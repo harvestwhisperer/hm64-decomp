@@ -74,7 +74,7 @@ typedef struct {
 
 extern void setupPlayerEntity(u16 arg0, u8 resetPlayer);
 
-extern void func_80065AA0();
+extern void initializePlayerHeldItem();
 extern u8 storeTool(u8 tool);
 extern void syncPlayerCoordinatesFromEntity();   
 extern Vec3f getOffsetTileCoordinates(f32 arg1, u8 arg2);

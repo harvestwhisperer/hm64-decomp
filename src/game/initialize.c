@@ -50,15 +50,15 @@
 #include "assetIndices/texts.h"
 
 // forward declarations
-void func_8004F768(void);
-void func_80054550(void);
-void func_80054734(void);
+void initializeEntityAssets(void);
+void initializeDialogueSystem(void);
+void setDialogueBytecodeAddresses(void);
 void initializeGameVariables(void);
 void initializeGameVariableStrings(void);
 void loadMapAddresses(void);
 void registerMainLoopCallbacks(void);
 void initializeDialogueVariables(void);
-void func_800535DC(void);
+void initializeTextAddresses(void);
 
 static inline void setStartingTime() {
     gYear = 1;
@@ -236,9 +236,9 @@ static inline void initializeToolboxSlots() {
        
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", func_8004E160);
+//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeAll);
 
-void func_8004E160(void) {
+void initializeAll(void) {
     
     volatile musConfig c;
     
@@ -252,11 +252,11 @@ void func_8004E160(void) {
     gCurrentGameIndex = 0; 
     
     registerMainLoopCallbacks();
-    func_8004F768();
+    initializeEntityAssets();
     loadMapAddresses();
-    func_80053088();
-    func_80054550();
-    setEntitiesColor(0, 0, 0, 0);
+    initializeMainMessageBoxes();
+    initializeDialogueSystem();
+    setEntitiesRGBA(0, 0, 0, 0);
     setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);
 
     setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -312,7 +312,7 @@ void initializeGameVariables(void) {
     gHarvestKing = 6;
     gHarvestCoinFinder = 0xFF;
     gFlowerFestivalGoddess = 0xFF;
-    D_80189054 = 0xFF;
+    gCowFestivalEnteredCowIndex= 0xFF;
     gVoteForFlowerFestivalGoddess = 0xFF;
     spiritFestivalAssistant1 = 0;
     spiritFestivalAssistant2 = 0;
@@ -325,7 +325,7 @@ void initializeGameVariables(void) {
 
     gSickDays = 0;
 
-    D_8013DC2E = 0;
+    deadAnimalCount = 0;
 
     flowerShopPoints = 0;
     bakeryCardPoints = 0;
@@ -346,15 +346,15 @@ void initializeGameVariables(void) {
 
     for (i = 0; i < MAX_NPCS; i++) {
         npcs[i].entityIndex = 0;
-        npcs[i].unk_1A = 0;
-        npcs[i].unk_1B = 0;
+        npcs[i].wanderRadiusX = 0;
+        npcs[i].wanderRadiusZ = 0;
         npcs[i].levelIndex = 0;
         npcs[i].movingFlag = 0;
-        npcs[i].unk_1E = 0;
+        npcs[i].behaviorMode = 0;
         npcs[i].direction = SOUTHWEST;
         npcs[i].speed = 0;
-        npcs[i].unk_21 = 0;
-        npcs[i].unk_22 = 0;
+        npcs[i].animationState = 0;
+        npcs[i].animationTimer = 0;
         npcs[i].location = 0;
     }
 
@@ -366,10 +366,10 @@ void initializeGameVariables(void) {
     dogInfo.coordinates.y = 0;
     dogInfo.coordinates.z = 0;
     dogInfo.location = FARM;
-    dogInfo.unk_17 = 0;
+    dogInfo.actionState = 0;
     dogInfo.direction = SOUTHWEST;
     dogInfo.speed = 0;
-    dogInfo.unk_1A = 0;
+    dogInfo.stateTimer = 0;
     dogInfo.unk_1B = 0;
     dogInfo.name[0] = 0xF6;
     dogInfo.name[1] = 0xF6;
@@ -377,7 +377,7 @@ void initializeGameVariables(void) {
     dogInfo.name[3] = 0xF6;
     dogInfo.name[4] = 0xF6;
     dogInfo.name[5] = 0xF6;
-    dogInfo.unk_1C = 0xFF;
+    dogInfo.bestRacePlacement = 0xFF;
     dogInfo.flags = 0;
     
     initializeDog();
@@ -389,7 +389,7 @@ void initializeGameVariables(void) {
     horseInfo.actionState = 0;
     horseInfo.direction = SOUTHWEST;
     horseInfo.speed = 0;
-    horseInfo.unk_1A = 0;
+    horseInfo.stateTimer = 0;
     horseInfo.unk_1B = 0;
     horseInfo.age = 0;
     horseInfo.name[0] = 0xF6;
@@ -398,7 +398,7 @@ void initializeGameVariables(void) {
     horseInfo.name[3] = 0xF6;
     horseInfo.name[4] = 0xF6;
     horseInfo.name[5] = 0xF6;
-    horseInfo.unk_1E = 0xFF;
+    horseInfo.bestRacePlacement = 0xFF;
     horseInfo.flags = 0;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
@@ -407,7 +407,7 @@ void initializeGameVariables(void) {
         gChickens[i].actionState = 0;
         gChickens[i].direction = SOUTHWEST;
         gChickens[i].speed = 0;
-        gChickens[i].unk_1A = 0;
+        gChickens[i].stateTimer = 0;
         gChickens[i].unk_1B = 0;
         gChickens[i].type = 0;
         gChickens[i].condition = 0;
@@ -433,10 +433,10 @@ void initializeGameVariables(void) {
          
         gFarmAnimals[i].location = 0;
          
-        gFarmAnimals[i].unk_1B = 0;
+        gFarmAnimals[i].actionState = 0;
         gFarmAnimals[i].direction = 0;
         gFarmAnimals[i].speed = 0;
-        gFarmAnimals[i].unk_1D = 0;
+        gFarmAnimals[i].stateTimer = 0;
         gFarmAnimals[i].unk_1E = 0;
          
         gFarmAnimals[i].type = 0;
@@ -457,12 +457,12 @@ void initializeGameVariables(void) {
         gFarmAnimals[i].name[4] = 0;
         gFarmAnimals[i].name[5] = 0;
           
-        gFarmAnimals[i].unk_23[0] = 0xFF;
-        gFarmAnimals[i].unk_23[1] = 0xFF;
-        gFarmAnimals[i].unk_23[2] = 0xFF;
-        gFarmAnimals[i].unk_23[3] = 0xFF;
-        gFarmAnimals[i].unk_23[4] = 0xFF;
-        gFarmAnimals[i].unk_23[5] = 0xFF;
+        gFarmAnimals[i].motherName[0] = 0xFF;
+        gFarmAnimals[i].motherName[1] = 0xFF;
+        gFarmAnimals[i].motherName[2] = 0xFF;
+        gFarmAnimals[i].motherName[3] = 0xFF;
+        gFarmAnimals[i].motherName[4] = 0xFF;
+        gFarmAnimals[i].motherName[5] = 0xFF;
          
         gFarmAnimals[i].birthdaySeason = 0;
         gFarmAnimals[i].birthdayDayOfMonth = 0;
@@ -703,7 +703,7 @@ void registerMainLoopCallbacks(void) {
 
     // naming screen
     registerMainLoopCallback(NAMING_SCREEN, loadNamingScreenCallback);
-    registerMainLoopCallback(NAMING_SCREEN_LOAD, func_800ED974);
+    registerMainLoopCallback(NAMING_SCREEN_LOAD, namingScreenCallback);
 
     // game file
     registerMainLoopCallback(SELECT_GAME, gameSelectCallback);
@@ -716,9 +716,9 @@ void registerMainLoopCallbacks(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", func_8004F768);
+//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeEntityAssets);
 
-void func_8004F768(void) {
+void initializeEntityAssets(void) {
     
     initializeShadowSprite(0, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (u8*)SHADOW_TEXTURE_BUFFER, (u16*)SHADOW_PALETTE_BUFFER, (AnimationFrameMetadata*)SHADOW_ANIMATION_FRAME_METADATA_BUFFER, (u32*)SHADOW_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0);
     initializeShadowSprite(1, &_shadowsTextureSegmentRomStart, &_shadowsTextureSegmentRomEnd, &_shadowsIndexSegmentRomStart, &_shadowsIndexSegmentRomEnd, (u8*)SHADOW_TEXTURE_BUFFER, (u16*)SHADOW_PALETTE_BUFFER, (AnimationFrameMetadata*)SHADOW_ANIMATION_FRAME_METADATA_BUFFER, (u32*)SHADOW_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 1, 0);
@@ -1277,9 +1277,9 @@ void loadMapAddresses(void) {
 
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/initialize", func_80053088);
+// INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeMainMessageBoxes);
 
-void func_80053088(void) {
+void initializeMainMessageBoxes(void) {
 
     u32 ptr = &_fontTextureSegmentRomStart;
     u32 ptr2 = &_fontTextureSegmentRomEnd;
@@ -1288,7 +1288,7 @@ void func_80053088(void) {
     u32 ptr5 = &_fontPalette2SegmentRomStart;
     u32 ptr6 = &_fontPalette2SegmentRomEnd;
 
-    func_800535DC();
+    initializeTextAddresses();
     initializeGameVariableStrings();
     setCharacterAvatarAnimationsPtr((u8*)&characterAvatarAnimationScripts);
 
@@ -1305,23 +1305,21 @@ void func_80053088(void) {
     
     setCharacterAvatarSprite(0, 0x75, &_characterDialogueIconsTextureSegmentRomStart, &_characterDialogueIconsTextureSegmentRomEnd, &_characterDialogueIconsAssetsIndexSegmentRomStart, &_characterDialogueIconsAssetsIndexSegmentRomEnd, &_characterDialogueIconsSpritesheetIndexSegmentRomStart, &_characterDialogueIconsSpritesheetIndexSegmentRomEnd, (u8*)CHARACTER_AVATAR_TEXTURE_1_BUFFER, (u8*)CHARACTER_AVATAR_TEXTURE_2_BUFFER, (u16*)CHARACTER_AVATAR_PALETTE_BUFFER, (AnimationFrameMetadata*)CHARACTER_AVATAR_ANIMATION_FRAME_METADATA_BUFFER, (u32*)CHARACTER_AVATAR_SPRITESHEET_INDEX_BUFFER, (u32*)CHARACTER_AVATAR_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, -139.0f, 1.0f, 0);
  
-    initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
-    setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
-    setMessageBoxLineAndRowSizes(0, 0x10, 3);
-    setMessageBoxSpacing(0, 0, 2);
-    setMessageBoxFont(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
-
-    setMessageBoxInterpolationWithFlags(0, -4, 0);
-    setMessageBoxSpriteIndices(0, 0, 0, 0);
-    setMessageBoxSfx(0, 0x57, 8, 1);
-    setMessageBoxButtonMask(0, (BUTTON_B | BUTTON_A));
-    setMessageBoxScrollSpeed(0, 1);
+    initializeEmptyMessageBox(MAIN_MESSAGE_BOX_INDEX, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
+    setMessageBoxViewSpacePosition(MAIN_MESSAGE_BOX_INDEX, 24.0f, -64.0f, 352.0f);
+    setMessageBoxLineAndRowSizes(MAIN_MESSAGE_BOX_INDEX, 0x10, 3);
+    setMessageBoxSpacing(MAIN_MESSAGE_BOX_INDEX, 0, 2);
+    setMessageBoxFont(MAIN_MESSAGE_BOX_INDEX, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxInterpolationWithFlags(MAIN_MESSAGE_BOX_INDEX, -4, 0);
+    setMessageBoxSpriteIndices(MAIN_MESSAGE_BOX_INDEX, 0, 0, 0);
+    setMessageBoxSfx(MAIN_MESSAGE_BOX_INDEX, 0x57, 8, 1);
+    setMessageBoxButtonMask(MAIN_MESSAGE_BOX_INDEX, (BUTTON_B | BUTTON_A));
+    setMessageBoxScrollSpeed(MAIN_MESSAGE_BOX_INDEX, 1);
+    
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
-
     setMessageBoxViewSpacePosition(1, 64.0f, 32.0f, 352.0f);
     setMessageBoxSpacing(1, 0, 2);
     setMessageBoxFont(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_2_BUFFER);
-
     setMessageBoxLineAndRowSizes(1, 0xB, 4);
     setMessageBoxInterpolationWithFlags(1, -4, 3);
     setMessageBoxButtonMask(1, (BUTTON_B | BUTTON_A));
@@ -1331,9 +1329,9 @@ void func_80053088(void) {
     
 }
     
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", func_800535DC);
+//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeTextAddresses);
 
-void func_800535DC(void) {
+void initializeTextAddresses(void) {
 
     setTextAddresses(TEXT_1_TEXT_INDEX, &_text1TextIndexSegmentRomStart, &_text1TextIndexSegmentRomEnd, &_text1TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(LIBRARY_TEXT_INDEX, &_libraryTextIndexSegmentRomStart, &_libraryTextIndexSegmentRomEnd, &_libraryTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
@@ -1400,7 +1398,7 @@ void func_800535DC(void) {
     setTextAddresses(ADDITIONAL_NPCS_TEXT_INDEX, &_additionalNpcsTextIndexSegmentRomStart, &_additionalNpcsTextIndexSegmentRomEnd, &_additionalNpcsTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     
     // cutscenes and festivals
-    setTextAddresses(TEXT_64_TEXT_INDEX, &_text64TextIndexSegmentRomStart, &_text64TextIndexSegmentRomEnd, &_text64TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
+    setTextAddresses(FARM_VISITS_TEXT_INDEX, &_farmVisitsTextIndexSegmentRomStart, &_farmVisitsTextIndexSegmentRomEnd, &_farmVisitsTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(TEXT_65_TEXT_INDEX, &_text65TextIndexSegmentRomStart, &_text65TextIndexSegmentRomEnd, &_text65TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(CUTSCENES_1_TEXT_INDEX, &_cutscenes1TextIndexSegmentRomStart, &_cutscenes1TextIndexSegmentRomEnd, &_cutscenes1TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(TEXT_54_TEXT_INDEX, &_text54TextIndexSegmentRomStart, &_text54TextIndexSegmentRomEnd, &_text54TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
@@ -1456,7 +1454,7 @@ void initializeGameVariableStrings(void) {
     // prices
     setGameVariableString(0x12, D_801A8B50, 8);
 
-    setGameVariableString(0x13, deadAnimalName, 6);
+    setGameVariableString(0x13, gDeadAnimalName, 6);
 
     setGameVariableString(0x14, gCurrentSeasonName, 6);
     
@@ -1480,14 +1478,14 @@ void initializeGameVariableStrings(void) {
     // unsued
     setGameVariableString(0x1F, D_8020563B, 4);
 
-    setGameVariableString(0x20, harvestKingName, 6);
+    setGameVariableString(0x20, gHarvestKingName, 6);
 
     // unused
     setGameVariableString(0x21, D_801806C8, 2);
     setGameVariableString(0x22, D_80170268, 6);
     setGameVariableString(0x23, D_801FC156, 6);
     setGameVariableString(0x24, D_80204B3C, 6);
-    setGameVariableString(0x25, D_8016FBCC, 1);
+    setGameVariableString(0x25, gMilkTypeString, 1);
     setGameVariableString(0x27, D_801886D4, 6);
 
     // 0x2A-0x2F set by overlay screens (horse/dog race)
@@ -1509,11 +1507,11 @@ void initializeGameVariableStrings(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", func_80054550);
+//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeDialogueSystem);
 
-void func_80054550(void) {
+void initializeDialogueSystem(void) {
 
-    func_80054734();
+    setDialogueBytecodeAddresses();
 
     initializeDialogueVariables();
 
@@ -1529,9 +1527,9 @@ void func_80054550(void) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", func_80054734);
+//INCLUDE_ASM("asm/nonmatchings/game/initialize", setDialogueBytecodeAddresses);
 
-void func_80054734(void) {
+void setDialogueBytecodeAddresses(void) {
 
     setDialogueBytecodeAddressInfo(0, TEXT_1_TEXT_INDEX, 0, &_text1DialogueIndexSegmentRomStart, &_text1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
     setDialogueBytecodeAddressInfo(1, DIARY_TEXT_INDEX, 2, &_diaryDialogueIndexSegmentRomStart, &_diaryDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_diaryDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
@@ -1585,7 +1583,7 @@ void func_80054734(void) {
     setDialogueBytecodeAddressInfo(0x43, NPC_BABY_TEXT_INDEX, 0x47, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
     setDialogueBytecodeAddressInfo(0x43, NPC_BABY_TEXT_INDEX, 0x47, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
     setDialogueBytecodeAddressInfo(0x45, ADDITIONAL_NPCS_TEXT_INDEX, 0x46, &_additionalNpcs2DialogueIndexSegmentRomStart, &_additionalNpcs2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_additionalNpcs2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x35, TEXT_64_TEXT_INDEX, 0x3F, &_text64DialogueIndexSegmentRomStart, &_text64DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text64DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(0x35, FARM_VISITS_TEXT_INDEX, 0x3F, &_farmVisitsDialogueIndexSegmentRomStart, &_farmVisitsDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_farmVisitsDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
     setDialogueBytecodeAddressInfo(0x36, TEXT_65_TEXT_INDEX, 0x40, &_text65DialogueIndexSegmentRomStart, &_text65DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text65DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
     setDialogueBytecodeAddressInfo(0x27, CUTSCENES_1_TEXT_INDEX, 0x2D, &_cutscenes1DialogueIndexSegmentRomStart, &_cutscenes1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_cutscenes1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
     setDialogueBytecodeAddressInfo(0x2F, TEXT_54_TEXT_INDEX, 0x35, &_text54DialogueIndexSegmentRomStart, &_text54DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text54DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);

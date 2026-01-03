@@ -31,9 +31,9 @@ static TitleContext titleScreenContext;
 u8 demoCutsceneIndex;
 
 // forward declarations
-void func_800E0ED4();                                  
+void handleDogAnimation();                                  
 void updateGrassAnimation();                                  
-void func_800E10E8();                                  
+void resetWrappingSpritePositions();                                  
 void loadDogTitleSprite(void);
 
 
@@ -474,7 +474,7 @@ void titleScreenMainLoopCallback(void) {
                 }
             }
 
-            func_800E0ED4();
+            handleDogAnimation();
             break;
         
         case 1:
@@ -593,7 +593,7 @@ void titleScreenMainLoopCallback(void) {
                 
             }
 
-            func_800E0ED4();
+            handleDogAnimation();
 
             break;
 
@@ -605,10 +605,9 @@ void titleScreenMainLoopCallback(void) {
                 deactivateTitleScreenSprites();
                 
                 if (titleScreenContext.rowHighlighted == 0) {
-                    // load select game screen
-                    func_800E1380(FALSE);
+                    initLoadGameScreen(FALSE);
                 } else {
-                    func_80055F08(HOW_TO_PLAY_CUTSCENE, 0, 0);
+                    launchIntroCutscene(HOW_TO_PLAY_CUTSCENE, 0, 0);
                 }
             }
 
@@ -622,13 +621,13 @@ void titleScreenMainLoopCallback(void) {
  
                 switch (demoCutsceneIndex) {
                     case 0:
-                        func_80055F08(DEMO_CUTSCENE_1, 0, 1);
+                        launchIntroCutscene(DEMO_CUTSCENE_1, 0, 1);
                         break;
                     case 1:
-                        func_80055F08(DEMO_CUTSCENE_2, 0x1D, 1);
+                        launchIntroCutscene(DEMO_CUTSCENE_2, 0x1D, 1);
                         break;
                     case 2:
-                        func_80055F08(DEMO_CUTSCENE_3, 0x32, 1);
+                        launchIntroCutscene(DEMO_CUTSCENE_3, 0x32, 1);
                         break;
                     default:
                         break;
@@ -643,57 +642,57 @@ void titleScreenMainLoopCallback(void) {
         }  
             
     updateGrassAnimation();
-    func_800E10E8();
+    resetWrappingSpritePositions();
 
 }
 
 static inline void updateDogTitleAnimation() {
     
     switch (titleScreenContext.dogAnimationIndex) {
-            case 0:
-                startSpriteAnimation(DOG_TITLE_SPRITE, 0xB, 0xFF);
-                titleScreenContext.dogAnimationIndex = 0xFF;
-                break;
-            case 1:
-                startSpriteAnimation(DOG_TITLE_SPRITE, 0x13, 0xFF);
-                titleScreenContext.dogAnimationIndex = 0xFF;
-                break;
-            case 2:
-                startSpriteAnimation(DOG_TITLE_SPRITE, 0x2D, 0xFF);
-                titleScreenContext.dogAnimationIndex = 0xFF;
-                break;
-            case 3:
-                startSpriteAnimation(DOG_TITLE_SPRITE, 0x32, 0xFF);
-                titleScreenContext.dogAnimationIndex = 0xFF;
-                break;            
-            case 4:
-                startSpriteAnimation(DOG_TITLE_SPRITE, 0x48, 0xFF);
-                titleScreenContext.dogAnimationIndex = 0xFF;
-                break;         
-            case 5:
-                startSpriteAnimation(DOG_TITLE_SPRITE, 0x63, 0xFF);
-                titleScreenContext.dogAnimationIndex = 0xFF;
-                break;            
-            case 6:
-                startSpriteAnimation(DOG_TITLE_SPRITE, 0x69, 0xFF);
-                titleScreenContext.dogAnimationIndex = 0xFF;
-                break;            
-            default:
-               startSpriteAnimation(DOG_TITLE_SPRITE, 0x1D, 0xFE);
-                if (titleScreenContext.dogIdleCounter >= 0x1F) {
-                    titleScreenContext.dogAnimationIndex = getRandomNumberInRange(0, 10);
-                    titleScreenContext.dogIdleCounter = 0;
-                }
-                break;
-        }
-    
-        titleScreenContext.dogIdleCounter++;
+        case 0:
+            startSpriteAnimation(DOG_TITLE_SPRITE, 0xB, 0xFF);
+            titleScreenContext.dogAnimationIndex = 0xFF;
+            break;
+        case 1:
+            startSpriteAnimation(DOG_TITLE_SPRITE, 0x13, 0xFF);
+            titleScreenContext.dogAnimationIndex = 0xFF;
+            break;
+        case 2:
+            startSpriteAnimation(DOG_TITLE_SPRITE, 0x2D, 0xFF);
+            titleScreenContext.dogAnimationIndex = 0xFF;
+            break;
+        case 3:
+            startSpriteAnimation(DOG_TITLE_SPRITE, 0x32, 0xFF);
+            titleScreenContext.dogAnimationIndex = 0xFF;
+            break;            
+        case 4:
+            startSpriteAnimation(DOG_TITLE_SPRITE, 0x48, 0xFF);
+            titleScreenContext.dogAnimationIndex = 0xFF;
+            break;         
+        case 5:
+            startSpriteAnimation(DOG_TITLE_SPRITE, 0x63, 0xFF);
+            titleScreenContext.dogAnimationIndex = 0xFF;
+            break;            
+        case 6:
+            startSpriteAnimation(DOG_TITLE_SPRITE, 0x69, 0xFF);
+            titleScreenContext.dogAnimationIndex = 0xFF;
+            break;            
+        default:
+            startSpriteAnimation(DOG_TITLE_SPRITE, 0x1D, 0xFE);
+            if (titleScreenContext.dogIdleCounter >= 0x1F) {
+                titleScreenContext.dogAnimationIndex = getRandomNumberInRange(0, 10);
+                titleScreenContext.dogIdleCounter = 0;
+            }
+            break;
+    }
+
+    titleScreenContext.dogIdleCounter++;
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/title", func_800E0ED4);
+//INCLUDE_ASM("asm/nonmatchings/game/title", handleDogAnimation);
 
-void func_800E0ED4(void) {
+void handleDogAnimation(void) {
 
     if (checkSpriteAnimationStateChanged(DOG_TITLE_SPRITE)) {
         resetAnimationState(DOG_TITLE_SPRITE);
@@ -704,7 +703,7 @@ void func_800E0ED4(void) {
 
 // alternate
 /*
-void func_800E0ED4(void) {
+void handleDogAnimation(void) {
 
     if (checkSpriteAnimationStateChanged(0x44)) {
         
@@ -790,9 +789,9 @@ void updateGrassAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/title", func_800E10E8);
+//INCLUDE_ASM("asm/nonmatchings/game/title", resetWrappingSpritePositions);
 
-void func_800E10E8(void) {
+void resetWrappingSpritePositions(void) {
     
     if (globalSprites[CLOUD_2_1].viewSpacePosition.x > 320.0f) {
         setSpriteViewSpacePosition(CLOUD_2_1, titleScreenContext.centerCoordinate - 320.0f, 64.0f, 64.0f);

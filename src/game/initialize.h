@@ -5,7 +5,7 @@
 
 #include "common.h"
 
-extern void func_8004E160(void);   
-extern void func_80053088(void); 
+extern void initializeAll(void);   
+extern void initializeMainMessageBoxes(void); 
 
 #endif

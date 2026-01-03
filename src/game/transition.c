@@ -53,11 +53,9 @@ void mainGameLoopCallback(void) {
     
     if (checkEntityMapSpaceDependent(ENTITY_PLAYER) && !(checkEntityPaused(ENTITY_PLAYER))) {
 
-        // increment clock and handle audio changes
-        func_800D7C20();
-        // handle button input and player animation
+        handleTimeUpdates();
         updatePlayerAction();
-        setNpcAnimations();
+        setNPCAnimations();
         updateAnimals();
         handlePlayerAnimation();
 
@@ -72,21 +70,20 @@ void mainGameLoopCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", func_80055F08);
+//INCLUDE_ASM("asm/nonmatchings/game/transition", launchIntroCutscene);
 
-// setup title/demo/non game cutscenes
 // used by game.c
-inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
+inline void launchIntroCutscene(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
     deactivateSprites();
     deactivateGlobalSprites();
     initializeMessageBoxes();
     initializeCutsceneExecutors();
-    func_80053088();
+    initializeMainMessageBoxes();
     
     resetGlobalLighting();
 
-    setEntitiesColor(0, 0, 0, 0);
+    setEntitiesRGBA(0, 0, 0, 0);
     setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);
 
     gHour = 12;
@@ -97,10 +94,8 @@ inline void func_80055F08(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
 
     gCutsceneIndex = cutsceneIndex;
 
-    // trigger cutscene and load cutscene assets
     loadCutscene(0);
     
-    // set up map/level
     loadLevelFromEntrance(gEntranceIndex);
  
     setupPlayerEntity(gEntranceIndex, FALSE);
@@ -126,6 +121,7 @@ void loadLevel(u8 arg0) {
     toggleDailyEventBit(0x28);
     toggleDailyEventBit(0x4B);
 
+    // update misc. game state
     func_8005CDCC();
     syncPlayerCoordinatesFromEntity();
     updateAnimalCoordinates();
@@ -199,7 +195,7 @@ void loadLevel(u8 arg0) {
             gPlayer.heldItem = 0;
         }
 
-        if (!(gCutsceneFlags & 1) && func_8009B5E0()) {
+        if (!(gCutsceneFlags & 1) && getHealthyChickenCount()) {
             playSfx(63);
         }
 
@@ -210,7 +206,7 @@ void loadLevel(u8 arg0) {
     
     setupPlayerEntity(gEntranceIndex, arg0);
     
-    func_80065AA0();
+    initializePlayerHeldItem();
     loadActiveItemEntities();
 
     if (arg0 != 2) {
@@ -220,7 +216,7 @@ void loadLevel(u8 arg0) {
         if (!(*ptr & (2 | 4))) {
             
             if (!checkDailyEventBit(0x4D)) {
-                func_80088D54();
+                spawnWildAnimals();
             }
 
             if (!(*ptr & (2 | 4))) {
@@ -236,18 +232,16 @@ void loadLevel(u8 arg0) {
     }
     
     handlePlayerAnimation();
-    // handle item state
-    updateHeldItemStates();
-    // handle tool use
+    updateHeldItemState();
     processToolUseState();
 
-    setEntitiesColor(0, 0, 0, 0);
+    setEntitiesRGBA(0, 0, 0, 0);
     setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);
     
-    unknownRGBA.r = 0;
-    unknownRGBA.g = 0;
-    unknownRGBA.b = 0;
-    unknownRGBA.a = 0;
+    previousLightingRGBA.r = 0;
+    previousLightingRGBA.g = 0;
+    previousLightingRGBA.b = 0;
+    previousLightingRGBA.a = 0;
     
 }
 
@@ -549,7 +543,7 @@ void exitOverlayScreen(void) {
     loadAllPendingEntities();
     resumeCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
-    func_80065AA0();
+    initializePlayerHeldItem();
 
     dmaMapAssets(0, gMapWithSeasonIndex);
     
@@ -566,7 +560,6 @@ void exitOverlayScreen(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", openOverlayScreen);
 
-// pause before going to overlay screen or naming screen
 void inline openOverlayScreen(void) {
     pauseAllEntityLoads();
     pauseAllCutsceneExecutors();
@@ -641,8 +634,7 @@ void startNewDay(void) {
         // get average of sprite affection
         if (((npcAffection[HARVEST_SPRITE_1] + npcAffection[HARVEST_SPRITE_2] + npcAffection[HARVEST_SPRITE_3]) / 3) >= 120) {
             
-            // check animal score
-            if ((func_8009B564() + func_8009B374()) >= 2) {
+            if ((getTotalChickenCount() + getTotalFarmAnimalsCount()) >= 2) {
                 setLifeEventBit(HARVEST_SPRITES_ANIMAL_HELP);
             }
 
@@ -650,7 +642,7 @@ void startNewDay(void) {
         
         // harvest sprites help with animals during typhoon
         if (gWeather == TYPHOON && checkLifeEventBit(HARVEST_SPRITES_ANIMAL_HELP)) {
-            func_80087D5C();
+            feedAllAnimals();
         }
 
     }
@@ -679,17 +671,17 @@ void startNewDay(void) {
     
     if (gWeather == RAIN) {
         // update animal status based on rain
-        func_80064114();
+        updateFarmStatusRain();
     }
     
     if (gWeather == SNOW) {
         // update animal status based on snow
-        func_800644B0();
+        updateFarmStatusSnow();
     }
     
     if (gWeather == TYPHOON) {
         // update animal status based on typhoon
-        func_80064814();
+        updateFarmStatusTyphoon();
     }
     
     gWeather = gForecast;
@@ -698,11 +690,11 @@ void startNewDay(void) {
     setForecast();
     
     if (checkLifeEventBit(0x7E)) {
-        // unused code?
+        // dead code
         checkLifeEventBit(0x7F);
     }
     
-    func_800DB424();
+    updateFieldObjectsOvernight();
 
     resetAnimalStatuses();
     updateCropsIfRain();
@@ -716,7 +708,7 @@ void startNewDay(void) {
     
     if (checkDailyEventBit(7)) {
         // save game
-        func_800E53E8(gCurrentGameIndex);
+        saveGameToSram(gCurrentGameIndex);
     }
     
     // update more game state

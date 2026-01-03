@@ -346,7 +346,7 @@ void func_800692E4(void);
 void func_80069830(void);
 void func_80069C5C(void);
 void handleWhistleForDogAction(void);
-void handleWhistleForHorseAction(void);
+void handlehandleWhistleForHorseAction(void);
 void func_80069DA8(void);
 void handlePuttingItemInRucksackAction(void);
 void handleCastingFishingRodActionStub(void);
@@ -485,9 +485,9 @@ void setupPlayerEntity(u16 entranceIndex, u8 resetPlayer) {
 
 }
   
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80065AA0);
+//INCLUDE_ASM("asm/nonmatchings/game/player", initializePlayerHeldItem);
 
-void func_80065AA0(void) {
+void initializePlayerHeldItem(void) {
 
     if (gPlayer.heldItem) {
         
@@ -851,9 +851,11 @@ void updatePlayerAction(void) {
         case 8:
             func_800682F8();
             break;
+        // turn on TV
         case 9:
             func_80068340();
             break;
+        // shop item interaction
         case 10:
             func_80068410();
             break;
@@ -885,7 +887,7 @@ void updatePlayerAction(void) {
             handleWhistleForDogAction();
             break;
         case WHISTLE_FOR_HORSE:
-            handleWhistleForHorseAction();
+            handlehandleWhistleForHorseAction();
             break;
         case DRINKING:
             func_80069DA8();
@@ -931,9 +933,7 @@ void updatePlayerAction(void) {
             break;
     }
     
-    // handle item state
-    updateHeldItemStates();
-    // handle tool use
+    updateHeldItemState();
     processToolUseState();
 
 }
@@ -976,10 +976,10 @@ void handlePlayerInput(void) {
         temp = 0xFF;
     }
 
-    func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, BUTTON_A);
+    checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, BUTTON_A);
 
-    horseResult = func_8009A100();
-    npcResult = func_800858D4();
+    horseResult = handleHorseGrownPlayerInteraction();
+    npcResult = checkNPCInteraction();
 
     if (!set && npcResult == 1) {
         temp = 0xFF;
@@ -1374,12 +1374,12 @@ void func_80067290(u8 arg0) {
     
     if (arg0 == 0) {
 
-        if ((getItemFlags(gPlayer.heldItem) & ITEM_INCUBATOR_PLACEABLE) && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == COOP && !func_8009B7BC()) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_INCUBATOR_PLACEABLE) && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 17) && gBaseMapIndex == COOP && getIncubatingEggCount() == 0) {
             set = TRUE;
             startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
         }
 
-        if ((getItemFlags(gPlayer.heldItem) & ITEM_LUMBER_STORABLE) && !set && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x11) && gBaseMapIndex == FARM) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_LUMBER_STORABLE) && !set && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 17) && gBaseMapIndex == FARM) {
             set = TRUE;
             startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
         }
@@ -1754,7 +1754,7 @@ void func_80068120(void) {
             setItemState(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
             gPlayer.actionPhase++;
-            playSfx(0x25); 
+            playSfx(PUTTING_DOWN_SFX); 
         }
 
         gPlayer.actionPhaseFrameCounter++;
@@ -1891,7 +1891,7 @@ void func_80068558(void) {
 
         if (gPlayer.actionPhaseFrameCounter == 0) {
 
-            playSfx(4);
+            playSfx(ITEM_PLUCK_SFX);
             
             setEntityCollidable(ENTITY_PLAYER, 0);
             setEntityTracksCollisions(ENTITY_PLAYER, 0);
@@ -1948,7 +1948,7 @@ void func_80068738(void) {
 
         if (gPlayer.actionPhaseFrameCounter == 0) {
 
-            playSfx(4);
+            playSfx(ITEM_PLUCK_SFX);
             
             setEntityCollidable(ENTITY_PLAYER, 0);
             setEntityTracksCollisions(ENTITY_PLAYER, 0);
@@ -2590,14 +2590,14 @@ void func_80069C5C(void) {
 void handleWhistleForDogAction(void) {
 
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-        playSfx(0xA);
+        playSfx(WHISTLE);
     }
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForHorseAction);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlehandleWhistleForHorseAction);
 
-void handleWhistleForHorseAction(void) {
+void handlehandleWhistleForHorseAction(void) {
 
     if (gPlayer.actionPhase == 0) {
 
@@ -3246,7 +3246,7 @@ void func_8006AC4C(void) {
 
             default:
                 if (gPlayer.actionPhase >= 10) {
-                    func_8005C940(8, END_OF_DAY_1);    
+                    handleExitLevel(8, END_OF_DAY_1);    
                 } else {
                     gPlayer.actionPhase++;
                 }
@@ -3645,8 +3645,7 @@ void func_8006B97C(void) {
             gPlayer.actionPhase++;
         } else {
             resetAction();
-            // dog
-            func_8009B11C();
+            handleWhistleForDog();
         }
     }
 
@@ -3664,8 +3663,7 @@ void func_8006BA14(void) {
             gPlayer.actionPhase++;
         } else {
             resetAction();
-            // horse
-            func_8009B1BC();
+            handleWhistleForHorse();
         }
     }
 
@@ -3843,7 +3841,7 @@ void handleFishingRodUse(void) {
 
                 totalFishCaught += adjustValue(totalFishCaught, 1, MAX_FISH_CAUGHT);
 
-                func_80065AA0();
+                initializePlayerHeldItem();
                 
                 break;
             
@@ -3971,76 +3969,76 @@ void func_8006C384(void) {
             case WATERING_CAN:                                     
                 func_8006CF54();
                 break;
-            case 6:                                     
+            case MILKER:                                     
                 func_8006D0AC();
                 break;
-            case 7:                                     
+            case BELL:                                     
                 func_8006D21C();
                 break;
-            case 8:                                     
+            case BRUSH:                                     
                 func_8006D304();
                 break;
-            case 9:                                     
+            case CLIPPERS:                                     
                 func_8006D3FC();
                 break;
-            case 10:                                    
+            case TURNIP_SEEDS:                                    
                 func_8006D56C();
                 break;
             case POTATO_SEEDS:                                    
                 func_8006D690();
                 break;
-            case 12:                                    
+            case CABBAGE_SEEDS:                                    
                 func_8006D7B4();
                 break;
-            case 13:                                    
+            case TOMATO_SEEDS:                                    
                 func_8006D8D8();
                 break;
-            case 14:                                    
+            case CORN_SEEDS:                                    
                 func_8006D9FC();
                 break;
-            case 15:                                    
+            case EGGPLANT_SEEDS:                                    
                 func_8006DB20();
                 break;
-            case 16:                                    
+            case STRAWBERRY_SEEDS:                                    
                 func_8006DC44();
                 break;
-            case 17:                                    
+            case MOON_DROP_SEEDS:                                    
                 func_8006DD68();
                 break;
-            case 18:                                    
+            case PINK_CAT_MINT_SEEDS:                                    
                 func_8006DE8C();
                 break;
-            case 19:                                    
+            case BLUE_MIST_SEEDS:                                    
                 func_8006DFB0();
                 break;
-            case 20:                                    
+            case CHICKEN_FEED:                                    
                 func_8006E0D4();
                 break;
-            case 21:                                    
+            case BALL:                                    
                 func_8006E1F8();
                 break;
-            case 22:                                    
+            case FEEDING_BOTTLE:                                    
                 func_8006E200();
                 break;
             case 23:                                    
                 func_8006E208();
                 break;
-            case 24:                                    
+            case FISHING_POLE:                                    
                 func_8006E210();
                 break;
-            case 25:                                    
+            case MIRACLE_POTION:                                    
                 func_8006E240();
                 break;
-            case 26:                                    
+            case COW_MEDICINE:                                    
                 func_8006E348();
                 break;
-            case 27:                                    
+            case GRASS_SEEDS:                                    
                 func_8006E450();
                 break;
-            case 28:                                    
+            case BLUE_FEATHER:                                    
                 func_8006E574();
                 break;
-            case 29:                                    
+            case EMPTY_BOTTLE:                                    
                 func_8006E678();
                 break;
             }
@@ -4060,21 +4058,21 @@ void func_8006C384(void) {
                 playSfx(MILKER_SFX);
                 break;
             case BELL:                                     
-                playSfx(0x20);
+                playSfx(BELL_SFX);
                 break;
             case BRUSH:                                     
-                playSfx(0x1F);
+                playSfx(BRUSH_SFX);
                 break;
             case CLIPPERS:                                     
-                playSfx(0x22);
+                playSfx(34);
                 break;
             case CHICKEN_FEED:                                    
-                playSfx(0x1D);
+                playSfx(SEEDS_SFX);
                 break;
             case MIRACLE_POTION:                                    
             case COW_MEDICINE:                                    
             case BLUE_FEATHER:                                    
-                playSfx(0x23);
+                playSfx(SHIMMER_SFX);
                 break;
             case EMPTY_BOTTLE:
             default:
@@ -4101,14 +4099,14 @@ void func_8006C628(u16 arg0, u16 arg1) {
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, arg0);
 
             switch (gPlayer.currentTool) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    func_80099DE8();
-                    func_80099EEC();
-                    func_80099FF0();
-                    func_8009A074();
+                case SICKLE:
+                case HOE:
+                case AX:
+                case HAMMER:
+                    handleFarmAnimalPlayerCollision();
+                    handleChickenPlayerCollision();
+                    handleDogPlayerCollision();
+                    handleHorsePlayerInteraction();
                     break;
             }
 
@@ -4203,7 +4201,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
                             
                                 gPlayer.heldItem = POWER_NUT;
                                 startAction(EATING, EATING + 2);
-                                func_80065AA0();
+                                initializePlayerHeldItem();
                                 powerNutBits |= 1;
                                 gMaximumStamina += adjustValue(gMaximumStamina, 15, MAX_STAMINA);
                                 
@@ -4278,7 +4276,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 
                                 gPlayer.heldItem = 0x57;
                                 startAction(6, 8);
-                                func_80065AA0();
+                                initializePlayerHeldItem();
                                 powerNutBits |= 0x10;
                                 
                                 gMaximumStamina += adjustValue(gMaximumStamina, 15, 250);
@@ -4512,7 +4510,7 @@ void func_8006D0AC(void) {
         
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
-            func_80099DE8();
+            handleFarmAnimalPlayerCollision();
             break;
         
         case 1:
@@ -4592,8 +4590,8 @@ void func_8006D304(void) {
         
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
-            func_80099DE8();
-            func_8009A074();
+            handleFarmAnimalPlayerCollision();
+            handleHorsePlayerInteraction();
             break;
         
         case 1:
@@ -4625,7 +4623,7 @@ void func_8006D3FC(void) {
         
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
-            func_80099DE8();
+            handleFarmAnimalPlayerCollision();
             break;
 
         case 1:
@@ -5134,7 +5132,7 @@ void func_8006E240(void) {
     switch (gPlayer.actionPhase) {                           
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
-            func_80099DE8();
+            handleFarmAnimalPlayerCollision();
             break;
         case 1:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x234);
@@ -5167,7 +5165,7 @@ void func_8006E348(void) {
 
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
-            func_80099DE8();
+            handleFarmAnimalPlayerCollision();
             break;
         
         case 1:
@@ -5247,9 +5245,8 @@ void func_8006E574(void) {
     switch (gPlayer.actionPhase) {
         case 0:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
-            func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0);
-            // set npc talking to
-            func_80085C94();
+            checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, 0);
+            findNPCToTalkTo();
             break;
         case 1:
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x234);
@@ -5280,7 +5277,7 @@ void func_8006E678(void) {
             if (gPlayer.bottleContents == 0) {
                 
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
-                func_80099DE8();
+                handleFarmAnimalPlayerCollision();
                 
             } else {
 
@@ -5315,7 +5312,7 @@ void func_8006E678(void) {
                     
                 }
                 
-                func_80065AA0();
+                initializePlayerHeldItem();
 
                 gPlayer.bottleContents = 0;       
 

@@ -29,13 +29,13 @@ extern u16 gCutsceneBytecodeSegmentIndex;
 
 // sum of girls' affection
 extern u16 D_80215DF0;
-// cow festival winner affection (D_80189054)
+// cow festival winner affection (gCowFestivalEnteredCowIndex)
 extern u16 D_801886D2;
 
 extern u8 cutsceneLevelInteractionIndex;
 extern u8 interactedWithLevelInteractionIndex;
 
 extern u32 D_801C3F78;
-extern u8 D_8018A72C[6];
+extern u8 gRaceFinishOrder[6];
 
 #endif

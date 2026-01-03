@@ -31,33 +31,33 @@
 #include "ld_symbols.h"
 
 // foward declarations
-u8 func_800E4424(u8, u8);                 
-void func_800E16A0(void);
-void func_800E16D0(u8 arg0, u8 arg1);
-void func_800E1998(void);
-void func_800E1A94(void);
-void func_800E3358(u8 arg0, u8 arg1, u8 arg2);
-void func_800E6C08(u8);
-void func_800E6FB4(u8);                 
-void func_800E80AC(u8);                
-void func_800E9550(u8);                  
-void func_800E9B2C(u8);          
-void func_800EA3AC(u8, u8);                              
-void func_800EAA9C(u8);
-void func_800EB74C(u8 arg0);               
-void func_800EB788(u8);                                 
-void func_800EBA90(u8 arg0);
-void func_800EBAC8(u8 arg0);                       
-void func_800EBC00();                                  
-u8 func_800EBCD8();      
-void func_800ED160(u8 arg0, u8 arg1);
-void func_800EBEAC(u8, u8);
+u8 loadGameFromSram(u8, u8);                 
+void resetGamePakState(void);
+void showDiarySelectScreen(u8 fadeIn, u8 diaryIndex);
+void loadAllDiarySlots(void);
+void setupDiaryMessageBoxes(void);
+void loadDiarySlotData(u8 slot, u8 source, u8 operation);
+void clearFarmRankingSlot(u8);
+void setupRankingListMessageBoxes(u8);                 
+void setupRankingDetailMessageBoxes(u8);                
+void loadFarmRankingFromSram(u8);                  
+void saveFarmRankingToSram(u8);          
+void loadTempRankingFromSave(u8, u8);                              
+void calculateFarmRankingScore(u8);
+void setRankingGrassTiles(u8 slot);               
+void countRankingPhotos(u8);                                 
+void setRankingRecipeCount(u8 slot);
+void countRankingHouseExtensions(u8 slot);                       
+void sortFarmRankings();                                  
+u8 findMatchingFarmRanking();      
+void copyFarmRankingSlot(u8 destSlot, u8 srcSlot);
+void swapFarmRankingSlots(u8, u8);
  
 // bss
 LoadGameScreenContext loadGameScreenContext;
 FarmRankingData gFarmRankingData;
 u8 gCurrentGameIndex;
-s32 D_8016FDFC;
+s32 farmRankingRawScore;
 
 // unused
 u32 D_8018A080;
@@ -75,15 +75,14 @@ u32 D_802226E4;
 
 // data
 // "PACKINSOFT FARM2" in ASCII
-u8 D_80119740[16] = { 0x50, 0x41, 0x43, 0x4B, 0x49, 0x4E, 0x53, 0x4F, 0x46, 0x54, 0x20, 0x46, 0x41, 0x52, 0x4D, 0x32 };
+u8 sramSignature[16] = { 0x50, 0x41, 0x43, 0x4B, 0x49, 0x4E, 0x53, 0x4F, 0x46, 0x54, 0x20, 0x46, 0x41, 0x52, 0x4D, 0x32 };
 
 
 /* helpers */
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E1380);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", initLoadGameScreen);
 
-// close farm ranking screen
-void func_800E1380(u8 controllerPakEnabled) {
+void initLoadGameScreen(bool controllerPakEnabled) {
     
     if (!controllerPakEnabled) {
         loadGameScreenContext.showControllerPakScreen = 0;
@@ -94,54 +93,54 @@ void func_800E1380(u8 controllerPakEnabled) {
         loadGameScreenContext.action = 11;
     }
     
-    loadGameScreenContext.unk_2A[0] = 0x45;
-    loadGameScreenContext.unk_2A[1] = 0x39;
-    loadGameScreenContext.unk_2A[2] = 0x4E;
-    loadGameScreenContext.unk_2A[3] = 0x59;
-    loadGameScreenContext.unk_2A[4] = 0x57;
-    loadGameScreenContext.unk_2A[5] = 0x45;
+    loadGameScreenContext.gamePakExtension[0] = 0x45;
+    loadGameScreenContext.gamePakExtension[1] = 0x39;
+    loadGameScreenContext.gamePakExtension[2] = 0x4E;
+    loadGameScreenContext.gamePakExtension[3] = 0x59;
+    loadGameScreenContext.gamePakExtension[4] = 0x57;
+    loadGameScreenContext.gamePakExtension[5] = 0x45;
     
-    loadGameScreenContext.unk_0[0] = 0x48;
-    loadGameScreenContext.unk_0[1] = 0x41;
-    loadGameScreenContext.unk_0[2] = 0x52;
-    loadGameScreenContext.unk_0[3] = 0x56;
-    loadGameScreenContext.unk_0[4] = 0x45;
-    loadGameScreenContext.unk_0[5] = 0x53;
-    loadGameScreenContext.unk_0[6] = 0x54;
-    loadGameScreenContext.unk_0[7] = 0x4D;
-    loadGameScreenContext.unk_0[8] = 0x4F;
-    loadGameScreenContext.unk_0[9] = 0x4F;
-    loadGameScreenContext.unk_0[10] = 0x4E;
-    loadGameScreenContext.unk_0[11] = 0;
-    loadGameScreenContext.unk_0[12] = 0;
-    loadGameScreenContext.unk_0[13] = 0;
-    loadGameScreenContext.unk_0[14] = 0;
-    loadGameScreenContext.unk_0[15] = 0;
-    loadGameScreenContext.unk_0[16] = 0x41;
-    loadGameScreenContext.unk_0[17] = 0;
-    loadGameScreenContext.unk_0[18] = 0;
-    loadGameScreenContext.unk_0[19] = 0;
+    loadGameScreenContext.gamePakNoteNameA[0] = 0x48;
+    loadGameScreenContext.gamePakNoteNameA[1] = 0x41;
+    loadGameScreenContext.gamePakNoteNameA[2] = 0x52;
+    loadGameScreenContext.gamePakNoteNameA[3] = 0x56;
+    loadGameScreenContext.gamePakNoteNameA[4] = 0x45;
+    loadGameScreenContext.gamePakNoteNameA[5] = 0x53;
+    loadGameScreenContext.gamePakNoteNameA[6] = 0x54;
+    loadGameScreenContext.gamePakNoteNameA[7] = 0x4D;
+    loadGameScreenContext.gamePakNoteNameA[8] = 0x4F;
+    loadGameScreenContext.gamePakNoteNameA[9] = 0x4F;
+    loadGameScreenContext.gamePakNoteNameA[10] = 0x4E;
+    loadGameScreenContext.gamePakNoteNameA[11] = 0;
+    loadGameScreenContext.gamePakNoteNameA[12] = 0;
+    loadGameScreenContext.gamePakNoteNameA[13] = 0;
+    loadGameScreenContext.gamePakNoteNameA[14] = 0;
+    loadGameScreenContext.gamePakNoteNameA[15] = 0;
+    loadGameScreenContext.gamePakNoteNameA[16] = 0x41;
+    loadGameScreenContext.gamePakNoteNameA[17] = 0;
+    loadGameScreenContext.gamePakNoteNameA[18] = 0;
+    loadGameScreenContext.gamePakNoteNameA[19] = 0;
     
-    loadGameScreenContext.unk_15[0] = 0x48;
-    loadGameScreenContext.unk_15[1] = 0x41;
-    loadGameScreenContext.unk_15[2] = 0x52;
-    loadGameScreenContext.unk_15[3] = 0x56;
-    loadGameScreenContext.unk_15[4] = 0x45;
-    loadGameScreenContext.unk_15[5] = 0x53;
-    loadGameScreenContext.unk_15[6] = 0x54;
-    loadGameScreenContext.unk_15[7] = 0x4D;
-    loadGameScreenContext.unk_15[8] = 0x4F;
-    loadGameScreenContext.unk_15[9] = 0x4F;
-    loadGameScreenContext.unk_15[10] = 0x4E;
-    loadGameScreenContext.unk_15[11] = 0;
-    loadGameScreenContext.unk_15[12] = 0;
-    loadGameScreenContext.unk_15[13] = 0;
-    loadGameScreenContext.unk_15[14] = 0;
-    loadGameScreenContext.unk_15[15] = 0;
-    loadGameScreenContext.unk_15[16] = 0x42;
-    loadGameScreenContext.unk_15[17] = 0;
-    loadGameScreenContext.unk_15[18] = 0;
-    loadGameScreenContext.unk_15[19] = 0;
+    loadGameScreenContext.gamePakNoteNameB[0] = 0x48;
+    loadGameScreenContext.gamePakNoteNameB[1] = 0x41;
+    loadGameScreenContext.gamePakNoteNameB[2] = 0x52;
+    loadGameScreenContext.gamePakNoteNameB[3] = 0x56;
+    loadGameScreenContext.gamePakNoteNameB[4] = 0x45;
+    loadGameScreenContext.gamePakNoteNameB[5] = 0x53;
+    loadGameScreenContext.gamePakNoteNameB[6] = 0x54;
+    loadGameScreenContext.gamePakNoteNameB[7] = 0x4D;
+    loadGameScreenContext.gamePakNoteNameB[8] = 0x4F;
+    loadGameScreenContext.gamePakNoteNameB[9] = 0x4F;
+    loadGameScreenContext.gamePakNoteNameB[10] = 0x4E;
+    loadGameScreenContext.gamePakNoteNameB[11] = 0;
+    loadGameScreenContext.gamePakNoteNameB[12] = 0;
+    loadGameScreenContext.gamePakNoteNameB[13] = 0;
+    loadGameScreenContext.gamePakNoteNameB[14] = 0;
+    loadGameScreenContext.gamePakNoteNameB[15] = 0;
+    loadGameScreenContext.gamePakNoteNameB[16] = 0x42;
+    loadGameScreenContext.gamePakNoteNameB[17] = 0;
+    loadGameScreenContext.gamePakNoteNameB[18] = 0;
+    loadGameScreenContext.gamePakNoteNameB[19] = 0;
     
     setGameVariableString(0, loadGameScreenContext.playerNames[0], 6);
     setGameVariableString(1, loadGameScreenContext.dateNumbers[0], 2);
@@ -163,20 +162,20 @@ void func_800E1380(u8 controllerPakEnabled) {
     setGameVariableString(14, loadGameScreenContext.seasonNames[3], 6);
     setGameVariableString(15, loadGameScreenContext.dateEndings[3], 2);
     
-    func_800E16D0(1, loadGameScreenContext.diaryHighlighted);
+    showDiarySelectScreen(1, loadGameScreenContext.diaryHighlighted);
     
     setMainLoopCallbackFunctionIndex(SELECT_GAME);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E16A0);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", resetGamePakState);
 
-void func_800E16A0(void) {
+void resetGamePakState(void) {
 
     u32 padding[4];
     
     loadGameScreenContext.gamePakEnabled = FALSE;
-    loadGameScreenContext.unk_14 = 0;
+    loadGameScreenContext.controllerPakStatus = 0;
     loadGameScreenContext.unk_29 = 0;
     loadGameScreenContext.unk_3C = 0;
 
@@ -185,25 +184,25 @@ void func_800E16A0(void) {
 
 /* select game functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E16D0);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", showDiarySelectScreen);
 
-void func_800E16D0(u8 arg0, u8 arg1) {
+void showDiarySelectScreen(bool fadeIn, u8 diaryIndex) {
 
-    loadGameScreenContext.diaryHighlighted = arg1;
-    
-    func_800E1998();
+    loadGameScreenContext.diaryHighlighted = diaryIndex;
+
+    loadAllDiarySlots();
     loadDiarySelectScreen();
-    
-    if (arg0) {
+
+    if (fadeIn) {
         fadeInLoadGameScreen();
     } else {
         setLoadGameScreenFullAlpha();
     }
     
     if (loadGameScreenContext.showControllerPakScreen == FALSE) {
-        
-        if (arg0) {
-            
+
+        if (fadeIn) {
+
             setMessageBoxRGBA(0, 0, 0, 0, 0);
             setMessageBoxRGBA(1, 0, 0, 0, 0);
             setMessageBoxRGBA(2, 0, 0, 0, 0);
@@ -224,11 +223,11 @@ void func_800E16D0(u8 arg0, u8 arg1) {
             setMessageBoxRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
             setMessageBoxRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
 
-        }    
-        
+        }
+
     } else {
 
-        if (arg0) {
+        if (fadeIn) {
     
             setMessageBoxRGBA(0, 0, 0, 0, 0);
             setMessageBoxRGBA(1, 0, 0, 0, 0);
@@ -248,45 +247,45 @@ void func_800E16D0(u8 arg0, u8 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E1998);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadAllDiarySlots);
 
-void func_800E1998(void) {
+void loadAllDiarySlots(void) {
 
-    func_800E16A0();
+    resetGamePakState();
 
     if (loadGameScreenContext.showControllerPakScreen == FALSE) {
-        func_800E3358(0, 0, 0);
-        func_800E3358(1, 0, 0);
-        func_800E3358(2, 0, 0);
-        func_800E3358(3, 0, 0);
+        loadDiarySlotData(0, 0, 0);
+        loadDiarySlotData(1, 0, 0);
+        loadDiarySlotData(2, 0, 0);
+        loadDiarySlotData(3, 0, 0);
     } else {
 
-        if (loadGameScreenContext.unk_14 & 2) {
-            func_800E3358(0, 1, 0);
-        } else if (loadGameScreenContext.unk_14 & 1) {
-            func_800E3358(0, 1, 1);
+        if (loadGameScreenContext.controllerPakStatus & 2) {
+            loadDiarySlotData(0, 1, 0);
+        } else if (loadGameScreenContext.controllerPakStatus & 1) {
+            loadDiarySlotData(0, 1, 1);
         } else {
-            func_800E3358(0, 1, 2);
+            loadDiarySlotData(0, 1, 2);
         }
 
         if (loadGameScreenContext.unk_29 & 2) {
-            func_800E3358(1, 1, 0);
+            loadDiarySlotData(1, 1, 0);
         } else {
             if (loadGameScreenContext.unk_29 & 1) {
-                func_800E3358(1, 1, 1);
+                loadDiarySlotData(1, 1, 1);
             } else {
-                func_800E3358(1, 1, 2);   
+                loadDiarySlotData(1, 1, 2);   
             }
         }
     }
     
-    func_800E1A94();
+    setupDiaryMessageBoxes();
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E1A94);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", setupDiaryMessageBoxes);
 
-void func_800E1A94(void) {
+void setupDiaryMessageBoxes(void) {
 
     if (loadGameScreenContext.showControllerPakScreen == FALSE) {
 
@@ -433,7 +432,7 @@ void gameSelectCallback(void) {
                                 deactivateMessageBox(1);
                                 deactivateMessageBox(2);
                                 deactivateMessageBox(3);
-                                func_800E16D0(0, 0);
+                                showDiarySelectScreen(0, 0);
                                 
                             } else {
                                 set = TRUE;
@@ -466,7 +465,7 @@ void gameSelectCallback(void) {
                             deactivateMessageBox(1);
                             deactivateMessageBox(2);
                             deactivateMessageBox(3);
-                            func_800E16D0(0, 3);
+                            showDiarySelectScreen(0, 3);
                             set = TRUE;
                         }
                     }
@@ -673,7 +672,7 @@ void gameSelectCallback(void) {
                                 deactivateMessageBox(1);
                                 deactivateMessageBox(2);
                                 deactivateMessageBox(3);
-                                func_800E16D0(0, 0);
+                                showDiarySelectScreen(0, 0);
                             } else {
                                 set = TRUE;
                             }
@@ -704,7 +703,7 @@ void gameSelectCallback(void) {
                             deactivateMessageBox(1);
                             deactivateMessageBox(2);
                             deactivateMessageBox(3);
-                            func_800E16D0(0, 3);
+                            showDiarySelectScreen(0, 3);
                             set = TRUE;
                         }
                     }
@@ -781,7 +780,7 @@ void gameSelectCallback(void) {
                                 deactivateMessageBox(1);
                                 deactivateMessageBox(2);
                                 deactivateMessageBox(3);
-                                func_800E16D0(0, 0);
+                                showDiarySelectScreen(0, 0);
                             } else {
                                 set = TRUE;
                             }
@@ -813,7 +812,7 @@ void gameSelectCallback(void) {
                             deactivateMessageBox(1);
                             deactivateMessageBox(2);
                             deactivateMessageBox(3);
-                            func_800E16D0(0, 3);
+                            showDiarySelectScreen(0, 3);
                             set = TRUE;
                         }
                     }
@@ -908,7 +907,7 @@ void gameSelectCallback(void) {
                                 deactivateMessageBox(1);
                                 deactivateMessageBox(2);
                                 deactivateMessageBox(3);
-                                func_800E16D0(0, 0);
+                                showDiarySelectScreen(0, 0);
                             } else {
                                 set = TRUE;
                             }
@@ -945,7 +944,7 @@ void gameSelectCallback(void) {
                             deactivateMessageBox(1);
                             deactivateMessageBox(2);
                             deactivateMessageBox(3);
-                            func_800E16D0(0, 3);
+                            showDiarySelectScreen(0, 3);
                             set = TRUE;
                         }
                     
@@ -1007,12 +1006,12 @@ void gameSelectCallback(void) {
                 temp = loadGameScreenContext.diaryHighlighted;
                 gCurrentGameIndex = temp;
                 
-                func_80053088();
+                initializeMainMessageBoxes();
                 
                 // start existing game
                 if (loadGameScreenContext.flags[gCurrentGameIndex] & 2) {
                     // set game state from sram
-                    func_800E4424(gCurrentGameIndex, 0);
+                    loadGameFromSram(gCurrentGameIndex, 0);
                     startGame();
                 } else {
                     // start new game
@@ -1047,8 +1046,8 @@ void gameSelectCallback(void) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && !set) {
                 resetAnimationState(0xAC);
                 set = TRUE;
-                func_800E67E4(loadGameScreenContext.diaryHighlighted, loadGameScreenContext.showControllerPakScreen);
-                func_800E1998();
+                deleteSaveSlot(loadGameScreenContext.diaryHighlighted, loadGameScreenContext.showControllerPakScreen);
+                loadAllDiarySlots();
                 loadGameScreenContext.action = 2;
                 playSfx(0);
             }
@@ -1072,8 +1071,8 @@ void gameSelectCallback(void) {
                 resetAnimationState(0xB2);
                 
                 set = TRUE;
-                func_800E66A0(loadGameScreenContext.unk_86, loadGameScreenContext.unk_88, loadGameScreenContext.diaryHighlighted, loadGameScreenContext.showControllerPakScreen);
-                func_800E1998();
+                handleSramOperation(loadGameScreenContext.unk_86, loadGameScreenContext.unk_88, loadGameScreenContext.diaryHighlighted, loadGameScreenContext.showControllerPakScreen);
+                loadAllDiarySlots();
                 loadGameScreenContext.action = 2;
                 playSfx(0);
 
@@ -1122,20 +1121,19 @@ void gameSelectCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E3300);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", verifySramSignature);
 
-// verify signature
-inline bool func_800E3300(u8 arg0[]) {
+inline bool verifySramSignature(u8 buffer[]) {
 
     u8 i = 0;
     bool result = 0;
 
-    if (arg0[0] == D_80119740[0]) {
+    if (buffer[0] == sramSignature[0]) {
 
         do {
             i++;
-        } while (arg0[i] == D_80119740[i]);
-        
+        } while (buffer[i] == sramSignature[i]);
+
     }
 
     if (i == 16) {
@@ -1143,51 +1141,51 @@ inline bool func_800E3300(u8 arg0[]) {
     }
 
     return result;
-    
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E3358);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadDiarySlotData);
 
-void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
+void loadDiarySlotData(u8 slot, u8 source, u8 status) {
 
-    switch (arg2) {
+    switch (status) {
 
         case 0:
-        
-            if (func_800E4424(arg0, arg1)) {
-            
+
+            if (loadGameFromSram(slot, source)) {
+
                 setGlobalSeasonName(gSeason);
-                
-                loadGameScreenContext.seasonNames[arg0][0] = gGlobalSeasonName[0];
-                loadGameScreenContext.seasonNames[arg0][1] = gGlobalSeasonName[1];
-                loadGameScreenContext.seasonNames[arg0][2] = gGlobalSeasonName[2];
-                loadGameScreenContext.seasonNames[arg0][3] = gGlobalSeasonName[3];
-                loadGameScreenContext.seasonNames[arg0][4] = gGlobalSeasonName[4];
-                loadGameScreenContext.seasonNames[arg0][5] = gGlobalSeasonName[5];
-        
+
+                loadGameScreenContext.seasonNames[slot][0] = gGlobalSeasonName[0];
+                loadGameScreenContext.seasonNames[slot][1] = gGlobalSeasonName[1];
+                loadGameScreenContext.seasonNames[slot][2] = gGlobalSeasonName[2];
+                loadGameScreenContext.seasonNames[slot][3] = gGlobalSeasonName[3];
+                loadGameScreenContext.seasonNames[slot][4] = gGlobalSeasonName[4];
+                loadGameScreenContext.seasonNames[slot][5] = gGlobalSeasonName[5];
+
                 switch (gYear) {
                     case 1:
-                        loadGameScreenContext.dateEndings[arg0][0] = 0xCD;
-                        loadGameScreenContext.dateEndings[arg0][1] = 0xCE;
+                        loadGameScreenContext.dateEndings[slot][0] = 0xCD;
+                        loadGameScreenContext.dateEndings[slot][1] = 0xCE;
                         break;
                     case 2:
-                        loadGameScreenContext.dateEndings[arg0][0] = 0xC8;
-                        loadGameScreenContext.dateEndings[arg0][1] = 0xBE;
+                        loadGameScreenContext.dateEndings[slot][0] = 0xC8;
+                        loadGameScreenContext.dateEndings[slot][1] = 0xBE;
                         break;
                     case 3:
-                        loadGameScreenContext.dateEndings[arg0][0] = 0xCC;
-                        loadGameScreenContext.dateEndings[arg0][1] = 0xBE;
+                        loadGameScreenContext.dateEndings[slot][0] = 0xCC;
+                        loadGameScreenContext.dateEndings[slot][1] = 0xBE;
                         break;
                     default:
-                        loadGameScreenContext.dateEndings[arg0][0] = 0xCE;
-                        loadGameScreenContext.dateEndings[arg0][1] = 0xC2;
+                        loadGameScreenContext.dateEndings[slot][0] = 0xCE;
+                        loadGameScreenContext.dateEndings[slot][1] = 0xC2;
                         break;
                 }
 
-                switch (arg0) {
+                switch (slot) {
                     case 0:
                         convertNumberToGameVariableString(1, gYear, 1);
-                        break;                  
+                        break;
                     case 1:
                         convertNumberToGameVariableString(5, gYear, 1);
                         break;
@@ -1196,96 +1194,96 @@ void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
                         break;
                     case 3:
                         convertNumberToGameVariableString(13, gYear, 1);
-                        break;                  
+                        break;
                     default:
                         break;
                 }
-                
-                loadGameScreenContext.playerNames[arg0][0] = gPlayer.name[0];
-                loadGameScreenContext.playerNames[arg0][1] = gPlayer.name[1];
-                loadGameScreenContext.playerNames[arg0][2] = gPlayer.name[2];
-                loadGameScreenContext.playerNames[arg0][3] = gPlayer.name[3];
-                loadGameScreenContext.playerNames[arg0][4] = gPlayer.name[4];
-                loadGameScreenContext.playerNames[arg0][5] = gPlayer.name[5];
-    
-                loadGameScreenContext.flags[arg0] = 3;
+
+                loadGameScreenContext.playerNames[slot][0] = gPlayer.name[0];
+                loadGameScreenContext.playerNames[slot][1] = gPlayer.name[1];
+                loadGameScreenContext.playerNames[slot][2] = gPlayer.name[2];
+                loadGameScreenContext.playerNames[slot][3] = gPlayer.name[3];
+                loadGameScreenContext.playerNames[slot][4] = gPlayer.name[4];
+                loadGameScreenContext.playerNames[slot][5] = gPlayer.name[5];
+
+                loadGameScreenContext.flags[slot] = 3;
 
             } else {
-                
-                loadGameScreenContext.playerNames[arg0][0] = 0xF6;
-                loadGameScreenContext.playerNames[arg0][1] = 0xF6;
-                loadGameScreenContext.playerNames[arg0][2] = 0xF6;
-                loadGameScreenContext.playerNames[arg0][3] = 0xF6;
-                loadGameScreenContext.playerNames[arg0][4] = 0xF6;
-                loadGameScreenContext.playerNames[arg0][5] = 0xF6;
-                
-                loadGameScreenContext.dateNumbers[arg0][0] = 0xF6;
-                loadGameScreenContext.dateNumbers[arg0][1] = 0xF6;
 
-                loadGameScreenContext.seasonNames[arg0][0] = 0xF6;
-                loadGameScreenContext.seasonNames[arg0][1] = 0xF6;
-                loadGameScreenContext.seasonNames[arg0][2] = 0xF6;
-                loadGameScreenContext.seasonNames[arg0][3] = 0xF6;
-                loadGameScreenContext.seasonNames[arg0][4] = 0xF6;
-                loadGameScreenContext.seasonNames[arg0][5] = 0xF6;
-                    
-                loadGameScreenContext.dateEndings[arg0][0] = 0xF6;
-                loadGameScreenContext.dateEndings[arg0][1] = 0xF6;     
-                
-                loadGameScreenContext.flags[arg0] = 1;
+                loadGameScreenContext.playerNames[slot][0] = 0xF6;
+                loadGameScreenContext.playerNames[slot][1] = 0xF6;
+                loadGameScreenContext.playerNames[slot][2] = 0xF6;
+                loadGameScreenContext.playerNames[slot][3] = 0xF6;
+                loadGameScreenContext.playerNames[slot][4] = 0xF6;
+                loadGameScreenContext.playerNames[slot][5] = 0xF6;
+
+                loadGameScreenContext.dateNumbers[slot][0] = 0xF6;
+                loadGameScreenContext.dateNumbers[slot][1] = 0xF6;
+
+                loadGameScreenContext.seasonNames[slot][0] = 0xF6;
+                loadGameScreenContext.seasonNames[slot][1] = 0xF6;
+                loadGameScreenContext.seasonNames[slot][2] = 0xF6;
+                loadGameScreenContext.seasonNames[slot][3] = 0xF6;
+                loadGameScreenContext.seasonNames[slot][4] = 0xF6;
+                loadGameScreenContext.seasonNames[slot][5] = 0xF6;
+
+                loadGameScreenContext.dateEndings[slot][0] = 0xF6;
+                loadGameScreenContext.dateEndings[slot][1] = 0xF6;
+
+                loadGameScreenContext.flags[slot] = 1;
             }
 
             break;
-        
-        case 1:
-                   
-            loadGameScreenContext.playerNames[arg0][0] = 0xF6;
-            loadGameScreenContext.playerNames[arg0][1] = 0xF6;
-            loadGameScreenContext.playerNames[arg0][2] = 0xF6;
-            loadGameScreenContext.playerNames[arg0][3] = 0xF6;
-            loadGameScreenContext.playerNames[arg0][4] = 0xF6;
-            loadGameScreenContext.playerNames[arg0][5] = 0xF6;
-            
-            loadGameScreenContext.dateNumbers[arg0][0] = 0xF6;
-            loadGameScreenContext.dateNumbers[arg0][1] = 0xF6;
-            
-            loadGameScreenContext.seasonNames[arg0][0] = 0xF6;
-            loadGameScreenContext.seasonNames[arg0][1] = 0xF6;
-            loadGameScreenContext.seasonNames[arg0][2] = 0xF6;
-            loadGameScreenContext.seasonNames[arg0][3] = 0xF6;
-            loadGameScreenContext.seasonNames[arg0][4] = 0xF6;
-            loadGameScreenContext.seasonNames[arg0][5] = 0xF6;
-            
-            loadGameScreenContext.dateEndings[arg0][0] = 0xF6;
-            loadGameScreenContext.dateEndings[arg0][1] = 0xF6;
-            
-            loadGameScreenContext.flags[arg0] = 1;
-            
-            break;
-        
-        case 2:
-            
-            loadGameScreenContext.playerNames[arg0][0] = 0xEE;
-            loadGameScreenContext.playerNames[arg0][1] = 0xEE;
-            loadGameScreenContext.playerNames[arg0][2] = 0xEE;
-            loadGameScreenContext.playerNames[arg0][3] = 0xEE;
-            loadGameScreenContext.playerNames[arg0][4] = 0xEE;
-            loadGameScreenContext.playerNames[arg0][5] = 0xEE;
-            
-            loadGameScreenContext.dateNumbers[arg0][0] = 0xEE;
-            loadGameScreenContext.dateNumbers[arg0][1] = 0xEE;
 
-            loadGameScreenContext.seasonNames[arg0][0] = 0xEE;
-            loadGameScreenContext.seasonNames[arg0][1] = 0xEE;
-            loadGameScreenContext.seasonNames[arg0][2] = 0xEE;
-            loadGameScreenContext.seasonNames[arg0][3] = 0xEE;
-            loadGameScreenContext.seasonNames[arg0][4] = 0xEE;
-            loadGameScreenContext.seasonNames[arg0][5] = 0xEE;
-            
-            loadGameScreenContext.dateEndings[arg0][0] = 0xEE;
-            loadGameScreenContext.dateEndings[arg0][1] = 0xEE;
-            
-            loadGameScreenContext.flags[arg0] = 0;
+        case 1:
+
+            loadGameScreenContext.playerNames[slot][0] = 0xF6;
+            loadGameScreenContext.playerNames[slot][1] = 0xF6;
+            loadGameScreenContext.playerNames[slot][2] = 0xF6;
+            loadGameScreenContext.playerNames[slot][3] = 0xF6;
+            loadGameScreenContext.playerNames[slot][4] = 0xF6;
+            loadGameScreenContext.playerNames[slot][5] = 0xF6;
+
+            loadGameScreenContext.dateNumbers[slot][0] = 0xF6;
+            loadGameScreenContext.dateNumbers[slot][1] = 0xF6;
+
+            loadGameScreenContext.seasonNames[slot][0] = 0xF6;
+            loadGameScreenContext.seasonNames[slot][1] = 0xF6;
+            loadGameScreenContext.seasonNames[slot][2] = 0xF6;
+            loadGameScreenContext.seasonNames[slot][3] = 0xF6;
+            loadGameScreenContext.seasonNames[slot][4] = 0xF6;
+            loadGameScreenContext.seasonNames[slot][5] = 0xF6;
+
+            loadGameScreenContext.dateEndings[slot][0] = 0xF6;
+            loadGameScreenContext.dateEndings[slot][1] = 0xF6;
+
+            loadGameScreenContext.flags[slot] = 1;
+
+            break;
+
+        case 2:
+
+            loadGameScreenContext.playerNames[slot][0] = 0xEE;
+            loadGameScreenContext.playerNames[slot][1] = 0xEE;
+            loadGameScreenContext.playerNames[slot][2] = 0xEE;
+            loadGameScreenContext.playerNames[slot][3] = 0xEE;
+            loadGameScreenContext.playerNames[slot][4] = 0xEE;
+            loadGameScreenContext.playerNames[slot][5] = 0xEE;
+
+            loadGameScreenContext.dateNumbers[slot][0] = 0xEE;
+            loadGameScreenContext.dateNumbers[slot][1] = 0xEE;
+
+            loadGameScreenContext.seasonNames[slot][0] = 0xEE;
+            loadGameScreenContext.seasonNames[slot][1] = 0xEE;
+            loadGameScreenContext.seasonNames[slot][2] = 0xEE;
+            loadGameScreenContext.seasonNames[slot][3] = 0xEE;
+            loadGameScreenContext.seasonNames[slot][4] = 0xEE;
+            loadGameScreenContext.seasonNames[slot][5] = 0xEE;
+
+            loadGameScreenContext.dateEndings[slot][0] = 0xEE;
+            loadGameScreenContext.dateEndings[slot][1] = 0xEE;
+
+            loadGameScreenContext.flags[slot] = 0;
 
             break;       
 
@@ -1293,80 +1291,76 @@ void func_800E3358(u8 arg0, u8 arg1, u8 arg2) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E38E8);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", calculateSaveChecksum);
 
-// calculate
-inline u16 func_800E38E8(u8 arg0[]) {
+inline u16 calculateSaveChecksum(u8 buffer[]) {
 
     u16 result = 0;
     u16 i = 0;
 
     do {
 
-        result += arg0[i];
+        result += buffer[i];
         i++;
-        
+
     } while (i < 4094);
 
     return result;
-    
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E391C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", verifySaveChecksum);
 
-// verify checksum
-inline u16 func_800E391C(u8* arg0) {
+inline u16 verifySaveChecksum(u8* buffer) {
 
     u16 result = 0;
     u16 i = 0;
 
     do {
 
-        result += arg0[i];
+        result += buffer[i];
         i++;
-        
+
     } while (i < 4094);
 
-    return result == *(u16*)(arg0 + 4094);
+    return result == *(u16*)(buffer + 4094);
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E395C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", calculateRankingChecksum);
 
-// calculate checksum
-inline u16 func_800E395C(u8 arg0[]) {
+inline u16 calculateRankingChecksum(u8 buffer[]) {
 
     u16 result = 0;
     u16 i = 0;
 
     do {
 
-        result += arg0[i];
+        result += buffer[i];
         i++;
-        
+
     } while (i < 254);
 
     return result;
-    
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E3990);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", verifyRankingChecksum);
 
-// verify checksum
-inline u16 func_800E3990(u8 arg0[]) {
+inline u16 verifyRankingChecksum(u8 buffer[]) {
 
     u16 result = 0;
     u16 i = 0;
 
     do {
 
-        result += arg0[i];
+        result += buffer[i];
         i++;
-        
+
     } while (i < 254);
 
-    return result == *(u16*)(arg0 + 254);
-    
+    return result == *(u16*)(buffer + 254);
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameFile", initializeNewGameState);
@@ -1433,15 +1427,15 @@ void initializeNewGameState(void) {
     
     gHarvestCoinFinder = 0;
     gFlowerFestivalGoddess = 0;
-    D_80189054 = 0;
+    gCowFestivalEnteredCowIndex= 0;
     gVoteForFlowerFestivalGoddess = 0;
     
-    deadAnimalName[0] = 0;
-    deadAnimalName[1] = 0;
-    deadAnimalName[2] = 0;
-    deadAnimalName[3] = 0;
-    deadAnimalName[4] = 0;
-    deadAnimalName[5] = 0;
+    gDeadAnimalName[0] = 0;
+    gDeadAnimalName[1] = 0;
+    gDeadAnimalName[2] = 0;
+    gDeadAnimalName[3] = 0;
+    gDeadAnimalName[4] = 0;
+    gDeadAnimalName[5] = 0;
 
     gHappiness = 0;
     blueMistFlowerPlot = 0;
@@ -1478,7 +1472,7 @@ void initializeNewGameState(void) {
     gBabyName[5] = 0;
     
     gSickDays = 0;
-    D_8013DC2E = 0;
+    deadAnimalCount = 0;
     
     mrsManaCow1Index = 0;
     mrsManaCow2Index = 0;
@@ -1591,7 +1585,7 @@ void initializeNewGameState(void) {
     dogInfo.location = 0;
     dogInfo.coordinates.x = 0;
     dogInfo.coordinates.z = 0;
-    dogInfo.unk_1C = 0;
+    dogInfo.bestRacePlacement = 0;
 
     horseInfo.name[0] = 0;
     horseInfo.name[1] = 0;
@@ -1605,7 +1599,7 @@ void initializeNewGameState(void) {
     horseInfo.coordinates.z = 0;
     horseInfo.grown = 0;
     horseInfo.age = 0;
-    horseInfo.unk_1E = 0;
+    horseInfo.bestRacePlacement = 0;
     horseInfo.flags = 0;
 
     for (j = 0; j < MAX_CHICKENS; j++) {
@@ -1651,12 +1645,12 @@ void initializeNewGameState(void) {
         gFarmAnimals[j].conditionCounter = 0;
         gFarmAnimals[j].flags = 0;
 
-        gFarmAnimals[j].unk_23[0] = 0;
-        gFarmAnimals[j].unk_23[1] = 0;
-        gFarmAnimals[j].unk_23[2] = 0;
-        gFarmAnimals[j].unk_23[3] = 0;
-        gFarmAnimals[j].unk_23[4] = 0;
-        gFarmAnimals[j].unk_23[5] = 0;
+        gFarmAnimals[j].motherName[0] = 0;
+        gFarmAnimals[j].motherName[1] = 0;
+        gFarmAnimals[j].motherName[2] = 0;
+        gFarmAnimals[j].motherName[3] = 0;
+        gFarmAnimals[j].motherName[4] = 0;
+        gFarmAnimals[j].motherName[5] = 0;
         gFarmAnimals[j].birthdaySeason = 0;
         gFarmAnimals[j].birthdayDayOfMonth = 0;
         gFarmAnimals[j].milkType = 0;
@@ -1711,10 +1705,9 @@ void initializeNewGameState(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E4424);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadGameFromSram);
 
-// set game state globals from sram
-bool func_800E4424(u8 saveSlot, u8 arg1) {
+bool loadGameFromSram(u8 saveSlot, bool gamePakEnabled) {
 
     u32 devAddr;
     u32 vaddr;
@@ -1722,11 +1715,11 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
     u8 checksumValid;
     u16 checksum;
     SramBuffer* buff;
-    
+
     u8 i, j;
     u8 row, col;
     u16 idx;
-    
+
     bool result;
 
     // Get SRAM address (each save is 0x1000 bytes)
@@ -1734,14 +1727,14 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
     vaddr = SRAM_BUFFER;
     buff = (SramBuffer*)vaddr;
 
-    if (arg1 == 0) {
+    if (gamePakEnabled == FALSE) {
         func_8004DC48(devAddr, vaddr, 0x1000);
     } else {
-        func_800E16A0();
+        resetGamePakState();
         if (loadGameScreenContext.gamePakEnabled) {
             func_8004D9AC(CONTROLLER_1,
-                &loadGameScreenContext.unk_0[(saveSlot * 4 + saveSlot) * 4 + saveSlot],
-                &loadGameScreenContext.unk_15[(saveSlot * 4 + saveSlot) * 4 + saveSlot - 5],
+                &loadGameScreenContext.gamePakNoteNameA[(saveSlot * 4 + saveSlot) * 4 + saveSlot],
+                &loadGameScreenContext.gamePakNoteNameB[(saveSlot * 4 + saveSlot) * 4 + saveSlot - 5],
                 0, 0x1000, vaddr);
         }
     }
@@ -1800,15 +1793,15 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
     gHarvestKing = buff->harvestKing;
     gHarvestCoinFinder = buff->harvestCoinFinder;
     gFlowerFestivalGoddess = buff->flowerFestivalGoddess;
-    D_80189054 = buff->cowFestivalStall;
+    gCowFestivalEnteredCowIndex= buff->cowFestivalEnteredCowIndex;
     gVoteForFlowerFestivalGoddess = buff->voteForFlowerFestivalGoddess;
 
-    deadAnimalName[0] = buff->deadAnimalName[0];
-    deadAnimalName[1] = buff->deadAnimalName[1];
-    deadAnimalName[2] = buff->deadAnimalName[2];
-    deadAnimalName[3] = buff->deadAnimalName[3];
-    deadAnimalName[4] = buff->deadAnimalName[4];
-    deadAnimalName[5] = buff->deadAnimalName[5];
+    gDeadAnimalName[0] = buff->gDeadAnimalName[0];
+    gDeadAnimalName[1] = buff->gDeadAnimalName[1];
+    gDeadAnimalName[2] = buff->gDeadAnimalName[2];
+    gDeadAnimalName[3] = buff->gDeadAnimalName[3];
+    gDeadAnimalName[4] = buff->gDeadAnimalName[4];
+    gDeadAnimalName[5] = buff->gDeadAnimalName[5];
 
     gHappiness = buff->happiness;
     blueMistFlowerPlot = buff->blueMistFlowerPlot;
@@ -1844,7 +1837,7 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
     gBabyName[5] = buff->babyName[5];
 
     gSickDays = buff->sickDays;
-    D_8013DC2E = buff->deadAnimalCount;
+    deadAnimalCount = buff->deadAnimalCount;
 
     mrsManaCow1Index = buff->mrsManaCow1Index;
     mrsManaCow2Index = buff->mrsManaCow2Index;
@@ -1957,7 +1950,7 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
     dogInfo.location = buff->dogLocation;
     dogInfo.coordinates.x = buff->dogCoordX;
     dogInfo.coordinates.z = buff->dogCoordZ;
-    dogInfo.unk_1C = buff->dogUnk_1C;
+    dogInfo.bestRacePlacement = buff->dogBestRacePlacement;
 
     horseInfo.name[0] = buff->horseName[0];
     horseInfo.name[1] = buff->horseName[1];
@@ -1971,7 +1964,7 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
     horseInfo.coordinates.z = buff->horseCoordZ;
     horseInfo.grown = buff->horseGrown;
     horseInfo.age = buff->horseAge;
-    horseInfo.unk_1E = buff->horseUnk_1E;
+    horseInfo.bestRacePlacement = buff->horseBestRacePlacement;
     horseInfo.flags = buff->horseFlags;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
@@ -2007,12 +2000,12 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
         gFarmAnimals[i].typeCounter = *((u8*)buff + 0x812 + (i << 5));
         gFarmAnimals[i].conditionCounter = *((u8*)buff + 0x813 + (i << 5));
         gFarmAnimals[i].flags = *(u16*)((u8*)buff + 0x814 + (i << 5));
-        gFarmAnimals[i].unk_23[0] = *((u8*)buff + 0x816 + (i << 5));
-        gFarmAnimals[i].unk_23[1] = *((u8*)buff + 0x817 + (i << 5));
-        gFarmAnimals[i].unk_23[2] = *((u8*)buff + 0x818 + (i << 5));
-        gFarmAnimals[i].unk_23[3] = *((u8*)buff + 0x819 + (i << 5));
-        gFarmAnimals[i].unk_23[4] = *((u8*)buff + 0x81A + (i << 5));
-        gFarmAnimals[i].unk_23[5] = *((u8*)buff + 0x81B + (i << 5));
+        gFarmAnimals[i].motherName[0] = *((u8*)buff + 0x816 + (i << 5));
+        gFarmAnimals[i].motherName[1] = *((u8*)buff + 0x817 + (i << 5));
+        gFarmAnimals[i].motherName[2] = *((u8*)buff + 0x818 + (i << 5));
+        gFarmAnimals[i].motherName[3] = *((u8*)buff + 0x819 + (i << 5));
+        gFarmAnimals[i].motherName[4] = *((u8*)buff + 0x81A + (i << 5));
+        gFarmAnimals[i].motherName[5] = *((u8*)buff + 0x81B + (i << 5));
         gFarmAnimals[i].birthdaySeason = *((u8*)buff + 0x81C + (i << 5));
         gFarmAnimals[i].birthdayDayOfMonth = *((u8*)buff + 0x81D + (i << 5));
         gFarmAnimals[i].milkType = *((u8*)buff + 0x81E + (i << 5));
@@ -2074,8 +2067,8 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
     specialDialogueBits[14] = buff->specialDialogueBits[14];
     specialDialogueBits[15] = buff->specialDialogueBits[15];
 
-    if (func_800E3300(buff->signature) ) {
-        if (func_800E391C(buff)) {
+    if (verifySramSignature(buff->signature) ) {
+        if (verifySaveChecksum(buff)) {
             result = TRUE;
         }
     } 
@@ -2084,10 +2077,10 @@ bool func_800E4424(u8 saveSlot, u8 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E53E8);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", saveGameToSram);
 
 // save game state to sram
-bool func_800E53E8(u8 saveSlot) {
+bool saveGameToSram(u8 saveSlot) {
 
     SramBuffer* buff = (SramBuffer*)SRAM_BUFFER;
     u32 temp = saveSlot << 12;
@@ -2101,22 +2094,22 @@ bool func_800E53E8(u8 saveSlot) {
     u8 idx2;
     
     // ?
-    buff->signature[0] = D_80119740[0];
-    sramBuffer.signature[1] = D_80119740[1];
-    sramBuffer.signature[2] = D_80119740[2];
-    sramBuffer.signature[3] = D_80119740[3];
-    sramBuffer.signature[4] = D_80119740[4];
-    sramBuffer.signature[5] = D_80119740[5];
-    sramBuffer.signature[6] = D_80119740[6];
-    sramBuffer.signature[7] = D_80119740[7];
-    sramBuffer.signature[8] = D_80119740[8];
-    sramBuffer.signature[9] = D_80119740[9];
-    sramBuffer.signature[10] = D_80119740[10];
-    sramBuffer.signature[11] = D_80119740[11];
-    sramBuffer.signature[12] = D_80119740[12];
-    sramBuffer.signature[13] = D_80119740[13];
-    sramBuffer.signature[14] = D_80119740[14];
-    sramBuffer.signature[15] = D_80119740[15];
+    buff->signature[0] = sramSignature[0];
+    sramBuffer.signature[1] = sramSignature[1];
+    sramBuffer.signature[2] = sramSignature[2];
+    sramBuffer.signature[3] = sramSignature[3];
+    sramBuffer.signature[4] = sramSignature[4];
+    sramBuffer.signature[5] = sramSignature[5];
+    sramBuffer.signature[6] = sramSignature[6];
+    sramBuffer.signature[7] = sramSignature[7];
+    sramBuffer.signature[8] = sramSignature[8];
+    sramBuffer.signature[9] = sramSignature[9];
+    sramBuffer.signature[10] = sramSignature[10];
+    sramBuffer.signature[11] = sramSignature[11];
+    sramBuffer.signature[12] = sramSignature[12];
+    sramBuffer.signature[13] = sramSignature[13];
+    sramBuffer.signature[14] = sramSignature[14];
+    sramBuffer.signature[15] = sramSignature[15];
 
     sramBuffer.year = gYear;
     sramBuffer.season = gSeason;
@@ -2172,15 +2165,15 @@ bool func_800E53E8(u8 saveSlot) {
     sramBuffer.harvestKing = gHarvestKing;
     sramBuffer.harvestCoinFinder = gHarvestCoinFinder;
     sramBuffer.flowerFestivalGoddess = gFlowerFestivalGoddess;
-    sramBuffer.cowFestivalStall = D_80189054;
+    sramBuffer.cowFestivalEnteredCowIndex = gCowFestivalEnteredCowIndex;
     sramBuffer.voteForFlowerFestivalGoddess = gVoteForFlowerFestivalGoddess;
 
-    sramBuffer.deadAnimalName[0] = deadAnimalName[0];
-    sramBuffer.deadAnimalName[1] = deadAnimalName[1];
-    sramBuffer.deadAnimalName[2] = deadAnimalName[2];
-    sramBuffer.deadAnimalName[3] = deadAnimalName[3];
-    sramBuffer.deadAnimalName[4] = deadAnimalName[4];
-    sramBuffer.deadAnimalName[5] = deadAnimalName[5];
+    sramBuffer.gDeadAnimalName[0] = gDeadAnimalName[0];
+    sramBuffer.gDeadAnimalName[1] = gDeadAnimalName[1];
+    sramBuffer.gDeadAnimalName[2] = gDeadAnimalName[2];
+    sramBuffer.gDeadAnimalName[3] = gDeadAnimalName[3];
+    sramBuffer.gDeadAnimalName[4] = gDeadAnimalName[4];
+    sramBuffer.gDeadAnimalName[5] = gDeadAnimalName[5];
 
     sramBuffer.happiness = gHappiness;
     sramBuffer.blueMistFlowerPlot = blueMistFlowerPlot;
@@ -2216,7 +2209,7 @@ bool func_800E53E8(u8 saveSlot) {
     sramBuffer.babyName[5] = gBabyName[5];
 
     sramBuffer.sickDays = gSickDays;
-    sramBuffer.deadAnimalCount = D_8013DC2E;
+    sramBuffer.deadAnimalCount = deadAnimalCount;
 
     sramBuffer.mrsManaCow1Index = mrsManaCow1Index;
     sramBuffer.mrsManaCow2Index = mrsManaCow2Index;
@@ -2329,7 +2322,7 @@ bool func_800E53E8(u8 saveSlot) {
     buff->dogLocation = dogInfo.location;
     buff->dogCoordX = dogInfo.coordinates.x;
     buff->dogCoordZ = dogInfo.coordinates.z;
-    buff->dogUnk_1C = dogInfo.unk_1C;
+    buff->dogBestRacePlacement = dogInfo.bestRacePlacement;
 
     buff->horseName[0] = horseInfo.name[0];
     buff->horseName[1] = horseInfo.name[1];
@@ -2343,7 +2336,7 @@ bool func_800E53E8(u8 saveSlot) {
     buff->horseCoordZ = horseInfo.coordinates.z;
     buff->horseGrown = horseInfo.grown;
     buff->horseAge = horseInfo.age;
-    buff->horseUnk_1E = horseInfo.unk_1E;
+    buff->horseBestRacePlacement = horseInfo.bestRacePlacement;
     buff->horseFlags = horseInfo.flags;
     
     for (i = 0; i < MAX_CHICKENS; i++) {
@@ -2379,12 +2372,12 @@ bool func_800E53E8(u8 saveSlot) {
         *((u8*)buff + 0x812 + (i << 5)) = gFarmAnimals[i].typeCounter;
         *((u8*)buff + 0x813 + (i << 5)) = gFarmAnimals[i].conditionCounter;
         *(u16*)((u8*)buff + 0x814 + (i << 5)) = gFarmAnimals[i].flags;
-        *((u8*)buff + 0x816 + (i << 5)) = gFarmAnimals[i].unk_23[0];
-        *((u8*)buff + 0x817 + (i << 5)) = gFarmAnimals[i].unk_23[1];
-        *((u8*)buff + 0x818 + (i << 5)) = gFarmAnimals[i].unk_23[2];
-        *((u8*)buff + 0x819 + (i << 5)) = gFarmAnimals[i].unk_23[3];
-        *((u8*)buff + 0x81A + (i << 5)) = gFarmAnimals[i].unk_23[4];
-        *((u8*)buff + 0x81B + (i << 5)) = gFarmAnimals[i].unk_23[5];
+        *((u8*)buff + 0x816 + (i << 5)) = gFarmAnimals[i].motherName[0];
+        *((u8*)buff + 0x817 + (i << 5)) = gFarmAnimals[i].motherName[1];
+        *((u8*)buff + 0x818 + (i << 5)) = gFarmAnimals[i].motherName[2];
+        *((u8*)buff + 0x819 + (i << 5)) = gFarmAnimals[i].motherName[3];
+        *((u8*)buff + 0x81A + (i << 5)) = gFarmAnimals[i].motherName[4];
+        *((u8*)buff + 0x81B + (i << 5)) = gFarmAnimals[i].motherName[5];
         *((u8*)buff + 0x81C + (i << 5)) = gFarmAnimals[i].birthdaySeason;
         *((u8*)buff + 0x81D + (i << 5)) = gFarmAnimals[i].birthdayDayOfMonth;
         *((u8*)buff + 0x81E + (i << 5)) = gFarmAnimals[i].milkType;
@@ -2444,17 +2437,15 @@ bool func_800E53E8(u8 saveSlot) {
     buff->specialDialogueBits[14] = specialDialogueBits[14];
     buff->specialDialogueBits[15] = specialDialogueBits[15];
 
-    // calculate and write checksum
-    buff->checksum = func_800E38E8(buff);
+    buff->checksum = calculateSaveChecksum(buff);
 
     // write to memory
     func_8004DD7C(devAddr, buff, 0x1000);
 
     result = FALSE;
 
-    // verify save (signature and checksum)
-    if (func_800E3300(buff->signature)) {
-        if (func_800E391C(buff)) {
+    if (verifySramSignature(buff->signature)) {
+        if (verifySaveChecksum(buff)) {
             result = TRUE;
         }
     }
@@ -2463,53 +2454,51 @@ bool func_800E53E8(u8 saveSlot) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E66A0);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", handleSramOperation);
 
-void func_800E66A0(u8 saveSlot, u8 arg1, u8 arg2, u8 arg3) {
+void handleSramOperation(u8 srcSlot, bool srcGamePak, u8 destSlot, bool destGamePak) {
 
     u32 devAddr;
     u32 vaddr;
     u32 temp;
 
-    temp =  saveSlot << 12;
-    
+    temp =  srcSlot << 12;
+
     devAddr = temp + 0x08000000;
     vaddr = SRAM_BUFFER;
-     
-    if (arg1 == 0) {
+
+    if (srcGamePak == FALSE) {
         func_8004DC48(devAddr, vaddr, 0x1000);
     } else {
 
-        func_800E16A0();
+        resetGamePakState();
 
         if (loadGameScreenContext.gamePakEnabled) {
-            func_8004D9AC(CONTROLLER_1, &loadGameScreenContext.unk_0[(saveSlot * 4 + saveSlot) * 4 + saveSlot], &loadGameScreenContext.unk_15[(saveSlot * 4 + saveSlot) * 4 + saveSlot - 5], 0, 0x1000, vaddr);
+            func_8004D9AC(CONTROLLER_1, &loadGameScreenContext.gamePakNoteNameA[(srcSlot * 4 + srcSlot) * 4 + srcSlot], &loadGameScreenContext.gamePakNoteNameB[(srcSlot * 4 + srcSlot) * 4 + srcSlot - 5], 0, 0x1000, vaddr);
         }
-        
+
     }
 
-    temp = arg2 << 12;
+    temp = destSlot << 12;
     devAddr = temp + 0x08000000;
-    
-    if (arg3 == 0) {
 
+    if (destGamePak == FALSE) {
         func_8004DD7C(devAddr, vaddr, 0x1000);
-        
     } else {
 
-        func_800E16A0();
-        
+        resetGamePakState();
+
         if (loadGameScreenContext.gamePakEnabled) {
-            func_8004DA48(CONTROLLER_1, &loadGameScreenContext.unk_0[(arg2 * 4 + arg2) * 4 + arg2], &loadGameScreenContext.unk_15[(arg2 * 4 + arg2) * 4 + arg2 - 5], 0, 0x1000, vaddr);
+            func_8004DA48(CONTROLLER_1, &loadGameScreenContext.gamePakNoteNameA[(destSlot * 4 + destSlot) * 4 + destSlot], &loadGameScreenContext.gamePakNoteNameB[(destSlot * 4 + destSlot) * 4 + destSlot - 5], 0, 0x1000, vaddr);
         }
-        
+
     }
-    
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E67E4);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", deleteSaveSlot);
 
-void func_800E67E4(u8 saveSlot, u8 arg1) {
+void deleteSaveSlot(u8 saveSlot, bool gamePakEnabled) {
 
     u32 devAddr;
     u32 vaddr;
@@ -2536,14 +2525,14 @@ void func_800E67E4(u8 saveSlot, u8 arg1) {
     devAddr = temp + 0x08000000;
     vaddr = SRAM_BUFFER;
 
-    if (arg1 == 0) {
-        func_8004DD7C(devAddr, vaddr, 0x10);
+    if (gamePakEnabled == FALSE) {
+        func_8004DD7C(devAddr, vaddr, 16);
     } else {
 
-        func_800E16A0();
+        resetGamePakState();
 
         if (loadGameScreenContext.gamePakEnabled) {
-            func_8004DAF4(CONTROLLER_1, &loadGameScreenContext.unk_0[(saveSlot * 4 + saveSlot) * 4 + saveSlot], &loadGameScreenContext.unk_15[(saveSlot * 4 + saveSlot) * 4 + saveSlot - 5]);
+            func_8004DAF4(CONTROLLER_1, &loadGameScreenContext.gamePakNoteNameA[(saveSlot * 4 + saveSlot) * 4 + saveSlot], &loadGameScreenContext.gamePakNoteNameB[(saveSlot * 4 + saveSlot) * 4 + saveSlot - 5]);
         }
         
     }
@@ -2561,7 +2550,7 @@ void loadFarmRankingScreen(void) {
 
     // 0 initialize strings
     for (i = 0; i < 7; i++) {
-        func_800E6C08(i);
+        clearFarmRankingSlot(i);
     } 
     
     // abbreviated player names on first screen
@@ -2572,30 +2561,30 @@ void loadFarmRankingScreen(void) {
     setGameVariableString(4, (u8*)&gFarmRankingData.farmNames[4], 6);
     
     // load game state from sram and write farm ranking screen strings
-    func_800E9550(0);
-    func_800E9550(1);
-    func_800E9550(2);
-    func_800E9550(3);
-    func_800E9550(4);
+    loadFarmRankingFromSram(0);
+    loadFarmRankingFromSram(1);
+    loadFarmRankingFromSram(2);
+    loadFarmRankingFromSram(3);
+    loadFarmRankingFromSram(4);
 
     // set strings from game state
-    func_800EA3AC(0, 0);
-    func_800EA3AC(1, 0);
-    func_800EA3AC(2, 0);
-    func_800EA3AC(3, 0);
+    loadTempRankingFromSave(0, 0);
+    loadTempRankingFromSave(1, 0);
+    loadTempRankingFromSave(2, 0);
+    loadTempRankingFromSave(3, 0);
     // game pak
-    func_800EA3AC(0, 1);
-    func_800EA3AC(1, 1);
+    loadTempRankingFromSave(0, 1);
+    loadTempRankingFromSave(1, 1);
 
     // save/cache completion state into sram?
-    func_800E9B2C(0);
-    func_800E9B2C(1);
-    func_800E9B2C(2);
-    func_800E9B2C(3);
-    func_800E9B2C(4);
+    saveFarmRankingToSram(0);
+    saveFarmRankingToSram(1);
+    saveFarmRankingToSram(2);
+    saveFarmRankingToSram(3);
+    saveFarmRankingToSram(4);
 
     // set up sprites and message boxes
-    func_800E6FB4(0);
+    setupRankingListMessageBoxes(0);
 
     // overlay screen rankings sprites
     loadFarmRankingsListScreen();
@@ -2616,10 +2605,10 @@ void loadFarmRankingScreen(void) {
     
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E6C08);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", clearFarmRankingSlot);
 
 // setup/reset farm ranking screen strings
-void func_800E6C08(u8 arg0) {
+void clearFarmRankingSlot(u8 slot) {
 
     u32 *ptr;
     u16* ptr2;
@@ -2627,101 +2616,100 @@ void func_800E6C08(u8 arg0) {
     u32 *ptr4;
     u32 *ptr5;
 
-    gFarmRankingData.flags[arg0] = 0;
+    gFarmRankingData.flags[slot] = 0;
 
-    gFarmRankingData.farmNames[arg0][0] = 0xF6;
-    gFarmRankingData.farmNames[arg0][1] = 0xF6;
-    gFarmRankingData.farmNames[arg0][2] = 0xF6;
-    gFarmRankingData.farmNames[arg0][3] = 0xF6;
-    gFarmRankingData.farmNames[arg0][4] = 0xF6;
-    gFarmRankingData.farmNames[arg0][5] = 0xF6;
+    gFarmRankingData.farmNames[slot][0] = 0xF6;
+    gFarmRankingData.farmNames[slot][1] = 0xF6;
+    gFarmRankingData.farmNames[slot][2] = 0xF6;
+    gFarmRankingData.farmNames[slot][3] = 0xF6;
+    gFarmRankingData.farmNames[slot][4] = 0xF6;
+    gFarmRankingData.farmNames[slot][5] = 0xF6;
 
-    gFarmRankingData.playerNames[arg0][0] = 0xF6;
-    gFarmRankingData.playerNames[arg0][1] = 0xF6;
-    gFarmRankingData.playerNames[arg0][2] = 0xF6;
-    gFarmRankingData.playerNames[arg0][3] = 0xF6;
-    gFarmRankingData.playerNames[arg0][4] = 0xF6;
-    gFarmRankingData.playerNames[arg0][5] = 0xF6;
-    
-    gFarmRankingData.wifeNames[arg0][0] = 0xF6;
-    gFarmRankingData.wifeNames[arg0][1] = 0xF6;
-    gFarmRankingData.wifeNames[arg0][2] = 0xF6;
-    gFarmRankingData.wifeNames[arg0][3] = 0xF6;
-    gFarmRankingData.wifeNames[arg0][4] = 0xF6;
-    gFarmRankingData.wifeNames[arg0][5] = 0xF6;
-        
-    gFarmRankingData.babyNames[arg0][0] = 0xF6;
-    gFarmRankingData.babyNames[arg0][1] = 0xF6;
-    gFarmRankingData.babyNames[arg0][2] = 0xF6;
-    gFarmRankingData.babyNames[arg0][3] = 0xF6;
-    gFarmRankingData.babyNames[arg0][4] = 0xF6;
-    gFarmRankingData.babyNames[arg0][5] = 0xF6;
-    
-    gFarmRankingData.dogNames[arg0][0] = 0xF6;
-    gFarmRankingData.dogNames[arg0][1] = 0xF6;
-    gFarmRankingData.dogNames[arg0][2] = 0xF6;
-    gFarmRankingData.dogNames[arg0][3] = 0xF6;
-    gFarmRankingData.dogNames[arg0][4] = 0xF6;
-    gFarmRankingData.dogNames[arg0][5] = 0xF6;
+    gFarmRankingData.playerNames[slot][0] = 0xF6;
+    gFarmRankingData.playerNames[slot][1] = 0xF6;
+    gFarmRankingData.playerNames[slot][2] = 0xF6;
+    gFarmRankingData.playerNames[slot][3] = 0xF6;
+    gFarmRankingData.playerNames[slot][4] = 0xF6;
+    gFarmRankingData.playerNames[slot][5] = 0xF6;
 
-    gFarmRankingData.horseNames[arg0][0] = 0xF6;
-    gFarmRankingData.horseNames[arg0][1] = 0xF6;
-    gFarmRankingData.horseNames[arg0][2] = 0xF6;
-    gFarmRankingData.horseNames[arg0][3] = 0xF6;
-    gFarmRankingData.horseNames[arg0][4] = 0xF6;
-    gFarmRankingData.horseNames[arg0][5] = 0xF6;
+    gFarmRankingData.wifeNames[slot][0] = 0xF6;
+    gFarmRankingData.wifeNames[slot][1] = 0xF6;
+    gFarmRankingData.wifeNames[slot][2] = 0xF6;
+    gFarmRankingData.wifeNames[slot][3] = 0xF6;
+    gFarmRankingData.wifeNames[slot][4] = 0xF6;
+    gFarmRankingData.wifeNames[slot][5] = 0xF6;
 
-    gFarmRankingData.years[arg0] = 0;
-    gFarmRankingData.seasons[arg0] = 0;    
-    gFarmRankingData.mariaAffection[arg0] = 0;
-    gFarmRankingData.popuriAffection[arg0] = 0;
-    gFarmRankingData.elliAffection[arg0] = 0;    
-    gFarmRankingData.annAffection[arg0] = 0;
-    gFarmRankingData.karenAffection[arg0] = 0;
-    gFarmRankingData.harrisAffection[arg0] = 0;    
-    gFarmRankingData.grayAffection[arg0] = 0;
-    gFarmRankingData.jeffAffection[arg0] = 0;
-    gFarmRankingData.cliffAffection[arg0] = 0;    
-    gFarmRankingData.kaiAffection[arg0] = 0;
-    gFarmRankingData.wifeAffection[arg0] = 0;
-    gFarmRankingData.babyAffection[arg0] = 0;
-    gFarmRankingData.dogAffection[arg0] = 0;    
-    gFarmRankingData.horseAffection[arg0] = 0;
-    
-    gFarmRankingData.farmAnimalAffection[arg0][0] = 0;
-    gFarmRankingData.farmAnimalAffection[arg0][1] = 0;
-    gFarmRankingData.farmAnimalAffection[arg0][2] = 0;
-    gFarmRankingData.farmAnimalAffection[arg0][3] = 0;
-    gFarmRankingData.farmAnimalAffection[arg0][4] = 0;
-    gFarmRankingData.farmAnimalAffection[arg0][5] = 0;
-    gFarmRankingData.farmAnimalAffection[arg0][6] = 0;
-    gFarmRankingData.farmAnimalAffection[arg0][7] = 0;
-    
-    gFarmRankingData.chickenCounts[arg0] = 0;
-    
-    gFarmRankingData.cropsShipped[arg0] = 0;
-    gFarmRankingData.eggsShipped[arg0] = 0;
-    gFarmRankingData.milkShipped[arg0] = 0;
-    gFarmRankingData.fishCaught[arg0] = 0;
-    
-    gFarmRankingData.gold[arg0] = 0;
+    gFarmRankingData.babyNames[slot][0] = 0xF6;
+    gFarmRankingData.babyNames[slot][1] = 0xF6;
+    gFarmRankingData.babyNames[slot][2] = 0xF6;
+    gFarmRankingData.babyNames[slot][3] = 0xF6;
+    gFarmRankingData.babyNames[slot][4] = 0xF6;
+    gFarmRankingData.babyNames[slot][5] = 0xF6;
 
-    gFarmRankingData.grassTiles[arg0] = 0;
+    gFarmRankingData.dogNames[slot][0] = 0xF6;
+    gFarmRankingData.dogNames[slot][1] = 0xF6;
+    gFarmRankingData.dogNames[slot][2] = 0xF6;
+    gFarmRankingData.dogNames[slot][3] = 0xF6;
+    gFarmRankingData.dogNames[slot][4] = 0xF6;
+    gFarmRankingData.dogNames[slot][5] = 0xF6;
 
-    gFarmRankingData.maxStamina[arg0] = 0;
-    gFarmRankingData.photoCount[arg0] = 0;
-    gFarmRankingData.recipeCount[arg0] = 0;
-    gFarmRankingData.houseExtensions[arg0] = 0;
-    gFarmRankingData.happiness[arg0] = 0;
+    gFarmRankingData.horseNames[slot][0] = 0xF6;
+    gFarmRankingData.horseNames[slot][1] = 0xF6;
+    gFarmRankingData.horseNames[slot][2] = 0xF6;
+    gFarmRankingData.horseNames[slot][3] = 0xF6;
+    gFarmRankingData.horseNames[slot][4] = 0xF6;
+    gFarmRankingData.horseNames[slot][5] = 0xF6;
 
-    gFarmRankingData.scores[arg0] = 0;
+    gFarmRankingData.years[slot] = 0;
+    gFarmRankingData.seasons[slot] = 0;
+    gFarmRankingData.mariaAffection[slot] = 0;
+    gFarmRankingData.popuriAffection[slot] = 0;
+    gFarmRankingData.elliAffection[slot] = 0;
+    gFarmRankingData.annAffection[slot] = 0;
+    gFarmRankingData.karenAffection[slot] = 0;
+    gFarmRankingData.harrisAffection[slot] = 0;
+    gFarmRankingData.grayAffection[slot] = 0;
+    gFarmRankingData.jeffAffection[slot] = 0;
+    gFarmRankingData.cliffAffection[slot] = 0;
+    gFarmRankingData.kaiAffection[slot] = 0;
+    gFarmRankingData.wifeAffection[slot] = 0;
+    gFarmRankingData.babyAffection[slot] = 0;
+    gFarmRankingData.dogAffection[slot] = 0;
+    gFarmRankingData.horseAffection[slot] = 0;
+
+    gFarmRankingData.farmAnimalAffection[slot][0] = 0;
+    gFarmRankingData.farmAnimalAffection[slot][1] = 0;
+    gFarmRankingData.farmAnimalAffection[slot][2] = 0;
+    gFarmRankingData.farmAnimalAffection[slot][3] = 0;
+    gFarmRankingData.farmAnimalAffection[slot][4] = 0;
+    gFarmRankingData.farmAnimalAffection[slot][5] = 0;
+    gFarmRankingData.farmAnimalAffection[slot][6] = 0;
+    gFarmRankingData.farmAnimalAffection[slot][7] = 0;
+
+    gFarmRankingData.chickenCounts[slot] = 0;
+
+    gFarmRankingData.cropsShipped[slot] = 0;
+    gFarmRankingData.eggsShipped[slot] = 0;
+    gFarmRankingData.milkShipped[slot] = 0;
+    gFarmRankingData.fishCaught[slot] = 0;
+
+    gFarmRankingData.gold[slot] = 0;
+
+    gFarmRankingData.grassTiles[slot] = 0;
+
+    gFarmRankingData.maxStamina[slot] = 0;
+    gFarmRankingData.photoCount[slot] = 0;
+    gFarmRankingData.recipeCount[slot] = 0;
+    gFarmRankingData.houseExtensions[slot] = 0;
+    gFarmRankingData.happiness[slot] = 0;
+
+    gFarmRankingData.scores[slot] = 0;
 
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E6FB4);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", setupRankingListMessageBoxes);
 
-// set up farm ranking screen sprites and message boxes
-void func_800E6FB4(u8 arg0) {
+void setupRankingListMessageBoxes(bool noFadeIn) {
 
     deactivateMessageBox(0);
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
@@ -2835,24 +2823,24 @@ void func_800E6FB4(u8 arg0) {
     setOverlayScreenSpritesRGBA(8, 0, 0, 0, 0);
     setOverlayScreenSpritesRGBA(9, 0, 0, 0, 0);
     
-    if (arg0 == 0) {
+    if (noFadeIn == FALSE) {
         
         setMessageBoxRGBAWithTransition(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
         setMessageBoxRGBAWithTransition(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
         setMessageBoxRGBAWithTransition(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
         setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
         setMessageBoxRGBAWithTransition(4, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8004635C(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-
-        func_8004635C(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8004635C(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8004635C(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8004635C(4, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8004635C(5, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8004635C(6, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8004635C(7, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8004635C(8, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        func_8004635C(9, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        
+        updateOverlayScreenSpriteRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        updateOverlayScreenSpriteRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        updateOverlayScreenSpriteRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        updateOverlayScreenSpriteRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        updateOverlayScreenSpriteRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        updateOverlayScreenSpriteRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        updateOverlayScreenSpriteRGBA(6, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        updateOverlayScreenSpriteRGBA(7, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        updateOverlayScreenSpriteRGBA(8, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        updateOverlayScreenSpriteRGBA(9, 0xFF, 0xFF, 0xFF, 0xFF, 24);
         
     } else {
         
@@ -2877,16 +2865,16 @@ void func_800E6FB4(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E80AC);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", setupRankingDetailMessageBoxes);
 
-void func_800E80AC(u8 arg0) {
+void setupRankingDetailMessageBoxes(u8 slot) {
 
-    setGameVariableString(5, (u8*)&gFarmRankingData.farmNames[arg0], 6);
-    setGameVariableString(6, (u8*)&gFarmRankingData.farmNames[arg0 + 7], 6);
-    setGameVariableString(7, (u8*)&gFarmRankingData.farmNames[arg0 + 14], 6);
-    setGameVariableString(8, (u8*)&gFarmRankingData.farmNames[arg0 + 21], 6);
-    setGameVariableString(9, (u8*)&gFarmRankingData.farmNames[arg0 + 28], 6);
-    setGameVariableString(10, (u8*)&gFarmRankingData.farmNames[arg0 + 35], 6);
+    setGameVariableString(5, (u8*)&gFarmRankingData.farmNames[slot], 6);
+    setGameVariableString(6, (u8*)&gFarmRankingData.farmNames[slot + 7], 6);
+    setGameVariableString(7, (u8*)&gFarmRankingData.farmNames[slot + 14], 6);
+    setGameVariableString(8, (u8*)&gFarmRankingData.farmNames[slot + 21], 6);
+    setGameVariableString(9, (u8*)&gFarmRankingData.farmNames[slot + 28], 6);
+    setGameVariableString(10, (u8*)&gFarmRankingData.farmNames[slot + 35], 6);
 
     deactivateMessageBox(0);
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
@@ -2912,8 +2900,8 @@ void func_800E80AC(u8 arg0) {
     setMessageBoxScrollSpeed(1, 1);
     initializeMessageBox(1, 0, 0xD, MESSAGE_BOX_MODE_NO_INPUT);
 
-    if (gFarmRankingData.flags[arg0] & 2) {
-        
+    if (gFarmRankingData.flags[slot] & 2) {
+
         deactivateMessageBox(2);
         initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
         setMessageBoxViewSpacePosition(2, -40.0f, 24.0f, 0.0f);
@@ -2925,10 +2913,10 @@ void func_800E80AC(u8 arg0) {
         setMessageBoxButtonMask(2, 0x8000);
         setMessageBoxScrollSpeed(2, 1);
         initializeMessageBox(2, 0, 0xE, MESSAGE_BOX_MODE_NO_INPUT);
-    
+
     }
 
-    if (gFarmRankingData.flags[arg0] & 4) {
+    if (gFarmRankingData.flags[slot] & 4) {
         deactivateMessageBox(3);
         initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
         setMessageBoxViewSpacePosition(3, -40.0f, 8.0f, 0.0f);
@@ -2954,7 +2942,7 @@ void func_800E80AC(u8 arg0) {
     setMessageBoxScrollSpeed(4, 1);
     initializeMessageBox(4, 0, 0x10, MESSAGE_BOX_MODE_NO_INPUT);
 
-    if (gFarmRankingData.flags[arg0] & 8) {
+    if (gFarmRankingData.flags[slot] & 8) {
         deactivateMessageBox(5);
         initializeEmptyMessageBox(5, (u8*)MESSAGE_BOX_6_TEXT_BUFFER);
         setMessageBoxViewSpacePosition(5, -40.0f, -24.0f, 0.0f);
@@ -2967,39 +2955,39 @@ void func_800E80AC(u8 arg0) {
         setMessageBoxScrollSpeed(5, 1);
         initializeMessageBox(5, 0, 0x11, MESSAGE_BOX_MODE_NO_INPUT);
     }
-    
+
     setOverlayScreenSprites(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 48.0f, 80.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(0, gFarmRankingData.years[arg0], 1, 3);
-    
+    dmaOverlayScreenSprites(0, gFarmRankingData.years[slot], 1, 3);
+
     setOverlayScreenSprites(1, 0x8B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 116.0f, 80.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(1, gFarmRankingData.scores[arg0], 2, 3);
+    dmaOverlayScreenSprites(1, gFarmRankingData.scores[slot], 2, 3);
 
     setOverlayScreenSprites(2, 0xA4, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, -26.0f, -32.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(2, gFarmRankingData.photoCount[arg0], 1, 3);
+    dmaOverlayScreenSprites(2, gFarmRankingData.photoCount[slot], 1, 3);
     
     setOverlayScreenSprites(3, 0xA6, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, -26.0f, -48.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(3, gFarmRankingData.recipeCount[arg0], 1, 3);
+    dmaOverlayScreenSprites(3, gFarmRankingData.recipeCount[slot], 1, 3);
     
     setOverlayScreenSprites(4, 0xA8, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, -26.0f, -64.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(4, (gFarmRankingData.houseExtensions[arg0] * 100) / 6, 2, 3);
+    dmaOverlayScreenSprites(4, (gFarmRankingData.houseExtensions[slot] * 100) / 6, 2, 3);
     
     setOverlayScreenSprites(5, 0xAB, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, -26.0f, -80.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(5, gFarmRankingData.grassTiles[arg0], 2, 3);
+    dmaOverlayScreenSprites(5, gFarmRankingData.grassTiles[slot], 2, 3);
     
     setOverlayScreenSprites(6, 0x8E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, 34.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(6, gFarmRankingData.cropsShipped[arg0], 4, 3);
+    dmaOverlayScreenSprites(6, gFarmRankingData.cropsShipped[slot], 4, 3);
     
     setOverlayScreenSprites(7, 0x93, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, 6.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(7, gFarmRankingData.milkShipped[arg0], 3, 3);
+    dmaOverlayScreenSprites(7, gFarmRankingData.milkShipped[slot], 3, 3);
     
     setOverlayScreenSprites(8, 0x97, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, -22.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(8, gFarmRankingData.eggsShipped[arg0], 3, 3);
+    dmaOverlayScreenSprites(8, gFarmRankingData.eggsShipped[slot], 3, 3);
     
     setOverlayScreenSprites(9, 0x9B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, -50.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(9, gFarmRankingData.fishCaught[arg0], 2, 3);
+    dmaOverlayScreenSprites(9, gFarmRankingData.fishCaught[slot], 2, 3);
     
     setOverlayScreenSprites(0xA, 0x9E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, -78.0f, 16.0f, 0xA);
-    dmaOverlayScreenSprites(0xA, gFarmRankingData.gold[arg0], 5, 3);
+    dmaOverlayScreenSprites(0xA, gFarmRankingData.gold[slot], 5, 3);
 
     setMessageBoxRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
     setMessageBoxRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -3124,16 +3112,16 @@ void farmRankingScreenCallback(void) {
                 setMessageBoxRGBAWithTransition(2, 0, 0, 0, 0, 24);
                 setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 24);
                 setMessageBoxRGBAWithTransition(4, 0, 0, 0, 0, 24);
-                func_8004635C(0, 0, 0, 0, 0, 24);
-                func_8004635C(1, 0, 0, 0, 0, 24);
-                func_8004635C(2, 0, 0, 0, 0, 24);
-                func_8004635C(3, 0, 0, 0, 0, 24);
-                func_8004635C(4, 0, 0, 0, 0, 24);
-                func_8004635C(5, 0, 0, 0, 0, 24);
-                func_8004635C(6, 0, 0, 0, 0, 24);
-                func_8004635C(7, 0, 0, 0, 0, 24);
-                func_8004635C(8, 0, 0, 0, 0, 24);
-                func_8004635C(9, 0, 0, 0, 0, 24);
+                updateOverlayScreenSpriteRGBA(0, 0, 0, 0, 0, 24);
+                updateOverlayScreenSpriteRGBA(1, 0, 0, 0, 0, 24);
+                updateOverlayScreenSpriteRGBA(2, 0, 0, 0, 0, 24);
+                updateOverlayScreenSpriteRGBA(3, 0, 0, 0, 0, 24);
+                updateOverlayScreenSpriteRGBA(4, 0, 0, 0, 0, 24);
+                updateOverlayScreenSpriteRGBA(5, 0, 0, 0, 0, 24);
+                updateOverlayScreenSpriteRGBA(6, 0, 0, 0, 0, 24);
+                updateOverlayScreenSpriteRGBA(7, 0, 0, 0, 0, 24);
+                updateOverlayScreenSpriteRGBA(8, 0, 0, 0, 0, 24);
+                updateOverlayScreenSpriteRGBA(9, 0, 0, 0, 0, 24);
                 
                 gFarmRankingData.screenState = 5;
                 playSfx(0);
@@ -3143,7 +3131,7 @@ void farmRankingScreenCallback(void) {
             break;
 
         case 2:
-            func_800E80AC(gFarmRankingData.cursorIndex);
+            setupRankingDetailMessageBoxes(gFarmRankingData.cursorIndex);
             loadIndividualRankingScreen(gFarmRankingData.cursorIndex);
             gFarmRankingData.screenState = 3;
             break;
@@ -3191,7 +3179,7 @@ void farmRankingScreenCallback(void) {
             break;
         
         case 4:
-            func_800E6FB4(1);
+            setupRankingListMessageBoxes(1);
             loadFarmRankingsListScreen();
             setFarmRankingScreenFullAlpha();
 
@@ -3223,7 +3211,7 @@ void farmRankingScreenCallback(void) {
                 deactivateOverlayScreenSprites(8);
                 deactivateOverlayScreenSprites(9);
                 
-                func_800E1380(TRUE);
+                initLoadGameScreen(TRUE);
                 
             }
             
@@ -3233,18 +3221,18 @@ void farmRankingScreenCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E9550);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadFarmRankingFromSram);
 
-void func_800E9550(u8 slot) {
+void loadFarmRankingFromSram(u8 slot) {
 
     FarmRankingsBuffer* buff = (FarmRankingsBuffer*)FARM_RANKINGS_BUFFER;
     u32 devAddr = ((slot << 8) + 0x4000) | 0x08000000;
 
     func_8004DC48(devAddr, FARM_RANKINGS_BUFFER, 0x100);
 
-    if (func_800E3300(buff->signature)) {
+    if (verifySramSignature(buff->signature)) {
         
-        if (func_800E3990((u8*)buff)) {
+        if (verifyRankingChecksum((u8*)buff)) {
 
             gFarmRankingData.flags[slot] = 1;
             gFarmRankingData.flags[slot] = buff->flags;
@@ -3346,9 +3334,9 @@ void func_800E9550(u8 slot) {
 }
 
 // save/cache top completion state into sram
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800E9B2C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", saveFarmRankingToSram);
 
-void func_800E9B2C(u8 slot) {
+void saveFarmRankingToSram(u8 slot) {
 
     u32 temp = (slot << 8) + 0x4000;
     u32 devAddr = temp + 0x08000000;
@@ -3363,22 +3351,22 @@ void func_800E9B2C(u8 slot) {
     FarmRankingsBuffer* buff = (FarmRankingsBuffer*)FARM_RANKINGS_BUFFER;
 
     // Write signature
-    buff->signature[0] = D_80119740[0];
-    farmRankingsBuffer.signature[1] = D_80119740[1];
-    farmRankingsBuffer.signature[2] = D_80119740[2];
-    farmRankingsBuffer.signature[3] = D_80119740[3];
-    farmRankingsBuffer.signature[4] = D_80119740[4];
-    farmRankingsBuffer.signature[5] = D_80119740[5];
-    farmRankingsBuffer.signature[6] = D_80119740[6];
-    farmRankingsBuffer.signature[7] = D_80119740[7];
-    farmRankingsBuffer.signature[8] = D_80119740[8];
-    farmRankingsBuffer.signature[9] = D_80119740[9];
-    farmRankingsBuffer.signature[10] = D_80119740[10];
-    farmRankingsBuffer.signature[11] = D_80119740[11];
-    farmRankingsBuffer.signature[12] = D_80119740[12];
-    farmRankingsBuffer.signature[13] = D_80119740[13];
-    farmRankingsBuffer.signature[14] = D_80119740[14];
-    farmRankingsBuffer.signature[15] = D_80119740[15];
+    buff->signature[0] = sramSignature[0];
+    farmRankingsBuffer.signature[1] = sramSignature[1];
+    farmRankingsBuffer.signature[2] = sramSignature[2];
+    farmRankingsBuffer.signature[3] = sramSignature[3];
+    farmRankingsBuffer.signature[4] = sramSignature[4];
+    farmRankingsBuffer.signature[5] = sramSignature[5];
+    farmRankingsBuffer.signature[6] = sramSignature[6];
+    farmRankingsBuffer.signature[7] = sramSignature[7];
+    farmRankingsBuffer.signature[8] = sramSignature[8];
+    farmRankingsBuffer.signature[9] = sramSignature[9];
+    farmRankingsBuffer.signature[10] = sramSignature[10];
+    farmRankingsBuffer.signature[11] = sramSignature[11];
+    farmRankingsBuffer.signature[12] = sramSignature[12];
+    farmRankingsBuffer.signature[13] = sramSignature[13];
+    farmRankingsBuffer.signature[14] = sramSignature[14];
+    farmRankingsBuffer.signature[15] = sramSignature[15];
 
     farmRankingsBuffer.flags = gFarmRankingData.flags[slot];
 
@@ -3477,18 +3465,17 @@ void func_800E9B2C(u8 slot) {
     
     farmRankingsBuffer.score = gFarmRankingData.scores[slot];
     
-    // Calculate and store checksum
-    buff->checksum = func_800E395C(buff->signature);
+    buff->checksum = calculateRankingChecksum(buff->signature);
 
     // Write to SRAM
     func_8004DD7C(devAddr, buff, 0x100);
 
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA2A4);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", clearFarmRankingBuffer);
 
-void func_800EA2A4(u8 arg0) { 
-    
+void clearFarmRankingBuffer(u8 slot) {
+
     farmRankingsBuffer.signature[0] = 0;
     farmRankingsBuffer.signature[1] = 0;
     farmRankingsBuffer.signature[2] = 0;
@@ -3506,13 +3493,13 @@ void func_800EA2A4(u8 arg0) {
     farmRankingsBuffer.signature[14] = 0;
     farmRankingsBuffer.signature[15] = 0;
 
-    func_8004DD7C(((arg0 * 0x100) + 0x4000) | 0x08000000, (FarmRankingsBuffer*)FARM_RANKINGS_BUFFER, 0x10);
+    func_8004DD7C(((slot * 0x100) + 0x4000) | 0x08000000, (FarmRankingsBuffer*)FARM_RANKINGS_BUFFER, 0x10);
 
 } 
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA360);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", countActiveFarmRankings);
 
-u8 func_800EA360(void) {
+u8 countActiveFarmRankings(void) {
 
     u8 count = 0;
 
@@ -3552,13 +3539,11 @@ static inline void setHorseAffection() {
     }
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EA3AC);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadTempRankingFromSave);
 
-// set strings from game state
-void func_800EA3AC(u8 arg0, u8 arg1) {
+void loadTempRankingFromSave(u8 saveSlot, u8 source) {
 
-    // set game state from sram
-    if (func_800E4424(arg0, arg1)) {
+    if (loadGameFromSram(saveSlot, source)) {
 
         gFarmRankingData.tempFlags = 1;
         
@@ -3695,7 +3680,7 @@ void func_800EA3AC(u8 arg0, u8 arg1) {
             gFarmRankingData.tempFarmAnimalAffection[7] = 0;
         }
 
-        gFarmRankingData.chickenCounts[RANKING_TEMP_SLOT] = func_8009B564();
+        gFarmRankingData.chickenCounts[RANKING_TEMP_SLOT] = getTotalChickenCount();
 
         gFarmRankingData.cropsShipped[RANKING_TEMP_SLOT] = gTotalCropsShipped;
         gFarmRankingData.eggsShipped[RANKING_TEMP_SLOT] = gTotalEggsShipped;
@@ -3706,14 +3691,14 @@ void func_800EA3AC(u8 arg0, u8 arg1) {
         gFarmRankingData.maxStamina[RANKING_TEMP_SLOT] = gMaximumStamina;
         gFarmRankingData.happiness[RANKING_TEMP_SLOT] = gHappiness;
         
-        func_800EB74C(5);
-        func_800EB788(5);
-        func_800EBA90(5);
-        func_800EBAC8(5);
-        func_800EAA9C(5);
+        setRankingGrassTiles(5);
+        countRankingPhotos(5);
+        setRankingRecipeCount(5);
+        countRankingHouseExtensions(5);
+        calculateFarmRankingScore(5);
         
-        if (!(func_800EBCD8())) {
-            func_800EBC00();
+        if (!(findMatchingFarmRanking())) {
+            sortFarmRankings();
         }
         
     } else {
@@ -3722,9 +3707,9 @@ void func_800EA3AC(u8 arg0, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EAA9C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", calculateFarmRankingScore);
 
-void func_800EAA9C(u8 slot) {
+void calculateFarmRankingScore(u8 slot) {
     
     f32 totalScore;
     s32 finalIntScore;
@@ -3792,127 +3777,127 @@ void func_800EAA9C(u8 slot) {
 
     totalScore += (f32)(f64)(((u32)gFarmRankingData.happiness[slot] * 400) / 255);
 
-    D_8016FDFC = (s32)(u32)totalScore;
+    farmRankingRawScore = (s32)(u32)totalScore;
     
     gFarmRankingData.scores[slot] = totalScore / 70.0f;
     
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EB74C);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", setRankingGrassTiles);
 
-void func_800EB74C(u8 arg0) {
-    gFarmRankingData.grassTiles[arg0] = getFarmGrassTilesSum();
+void setRankingGrassTiles(u8 slot) {
+    gFarmRankingData.grassTiles[slot] = getFarmGrassTilesSum();
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EB788);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", countRankingPhotos);
 
-void func_800EB788(u8 arg0) {
+void countRankingPhotos(u8 slot) {
 
-    gFarmRankingData.photoCount[arg0] = 0;
+    gFarmRankingData.photoCount[slot] = 0;
 
     if (albumBits & 1) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 2) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 4) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 8) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 0x10) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 0x20) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 0x40) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
-    
+
     if (albumBits & 0x80) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 0x100) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
-    
+
     if (albumBits & 0x200) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
-    
+
     if (albumBits & 0x400) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 0x800) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 0x1000) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
-    
+
     if (albumBits & 0x2000) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 0x4000) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
 
     if (albumBits & 0x8000) {
-        gFarmRankingData.photoCount[arg0]++;
+        gFarmRankingData.photoCount[slot]++;
     }
-    
+
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBA90);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", setRankingRecipeCount);
 
-void func_800EBA90(u8 arg0) {
-    gFarmRankingData.recipeCount[arg0] = getAcquiredRecipesTotal();
+void setRankingRecipeCount(u8 slot) {
+    gFarmRankingData.recipeCount[slot] = getAcquiredRecipesTotal();
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBAC8);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", countRankingHouseExtensions);
 
-void func_800EBAC8(u8 arg0) {
+void countRankingHouseExtensions(u8 slot) {
 
-    gFarmRankingData.houseExtensions[arg0] = 0;
-    
+    gFarmRankingData.houseExtensions[slot] = 0;
+
     if (checkLifeEventBit(HAVE_KITCHEN)) {
-        gFarmRankingData.houseExtensions[arg0]++;
+        gFarmRankingData.houseExtensions[slot]++;
     }
     if (checkLifeEventBit(HAVE_BATHROOM)) {
-        gFarmRankingData.houseExtensions[arg0]++;
+        gFarmRankingData.houseExtensions[slot]++;
     }
     if (checkLifeEventBit(HAVE_STAIRS)) {
-        gFarmRankingData.houseExtensions[arg0]++;
+        gFarmRankingData.houseExtensions[slot]++;
     }
     if (checkLifeEventBit(HAVE_GREENHOUSE)) {
-        gFarmRankingData.houseExtensions[arg0]++;
+        gFarmRankingData.houseExtensions[slot]++;
     }
     if (checkLifeEventBit(HAVE_LOG_TERRACE)) {
-        gFarmRankingData.houseExtensions[arg0]++;
+        gFarmRankingData.houseExtensions[slot]++;
     }
     if (checkLifeEventBit(HAVE_BABY_BED)) {
-        gFarmRankingData.houseExtensions[arg0]++;
+        gFarmRankingData.houseExtensions[slot]++;
     }
-    
+
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBC00);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", sortFarmRankings);
 
 // get highest percentage
-void func_800EBC00(void) {
+void sortFarmRankings(void) {
 
     f32 f1, f2;
     u8 i = 0;
@@ -3941,7 +3926,7 @@ void func_800EBC00(void) {
         } 
         
         // swap highest
-        func_800EBEAC(i, temp);
+        swapFarmRankingSlots(i, temp);
 
         i++;
         
@@ -3949,9 +3934,9 @@ void func_800EBC00(void) {
     
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBCD8);
+// INCLUDE_ASM("asm/nonmatchings/game/gameFile", findMatchingFarmRanking);
 
-u8 func_800EBCD8(void) {
+u8 findMatchingFarmRanking(void) {
     
     bool found = FALSE;
     u8 i = 0;
@@ -3972,7 +3957,7 @@ u8 func_800EBCD8(void) {
             gFarmRankingData.tempPlayerName[5] == gFarmRankingData.playerNames[i][5]) {
 
             if (gFarmRankingData.scores[RANKING_TEMP_SLOT] >= gFarmRankingData.scores[i]) {
-                func_800ED160(i, RANKING_TEMP_SLOT);
+                copyFarmRankingSlot(i, RANKING_TEMP_SLOT);
             } else {
                 found = TRUE;
             }
@@ -3987,9 +3972,9 @@ u8 func_800EBCD8(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800EBEAC);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", swapFarmRankingSlots);
 
-void func_800EBEAC(u8 slotA, u8 slotB) {
+void swapFarmRankingSlots(u8 slotA, u8 slotB) {
 
     gFarmRankingData.swapFlags = gFarmRankingData.flags[slotA];
 
@@ -4259,103 +4244,102 @@ void func_800EBEAC(u8 slotA, u8 slotB) {
    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", func_800ED160);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", copyFarmRankingSlot);
 
-void func_800ED160(u8 arg0, u8 arg1) {
+void copyFarmRankingSlot(u8 destSlot, u8 srcSlot) {
 
-    gFarmRankingData.flags[arg0] = gFarmRankingData.flags[arg1];
+    gFarmRankingData.flags[destSlot] = gFarmRankingData.flags[srcSlot];
 
-    gFarmRankingData.farmNames[arg0][0] = gFarmRankingData.farmNames[arg1][0];
-    gFarmRankingData.farmNames[arg0][1] = gFarmRankingData.farmNames[arg1][1];
-    gFarmRankingData.farmNames[arg0][2] = gFarmRankingData.farmNames[arg1][2];
-    gFarmRankingData.farmNames[arg0][3] = gFarmRankingData.farmNames[arg1][3];
-    gFarmRankingData.farmNames[arg0][4] = gFarmRankingData.farmNames[arg1][4];
-    gFarmRankingData.farmNames[arg0][5] = gFarmRankingData.farmNames[arg1][5];
+    gFarmRankingData.farmNames[destSlot][0] = gFarmRankingData.farmNames[srcSlot][0];
+    gFarmRankingData.farmNames[destSlot][1] = gFarmRankingData.farmNames[srcSlot][1];
+    gFarmRankingData.farmNames[destSlot][2] = gFarmRankingData.farmNames[srcSlot][2];
+    gFarmRankingData.farmNames[destSlot][3] = gFarmRankingData.farmNames[srcSlot][3];
+    gFarmRankingData.farmNames[destSlot][4] = gFarmRankingData.farmNames[srcSlot][4];
+    gFarmRankingData.farmNames[destSlot][5] = gFarmRankingData.farmNames[srcSlot][5];
 
-    gFarmRankingData.playerNames[arg0][0] = gFarmRankingData.playerNames[arg1][0];
-    gFarmRankingData.playerNames[arg0][1] = gFarmRankingData.playerNames[arg1][1];
-    gFarmRankingData.playerNames[arg0][2] = gFarmRankingData.playerNames[arg1][2];
-    gFarmRankingData.playerNames[arg0][3] = gFarmRankingData.playerNames[arg1][3];
-    gFarmRankingData.playerNames[arg0][4] = gFarmRankingData.playerNames[arg1][4];
-    gFarmRankingData.playerNames[arg0][5] = gFarmRankingData.playerNames[arg1][5];
+    gFarmRankingData.playerNames[destSlot][0] = gFarmRankingData.playerNames[srcSlot][0];
+    gFarmRankingData.playerNames[destSlot][1] = gFarmRankingData.playerNames[srcSlot][1];
+    gFarmRankingData.playerNames[destSlot][2] = gFarmRankingData.playerNames[srcSlot][2];
+    gFarmRankingData.playerNames[destSlot][3] = gFarmRankingData.playerNames[srcSlot][3];
+    gFarmRankingData.playerNames[destSlot][4] = gFarmRankingData.playerNames[srcSlot][4];
+    gFarmRankingData.playerNames[destSlot][5] = gFarmRankingData.playerNames[srcSlot][5];
 
-    gFarmRankingData.wifeNames[arg0][0] = gFarmRankingData.wifeNames[arg1][0];
-    gFarmRankingData.wifeNames[arg0][1] = gFarmRankingData.wifeNames[arg1][1];
-    gFarmRankingData.wifeNames[arg0][2] = gFarmRankingData.wifeNames[arg1][2];
-    gFarmRankingData.wifeNames[arg0][3] = gFarmRankingData.wifeNames[arg1][3];
-    gFarmRankingData.wifeNames[arg0][4] = gFarmRankingData.wifeNames[arg1][4];
-    gFarmRankingData.wifeNames[arg0][5] = gFarmRankingData.wifeNames[arg1][5];
+    gFarmRankingData.wifeNames[destSlot][0] = gFarmRankingData.wifeNames[srcSlot][0];
+    gFarmRankingData.wifeNames[destSlot][1] = gFarmRankingData.wifeNames[srcSlot][1];
+    gFarmRankingData.wifeNames[destSlot][2] = gFarmRankingData.wifeNames[srcSlot][2];
+    gFarmRankingData.wifeNames[destSlot][3] = gFarmRankingData.wifeNames[srcSlot][3];
+    gFarmRankingData.wifeNames[destSlot][4] = gFarmRankingData.wifeNames[srcSlot][4];
+    gFarmRankingData.wifeNames[destSlot][5] = gFarmRankingData.wifeNames[srcSlot][5];
 
-    gFarmRankingData.babyNames[arg0][0] = gFarmRankingData.babyNames[arg1][0];
-    gFarmRankingData.babyNames[arg0][1] = gFarmRankingData.babyNames[arg1][1];
-    gFarmRankingData.babyNames[arg0][2] = gFarmRankingData.babyNames[arg1][2];
-    gFarmRankingData.babyNames[arg0][3] = gFarmRankingData.babyNames[arg1][3];
-    gFarmRankingData.babyNames[arg0][4] = gFarmRankingData.babyNames[arg1][4];
-    gFarmRankingData.babyNames[arg0][5] = gFarmRankingData.babyNames[arg1][5];
+    gFarmRankingData.babyNames[destSlot][0] = gFarmRankingData.babyNames[srcSlot][0];
+    gFarmRankingData.babyNames[destSlot][1] = gFarmRankingData.babyNames[srcSlot][1];
+    gFarmRankingData.babyNames[destSlot][2] = gFarmRankingData.babyNames[srcSlot][2];
+    gFarmRankingData.babyNames[destSlot][3] = gFarmRankingData.babyNames[srcSlot][3];
+    gFarmRankingData.babyNames[destSlot][4] = gFarmRankingData.babyNames[srcSlot][4];
+    gFarmRankingData.babyNames[destSlot][5] = gFarmRankingData.babyNames[srcSlot][5];
 
-    gFarmRankingData.dogNames[arg0][0] = gFarmRankingData.dogNames[arg1][0];
-    gFarmRankingData.dogNames[arg0][1] = gFarmRankingData.dogNames[arg1][1];
-    gFarmRankingData.dogNames[arg0][2] = gFarmRankingData.dogNames[arg1][2];
-    gFarmRankingData.dogNames[arg0][3] = gFarmRankingData.dogNames[arg1][3];
-    gFarmRankingData.dogNames[arg0][4] = gFarmRankingData.dogNames[arg1][4];
-    gFarmRankingData.dogNames[arg0][5] = gFarmRankingData.dogNames[arg1][5];
+    gFarmRankingData.dogNames[destSlot][0] = gFarmRankingData.dogNames[srcSlot][0];
+    gFarmRankingData.dogNames[destSlot][1] = gFarmRankingData.dogNames[srcSlot][1];
+    gFarmRankingData.dogNames[destSlot][2] = gFarmRankingData.dogNames[srcSlot][2];
+    gFarmRankingData.dogNames[destSlot][3] = gFarmRankingData.dogNames[srcSlot][3];
+    gFarmRankingData.dogNames[destSlot][4] = gFarmRankingData.dogNames[srcSlot][4];
+    gFarmRankingData.dogNames[destSlot][5] = gFarmRankingData.dogNames[srcSlot][5];
 
-    gFarmRankingData.horseNames[arg0][0] = gFarmRankingData.horseNames[arg1][0];
-    gFarmRankingData.horseNames[arg0][1] = gFarmRankingData.horseNames[arg1][1];
-    gFarmRankingData.horseNames[arg0][2] = gFarmRankingData.horseNames[arg1][2];
-    gFarmRankingData.horseNames[arg0][3] = gFarmRankingData.horseNames[arg1][3];
-    gFarmRankingData.horseNames[arg0][4] = gFarmRankingData.horseNames[arg1][4];
-    gFarmRankingData.horseNames[arg0][5] = gFarmRankingData.horseNames[arg1][5];
+    gFarmRankingData.horseNames[destSlot][0] = gFarmRankingData.horseNames[srcSlot][0];
+    gFarmRankingData.horseNames[destSlot][1] = gFarmRankingData.horseNames[srcSlot][1];
+    gFarmRankingData.horseNames[destSlot][2] = gFarmRankingData.horseNames[srcSlot][2];
+    gFarmRankingData.horseNames[destSlot][3] = gFarmRankingData.horseNames[srcSlot][3];
+    gFarmRankingData.horseNames[destSlot][4] = gFarmRankingData.horseNames[srcSlot][4];
+    gFarmRankingData.horseNames[destSlot][5] = gFarmRankingData.horseNames[srcSlot][5];
 
-    gFarmRankingData.years[arg0] = gFarmRankingData.years[arg1];
-    gFarmRankingData.seasons[arg0] = gFarmRankingData.seasons[arg1];
-    gFarmRankingData.mariaAffection[arg0] = gFarmRankingData.mariaAffection[arg1];
-    gFarmRankingData.popuriAffection[arg0] = gFarmRankingData.popuriAffection[arg1];
-    gFarmRankingData.elliAffection[arg0] = gFarmRankingData.elliAffection[arg1];
-    gFarmRankingData.annAffection[arg0] = gFarmRankingData.annAffection[arg1];
-    gFarmRankingData.karenAffection[arg0] = gFarmRankingData.karenAffection[arg1];
-    gFarmRankingData.harrisAffection[arg0] = gFarmRankingData.harrisAffection[arg1];
-    gFarmRankingData.grayAffection[arg0] = gFarmRankingData.grayAffection[arg1];
-    gFarmRankingData.jeffAffection[arg0] = gFarmRankingData.jeffAffection[arg1];
-    gFarmRankingData.cliffAffection[arg0] = gFarmRankingData.cliffAffection[arg1];
-    gFarmRankingData.kaiAffection[arg0] = gFarmRankingData.kaiAffection[arg1];
-    gFarmRankingData.wifeAffection[arg0] = gFarmRankingData.wifeAffection[arg1];
-    gFarmRankingData.babyAffection[arg0] = gFarmRankingData.babyAffection[arg1];
-    gFarmRankingData.dogAffection[arg0] = gFarmRankingData.dogAffection[arg1];
+    gFarmRankingData.years[destSlot] = gFarmRankingData.years[srcSlot];
+    gFarmRankingData.seasons[destSlot] = gFarmRankingData.seasons[srcSlot];
+    gFarmRankingData.mariaAffection[destSlot] = gFarmRankingData.mariaAffection[srcSlot];
+    gFarmRankingData.popuriAffection[destSlot] = gFarmRankingData.popuriAffection[srcSlot];
+    gFarmRankingData.elliAffection[destSlot] = gFarmRankingData.elliAffection[srcSlot];
+    gFarmRankingData.annAffection[destSlot] = gFarmRankingData.annAffection[srcSlot];
+    gFarmRankingData.karenAffection[destSlot] = gFarmRankingData.karenAffection[srcSlot];
+    gFarmRankingData.harrisAffection[destSlot] = gFarmRankingData.harrisAffection[srcSlot];
+    gFarmRankingData.grayAffection[destSlot] = gFarmRankingData.grayAffection[srcSlot];
+    gFarmRankingData.jeffAffection[destSlot] = gFarmRankingData.jeffAffection[srcSlot];
+    gFarmRankingData.cliffAffection[destSlot] = gFarmRankingData.cliffAffection[srcSlot];
+    gFarmRankingData.kaiAffection[destSlot] = gFarmRankingData.kaiAffection[srcSlot];
+    gFarmRankingData.wifeAffection[destSlot] = gFarmRankingData.wifeAffection[srcSlot];
+    gFarmRankingData.babyAffection[destSlot] = gFarmRankingData.babyAffection[srcSlot];
+    gFarmRankingData.dogAffection[destSlot] = gFarmRankingData.dogAffection[srcSlot];
 
-    gFarmRankingData.horseAffection[arg0] = gFarmRankingData.horseAffection[arg1];
+    gFarmRankingData.horseAffection[destSlot] = gFarmRankingData.horseAffection[srcSlot];
 
-    gFarmRankingData.farmAnimalAffection[arg0][0] = gFarmRankingData.farmAnimalAffection[arg1][0];
-    gFarmRankingData.farmAnimalAffection[arg0][1] = gFarmRankingData.farmAnimalAffection[arg1][1];
-    gFarmRankingData.farmAnimalAffection[arg0][2] = gFarmRankingData.farmAnimalAffection[arg1][2];
-    gFarmRankingData.farmAnimalAffection[arg0][3] = gFarmRankingData.farmAnimalAffection[arg1][3];
-    gFarmRankingData.farmAnimalAffection[arg0][4] = gFarmRankingData.farmAnimalAffection[arg1][4];
-    gFarmRankingData.farmAnimalAffection[arg0][5] = gFarmRankingData.farmAnimalAffection[arg1][5];
-    gFarmRankingData.farmAnimalAffection[arg0][6] = gFarmRankingData.farmAnimalAffection[arg1][6];
-    gFarmRankingData.farmAnimalAffection[arg0][7] = gFarmRankingData.farmAnimalAffection[arg1][7];
+    gFarmRankingData.farmAnimalAffection[destSlot][0] = gFarmRankingData.farmAnimalAffection[srcSlot][0];
+    gFarmRankingData.farmAnimalAffection[destSlot][1] = gFarmRankingData.farmAnimalAffection[srcSlot][1];
+    gFarmRankingData.farmAnimalAffection[destSlot][2] = gFarmRankingData.farmAnimalAffection[srcSlot][2];
+    gFarmRankingData.farmAnimalAffection[destSlot][3] = gFarmRankingData.farmAnimalAffection[srcSlot][3];
+    gFarmRankingData.farmAnimalAffection[destSlot][4] = gFarmRankingData.farmAnimalAffection[srcSlot][4];
+    gFarmRankingData.farmAnimalAffection[destSlot][5] = gFarmRankingData.farmAnimalAffection[srcSlot][5];
+    gFarmRankingData.farmAnimalAffection[destSlot][6] = gFarmRankingData.farmAnimalAffection[srcSlot][6];
+    gFarmRankingData.farmAnimalAffection[destSlot][7] = gFarmRankingData.farmAnimalAffection[srcSlot][7];
 
-    gFarmRankingData.chickenCounts[arg0] = gFarmRankingData.chickenCounts[arg1];
+    gFarmRankingData.chickenCounts[destSlot] = gFarmRankingData.chickenCounts[srcSlot];
 
-    gFarmRankingData.wife[arg0] = gFarmRankingData.wife[arg1];
-    
-    gFarmRankingData.cropsShipped[arg0] = gFarmRankingData.cropsShipped[arg1];
-    gFarmRankingData.eggsShipped[arg0] = gFarmRankingData.eggsShipped[arg1];
-    gFarmRankingData.milkShipped[arg0] = gFarmRankingData.milkShipped[arg1];
-    gFarmRankingData.fishCaught[arg0] = gFarmRankingData.fishCaught[arg1];
+    gFarmRankingData.wife[destSlot] = gFarmRankingData.wife[srcSlot];
 
-    gFarmRankingData.gold[arg0] = gFarmRankingData.gold[arg1];
-    
-    gFarmRankingData.grassTiles[arg0] = gFarmRankingData.grassTiles[arg1];
-    
-    gFarmRankingData.maxStamina[arg0] = gFarmRankingData.maxStamina[arg1];
-    gFarmRankingData.photoCount[arg0] = gFarmRankingData.photoCount[arg1];
-    gFarmRankingData.recipeCount[arg0] = gFarmRankingData.recipeCount[arg1];
-    gFarmRankingData.houseExtensions[arg0] = gFarmRankingData.houseExtensions[arg1];
-    gFarmRankingData.happiness[arg0] = gFarmRankingData.happiness[arg1];
-    
-    
-    gFarmRankingData.scores[arg0] = gFarmRankingData.scores[arg1];
-    
-    func_800E6C08(arg1);
-        
+    gFarmRankingData.cropsShipped[destSlot] = gFarmRankingData.cropsShipped[srcSlot];
+    gFarmRankingData.eggsShipped[destSlot] = gFarmRankingData.eggsShipped[srcSlot];
+    gFarmRankingData.milkShipped[destSlot] = gFarmRankingData.milkShipped[srcSlot];
+    gFarmRankingData.fishCaught[destSlot] = gFarmRankingData.fishCaught[srcSlot];
+
+    gFarmRankingData.gold[destSlot] = gFarmRankingData.gold[srcSlot];
+
+    gFarmRankingData.grassTiles[destSlot] = gFarmRankingData.grassTiles[srcSlot];
+
+    gFarmRankingData.maxStamina[destSlot] = gFarmRankingData.maxStamina[srcSlot];
+    gFarmRankingData.photoCount[destSlot] = gFarmRankingData.photoCount[srcSlot];
+    gFarmRankingData.recipeCount[destSlot] = gFarmRankingData.recipeCount[srcSlot];
+    gFarmRankingData.houseExtensions[destSlot] = gFarmRankingData.houseExtensions[srcSlot];
+    gFarmRankingData.happiness[destSlot] = gFarmRankingData.happiness[srcSlot];
+
+    gFarmRankingData.scores[destSlot] = gFarmRankingData.scores[srcSlot];
+
+    clearFarmRankingSlot(srcSlot);
+
 }

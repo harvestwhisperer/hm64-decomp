@@ -25,26 +25,24 @@ typedef struct {
 } OverlayScreenTable;
 
 typedef union {
-    u16 unk_3[3];
-    u8 strings[1][6];
-} OverlayScreenStringsUnion;
+    u16 displayOddsBottom[3];
+    u8 racerNameLookup[1][6];
+} RacerOddsUnion;
 
 // 0x801C3DA0
 typedef struct {
-    u16 unk_0[3];
-    OverlayScreenStringsUnion unk_6;
-    u8 gameVariableStrings[6][6]; // game variable strings 0x2A-0x2F, 0x801C3DAC
-    u8 strings2[3][6];
-    u8 strings3[3][6];
-    u8 unk_54[6][3];
-    u8 gameVariableStringsIndices[6]; // 0x801C3E06
-    u8 unk_6C;
-    u8 unk_6D; // set from random number
-    u8 unk_6E; // set from random number
-    u8 unk_6F[3];
-} OverlayScreenStrings;
-
-
+    u16 displayOddsTop[3];
+    RacerOddsUnion oddsAndNames;
+    u8 racerNames[6][6]; // game variable strings 0x2A-0x2F, 0x801C3DAC
+    u8 playerBets[3][6];
+    u8 racerOdds[3][6];
+    u8 racerNameIndices[6][3];
+    u8 finishOrder[6]; // 0x801C3E06
+    u8 currentRaceIndex;
+    u8 playerRaceNumber;
+    u8 unk_6E; // race index
+    u8 betPlacedFlags[3];
+} RacingContext;
 
 extern void closeOverlayScreen(void);
 extern void loadTVCButtonIcons(void);
@@ -65,9 +63,9 @@ extern void fadeInFarmRankingScreen(void);
 extern void fadeOutFarmRankingScreen(void);
 extern void setFarmRankingScreenFullAlpha(void);
 extern void setFarmRankingCursorPosition(u8 arg0);
-extern void func_800CB0C4(void);
-extern void func_800CB8F0(void);
-extern void func_800CC17C(void); 
+extern void updateHorseRaceContext(void);
+extern void updateDogRaceContext(void);
+extern void initializeRaceContext(void); 
 extern bool func_800CE714(bool);
 extern bool func_800CE828(bool); 
 
@@ -115,6 +113,6 @@ extern u8 D_80237420[31];
 extern u32 D_80205204;
 
 extern OverlayScreenTable overlayScreenTable;
-extern OverlayScreenStrings overlayScreenStrings;
+extern RacingContext gRacingContext;
 
 #endif

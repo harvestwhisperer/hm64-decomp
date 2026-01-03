@@ -419,9 +419,9 @@ void clearForagableObjects(u8 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800D9BFC);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", setDefaultGroundObjectsForLevel);
 
-void func_800D9BFC(void) {
+void setDefaultGroundObjectsForLevel(void) {
 
     u8 i, j;
 
@@ -451,6 +451,7 @@ void func_800D9BFC(void) {
                 mountain1FieldTiles[17][13] = EDIBLE_HERB_FIELD;
                 mountain1FieldTiles[14][15] = VERYBERRY_FRUIT_FIELD;
                 mountain1FieldTiles[12][10] = MOONDROP_PLANT_FIELD;
+                
                 mountain1FieldTiles[2][16] = STUMP;
                 mountain1FieldTiles[2][17] = 0xC9;
                 mountain1FieldTiles[3][16] = 0xCA;
@@ -461,10 +462,12 @@ void func_800D9BFC(void) {
                 mountain2FieldTiles[23][5] = WEED;
                 mountain2FieldTiles[16][1] = VERYBERRY_FRUIT_FIELD;
                 mountain2FieldTiles[23][6] = MOONDROP_PLANT_FIELD;
+
                 mountain2FieldTiles[20][8] = STUMP;
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
                 mountain2FieldTiles[21][9] = 0xCB;
+
                 mountain2FieldTiles[9][6] = STUMP;
                 mountain2FieldTiles[9][7] = 0xC9;
                 mountain2FieldTiles[10][6] = 0xCA;
@@ -477,14 +480,17 @@ void func_800D9BFC(void) {
                     topOfMountain1FieldTiles[3][7] = WEED;
                     topOfMountain1FieldTiles[9][16] = VERYBERRY_FRUIT_FIELD;
                     topOfMountain1FieldTiles[3][14] = MOONDROP_PLANT_FIELD;
+
                     topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
                     topOfMountain1FieldTiles[5][7] = 0xCB;
+
                     topOfMountain1FieldTiles[7][7] = STUMP;
                     topOfMountain1FieldTiles[7][8] = 0xC9;
                     topOfMountain1FieldTiles[8][7] = 0xCA;
                     topOfMountain1FieldTiles[8][8] = 0xCB;
+
                     topOfMountain1FieldTiles[5][10] = STUMP;
                     topOfMountain1FieldTiles[5][11] = 0xC9;
                     topOfMountain1FieldTiles[6][10] = 0xCA;
@@ -510,6 +516,7 @@ void func_800D9BFC(void) {
                 pondFieldTiles[8][6] = MOONDROP_PLANT_FIELD;
                 pondFieldTiles[3][4] = MOONDROP_PLANT_FIELD;
                 pondFieldTiles[2][1] = MOONDROP_PLANT_FIELD;
+
                 pondFieldTiles[4][12] = STUMP;
                 pondFieldTiles[4][13] = 0xC9;
                 pondFieldTiles[5][12] = 0xCA;
@@ -530,12 +537,14 @@ void func_800D9BFC(void) {
         case SUMMER:
 
             if (gBaseMapIndex != MOUNTAIN_1) {
+
                 mountain1FieldTiles[22][12] = WEED;
                 mountain1FieldTiles[20][13] = WEED;
                 mountain1FieldTiles[22][4] = WEED;
                 mountain1FieldTiles[17][13] = EDIBLE_HERB_FIELD;
                 mountain1FieldTiles[12][10] = MOONDROP_PLANT_FIELD;
                 mountain1FieldTiles[16][0] = WALNUT_FIELD;
+
                 mountain1FieldTiles[2][16] = STUMP;
                 mountain1FieldTiles[2][17] = 0xC9;
                 mountain1FieldTiles[3][16] = 0xCA;
@@ -543,17 +552,21 @@ void func_800D9BFC(void) {
             }
 
             if (gBaseMapIndex != MOUNTAIN_2) {
+
                 mountain2FieldTiles[23][5] = WEED;
                 mountain2FieldTiles[23][6] = MOONDROP_PLANT_FIELD;
                 mountain2FieldTiles[12][13] = WALNUT_FIELD;
+
                 mountain2FieldTiles[20][8] = STUMP;
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
                 mountain2FieldTiles[21][9] = 0xCB;
+
                 mountain2FieldTiles[11][7] = 0xCB;
                 mountain2FieldTiles[10][6] = STUMP;
                 mountain2FieldTiles[10][7] = 0xC9;
                 mountain2FieldTiles[11][6] = 0xCA;
+
                 mountain2FieldTiles[7][2] = TROPICAL_FRUIT_FIELD;
             }
 
@@ -561,18 +574,22 @@ void func_800D9BFC(void) {
                 if (!(checkLifeEventBit(HOT_SPRINGS_COMPLETED)) && gYear == 1 && ((gSeason < WINTER) || (gSeason == WINTER && gDayOfMonth < 12))) {
                     topOfMountain1FieldTiles[3][7] = WEED;
                     topOfMountain1FieldTiles[3][14] = MOONDROP_PLANT_FIELD;
+
                     topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
                     topOfMountain1FieldTiles[5][7] = 0xCB;
+
                     topOfMountain1FieldTiles[7][7] = STUMP;
                     topOfMountain1FieldTiles[7][8] = 0xC9;
                     topOfMountain1FieldTiles[8][7] = 0xCA;
                     topOfMountain1FieldTiles[8][8] = 0xCB;
+
                     topOfMountain1FieldTiles[5][10] = STUMP;
                     topOfMountain1FieldTiles[5][11] = 0xC9;
                     topOfMountain1FieldTiles[6][10] = 0xCA;
                     topOfMountain1FieldTiles[6][11] = 0xCB;
+
                     topOfMountain1FieldTiles[3][15] = TROPICAL_FRUIT_FIELD;
                 }
             }
@@ -593,6 +610,7 @@ void func_800D9BFC(void) {
                 pondFieldTiles[8][6] = MOONDROP_PLANT_FIELD;
                 pondFieldTiles[3][4] = MOONDROP_PLANT_FIELD;
                 pondFieldTiles[2][1] = MOONDROP_PLANT_FIELD;
+
                 pondFieldTiles[4][12] = STUMP;
                 pondFieldTiles[4][13] = 0xC9;
                 pondFieldTiles[5][12] = 0xCA;
@@ -618,6 +636,7 @@ void func_800D9BFC(void) {
                 mountain1FieldTiles[22][4] = WEED;
                 mountain1FieldTiles[17][13] = EDIBLE_HERB_FIELD;
                 mountain1FieldTiles[21][14] = MUSHROOM_FIELD;
+
                 mountain1FieldTiles[2][16] = STUMP;
                 mountain1FieldTiles[2][17] = 0xC9;
                 mountain1FieldTiles[3][16] = 0xCA;
@@ -627,14 +646,17 @@ void func_800D9BFC(void) {
             if (gBaseMapIndex != MOUNTAIN_2) {
                 mountain2FieldTiles[23][5] = WEED;
                 mountain2FieldTiles[23][12] = MUSHROOM_FIELD;
+
                 mountain2FieldTiles[20][8] = STUMP;
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
                 mountain2FieldTiles[21][9] = 0xCB;
+
                 mountain2FieldTiles[9][6] = STUMP;
                 mountain2FieldTiles[9][7] = 0xC9;
                 mountain2FieldTiles[10][6] = 0xCA;
                 mountain2FieldTiles[10][7] = 0xCB;
+
                 mountain2FieldTiles[15][2] = POISONOUS_MUSHROOM_FIELD;
                 mountain2FieldTiles[10][2] = WILD_GRAPES_FIELD;
             }
@@ -643,18 +665,22 @@ void func_800D9BFC(void) {
                 if (!(checkLifeEventBit(HOT_SPRINGS_COMPLETED)) && gYear == 1 && ((gSeason < 4) || (gSeason == 4 && gDayOfMonth < 12))) {
                     topOfMountain1FieldTiles[3][7] = WEED;
                     topOfMountain1FieldTiles[3][3] = MUSHROOM_FIELD;
+
                     topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
                     topOfMountain1FieldTiles[5][7] = 0xCB;
+
                     topOfMountain1FieldTiles[7][7] = STUMP;
                     topOfMountain1FieldTiles[7][8] = 0xC9;
                     topOfMountain1FieldTiles[8][7] = 0xCA;
                     topOfMountain1FieldTiles[8][8] = 0xCB;
+
                     topOfMountain1FieldTiles[5][10] = STUMP;
                     topOfMountain1FieldTiles[5][11] = 0xC9;
                     topOfMountain1FieldTiles[6][10] = 0xCA;
                     topOfMountain1FieldTiles[6][11] = 0xCB;
+
                     topOfMountain1FieldTiles[6][15] = WILD_GRAPES_FIELD;
                 }
             }
@@ -676,6 +702,7 @@ void func_800D9BFC(void) {
                 
                 pondFieldTiles[3][5] = MEDICINAL_HERB_FIELD;
                 pondFieldTiles[5][1] = MUSHROOM_FIELD;
+
                 pondFieldTiles[4][12] = STUMP;
                 pondFieldTiles[4][13] = 0xC9;
                 pondFieldTiles[5][12] = 0xCA;
@@ -699,6 +726,7 @@ void func_800D9BFC(void) {
                 mountain2FieldTiles[20][9] = 0xC9;
                 mountain2FieldTiles[21][8] = 0xCA;
                 mountain2FieldTiles[21][9] = 0xCB;
+
                 mountain2FieldTiles[9][6] = STUMP;
                 mountain2FieldTiles[9][7] = 0xC9;
                 mountain2FieldTiles[10][6] = 0xCA;
@@ -707,14 +735,17 @@ void func_800D9BFC(void) {
 
             if (gBaseMapIndex != TOP_OF_MOUNTAIN_1) {
                 if (!(checkLifeEventBit(HOT_SPRINGS_COMPLETED)) && gYear == 1 && ((gSeason < 4U) || (gSeason == 4 && gDayOfMonth < 12))) {
+
                     topOfMountain1FieldTiles[4][6] = STUMP;
                     topOfMountain1FieldTiles[4][7] = 0xC9;
                     topOfMountain1FieldTiles[5][6] = 0xCA;
                     topOfMountain1FieldTiles[5][7] = 0xCB;
+
                     topOfMountain1FieldTiles[7][7] = STUMP;
                     topOfMountain1FieldTiles[7][8] = 0xC9;
                     topOfMountain1FieldTiles[8][7] = 0xCA;
                     topOfMountain1FieldTiles[8][8] = 0xCB;
+
                     topOfMountain1FieldTiles[5][10] = STUMP;
                     topOfMountain1FieldTiles[5][11] = 0xC9;
                     topOfMountain1FieldTiles[6][10] = 0xCA;
@@ -753,10 +784,10 @@ u8 getGroundObjectMapAdditionIndex(u8 index) {
     
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DA8E8);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectSpriteIndex);
 
 // unused
-u8 func_800DA8E8(u8 index) {
+u8 getGroundObjectSpriteIndex(u8 index) {
 
     u8 result;
 
@@ -1184,38 +1215,39 @@ u8 getGroundObjectIndexFromCoordinates(f32 x, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DB424);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", updateFieldObjectsOvernight);
 
-void func_800DB424(void) {
+void updateFieldObjectsOvernight(void) {
 
     u8 i, j;
     u8 flags;
-    u8 temp;
+    u8 currentGroundObject;
     
+    // farm
     for (i = 0; i < FIELD_HEIGHT; i++) {
         
         for (j = 0; j < FIELD_WIDTH; j++) {
 
-            temp = farmFieldTiles[i][j];
+            currentGroundObject = farmFieldTiles[i][j];
 
-            if (temp) {
+            if (currentGroundObject) {
                 
-                if (temp < MAX_FIELD_OBJECTS) {
-                    flags = groundObjectsInfo[temp].playerInteractionFlags;
+                if (currentGroundObject < MAX_FIELD_OBJECTS) {
+                    flags = groundObjectsInfo[currentGroundObject].playerInteractionFlags;
                 } else {
                     flags = 0;
                 }
         
                 if (flags & 1) {
-                    temp++;
+                    currentGroundObject++;
                 }
                 
                 if (flags & 2) {
-                    temp--;
+                    currentGroundObject--;
                 }
                 
                 if (flags & 4) {
-                    temp -= 7;
+                    currentGroundObject -= 7;
                 }
     
                 if (gDayOfMonth == 1) {
@@ -1224,22 +1256,22 @@ void func_800DB424(void) {
     
                         case SPRING:
 
-                            switch (temp) {
+                            switch (currentGroundObject) {
     
                                 case GRASS_PLANTED_STAGE_1 ... GRASS_RIPE:
-                                    temp = GRASS_CUT;
+                                    currentGroundObject = GRASS_CUT;
                                     break;
                                 
                                 case TILLED ... TILLED_WATERED:
                                     
                                     if (getRandomNumberInRange(0, 5) >= 3) {
-                                        temp = BASE_TILE;
+                                        currentGroundObject = BASE_TILE;
                                     }
                                     
                                     break;
 
                                 case 0xD7 ... 0xD8:
-                                    temp = TILLED;
+                                    currentGroundObject = TILLED;
                                     break;
                                     
                             }
@@ -1248,23 +1280,23 @@ void func_800DB424(void) {
                         
                         case SUMMER:
                         
-                            switch (temp) {
+                            switch (currentGroundObject) {
     
                                 case TURNIP_PLANTED_STAGE_1 ... TURNIP_PLANTED_STAGE_2_WATERED:
                                 case CABBAGE_PLANTED_STAGE_1 ... CABBAGE_PLANTED_STAGE_3_WATERED:
                                 case POTATO_PLANTED_STAGE_1 ... POTATO_PLANTED_STAGE_3_WATERED:
                                 case 0xD7 ... 0xD8:
-                                    temp = TILLED;
+                                    currentGroundObject = TILLED;
                                     break;
                                 
                                 case TURNIP_SPROUT_STAGE_1 ... TURNIP_RIPE_WATERED:
-                                    temp = TURNIP_DEAD;
+                                    currentGroundObject = TURNIP_DEAD;
                                     break;
                                 case POTATO_SPROUT_STAGE_1 ... POTATO_RIPE_WATERED:
-                                    temp = POTATO_DEAD;
+                                    currentGroundObject = POTATO_DEAD;
                                     break;
                                 case CABBAGE_SPROUT_STAGE_1 ... CABBAGE_RIPE_WATERED:
-                                    temp = CABBAGE_DEAD;
+                                    currentGroundObject = CABBAGE_DEAD;
                                     break;
                                 
                             }
@@ -1273,7 +1305,7 @@ void func_800DB424(void) {
                         
                         case AUTUMN:
     
-                            switch (temp) {
+                            switch (currentGroundObject) {
 
                                 case TURNIP_PLANTED_STAGE_1 ... TURNIP_PLANTED_STAGE_2_WATERED:
                                 case CABBAGE_PLANTED_STAGE_1 ... CABBAGE_PLANTED_STAGE_3_WATERED:
@@ -1283,23 +1315,23 @@ void func_800DB424(void) {
                                 case MOONDROP_PLANTED_STAGE_1 ... MOONDROP_PLANTED_STAGE_2_WATERED:
                                 case PINK_CAT_MINT_PLANTED_STAGE_1 ... PINK_CAT_MINT_PLANTED_STAGE_3_WATERED:
                                 case 0xD7 ... 0xD8:
-                                    temp = TILLED;
+                                    currentGroundObject = TILLED;
                                     break;
                                 
                                 case TOMATO_SPROUT_STAGE_1 ... TOMATO_RIPE_WATERED:
-                                    temp = TOMATO_DEAD;
+                                    currentGroundObject = TOMATO_DEAD;
                                     break;
                                 
                                 case CORN_SPROUT_STAGE_1 ... CORN_RIPE_WATERED:
-                                    temp = CORN_DEAD;
+                                    currentGroundObject = CORN_DEAD;
                                     break;
 
                                 case MOONDROP_SPROUT_STAGE_1 ... MOONDROP_RIPE_WATERED:
-                                    temp = MOONDROP_DEAD;
+                                    currentGroundObject = MOONDROP_DEAD;
                                     break;
                                 
                                 case PINK_CAT_MINT_SPROUT_STAGE_1 ... PINK_CAT_MINT_RIPE_WATERED:
-                                    temp = PINK_CAT_MINT_DEAD;
+                                    currentGroundObject = PINK_CAT_MINT_DEAD;
                                     break;
                                     
                                 
@@ -1309,7 +1341,7 @@ void func_800DB424(void) {
                         
                         case WINTER:
 
-                            switch (temp) {
+                            switch (currentGroundObject) {
 
                                 case TILLED:
                                 case WEED:
@@ -1325,7 +1357,7 @@ void func_800DB424(void) {
                                 case MOONDROP_DEAD ... PINK_CAT_MINT_PLANTED_STAGE_3_WATERED:
                                 case PINK_CAT_MINT_DEAD:
                                 case 0xD7 ... 0xD8:
-                                    temp = BASE_TILE;
+                                    currentGroundObject = BASE_TILE;
                                     break;
                                 
                             }
@@ -1337,7 +1369,7 @@ void func_800DB424(void) {
                     
                 }
                 
-                farmFieldTiles[i][j] = temp;
+                farmFieldTiles[i][j] = currentGroundObject;
                 
             }
             
@@ -1345,11 +1377,12 @@ void func_800DB424(void) {
         
     }
 
+    // greenhouse
     for (i = 0; i < FIELD_HEIGHT; i++) {
      
         for (j = 0; j < FIELD_WIDTH; j++) {
 
-            temp = greenhouseFieldTiles[i][j];
+            currentGroundObject = greenhouseFieldTiles[i][j];
             
             if (greenhouseFieldTiles[i][j]) {
                 
@@ -1360,16 +1393,16 @@ void func_800DB424(void) {
                 }
 
                 if (flags & 1) {
-                    temp++;
+                    currentGroundObject++;
                 }
                 if (flags & 2) {
-                    temp--;
+                    currentGroundObject--;
                 } 
                 if (flags & 4) {
-                    temp -= 7;
+                    currentGroundObject -= 7;
                 }
 
-                 greenhouseFieldTiles[i][j] = temp;
+                 greenhouseFieldTiles[i][j] = currentGroundObject;
                 
             }
             
@@ -1377,6 +1410,7 @@ void func_800DB424(void) {
         
     }
 
+    // blue mist flower plot at pond 
     if (blueMistFlowerPlot) {
         
         if (gSeason < AUTUMN) {
@@ -1656,10 +1690,10 @@ label:
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DBE8C);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", randomlyResetGreenhouseTiles);
 
-// update greenhouse field after typhoon
-void func_800DBE8C(u8 randomRange) {
+// update greenhouse field after earthquake
+void randomlyResetGreenhouseTiles(u8 randomRange) {
      
     u8 i;
     u8 j;
@@ -1688,7 +1722,7 @@ void func_800DBE8C(u8 randomRange) {
 
 // alternate
 /*
-void func_800DBE8C(u8 arg0) {
+void randomlyResetGreenhouseTiles(u8 arg0) {
     
     u8 i;
     u8 j;
@@ -1786,9 +1820,9 @@ u16 getFarmGrassTilesSum(void) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DC008);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getFarmMoondropFlowerCount);
 
-u16 func_800DC008(void) {
+u16 getFarmMoondropFlowerCount(void) {
     
     u8 i;
     u8 j;
@@ -1817,7 +1851,7 @@ u16 func_800DC008(void) {
 
 // alternate
 /*
-u16 func_800DC008(void) {
+u16 getFarmMoondropFlowerCount(void) {
     
     u8 i;
     u8 j;
@@ -1845,9 +1879,9 @@ u16 func_800DC008(void) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DC080);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGreenhouseMoondropFlowerCount);
 
-u16 func_800DC080(void) {
+u16 getGreenhouseMoondropFlowerCount(void) {
 
     u8 i;
     u8 j;
@@ -1876,7 +1910,7 @@ u16 func_800DC080(void) {
 
 // alternate
 /*
-u16 func_800DC080(void) {
+u16 getGreenhouseMoondropFlowerCount(void) {
 
     u8 i;
     u8 j;
@@ -1904,9 +1938,9 @@ u16 func_800DC080(void) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getFarmPinkCatMintFlowersTilesSum);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getFarmPinkCatMintFlowersCount);
 
-u16 getFarmPinkCatMintFlowersTilesSum(void) {
+u16 getFarmPinkCatMintFlowersCount(void) {
 
     u8 i, j;
     u16 count = 0;
@@ -1926,9 +1960,9 @@ u16 getFarmPinkCatMintFlowersTilesSum(void) {
     return count;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGreenhousePinkCatMintFlowersTilesSum);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGreenhousePinkCatMintFlowersCount);
 
-u16 getGreenhousePinkCatMintFlowersTilesSum(void) {
+u16 getGreenhousePinkCatMintFlowersCount(void) {
 
     u8 i, j;
     u16 count = 0;
@@ -1948,9 +1982,9 @@ u16 getGreenhousePinkCatMintFlowersTilesSum(void) {
     return count;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", func_800DC1E8);
+//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", removePinkCatMintFlowerFromFarm);
 
-void func_800DC1E8(void) {
+void removePinkCatMintFlowerFromFarm(void) {
 
     u8 i;
     u8 j;
@@ -1966,7 +2000,7 @@ void func_800DC1E8(void) {
 
                 case PINK_CAT_MINT_RIPE ... PINK_CAT_MINT_RIPE_WATERED:
                     if (!found) {
-                        addGroundObjectToMap(FARM, 2, j, i);
+                        addGroundObjectToMap(FARM, TILLED, j, i);
                         found = TRUE;
                     }
                     break;

@@ -29,15 +29,20 @@
 #define WATERING_CAN_SFX 23
 #define SILVER_WATERING_CAN_SFX 24
 #define GOLDEN_WATERING_CAN_SFX 25
+// hoe
 #define SEEDS_SFX 29
 #define MILKER_SFX 30
-#define RAIN_SFX 32
-#define TYPHOON_SFX 34
+#define BRUSH_SFX 31
+#define BELL_SFX 32
+#define SHIMMER_SFX 35
 #define PICKING_UP_SFX 36
+#define PUTTING_DOWN_SFX 37
 #define FISHING_ROD_CAST 40
 #define TV_OFF_SFX 47
 #define DOOR_OPEN_SFX 50
+#define HORSE_NEIGH 56
 // 0x3F set by loadLevel
+#define DOG_BARK 59
 #define ROOSTER 63
 #define CHICKEN_CLUCK 64
 #define BIRD_CHIRP 66
@@ -46,5 +51,8 @@
 #define DIALOGUE_BEEP 87
 #define RUMBLE 89
 #define TOOL_ACQUISITION_FANFARE 90
+
+#define RAIN_SFX 32
+#define TYPHOON_SFX 34
 
 #endif

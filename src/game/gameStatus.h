@@ -207,9 +207,9 @@ extern void handleWifeMorningHelp(void);
 extern u8 readMail(void);
 extern u8 getAcquiredRecipesTotal(void);
 extern void func_800657BC(void);
-extern void func_80064114(void);
-extern void func_800644B0(void);     
-extern void func_80064814(void);     
+extern void updateFarmStatusRain(void);
+extern void updateFarmStatusSnow(void);     
+extern void updateFarmStatusTyphoon(void);     
 extern s32 getSumNpcAffection(void);
 
 extern void func_800657B4();

@@ -757,15 +757,15 @@ beginseg
 endseg
 
 beginseg
-    name "text64Text"
+    name "farmVisitsText"
     flags RAW
-    include "build/bin/text/text64Text.bin.o"
+    include "build/bin/text/farmVisitsText.bin.o"
 endseg
 
 beginseg
-    name "text64TextIndex"
+    name "farmVisitsTextIndex"
     flags RAW
-    include "build/bin/text/text64TextIndex.bin.o"
+    include "build/bin/text/farmVisitsTextIndex.bin.o"
 endseg
 
 beginseg

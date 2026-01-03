@@ -56,12 +56,12 @@ extern void showPinkOverlayText(u8);
 extern void showTextBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4);
 extern void showMessageBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4);
 extern void setLevelLighting(s16 arg0, u16 arg1);
-extern void func_8005C940(u16, u16 callbackIndex); 
+extern void handleExitLevel(u16, u16 callbackIndex); 
 extern void loadOverlayScreen(u16, u16);   
 extern void func_8005CDCC(); 
 extern u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 playerZ);
 extern void clearHeldItemsAtEndOfDay(void);
-extern bool func_80061178(void);
+extern bool checkBacheloretteReadyForMarriage(void);
 extern void func_80061690(u8);
 extern u8 handlePurchaseHouseExtension(u8);  
 extern u16 func_80063A2C(u8);
@@ -130,7 +130,7 @@ extern u16 D_801886D2;
 extern u8 gFarmName[6];
 extern u8 gWifeName[6];
 extern u8 gBabyName[6];
-extern u8 harvestKingName[6];
+extern u8 gHarvestKingName[6];
 
 extern u8 gHappiness;
 
@@ -162,7 +162,7 @@ extern u8 anniversaryDate;
 
 extern u8 gHouseExtensionSelection;
 
-extern Vec4f unknownRGBA;
+extern Vec4f previousLightingRGBA;
 
 extern u8 gSumGirlsWithHighAffection;
 extern u8 gAverageFarmAnimalAffection;
@@ -199,10 +199,10 @@ static inline void resetGlobalLighting() {
     globalLightingRGBA.a = 0;
 
     // dialogue icon struct
-    unknownRGBA.r = 0;
-    unknownRGBA.g = 0;
-    unknownRGBA.b = 0;
-    unknownRGBA.a = 0;
+    previousLightingRGBA.r = 0;
+    previousLightingRGBA.g = 0;
+    previousLightingRGBA.b = 0;
+    previousLightingRGBA.a = 0;
 
 }
 

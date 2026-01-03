@@ -95,11 +95,9 @@ void handleWifeMorningHelp(void) {
 
             if (!getRandomNumberInRange(0,  (5 - npcAffection[MARIA] / 50))) {
                 if (temp) {
-                    // weeding
-                    func_80063D38();
+                    handleWifeHelpsWeeding();
                 } else {
-                    // eggs
-                    func_80063E18();
+                    handleWifeCratesEggs();
                 }
             } 
             break;
@@ -108,9 +106,9 @@ void handleWifeMorningHelp(void) {
 
             if (!getRandomNumberInRange(0,  (5 - npcAffection[POPURI] / 50))) {
                 if (temp) {
-                    func_80063F3C();
+                    handleWifeHelpsWatering();
                 } else {
-                    func_80063E18();
+                    handleWifeCratesEggs();
                 }
             } 
             break;
@@ -119,9 +117,9 @@ void handleWifeMorningHelp(void) {
 
             if (!getRandomNumberInRange(0,  (5 - npcAffection[ELLI] / 50))) {
                 if (temp) {
-                    func_80064048();
+                    handleWifeFeedsChickens();
                 } else {
-                    func_80063E18();
+                    handleWifeCratesEggs();
                 }
             } 
             break;       
@@ -130,10 +128,10 @@ void handleWifeMorningHelp(void) {
 
             if (!getRandomNumberInRange(0,  (5 - npcAffection[ANN] / 50))) {
                 if (temp) {
-                    func_80064048();
+                    handleWifeFeedsChickens();
                     break;
                 } else {
-                    func_80063E18();
+                    handleWifeCratesEggs();
                 }
             } 
             break;
@@ -142,7 +140,7 @@ void handleWifeMorningHelp(void) {
 
             if (!getRandomNumberInRange(0,  (5 - npcAffection[KAREN] / 50))) {
                 if (temp) {
-                    func_80063E18();
+                    handleWifeCratesEggs();
                 }
             } 
             break;
@@ -153,10 +151,9 @@ void handleWifeMorningHelp(void) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80063D38);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", handleWifeHelpsWeeding);
 
-// wife helps with weeding
-void func_80063D38(void) {
+void handleWifeHelpsWeeding(void) {
     
     u8 i;
     u8 j;
@@ -175,10 +172,9 @@ void func_80063D38(void) {
     }
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80063E18);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", handleWifeCratesEggs);
 
-// wife crates eggs
-void func_80063E18(void) {
+void handleWifeCratesEggs(void) {
 
     u8 i = 0;
  
@@ -195,11 +191,12 @@ void func_80063E18(void) {
             
         }
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80063F3C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", handleWifeHelpsWatering);
 
-void func_80063F3C(void) {
+void handleWifeHelpsWatering(void) {
 
     u8 i, j;
     u8 temp;
@@ -209,26 +206,28 @@ void func_80063F3C(void) {
         for (i = 0; i < FIELD_HEIGHT; i++) {
             for (j = 0; j < FIELD_WIDTH; j++) {
                 temp = farmFieldTiles[i][j];
-                if (farmFieldTiles[i][j] && getGroundObjectToolInteractionFlags(temp) & 0x10 && !(getRandomNumberInRange(0, 3))) {
+                if (farmFieldTiles[i][j] && (getGroundObjectToolInteractionFlags(temp) & GROUND_OBJECT_WATERABLE) && !(getRandomNumberInRange(0, 3))) {
                     setSpecialDialogueBit(0x89);
                     temp++;
                     setFieldTile(FARM, temp, j, i);
                 }
             }
         }   
+
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064048);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", handleWifeFeedsChickens);
 
-void func_80064048(void) {
+void handleWifeFeedsChickens(void) {
 
     u8 i;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
         if ((gChickens[i].flags & 1) && gChickens[i].type == 2 && gChickens[i].location == COOP) {
             setSpecialDialogueBit(0x86);
-            gChickens[i].flags |= 0x10;
+            gChickens[i].flags |= CHICKEN_FED;
         }
     }
     
@@ -281,10 +280,9 @@ static inline int adjustValue4(int initial, int value, int max) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064114);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", updateFarmStatusRain);
 
-// rain
-void func_80064114(void) {
+void updateFarmStatusRain(void) {
 
     u8 i;
 
@@ -299,11 +297,11 @@ void func_80064114(void) {
             switch (gFarmAnimals[i].type) {
 
                 case BABY_COW:
-                    func_80086458(i, -20);
+                    adjustFarmAnimalAffection(i, -20);
                     break;
                 
                 case CALF:
-                    func_80086458(i, -20);
+                    adjustFarmAnimalAffection(i, -20);
                     break;
                 
                 case ADULT_COW:
@@ -316,8 +314,8 @@ void func_80064114(void) {
 
                             if (!getRandomNumberInRange(0, 3)) {
                                 
-                                func_800861A4(2, i, 0xFF, COW_MAD, 0);
-                                func_80086458(i, -20);
+                                setAnimalState(2, i, 0xFF, COW_MAD, 0);
+                                adjustFarmAnimalAffection(i, -20);
 
                                 // FIXME: should just be += adjustValue(gHappiness, -5, MAX_HAPPINESS)
                                 gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
@@ -326,8 +324,8 @@ void func_80064114(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                                 
-                                func_800861A4(2, i, 0xFF, COW_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, COW_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                         
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -336,7 +334,7 @@ void func_80064114(void) {
                             break;
                                                 
                         case COW_SICK:
-                            func_80086458(i, -20);
+                            adjustFarmAnimalAffection(i, -20);
                             break;
 
                         default:
@@ -347,11 +345,11 @@ void func_80064114(void) {
                     break;
                 
                 case PREGNANT_COW:
-                    func_80086458(i, -20);
+                    adjustFarmAnimalAffection(i, -20);
                     break;
                 
                 case BABY_SHEEP:
-                    func_80086458(i, -20);
+                    adjustFarmAnimalAffection(i, -20);
                     break;
                 
                 case ADULT_SHEEP:
@@ -362,8 +360,8 @@ void func_80064114(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                             
-                                func_800861A4(2, i, 0xFF, SHEEP_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -372,7 +370,7 @@ void func_80064114(void) {
                             break;
 
                         case SHEEP_SICK:
-                            func_80086458(i, -20);
+                            adjustFarmAnimalAffection(i, -20);
                             break;
                             
                     }
@@ -387,8 +385,8 @@ void func_80064114(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                                     
-                                func_800861A4(2, i, 0xFF, SHEEP_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -397,7 +395,7 @@ void func_80064114(void) {
                             break;
 
                         case SHEEP_SICK:
-                            func_80086458(i, -20);
+                            adjustFarmAnimalAffection(i, -20);
                             break;
                         
                     }
@@ -423,7 +421,7 @@ void func_80064114(void) {
                     break;
                 case ADULT_CHICKEN:
                     if (gChickens[i].condition == CHICKEN_NORMAL) {
-                        func_800861A4(1, i, 0xFF, CHICKEN_STARVED, 0);
+                        setAnimalState(1, i, 0xFF, CHICKEN_STARVED, 0);
                     }
                 case CHICKEN_EGG:
                     break;
@@ -436,10 +434,10 @@ void func_80064114(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_800644B0);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", updateFarmStatusSnow);
 
 // snow
-void func_800644B0(void) {
+void updateFarmStatusSnow(void) {
     
     u8 i;
 
@@ -452,11 +450,11 @@ void func_800644B0(void) {
             switch (gFarmAnimals[i].type) {
 
                 case BABY_COW:
-                    func_80086458(i, -20);
+                    adjustFarmAnimalAffection(i, -20);
                     break;
                 
                 case CALF:
-                    func_80086458(i, -20);
+                    adjustFarmAnimalAffection(i, -20);
                     break;
                 
                 case ADULT_COW:
@@ -469,8 +467,8 @@ void func_800644B0(void) {
 
                             if (!getRandomNumberInRange(0, 1)) {
                                 
-                                func_800861A4(2, i, 0xFF, COW_MAD, 0);
-                                func_80086458(i, -20);
+                                setAnimalState(2, i, 0xFF, COW_MAD, 0);
+                                adjustFarmAnimalAffection(i, -20);
 
                                 gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
                                 
@@ -478,8 +476,8 @@ void func_800644B0(void) {
                             
                             if (!getRandomNumberInRange(0, 3)) {
                                 
-                                func_800861A4(2, i, 0xFF, COW_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, COW_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                         
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -488,7 +486,7 @@ void func_800644B0(void) {
                             break;
                                                 
                         case COW_SICK:
-                            func_80086458(i, -20);
+                            adjustFarmAnimalAffection(i, -20);
                             break;
 
                         default:
@@ -499,11 +497,11 @@ void func_800644B0(void) {
                     break;
                 
                 case PREGNANT_COW:
-                    func_80086458(i, -20);
+                    adjustFarmAnimalAffection(i, -20);
                     break;
                 
                 case BABY_SHEEP:
-                    func_80086458(i, -20);
+                    adjustFarmAnimalAffection(i, -20);
                     break;
                 
                 case ADULT_SHEEP:
@@ -514,8 +512,8 @@ void func_800644B0(void) {
                             
                             if (!getRandomNumberInRange(0, 3)) {
                             
-                                func_800861A4(2, i, 0xFF, SHEEP_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -524,7 +522,7 @@ void func_800644B0(void) {
                             break;
 
                         case SHEEP_SICK:
-                            func_80086458(i, -20);
+                            adjustFarmAnimalAffection(i, -20);
                             break;
                             
                     }
@@ -539,8 +537,8 @@ void func_800644B0(void) {
                             
                             if (!getRandomNumberInRange(0, 3)) {
                                     
-                                func_800861A4(2, i, 0xFF, SHEEP_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -549,7 +547,7 @@ void func_800644B0(void) {
                             break;
 
                         case SHEEP_SICK:
-                            func_80086458(i, -20);
+                            adjustFarmAnimalAffection(i, -20);
                             break;
                         
                     }
@@ -573,7 +571,7 @@ void func_800644B0(void) {
                     break;
                 case ADULT_CHICKEN:
                     if (gChickens[i].condition == CHICKEN_NORMAL) {
-                        func_800861A4(1, i, 0xFF, CHICKEN_STARVED, 0);
+                        setAnimalState(1, i, 0xFF, CHICKEN_STARVED, 0);
                     }
                 case CHICKEN_EGG:
                     break;
@@ -586,10 +584,9 @@ void func_800644B0(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064814);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", updateFarmStatusTyphoon);
 
-// typhoon
-void func_80064814(void) {
+void updateFarmStatusTyphoon(void) {
 
     u8 i;
 
@@ -618,11 +615,11 @@ void func_80064814(void) {
             switch (gFarmAnimals[i].type) {
 
                 case BABY_COW:
-                    func_80086458(i, -30);
+                    adjustFarmAnimalAffection(i, -30);
                     break;
                 
                 case CALF:
-                    func_80086458(i, -30);
+                    adjustFarmAnimalAffection(i, -30);
                     break;
                 
                 case ADULT_COW:
@@ -635,8 +632,8 @@ void func_80064814(void) {
 
                             if (!getRandomNumberInRange(0, 1)) {
                                 
-                                func_800861A4(2, i, 0xFF, COW_MAD, 0);
-                                func_80086458(i, -20);
+                                setAnimalState(2, i, 0xFF, COW_MAD, 0);
+                                adjustFarmAnimalAffection(i, -20);
 
                                 gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
                                 
@@ -644,8 +641,8 @@ void func_80064814(void) {
                             
                             if (!getRandomNumberInRange(0, 1)) {
                                 
-                                func_800861A4(2, i, 0xFF, COW_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, COW_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                         
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -654,7 +651,7 @@ void func_80064814(void) {
                             break;
                                                 
                         case COW_SICK:
-                            func_80086458(i, -30);
+                            adjustFarmAnimalAffection(i, -30);
                             break;
 
                         default:
@@ -665,11 +662,11 @@ void func_80064814(void) {
                     break;
                 
                 case PREGNANT_COW:
-                    func_80086458(i, -30);
+                    adjustFarmAnimalAffection(i, -30);
                     break;
                 
                 case BABY_SHEEP:
-                    func_80086458(i, -30);
+                    adjustFarmAnimalAffection(i, -30);
                     break;
                 
                 case ADULT_SHEEP:
@@ -680,8 +677,8 @@ void func_80064814(void) {
                             
                             if (!getRandomNumberInRange(0, 1)) {
                             
-                                func_800861A4(2, i, 0xFF, SHEEP_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -690,7 +687,7 @@ void func_80064814(void) {
                             break;
 
                         case SHEEP_SICK:
-                            func_80086458(i, -30);
+                            adjustFarmAnimalAffection(i, -30);
                             break;
                             
                     }
@@ -705,8 +702,8 @@ void func_80064814(void) {
                             
                             if (!getRandomNumberInRange(0, 1)) {
                                     
-                                func_800861A4(2, i, 0xFF, SHEEP_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -715,7 +712,7 @@ void func_80064814(void) {
                             break;
 
                         case SHEEP_SICK:
-                            func_80086458(i, -30);
+                            adjustFarmAnimalAffection(i, -30);
                             break;
                         
                     }
@@ -737,18 +734,18 @@ void func_80064814(void) {
 
                 case CHICK:
 
-                    func_800861A4(1, i, 0xFF, CHICKEN_DEAD, 0xFF);
+                    setAnimalState(1, i, 0xFF, CHICKEN_DEAD, 0xFF);
 
                     gChickens[i].flags = 0;
 
                     setLifeEventBit(ANIMAL_DIED);
                     
-                    deadAnimalName[0] = gChickens[i].name[0];
-                    deadAnimalName[1] = gChickens[i].name[1];
-                    deadAnimalName[2] = gChickens[i].name[2];
-                    deadAnimalName[3] = gChickens[i].name[3];
-                    deadAnimalName[4] = gChickens[i].name[4];
-                    deadAnimalName[5] = gChickens[i].name[5];
+                    gDeadAnimalName[0] = gChickens[i].name[0];
+                    gDeadAnimalName[1] = gChickens[i].name[1];
+                    gDeadAnimalName[2] = gChickens[i].name[2];
+                    gDeadAnimalName[3] = gChickens[i].name[3];
+                    gDeadAnimalName[4] = gChickens[i].name[4];
+                    gDeadAnimalName[5] = gChickens[i].name[5];
 
                     break;
 
@@ -759,18 +756,18 @@ void func_80064814(void) {
                         case CHICKEN_NORMAL:
                         case CHICKEN_STARVED:
                         
-                            func_800861A4(1, i, 0xFF, CHICKEN_DEAD, 0xFF);
+                            setAnimalState(1, i, 0xFF, CHICKEN_DEAD, 0xFF);
         
                             gChickens[i].flags = 0;
         
                             setLifeEventBit(ANIMAL_DIED);
                             
-                            deadAnimalName[0] = gChickens[i].name[0];
-                            deadAnimalName[1] = gChickens[i].name[1];
-                            deadAnimalName[2] = gChickens[i].name[2];
-                            deadAnimalName[3] = gChickens[i].name[3];
-                            deadAnimalName[4] = gChickens[i].name[4];
-                            deadAnimalName[5] = gChickens[i].name[5];
+                            gDeadAnimalName[0] = gChickens[i].name[0];
+                            gDeadAnimalName[1] = gChickens[i].name[1];
+                            gDeadAnimalName[2] = gChickens[i].name[2];
+                            gDeadAnimalName[3] = gChickens[i].name[3];
+                            gDeadAnimalName[4] = gChickens[i].name[4];
+                            gDeadAnimalName[5] = gChickens[i].name[5];
         
                             break;
 
@@ -789,12 +786,13 @@ void func_80064814(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064CF0);
 
+// earthquake
 void func_80064CF0(void) {
     
     u8 i;
 
     randomlyBreakLogPieces(16);
-    func_800DBE8C(8);
+    randomlyResetGreenhouseTiles(8);
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
@@ -803,11 +801,11 @@ void func_80064CF0(void) {
             switch (gFarmAnimals[i].type) {
 
                 case BABY_COW:
-                    func_80086458(i, -10);
+                    adjustFarmAnimalAffection(i, -10);
                     break;
                 
                 case CALF:
-                    func_80086458(i, -10);
+                    adjustFarmAnimalAffection(i, -10);
                     break;
                 
                 case ADULT_COW:
@@ -820,8 +818,8 @@ void func_80064CF0(void) {
 
                             if (!getRandomNumberInRange(0, 3)) {
                                 
-                                func_800861A4(2, i, 0xFF, COW_MAD, 0);
-                                func_80086458(i, -20);
+                                setAnimalState(2, i, 0xFF, COW_MAD, 0);
+                                adjustFarmAnimalAffection(i, -20);
 
                                 gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
                                 
@@ -829,8 +827,8 @@ void func_80064CF0(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                                 
-                                func_800861A4(2, i, 0xFF, COW_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, COW_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                         
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -839,7 +837,7 @@ void func_80064CF0(void) {
                             break;
                                                 
                         case COW_SICK:
-                            func_80086458(i, -10);
+                            adjustFarmAnimalAffection(i, -10);
                             break;
 
                         default:
@@ -850,11 +848,11 @@ void func_80064CF0(void) {
                     break;
                 
                 case PREGNANT_COW:
-                    func_80086458(i, -10);
+                    adjustFarmAnimalAffection(i, -10);
                     break;
                 
                 case BABY_SHEEP:
-                    func_80086458(i, -10);
+                    adjustFarmAnimalAffection(i, -10);
                     break;
                 
                 case ADULT_SHEEP:
@@ -865,8 +863,8 @@ void func_80064CF0(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                             
-                                func_800861A4(2, i, 0xFF, SHEEP_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -875,7 +873,7 @@ void func_80064CF0(void) {
                             break;
 
                         case SHEEP_SICK:
-                            func_80086458(i, -10);
+                            adjustFarmAnimalAffection(i, -10);
                             break;
                             
                     }
@@ -890,8 +888,8 @@ void func_80064CF0(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                                     
-                                func_800861A4(2, i, 0xFF, SHEEP_SICK, 0);
-                                func_80086458(i, -30);
+                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
@@ -900,7 +898,7 @@ void func_80064CF0(void) {
                             break;
 
                         case SHEEP_SICK:
-                            func_80086458(i, -10);
+                            adjustFarmAnimalAffection(i, -10);
                             break;
                         
                     }
@@ -924,7 +922,7 @@ void func_80064CF0(void) {
                     break;
                 case ADULT_CHICKEN:
                     if (gChickens[i].condition == CHICKEN_NORMAL && !getRandomNumberInRange(0, 3)) {
-                        func_800861A4(1, i, 0xFF, CHICKEN_STARVED, 0);
+                        setAnimalState(1, i, 0xFF, CHICKEN_STARVED, 0);
                     }
                     break;
                 case CHICKEN_EGG:

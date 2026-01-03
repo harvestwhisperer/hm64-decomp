@@ -44,20 +44,18 @@ void func_800598E0(void) {
         setDailyEventBit(0x27);
     }
     
-    // set npc location indices
-    func_80075A18();
+    randomizeNPCLocations();
     // animals
-    func_8009BC64();
-    // sets foragable item defaults
-    func_800D9BFC();
+    randomizeMiscAnimalSpawnVariants();
+    setDefaultGroundObjectsForLevel();
     
     handleHouseConstruction(gHouseExtensionSelection);
     
     setSpecialDialogues();
     
     gSumGirlsWithHighAffection = getBacholeretteWithHighestAffection(140);
-    gTotalGrassTiles = func_800DC008() + func_800DC080(); // farm field + greenhouse
-    gTotalPinkCatMintFlowersGrowing = getFarmPinkCatMintFlowersTilesSum() + getGreenhousePinkCatMintFlowersTilesSum();
+    gTotalGrassTiles = getFarmMoondropFlowerCount() + getGreenhouseMoondropFlowerCount(); // farm field + greenhouse
+    gTotalPinkCatMintFlowersGrowing = getFarmPinkCatMintFlowersCount() + getGreenhousePinkCatMintFlowersCount();
      
     if (checkLifeEventBit(MARRIED)) {
         setWifeNameString(gWife);
@@ -69,7 +67,7 @@ void func_800598E0(void) {
 
             if (gDayOfMonth == 5) {
                 gAverageFarmAnimalAffection = (gFarmAnimals[mrsManaCow1Index].affection + gFarmAnimals[mrsManaCow2Index].affection + gFarmAnimals[mrsManaCow3Index].affection) / 3;
-                func_800886D0();
+                initializeWatchedCows();
             }
 
             if (gSeason == WINTER && gDayOfMonth == 6) {
@@ -81,7 +79,6 @@ void func_800598E0(void) {
     }
     
     setSeasonName();
-    // decrease wife/baby/horse/dog affection
     decrementFamilyAndPetAffection();
     setFestivalDailyBits();
     
@@ -94,23 +91,21 @@ void func_800598E0(void) {
         setDailyEventBit(0x3F);
     }
     
-    if (gSeason == SPRING) {
-        if (gDayOfMonth == 17) {
-            setDailyEventBit(0x41);
-            toggleLifeEventBit(0x90);
-            func_800CC17C();
-        }
+    if (gSeason == SPRING && gDayOfMonth == 17) {
+        setDailyEventBit(0x41);
+        toggleLifeEventBit(0x90);
+        initializeRaceContext();
     }
     
     if (gSeason == AUTUMN && gDayOfMonth == 28) {
         setDailyEventBit(0x41);
         toggleLifeEventBit(0x90);
-        func_800CC17C();
+        initializeRaceContext();
     }
     
     if (gSeason == WINTER && gDayOfMonth == 19) {
         setDailyEventBit(0x42);
-        func_800CC17C();            
+        initializeRaceContext();            
     }
 
     if (gSeason == AUTUMN) {
@@ -118,17 +113,13 @@ void func_800598E0(void) {
         if (gDayOfMonth == 3) {
             toggleLifeEventBit(0x91);
             // animal index
-            D_80189054 = 0xFF;
+            gCowFestivalEnteredCowIndex= 0xFF;
         }
 
         // redundant code: macro or static inline?
-        if (gSeason == AUTUMN) {
-
-            if (gDayOfMonth == 5) {  
-                // animal index     
-                D_80189054 = 0xFF;
-            }
-
+        if (gSeason == AUTUMN && gDayOfMonth == 5) {  
+            // animal index     
+            gCowFestivalEnteredCowIndex= 0xFF;
         }
 
     }

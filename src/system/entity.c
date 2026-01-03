@@ -563,10 +563,10 @@ bool setEntityAnimation(u16 index, u16 animationIndex) {
 
             entities[index].animationIndices.animationIndex = animationIndex;
             
-            entities[index].flags |= 8;
+            entities[index].flags |= ENTITY_IS_CURRENTLY_ANIMATED;
             entities[index].flags &= ~ENTITY_ANIMATION_DIRECTION_CHANGE; 
 
-            globalSprites[entities[index].globalSpriteIndex].stateFlags &= ~ENTITY_PAUSED;
+            globalSprites[entities[index].globalSpriteIndex].stateFlags &= ~SPRITE_ANIMATION_STATE_CHANGED;
             globalSprites[entities[index].globalSpriteIndex].audioTrigger = FALSE;
             
             result = TRUE;
@@ -591,7 +591,7 @@ bool setEntityAnimationWithDirectionChange(u16 index, u16 animationIndex) {
             entities[index].animationIndices.animationIndex = animationIndex;
             entities[index].flags |= (8 | ENTITY_ANIMATION_DIRECTION_CHANGE);
     
-            globalSprites[entities[index].globalSpriteIndex].stateFlags &= ~ENTITY_PAUSED;
+            globalSprites[entities[index].globalSpriteIndex].stateFlags &= ~SPRITE_ANIMATION_STATE_CHANGED;
     
             result = TRUE;
     
@@ -617,7 +617,7 @@ bool loadPendingEntity(u16 index) {
             
             loadEntity(index, entities[index].entityAssetIndex, entities[index].transformExempt);
 
-            entities[index].flags |= 8;
+            entities[index].flags |= ENTITY_IS_CURRENTLY_ANIMATED;
             entities[index].flags &= ~ENTITY_LOAD_PENDING;
 
             result = TRUE;
@@ -641,11 +641,11 @@ bool pauseEntityLoad(u16 index) {
 
         if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & ENTITY_INITIALIZED)) {
             
-            if (entities[index].flags & 8) {
+            if (entities[index].flags & ENTITY_IS_CURRENTLY_ANIMATED) {
 
                 setEntityMovementVector(index, 0.0f, 0.0f, 0.0f, 0.0f);
                 
-                temp = entities[index].flags & 0x2000;
+                temp = entities[index].flags & ENTITY_PALETTE_SET;
                 entities[index].flags |= ENTITY_LOAD_PENDING;
 
                 deactivateEntity(index);
@@ -724,15 +724,15 @@ void rotateAllEntities(s16 arg0) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntitiesColor);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntitiesRGBA);
 
-void setEntitiesColor(u8 r, u8 g, u8 b, u8 a) {
+void setEntitiesRGBA(u8 r, u8 g, u8 b, u8 a) {
 
     u16 i;
 
     for (i = 0; i < MAX_ENTITIES; i++) {
 
-        if (entities[i].flags & ENTITY_ACTIVE && entities[i].flags & 8) {
+        if (entities[i].flags & ENTITY_ACTIVE && entities[i].flags & ENTITY_IS_CURRENTLY_ANIMATED) {
 
             if (i < MAX_ENTITIES && entities[i].flags & ENTITY_INITIALIZED) {
 
@@ -743,20 +743,22 @@ void setEntitiesColor(u8 r, u8 g, u8 b, u8 a) {
                 }
 
             }
+
         }
+
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", updateEntitiesColor);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntitiesRGBAWithTransition);
 
-void updateEntitiesColor(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
+void setEntitiesRGBAWithTransition(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
 
     u16 i;
 
     for (i = 0; i < MAX_ENTITIES; i++) {
 
-        if ((entities[i].flags & ENTITY_ACTIVE) && (entities[i].flags & 8)) {
+        if ((entities[i].flags & ENTITY_ACTIVE) && (entities[i].flags & ENTITY_IS_CURRENTLY_ANIMATED)) {
         
             if (i < MAX_ENTITIES && entities[i].flags & ENTITY_INITIALIZED) {
         
@@ -767,8 +769,11 @@ void updateEntitiesColor(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
                 }
         
             }
+
         }
+
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", deactivateEntity);
@@ -779,7 +784,7 @@ bool deactivateEntity(u16 index) {
 
     if (index < MAX_ENTITIES) {
 
-        if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & 8)) {
+        if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & ENTITY_IS_CURRENTLY_ANIMATED)) {
             
             entities[index].flags &= ~( 0x8 | ENTITY_PALETTE_SET);
             deactivateSprite(entities[index].globalSpriteIndex);
@@ -791,6 +796,7 @@ bool deactivateEntity(u16 index) {
             result = TRUE;
 
         }
+
     }
 
     return result;
@@ -890,7 +896,7 @@ bool setEntityMapSpaceIndependent(u16 index, bool flag) {
 
     if (index < MAX_ENTITIES) {
 
-        if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & 8)) {
+        if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & ENTITY_IS_CURRENTLY_ANIMATED)) {
 
             if (flag) {
                 entities[index].flags &= ~ENTITY_MAP_SPACE_INDEPENDENT;
@@ -901,6 +907,7 @@ bool setEntityMapSpaceIndependent(u16 index, bool flag) {
             result = TRUE;
 
         }
+    
     }
 
     return result;
@@ -917,7 +924,7 @@ bool checkEntityMapSpaceDependent(u16 index) {
 
     if (index < MAX_ENTITIES) {
 
-        if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & 8)) {
+        if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & ENTITY_IS_CURRENTLY_ANIMATED)) {
             temp = entities[index].flags & ENTITY_MAP_SPACE_INDEPENDENT;
             result = !temp;
         }
@@ -961,7 +968,7 @@ bool setEntityMovementVector(u16 entityIndex, f32 x, f32 y, f32 z, f32 arg4) {
     
     if (entityIndex < MAX_ENTITIES) {
 
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && (entities[entityIndex].flags & 8) && !(entities[entityIndex].flags & ENTITY_LOAD_PENDING)) {
+        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && (entities[entityIndex].flags & ENTITY_IS_CURRENTLY_ANIMATED) && !(entities[entityIndex].flags & ENTITY_LOAD_PENDING)) {
             
             entities[entityIndex].movementVector.x = x;
             entities[entityIndex].movementVector.y = y;
@@ -971,6 +978,7 @@ bool setEntityMovementVector(u16 entityIndex, f32 x, f32 y, f32 z, f32 arg4) {
             result = TRUE;
 
         }
+
     }
 
     return result;
@@ -1085,10 +1093,10 @@ bool setEntityYMovement(u16 index, bool flag) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_800300F8);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityHandlesMultipleCollisions);
 
-// only used by farm animals and chicken eggs
-bool func_800300F8(u16 index, u8 flag) {
+// only used by farm animals and misc. animals
+bool setEntityHandlesMultipleCollisions(u16 index, u8 flag) {
 
     bool result = FALSE;
 
@@ -1221,19 +1229,24 @@ u16 checkEntityToEntityCollision(u16 entityIndex, f32 x, f32 z, u16 buttonPresse
                             entities[entityIndex].collision = 0xFFFF;
                             
                         }
+
                     }
+
                 }
+
             }   
+
         }
+
     }
     
     return count;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", func_800305CC);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityProximity);
 
-u16 func_800305CC(u16 index, f32 x, f32 z, u16 buttonPressed) {
+u16 checkEntityProximity(u16 index, f32 x, f32 z, u16 buttonPressed) {
 
     Vec3f worldCoordinates;
     Vec3f rotatedPosition;
@@ -1303,10 +1316,15 @@ u16 func_800305CC(u16 index, f32 x, f32 z, u16 buttonPressed) {
                             }
                             
                         }       
+
                     }
+
                 }
+
             }
+
         }
+
     }
     
     return result;
@@ -1929,7 +1947,7 @@ u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, 
     u8 counter = 0;
     u8 result = 0;
     
-    if (entityIndex < MAX_ENTITIES && entities[entityIndex].flags & ENTITY_ACTIVE && entities[entityIndex].flags & 8) { 
+    if (entityIndex < MAX_ENTITIES && entities[entityIndex].flags & ENTITY_ACTIVE && entities[entityIndex].flags & ENTITY_IS_CURRENTLY_ANIMATED) { 
 
         adjustedX = entity->coordinates.x + deltaX;
         adjustedZ = entity->coordinates.z + deltaZ;
@@ -2275,7 +2293,7 @@ void updateEntities(void) {
 
     while (i < MAX_ENTITIES) {
 
-        if ((entities[i].flags & ENTITY_ACTIVE) && (entities[i].flags & 8)) {
+        if ((entities[i].flags & ENTITY_ACTIVE) && (entities[i].flags & ENTITY_IS_CURRENTLY_ANIMATED)) {
             
             entities[i].unk_66 = 0;
 

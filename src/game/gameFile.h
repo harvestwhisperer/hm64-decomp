@@ -17,13 +17,13 @@
 
 // D_801D6238
 typedef struct {
-    u8 unk_0[15];
+    u8 gamePakNoteNameA[15]; // "HARVESTMOON" + padding
     u8 numGamePaks; // 0xF, D_801D624C
     u32 unk_10;
-    u8 unk_14;
-    u8 unk_15[20]; //  D_801D624D
+    u8 controllerPakStatus; // 0x14
+    u8 gamePakNoteNameB[20]; // D_801D624D
     u8 unk_29; // D_801D6261
-    u8 unk_2A[6]; // D_801D6262
+    u8 gamePakExtension[6]; // D_801D6262, "E9NYWE"
     u8 unk_30;
     u32 unk_34;
     u16 unk_38;
@@ -110,8 +110,8 @@ typedef struct {
 
 extern FarmRankingData gFarmRankingData;
 
-extern void func_800E1380(u8);            
-extern bool func_800E53E8(u8);    
+extern void initLoadGameScreen(bool flag);
+extern bool saveGameToSram(u8 gameSlot);
 extern void gameSelectCallback(void);
 extern void farmRankingScreenCallback(void);
 

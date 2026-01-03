@@ -23,6 +23,7 @@
 
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
+#include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
 
 #include "buffers/buffers.h"
@@ -42,25 +43,23 @@ u8 mrsManaCow3Index;
 // shared bss
 u8 bornChickenIndex;
 u8 bornAnimalIndex;
-u8 D_80189054;
+u8 gCowFestivalEnteredCowIndex;
 // price
-u32 D_801890E0;
+u32 gAnimalSalePrice;
 
 // game variable strings
-u8 D_8016FBCC[2];
+u8 gMilkTypeString[2];
 u8 D_801886D4[6];
-u8 deadAnimalName[6];
+u8 gDeadAnimalName[6];
 
 u8 bornChickenIndex;
-// cow festival stall
-u8 D_80189054;
 // newest animal index (generic)?
-u8 D_801FC155;
+u8 gSelectedAnimalIndex;
 // dead animal count
 // TODO: label
-u16 D_8013DC2E;
+u16 deadAnimalCount;
 // purchased animal type
-u8 D_801C4216;
+u8 selectedAnimalType;
 
 
 // data
@@ -91,63 +90,59 @@ Vec3f farmAnimalStartingCoordinates[] = {
     { 64.0f, 0.0f, -112.0f },
 };
 
-Vec3f D_80114AB0 = { 208.0f, 0.0f, -208.0f };
+Vec3f pregnantCowStartingCoordinates = { 208.0f, 0.0f, -208.0f };
 
-u16 D_80114ABC[4] = { SMALL_MILK, 100, 6500, 10 };
-u16 D_80114AC4[4] = { MEDIUM_MILK, 150, 7000, 20 };
-u16 D_80114ACC[4] = { LARGE_MILK, 300,  7500, 30 };
-u16 D_80114AD4[4] = { GOLDEN_MILK, 500, 8500, 50 };
+u16 smallMilkInfo[4] = { SMALL_MILK, 100, 6500, 10 };
+u16 mediumMilkInfo[4] = { MEDIUM_MILK, 150, 7000, 20 };
+u16 largeMilkInfo[4] = { LARGE_MILK, 300,  7500, 30 };
+u16 goldenMilkInfo[4] = { GOLDEN_MILK, 500, 8500, 50 };
 
-SheepItemInfo D_80114ADC = {
+SheepItemInfo sheepWoolInfo = {
     { WOOL, 900, 4200 },
     { WOOL, 900, 4600 },
     { HIGH_QUALITY_WOOL, 1800, 5000}
 };
 
 // forward declarations
-void func_800861A4(u8, u8, u8, u8, u8);               
-void func_80086458(u8, s8); 
+void setAnimalState(u8, u8, u8, u8, u8);               
+void adjustFarmAnimalAffection(u8, s8); 
 u8 initializeNewFarmAnimal(u8 arg0, u8 arg1);
 void setFarmAnimalLocation(u8); 
 void updateDog();                                  
 void updateHorse();                                  
 void updateHorseGrown();                                 
 void updateHorseNotGrown();       
-u8 func_8008A4A8(u8 index, u8 direction, f32 x, f32 y, f32 z);          
-void func_8008A5F0();
-void func_8008A650(u8);                               
-void func_8008A9E8(u8);                               
-void func_8008B150();       
+u8 spawnMiscAnimal(u8 index, u8 direction, f32 x, f32 y, f32 z);          
 void initializeDogEntity();                                  
 void initializeChickenEntity(u8);                               
 void initializeFarmAnimalEntity(u8);                               
 void initializeHorseEntity();                                  
 void initializeMiscAnimalEntity(u8, u8); 
-void func_8008CF94(u8);                               
-void func_8008DAA0(u8);                               
-void func_8009476C(u8);     
-void func_80094A5C(u8);                               
-void func_800958EC(u8);                               
-void func_80096264(u8);                               
-void func_800967E0(u8);                               
-void func_80096978(u8);                               
-void func_80096DFC(u8);                               
-void func_800973F8(u8);                               
-void func_80097804(u8);                               
-void func_80097CB0(u8);                               
-void func_80098188(u8);                               
-void func_80098740(u8);                               
-void func_80098B3C(u8);                               
-void func_80098F24(u8);                               
-void func_800991C0(u8);                     
-void func_80099424(u8);                               
-void func_80099548(u8);                               
-void func_800995F8(u8);                               
-void func_80099804(u8);                               
-void func_800999B0(u8);                               
-void func_8009B914(void);              
-void func_80099B5C(u8);                 
-void func_80099C94(u8);                         
+void updateChicken(u8);                               
+void updateFarmAnimal(u8);                               
+void updateMiscAnimal(u8);     
+void updatePlayerDog(u8);
+void updateVillageDog(u8);
+void updateCat(u8);
+void updateRanchHorse(u8);
+void updateWildSheep(u8);
+void updateRanchCow(u8);
+void updateFox(u8);
+void updateBunny(u8);
+void updateSquirrel(u8);
+void updateMonkey(u8);
+void updateSparrow(u8);
+void updateBird(u8);
+void updateCrab(u8);
+void updateSnake(u8);
+void updateWhiteButterfly(u8);
+void updateLadybug(u8);
+void updateCicada(u8);
+void updateHornedBeetle(u8);
+void updateStagBeetle(u8);
+void setgAnimalSalePrice(void);
+void updateDragonfly(u8);
+void updateCricket(u8);                         
 void showAnimalExpressionBubble(u8, u8, u8);
 
 
@@ -157,49 +152,49 @@ void deactivateAnimalEntities(void) {
 
     u8 i;
 
-    if (dogInfo.flags & 4) {
+    if (dogInfo.flags & DOG_ENTITY_LOADED) {
         deactivateEntity(dogInfo.entityIndex);
     }
 
-    dogInfo.unk_17 = 0;
-    dogInfo.unk_1A = 0;
-    dogInfo.flags &= ~4;
+    dogInfo.actionState = 0;
+    dogInfo.stateTimer = 0;
+    dogInfo.flags &= ~DOG_ENTITY_LOADED;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if (gChickens[i].flags & 4) {
+        if (gChickens[i].flags & CHICKEN_ENTITY_LOADED) {
             deactivateEntity(gChickens[i].entityIndex);
         }
 
         gChickens[i].actionState = 0;
-        gChickens[i].unk_1A = 0;
-        gChickens[i].flags &= ~4;
+        gChickens[i].stateTimer = 0;
+        gChickens[i].flags &= ~CHICKEN_ENTITY_LOADED;
         
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
-        if (gFarmAnimals[i].flags & 4) {
+        if (gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) {
             deactivateEntity(gFarmAnimals[i].entityIndex);
         }
 
-        gFarmAnimals[i].unk_1B = 0;
-        gFarmAnimals[i].unk_1D = 0;
-        gFarmAnimals[i].flags &= ~4;
+        gFarmAnimals[i].actionState = 0;
+        gFarmAnimals[i].stateTimer = 0;
+        gFarmAnimals[i].flags &= ~FARM_ANIMAL_ENTITY_LOADED;
         
     }
 
-    if (horseInfo.flags & 4) {
+    if (horseInfo.flags & HORSE_ENTITY_LOADED) {
         deactivateEntity(horseInfo.entityIndex);
     }
 
     horseInfo.actionState = 0;
-    horseInfo.unk_1A = 0;
-    horseInfo.flags &= ~4;
+    horseInfo.stateTimer = 0;
+    horseInfo.flags &= ~HORSE_ENTITY_LOADED;
 
     for (i = 0; i < MAX_MISC_ANIMALS; i++) {
         
-        if (gMiscAnimals[i].flags & 4) {
+        if (gMiscAnimals[i].flags & MISC_ANIMAL_ENTITY_LOADED) {
             deactivateEntity(gMiscAnimals[i].entityIndex);
         }
         
@@ -211,9 +206,9 @@ void deactivateAnimalEntities(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800861A4);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", setAnimalState);
 
-void func_800861A4(u8 animalType, u8 index, u8 type, u8 condition, u8 arg4) {
+void setAnimalState(u8 animalType, u8 index, u8 type, u8 condition, u8 actionState) {
 
     switch (animalType) {       
         
@@ -232,12 +227,12 @@ void func_800861A4(u8 animalType, u8 index, u8 type, u8 condition, u8 arg4) {
                 gChickens[index].conditionCounter = 0;
             }
             
-            if (arg4 != 0xFF) {
-                gChickens[index].actionState = arg4;
+            if (actionState != 0xFF) {
+                gChickens[index].actionState = actionState;
             }
 
             gChickens[index].speed = 0;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
         
             break;
@@ -254,12 +249,12 @@ void func_800861A4(u8 animalType, u8 index, u8 type, u8 condition, u8 arg4) {
                 gFarmAnimals[index].conditionCounter = 0;
             }
             
-            if (arg4 != 0xFF) {
-                gFarmAnimals[index].unk_1B = arg4;
+            if (actionState != 0xFF) {
+                gFarmAnimals[index].actionState = actionState;
             }
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
         
             break;
@@ -271,9 +266,9 @@ void func_800861A4(u8 animalType, u8 index, u8 type, u8 condition, u8 arg4) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008634C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", adjustAllAnimalAffection);
 
-void func_8008634C(s8 amount) {
+void adjustAllAnimalAffection(s8 amount) {
 
     u8 i;
 
@@ -281,7 +276,7 @@ void func_8008634C(s8 amount) {
     adjustHorseAffection(amount);
 
     for (i = 0; i < 8; i++) {
-        func_80086458(i, amount);
+        adjustFarmAnimalAffection(i, amount);
     }
     
 }
@@ -289,7 +284,7 @@ void func_8008634C(s8 amount) {
 //INCLUDE_ASM("asm/nonmatchings/game/animals", adjustDogAffection);
 
 inline void adjustDogAffection(s8 amount) {
-    if (dogInfo.flags & 1) {
+    if (dogInfo.flags & DOG_ACTIVE) {
         dogInfo.affection += adjustValue(dogInfo.affection, amount, 0xFF);
     }
 }
@@ -297,18 +292,18 @@ inline void adjustDogAffection(s8 amount) {
 //INCLUDE_ASM("asm/nonmatchings/game/animals", adjustHorseAffection);
 
 inline void adjustHorseAffection(s8 amount) {
-    if (horseInfo.flags & 1) {
+    if (horseInfo.flags & HORSE_ACTIVE) {
         horseInfo.affection += adjustValue(horseInfo.affection, amount, 0xFF);
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80086458);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", adjustFarmAnimalAffection);
 
-void func_80086458(u8 animalIndex, s8 amount) {
+void adjustFarmAnimalAffection(u8 animalIndex, s8 amount) {
     
     s8 adjusted;
     
-    if (gFarmAnimals[animalIndex].flags & 1) {
+    if (gFarmAnimals[animalIndex].flags & FARM_ANIMAL_ACTIVE) {
     
         switch (gFarmAnimals[animalIndex].type) {
 
@@ -383,28 +378,28 @@ void func_80086458(u8 animalIndex, s8 amount) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008662C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getMilkHeldItemIndex);
 
-inline u16 func_8008662C(u8 animalIndex, u8 arg1) {
+inline u16 getMilkHeldItemIndex(u8 animalIndex, u8 arg1) {
 
     u16 res;
     
     if (gFarmAnimals[animalIndex].milkType == 0) {
 
-        res = D_80114AD4[arg1];
+        res = goldenMilkInfo[arg1];
         
     } else {
 
         if (gFarmAnimals[animalIndex].affection <= 150) {
-            res = D_80114ABC[arg1];
+            res = smallMilkInfo[arg1];
         }
 
         if (150 < gFarmAnimals[animalIndex].affection && gFarmAnimals[animalIndex].affection < 221) {
-            res = D_80114AC4[arg1];
+            res = mediumMilkInfo[arg1];
         }
 
         if (gFarmAnimals[animalIndex].affection >= 221) {
-            res = D_80114ACC[arg1];
+            res = largeMilkInfo[arg1];
         }
         
     }
@@ -413,22 +408,22 @@ inline u16 func_8008662C(u8 animalIndex, u8 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800866E0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getWoolHeldItemIndex);
 
-inline u16 func_800866E0(u8 animalIndex, u8 arg1) {
+inline u16 getWoolHeldItemIndex(u8 animalIndex, u8 arg1) {
 
     u16 res;
 
     if (gFarmAnimals[animalIndex].affection < 100) {
-        res = D_80114ADC.arr[arg1];
+        res = sheepWoolInfo.arr[arg1];
     }
 
     if (99 < gFarmAnimals[animalIndex].affection && gFarmAnimals[animalIndex].affection < 200) {
-        res = D_80114ADC.arr2[arg1];
+        res = sheepWoolInfo.arr2[arg1];
     }
 
     if (gFarmAnimals[animalIndex].affection >= 200) {
-        res = D_80114ADC.arr3[arg1];
+        res = sheepWoolInfo.arr3[arg1];
     }
     
     return res;
@@ -437,7 +432,6 @@ inline u16 func_800866E0(u8 animalIndex, u8 arg1) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", handlePlayerAnimalInteraction);
 
-// player - animal interaction handler
 bool handlePlayerAnimalInteraction(void) {
 
     Vec3f vec;
@@ -449,11 +443,11 @@ bool handlePlayerAnimalInteraction(void) {
     u16 tempFlags;
     u8 groundObjectIndex;
 
-    if (!(gPlayer.flags & 1)) {
+    if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
 
         if (gPlayer.heldItem == 0) {
 
-            if ((dogInfo.flags & 4) && entities[dogInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[dogInfo.entityIndex].buttonPressed == BUTTON_A) {
+            if ((dogInfo.flags & DOG_ENTITY_LOADED) && entities[dogInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[dogInfo.entityIndex].buttonPressed == BUTTON_A) {
 
                 // ???
                 if (!i) {
@@ -465,14 +459,14 @@ bool handlePlayerAnimalInteraction(void) {
                 deactivateEntity(dogInfo.entityIndex);
                 setPlayerAction(4, 6);
 
-                dogInfo.flags &= ~(4 | 0x10);
-                dogInfo.flags |= 8;
+                dogInfo.flags &= ~(DOG_ENTITY_LOADED | DOG_FOLLOWING);
+                dogInfo.flags |= DOG_HELD;
 
-                if (!(dogInfo.flags & 0x40)) {
+                if (!(dogInfo.flags & DOG_HELD_DAILY)) {
 
                     adjustDogAffection(1);
 
-                    dogInfo.flags |= 0x40;
+                    dogInfo.flags |= DOG_HELD_DAILY;
                     
                 }
                 
@@ -482,20 +476,19 @@ bool handlePlayerAnimalInteraction(void) {
 
             for (i = 0; i < MAX_CHICKENS && !set; i++) {
 
-                if ((gChickens[i].flags & 4) && entities[gChickens[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[gChickens[i].entityIndex].buttonPressed == BUTTON_A) {
+                if ((gChickens[i].flags & CHICKEN_ENTITY_LOADED) && entities[gChickens[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[gChickens[i].entityIndex].buttonPressed == BUTTON_A) {
 
                     if (checkDailyEventBit(2) && getLevelFlags(gChickens[i].location) & 0x20) {
 
                         if (gChickens[i].type == ADULT_CHICKEN) {
 
                             setGameVariableString(0xD, gChickens[i].name, 6);
-                            // pink overlay message
                             showPinkOverlayText(7);
                             
-                            D_801C4216 = 4;
-                            D_801FC155 = i;
+                            selectedAnimalType = CHICKEN_TYPE;
+                            gSelectedAnimalIndex = i;
                             
-                            func_8009B914();
+                            setgAnimalSalePrice();
                             
                             
                         } else {
@@ -510,19 +503,19 @@ bool handlePlayerAnimalInteraction(void) {
 
                             case ADULT_CHICKEN:
                                 gPlayer.heldItem = CHICKEN_HELD_ITEM;
-                                gChickens[i].flags |= 8;
+                                gChickens[i].flags |= CHICKEN_HELD;
                                 set = TRUE;
                                 break;
                             
                             case CHICK:
                                 gPlayer.heldItem = CHICK_HELD_ITEM;
-                                gChickens[i].flags |= 8;
+                                gChickens[i].flags |= CHICKEN_HELD;
                                 set = TRUE;
                                 break;
                             
                             case CHICKEN_EGG:
 
-                                if (!(gChickens[i].flags & 0x20)) {
+                                if (!(gChickens[i].flags & CHICKEN_EGG_INCUBATING)) {
                                     set = TRUE;
                                     gPlayer.heldItem = EGG_HELD_ITEM;
                                     gChickens[i].flags = 0;
@@ -539,7 +532,7 @@ bool handlePlayerAnimalInteraction(void) {
                             setPlayerAction(4, 6);
                             gPlayer.heldAnimalIndex = i;
                             
-                            gChickens[i].flags &= ~4;
+                            gChickens[i].flags &= ~CHICKEN_ENTITY_LOADED;
                             
                         }
                         
@@ -551,7 +544,7 @@ bool handlePlayerAnimalInteraction(void) {
 
             for (i = 0; i < MAX_FARM_ANIMALS && !set; i++) {
 
-                if ((gFarmAnimals[i].flags & 4) && entities[gFarmAnimals[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER) {
+                if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && entities[gFarmAnimals[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER) {
 
                     if (entities[gFarmAnimals[i].entityIndex].buttonPressed == BUTTON_A) {
                         
@@ -564,14 +557,14 @@ bool handlePlayerAnimalInteraction(void) {
                                 showPinkOverlayText(7);
                                 
                                 if (gFarmAnimals[i].type == ADULT_COW) {
-                                    D_801C4216 = 2;
+                                    selectedAnimalType = COW_TYPE;
                                 } else {
-                                    D_801C4216 = 3;
+                                    selectedAnimalType = SHEEP_TYPE;
                                 }
                                 
-                                D_801FC155 = i;
+                                gSelectedAnimalIndex = i;
                                 
-                                func_8009B914();
+                                setgAnimalSalePrice();
                                 
                             }  else {
                                 showTextBox(0, 6, 0x5C, 0, 2);
@@ -585,7 +578,7 @@ bool handlePlayerAnimalInteraction(void) {
                                 showPinkOverlayText(8);
                                 
                                 setGameVariableString(0xD, gFarmAnimals[i].name, 6);
-                                D_801FC155 = i;
+                                gSelectedAnimalIndex = i;
                                 
                             }  else {
                                 showTextBox(0, 4, 0x35, 0, 0);
@@ -641,24 +634,24 @@ bool handlePlayerAnimalInteraction(void) {
     
                             showTextBox(1, 7, textIndex, 0, 2);
     
-                            gFarmAnimals[i].flags |= (0x200 | 0x2000);
+                            gFarmAnimals[i].flags |= (FARM_ANIMAL_APPROACHING  | FARM_ANIMAL_FOLLOWING);
                             
-                            if (!(gFarmAnimals[i].flags & 0x1000)) {
+                            if (!(gFarmAnimals[i].flags & FARM_ANIMAL_TALKED_TO)) {
                                 
-                                func_80086458(i, 1);
-                                func_800861A4(2, i, 0xFF, 0xFF, 0x11);
+                                adjustFarmAnimalAffection(i, 1);
+                                setAnimalState(2, i, 0xFF, 0xFF, 17);
     
-                                gFarmAnimals[i].flags |= 0x8000;
+                                gFarmAnimals[i].flags |= FARM_ANIMAL_COLLISION_WITH_PLAYER;
                                 
                                 showAnimalExpressionBubble(COW_TYPE, i, 3);
     
-                                gFarmAnimals[i].flags |= 0x1000;
+                                gFarmAnimals[i].flags |= FARM_ANIMAL_TALKED_TO;
                                 
                             }
                             
                         }
     
-                        gFarmAnimals[i].flags &= ~0x400;
+                        gFarmAnimals[i].flags &= ~FARM_ANIMAL_LINGERING;
     
                     }
 
@@ -668,7 +661,7 @@ bool handlePlayerAnimalInteraction(void) {
                 
             }
             
-            if (horseInfo.flags & 4 && entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[horseInfo.entityIndex].buttonPressed == BUTTON_A) {
+            if (horseInfo.flags & HORSE_ENTITY_LOADED && entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[horseInfo.entityIndex].buttonPressed == BUTTON_A) {
 
                 if (gPlayer.heldItem == 0) {
 
@@ -685,13 +678,13 @@ bool handlePlayerAnimalInteraction(void) {
                                 
                                 setPlayerAction(0xD, 0xF);
 
-                                horseInfo.flags &= ~(4 | 0x10);
+                                horseInfo.flags &= ~(HORSE_ENTITY_LOADED | HORSE_FOLLOWING);
 
-                                if (!(horseInfo.flags & 0x400)) {
+                                if (!(horseInfo.flags & HORSE_JUMPED_DAILY)) {
 
                                     adjustHorseAffection(1);
 
-                                    horseInfo.flags |= 0x400;
+                                    horseInfo.flags |= HORSE_JUMPED_DAILY;
 
                                 }
                                 
@@ -714,9 +707,9 @@ bool handlePlayerAnimalInteraction(void) {
                             showTextBox(1, 7, 8, 0, 2);
                         }
 
-                        horseInfo.flags |= 0x10;
+                        horseInfo.flags |= HORSE_FOLLOWING;
                             
-                        if (!(horseInfo.flags & 0x800)) {
+                        if (!(horseInfo.flags & HORSE_TALKED_TO_DAILY)) {
 
                             horseInfo.actionState = 17;
 
@@ -726,7 +719,7 @@ bool handlePlayerAnimalInteraction(void) {
                                 adjustHorseAffection(1);
                             }
 
-                            horseInfo.flags |= (0x20 | 0x800);
+                            horseInfo.flags |= (HORSE_COLLISION_WITH_PLAYER | HORSE_TALKED_TO_DAILY);
                             
                             showAnimalExpressionBubble(HORSE_TYPE, 0, 3);
                             
@@ -742,7 +735,7 @@ bool handlePlayerAnimalInteraction(void) {
 
             for (i = 0; i < MAX_MISC_ANIMALS && !set; i++) {
 
-                if (gMiscAnimals[i].flags & 4) {
+                if (gMiscAnimals[i].flags & MISC_ANIMAL_ENTITY_LOADED) {
 
                     if (entities[gMiscAnimals[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[gMiscAnimals[i].entityIndex].buttonPressed == BUTTON_A) {
 
@@ -886,7 +879,7 @@ bool handlePlayerAnimalInteraction(void) {
                                         gMiscAnimals[i].actionState = 0x11;    
                                     } else {
                                         gMiscAnimals[i].actionState = 0x20;
-                                        gMiscAnimals[i].flags |= 0x10;
+                                        gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     }
                                     
                                     break;
@@ -897,34 +890,34 @@ bool handlePlayerAnimalInteraction(void) {
                                         gMiscAnimals[i].actionState = 0x11;
                                     } else {
                                         gMiscAnimals[i].actionState = 0x20;
-                                        gMiscAnimals[i].flags |= 0x10;
+                                        gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     }
                                     
                                     break;
 
                                 case 7:
                                     gMiscAnimals[i].actionState = 0x20;
-                                    gMiscAnimals[i].flags |= 0x10;
+                                    gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     break;
 
                                 case 8:
                                     gMiscAnimals[i].actionState = 0x20;
-                                    gMiscAnimals[i].flags |= 0x10;
+                                    gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     break;
 
                                 case 11:
                                     gMiscAnimals[i].actionState = 0x20;
-                                    gMiscAnimals[i].flags |= 0x10;
+                                    gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     break;
 
                                 case 12:
                                     gMiscAnimals[i].actionState = 0x20;
-                                    gMiscAnimals[i].flags |= 0x10;
+                                    gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     break;
 
                                 case 13:
                                     gMiscAnimals[i].actionState = 0x20;
-                                    gMiscAnimals[i].flags |= 0x10;
+                                    gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     break;
 
                                 case 14:
@@ -988,21 +981,22 @@ void initializeAnimalEntities(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008779C);
 
+// alternate deactivate animal entities at end of certain cutscenes
 void func_8008779C(void) {
 
     u8 i;
 
-    if (dogInfo.flags & 4) {
-        if (entities[dogInfo.entityIndex].flags & 8) {
+    if (dogInfo.flags & DOG_ENTITY_LOADED) {
+        if (entities[dogInfo.entityIndex].flags & ENTITY_IS_CURRENTLY_ANIMATED) {
             deactivateEntity(dogInfo.entityIndex);
         }
     }
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if (gChickens[i].flags & 4) {
+        if (gChickens[i].flags & CHICKEN_ENTITY_LOADED) {
 
-            if (entities[gChickens[i].entityIndex].flags & 8) {
+            if (entities[gChickens[i].entityIndex].flags & ENTITY_IS_CURRENTLY_ANIMATED) {
                 deactivateEntity(gChickens[i].entityIndex);
             }
 
@@ -1010,22 +1004,22 @@ void func_8008779C(void) {
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
-        if (gFarmAnimals[i].flags & 4) {
-            if (entities[gFarmAnimals[i].entityIndex].flags & 8) {
+        if (gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) {
+            if (entities[gFarmAnimals[i].entityIndex].flags & ENTITY_IS_CURRENTLY_ANIMATED) {
                 deactivateEntity(gFarmAnimals[i].entityIndex);
             }
         }
     }
 
-    if (horseInfo.flags & 4) {
-        if (entities[horseInfo.entityIndex].flags & 8) {
+    if (horseInfo.flags & HORSE_ENTITY_LOADED) {
+        if (entities[horseInfo.entityIndex].flags & ENTITY_IS_CURRENTLY_ANIMATED) {
             deactivateEntity(horseInfo.entityIndex);
         }
     }
 
     for (i = 0; i < MAX_MISC_ANIMALS; i++) {
-        if (gMiscAnimals[i].flags & 4) {
-            if (entities[gMiscAnimals[i].entityIndex].flags & 8) {
+        if (gMiscAnimals[i].flags & MISC_ANIMAL_ENTITY_LOADED) {
+            if (entities[gMiscAnimals[i].entityIndex].flags & ENTITY_IS_CURRENTLY_ANIMATED) {
                 deactivateEntity(gMiscAnimals[i].entityIndex);
             }
         }
@@ -1039,7 +1033,7 @@ void updateAnimalCoordinates(void) {
 
     u8 i = 0;
 
-    if ((dogInfo.flags) & 4 && (dogInfo.location == gBaseMapIndex)) {
+    if ((dogInfo.flags & DOG_ENTITY_LOADED) && (dogInfo.location == gBaseMapIndex)) {
         dogInfo.coordinates.x = entities[dogInfo.entityIndex].coordinates.x; 
         dogInfo.coordinates.y = entities[dogInfo.entityIndex].coordinates.y;
         dogInfo.coordinates.z = entities[dogInfo.entityIndex].coordinates.z;
@@ -1047,7 +1041,7 @@ void updateAnimalCoordinates(void) {
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if ((gChickens[i].flags & 4) && (gChickens[i].location == gBaseMapIndex)) {
+        if ((gChickens[i].flags & CHICKEN_ENTITY_LOADED) && (gChickens[i].location == gBaseMapIndex)) {
 
             gChickens[i].coordinates.x = entities[gChickens[i].entityIndex].coordinates.x; 
             gChickens[i].coordinates.y = entities[gChickens[i].entityIndex].coordinates.y;
@@ -1059,7 +1053,7 @@ void updateAnimalCoordinates(void) {
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
-        if ((gFarmAnimals[i].flags & 4) && (gFarmAnimals[i].location == gBaseMapIndex)) {
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && (gFarmAnimals[i].location == gBaseMapIndex)) {
 
             gFarmAnimals[i].coordinates.x = entities[gFarmAnimals[i].entityIndex].coordinates.x; 
             gFarmAnimals[i].coordinates.y = entities[gFarmAnimals[i].entityIndex].coordinates.y;
@@ -1069,7 +1063,7 @@ void updateAnimalCoordinates(void) {
         
     }
 
-    if ((horseInfo.flags) & 4 && (horseInfo.location == gBaseMapIndex)) {
+    if ((horseInfo.flags & HORSE_ENTITY_LOADED) && (horseInfo.location == gBaseMapIndex)) {
         horseInfo.coordinates.x = entities[horseInfo.entityIndex].coordinates.x; 
         horseInfo.coordinates.y = entities[horseInfo.entityIndex].coordinates.y;
         horseInfo.coordinates.z = entities[horseInfo.entityIndex].coordinates.z;
@@ -1086,24 +1080,24 @@ void updateAnimals(void) {
     updateDog();
 
     for (i = 0; i < MAX_CHICKENS; i++) {
-        func_8008CF94(i);
+        updateChicken(i);
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
-        func_8008DAA0(i);
+        updateFarmAnimal(i);
     }
 
     updateHorse();
     
     for (i = 0; i < 7; i++) {
-        func_8009476C(i);
+        updateMiscAnimal(i);
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80087D5C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", feedAllAnimals);
 
-void func_80087D5C(void) {
+void feedAllAnimals(void) {
 
     u8 i;
 
@@ -1112,7 +1106,7 @@ void func_80087D5C(void) {
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
-        gFarmAnimals[i].flags |= (FARM_ANIMAL_FED | 0x10);
+        gFarmAnimals[i].flags |= (FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
     }
     
 }
@@ -1123,35 +1117,33 @@ void resetAnimalStatuses(void) {
 
     u8 i;
     
-    func_8008A5F0();
+    updateDogAffectionIfFed();
 
-    dogInfo.flags &= ~(0x40 | 0x80);
+    dogInfo.flags &= ~(DOG_HELD_DAILY | DOG_WHISTLED_FOR_DAILY);
 
     for (i = 6; i < MAX_CHICKENS; i++) {
-        if (!(gChickens[i].flags & 0x20)) {
+        if (!(gChickens[i].flags & CHICKEN_EGG_INCUBATING)) {
             gChickens[i].flags = 0;
         }
     }
 
     for (i = 0; i < MAX_CHICKENS; i++) {
-        func_8008A650(i);
-        gChickens[i].flags &= ~(CHICKEN_FED| 0x80);
+        updateChickenStartOfDay(i);
+        gChickens[i].flags &= ~(CHICKEN_FED| CHICKEN_LAID_EGG);
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) { 
-        func_8008A9E8(i);
-        gFarmAnimals[i].flags &= ~(8 | 0x10 | 0x20 | 0x40 | 0x80 | 0x100 | 0x1000 | 0x4000);
+        updateFarmAnimalStartOfDay(i);
+        gFarmAnimals[i].flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS | FARM_ANIMAL_BRUSHED | FARM_ANIMAL_MILKED | FARM_ANIMAL_PREGNANT | FARM_ANIMAL_SHEARED | FARM_ANIMAL_TALKED_TO | FARM_ANIMAL_INDOORS);
     }
 
-    func_8008B150();
+    updateHorseAge();
 
-    horseInfo.flags &= ~(0x100 | 0x200 | 0x400 | 0x800);
-
+    horseInfo.flags &= ~(HORSE_BRUSHED_DAILY | HORSE_WHISTLED_DAILY | HORSE_JUMPED_DAILY | HORSE_TALKED_TO_DAILY);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", initializeNewChicken);
 
-// initialize new chicken when born
 u8 initializeNewChicken(u8 animalType, u8 arg1) {
 
     u32 padding[4];
@@ -1165,7 +1157,7 @@ u8 initializeNewChicken(u8 animalType, u8 arg1) {
     
     for (i = 0; i < 6 && found == 0xFF; i++) {
 
-        if (!(gChickens[i + temp].flags & 1)) {
+        if (!(gChickens[i + temp].flags & CHICKEN_ACTIVE)) {
             found = i + temp;
         }
         
@@ -1191,10 +1183,10 @@ u8 initializeNewChicken(u8 animalType, u8 arg1) {
             
         }
 
-        func_800861A4(1, found, animalType, 0, 0);
+        setAnimalState(1, found, animalType, 0, 0);
 
         gChickens[found].direction = 2;
-        gChickens[found].flags = 1;
+        gChickens[found].flags = CHICKEN_ACTIVE;
         
     }
 
@@ -1211,7 +1203,7 @@ void initializeChicken(u8 chickenIndex) {
     gChickens[chickenIndex].actionState = 0;
     gChickens[chickenIndex].direction = 0;
     gChickens[chickenIndex].speed = 0;
-    gChickens[chickenIndex].unk_1A = 0;
+    gChickens[chickenIndex].stateTimer = 0;
     gChickens[chickenIndex].unk_1B = 0;
 
     gChickens[chickenIndex].type = 0;
@@ -1247,7 +1239,7 @@ u8 initializeNewFarmAnimal(u8 animalType, u8 arg1) {
     // find free farm animal slot
     do {
 
-        if (!(gFarmAnimals[i].flags & 1)) {
+        if (!(gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE)) {
             index = i;
         }
 
@@ -1257,32 +1249,32 @@ u8 initializeNewFarmAnimal(u8 animalType, u8 arg1) {
 
     if (index != 0xFF) {
         
-        func_800861A4(2, index, animalType, 0, 0);
+        setAnimalState(2, index, animalType, 0, 0);
         setFarmAnimalLocation(index);
 
         gFarmAnimals[index].birthdaySeason = gSeason;
-        gFarmAnimals[index].flags = 1;
+        gFarmAnimals[index].flags = FARM_ANIMAL_ACTIVE;
         gFarmAnimals[index].birthdayDayOfMonth = gDayOfMonth;
         gFarmAnimals[index].milkType = 0xFF;
         gFarmAnimals[index].affection = 0;
 
         if (animalType == 0) {
 
-            gFarmAnimals[index].unk_23[0] = gFarmAnimals[arg1].name[0];
-            gFarmAnimals[index].unk_23[1] = gFarmAnimals[arg1].name[1];
-            gFarmAnimals[index].unk_23[2] = gFarmAnimals[arg1].name[2];
-            gFarmAnimals[index].unk_23[3] = gFarmAnimals[arg1].name[3];
-            gFarmAnimals[index].unk_23[4] = gFarmAnimals[arg1].name[4];
-            gFarmAnimals[index].unk_23[5] = gFarmAnimals[arg1].name[5];
+            gFarmAnimals[index].motherName[0] = gFarmAnimals[arg1].name[0];
+            gFarmAnimals[index].motherName[1] = gFarmAnimals[arg1].name[1];
+            gFarmAnimals[index].motherName[2] = gFarmAnimals[arg1].name[2];
+            gFarmAnimals[index].motherName[3] = gFarmAnimals[arg1].name[3];
+            gFarmAnimals[index].motherName[4] = gFarmAnimals[arg1].name[4];
+            gFarmAnimals[index].motherName[5] = gFarmAnimals[arg1].name[5];
             
         } else {
 
-            gFarmAnimals[index].unk_23[0] = 0xF6;
-            gFarmAnimals[index].unk_23[1] = 0xF6;
-            gFarmAnimals[index].unk_23[2] = 0xF6;
-            gFarmAnimals[index].unk_23[3] = 0xF6;
-            gFarmAnimals[index].unk_23[4] = 0xF6;
-            gFarmAnimals[index].unk_23[5] = 0xF6;
+            gFarmAnimals[index].motherName[0] = 0xF6;
+            gFarmAnimals[index].motherName[1] = 0xF6;
+            gFarmAnimals[index].motherName[2] = 0xF6;
+            gFarmAnimals[index].motherName[3] = 0xF6;
+            gFarmAnimals[index].motherName[4] = 0xF6;
+            gFarmAnimals[index].motherName[5] = 0xF6;
             
         }
         
@@ -1323,10 +1315,10 @@ void setMrsManaCowsNames(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800886D0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeWatchedCows);
 
 // initialize watched cows from Doug
-void func_800886D0(void) {
+void initializeWatchedCows(void) {
     initializeFarmAnimal(mrsManaCow1Index);
     initializeFarmAnimal(mrsManaCow2Index);
     initializeFarmAnimal(mrsManaCow3Index);
@@ -1334,16 +1326,15 @@ void func_800886D0(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", setFarmAnimalLocation);
 
-// set farm animal locations
 void setFarmAnimalLocation(u8 animalIndex) {
 
     gFarmAnimals[animalIndex].location = BARN;
 
     if (gFarmAnimals[animalIndex].type == PREGNANT_COW) {
         
-        gFarmAnimals[animalIndex].coordinates.x = D_80114AB0.x;
-        gFarmAnimals[animalIndex].coordinates.y = D_80114AB0.y;
-        gFarmAnimals[animalIndex].coordinates.z = D_80114AB0.z;
+        gFarmAnimals[animalIndex].coordinates.x = pregnantCowStartingCoordinates.x;
+        gFarmAnimals[animalIndex].coordinates.y = pregnantCowStartingCoordinates.y;
+        gFarmAnimals[animalIndex].coordinates.z = pregnantCowStartingCoordinates.z;
         gFarmAnimals[animalIndex].direction = NORTHEAST;
 
     } else {
@@ -1367,10 +1358,10 @@ void initializeFarmAnimal(u8 animalIndex) {
 
     gFarmAnimals[animalIndex].location = 0;
     
-    gFarmAnimals[animalIndex].unk_1B = 0;
+    gFarmAnimals[animalIndex].actionState = 0;
     gFarmAnimals[animalIndex].direction = 0;
     gFarmAnimals[animalIndex].speed = 0;
-    gFarmAnimals[animalIndex].unk_1D = 0;
+    gFarmAnimals[animalIndex].stateTimer = 0;
     gFarmAnimals[animalIndex].unk_1E = 0;
     
     gFarmAnimals[animalIndex].type = 0;
@@ -1399,13 +1390,13 @@ void initializeDog(void) {
 
     dogInfo.location = FARM;
     dogInfo.coordinates.y = 0.0f;
-    dogInfo.unk_17 = 0;
+    dogInfo.actionState = 0;
     dogInfo.direction = SOUTHWEST;
     dogInfo.affection = 0; 
     dogInfo.speed = 0;
-    dogInfo.unk_1A = 0;
+    dogInfo.stateTimer = 0;
     dogInfo.unk_1B = 0;
-    dogInfo.flags = 1;
+    dogInfo.flags = DOG_ACTIVE;
     dogInfo.coordinates.x = -432.0f;
     dogInfo.coordinates.z = 96.0f;
     
@@ -1420,12 +1411,12 @@ void initializeHorse(void) {
     horseInfo.actionState = 0;
     horseInfo.direction = SOUTHWEST;
     horseInfo.speed = 0;
-    horseInfo.unk_1A = 0;
+    horseInfo.stateTimer = 0;
     horseInfo.unk_1B = 0;
     horseInfo.grown = 0;
     horseInfo.age = 0;
     horseInfo.affection = 0;
-    horseInfo.flags = 1;
+    horseInfo.flags = HORSE_ACTIVE;
     horseInfo.coordinates.x = -240.0f;
     horseInfo.coordinates.z = -384.0f;
 
@@ -1441,11 +1432,11 @@ void setAnimalLocations(u8 mapIndex) {
     setHorseLocation(mapIndex);
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
-        func_80088BB0(mapIndex, i);
+        resetFarmAnimalLocation(mapIndex, i);
     }
 
     for (i = 0; i < MAX_CHICKENS; i++) {
-        func_80088C1C(mapIndex, i);
+        resetChickenLocation(mapIndex, i);
     }
 
 }
@@ -1454,7 +1445,7 @@ void setAnimalLocations(u8 mapIndex) {
 
 void setDogLocation(u8 mapIndex) {
 
-    if (dogInfo.flags & 1 && (mapIndex == 0xFF || dogInfo.location == mapIndex)) {
+    if (dogInfo.flags & DOG_ACTIVE && (mapIndex == 0xFF || dogInfo.location == mapIndex)) {
         dogInfo.location = FARM;
         dogInfo.coordinates.y = 0.0f;
         dogInfo.direction = SOUTHWEST;
@@ -1469,7 +1460,7 @@ void setDogLocation(u8 mapIndex) {
 
 void setHorseLocation(u8 mapIndex) {
 
-    if (horseInfo.flags & 1 && (mapIndex == 0xFF || horseInfo.location == mapIndex)) {
+    if (horseInfo.flags & HORSE_ACTIVE && (mapIndex == 0xFF || horseInfo.location == mapIndex)) {
         horseInfo.coordinates.y = 0;
         horseInfo.location = FARM;
         horseInfo.direction = SOUTHWEST;
@@ -1479,25 +1470,25 @@ void setHorseLocation(u8 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80088BB0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", resetFarmAnimalLocation);
 
-void func_80088BB0(u8 mapIndex, u8 animalIndex) {
+void resetFarmAnimalLocation(u8 mapIndex, u8 animalIndex) {
 
-    if ((gFarmAnimals[animalIndex].flags & 1) && (mapIndex == 0xFF ||  gFarmAnimals[animalIndex].location == mapIndex)) {
+    if ((gFarmAnimals[animalIndex].flags & FARM_ANIMAL_ACTIVE) && (mapIndex == 0xFF ||  gFarmAnimals[animalIndex].location == mapIndex)) {
         setFarmAnimalLocation(animalIndex);
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80088C1C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", resetChickenLocation);
 
-void func_80088C1C(u8 mapIndex, u8 chickenIndex) {
+void resetChickenLocation(u8 mapIndex, u8 chickenIndex) {
 
-    if ((gChickens[chickenIndex].flags & 1) && (mapIndex == 0xFF || gChickens[chickenIndex].location == mapIndex)) {
+    if ((gChickens[chickenIndex].flags & FARM_ANIMAL_ACTIVE) && (mapIndex == 0xFF || gChickens[chickenIndex].location == mapIndex)) {
 
         gChickens[chickenIndex].location = COOP;
 
-        if (gChickens[chickenIndex].flags & 0x20) {
+        if (gChickens[chickenIndex].flags & CHICKEN_EGG_INCUBATING) {
 
             gChickens[chickenIndex].coordinates.x = 96.0f;
             gChickens[chickenIndex].coordinates.y = 0;
@@ -1511,14 +1502,14 @@ void func_80088C1C(u8 mapIndex, u8 chickenIndex) {
             
         }
 
-        gChickens[chickenIndex].flags &= ~8;
+        gChickens[chickenIndex].flags &= ~CHICKEN_HELD;
         
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80088D54);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", spawnWildAnimals);
 
-void func_80088D54(void) {
+void spawnWildAnimals(void) {
 
     switch (gBaseMapIndex) {
         
@@ -1526,14 +1517,14 @@ void func_80088D54(void) {
 
             if (gSeason != WINTER && gWeather == SUNNY && 5 < gHour && gHour < 9) {
 
-                if (gMiscAnimals[4].unk_16 == 1) {
-                    func_8008A4A8(0xB, SOUTHWEST, -336.0f, 0.0f, 0.0f);
-                    func_8008A4A8(0xB, SOUTHWEST, -368.0f, 0.0f, 32.0f);
+                if (gMiscAnimals[4].spawnVariant == 1) {
+                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, -336.0f, 0.0f, 0.0f);
+                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, -368.0f, 0.0f, 32.0f);
                 }
 
-                if (gMiscAnimals[4].unk_16 == 2) {
-                    func_8008A4A8(0xB, SOUTHWEST, 320.0f, 0.0f, -352.0f);
-                    func_8008A4A8(0xB, SOUTHWEST, 288.0f, 0.0f, -352.0f);
+                if (gMiscAnimals[4].spawnVariant == 2) {
+                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, 320.0f, 0.0f, -352.0f);
+                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, 288.0f, 0.0f, -352.0f);
                 }
                 
             }
@@ -1542,143 +1533,143 @@ void func_80088D54(void) {
         
         case POND:
 
-            if (gSeason == AUTUMN && 12 < gHour && gHour < 22 && gMiscAnimals[0].unk_16 >= 2 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
-                func_8008A4A8(7, 6, -192.0f, 0.0f, -64.0f);
+            if (gSeason == AUTUMN && 12 < gHour && gHour < 22 && gMiscAnimals[0].spawnVariant >= 2 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_FOX, 6, -192.0f, 0.0f, -64.0f);
             }
 
-            if (gSeason == WINTER && 12 < gHour && gHour < 22 && gMiscAnimals[0].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
-                func_8008A4A8(7, 6, -192.0f, 0.0f, -64.0f);
+            if (gSeason == WINTER && 12 < gHour && gHour < 22 && gMiscAnimals[0].spawnVariant == 1 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_FOX, 6, -192.0f, 0.0f, -64.0f);
             }
             
-            if (gSeason == SPRING && 8 < gHour && gHour < 15 && gMiscAnimals[1].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
-                func_8008A4A8(8, 4, -192.0f, 0.0f, -160.0f);
+            if (gSeason == SPRING && 8 < gHour && gHour < 15 && gMiscAnimals[1].spawnVariant == 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_BUNNY, 4, -192.0f, 0.0f, -160.0f);
             }
 
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gMiscAnimals[1].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x65) >= 8) {
-                func_8008A4A8(8, 4, -192.0f, 0.0f, -160.0f);
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gMiscAnimals[1].spawnVariant < 2) && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_BUNNY, 4, -192.0f, 0.0f, -160.0f);
             }
 
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[2].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
-                gMiscAnimals[func_8008A4A8(9, SOUTHWEST, 144.0f, 0.0f, -256.0f)].actionState = 0x10;
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[2].spawnVariant == 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+                gMiscAnimals[spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, SOUTHWEST, 144.0f, 0.0f, -256.0f)].actionState = 0x10;
             }
 
-            if (gSeason == WINTER && 10 < gHour && gHour < 17 && gMiscAnimals[3].unk_16 >= 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                func_8008A4A8(0xA, SOUTHEAST, -192.0f, 0.0f, -224.0f);
+            if (gSeason == WINTER && 10 < gHour && gHour < 17 && gMiscAnimals[3].spawnVariant >= 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_MONKEY, SOUTHEAST, -192.0f, 0.0f, -224.0f);
             }
 
-            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && gMiscAnimals[4].unk_16 < 2) {
-                func_8008A4A8(0xE, SOUTHWEST, 96.0f, 0.0f, -64.0f);
+            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && gMiscAnimals[4].spawnVariant < 2) {
+                spawnMiscAnimal(MISC_ANIMAL_SNAKE, SOUTHWEST, 96.0f, 0.0f, -64.0f);
             }
 
             break;
 
         case MOUNTAIN_1:
 
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[1].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
-                func_8008A4A8(8, NORTHWEST, 128.0f, 0.0f, 64.0f);
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[1].spawnVariant < 2 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_BUNNY, NORTHWEST, 128.0f, 0.0f, 64.0f);
             }
 
-            if (gSeason == SPRING && 6 < gHour && gHour < 16 && !(gMiscAnimals[2].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
-                func_8008A4A8(9, SOUTHWEST, 256.0f, 0.0f, -416.0f);
+            if (gSeason == SPRING && 6 < gHour && gHour < 16 && !(gMiscAnimals[2].spawnVariant < 2) && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, SOUTHWEST, 256.0f, 0.0f, -416.0f);
             }
             
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[2].unk_16 < 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
-                func_8008A4A8(9, SOUTHWEST, 160.0f, 0.0f, 128.0f);
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[2].spawnVariant < 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, SOUTHWEST, 160.0f, 0.0f, 128.0f);
             }
 
-            if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gMiscAnimals[3].unk_16 == 1 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                func_8008A4A8(0xA, SOUTHWEST, -96.0f, 0.0f, 128.0f);
+            if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gMiscAnimals[3].spawnVariant == 1 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_MONKEY, SOUTHWEST, -96.0f, 0.0f, 128.0f);
             }
 
-            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gMiscAnimals[4].unk_16 < 2)) {
-                func_8008A4A8(0xE, SOUTHWEST, 160.0f, 0.0f, 128.0f);
+            if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gMiscAnimals[4].spawnVariant < 2)) {
+                spawnMiscAnimal(MISC_ANIMAL_SNAKE, SOUTHWEST, 160.0f, 0.0f, 128.0f);
             }
 
-            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && !(gMiscAnimals[5].unk_16 < 2) && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
-                func_8008A4A8(0x14, SOUTHWEST, 0.0f, 0.0f, -128.0f);
+            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && !(gMiscAnimals[5].spawnVariant < 2) && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
+                spawnMiscAnimal(MISC_ANIMAL_DRAGONFLY, SOUTHWEST, 0.0f, 0.0f, -128.0f);
             }
 
-            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[4].unk_16 < 2 && gPlayer.heldItem != CRICKET_HELD_ITEM) {
-                func_8008A4A8(0x15, SOUTHWEST, 128.0f, 0.0f, 64.0f);
+            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[4].spawnVariant < 2 && gPlayer.heldItem != CRICKET_HELD_ITEM) {
+                spawnMiscAnimal(MISC_ANIMAL_CRICKET, SOUTHWEST, 128.0f, 0.0f, 64.0f);
             }
             
             break;
 
         case MOUNTAIN_2:
 
-            if (gSeason == AUTUMN && 12 < gHour && gHour < 22 && gMiscAnimals[0].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
-                func_8008A4A8(7, 6, -128.0f, 0.0f, 224.0f);
+            if (gSeason == AUTUMN && 12 < gHour && gHour < 22 && gMiscAnimals[0].spawnVariant < 2 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_FOX, 6, -128.0f, 0.0f, 224.0f);
             }
 
-            if (gSeason == WINTER && 12 < gHour && gHour < 22 && gMiscAnimals[0].unk_16 == 0 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
-                func_8008A4A8(7, 6, -128.0f, 0.0f, 224.0f);
+            if (gSeason == WINTER && 12 < gHour && gHour < 22 && gMiscAnimals[0].spawnVariant == 0 && (u8)(gPlayer.heldItem + 0x75) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_FOX, 6, -128.0f, 0.0f, 224.0f);
             }
             
-            if (gSeason == SPRING && 8 < gHour && gHour < 15 && gMiscAnimals[1].unk_16 < 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
-                func_8008A4A8(8, NORTHEAST, -192.0f, 0.0f, -192.0f);
+            if (gSeason == SPRING && 8 < gHour && gHour < 15 && gMiscAnimals[1].spawnVariant < 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_BUNNY, NORTHEAST, -192.0f, 0.0f, -192.0f);
             }
 
-            if (gSeason == SPRING && 6 < gHour && gHour < 16 && gMiscAnimals[2].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
-                func_8008A4A8(9, SOUTHWEST, -224.0f, 0.0f, -160.0f);
+            if (gSeason == SPRING && 6 < gHour && gHour < 16 && gMiscAnimals[2].spawnVariant < 2 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, SOUTHWEST, -224.0f, 0.0f, -160.0f);
             }
 
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[3].unk_16 < 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                func_8008A4A8(0xA, SOUTHWEST, -320.0f, 0.0f, -320.0f);
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[3].spawnVariant < 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_MONKEY, SOUTHWEST, -320.0f, 0.0f, -320.0f);
             }
 
-            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gMiscAnimals[3].unk_16 < 2) && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                func_8008A4A8(0xA, SOUTHWEST, 0.0f, 0.0f, 288.0f);
+            if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gMiscAnimals[3].spawnVariant < 2) && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                spawnMiscAnimal(MISC_ANIMAL_MONKEY, SOUTHWEST, 0.0f, 0.0f, 288.0f);
             }
 
-            if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gMiscAnimals[3].unk_16 == 0 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                gMiscAnimals[func_8008A4A8(0xA, SOUTHWEST, -112.0f, 0.0f, -160.0f)].actionState = 0x10;
+            if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gMiscAnimals[3].spawnVariant == 0 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
+                gMiscAnimals[spawnMiscAnimal(MISC_ANIMAL_MONKEY, SOUTHWEST, -112.0f, 0.0f, -160.0f)].actionState = 0x10;
             }
 
-            if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && gMiscAnimals[4].unk_16 < 2) {
-                func_8008A4A8(0xC, SOUTHWEST, -128.0f, 0.0f, 32.0f);
-                func_8008A4A8(0xC, SOUTHEAST, -96.0f, 0.0f, 64.0f);
+            if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && gMiscAnimals[4].spawnVariant < 2) {
+                spawnMiscAnimal(MISC_ANIMAL_BIRD, SOUTHWEST, -128.0f, 0.0f, 32.0f);
+                spawnMiscAnimal(MISC_ANIMAL_BIRD, SOUTHEAST, -96.0f, 0.0f, 64.0f);
             }
 
             if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gPlayer.heldItem < 0xB4) {
-                func_8008A4A8(0x10, SOUTHWEST, 96.0f, 0.0f, -96.0f);
+                spawnMiscAnimal(MISC_ANIMAL_LADYBUG, SOUTHWEST, 96.0f, 0.0f, -96.0f);
             }
 
-            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[3].unk_16 < 2 && gPlayer.heldItem != CICADA_HELD_ITEM) {
-                func_8008A4A8(0x11, SOUTHWEST, -112.0f, 0.0f, -160.0f);
+            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[3].spawnVariant < 2 && gPlayer.heldItem != CICADA_HELD_ITEM) {
+                spawnMiscAnimal(MISC_ANIMAL_CICADA, SOUTHWEST, -112.0f, 0.0f, -160.0f);
             }
             
             break;
         
         case TOP_OF_MOUNTAIN_1:
 
-            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].unk_16 < 2 && gPlayer.heldItem != HORNED_BEETLE_HELD_ITEM) {
-                func_8008A4A8(0x12, SOUTHWEST, 192.0f, 0.0f, -192.0f);
+            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].spawnVariant < 2 && gPlayer.heldItem != HORNED_BEETLE_HELD_ITEM) {
+                spawnMiscAnimal(MISC_ANIMAL_HORNED_BEETLE, SOUTHWEST, 192.0f, 0.0f, -192.0f);
             }
 
-            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[1].unk_16 < 2 && gPlayer.heldItem != STAG_BEETLE_HELD_ITEM) {
-                func_8008A4A8(0x13, SOUTHWEST, 224.0f, 0.0f, 0.0f);
+            if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[1].spawnVariant < 2 && gPlayer.heldItem != STAG_BEETLE_HELD_ITEM) {
+                spawnMiscAnimal(0x13, SOUTHWEST, 224.0f, 0.0f, 0.0f);
             }
 
             break;
         
         case MOON_MOUNTAIN:
 
-            if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gMiscAnimals[4].unk_16 < 2)) {
-                func_8008A4A8(0xC, SOUTHWEST, 192.0f, 0.0f, -64.0f);
-                func_8008A4A8(0xC, SOUTHEAST, 224.0f, 0.0f, -96.0f);
+            if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gMiscAnimals[4].spawnVariant < 2)) {
+                spawnMiscAnimal(MISC_ANIMAL_BIRD, SOUTHWEST, 192.0f, 0.0f, -64.0f);
+                spawnMiscAnimal(MISC_ANIMAL_BIRD, SOUTHEAST, 224.0f, 0.0f, -96.0f);
             }
 
-            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[5].unk_16 == 0 && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
-                func_8008A4A8(0x14, SOUTHWEST, 128.0f, 0.0f, -256.0f);
+            if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[5].spawnVariant == 0 && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
+                spawnMiscAnimal(MISC_ANIMAL_DRAGONFLY, SOUTHWEST, 128.0f, 0.0f, -256.0f);
             }
 
             break;
         
         case SQUARE:
 
-            if (gSeason != WINTER && gWeather == SUNNY && 5 < gHour && gHour < 9 && gMiscAnimals[4].unk_16 == 3) {
-                func_8008A4A8(0xB, SOUTHWEST, -128.0f, 0.0f, 0.0f);
-                func_8008A4A8(0xB, SOUTHWEST, -96.0f, 0.0f, -32.0f);
+            if (gSeason != WINTER && gWeather == SUNNY && 5 < gHour && gHour < 9 && gMiscAnimals[4].spawnVariant == 3) {
+                spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, -128.0f, 0.0f, 0.0f);
+                spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, -96.0f, 0.0f, -32.0f);
             }
 
             break;
@@ -1686,23 +1677,23 @@ void func_80088D54(void) {
         case BEACH:
 
             if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16) {
-                func_8008A4A8(0xD, SOUTHWEST, -256.0f, 0.0f, -64.0f);
+                spawnMiscAnimal(0xD, SOUTHWEST, -256.0f, 0.0f, -64.0f);
             }
 
             break;
 
         case VILLAGE_1:
                 
-            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].unk_16 == 0 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
-                func_8008A4A8(0xF, SOUTHWEST, 64.0f, 0.0f, -352.0f);
+            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].spawnVariant == 0 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
+                spawnMiscAnimal(0xF, SOUTHWEST, 64.0f, 0.0f, -352.0f);
             }
 
-            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].unk_16 == 1 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
-                func_8008A4A8(0xF, SOUTHWEST, -448.0f, 0.0f, 0.0f);
+            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].spawnVariant == 1 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
+                spawnMiscAnimal(0xF, SOUTHWEST, -448.0f, 0.0f, 0.0f);
             }
 
-            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[5].unk_16 == 1 && gPlayer.heldItem < LADYBUG_HELD_ITEM) {
-                func_8008A4A8(0x10, SOUTHWEST, -448.0f, 0.0f, 64.0f);
+            if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[5].spawnVariant == 1 && gPlayer.heldItem < LADYBUG_HELD_ITEM) {
+                spawnMiscAnimal(MISC_ANIMAL_LADYBUG, SOUTHWEST, -448.0f, 0.0f, 64.0f);
             }
         
             break;
@@ -1714,11 +1705,11 @@ void func_80088D54(void) {
                 if (gWeather != RAIN && gSeason != WINTER) {
                     
                     if ((u8)(gPlayer.heldItem + 0x55) >= 8) {
-                        func_8008A4A8(0, SOUTHWEST, 400.0f, 0.0f, -160.0f);
+                        spawnMiscAnimal(0, SOUTHWEST, 400.0f, 0.0f, -160.0f);
                     }
     
                     if (checkLifeEventBit(PUPPIES) && (u8)(gPlayer.heldItem - 0x7B) >= 8) {
-                        func_8008A4A8(1, SOUTHWEST, 432.0f, 0.0f, -160.0f);
+                        spawnMiscAnimal(1, SOUTHWEST, 432.0f, 0.0f, -160.0f);
                     }
                     
                 }
@@ -1726,10 +1717,10 @@ void func_80088D54(void) {
                 if (8 < gHour && gHour < 18 && !(SUNNY < gWeather && gWeather < 4)) {
                     
                     if ((u8)(gPlayer.heldItem + 0x7D) >= 8) {
-                        func_8008A4A8(2, SOUTHWEST, 32.0f, 0.0f, -96.0f);
+                        spawnMiscAnimal(2, SOUTHWEST, 32.0f, 0.0f, -96.0f);
                     }
                 
-                    func_8008A4A8(2, SOUTHWEST, 0.0f, 0.0f, -64.0f);
+                    spawnMiscAnimal(2, SOUTHWEST, 0.0f, 0.0f, -64.0f);
                 
                 }
                 
@@ -1742,11 +1733,11 @@ void func_80088D54(void) {
             if (gWeather == RAIN || gSeason == WINTER)  {
 
                 if ((u8)(gPlayer.heldItem + 0x55) >= 8) {
-                    func_8008A4A8(0, SOUTHWEST, -64.0f, 0.0f, -64.0f);
+                    spawnMiscAnimal(0, SOUTHWEST, -64.0f, 0.0f, -64.0f);
                 }
 
                 if (checkLifeEventBit(PUPPIES) && (u8)(gPlayer.heldItem - 0x7B) >= 8) {
-                    func_8008A4A8(1, SOUTHWEST, -96.0f, 0.0f, -64.0f);
+                    spawnMiscAnimal(1, SOUTHWEST, -96.0f, 0.0f, -64.0f);
                 }
                 
             }
@@ -1755,48 +1746,48 @@ void func_80088D54(void) {
         
         case RANCH:
 
-            if (gMiscAnimals[0].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
-                func_8008A4A8(4, NORTHEAST, -384.0f, 0.0f, 32.0f);
+            if (gMiscAnimals[0].spawnVariant < 2 && gWeather != RAIN && gSeason != WINTER) {
+                spawnMiscAnimal(4, NORTHEAST, -384.0f, 0.0f, 32.0f);
             }
 
-            if (gMiscAnimals[1].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
-                func_8008A4A8(3, SOUTHEAST, -320.0f, 0.0f, 0.0f);
+            if (gMiscAnimals[1].spawnVariant < 2 && gWeather != RAIN && gSeason != WINTER) {
+                spawnMiscAnimal(3, SOUTHEAST, -320.0f, 0.0f, 0.0f);
             }
    
-            if (gMiscAnimals[2].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
-                func_8008A4A8(3, SOUTHWEST, -288.0f, 0.0f, 96.0f);
+            if (gMiscAnimals[2].spawnVariant < 2 && gWeather != RAIN && gSeason != WINTER) {
+                spawnMiscAnimal(3, SOUTHWEST, -288.0f, 0.0f, 96.0f);
             }         
    
-            if (gMiscAnimals[3].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
-                func_8008A4A8(6, NORTHEAST, -288.0f, 0.0f, 128.0f);
+            if (gMiscAnimals[3].spawnVariant < 2 && gWeather != RAIN && gSeason != WINTER) {
+                spawnMiscAnimal(6, NORTHEAST, -288.0f, 0.0f, 128.0f);
             }         
    
-            if (gMiscAnimals[4].unk_16 < 2 && gWeather != RAIN && gSeason != WINTER) {
-                func_8008A4A8(5, SOUTHEAST, -352.0f, 0.0f, 80.0f);
+            if (gMiscAnimals[4].spawnVariant < 2 && gWeather != RAIN && gSeason != WINTER) {
+                spawnMiscAnimal(5, SOUTHEAST, -352.0f, 0.0f, 80.0f);
             }         
 
             break;
         
         case RANCH_BARN:
 
-            if (gMiscAnimals[0].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
-                func_8008A4A8(4, NORTHWEST, -96.0f, 0.0f, -192.0f);
+            if (gMiscAnimals[0].spawnVariant >= 2 || gWeather == RAIN || gSeason == WINTER) {
+                spawnMiscAnimal(4, NORTHWEST, -96.0f, 0.0f, -192.0f);
             }
 
-            if (gMiscAnimals[1].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
-                func_8008A4A8(3, NORTHWEST, -96.0f, 0.0f, -128.0f);
+            if (gMiscAnimals[1].spawnVariant >= 2 || gWeather == RAIN || gSeason == WINTER) {
+                spawnMiscAnimal(3, NORTHWEST, -96.0f, 0.0f, -128.0f);
             }
 
-            if (gMiscAnimals[2].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
-                func_8008A4A8(3, NORTHWEST, -96.0f, 0.0f, 64.0f);
+            if (gMiscAnimals[2].spawnVariant >= 2 || gWeather == RAIN || gSeason == WINTER) {
+                spawnMiscAnimal(3, NORTHWEST, -96.0f, 0.0f, 64.0f);
             }
 
-            if (gMiscAnimals[3].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
-                func_8008A4A8(6, SOUTHEAST, 0.0f, 0.0f, 64.0f);
+            if (gMiscAnimals[3].spawnVariant >= 2 || gWeather == RAIN || gSeason == WINTER) {
+                spawnMiscAnimal(6, SOUTHEAST, 0.0f, 0.0f, 64.0f);
             }
 
-            if (gMiscAnimals[4].unk_16 >= 2 || gWeather == RAIN || gSeason == WINTER) {
-                func_8008A4A8(5, SOUTHEAST, 0.0f, 0.0f, 128.0f);
+            if (gMiscAnimals[4].spawnVariant >= 2 || gWeather == RAIN || gSeason == WINTER) {
+                spawnMiscAnimal(5, SOUTHEAST, 0.0f, 0.0f, 128.0f);
             }
             
             break;
@@ -1805,23 +1796,23 @@ void func_80088D54(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A4A8);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", spawnMiscAnimal);
 
-u8 func_8008A4A8(u8 index, u8 direction, f32 x, f32 y, f32 z) {
+u8 spawnMiscAnimal(u8 animalType, u8 direction, f32 x, f32 y, f32 z) {
 
     u32 padding[4];
-    
+
     u8 i = 0;
-    u8 found = (index != 0) ? 0xFF : 6;
+    u8 found = (animalType != MISC_ANIMAL_PLAYER_DOG) ? 0xFF : 6;
     u8 temp;
-    
-    if (index == 5) {
-        found = 5;    
+
+    if (animalType == MISC_ANIMAL_COW) {
+        found = 5;
     }
 
     while (i < 5 && found == 0xFF) {
 
-        if (!(gMiscAnimals[i].flags & 1)) {
+        if (!(gMiscAnimals[i].flags & MISC_ANIMAL_ACTIVE)) {
             found = i;
         }
         
@@ -1831,11 +1822,11 @@ u8 func_8008A4A8(u8 index, u8 direction, f32 x, f32 y, f32 z) {
         
     if (found != 0xFF) {
 
-        gMiscAnimals[found].animalType = index;
+        gMiscAnimals[found].animalType = animalType;
         gMiscAnimals[found].direction = direction;
         gMiscAnimals[found].actionState = 0;
         gMiscAnimals[found].yDisplacement = 0;
-        gMiscAnimals[found].flags = 1;
+        gMiscAnimals[found].flags = MISC_ANIMAL_ACTIVE;
         gMiscAnimals[found].coordinates.x = x;
         gMiscAnimals[found].coordinates.y = y;
         gMiscAnimals[found].coordinates.z = z;
@@ -1848,36 +1839,36 @@ u8 func_8008A4A8(u8 index, u8 direction, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A5F0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateDogAffectionIfFed);
 
-void func_8008A5F0(void) {
+void updateDogAffectionIfFed(void) {
     
-    if (checkDailyEventBit(0x43) && (dogInfo.flags & 1)) {
+    if (checkDailyEventBit(FED_DOG) && (dogInfo.flags & DOG_ACTIVE)) {
         dogInfo.affection += adjustValue(dogInfo.affection, 2, MAX_AFFECTION);
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A650);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateChickenStartOfDay);
 
-void func_8008A650(u8 index) {
+void updateChickenStartOfDay(u8 index) {
     
-    if ((gChickens[index].flags & 1) && !(gChickens[index].flags & 0x100)) {
+    if ((gChickens[index].flags & CHICKEN_ACTIVE) && !(gChickens[index].flags & CHICKEN_NEWBORN)) {
         
-        if (gChickens[index].flags & 0x80) {
+        if (gChickens[index].flags & CHICKEN_LAID_EGG) {
             
-            gChickens[index].flags &= ~0x10;
+            gChickens[index].flags &= ~CHICKEN_FED;
 
         } else {
 
             if (gChickens[index].location != COOP) {
-                gChickens[index].flags &= ~0x10;
+                gChickens[index].flags &= ~CHICKEN_FED;
             }
 
             if (gChickens[index].location == FARM) {
                 
                 if (gSeason != WINTER) {
-                    gChickens[index].flags |= 0x10;
+                    gChickens[index].flags |= CHICKEN_FED;
                 } 
 
             } 
@@ -1888,7 +1879,7 @@ void func_8008A650(u8 index) {
         
             case CHICKEN_EGG:
                 
-                if (gChickens[index].flags & 0x20) {
+                if (gChickens[index].flags & CHICKEN_EGG_INCUBATING) {
                     
                     gChickens[index].typeCounter++;
                     
@@ -1898,8 +1889,8 @@ void func_8008A650(u8 index) {
                         
                         if (bornChickenIndex != 0xFF) {
 
-                            gChickens[bornChickenIndex].flags |= 0x100;
-                            gChickens[index].flags &= ~1;
+                            gChickens[bornChickenIndex].flags |= CHICKEN_NEWBORN;
+                            gChickens[index].flags &= ~CHICKEN_ACTIVE;
 
                             setLifeEventBit(CHICKEN_BORN);
                             
@@ -1918,7 +1909,7 @@ void func_8008A650(u8 index) {
                 gChickens[index].typeCounter++;
                 
                 if (gChickens[index].typeCounter == CHICK_DURATION) {
-                    func_800861A4(1, index, ADULT_CHICKEN, 0, 0);
+                    setAnimalState(1, index, ADULT_CHICKEN, 0, 0);
                 }
                 
                 break;
@@ -1932,7 +1923,7 @@ void func_8008A650(u8 index) {
                         if ((gChickens[index].flags & CHICKEN_FED)) {
                             initializeNewChicken(0, index);
                         } else {
-                            func_800861A4(1, index, 0xFF, CHICKEN_STARVED, 0);
+                            setAnimalState(1, index, 0xFF, CHICKEN_STARVED, 0);
                         }
                         
                         break;
@@ -1940,25 +1931,25 @@ void func_8008A650(u8 index) {
                     case CHICKEN_STARVED:
                         
                         if (gChickens[index].flags & CHICKEN_FED) {
-                            func_800861A4(1, index, 0xFF, CHICKEN_NORMAL, 0);
+                            setAnimalState(1, index, 0xFF, CHICKEN_NORMAL, 0);
                         } else {
                             
                             gChickens[index].conditionCounter++;
                             
                             if (gChickens[index].conditionCounter == 3) {
                                 
-                                func_800861A4(1, index, 0xFF, CHICKEN_DEAD, 0xFF);
+                                setAnimalState(1, index, 0xFF, CHICKEN_DEAD, 0xFF);
                                 
                                 gChickens[index].flags = 0;
 
                                 setLifeEventBit(ANIMAL_DIED);
                                 
-                                deadAnimalName[0] = gChickens[index].name[0];
-                                deadAnimalName[1] = gChickens[index].name[1];
-                                deadAnimalName[2] = gChickens[index].name[2];
-                                deadAnimalName[3] = gChickens[index].name[3];
-                                deadAnimalName[4] = gChickens[index].name[4];
-                                deadAnimalName[5] = gChickens[index].name[5];
+                                gDeadAnimalName[0] = gChickens[index].name[0];
+                                gDeadAnimalName[1] = gChickens[index].name[1];
+                                gDeadAnimalName[2] = gChickens[index].name[2];
+                                gDeadAnimalName[3] = gChickens[index].name[3];
+                                gDeadAnimalName[4] = gChickens[index].name[4];
+                                gDeadAnimalName[5] = gChickens[index].name[5];
 
                             }
                             
@@ -1976,32 +1967,32 @@ void func_8008A650(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008A9E8);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateFarmAnimalStartOfDay);
 
-void func_8008A9E8(u8 index) {
+void updateFarmAnimalStartOfDay(u8 index) {
     
-    if ((gFarmAnimals[index].flags & 1) && !(gFarmAnimals[index].flags & 0x800)) {
+    if ((gFarmAnimals[index].flags & FARM_ANIMAL_ACTIVE) && !(gFarmAnimals[index].flags & FARM_ANIMAL_NEWBORN)) {
         
-        if (gFarmAnimals[index].flags & 0x4000) {
+        if (gFarmAnimals[index].flags & FARM_ANIMAL_INDOORS) {
             
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_FED | 0x10);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
             
         } else if (gFarmAnimals[index].location == FARM) {
             
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_FED | 0x10);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
             
             if (checkAnimalCanEatGrass()) {
-                gFarmAnimals[index].flags |= (FARM_ANIMAL_FED | 0x10);
+                gFarmAnimals[index].flags |= (FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
             }
             
         } else {
-            func_80086458(index, -1);
+            adjustFarmAnimalAffection(index, -1);
         }
 
-        if (D_80189054 != 0xFF) {
+        if (gCowFestivalEnteredCowIndex!= 0xFF) {
             
-            if (D_80189054 == index) {
-                gFarmAnimals[D_80189054].flags |= (FARM_ANIMAL_FED | 0x10);
+            if (gCowFestivalEnteredCowIndex== index) {
+                gFarmAnimals[gCowFestivalEnteredCowIndex].flags |= (FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
             }
             
         }
@@ -2012,7 +2003,7 @@ void func_8008A9E8(u8 index) {
                 gFarmAnimals[index].typeCounter++;
                 
                 if (gFarmAnimals[index].typeCounter == COW_INFANCY_DURATION) {
-                    func_800861A4(2, index, CALF, 0xFF, 0);
+                    setAnimalState(2, index, CALF, 0xFF, 0);
                 }
                 
                 break;
@@ -2021,7 +2012,7 @@ void func_8008A9E8(u8 index) {
                 gFarmAnimals[index].typeCounter++;
                 
                 if (gFarmAnimals[index].typeCounter == COW_YOUTH_DURATION) {
-                    func_800861A4(2, index, ADULT_COW, 0xFF, 0);
+                    setAnimalState(2, index, ADULT_COW, 0xFF, 0);
                 }
                 
                 break;
@@ -2034,26 +2025,26 @@ void func_8008A9E8(u8 index) {
                         
                         if (!(gFarmAnimals[index].flags & FARM_ANIMAL_FED)) {
                             
-                            func_80086458(index, -8);
+                            adjustFarmAnimalAffection(index, -8);
                             
                             if (!(getRandomNumberInRange(0, 1))) {
-                                func_800861A4(2, index, 0xFF, COW_SICK, 0);
-                                func_80086458(index, -30);
+                                setAnimalState(2, index, 0xFF, COW_SICK, 0);
+                                adjustFarmAnimalAffection(index, -30);
                                 gHappiness += adjustValue(gHappiness, -10, 0xFF);
                             }
         
                         } else if (gFarmAnimals[index].location == FARM) {
                             
                             if (!(getRandomNumberInRange(0, 3))) {
-                                func_800861A4(2, index, 0xFF, COW_HAPPY, 0);
-                                func_80086458(index, 30);
+                                setAnimalState(2, index, 0xFF, COW_HAPPY, 0);
+                                adjustFarmAnimalAffection(index, 30);
                                 gHappiness += adjustValue(gHappiness, 5, 0xFF);
                             }
                             
                         }
                         
-                        if (gFarmAnimals[index].flags & COW_PREGNANT) {
-                            func_800861A4(2, index, PREGNANT_COW, 0xFF, 0);
+                        if (gFarmAnimals[index].flags & FARM_ANIMAL_PREGNANT) {
+                            setAnimalState(2, index, PREGNANT_COW, 0xFF, 0);
                         }
                         
                         break;
@@ -2063,7 +2054,7 @@ void func_8008A9E8(u8 index) {
                         gFarmAnimals[index].conditionCounter++;
                             
                         if (gFarmAnimals[index].conditionCounter == 3) {
-                            func_800861A4(2, index, 0xFF, COW_NORMAL, 0);
+                            setAnimalState(2, index, 0xFF, COW_NORMAL, 0);
                         }
                         
                         break;
@@ -2072,12 +2063,12 @@ void func_8008A9E8(u8 index) {
                         
                         if (gFarmAnimals[index].flags & FARM_ANIMAL_FED) {
                             
-                            func_80086458(index, -8);
+                            adjustFarmAnimalAffection(index, -8);
                             
                             gFarmAnimals[index].conditionCounter++;
                             
                             if (gFarmAnimals[index].conditionCounter == 3) {
-                                func_800861A4(2, index, 0xFF, COW_NORMAL, 0);
+                                setAnimalState(2, index, 0xFF, COW_NORMAL, 0);
                             }
                             
                         }
@@ -2090,18 +2081,18 @@ void func_8008A9E8(u8 index) {
                         
                         if (gFarmAnimals[index].conditionCounter == ANIMAL_DEATH_COUNT) {
                             
-                            func_800861A4(2, index, 0xFF, COW_DEAD, 0xFF);
+                            setAnimalState(2, index, 0xFF, COW_DEAD, 0xFF);
 
                             gFarmAnimals[index].flags = 0;
                             
                             setLifeEventBit(ANIMAL_DIED);
                             
-                            deadAnimalName[0] = gFarmAnimals[index].name[0];
-                            deadAnimalName[1] = gFarmAnimals[index].name[1];
-                            deadAnimalName[2] = gFarmAnimals[index].name[2];
-                            deadAnimalName[3] = gFarmAnimals[index].name[3];
-                            deadAnimalName[4] = gFarmAnimals[index].name[4];
-                            deadAnimalName[5] = gFarmAnimals[index].name[5];
+                            gDeadAnimalName[0] = gFarmAnimals[index].name[0];
+                            gDeadAnimalName[1] = gFarmAnimals[index].name[1];
+                            gDeadAnimalName[2] = gFarmAnimals[index].name[2];
+                            gDeadAnimalName[3] = gFarmAnimals[index].name[3];
+                            gDeadAnimalName[4] = gFarmAnimals[index].name[4];
+                            gDeadAnimalName[5] = gFarmAnimals[index].name[5];
                             
                         }
                         
@@ -2121,10 +2112,10 @@ void func_8008A9E8(u8 index) {
                     
                     if (bornAnimalIndex != 0xFF) {
     
-                        gFarmAnimals[bornAnimalIndex].flags |= 0x800;
+                        gFarmAnimals[bornAnimalIndex].flags |= FARM_ANIMAL_NEWBORN;
                         gFarmAnimals[bornAnimalIndex].affection = gFarmAnimals[index].affection / 2;
                         
-                        func_800861A4(2, index, ADULT_COW, 0xFF, 0);
+                        setAnimalState(2, index, ADULT_COW, 0xFF, 0);
                         setLifeEventBit(FARM_ANIMAL_BORN);
                     
                     } else {
@@ -2140,7 +2131,7 @@ void func_8008A9E8(u8 index) {
                 gFarmAnimals[index].typeCounter++;
                 
                 if (gFarmAnimals[index].typeCounter == SHEEP_YOUTH_DURATION) {
-                    func_800861A4(2, index, ADULT_SHEEP, 0xFF, 0);
+                    setAnimalState(2, index, ADULT_SHEEP, 0xFF, 0);
                 }
     
                 break;
@@ -2150,7 +2141,7 @@ void func_8008A9E8(u8 index) {
                 gFarmAnimals[index].typeCounter++;
                 
                 if (gFarmAnimals[index].typeCounter == WOOL_REGROW_DURATION) {
-                    func_800861A4(2, index, ADULT_SHEEP, 0xFF, 0);
+                    setAnimalState(2, index, ADULT_SHEEP, 0xFF, 0);
                 }
                 
                 switch (gFarmAnimals[index].condition) {
@@ -2159,12 +2150,12 @@ void func_8008A9E8(u8 index) {
                         
                         if (!(gFarmAnimals[index].flags & FARM_ANIMAL_FED)) {
                             
-                            func_80086458(index, -8);
+                            adjustFarmAnimalAffection(index, -8);
                             
                             if (!(getRandomNumberInRange(0, 1))) {
                                 
-                                func_800861A4(2, index, 0xFF, SHEEP_SICK, 0);
-                                func_80086458(index, -30);
+                                setAnimalState(2, index, 0xFF, SHEEP_SICK, 0);
+                                adjustFarmAnimalAffection(index, -30);
                                 
                                 gHappiness += adjustValue(gHappiness, -10, 0xFF);
                                 
@@ -2180,17 +2171,17 @@ void func_8008A9E8(u8 index) {
                         
                         if (gFarmAnimals[index].conditionCounter == ANIMAL_DEATH_COUNT) {
                             
-                            func_800861A4(2, index, 0xFF, SHEEP_DEAD, 0xFF);
+                            setAnimalState(2, index, 0xFF, SHEEP_DEAD, 0xFF);
                             gFarmAnimals[index].flags = 0;
                             
                             setLifeEventBit(ANIMAL_DIED);
                             
-                            deadAnimalName[0] = gFarmAnimals[index].name[0];
-                            deadAnimalName[1] = gFarmAnimals[index].name[1];
-                            deadAnimalName[2] = gFarmAnimals[index].name[2];
-                            deadAnimalName[3] = gFarmAnimals[index].name[3];
-                            deadAnimalName[4] = gFarmAnimals[index].name[4];
-                            deadAnimalName[5] = gFarmAnimals[index].name[5];
+                            gDeadAnimalName[0] = gFarmAnimals[index].name[0];
+                            gDeadAnimalName[1] = gFarmAnimals[index].name[1];
+                            gDeadAnimalName[2] = gFarmAnimals[index].name[2];
+                            gDeadAnimalName[3] = gFarmAnimals[index].name[3];
+                            gDeadAnimalName[4] = gFarmAnimals[index].name[4];
+                            gDeadAnimalName[5] = gFarmAnimals[index].name[5];
                             
                         }
                         
@@ -2208,12 +2199,12 @@ void func_8008A9E8(u8 index) {
 
                         if (!(gFarmAnimals[index].flags & FARM_ANIMAL_FED)) {
                             
-                            func_80086458(index, -8);
+                            adjustFarmAnimalAffection(index, -8);
                             
                             if (!(getRandomNumberInRange(0, 1))) {
                                 
-                                func_800861A4(2, index, 0xFF, SHEEP_SICK, 0);
-                                func_80086458(index, -30);
+                                setAnimalState(2, index, 0xFF, SHEEP_SICK, 0);
+                                adjustFarmAnimalAffection(index, -30);
                                 gHappiness += adjustValue(gHappiness, -10, 0xFF);
                                 
                             }
@@ -2227,17 +2218,17 @@ void func_8008A9E8(u8 index) {
                         
                         if (gFarmAnimals[index].conditionCounter == ANIMAL_DEATH_COUNT) {
                             
-                            func_800861A4(2, index, 0xFF, SHEEP_DEAD, 0xFF);
+                            setAnimalState(2, index, 0xFF, SHEEP_DEAD, 0xFF);
                             gFarmAnimals[index].flags = 0;
                             
                             setLifeEventBit(ANIMAL_DIED);
                             
-                            deadAnimalName[0] = gFarmAnimals[index].name[0];
-                            deadAnimalName[1] = gFarmAnimals[index].name[1];
-                            deadAnimalName[2] = gFarmAnimals[index].name[2];
-                            deadAnimalName[3] = gFarmAnimals[index].name[3];
-                            deadAnimalName[4] = gFarmAnimals[index].name[4];
-                            deadAnimalName[5] = gFarmAnimals[index].name[5];
+                            gDeadAnimalName[0] = gFarmAnimals[index].name[0];
+                            gDeadAnimalName[1] = gFarmAnimals[index].name[1];
+                            gDeadAnimalName[2] = gFarmAnimals[index].name[2];
+                            gDeadAnimalName[3] = gFarmAnimals[index].name[3];
+                            gDeadAnimalName[4] = gFarmAnimals[index].name[4];
+                            gDeadAnimalName[5] = gFarmAnimals[index].name[5];
                             
                         }
                         
@@ -2253,11 +2244,11 @@ void func_8008A9E8(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008B150);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateHorseAge);
 
-void func_8008B150(void) {
+void updateHorseAge(void) {
 
-    if ((horseInfo.flags & 1) && horseInfo.grown == FALSE) {
+    if ((horseInfo.flags & HORSE_ACTIVE) && horseInfo.grown == FALSE) {
         
         horseInfo.age++;
     
@@ -2274,11 +2265,11 @@ void func_8008B150(void) {
 
 void initializeDogEntity(void) {
     
-    if ((dogInfo.flags & 1) && (dogInfo.location == gBaseMapIndex) && !(dogInfo.flags & 8)) {
+    if ((dogInfo.flags & DOG_ACTIVE) && (dogInfo.location == gBaseMapIndex) && !(dogInfo.flags & DOG_HELD)) {
         
         dogInfo.entityIndex = 1;
         
-        loadEntity(1, 0x40, TRUE);
+        loadEntity(1, ENTITY_ASSET_PLAYER_DOG, TRUE);
         setEntityCollidable(dogInfo.entityIndex, TRUE);
         setEntityYMovement(dogInfo.entityIndex, TRUE);
         setCameraTrackingEntity(dogInfo.entityIndex, FALSE);
@@ -2286,9 +2277,9 @@ void initializeDogEntity(void) {
         setEntityDirection(dogInfo.entityIndex, convertSpriteToWorldDirection(dogInfo.direction, MAIN_MAP_INDEX));
         setEntityCoordinates(dogInfo.entityIndex, dogInfo.coordinates.x, dogInfo.coordinates.y, dogInfo.coordinates.z);
         
-        dogInfo.unk_17 = 0;
-        dogInfo.unk_1A = 0;
-        dogInfo.flags |= 4;
+        dogInfo.actionState = 0;
+        dogInfo.stateTimer = 0;
+        dogInfo.flags |= DOG_ENTITY_LOADED;
         
     }
     
@@ -2300,7 +2291,7 @@ void initializeDogEntity(void) {
 
 void initializeChickenEntity(u8 chickenIndex) {
 
-    if ((gChickens[chickenIndex].flags & 1) && (gChickens[chickenIndex].location == gBaseMapIndex) && !(gChickens[chickenIndex].flags & 8)) {
+    if ((gChickens[chickenIndex].flags & CHICKEN_ACTIVE) && (gChickens[chickenIndex].location == gBaseMapIndex) && !(gChickens[chickenIndex].flags & CHICKEN_HELD)) {
     
         gChickens[chickenIndex].entityIndex = chickenIndex + 2;
         
@@ -2334,11 +2325,11 @@ void initializeChickenEntity(u8 chickenIndex) {
         setEntityCoordinates(gChickens[chickenIndex].entityIndex, gChickens[chickenIndex].coordinates.x, gChickens[chickenIndex].coordinates.y, gChickens[chickenIndex].coordinates.z);
         
         gChickens[chickenIndex].actionState = 0;
-        gChickens[chickenIndex].flags |= 4;
+        gChickens[chickenIndex].flags |= CHICKEN_ENTITY_LOADED;
         
     }
     
-    func_8008CF94(chickenIndex);
+    updateChicken(chickenIndex);
     
 }
 
@@ -2346,7 +2337,7 @@ void initializeChickenEntity(u8 chickenIndex) {
 
 void initializeFarmAnimalEntity(u8 index) {
 
-    if ((gFarmAnimals[index].flags & 1) && (D_80189054 != index) && (gFarmAnimals[index].location == gBaseMapIndex)) {
+    if ((gFarmAnimals[index].flags & FARM_ANIMAL_ACTIVE) && (gCowFestivalEnteredCowIndex!= index) && (gFarmAnimals[index].location == gBaseMapIndex)) {
         
         gFarmAnimals[index].entityIndex = index + 21;
         
@@ -2391,20 +2382,20 @@ void initializeFarmAnimalEntity(u8 index) {
         setEntityDirection(gFarmAnimals[index].entityIndex, convertSpriteToWorldDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
         setEntityCoordinates(gFarmAnimals[index].entityIndex, gFarmAnimals[index].coordinates.x, gFarmAnimals[index].coordinates.y, gFarmAnimals[index].coordinates.z);
     
-        func_800300F8(gFarmAnimals[index].entityIndex, FALSE);
+        setEntityHandlesMultipleCollisions(gFarmAnimals[index].entityIndex, FALSE);
     
-        gFarmAnimals[index].flags |= 0x4;
-        gFarmAnimals[index].flags &= ~(0x200 | 0x400);
+        gFarmAnimals[index].flags |= FARM_ANIMAL_ENTITY_LOADED;
+        gFarmAnimals[index].flags &= ~(FARM_ANIMAL_APPROACHING | FARM_ANIMAL_LINGERING);
         
-        if ((gWeather == SUNNY) || !(getLevelFlags(gFarmAnimals[index].location) & 2)) {
-            gFarmAnimals[index].unk_1B = 0;
+        if ((gWeather == SUNNY) || !(getLevelFlags(gFarmAnimals[index].location) & OUTDOORS)) {
+            gFarmAnimals[index].actionState = 0;
         } else {
-            gFarmAnimals[index].unk_1B = 19;
+            gFarmAnimals[index].actionState = 19;
         }
     
     }
     
-    func_8008DAA0(index);
+    updateFarmAnimal(index);
 
 }
 
@@ -2412,7 +2403,7 @@ void initializeFarmAnimalEntity(u8 index) {
 
 void initializeHorseEntity(void) {
 
-    if ((horseInfo.flags & 1) && (horseInfo.location == gBaseMapIndex) && !(horseInfo.flags & 8)) {
+    if ((horseInfo.flags & HORSE_ACTIVE) && (horseInfo.location == gBaseMapIndex) && !(horseInfo.flags & 8)) {
         
         horseInfo.entityIndex = 38;
         
@@ -2433,7 +2424,7 @@ void initializeHorseEntity(void) {
         setEntityCoordinates(horseInfo.entityIndex, horseInfo.coordinates.x, horseInfo.coordinates.y, horseInfo.coordinates.z);
         
         horseInfo.actionState = 0;
-        horseInfo.flags |= 4;
+        horseInfo.flags |= HORSE_ENTITY_LOADED;
 
     }
     
@@ -2445,24 +2436,22 @@ void initializeHorseEntity(void) {
 
 void initializeMiscAnimalEntity(u8 index, u8 arg1) {
 
-    if ((gMiscAnimals[index].flags & 1) && (index < 7)) {
+    if ((gMiscAnimals[index].flags & MISC_ANIMAL_ACTIVE) && (index < 7)) {
         
         // initialize entity objects if needed
         switch (gMiscAnimals[index].animalType) {
-    
-            // player's dog
-            case 0:
+
+            case MISC_ANIMAL_PLAYER_DOG:
                 initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOTS_1_20_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_1_20_ANIM_METADATA, (u32*)ENTITY_SLOTS_1_20_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_1_20_TEXTURE_TO_PALETTE_LOOKUP);
                 setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 2);
                 break;
-            
-            // player's horse
-            case 5:
+
+            case MISC_ANIMAL_COW:
                 initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOTS_21_28_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_21_28_ANIM_METADATA, (u32*)ENTITY_SLOTS_21_28_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_21_28_TEXTURE_TO_PALETTE_LOOKUP);
                 break;
-            
+
             default:
-                
+
                 switch (index) {
 
                     case 0:
@@ -2484,79 +2473,79 @@ void initializeMiscAnimalEntity(u8 index, u8 arg1) {
                 }
 
                 // set different palette for horse 2
-                if (gMiscAnimals[index].animalType == 4) {
+                if (gMiscAnimals[index].animalType == MISC_ANIMAL_HORSE_2) {
                     setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 0);
                 }
-                
+
                 break;
-            
+
         }
         
         switch (gMiscAnimals[index].animalType) {
-        
-            case 0:
+
+            case MISC_ANIMAL_PLAYER_DOG:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_PLAYER_DOG, TRUE);
                 break;
-            case 1:
+            case MISC_ANIMAL_NPC_DOG:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG, TRUE);
                 break;
-            case 2:
+            case MISC_ANIMAL_CAT:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CAT, TRUE);
                 break;
-            case 3:
-            case 4:
+            case MISC_ANIMAL_HORSE:
+            case MISC_ANIMAL_HORSE_2:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_HORSE_UNBRIDLED, TRUE);
                 break;
-            case 6:
+            case MISC_ANIMAL_SHEEP:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_SHEEP, TRUE);
                 break;
-            case 5:
+            case MISC_ANIMAL_COW:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_COW, TRUE);
                 break;
-            case 7:
+            case MISC_ANIMAL_FOX:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_FOX, TRUE);
                 break;
-            case 8:
+            case MISC_ANIMAL_BUNNY:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BUNNY, TRUE);
                 break;
-            case 9:
+            case MISC_ANIMAL_SQUIRREL:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_SQUIRREL, TRUE);
                 break;
-            case 10:
+            case MISC_ANIMAL_MONKEY:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_MONKEY, TRUE);
                 break;
-            case 11:
+            case MISC_ANIMAL_SPARROW:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BIRD, TRUE);
                 setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 0);
                 break;
-            case 12:
+            case MISC_ANIMAL_BIRD:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BIRD, TRUE);
                 break;
-            case 13:
+            case MISC_ANIMAL_CRAB:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CRAB, TRUE);
                 break;
-            case 14:
+            case MISC_ANIMAL_SNAKE:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_SNAKE, TRUE);
                 break;
-            case 15:
+            case MISC_ANIMAL_WHITE_BUTTERFLY:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_WHITE_BUTTERFLY, TRUE);
                 break;
-            case 16:
+            case MISC_ANIMAL_LADYBUG:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_LADYBUG, TRUE);
                 break;
-            case 17:
+            case MISC_ANIMAL_CICADA:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CICADA, TRUE);
                 break;
-            case 18:
+            case MISC_ANIMAL_HORNED_BEETLE:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_HORNED_BEETLE, TRUE);
                 break;
-            case 19:
+            case MISC_ANIMAL_STAG_BEETLE:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_STAG_BEETLE, TRUE);
                 break;
-            case 20:
+            case MISC_ANIMAL_DRAGONFLY:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DRAGONFLY, TRUE);
                 break;
-            case 21:
+            case MISC_ANIMAL_CRICKET:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BELL_RING_CRICKET, TRUE);
                 break;
         }
@@ -2567,14 +2556,14 @@ void initializeMiscAnimalEntity(u8 index, u8 arg1) {
         
         setEntityDirection(gMiscAnimals[index].entityIndex, convertSpriteToWorldDirection(gMiscAnimals[index].direction, MAIN_MAP_INDEX));
         setEntityCoordinates(gMiscAnimals[index].entityIndex, gMiscAnimals[index].coordinates.x, gMiscAnimals[index].coordinates.y, gMiscAnimals[index].coordinates.z);
-        func_800300F8(gMiscAnimals[index].entityIndex, FALSE);
+        setEntityHandlesMultipleCollisions(gMiscAnimals[index].entityIndex, FALSE);
         
         gMiscAnimals[index].actionState = arg1;
-        gMiscAnimals[index].flags |= 4;
+        gMiscAnimals[index].flags |= MISC_ANIMAL_ENTITY_LOADED;
     
     }
     
-    func_8009476C(index);
+    updateMiscAnimal(index);
     
 }
 
@@ -2584,17 +2573,17 @@ void updateDog(void) {
 
     Vec3f vec;
 
-    if ((dogInfo.flags & 1) && (dogInfo.flags & 4)) {
+    if ((dogInfo.flags & DOG_ACTIVE) && (dogInfo.flags & DOG_ENTITY_LOADED)) {
         
-        if (checkEntityAnimationStateChanged(dogInfo.entityIndex) || dogInfo.flags & 0x20) {
+        if (checkEntityAnimationStateChanged(dogInfo.entityIndex) || dogInfo.flags & DOG_COLLISION_WITH_PLAYER) {
 
-            if (dogInfo.unk_1A == 0) {
-                func_8008C358();
+            if (dogInfo.stateTimer == 0) {
+                updateDogActionState();
             } else {
-                dogInfo.unk_1A--;
+                dogInfo.stateTimer--;
             }
             
-            dogInfo.flags &= ~0x20;
+            dogInfo.flags &= ~DOG_COLLISION_WITH_PLAYER;
             
         }
         
@@ -2606,31 +2595,31 @@ void updateDog(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008C358);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateDogActionState);
 
-void func_8008C358(void) {
+void updateDogActionState(void) {
 
     u16 temp;
     
-    switch (dogInfo.unk_17) {
+    switch (dogInfo.actionState) {
 
         case 0:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 10;
+            dogInfo.stateTimer = 10;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0);
             
-            if (dogInfo.flags & 0x10) {
+            if (dogInfo.flags & DOG_FOLLOWING) {
                 
                 dogInfo.direction = calculateAnimalDirectionToPlayer(entities[dogInfo.entityIndex].coordinates.x, entities[dogInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
-                dogInfo.unk_17 = 4;
+                dogInfo.actionState = 4;
                 
             } else {
 
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    dogInfo.unk_17 = 0;
+                    dogInfo.actionState = 0;
                 } else {
     
                     temp = getRandomNumberInRange(0, 20);
@@ -2642,51 +2631,51 @@ void func_8008C358(void) {
                     temp = getRandomNumberInRange(0, 10);
     
                     if (temp == 0) {
-                        dogInfo.unk_17 = 1;
+                        dogInfo.actionState = 1;
                     }
                     if (temp == 1) {
-                        dogInfo.unk_17 = 2;
+                        dogInfo.actionState = 2;
                     }
                     if (temp == 2) {
-                        dogInfo.unk_17 = 3;
+                        dogInfo.actionState = 3;
                     }
                     if (temp == 3) {
-                        dogInfo.unk_17 = 4;
+                        dogInfo.actionState = 4;
                     }
                     if (temp == 4) {
-                        dogInfo.unk_17 = 5;
+                        dogInfo.actionState = 5;
                     }
                     if (temp == 5) {
-                        dogInfo.unk_17 = 6;
+                        dogInfo.actionState = 6;
                     }
                     if (temp == 6) {
-                        dogInfo.unk_17 = 7;
+                        dogInfo.actionState = 7;
                     }
                     if (temp == 7) {
-                        dogInfo.unk_17 = 8;
+                        dogInfo.actionState = 8;
                     }
                     if (temp == 8) {
-                        dogInfo.unk_17 = 0xA;
+                        dogInfo.actionState = 10;
                     }
                     if (temp == 9) {
-                        dogInfo.unk_17 = 0x18;
+                        dogInfo.actionState = 24;
                     }
                     if (temp == 10) {
-                        dogInfo.unk_17 = 0x19;
+                        dogInfo.actionState = 25;
                     }
                     
                 }
                     
             } 
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 1:
     
             dogInfo.speed = 1;
-            dogInfo.unk_1A = 10;
+            dogInfo.stateTimer = 10;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 8);
@@ -2694,34 +2683,34 @@ void func_8008C358(void) {
             temp = getRandomNumberInRange(0, 19);
             
             if (temp < 10) {
-                dogInfo.unk_17 = 1;
+                dogInfo.actionState = 1;
             } else if (temp >= 15) {
-                dogInfo.unk_17 = 4;
+                dogInfo.actionState = 4;
             } else {
-                dogInfo.unk_17 = 0;
+                dogInfo.actionState = 0;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 2:
 
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x30);
-            dogInfo.unk_17 = 0x10;
+            dogInfo.actionState = 16;
             
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 3:
 
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 10;
+            dogInfo.stateTimer = 10;
             dogInfo.unk_1B = 0;
 
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x20);
@@ -2730,50 +2719,50 @@ void func_8008C358(void) {
             
             if (temp < 10) {
                 
-                dogInfo.unk_17 = 3;
+                dogInfo.actionState = 3;
                 
             } else {
 
                 if (9 < temp && temp < 12) {
-                    dogInfo.unk_17 = 0;
+                    dogInfo.actionState = 0;
                 }
 
                 if (11 < temp && temp < 14) {
-                    dogInfo.unk_17 = 11;
+                    dogInfo.actionState = 11;
                 }
 
                 if (13 < temp && temp < 16) {
-                    dogInfo.unk_17 = 12;
+                    dogInfo.actionState = 12;
                 }
                 
                 if (15 < temp && temp < 18) {
-                    dogInfo.unk_17 = 13;
+                    dogInfo.actionState = 13;
                 }
                 
                 if (17 < temp && temp < 20) {
-                    dogInfo.unk_17 = 14;
+                    dogInfo.actionState = 14;
                 }
                
             }
             
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
 
             break;
         
         case 4:
             
             dogInfo.speed = 2;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x10);
             
-            if (dogInfo.flags & 0x10) {
+            if (dogInfo.flags & DOG_FOLLOWING) {
                 
                 dogInfo.direction = calculateAnimalDirectionToPlayer(entities[dogInfo.entityIndex].coordinates.x, entities[dogInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (!(getRandomNumberInRange(0, 20))) {
-                    dogInfo.flags &= ~0x10;
+                    dogInfo.flags &= ~DOG_FOLLOWING;
                 }
                 
             } else {
@@ -2782,45 +2771,45 @@ void func_8008C358(void) {
 
                 if (temp < 10) {
                     
-                    dogInfo.unk_17 = 4;
+                    dogInfo.actionState = 4;
                     
                 } else {
     
                     if (9 < temp && temp < 13) {
-                        dogInfo.unk_17 = 0;
+                        dogInfo.actionState = 0;
                     }
     
                     if (12 < temp && temp < 16) {
-                        dogInfo.unk_17 = 1;
+                        dogInfo.actionState = 1;
                     }
     
                     if (15 < temp && temp < 19) {
-                        dogInfo.unk_17 = 21;
+                        dogInfo.actionState = 21;
                     }
                    
                 }
             
             }
             
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
 
             break;
 
         case 5:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x90);
             
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 5;
+                dogInfo.actionState = 5;
             } else {
-                dogInfo.unk_17 = 3;
+                dogInfo.actionState = 3;
             }
     
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
 
             break;
 
@@ -2828,163 +2817,163 @@ void func_8008C358(void) {
         case 6:
 
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0xA0);
             
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 6;
+                dogInfo.actionState = 6;
             } else {
-                dogInfo.unk_17 = 0;
+                dogInfo.actionState = 0;
             }
     
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 7:
 
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0xA8);
             
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 7;
+                dogInfo.actionState = 7;
             } else {
-                dogInfo.unk_17 = 0;
+                dogInfo.actionState = 0;
             }
     
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
         
         case 8:
 
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0xB0);
             
             if (getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 0;
+                dogInfo.actionState = 0;
             } else {
-                dogInfo.unk_17 = 8;
+                dogInfo.actionState = 8;
             }
     
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
         
         case 9:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0xB8);
             
-            dogInfo.unk_17 = 26;
+            dogInfo.actionState = 26;
             
             break;
         
         case 10:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 10;
+            dogInfo.stateTimer = 10;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0xC8);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 10;
+                dogInfo.actionState = 10;
             } else {
-                dogInfo.unk_17 = 0;
+                dogInfo.actionState = 0;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
                 
         case 11:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 10;
+            dogInfo.stateTimer = 10;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x28);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 11;
+                dogInfo.actionState = 11;
             } else {
-                dogInfo.unk_17 = 3;
+                dogInfo.actionState = 3;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
                         
         case 12:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 10;
+            dogInfo.stateTimer = 10;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x50);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 12;
+                dogInfo.actionState = 12;
             } else {
-                dogInfo.unk_17 = 3;
+                dogInfo.actionState = 3;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
                         
         case 13:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x58);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 13;
+                dogInfo.actionState = 13;
             } else {
-                dogInfo.unk_17 = 3;
+                dogInfo.actionState = 3;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
                         
         case 14:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x60);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 14;
+                dogInfo.actionState = 14;
             } else {
-                dogInfo.unk_17 = 3;
+                dogInfo.actionState = 3;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 16:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 10;
+            dogInfo.stateTimer = 10;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x28);
@@ -2992,79 +2981,79 @@ void func_8008C358(void) {
             temp = getRandomNumberInRange(0, 14);
 
             if (temp < 10) {
-                dogInfo.unk_17 = 16;
+                dogInfo.actionState = 16;
             }
             if (temp == 10) {
-                dogInfo.unk_17 = 27;
+                dogInfo.actionState = 27;
             }
             if (temp == 11) {
-                dogInfo.unk_17 = 17;
+                dogInfo.actionState = 17;
             }
             if (temp == 12) {
-                dogInfo.unk_17 = 18;
+                dogInfo.actionState = 18;
             }
             if (temp == 13) {
-                dogInfo.unk_17 = 19;
+                dogInfo.actionState = 19;
             }
             if (temp == 14) {
-                dogInfo.unk_17 = 20;
+                dogInfo.actionState = 20;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
                         
         case 17:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x68);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 17;
+                dogInfo.actionState = 17;
             } else {
-                dogInfo.unk_17 = 16;
+                dogInfo.actionState = 16;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
                         
         case 18:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x70);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 18;
+                dogInfo.actionState = 18;
             } else {
-                dogInfo.unk_17 = 16;
+                dogInfo.actionState = 16;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 19:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x78);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 19;
+                dogInfo.actionState = 19;
             } else {
-                dogInfo.unk_17 = 16;
+                dogInfo.actionState = 16;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
 
@@ -3072,143 +3061,143 @@ void func_8008C358(void) {
         case 20:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 10;
+            dogInfo.stateTimer = 10;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x80);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 20;
+                dogInfo.actionState = 20;
             } else {
-                dogInfo.unk_17 = 16;
+                dogInfo.actionState = 16;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 21:
             
             dogInfo.speed = 1;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x38);
             
-            dogInfo.unk_17 = 22;
-            dogInfo.flags |= 2;
+            dogInfo.actionState = 22;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;        
         
         case 22:
             
             dogInfo.speed = 2;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x40);
             
-            dogInfo.unk_17 = 23;
-            dogInfo.flags |= 2;
+            dogInfo.actionState = 23;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;     
         
         case 23:
             
             dogInfo.speed = 1;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x48);
             
-            dogInfo.unk_17 = 0;
-            dogInfo.flags |= 2;
+            dogInfo.actionState = 0;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;     
                                 
         case 24:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x88);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 24;
+                dogInfo.actionState = 24;
             } else {
-                dogInfo.unk_17 = 0;
+                dogInfo.actionState = 0;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
                                 
         case 25:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x98);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.unk_17 = 25;
+                dogInfo.actionState = 25;
             } else {
-                dogInfo.unk_17 = 0;
+                dogInfo.actionState = 0;
             }
 
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 26:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0xC0);
             
-            dogInfo.unk_17 = 0;
-            dogInfo.flags |= 2;
+            dogInfo.actionState = 0;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;     
         
         case 27:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x30);
             
-            dogInfo.unk_17 = 0;
-            dogInfo.flags |= 2;
+            dogInfo.actionState = 0;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;     
         
         case 32:
             
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0);
             
-            dogInfo.flags |= 2;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             break;     
 
         case 34:
             dogInfo.speed = 0;
-            dogInfo.unk_1A = 0;
+            dogInfo.stateTimer = 0;
             dogInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(dogInfo.entityIndex, 0x98);
             
-            dogInfo.unk_17 = 0;
-            dogInfo.flags |=  2;
+            dogInfo.actionState = 0;
+            dogInfo.flags |= DOG_STATE_CHANGED;
             
             playSfx(0x3C);
             
@@ -3218,15 +3207,15 @@ void func_8008C358(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008CF94);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateChicken);
 
-void func_8008CF94(u8 index) {
+void updateChicken(u8 index) {
     
     Vec3f vec;
 
-    if (gChickens[index].flags & 1 && gChickens[index].flags & 4) {
+    if (gChickens[index].flags & CHICKEN_ACTIVE && gChickens[index].flags & CHICKEN_ENTITY_LOADED) {
     
-        if ((checkEntityAnimationStateChanged(gChickens[index].entityIndex) || gChickens[index].flags & 0x40)) {
+        if ((checkEntityAnimationStateChanged(gChickens[index].entityIndex) || gChickens[index].flags & CHICKEN_COLLISION_WITH_PLAYER)) {
     
             switch(gChickens[index].type) {
     
@@ -3234,26 +3223,26 @@ void func_8008CF94(u8 index) {
     
                     switch(gChickens[index].condition) {
                         case CHICKEN_NORMAL:
-                            func_8008D1C0(index);
+                            updateAdultChickenNormal(index);
                             break;
                         case CHICKEN_STARVED:
-                            func_8008D650(index);
+                            updateAdultChickenStarved(index);
                             break;
                     }
         
                     break;
     
                 case CHICK:
-                    func_8008D70C(index);
+                    updateChick(index);
                     break;
         
                 case CHICKEN_EGG:
-                    func_8008DA00(index);
+                    updateChickenEgg(index);
                     break;
     
                 }
 
-            gChickens[index].flags &= ~0x40;
+            gChickens[index].flags &= ~CHICKEN_COLLISION_WITH_PLAYER;
     
         }
 
@@ -3266,9 +3255,9 @@ void func_8008CF94(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D1C0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultChickenNormal);
 
-void func_8008D1C0(u8 index) {
+void updateAdultChickenNormal(u8 index) {
 
     u16 temp;
 
@@ -3277,7 +3266,7 @@ void func_8008D1C0(u8 index) {
         case 0:
             
             gChickens[index].speed = 0;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
 
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
@@ -3306,13 +3295,13 @@ void func_8008D1C0(u8 index) {
             
             }
 
-            gChickens[index].flags |= 2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
             
             break;
             
         case 1:
             gChickens[index].speed  = 1;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 8);
@@ -3323,27 +3312,27 @@ void func_8008D1C0(u8 index) {
                 gChickens[index].actionState = 0;
             }
             
-            gChickens[index].flags |= 2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
             playSfx(0x40);
             
             break;
 
         case 2:
             gChickens[index].speed = 0;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x10);
 
             gChickens[index].actionState = 0;
-            gChickens[index].flags |= 2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
             
             break;
 
         case 3:
 
             gChickens[index].speed = 0;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
 
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x20);
@@ -3354,13 +3343,13 @@ void func_8008D1C0(u8 index) {
                 gChickens[index].actionState = 4;
             }
 
-            gChickens[index].flags |= 2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
             
             break;
 
         case 4:
             gChickens[index].speed = 0;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
 
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x18);
@@ -3371,30 +3360,30 @@ void func_8008D1C0(u8 index) {
                 gChickens[index].actionState = 3;
             }
         
-            gChickens[index].flags |= 2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
             
             break;
         
         case 16:
             gChickens[index].speed = 0;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
 
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
             
-            gChickens[index].flags |= 2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
 
             break;
 
         case 17:
             gChickens[index].speed = 0;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
 
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0x30);
             
             gChickens[index].actionState = 0;
-            gChickens[index].flags |=  2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
             
             playSfx(0x41);
             
@@ -3404,14 +3393,14 @@ void func_8008D1C0(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D650);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultChickenStarved);
 
-void func_8008D650(u8 chickenIndex) {
+void updateAdultChickenStarved(u8 chickenIndex) {
 
     u16 temp;
     
     gChickens[chickenIndex].speed = 0;
-    gChickens[chickenIndex].unk_1A = 0;
+    gChickens[chickenIndex].stateTimer = 0;
     gChickens[chickenIndex].unk_1B = 0;
 
     setEntityAnimationWithDirectionChange(gChickens[chickenIndex].entityIndex, 0x28);
@@ -3423,13 +3412,13 @@ void func_8008D650(u8 chickenIndex) {
     }
     
     gChickens[chickenIndex].actionState = 0;
-    gChickens[chickenIndex].flags |= 2;
+    gChickens[chickenIndex].flags |= CHICKEN_STATE_CHANGED;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008D70C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateChick);
 
-void func_8008D70C(u8 index) {
+void updateChick(u8 index) {
 
     u16 temp ;
 
@@ -3437,7 +3426,7 @@ void func_8008D70C(u8 index) {
 
         case 0:
             gChickens[index].speed = 0;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
 
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
@@ -3462,13 +3451,13 @@ void func_8008D70C(u8 index) {
                 }
             }
             
-            gChickens[index].flags |= 2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
 
             break;
 
         case 1:
             gChickens[index].speed = 1;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 8);
@@ -3479,7 +3468,7 @@ void func_8008D70C(u8 index) {
                 gChickens[index].actionState = 0;
             }
             
-            gChickens[index].flags |= 2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
             
             playSfx(0x42);
             
@@ -3487,24 +3476,24 @@ void func_8008D70C(u8 index) {
 
         case 2:
             gChickens[index].speed = 0;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
         
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 16);
         
             gChickens[index].actionState = 0;
-            gChickens[index].flags |= 2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
         
             break;
 
         case 16:
             gChickens[index].speed = 0;
-            gChickens[index].unk_1A = 0;
+            gChickens[index].stateTimer = 0;
             gChickens[index].unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(gChickens[index].entityIndex, 0);
 
-            gChickens[index].flags |= 2;
+            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
         
             break;
         
@@ -3512,44 +3501,44 @@ void func_8008D70C(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DA00);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateChickenEgg);
 
-void func_8008DA00(u8 chickenIndex) {
+void updateChickenEgg(u8 chickenIndex) {
 
     switch (gChickens[chickenIndex].actionState) {
 
         case 0:
         case 16:
             gChickens[chickenIndex].speed = 0;
-            gChickens[chickenIndex].unk_1A = 0;
+            gChickens[chickenIndex].stateTimer = 0;
             gChickens[chickenIndex].unk_1B = 0;
             setEntityAnimation(gChickens[chickenIndex].entityIndex, 0x13);
-            gChickens[chickenIndex].flags |= 2;
+            gChickens[chickenIndex].flags |= CHICKEN_STATE_CHANGED;
             
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DAA0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateFarmAnimal);
 
-void func_8008DAA0(u8 index) {
+void updateFarmAnimal(u8 index) {
 
     Vec3f vec;
     u8 levelInteractionIndex;
 
-    if ((gFarmAnimals[index].flags & 1) && (gFarmAnimals[index].flags & 4)) {
+    if ((gFarmAnimals[index].flags & FARM_ANIMAL_ACTIVE) && (gFarmAnimals[index].flags & FARM_ANIMAL_ENTITY_LOADED)) {
 
-        if ((checkEntityAnimationStateChanged(gFarmAnimals[index].entityIndex)) || (gFarmAnimals[index].flags & 0x8000)) {
+        if ((checkEntityAnimationStateChanged(gFarmAnimals[index].entityIndex)) || (gFarmAnimals[index].flags & FARM_ANIMAL_COLLISION_WITH_PLAYER)) {
             
             if (entities[gFarmAnimals[index].entityIndex].unk_5E == 0) {
 
-                if (!(gFarmAnimals[index].flags & 0x2000)) {
+                if (!(gFarmAnimals[index].flags & FARM_ANIMAL_FOLLOWING)) {
 
                     gFarmAnimals[index].direction = gPlayer.direction;
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
 
-                    gFarmAnimals[index].flags &= ~(0x200);
-                    gFarmAnimals[index].flags |= (0x400 | 0x2000);
+                    gFarmAnimals[index].flags &= ~(FARM_ANIMAL_APPROACHING);
+                    gFarmAnimals[index].flags |= (FARM_ANIMAL_LINGERING | FARM_ANIMAL_FOLLOWING);
 
                 }
 
@@ -3558,11 +3547,11 @@ void func_8008DAA0(u8 index) {
             switch (gFarmAnimals[index].type) {
 
                 case BABY_COW:
-                    func_80090DF8(index);
+                    updateBabyCow(index);
                     break;
 
                 case CALF:
-                    func_800904E4(index);
+                    updateCalf(index);
                     break;
 
                 case ADULT_COW:
@@ -3570,19 +3559,19 @@ void func_8008DAA0(u8 index) {
                     switch(gFarmAnimals[index].condition) {
 
                         case COW_NORMAL:
-                            func_8008DF9C(index);
+                            updateAdultCowNormal(index);
                             break;
 
                         case COW_HAPPY:
-                            func_8008E98C(index);
+                            updateAdultCowHappy(index);
                             break;
 
                         case COW_MAD:
-                            func_8008F37C(index);
+                            updateAdultCowMad(index);
                             break;
 
                         case COW_SICK:
-                            func_8008FC68(index);
+                            updateAdultCowSick(index);
                             break;
 
                     }
@@ -3590,11 +3579,11 @@ void func_8008DAA0(u8 index) {
                     break;
 
                 case PREGNANT_COW:
-                    func_8009170C(index);
+                    updatePregnantCow(index);
                     break;
 
                 case BABY_SHEEP:
-                    func_80093434(index);
+                    updateBabySheep(index);
                     break;
 
                 case ADULT_SHEEP:
@@ -3602,11 +3591,11 @@ void func_8008DAA0(u8 index) {
                     switch(gFarmAnimals[index].condition) {
 
                         case SHEEP_NORMAL:
-                            func_80092094(index);
+                            updateAdultSheepNormal(index);
                             break;
 
                         case SHEEP_SICK:
-                            func_80092808(index);
+                            updateAdultSheepSick(index);
                             break;
 
                     }
@@ -3618,11 +3607,11 @@ void func_8008DAA0(u8 index) {
                     switch(gFarmAnimals[index].condition) {
 
                         case SHEEP_NORMAL:
-                            func_80092A64(index);
+                            updateShearedSheepNormal(index);
                             break;
 
                         case SHEEP_SICK:
-                            func_800931D8(index);
+                            updateShearedSheepSick(index);
                             break;
 
                     }
@@ -3631,7 +3620,7 @@ void func_8008DAA0(u8 index) {
 
                 }
 
-            gFarmAnimals[index].flags &= ~(0x2000 | 0x8000);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_FOLLOWING | FARM_ANIMAL_COLLISION_WITH_PLAYER);
 
         }
        
@@ -3680,31 +3669,31 @@ void func_8008DAA0(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008DF9C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultCowNormal);
 
-void func_8008DF9C(u8 index) {
+void updateAdultCowNormal(u8 index) {
     
     u16 temp;
 
-    switch (gFarmAnimals[index].unk_1B) {
+    switch (gFarmAnimals[index].actionState) {
         
         case 0:
         
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
             
-            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
                 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
-                gFarmAnimals[index].unk_1B = 1;
+                gFarmAnimals[index].actionState = 1;
                 
             } else {
                 
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 } else {
                     
                     temp = getRandomNumberInRange(0, 20);
@@ -3716,78 +3705,78 @@ void func_8008DF9C(u8 index) {
                     temp = getRandomNumberInRange(0, 5);
                     
                     if (temp == 0) {
-                        gFarmAnimals[index].unk_1B = 1;
+                        gFarmAnimals[index].actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].unk_1B = 2;
+                        gFarmAnimals[index].actionState = 2;
                     }
                     
                     if (temp == 2) {
-                        gFarmAnimals[index].unk_1B = 3;
+                        gFarmAnimals[index].actionState = 3;
                     }
                     
                     if (temp == 3) {
-                        gFarmAnimals[index].unk_1B = 4;
+                        gFarmAnimals[index].actionState = 4;
                     }
                     
                     if (temp == 4) {
-                        gFarmAnimals[index].unk_1B = 5;
+                        gFarmAnimals[index].actionState = 5;
                     }
                     
                     if (temp == 5) {
-                        gFarmAnimals[index].unk_1B = 6;
+                        gFarmAnimals[index].actionState = 6;
                     }
                     
                 }
                     
             }
                 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
                 
             break;
             
         case 1:
             
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             gFarmAnimals[index].speed = 1.0f;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 8);
             
-            if (gFarmAnimals[index].flags & 0x200) {
+            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
             
-                gFarmAnimals[index].flags &= ~0x400;
+                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (!(getRandomNumberInRange(0, 20))) {
-                    gFarmAnimals[index].flags &= ~(0x200);
+                    gFarmAnimals[index].flags &= ~(FARM_ANIMAL_APPROACHING);
                 }
                 
-            } else if (gFarmAnimals[index].flags & 0x400) {
+            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
                 
                 if (!(getRandomNumberInRange(0, 40))) {
-                    gFarmAnimals[index].flags &= ~(0x400);
+                    gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
                 }
                 
             } else {
                 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
                 } else {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 }
             
             }
             
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 2:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 32);
@@ -3795,77 +3784,77 @@ void func_8008DF9C(u8 index) {
             temp = getRandomNumberInRange(0, 2);
             
             if (temp == 0) {
-                gFarmAnimals[index].unk_1B = 2;
+                gFarmAnimals[index].actionState = 2;
             }
             
             if (temp == 1) {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
             
             if (temp == 2) {
-                gFarmAnimals[index].unk_1B = 9;
+                gFarmAnimals[index].actionState = 9;
             }
             
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 3:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x10);
             
-            gFarmAnimals[index].unk_1B = 7;
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].actionState = 7;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 4:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
             
-            gFarmAnimals[index].unk_1B = 0;
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].actionState = 0;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 5:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x40);
             
-            gFarmAnimals[index].unk_1B = 0;
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].actionState = 0;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 6:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x48);
             
-            gFarmAnimals[index].unk_1B = 0;
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].actionState = 0;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 7:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
@@ -3873,87 +3862,87 @@ void func_8008DF9C(u8 index) {
             temp = getRandomNumberInRange(0, 11);
             
             if (temp < 10) {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
             if (temp == 10) {
-                gFarmAnimals[index].unk_1B = 8;
+                gFarmAnimals[index].actionState = 8;
             }
             if (temp == 11) {
-                gFarmAnimals[index].unk_1B = 10;
+                gFarmAnimals[index].actionState = 10;
             }
             
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 8:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
             
             if (getRandomNumberInRange(0, 4) < 4) {
-                gFarmAnimals[index].unk_1B = 8;
+                gFarmAnimals[index].actionState = 8;
             } else {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
             
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 9:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
             
-            gFarmAnimals[index].unk_1B = 2;
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].actionState = 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 10:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x10);
             
-            gFarmAnimals[index].unk_1B = 0;
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].actionState = 0;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 16:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
             
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~0x400;
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
         
         case 17:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
             
-            gFarmAnimals[index].unk_1B = 0;
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~0x400;
+            gFarmAnimals[index].actionState = 0;
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
             
             playSfx(0x36);
             
@@ -3962,15 +3951,15 @@ void func_8008DF9C(u8 index) {
         case 18:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x58);
             
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
             
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~0x400;
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
             
             playSfx(0x37);
             
@@ -3979,14 +3968,14 @@ void func_8008DF9C(u8 index) {
         case 19:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
             
-            gFarmAnimals[index].unk_1B = 19;
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~0x400;
+            gFarmAnimals[index].actionState = 19;
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
         
@@ -3994,24 +3983,24 @@ void func_8008DF9C(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008E98C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultCowHappy);
 
-void func_8008E98C(u8 index) {
+void updateAdultCowHappy(u8 index) {
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].unk_1B) {
+    switch (gFarmAnimals[index].actionState) {
 
         case 0:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xB0);
 
-            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -4019,13 +4008,13 @@ void func_8008E98C(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].unk_1B = 1;
+                gFarmAnimals[index].actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
                 
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
 
                 } else {
 
@@ -4038,47 +4027,47 @@ void func_8008E98C(u8 index) {
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].unk_1B = 1;
+                        gFarmAnimals[index].actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].unk_1B = 2;
+                        gFarmAnimals[index].actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].unk_1B = 3;
+                        gFarmAnimals[index].actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].unk_1B = 4;
+                        gFarmAnimals[index].actionState = 4;
                     }
 
                     if (temp == 4) {
-                        gFarmAnimals[index].unk_1B = 5;
+                        gFarmAnimals[index].actionState = 5;
                     }
 
                     if (temp == 5) {
-                        gFarmAnimals[index].unk_1B = 6;
+                        gFarmAnimals[index].actionState = 6;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
         
         case 1:
 
             gFarmAnimals[index].speed = 1.0f;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xB8);
 
-            if (gFarmAnimals[index].flags & 0x200) {
+            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~0x400;
+                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -4087,32 +4076,32 @@ void func_8008E98C(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~0x200;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & 0x400) {
+            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~0x400;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
                 } else {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= 2;            
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xD0);
@@ -4120,74 +4109,74 @@ void func_8008E98C(u8 index) {
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].unk_1B = 2;
+                gFarmAnimals[index].actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].unk_1B = 9;
+                gFarmAnimals[index].actionState = 9;
             }
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xC0);
             
-            gFarmAnimals[index].unk_1B = 7;
+            gFarmAnimals[index].actionState = 7;
             
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 4:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xE8);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xF0);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xF8);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xC8);
@@ -4195,89 +4184,89 @@ void func_8008E98C(u8 index) {
             temp = getRandomNumberInRange(0, 11);
 
             if (temp < 10) {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
 
             if (temp == 10) {
-                gFarmAnimals[index].unk_1B = 8;
+                gFarmAnimals[index].actionState = 8;
             }
 
             if (temp == 11) {
-                gFarmAnimals[index].unk_1B = 10;
+                gFarmAnimals[index].actionState = 10;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xD8);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             } else {
-                gFarmAnimals[index].unk_1B = 8;
+                gFarmAnimals[index].actionState = 8;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 9:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xE0);
 
-            gFarmAnimals[index].unk_1B = 2;
+            gFarmAnimals[index].actionState = 2;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 10:
                     
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xC0);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
         
         case 16:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xB0);
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -4286,15 +4275,15 @@ void func_8008E98C(u8 index) {
         case 18:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x100);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x37);
 
@@ -4303,15 +4292,15 @@ void func_8008E98C(u8 index) {
         case 19:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
 
-            gFarmAnimals[index].unk_1B = 19;
+            gFarmAnimals[index].actionState = 19;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -4319,26 +4308,26 @@ void func_8008E98C(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008F37C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultCowMad);
 
-void func_8008F37C(u8 index) {
+void updateAdultCowMad(u8 index) {
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].unk_1B) {
+    switch (gFarmAnimals[index].actionState) {
 
         case 0:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x68);
 
             temp = getRandomNumberInRange(0, 60);
 
-            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -4346,13 +4335,13 @@ void func_8008F37C(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].unk_1B = 1;
+                gFarmAnimals[index].actionState = 1;
                 
             } else {
         
                 if (temp < 40) {
                 
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
 
                 } else {
 
@@ -4365,40 +4354,40 @@ void func_8008F37C(u8 index) {
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].unk_1B = 1;
+                        gFarmAnimals[index].actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].unk_1B = 2;
+                        gFarmAnimals[index].actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].unk_1B = 3;
+                        gFarmAnimals[index].actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].unk_1B = 4;
+                        gFarmAnimals[index].actionState = 4;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         
         case 1:
 
             gFarmAnimals[index].speed = 0.5f;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x70);
 
-            if (gFarmAnimals[index].flags & 0x200) {
+            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~0x400;
+                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -4407,32 +4396,32 @@ void func_8008F37C(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~0x200;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & 0x400) {
+            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~0x400;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
                 } else {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= 2;            
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x88);
@@ -4440,48 +4429,48 @@ void func_8008F37C(u8 index) {
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].unk_1B = 2;
+                gFarmAnimals[index].actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x78);
             
-            gFarmAnimals[index].unk_1B = 5;
+            gFarmAnimals[index].actionState = 5;
             
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 4:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xA8);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x80);
@@ -4489,89 +4478,89 @@ void func_8008F37C(u8 index) {
             temp = getRandomNumberInRange(0, 11);
 
             if (temp < 10) {
-                gFarmAnimals[index].unk_1B = 5;
+                gFarmAnimals[index].actionState = 5;
             }
 
             if (temp == 10) {
-                gFarmAnimals[index].unk_1B = 6;
+                gFarmAnimals[index].actionState = 6;
             }
 
             if (temp == 11) {
-                gFarmAnimals[index].unk_1B = 8;
+                gFarmAnimals[index].actionState = 8;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x90);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].unk_1B = 5;
+                gFarmAnimals[index].actionState = 5;
             } else {
-                gFarmAnimals[index].unk_1B = 6;
+                gFarmAnimals[index].actionState = 6;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x98);
 
-            gFarmAnimals[index].unk_1B = 2;
+            gFarmAnimals[index].actionState = 2;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x78);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 16:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x68);
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -4580,15 +4569,15 @@ void func_8008F37C(u8 index) {
         case 18:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0xA0);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x37);
 
@@ -4597,15 +4586,15 @@ void func_8008F37C(u8 index) {
         case 19:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
 
-            gFarmAnimals[index].unk_1B = 19;
+            gFarmAnimals[index].actionState = 19;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -4613,24 +4602,24 @@ void func_8008F37C(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008FC68);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultCowSick);
 
-void func_8008FC68(u8 index) {
+void updateAdultCowSick(u8 index) {
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].unk_1B) {
+    switch (gFarmAnimals[index].actionState) {
 
         case 0:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x108);
 
-            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -4638,13 +4627,13 @@ void func_8008FC68(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].unk_1B = 1;
+                gFarmAnimals[index].actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
                 
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
 
                 } else {
 
@@ -4657,40 +4646,40 @@ void func_8008FC68(u8 index) {
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].unk_1B = 1;
+                        gFarmAnimals[index].actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].unk_1B = 2;
+                        gFarmAnimals[index].actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].unk_1B = 3;
+                        gFarmAnimals[index].actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].unk_1B = 4;
+                        gFarmAnimals[index].actionState = 4;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         
         case 1:
 
             gFarmAnimals[index].speed = 0.5f;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x110);
 
-            if (gFarmAnimals[index].flags & 0x200) {
+            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~0x400;
+                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -4699,32 +4688,32 @@ void func_8008FC68(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~0x200;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & 0x400) {
+            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~0x400;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
                 } else {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= 2;            
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x128);
@@ -4732,49 +4721,49 @@ void func_8008FC68(u8 index) {
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].unk_1B = 2;
+                gFarmAnimals[index].actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].unk_1B = 6;
+                gFarmAnimals[index].actionState = 6;
             }
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x118);
             
-            gFarmAnimals[index].unk_1B = 5;
+            gFarmAnimals[index].actionState = 5;
             
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             
             break;
 
         case 4:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x138);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x120);
@@ -4782,71 +4771,71 @@ void func_8008FC68(u8 index) {
             temp = getRandomNumberInRange(0, 11);
 
             if (temp < 10) {
-                gFarmAnimals[index].unk_1B = 5;
+                gFarmAnimals[index].actionState = 5;
             }
 
             if (temp == 10) {
-                gFarmAnimals[index].unk_1B = 6;
+                gFarmAnimals[index].actionState = 6;
             }
 
             if (temp == 11) {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x130);
 
-            gFarmAnimals[index].unk_1B = 2;
+            gFarmAnimals[index].actionState = 2;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x118);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 16:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x108);
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -4855,30 +4844,30 @@ void func_8008FC68(u8 index) {
         case 18:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x108);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             break;
         
         case 19:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
 
-            gFarmAnimals[index].unk_1B = 19;
+            gFarmAnimals[index].actionState = 19;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -4886,24 +4875,24 @@ void func_8008FC68(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800904E4);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateCalf);
 
-void func_800904E4(u8 index) {
+void updateCalf(u8 index) {
     
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].unk_1B) {
+    switch (gFarmAnimals[index].actionState) {
         
         case 0:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -4911,12 +4900,12 @@ void func_800904E4(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].unk_1B = 1;
+                gFarmAnimals[index].actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
@@ -4928,48 +4917,48 @@ void func_800904E4(u8 index) {
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].unk_1B = 1;
+                        gFarmAnimals[index].actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].unk_1B = 2;
+                        gFarmAnimals[index].actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].unk_1B = 3;
+                        gFarmAnimals[index].actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].unk_1B = 4;
+                        gFarmAnimals[index].actionState = 4;
                     }
                     
                     if (temp == 4) {
-                        gFarmAnimals[index].unk_1B = 5;
+                        gFarmAnimals[index].actionState = 5;
                     }
 
                     if (temp == 5) {
-                        gFarmAnimals[index].unk_1B = 6;
+                        gFarmAnimals[index].actionState = 6;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         
         case 1:
 
             gFarmAnimals[index].speed = 1.0f;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 8);
 
-            if (gFarmAnimals[index].flags & 0x200) {
+            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~0x400;
+                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -4978,32 +4967,32 @@ void func_800904E4(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~0x200;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & 0x400) {
+            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~0x400;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
                 } else {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= 2;            
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x10);
@@ -5011,22 +5000,22 @@ void func_800904E4(u8 index) {
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].unk_1B = 2;
+                gFarmAnimals[index].actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].unk_1B = 8;
+                gFarmAnimals[index].actionState = 8;
             }
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
@@ -5034,113 +5023,113 @@ void func_800904E4(u8 index) {
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].unk_1B = 3;
+                gFarmAnimals[index].actionState = 3;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
             
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             
             break;
 
         case 4:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x40);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x20);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].unk_1B = 3;
+                gFarmAnimals[index].actionState = 3;
             } else {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
 
-            gFarmAnimals[index].unk_1B = 2;
+            gFarmAnimals[index].actionState = 2;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
     
         case 16:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x48);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -5149,15 +5138,15 @@ void func_800904E4(u8 index) {
         case 18:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x37);
             
@@ -5166,15 +5155,15 @@ void func_800904E4(u8 index) {
         case 19:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x58);
 
-            gFarmAnimals[index].unk_1B = 19;
+            gFarmAnimals[index].actionState = 19;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -5182,24 +5171,24 @@ void func_800904E4(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80090DF8);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateBabyCow);
 
-void func_80090DF8(u8 index) {
+void updateBabyCow(u8 index) {
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].unk_1B) {
+    switch (gFarmAnimals[index].actionState) {
         
         case 0:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -5207,12 +5196,12 @@ void func_80090DF8(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].unk_1B = 1;
+                gFarmAnimals[index].actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
@@ -5224,48 +5213,48 @@ void func_80090DF8(u8 index) {
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].unk_1B = 1;
+                        gFarmAnimals[index].actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].unk_1B = 2;
+                        gFarmAnimals[index].actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].unk_1B = 3;
+                        gFarmAnimals[index].actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].unk_1B = 4;
+                        gFarmAnimals[index].actionState = 4;
                     }
                     
                     if (temp == 4) {
-                        gFarmAnimals[index].unk_1B = 5;
+                        gFarmAnimals[index].actionState = 5;
                     }
 
                     if (temp == 5) {
-                        gFarmAnimals[index].unk_1B = 6;
+                        gFarmAnimals[index].actionState = 6;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         
         case 1:
 
             gFarmAnimals[index].speed = 1.0f;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 8);
 
-            if (gFarmAnimals[index].flags & 0x200) {
+            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~0x400;
+                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -5274,32 +5263,32 @@ void func_80090DF8(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~0x200;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & 0x400) {
+            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~0x400;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
                 } else {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= 2;            
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x10);
@@ -5307,22 +5296,22 @@ void func_80090DF8(u8 index) {
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].unk_1B = 2;
+                gFarmAnimals[index].actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].unk_1B = 8;
+                gFarmAnimals[index].actionState = 8;
             }
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
@@ -5330,113 +5319,113 @@ void func_80090DF8(u8 index) {
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].unk_1B = 3;
+                gFarmAnimals[index].actionState = 3;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
             
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             
             break;
 
         case 4:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x40);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x20);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].unk_1B = 3;
+                gFarmAnimals[index].actionState = 3;
             } else {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
 
-            gFarmAnimals[index].unk_1B = 2;
+            gFarmAnimals[index].actionState = 2;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
     
         case 16:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x48);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -5445,15 +5434,15 @@ void func_80090DF8(u8 index) {
         case 18:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x37);
             
@@ -5462,15 +5451,15 @@ void func_80090DF8(u8 index) {
         case 19:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x58);
 
-            gFarmAnimals[index].unk_1B = 19;
+            gFarmAnimals[index].actionState = 19;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -5478,24 +5467,24 @@ void func_80090DF8(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009170C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updatePregnantCow);
 
-void func_8009170C(u8 index) {
+void updatePregnantCow(u8 index) {
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].unk_1B) {
+    switch (gFarmAnimals[index].actionState) {
         
         case 0:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -5503,12 +5492,12 @@ void func_8009170C(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].unk_1B = 1;
+                gFarmAnimals[index].actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
@@ -5520,47 +5509,47 @@ void func_8009170C(u8 index) {
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].unk_1B = 1;
+                        gFarmAnimals[index].actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].unk_1B = 2;
+                        gFarmAnimals[index].actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].unk_1B = 3;
+                        gFarmAnimals[index].actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].unk_1B = 4;
+                        gFarmAnimals[index].actionState = 4;
                     }
                     
                     if (temp == 4) {
-                        gFarmAnimals[index].unk_1B = 5;
+                        gFarmAnimals[index].actionState = 5;
                     }
 
                     if (temp == 5) {
-                        gFarmAnimals[index].unk_1B = 6;
+                        gFarmAnimals[index].actionState = 6;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
         
         case 1:
 
             gFarmAnimals[index].speed = 0.5f;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 8);
 
-            if (gFarmAnimals[index].flags & 0x200) {
+            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~0x400;
+                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -5569,32 +5558,32 @@ void func_8009170C(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~0x200;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & 0x400) {
+            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~0x400;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
                 } else {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= 2;            
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x20);
@@ -5602,104 +5591,104 @@ void func_8009170C(u8 index) {
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].unk_1B = 2;
+                gFarmAnimals[index].actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].unk_1B = 8;
+                gFarmAnimals[index].actionState = 8;
             }
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x10);
 
-            gFarmAnimals[index].unk_1B = 9;
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].actionState = 9;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             
             break;
 
         case 4:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x40);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x48);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].unk_1B = 3;
+                gFarmAnimals[index].actionState = 3;
             } else {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
 
-            gFarmAnimals[index].unk_1B = 2;
+            gFarmAnimals[index].actionState = 2;
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
         
         case 9:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
@@ -5707,43 +5696,43 @@ void func_8009170C(u8 index) {
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].unk_1B = 9;
+                gFarmAnimals[index].actionState = 9;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].unk_1B = 3;
+                gFarmAnimals[index].actionState = 3;
             }
             if (temp == 2) {
-                gFarmAnimals[index].unk_1B = 7;
+                gFarmAnimals[index].actionState = 7;
             }
             
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
     
         case 16:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -5752,15 +5741,15 @@ void func_8009170C(u8 index) {
         case 18:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x58);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x37);
             
@@ -5769,15 +5758,15 @@ void func_8009170C(u8 index) {
         case 19:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
 
-            gFarmAnimals[index].unk_1B = 19;
+            gFarmAnimals[index].actionState = 19;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -5785,24 +5774,24 @@ void func_8009170C(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80092094);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultSheepNormal);
 
-void func_80092094(u8 index) {
+void updateAdultSheepNormal(u8 index) {
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].unk_1B) {
+    switch (gFarmAnimals[index].actionState) {
         
         case 0:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            if ((gFarmAnimals[index].flags & 0x200) || (gFarmAnimals[index].flags & 0x400)) {
+            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -5810,12 +5799,12 @@ void func_80092094(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].unk_1B = 1;
+                gFarmAnimals[index].actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
@@ -5827,35 +5816,35 @@ void func_80092094(u8 index) {
                     temp = getRandomNumberInRange(0, 2);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].unk_1B = 1;
+                        gFarmAnimals[index].actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].unk_1B = 2;
+                        gFarmAnimals[index].actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].unk_1B = 3;
+                        gFarmAnimals[index].actionState = 3;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 1:
 
             gFarmAnimals[index].speed = 1.0f;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 8);
 
-            if (gFarmAnimals[index].flags & 0x200) {
+            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~0x400;
+                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
                     entities[gFarmAnimals[index].entityIndex].coordinates.x,
@@ -5864,57 +5853,57 @@ void func_80092094(u8 index) {
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~0x200;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & 0x400) {
+            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~0x400;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
                 } else {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= 2;            
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x10);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                gFarmAnimals[index].unk_1B = 2;
+                gFarmAnimals[index].actionState = 2;
             } else {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
 
             break;
 
         case 3:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
 
-            gFarmAnimals[index].unk_1B = 4;
+            gFarmAnimals[index].actionState = 4;
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             
             break;
 
@@ -5922,7 +5911,7 @@ void func_80092094(u8 index) {
         case 4:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x20);
@@ -5930,75 +5919,75 @@ void func_80092094(u8 index) {
             temp = getRandomNumberInRange(0, 11);
 
             if (temp < 10) {
-                gFarmAnimals[index].unk_1B = 4;
+                gFarmAnimals[index].actionState = 4;
             }
 
             if (temp == 10) {
-                gFarmAnimals[index].unk_1B = 4;
+                gFarmAnimals[index].actionState = 4;
             }
 
             if (temp == 11) {
-                gFarmAnimals[index].unk_1B = 6;
+                gFarmAnimals[index].actionState = 6;
             }
 
-            gFarmAnimals[index].flags |= 2;  
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].unk_1B = 4;
+                gFarmAnimals[index].actionState = 4;
             } else {
-                gFarmAnimals[index].unk_1B = 5;
+                gFarmAnimals[index].actionState = 5;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x18);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
             
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
     
         case 16:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x3A);
             
@@ -6007,15 +5996,15 @@ void func_80092094(u8 index) {
         case 18:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x3A);
             
@@ -6024,15 +6013,15 @@ void func_80092094(u8 index) {
         case 19:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
 
-            gFarmAnimals[index].unk_1B = 19;
+            gFarmAnimals[index].actionState = 19;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -6040,79 +6029,79 @@ void func_80092094(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80092808);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultSheepSick);
 
-void func_80092808(u8 index) {
+void updateAdultSheepSick(u8 index) {
 
-    switch (gFarmAnimals[index].unk_1B) {
+    switch (gFarmAnimals[index].actionState) {
         
         case 0:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x28);
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
     
         case 16:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 18:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
 
-            gFarmAnimals[index].unk_1B = 0;
+            gFarmAnimals[index].actionState = 0;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 19:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x30);
 
-            gFarmAnimals[index].unk_1B = 19;
+            gFarmAnimals[index].actionState = 19;
 
-            gFarmAnimals[index].flags |= (2 | 0x2000);
-            gFarmAnimals[index].flags &= ~(0x400);
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
     
@@ -6120,29 +6109,29 @@ void func_80092808(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80092A64);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateShearedSheepNormal);
 
-void func_80092A64(u8 index) {
+void updateShearedSheepNormal(u8 index) {
 
     u16 temp;
 
-    switch(gFarmAnimals[index].unk_1B) {
+    switch(gFarmAnimals[index].actionState) {
         
         case 0:
             
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
 
-            if (gFarmAnimals[index].flags & 0x200 || gFarmAnimals[index].flags & 0x400) {
+            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING || gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
                 
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
-                gFarmAnimals[index].unk_1B = 1;
+                gFarmAnimals[index].actionState = 1;
             
             } else if (getRandomNumberInRange(0, 60) < 40) {
             
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
                     
             } else {
                 
@@ -6155,253 +6144,253 @@ void func_80092A64(u8 index) {
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
                 } 
                 
                 if (temp == 1) {
-                    gFarmAnimals[index].unk_1B = 2;
+                    gFarmAnimals[index].actionState = 2;
                 } 
                 
                 if (temp == 2) {
-                    gFarmAnimals[index].unk_1B = 3;
+                    gFarmAnimals[index].actionState = 3;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 1:
             
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             gFarmAnimals[index].speed = 1.0f;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x40);
 
-            if (gFarmAnimals[index].flags & 0x200) {
+            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~0x400;
+                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
                 gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
                 if (!getRandomNumberInRange(0, 20)) {
-                    gFarmAnimals[index].flags &= ~0x200;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
                 }
                 
-            } else if (gFarmAnimals[index].flags & 0x400) {
+            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
 
                 if (!getRandomNumberInRange(0, 40)) {
-                    gFarmAnimals[index].flags &= ~0x400;
+                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
                 }
                 
             } else {
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].unk_1B = 1;
+                    gFarmAnimals[index].actionState = 1;
                 } else {
-                    gFarmAnimals[index].unk_1B = 0;
+                    gFarmAnimals[index].actionState = 0;
                 }
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 2:
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x48);
             
             if (!getRandomNumberInRange(0, 2)) {
-                gFarmAnimals[index].unk_1B = 2;
+                gFarmAnimals[index].actionState = 2;
             } else {
-                gFarmAnimals[index].unk_1B = 0;
+                gFarmAnimals[index].actionState = 0;
             }
             
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 3:
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
-            gFarmAnimals[index].unk_1B = 4;
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].actionState = 4;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 4:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x58);
 
             temp = getRandomNumberInRange(0, 11);
 
             if (temp < 10) {
-                gFarmAnimals[index].unk_1B = 4;
+                gFarmAnimals[index].actionState = 4;
             } 
             
             if (temp == 10) {
-                gFarmAnimals[index].unk_1B = 4;
+                gFarmAnimals[index].actionState = 4;
             } 
             
             if (temp == 11) {
-                gFarmAnimals[index].unk_1B = 6;
+                gFarmAnimals[index].actionState = 6;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 5:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x60);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].unk_1B = 4;
+                gFarmAnimals[index].actionState = 4;
             } else {
-                gFarmAnimals[index].unk_1B = 5;
+                gFarmAnimals[index].actionState = 5;
             }
 
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 6:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x50);
-            gFarmAnimals[index].unk_1B = 0;
-            gFarmAnimals[index].flags |= 2;
+            gFarmAnimals[index].actionState = 0;
+            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 16:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
-            gFarmAnimals[index].flags |= (0x2 | 0x2000);
-            gFarmAnimals[index].flags &= ~0x400;
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
             break;
 
         case 17:
 
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x38);
-            gFarmAnimals[index].unk_1B = 0;
-            gFarmAnimals[index].flags |= (0x2 | 0x2000);
-            gFarmAnimals[index].flags &= ~0x400;
+            gFarmAnimals[index].actionState = 0;
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
             playSfx(0x3A);
         
             break;
 
         case 18:
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x68);
-            gFarmAnimals[index].unk_1B = 0;
-            gFarmAnimals[index].flags |= (0x2 | 0x2000);
-            gFarmAnimals[index].flags &= ~0x400;
+            gFarmAnimals[index].actionState = 0;
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
             playSfx(0x3A);
             break;
 
         case 19:
             gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].unk_1D = 0;
+            gFarmAnimals[index].stateTimer = 0;
             gFarmAnimals[index].unk_1E = 0;
             setEntityAnimationWithDirectionChange(gFarmAnimals[index].entityIndex, 0x68);
-            gFarmAnimals[index].unk_1B = 19;
-            gFarmAnimals[index].flags |= (0x2 | 0x2000);
-            gFarmAnimals[index].flags &= ~0x400;
+            gFarmAnimals[index].actionState = 19;
+            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
             break;
 
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800931D8);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateShearedSheepSick);
 
-void func_800931D8(u8 farmAnimalIndex) {
+void updateShearedSheepSick(u8 farmAnimalIndex) {
 
     u16 temp;
     
-    switch (gFarmAnimals[farmAnimalIndex].unk_1B) {
+    switch (gFarmAnimals[farmAnimalIndex].actionState) {
         
         case 0:
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0x60);
 
-            gFarmAnimals[farmAnimalIndex].flags |= 2;
+            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 16:    
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0x60);
 
-            gFarmAnimals[farmAnimalIndex].flags |= (2 | 0x2000);
-            gFarmAnimals[farmAnimalIndex].flags &= ~0x400;
+            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
 
         case 17:
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0x60);
 
-            gFarmAnimals[farmAnimalIndex].unk_1B = 0;
+            gFarmAnimals[farmAnimalIndex].actionState = 0;
 
-            gFarmAnimals[farmAnimalIndex].flags |= (2 | 0x2000);
-            gFarmAnimals[farmAnimalIndex].flags &= ~0x400;
+            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
         
         case 18:
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0x68);
 
-            gFarmAnimals[farmAnimalIndex].unk_1B = 0;
+            gFarmAnimals[farmAnimalIndex].actionState = 0;
 
-            gFarmAnimals[farmAnimalIndex].flags |= (2 | 0x2000);
-            gFarmAnimals[farmAnimalIndex].flags &= ~0x400;
+            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
 
         case 19:    
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0x68);
 
-            gFarmAnimals[farmAnimalIndex].unk_1B = 19;
+            gFarmAnimals[farmAnimalIndex].actionState = 19;
 
-            gFarmAnimals[farmAnimalIndex].flags |= (2 | 0x2000);
-            gFarmAnimals[farmAnimalIndex].flags &= ~0x400;
+            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
 
@@ -6409,31 +6398,31 @@ void func_800931D8(u8 farmAnimalIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80093434);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateBabySheep);
 
-void func_80093434(u8 farmAnimalIndex) {
+void updateBabySheep(u8 farmAnimalIndex) {
 
     u16 temp;
     
-    switch (gFarmAnimals[farmAnimalIndex].unk_1B) {
+    switch (gFarmAnimals[farmAnimalIndex].actionState) {
         
         case 0:
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0);
 
-            if (gFarmAnimals[farmAnimalIndex].flags & 0x200 || gFarmAnimals[farmAnimalIndex].flags & 0x400) {
+            if (gFarmAnimals[farmAnimalIndex].flags & FARM_ANIMAL_APPROACHING || gFarmAnimals[farmAnimalIndex].flags & FARM_ANIMAL_LINGERING) {
 
                 gFarmAnimals[farmAnimalIndex].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[farmAnimalIndex].entityIndex].coordinates.x, 
                                    entities[gFarmAnimals[farmAnimalIndex].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[farmAnimalIndex].unk_1B = 1;
+                gFarmAnimals[farmAnimalIndex].actionState = 1;
                 
             } else if (getRandomNumberInRange(0, 60) < 40) {
 
-                gFarmAnimals[farmAnimalIndex].unk_1B = 0;
+                gFarmAnimals[farmAnimalIndex].actionState = 0;
                 
             } else {
 
@@ -6446,94 +6435,94 @@ void func_80093434(u8 farmAnimalIndex) {
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gFarmAnimals[farmAnimalIndex].unk_1B = 1;
+                    gFarmAnimals[farmAnimalIndex].actionState = 1;
                 }
 
                 if (temp == 1) {
-                    gFarmAnimals[farmAnimalIndex].unk_1B = 2;
+                    gFarmAnimals[farmAnimalIndex].actionState = 2;
                 }
 
                 if (temp == 2) {
-                    gFarmAnimals[farmAnimalIndex].unk_1B = 3;
+                    gFarmAnimals[farmAnimalIndex].actionState = 3;
                 }
                 
             }
 
-            gFarmAnimals[farmAnimalIndex].flags |= 2;
+            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 1:
             gFarmAnimals[farmAnimalIndex].speed = 1.0f;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
 
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 8);
 
-            if (gFarmAnimals[farmAnimalIndex].flags & 0x200) {
+            if (gFarmAnimals[farmAnimalIndex].flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[farmAnimalIndex].flags &= ~0x400;
+                gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
 
                 gFarmAnimals[farmAnimalIndex].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[farmAnimalIndex].entityIndex].coordinates.x, 
                                    entities[gFarmAnimals[farmAnimalIndex].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
                 if (!getRandomNumberInRange(0, 20)) {
-                    gFarmAnimals[farmAnimalIndex].flags &= ~0x200;
+                    gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_APPROACHING;
                 }
                 
-            } else if (gFarmAnimals[farmAnimalIndex].flags & 0x400) {
+            } else if (gFarmAnimals[farmAnimalIndex].flags & FARM_ANIMAL_LINGERING) {
 
                 if (!getRandomNumberInRange(0, 40)) {
-                    gFarmAnimals[farmAnimalIndex].flags &= ~0x400;
+                    gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
                 }
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[farmAnimalIndex].unk_1B = 1;
+                    gFarmAnimals[farmAnimalIndex].actionState = 1;
                 } else {
-                    gFarmAnimals[farmAnimalIndex].unk_1B = 0;
+                    gFarmAnimals[farmAnimalIndex].actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[farmAnimalIndex].flags |= 2;
+            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 2:    
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0x10);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gFarmAnimals[farmAnimalIndex].unk_1B = 2;
+                gFarmAnimals[farmAnimalIndex].actionState = 2;
             } else {
-                gFarmAnimals[farmAnimalIndex].unk_1B = 0;
+                gFarmAnimals[farmAnimalIndex].actionState = 0;
             }
 
-            gFarmAnimals[farmAnimalIndex].flags |= 2;
+            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
         
         case 3:    
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0x20);
 
-            gFarmAnimals[farmAnimalIndex].unk_1B = 4;
+            gFarmAnimals[farmAnimalIndex].actionState = 4;
 
-            gFarmAnimals[farmAnimalIndex].flags |= 2;
+            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
         
         case 4:    
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0x28);
@@ -6541,90 +6530,90 @@ void func_80093434(u8 farmAnimalIndex) {
             temp = getRandomNumberInRange(0, 11); 
 
             if (temp < 10) {
-                gFarmAnimals[farmAnimalIndex].unk_1B = 4;
+                gFarmAnimals[farmAnimalIndex].actionState = 4;
             } 
             
             if (temp == 10) {
-                gFarmAnimals[farmAnimalIndex].unk_1B = 4;
+                gFarmAnimals[farmAnimalIndex].actionState = 4;
             } 
             
             if (temp == 11) {
-                gFarmAnimals[farmAnimalIndex].unk_1B = 6;
+                gFarmAnimals[farmAnimalIndex].actionState = 6;
             } 
 
-            gFarmAnimals[farmAnimalIndex].flags |= 2;
+            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
     
         case 5:    
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0x18);
 
             if (getRandomNumberInRange(0, 4) < 4) {
-                gFarmAnimals[farmAnimalIndex].unk_1B = 5;
+                gFarmAnimals[farmAnimalIndex].actionState = 5;
             } else {
-                gFarmAnimals[farmAnimalIndex].unk_1B = 4;
+                gFarmAnimals[farmAnimalIndex].actionState = 4;
             }
 
-            gFarmAnimals[farmAnimalIndex].flags |= 2;
+            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 6:    
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0x20);
 
-            gFarmAnimals[farmAnimalIndex].unk_1B = 0;
+            gFarmAnimals[farmAnimalIndex].actionState = 0;
 
-            gFarmAnimals[farmAnimalIndex].flags |= 2;
+            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 16:    
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0);
 
-            gFarmAnimals[farmAnimalIndex].flags |= (2 | 0x2000);
-            gFarmAnimals[farmAnimalIndex].flags &= ~0x400;
+            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
 
         case 17:
         case 18:
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0);
 
-            gFarmAnimals[farmAnimalIndex].unk_1B = 0;
+            gFarmAnimals[farmAnimalIndex].actionState = 0;
 
-            gFarmAnimals[farmAnimalIndex].flags |= (2 | 0x2000);
-            gFarmAnimals[farmAnimalIndex].flags &= ~0x400;
+            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
             playSfx(0x3A);
             
             break;
 
         case 19:    
             gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1D = 0;
+            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
             gFarmAnimals[farmAnimalIndex].unk_1E = 0;
     
             setEntityAnimationWithDirectionChange(gFarmAnimals[farmAnimalIndex].entityIndex, 0);
 
-            gFarmAnimals[farmAnimalIndex].unk_1B = 19;
+            gFarmAnimals[farmAnimalIndex].actionState = 19;
 
-            gFarmAnimals[farmAnimalIndex].flags |= (2 | 0x2000);
-            gFarmAnimals[farmAnimalIndex].flags &= ~0x400;
+            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
 
@@ -6638,9 +6627,9 @@ void updateHorse(void) {
 
     Vec3f vec;
 
-    if ((horseInfo.flags & 1) && (horseInfo.flags & 4)) {
+    if ((horseInfo.flags & HORSE_ACTIVE) && (horseInfo.flags & HORSE_ENTITY_LOADED)) {
 
-        if (checkEntityAnimationStateChanged(horseInfo.entityIndex) || horseInfo.flags & 0x20) {
+        if (checkEntityAnimationStateChanged(horseInfo.entityIndex) || horseInfo.flags & HORSE_COLLISION_WITH_PLAYER) {
             
             switch (horseInfo.grown) {
                 case FALSE:
@@ -6651,7 +6640,7 @@ void updateHorse(void) {
                     break;
             }
             
-            horseInfo.flags &= ~(0x20 | 0x80);
+            horseInfo.flags &= ~(HORSE_COLLISION_WITH_PLAYER  | 0x80);
             
         }
         
@@ -6674,12 +6663,12 @@ void updateHorseGrown(void) {
         case 0:
             
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
-            if (horseInfo.flags & 0x10) {
+            if (horseInfo.flags & HORSE_FOLLOWING) {
 
                 horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 horseInfo.actionState = 4;
@@ -6728,13 +6717,13 @@ void updateHorseGrown(void) {
 
             } 
             
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 1:
 
             horseInfo.speed = 1;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 8);
@@ -6745,16 +6734,16 @@ void updateHorseGrown(void) {
                 horseInfo.actionState = 0;
             }
 
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 2:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
-            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x20U);
+            setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x20);
 
             if (getRandomNumberInRange(0, 2) == 0) {
                 horseInfo.actionState = 2;
@@ -6762,36 +6751,36 @@ void updateHorseGrown(void) {
                 horseInfo.actionState = 0;    
             }       
             
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 3:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x18);
             
             horseInfo.actionState = 7;
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             
             break;
 
         case 4:
 
             horseInfo.speed = 2;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x10);
 
-            if (horseInfo.flags & 0x10) {
+            if (horseInfo.flags & HORSE_FOLLOWING) {
                 
                 horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    horseInfo.flags &= ~(0x10);
+                    horseInfo.flags &= ~(HORSE_FOLLOWING);
                 }
                 
             } else {
@@ -6804,13 +6793,13 @@ void updateHorseGrown(void) {
                 
             }
         
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 5:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x48);
@@ -6821,13 +6810,13 @@ void updateHorseGrown(void) {
                 horseInfo.actionState = 0;    
             }
            
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 6:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x50);
@@ -6838,13 +6827,13 @@ void updateHorseGrown(void) {
                 horseInfo.actionState = 0;    
             }
            
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 7:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x28);
@@ -6855,13 +6844,13 @@ void updateHorseGrown(void) {
                 horseInfo.actionState = 0;    
             }
            
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 8:
             
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x30);
@@ -6872,19 +6861,19 @@ void updateHorseGrown(void) {
                 horseInfo.actionState = 0;    
             }
            
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
         
         
         case 16:
             
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
-            horseInfo.flags |= (0x2 | 0x80); 
+            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
             horseInfo.flags &= ~(0x40);
             
             break;
@@ -6892,13 +6881,13 @@ void updateHorseGrown(void) {
         case 17:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x48);
             
             horseInfo.actionState = 0;
-            horseInfo.flags |= (0x2 | 0x80); 
+            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
             horseInfo.flags &= ~(0x40);
             
             playSfx(0x39);
@@ -6908,13 +6897,13 @@ void updateHorseGrown(void) {
         case 18:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
             horseInfo.actionState = 0;
-            horseInfo.flags |= (0x2 | 0x80); 
+            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
             horseInfo.flags &= ~(0x40);
             
             playSfx(0x38);
@@ -6940,12 +6929,12 @@ void updateHorseNotGrown(void) {
         case 0:
             
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
-            if (horseInfo.flags & 0x10) {
+            if (horseInfo.flags & HORSE_FOLLOWING) {
 
                 horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 horseInfo.actionState = 4;
@@ -6990,13 +6979,13 @@ void updateHorseNotGrown(void) {
 
             } 
             
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 1:
 
             horseInfo.speed = 1;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 8);
@@ -7007,13 +6996,13 @@ void updateHorseNotGrown(void) {
                 horseInfo.actionState = 0;
             }
 
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 2:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x20U);
@@ -7024,36 +7013,36 @@ void updateHorseNotGrown(void) {
                 horseInfo.actionState = 0;    
             }       
             
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 3:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x18);
             
             horseInfo.actionState = 6;
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             
             break;
 
         case 4:
 
             horseInfo.speed = 2;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x10);
 
-            if (horseInfo.flags & 0x10) {
+            if (horseInfo.flags & HORSE_FOLLOWING) {
                 
                 horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    horseInfo.flags &= ~(0x10);
+                    horseInfo.flags &= ~HORSE_FOLLOWING;
                 }
                 
             } else {
@@ -7066,13 +7055,13 @@ void updateHorseNotGrown(void) {
                 
             }
         
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 5:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x30);
@@ -7083,13 +7072,13 @@ void updateHorseNotGrown(void) {
                 horseInfo.actionState = 0;    
             }
            
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
 
         case 6:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x28);
@@ -7100,18 +7089,18 @@ void updateHorseNotGrown(void) {
                 horseInfo.actionState = 0;    
             }
            
-            horseInfo.flags |= 2;
+            horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
         
         case 16:
             
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
-            horseInfo.flags |= (0x2 | 0x80); 
+            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
             horseInfo.flags &= ~(0x40);
             
             break;
@@ -7119,13 +7108,13 @@ void updateHorseNotGrown(void) {
         case 17:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0x30);
             
             horseInfo.actionState = 0;
-            horseInfo.flags |= (0x2 | 0x80); 
+            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
             horseInfo.flags &= ~(0x40);
             
             playSfx(0x39);
@@ -7135,13 +7124,13 @@ void updateHorseNotGrown(void) {
         case 18:
 
             horseInfo.speed = 0;
-            horseInfo.unk_1A = 0;
+            horseInfo.stateTimer = 0;
             horseInfo.unk_1B = 0;
             
             setEntityAnimationWithDirectionChange(horseInfo.entityIndex, 0);
             
             horseInfo.actionState = 0;
-            horseInfo.flags |= (0x2 | 0x80); 
+            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
             horseInfo.flags &= ~(0x40);
             
             playSfx(0x38);
@@ -7155,88 +7144,88 @@ void updateHorseNotGrown(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009476C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateMiscAnimal);
 
-void func_8009476C(u8 index) {
+void updateMiscAnimal(u8 index) {
 
     Vec3f vec;
 
-    if ((gMiscAnimals[index].flags & 1) && (gMiscAnimals[index].flags & 4)) {
+    if ((gMiscAnimals[index].flags & MISC_ANIMAL_ACTIVE) && (gMiscAnimals[index].flags & MISC_ANIMAL_ENTITY_LOADED)) {
 
         if (checkEntityAnimationStateChanged(gMiscAnimals[index].entityIndex) || gMiscAnimals[index].actionState == 0x20) {
 
             switch (gMiscAnimals[index].animalType) {
 
-                case 0:
-                    func_80094A5C(index);
-                    break;
-                
-                case 1:
-                    func_800958EC(index);
-                    break;
-                
-                case 2:
-                    func_80096264(index);
-                    break;
-                
-                case 3:
-                case 4:
-                    func_800967E0(index);
+                case MISC_ANIMAL_PLAYER_DOG:
+                    updateMiscDog(index);
                     break;
 
-                case 6:
-                    func_80096978(index);
+                case MISC_ANIMAL_NPC_DOG:
+                    updateVillageDog(index);
                     break;
-                
-                case 5:
-                    func_80096DFC(index);
+
+                case MISC_ANIMAL_CAT:
+                    updateCat(index);
                     break;
-                case 7:
-                    func_800973F8(index);
+
+                case MISC_ANIMAL_HORSE:
+                case MISC_ANIMAL_HORSE_2:
+                    updateRanchHorse(index);
                     break;
-                case 8:
-                    func_80097804(index);
+
+                case MISC_ANIMAL_SHEEP:
+                    updateWildSheep(index);
                     break;
-                case 9:
-                    func_80097CB0(index);
+
+                case MISC_ANIMAL_COW:
+                    updateRanchCow(index);
                     break;
-                case 10:
-                    func_80098188(index);
+                case MISC_ANIMAL_FOX:
+                    updateFox(index);
                     break;
-                case 11:
-                    func_80098740(index);
+                case MISC_ANIMAL_BUNNY:
+                    updateBunny(index);
                     break;
-                case 12:
-                    func_80098B3C(index);
+                case MISC_ANIMAL_SQUIRREL:
+                    updateSquirrel(index);
                     break;
-                case 13:
-                    func_80098F24(index);
+                case MISC_ANIMAL_MONKEY:
+                    updateMonkey(index);
                     break;
-                case 14:
-                    func_800991C0(index);
+                case MISC_ANIMAL_SPARROW:
+                    updateSparrow(index);
                     break;
-                case 15:
-                    func_80099424(index);
+                case MISC_ANIMAL_BIRD:
+                    updateBird(index);
                     break;
-                case 16:
-                    func_80099548(index);
+                case MISC_ANIMAL_CRAB:
+                    updateCrab(index);
                     break;
-                case 17:
-                    func_800995F8(index);
+                case MISC_ANIMAL_SNAKE:
+                    updateSnake(index);
                     break;
-                case 18:
-                    func_80099804(index);
+                case MISC_ANIMAL_WHITE_BUTTERFLY:
+                    updateWhiteButterfly(index);
                     break;
-                case 19:
-                    func_800999B0(index);
+                case MISC_ANIMAL_LADYBUG:
+                    updateLadybug(index);
                     break;
-                case 20:
-                    func_80099B5C(index);
+                case MISC_ANIMAL_CICADA:
+                    updateCicada(index);
                     break;
-                case 21:
-                    func_80099C94(index);
+                case MISC_ANIMAL_HORNED_BEETLE:
+                    updateHornedBeetle(index);
                     break;
-                
+                case MISC_ANIMAL_STAG_BEETLE:
+                    updateStagBeetle(index);
+                    break;
+                case MISC_ANIMAL_DRAGONFLY:
+                    updateDragonfly(index);
+                    break;
+                case MISC_ANIMAL_CRICKET:
+                    updateCricket(index);
+                    break;
+
             }
 
         }
@@ -7252,9 +7241,9 @@ void func_8009476C(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80094A5C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateMiscDog);
 
-void func_80094A5C(u8 index) {
+void updateMiscDog(u8 index) {
     
     u16 temp;
     
@@ -7322,7 +7311,7 @@ void func_80094A5C(u8 index) {
                  
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -7342,7 +7331,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 4;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
@@ -7354,7 +7343,7 @@ void func_80094A5C(u8 index) {
             
             gMiscAnimals[index].actionState = 16;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -7390,7 +7379,7 @@ void func_80094A5C(u8 index) {
 
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 4:
@@ -7417,7 +7406,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 4;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
@@ -7434,7 +7423,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
@@ -7450,7 +7439,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 6;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 7:
@@ -7466,7 +7455,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 7;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
@@ -7482,7 +7471,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 8;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 9:
@@ -7509,7 +7498,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 11:
@@ -7525,7 +7514,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 12:
@@ -7540,7 +7529,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
      
@@ -7557,7 +7546,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 14:
@@ -7573,7 +7562,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 16:
@@ -7604,7 +7593,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 20;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 17:
@@ -7620,7 +7609,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 16;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
                 
         case 18:
@@ -7636,7 +7625,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 16;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
                 
         case 19:
@@ -7652,7 +7641,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 16;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
                 
         case 20:
@@ -7668,7 +7657,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 16;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
                  
         case 21:
@@ -7680,7 +7669,7 @@ void func_80094A5C(u8 index) {
 
             gMiscAnimals[index].actionState = 22;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;       
                  
         case 22:
@@ -7692,7 +7681,7 @@ void func_80094A5C(u8 index) {
 
             gMiscAnimals[index].actionState = 23;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;       
 
         case 23:
@@ -7704,7 +7693,7 @@ void func_80094A5C(u8 index) {
 
             gMiscAnimals[index].actionState = 0;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;      
 
         case 24:
@@ -7720,7 +7709,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;      
 
         case 25:
@@ -7736,7 +7725,7 @@ void func_80094A5C(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;      
 
         case 26:
@@ -7748,7 +7737,7 @@ void func_80094A5C(u8 index) {
 
             gMiscAnimals[index].actionState = 0;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;      
 
         case 27:
@@ -7760,16 +7749,16 @@ void func_80094A5C(u8 index) {
 
             gMiscAnimals[index].actionState = 0;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;      
         
      }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800958EC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateVillageDog);
 
-void func_800958EC(u8 index) {
+void updateVillageDog(u8 index) {
 
     u16 temp;
     
@@ -7832,7 +7821,7 @@ void func_800958EC(u8 index) {
                  
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -7852,7 +7841,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 4;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
@@ -7864,7 +7853,7 @@ void func_800958EC(u8 index) {
             
             gMiscAnimals[index].actionState = 12;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -7892,7 +7881,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 4:
@@ -7911,7 +7900,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 1;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
@@ -7928,7 +7917,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
@@ -7944,7 +7933,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 7:
@@ -7960,7 +7949,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
@@ -7976,7 +7965,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 9:
@@ -7992,7 +7981,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 10:
@@ -8008,7 +7997,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 11:
@@ -8024,7 +8013,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 12:
@@ -8048,7 +8037,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 14;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
      
@@ -8065,7 +8054,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 14;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 14:
@@ -8081,7 +8070,7 @@ void func_800958EC(u8 index) {
                 gMiscAnimals[index].actionState = 14;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 15:
@@ -8093,16 +8082,16 @@ void func_800958EC(u8 index) {
 
             gMiscAnimals[index].actionState = 0;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
      }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80096264);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateCat);
 
-void func_80096264(u8 index) {
+void updateCat(u8 index) {
     
     u32 temp;
     u16 temp2;
@@ -8149,7 +8138,7 @@ void func_80096264(u8 index) {
 
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8169,7 +8158,7 @@ void func_80096264(u8 index) {
                 gMiscAnimals[index].actionState = 5;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             playSfx(0x43);
             break;
@@ -8198,7 +8187,7 @@ void func_80096264(u8 index) {
                 gMiscAnimals[index].actionState = 2;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 3:
@@ -8222,7 +8211,7 @@ void func_80096264(u8 index) {
                 gMiscAnimals[index].actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 4:
@@ -8238,7 +8227,7 @@ void func_80096264(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 5:
@@ -8254,7 +8243,7 @@ void func_80096264(u8 index) {
                 gMiscAnimals[index].actionState = 1;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
        case 6:
@@ -8270,7 +8259,7 @@ void func_80096264(u8 index) {
                 gMiscAnimals[index].actionState = 2;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;     
 
         case 7:
@@ -8286,16 +8275,16 @@ void func_80096264(u8 index) {
                 gMiscAnimals[index].actionState = 2;
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800967E0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateRanchHorse);
 
-void func_800967E0(u8 index) {
+void updateRanchHorse(u8 index) {
 
     u16 temp;
     
@@ -8322,7 +8311,7 @@ void func_800967E0(u8 index) {
                  
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8338,7 +8327,7 @@ void func_800967E0(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8346,9 +8335,9 @@ void func_800967E0(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80096978);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateWildSheep);
 
-void func_80096978(u8 index) {
+void updateWildSheep(u8 index) {
 
     u16 temp;
     u8 tempDirection;
@@ -8387,7 +8376,7 @@ void func_80096978(u8 index) {
 
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8403,7 +8392,7 @@ void func_80096978(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8419,7 +8408,7 @@ void func_80096978(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 3:
@@ -8431,7 +8420,7 @@ void func_80096978(u8 index) {
 
             gMiscAnimals[index].actionState = 4;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 4:
@@ -8456,7 +8445,7 @@ void func_80096978(u8 index) {
             }
 
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 5:
@@ -8472,7 +8461,7 @@ void func_80096978(u8 index) {
                 gMiscAnimals[index].actionState = 4;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
        case 6:
@@ -8484,16 +8473,16 @@ void func_80096978(u8 index) {
 
             gMiscAnimals[index].actionState = 0;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;     
 
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80096DFC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateRanchCow);
 
-void func_80096DFC(u8 index) {
+void updateRanchCow(u8 index) {
 
     u16 temp;
     u8 tempDirection;
@@ -8543,7 +8532,7 @@ void func_80096DFC(u8 index) {
                 }
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8559,7 +8548,7 @@ void func_80096DFC(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8583,7 +8572,7 @@ void func_80096DFC(u8 index) {
                 gMiscAnimals[index].actionState = 9;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 3:
@@ -8595,7 +8584,7 @@ void func_80096DFC(u8 index) {
 
             gMiscAnimals[index].actionState = 7;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 4:
@@ -8607,7 +8596,7 @@ void func_80096DFC(u8 index) {
 
             gMiscAnimals[index].actionState = 0;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 5:
@@ -8619,7 +8608,7 @@ void func_80096DFC(u8 index) {
 
             gMiscAnimals[index].actionState = 0;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
        case 6:
@@ -8631,7 +8620,7 @@ void func_80096DFC(u8 index) {
 
             gMiscAnimals[index].actionState = 0;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;     
 
         case 7:
@@ -8655,7 +8644,7 @@ void func_80096DFC(u8 index) {
                 gMiscAnimals[index].actionState = 10;
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
 
@@ -8672,7 +8661,7 @@ void func_80096DFC(u8 index) {
                  gMiscAnimals[index].actionState = 7;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
        
         case 9:
@@ -8684,7 +8673,7 @@ void func_80096DFC(u8 index) {
 
             gMiscAnimals[index].actionState = 2;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 10:
@@ -8696,7 +8685,7 @@ void func_80096DFC(u8 index) {
 
             gMiscAnimals[index].actionState = 0;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
 
@@ -8704,9 +8693,9 @@ void func_80096DFC(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800973F8);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateFox);
 
-void func_800973F8(u8 index) {
+void updateFox(u8 index) {
     
     u16 temp;
     u8 tempDirection;
@@ -8746,7 +8735,7 @@ void func_800973F8(u8 index) {
                 
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8762,7 +8751,7 @@ void func_800973F8(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8778,7 +8767,7 @@ void func_800973F8(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 3:
@@ -8794,7 +8783,7 @@ void func_800973F8(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 32:
@@ -8812,7 +8801,7 @@ void func_800973F8(u8 index) {
                 gMiscAnimals[index].flags &= ~(0x10);
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
 
@@ -8820,9 +8809,9 @@ void func_800973F8(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80097804);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateBunny);
 
-void func_80097804(u8 index) {
+void updateBunny(u8 index) {
 
     u16 temp;
     u8 tempDirection;
@@ -8861,7 +8850,7 @@ void func_80097804(u8 index) {
                 
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8877,7 +8866,7 @@ void func_80097804(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8893,7 +8882,7 @@ void func_80097804(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 3:
@@ -8909,7 +8898,7 @@ void func_80097804(u8 index) {
 
             gMiscAnimals[index].actionState = 0;
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 32:
@@ -8927,7 +8916,7 @@ void func_80097804(u8 index) {
                 gMiscAnimals[index].flags &= ~(0x10);
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
 
@@ -8935,9 +8924,9 @@ void func_80097804(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80097CB0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateSquirrel);
 
-void func_80097CB0(u8 index) {
+void updateSquirrel(u8 index) {
 
     u16 temp;
     u8 tempDirection;
@@ -8974,7 +8963,7 @@ void func_80097CB0(u8 index) {
                 
             } 
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8991,7 +8980,7 @@ void func_80097CB0(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
         
@@ -9007,7 +8996,7 @@ void func_80097CB0(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
 
@@ -9019,7 +9008,7 @@ void func_80097CB0(u8 index) {
             setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
             gMiscAnimals[index].actionState = 0x10;
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
 
@@ -9034,7 +9023,7 @@ void func_80097CB0(u8 index) {
             setEntityAnimation(gMiscAnimals[index].entityIndex, 0x19);
 
             gMiscAnimals[index].timer++;
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (gMiscAnimals[index].timer == 6) {
                 deactivateEntity(gMiscAnimals[index].entityIndex);
@@ -9057,16 +9046,16 @@ void func_80097CB0(u8 index) {
                 gMiscAnimals[index].flags &= ~(0x10);
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80098188);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateMonkey);
 
-void func_80098188(u8 index) {
+void updateMonkey(u8 index) {
 
     u16 temp;
     u8 tempDirection;
@@ -9105,7 +9094,7 @@ void func_80098188(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -9122,7 +9111,7 @@ void func_80098188(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
 
@@ -9139,7 +9128,7 @@ void func_80098188(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             playSfx(0x4D);
             
             break;
@@ -9152,7 +9141,7 @@ void func_80098188(u8 index) {
             setEntityAnimation(gMiscAnimals[index].entityIndex, 0x22);
 
             gMiscAnimals[index].actionState = 0;
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
     
         case 16:
@@ -9162,7 +9151,7 @@ void func_80098188(u8 index) {
             setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 0);
 
             gMiscAnimals[index].actionState = 0x10;
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
 
@@ -9178,7 +9167,7 @@ void func_80098188(u8 index) {
             setEntityAnimation(gMiscAnimals[index].entityIndex, 0x1D);
 
             gMiscAnimals[index].timer++;
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (gMiscAnimals[index].timer == 6) {
                 deactivateEntity(gMiscAnimals[index].entityIndex);
@@ -9201,7 +9190,7 @@ void func_80098188(u8 index) {
                 gMiscAnimals[index].flags &= ~(0x10);
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
 
@@ -9209,9 +9198,9 @@ void func_80098188(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80098740);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateSparrow);
 
-void func_80098740(u8 index) {
+void updateSparrow(u8 index) {
 
     u16 temp;
     
@@ -9245,7 +9234,7 @@ void func_80098740(u8 index) {
                 
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
@@ -9280,7 +9269,7 @@ void func_80098740(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             playSfx(0x46);
             
@@ -9298,7 +9287,7 @@ void func_80098740(u8 index) {
             
             setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (gMiscAnimals[index].timer < 129) {
                 gMiscAnimals[index].zDisplacement = 4;
@@ -9313,9 +9302,9 @@ void func_80098740(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80098B3C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateBird);
 
-void func_80098B3C(u8 index) {
+void updateBird(u8 index) {
     
     u16 temp;
     
@@ -9349,7 +9338,7 @@ void func_80098B3C(u8 index) {
                 
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
@@ -9384,7 +9373,7 @@ void func_80098B3C(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (!getRandomNumberInRange(0, 1)) {
                 playSfx(0x48);
@@ -9407,7 +9396,7 @@ void func_80098B3C(u8 index) {
 
             gMiscAnimals[index].zDisplacement = 4;
             gMiscAnimals[index].yDisplacement = 2;
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             gMiscAnimals[index].timer++;
                     
             break;
@@ -9416,9 +9405,9 @@ void func_80098B3C(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80098F24);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateCrab);
 
-void func_80098F24(u8 index) {
+void updateCrab(u8 index) {
     
     u32 temp;
     u16 temp2;
@@ -9450,7 +9439,7 @@ void func_80098F24(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
@@ -9468,7 +9457,7 @@ void func_80098F24(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
@@ -9479,7 +9468,7 @@ void func_80098F24(u8 index) {
             gMiscAnimals[index].direction = SOUTHEAST;
             setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (gMiscAnimals[index].timer < 17) {
                 gMiscAnimals[index].zDisplacement = 4;
@@ -9495,9 +9484,9 @@ void func_80098F24(u8 index) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800991C0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateSnake);
 
-void func_800991C0(u8 index) {
+void updateSnake(u8 index) {
 
     u16 temp;
     
@@ -9525,7 +9514,7 @@ void func_800991C0(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
@@ -9543,7 +9532,7 @@ void func_800991C0(u8 index) {
                 gMiscAnimals[index].actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
@@ -9551,7 +9540,7 @@ void func_800991C0(u8 index) {
 
             setEntityAnimationWithDirectionChange(gMiscAnimals[index].entityIndex, 8);
             
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (gMiscAnimals[index].timer < 33) {
                 gMiscAnimals[index].zDisplacement = 4;
@@ -9568,9 +9557,9 @@ void func_800991C0(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099424);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateWhiteButterfly);
 
-void func_80099424(u8 index) {
+void updateWhiteButterfly(u8 index) {
 
     switch (gMiscAnimals[index].actionState) {
 
@@ -9590,7 +9579,7 @@ void func_80099424(u8 index) {
     
             gMiscAnimals[index].direction = getRandomNumberInRange(0, 7);
             gMiscAnimals[index].actionState = 0;
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
         
@@ -9601,9 +9590,9 @@ void func_80099424(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099548);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateLadybug);
 
-void func_80099548(u8 index) {
+void updateLadybug(u8 index) {
 
     switch (gMiscAnimals[index].actionState) {
 
@@ -9617,7 +9606,7 @@ void func_80099548(u8 index) {
             setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
 
             gMiscAnimals[index].actionState = 0;
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
@@ -9628,9 +9617,9 @@ void func_80099548(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800995F8);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateCicada);
 
-void func_800995F8(u8 index) {
+void updateCicada(u8 index) {
 
     switch (gMiscAnimals[index].actionState) {
 
@@ -9642,9 +9631,9 @@ void func_800995F8(u8 index) {
 
             setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
 
-            entities[gMiscAnimals[index].entityIndex].yOffset = 0x40;
+            entities[gMiscAnimals[index].entityIndex].yOffset = 64;
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (!(5 < gHour && gHour < 16)) {
                 playSfx(0x51);
@@ -9669,7 +9658,7 @@ void func_800995F8(u8 index) {
             gMiscAnimals[index].zDisplacement = 4;
             gMiscAnimals[index].yDisplacement = 2;
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             gMiscAnimals[index].timer++;
             
@@ -9679,9 +9668,9 @@ void func_800995F8(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099804);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateHornedBeetle);
 
-void func_80099804(u8 index) {
+void updateHornedBeetle(u8 index) {
 
      switch (gMiscAnimals[index].actionState) {
 
@@ -9693,7 +9682,7 @@ void func_80099804(u8 index) {
 
             setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
@@ -9712,7 +9701,7 @@ void func_80099804(u8 index) {
             gMiscAnimals[index].zDisplacement = 4;
             gMiscAnimals[index].yDisplacement = 2;
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             gMiscAnimals[index].timer++;
             
@@ -9722,9 +9711,9 @@ void func_80099804(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_800999B0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateStagBeetle);
 
-void func_800999B0(u8 index) {
+void updateStagBeetle(u8 index) {
 
     switch (gMiscAnimals[index].actionState) {
 
@@ -9736,7 +9725,7 @@ void func_800999B0(u8 index) {
 
             setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
@@ -9755,7 +9744,7 @@ void func_800999B0(u8 index) {
             gMiscAnimals[index].zDisplacement = 4;
             gMiscAnimals[index].yDisplacement = 2;
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             gMiscAnimals[index].timer++;
             
@@ -9765,9 +9754,9 @@ void func_800999B0(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099B5C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateDragonfly);
 
-void func_80099B5C(u8 index) {
+void updateDragonfly(u8 index) {
 
     u16 temp;
     
@@ -9794,7 +9783,7 @@ void func_80099B5C(u8 index) {
             }
             
             gMiscAnimals[index].actionState = 0;
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;    
         
@@ -9802,9 +9791,9 @@ void func_80099B5C(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099C94);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateCricket);
 
-void func_80099C94(u8 index) {
+void updateCricket(u8 index) {
     
     switch (gMiscAnimals[index].actionState) {
 
@@ -9816,14 +9805,14 @@ void func_80099C94(u8 index) {
 
             setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
 
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
         case 1:
 
             setEntityAnimation(gMiscAnimals[index].entityIndex, 2);
-            gMiscAnimals[index].flags |= 2;
+            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (gMiscAnimals[index].timer < 33) {
                 gMiscAnimals[index].zDisplacement = 2;
@@ -9839,22 +9828,21 @@ void func_80099C94(u8 index) {
     }
     
 }
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleFarmAnimalPlayerCollision);
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099DE8);
-
-void func_80099DE8(void) {
+void handleFarmAnimalPlayerCollision(void) {
     
     u8 i = 0;
     bool set = FALSE;
 
-    func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0);
+    checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, 0);
     
     while (i < MAX_FARM_ANIMALS && !set) {
         
-        if ((gFarmAnimals[i].flags & 4) && (entities[gFarmAnimals[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
-            func_800861A4(2, i, 0xFF, 0xFF, 0x10);
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && (entities[gFarmAnimals[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
+            setAnimalState(2, i, 0xFF, 0xFF, 16);
             set = TRUE;
-            gFarmAnimals[i].flags |= 0x8000; 
+            gFarmAnimals[i].flags |= FARM_ANIMAL_COLLISION_WITH_PLAYER; 
         }
         
         i++;
@@ -9863,22 +9851,22 @@ void func_80099DE8(void) {
         
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099EEC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleChickenPlayerCollision);
 
-void func_80099EEC(void) {
+void handleChickenPlayerCollision(void) {
 
     u8 i = 0;
     bool set = FALSE;
 
-    func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0);
+    checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, 0);
 
     while (i < MAX_CHICKENS && !set) {
 
-        if ((gChickens[i].flags & 4) && entities[gChickens[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER) {
+        if ((gChickens[i].flags & CHICKEN_ENTITY_LOADED) && entities[gChickens[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER) {
 
-            func_800861A4(1, i, 0xFF, 0xFF, 0x10);
+            setAnimalState(1, i, 0xFF, 0xFF, 16);
             set = TRUE;
-            gChickens[i].flags |= 0x40;
+            gChickens[i].flags |= CHICKEN_COLLISION_WITH_PLAYER;
 
         }
 
@@ -9888,86 +9876,84 @@ void func_80099EEC(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_80099FF0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleDogPlayerCollision);
 
-void func_80099FF0(void) {
+void handleDogPlayerCollision(void) {
 
-    func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0);
+    checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, 0);
     
-    if ((dogInfo.flags & 4) && (entities[dogInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
-        dogInfo.unk_17 = 0x20;
-        dogInfo.flags |= 0x20;
+    if ((dogInfo.flags & DOG_ENTITY_LOADED) && (entities[dogInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
+        dogInfo.actionState = 0x20;
+        dogInfo.flags |= DOG_COLLISION_WITH_PLAYER;
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A074);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHorsePlayerInteraction);
 
-bool func_8009A074(void) {
+bool handleHorsePlayerInteraction(void) {
     
     bool result;
 
-    func_800305CC(ENTITY_PLAYER, 0.0f, 8.0f, 0);
+    checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, 0);
     
-    result = 0;
+    result = FALSE;
 
-    if ((horseInfo.flags & 4) && (entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
-        result = 1;
+    if ((horseInfo.flags & HORSE_ENTITY_LOADED) && (entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
+        result = TRUE;
         horseInfo.actionState = 16;
-        horseInfo.flags |= 0x20;
+        horseInfo.flags |= HORSE_COLLISION_WITH_PLAYER;
     }
     
     return result;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A100);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHorseGrownPlayerInteraction);
 
-bool func_8009A100(void) {
+bool handleHorseGrownPlayerInteraction(void) {
     
     bool result = FALSE;
 
-    if ((horseInfo.flags & 4) && (horseInfo.grown == TRUE) && (entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
-        
+    if ((horseInfo.flags & HORSE_ENTITY_LOADED) && (horseInfo.grown == TRUE) && (entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
         horseInfo.actionState = 16;
-        horseInfo.flags |=  0x20;
+        horseInfo.flags |=  HORSE_COLLISION_WITH_PLAYER;
         result = TRUE;
-        
     }
     
     return result;
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A17C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleBrushFarmAnimal);
 
-bool func_8009A17C(void) {
+bool handleBrushFarmAnimal(void) {
 
     u8 i = 0;
     bool set = FALSE;
 
     while (i < MAX_FARM_ANIMALS && !set) {
 
-        if ((gFarmAnimals[i].flags & 4) && gFarmAnimals[i].unk_1B == 16) {
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && gFarmAnimals[i].actionState == 16) {
 
-            func_800861A4(2, i, 0xFF, 0xFF, 0);
+            setAnimalState(2, i, 0xFF, 0xFF, 0);
 
-            if (!(gFarmAnimals[i].flags & 0x20)) {
+            if (!(gFarmAnimals[i].flags & FARM_ANIMAL_BRUSHED)) {
 
                 switch (gFarmAnimals[i].type) {
 
                     case BABY_COW ... PREGNANT_COW:
-                        func_80086458(i, 2);
-                        func_800861A4(2, i, 0xFF, 0xFF, 0x11);
-                        gFarmAnimals[i].flags |= (0x20 | 0x8000);
+                        adjustFarmAnimalAffection(i, 2);
+                        setAnimalState(2, i, 0xFF, 0xFF, 0x11);
+                        gFarmAnimals[i].flags |= (FARM_ANIMAL_BRUSHED | FARM_ANIMAL_COLLISION_WITH_PLAYER);
                         showAnimalExpressionBubble(COW_TYPE, i, 3);
                         set = TRUE;
                         break;
 
                     case BABY_SHEEP ... SHEARED_SHEEP:
-                        func_80086458(i, 2);
-                        func_800861A4(2, i, 0xFF, 0xFF, 0x11);
-                        gFarmAnimals[i].flags |= (0x20 | 0x8000);
+                        adjustFarmAnimalAffection(i, 2);
+                        setAnimalState(2, i, 0xFF, 0xFF, 0x11);
+                        gFarmAnimals[i].flags |= (FARM_ANIMAL_BRUSHED | FARM_ANIMAL_COLLISION_WITH_PLAYER);
                         showAnimalExpressionBubble(COW_TYPE, i, 3);
                         set = TRUE;
                         break;
@@ -9989,26 +9975,25 @@ bool func_8009A17C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A2D0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleBrushHorse);
 
-// brush horse
-bool func_8009A2D0(void) {
+bool handleBrushHorse(void) {
 
     bool result = FALSE;
     
-    if (horseInfo.flags & 4) {
+    if (horseInfo.flags & HORSE_ENTITY_LOADED) {
 
         if (horseInfo.actionState == 16) {
             
             horseInfo.actionState = 0;
             
-            if (!(horseInfo.flags & 0x100)) {
+            if (!(horseInfo.flags & HORSE_BRUSHED_DAILY)) {
                 
                 horseInfo.actionState = 17;
                 
                 adjustHorseAffection(2);
             
-                horseInfo.flags |= (0x20 | 0x100);
+                horseInfo.flags |= (HORSE_COLLISION_WITH_PLAYER | HORSE_BRUSHED_DAILY);
                 showAnimalExpressionBubble(HORSE_TYPE, 0, 3);
                 result = TRUE;
             
@@ -10021,16 +10006,16 @@ bool func_8009A2D0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A398);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHorseShippingItem);
 
-bool func_8009A398(void) {
+bool handleHorseShippingItem(void) {
 
     bool result = FALSE;
     
-    if ((horseInfo.flags & 4) && (horseInfo.actionState == 16)) {
+    if ((horseInfo.flags & HORSE_ENTITY_LOADED) && (horseInfo.actionState == 16)) {
         
         horseInfo.actionState = 0;
-        horseInfo.flags |= 0x20;
+        horseInfo.flags |= HORSE_COLLISION_WITH_PLAYER;
         showAnimalExpressionBubble(HORSE_TYPE, 0, 1);
         
         result = TRUE;
@@ -10041,25 +10026,25 @@ bool func_8009A398(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A400);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleAnimalMedicineUse);
 
-bool func_8009A400(void) {
+bool handleAnimalMedicineUse(void) {
 
     u8 i = 0;
     bool set = FALSE;
 
     while (i < MAX_FARM_ANIMALS && !set) {
 
-        if ((gFarmAnimals[i].flags & 4) && gFarmAnimals[i].unk_1B == 16) {
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && gFarmAnimals[i].actionState == 16) {
 
-            func_800861A4(2, i, 0xFF, 0xFF, 0);
+            setAnimalState(2, i, 0xFF, 0xFF, 0);
 
             switch (gFarmAnimals[i].type) {
 
                 case ADULT_COW:
                 case ADULT_SHEEP ... SHEARED_SHEEP:
                     if (gFarmAnimals[i].condition == 3) {
-                        func_800861A4(2, i, 0xFF, 0, 0);
+                        setAnimalState(2, i, 0xFF, 0, 0);
                         set = TRUE;
                     } 
                     break;
@@ -10076,30 +10061,30 @@ bool func_8009A400(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A53C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleMilkCow);
 
-bool func_8009A53C(void) {
+bool handleMilkCow(void) {
 
     u8 i = 0;
     bool set = FALSE;
 
     while (i < MAX_FARM_ANIMALS && !set) {
 
-        if ((gFarmAnimals[i].flags & 4) && gFarmAnimals[i].unk_1B == 16) {
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && gFarmAnimals[i].actionState == 16) {
 
-            func_800861A4(2, i, 0xFF, 0xFF, 0);
+            setAnimalState(2, i, 0xFF, 0xFF, 0);
 
-            if (!(gFarmAnimals[i].flags & 0x40)) {
+            if (!(gFarmAnimals[i].flags & FARM_ANIMAL_MILKED)) {
 
                 switch (gFarmAnimals[i].type) {
 
                     case ADULT_COW:
                         
                         if (gFarmAnimals[i].condition < COW_MAD) {
-                            func_80086458(i, 1);
-                            func_800861A4(2, i, 0xFF, 0xFF, 0x11);
-                            gPlayer.heldItem = func_8008662C(i, 0);
-                            gFarmAnimals[i].flags |= (0x40 | 0x8000);
+                            adjustFarmAnimalAffection(i, 1);
+                            setAnimalState(2, i, 0xFF, 0xFF, 0x11);
+                            gPlayer.heldItem = getMilkHeldItemIndex(i, 0);
+                            gFarmAnimals[i].flags |= (FARM_ANIMAL_MILKED | FARM_ANIMAL_COLLISION_WITH_PLAYER);
                             showAnimalExpressionBubble(COW_TYPE, i, 3);
                             set = TRUE;
                         }
@@ -10108,16 +10093,16 @@ bool func_8009A53C(void) {
                     
                     case PREGNANT_COW:
 
-                        func_80086458(i, 1);
-                        func_800861A4(2, i, 0xFF, 0xFF, 0x11);
+                        adjustFarmAnimalAffection(i, 1);
+                        setAnimalState(2, i, 0xFF, 0xFF, 0x11);
 
-                        gPlayer.heldItem = func_8008662C(i, 0);
+                        gPlayer.heldItem = getMilkHeldItemIndex(i, 0);
 
-                        if (gPlayer.heldItem != 0x15) {
+                        if (gPlayer.heldItem != SMALL_MILK) {
                             gPlayer.heldItem--;
                         }
 
-                        gFarmAnimals[i].flags |= (0x40 | 0x8000);
+                        gFarmAnimals[i].flags |= (FARM_ANIMAL_MILKED | FARM_ANIMAL_COLLISION_WITH_PLAYER);
                         showAnimalExpressionBubble(COW_TYPE, i, 3);
                         set = TRUE;
                         
@@ -10138,27 +10123,27 @@ bool func_8009A53C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A810);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleUseMiraclePotion);
 
-u8 func_8009A810(void) {
+u8 handleUseMiraclePotion(void) {
 
     u8 i = 0;
     bool set = FALSE;
 
-    if (func_8009B374() < 8) {
+    if (getTotalFarmAnimalsCount() < 8) {
         
         while (i < MAX_FARM_ANIMALS && !set) {
     
-            if ((gFarmAnimals[i].flags & 4) && gFarmAnimals[i].unk_1B == 16) {
+            if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && gFarmAnimals[i].actionState == 16) {
     
-                func_800861A4(2, i, 0xFF, 0xFF, 0);
+                setAnimalState(2, i, 0xFF, 0xFF, 0);
                 
-                if (!(gFarmAnimals[i].flags & COW_PREGNANT) && gFarmAnimals[i].type == ADULT_COW) {
+                if (!(gFarmAnimals[i].flags & FARM_ANIMAL_PREGNANT) && gFarmAnimals[i].type == ADULT_COW) {
                 
-                    func_80086458(i, 10);
-                    func_800861A4(2, i, 0xFF, COW_NORMAL, 0x11);
+                    adjustFarmAnimalAffection(i, 10);
+                    setAnimalState(2, i, 0xFF, COW_NORMAL, 0x11);
                     
-                    gFarmAnimals[i].flags |= (COW_PREGNANT | 0x8000);
+                    gFarmAnimals[i].flags |= (FARM_ANIMAL_PREGNANT | FARM_ANIMAL_COLLISION_WITH_PLAYER);
                     
                     showAnimalExpressionBubble(COW_TYPE, i, 3);
                     set = TRUE;
@@ -10170,33 +10155,34 @@ u8 func_8009A810(void) {
             i++;
             
         }
+
     }
 
     return set;
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009A97C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleGetMilkWithBottle);
 
-bool func_8009A97C(void) {
+bool handleGetMilkWithBottle(void) {
 
     u8 i = 0;
     bool set = FALSE;
 
     while (i < MAX_FARM_ANIMALS && !set) {
 
-        if ((gFarmAnimals[i].flags & 4) && gFarmAnimals[i].unk_1B == 16) {
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && gFarmAnimals[i].actionState == 16) {
 
-            func_800861A4(2, i, 0xFF, 0xFF, 0);
+            setAnimalState(2, i, 0xFF, 0xFF, 0);
 
             switch (gFarmAnimals[i].type) {
 
                 case ADULT_COW:
                     
-                if (gFarmAnimals[i].condition < COW_MAD) {
-                        func_800861A4(2, i, 0xFF, 0xFF, 0x11);
+                    if (gFarmAnimals[i].condition < COW_MAD) {
+                        setAnimalState(2, i, 0xFF, 0xFF, 0x11);
                         set = TRUE;
-                        gFarmAnimals[i].flags |= 0x8000;
+                        gFarmAnimals[i].flags |= FARM_ANIMAL_COLLISION_WITH_PLAYER;
                         gPlayer.bottleContents = 6;
                     }
 
@@ -10204,9 +10190,9 @@ bool func_8009A97C(void) {
 
                 case PREGNANT_COW:
 
-                    func_800861A4(2, i, 0xFF, 0xFF, 0x11);
+                    setAnimalState(2, i, 0xFF, 0xFF, 0x11);
                     set = TRUE;
-                    gFarmAnimals[i].flags |= 0x8000;
+                    gFarmAnimals[i].flags |= FARM_ANIMAL_COLLISION_WITH_PLAYER;
                     gPlayer.bottleContents = 6;
 
                     break;
@@ -10223,26 +10209,26 @@ bool func_8009A97C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009AAC8);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleShearSheep);
 
-void func_8009AAC8(void) {
+void handleShearSheep(void) {
 
     u8 i = 0;
     bool set = FALSE;
 
     while (i < MAX_FARM_ANIMALS && !set) {
 
-        if ((gFarmAnimals[i].flags & 4) && gFarmAnimals[i].unk_1B == 16) {
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && gFarmAnimals[i].actionState == 16) {
 
-            func_800861A4(2, i, 0xFF, 0xFF, 0);
+            setAnimalState(2, i, 0xFF, 0xFF, 0);
 
-            if (!(gFarmAnimals[i].flags & 0x100) && gFarmAnimals[i].type == ADULT_SHEEP) {
+            if (!(gFarmAnimals[i].flags & FARM_ANIMAL_SHEARED) && gFarmAnimals[i].type == ADULT_SHEEP) {
                 
-                func_80086458(i, 2);
-                func_800861A4(2, i, SHEARED_SHEEP, 0xFF, 0x11);
+                adjustFarmAnimalAffection(i, 2);
+                setAnimalState(2, i, SHEARED_SHEEP, 0xFF, 0x11);
                 
-                gPlayer.heldItem = func_800866E0(i, 0);
-                gFarmAnimals[i].flags |= 0x100;
+                gPlayer.heldItem = getWoolHeldItemIndex(i, 0);
+                gFarmAnimals[i].flags |= FARM_ANIMAL_SHEARED;
                 
                 showAnimalExpressionBubble(COW_TYPE, i, 3);
                 set = TRUE;
@@ -10257,35 +10243,35 @@ void func_8009AAC8(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009AC54);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHitFarmAnimalWithTool);
 
-bool func_8009AC54(void) {
+bool handleHitFarmAnimalWithTool(void) {
 
     u8 i = 0;
     bool result = FALSE;
 
     do {
 
-        if ((gFarmAnimals[i].flags & 4) && gFarmAnimals[i].unk_1B == 16) {
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && gFarmAnimals[i].actionState == 16) {
 
-            func_800861A4(2, i, 0xFF, 0xFF, 0);
+            setAnimalState(2, i, 0xFF, 0xFF, 0);
 
             switch (gFarmAnimals[i].type) {
 
                 case BABY_COW ... PREGNANT_COW:
                     
-                    func_80086458(i, -10);
-                    func_800861A4(2, i, 0xFF, 0xFF, 0x12);
+                    adjustFarmAnimalAffection(i, -10);
+                    setAnimalState(2, i, 0xFF, 0xFF, 0x12);
                     
-                    gFarmAnimals[i].flags |= 0x8000;
+                    gFarmAnimals[i].flags |= FARM_ANIMAL_COLLISION_WITH_PLAYER;
                     
                     showAnimalExpressionBubble(COW_TYPE, i, 0);
 
                     if (gFarmAnimals[i].type == ADULT_COW) {
                         
                         if (!(getRandomNumberInRange(0, 7))) {
-                            func_800861A4(2, i, 0xFF, 2, 0xFFU);
-                            func_80086458(i, -20);
+                            setAnimalState(2, i, 0xFF, 2, 0xFFU);
+                            adjustFarmAnimalAffection(i, -20);
                             gHappiness += adjustValue(gHappiness, -5, 0xFF);
                         }
                         
@@ -10297,10 +10283,10 @@ bool func_8009AC54(void) {
 
                 case BABY_SHEEP ... SHEARED_SHEEP:
                     
-                    func_80086458(i, -10);
-                    func_800861A4(2, i, 0xFF, 0xFF, 0x12);
+                    adjustFarmAnimalAffection(i, -10);
+                    setAnimalState(2, i, 0xFF, 0xFF, 0x12);
                     
-                    gFarmAnimals[i].flags |= 0x8000;
+                    gFarmAnimals[i].flags |= FARM_ANIMAL_COLLISION_WITH_PLAYER;
                     
                     showAnimalExpressionBubble(COW_TYPE, i, 0);
                     
@@ -10320,30 +10306,30 @@ bool func_8009AC54(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009AE7C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHitChickenWithTool);
 
-bool func_8009AE7C(void) {
+bool handleHitChickenWithTool(void) {
 
     u8 i = 0;
     bool set = FALSE;
 
     while (i < MAX_CHICKENS && !set) {
 
-        if ((gChickens[i].flags & 4) && gChickens[i].actionState == 16) {
+        if ((gChickens[i].flags & CHICKEN_ENTITY_LOADED) && gChickens[i].actionState == 16) {
 
-            func_800861A4(1, i, 0xFF, 0xFF, 0);
+            setAnimalState(1, i, 0xFF, 0xFF, 0);
 
              switch (gChickens[i].type) { 
 
                  case ADULT_CHICKEN:
-                    func_800861A4(1, i, 0xFF, 0xFF, 0x11);
-                    gChickens[i].flags |= 0x40;
+                    setAnimalState(1, i, 0xFF, 0xFF, 0x11);
+                    gChickens[i].flags |= CHICKEN_COLLISION_WITH_PLAYER;
                     showAnimalExpressionBubble(CHICKEN_TYPE, i, 0);
                     set = TRUE;
                     break;
                  
                  case CHICK:
-                    gChickens[i].flags |= 0x40;
+                    gChickens[i].flags |= CHICKEN_COLLISION_WITH_PLAYER;
                     showAnimalExpressionBubble(CHICKEN_TYPE, i, 0);
                     set = TRUE;
                     break;
@@ -10363,21 +10349,21 @@ bool func_8009AE7C(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009AFB4);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHitDogWithTool);
  
-bool func_8009AFB4(void) {
+bool handleHitDogWithTool(void) {
 
     bool result = FALSE;
     
-    if (dogInfo.flags & 4) {
+    if (dogInfo.flags & DOG_ENTITY_LOADED) {
 
-        if (dogInfo.unk_17 == 0x20) {
+        if (dogInfo.actionState == 0x20) {
 
-            dogInfo.unk_17 = 0x22;
+            dogInfo.actionState = 34;
 
             adjustDogAffection(-8);
 
-            dogInfo.flags |= 0x20;
+            dogInfo.flags |= DOG_COLLISION_WITH_PLAYER;
             showAnimalExpressionBubble(DOG_TYPE, 0, 0);
             result = TRUE;
             
@@ -10389,13 +10375,13 @@ bool func_8009AFB4(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B068);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHitHorseWithTool);
 
-bool func_8009B068(void) {
+bool handleHitHorseWithTool(void) {
     
     bool result = FALSE;
     
-    if (horseInfo.flags & 4) {
+    if (horseInfo.flags & HORSE_ENTITY_LOADED) {
 
         if (horseInfo.actionState == 16) {
 
@@ -10403,7 +10389,7 @@ bool func_8009B068(void) {
 
             adjustHorseAffection(-8);
 
-            horseInfo.flags |= 0x20;
+            horseInfo.flags |= HORSE_COLLISION_WITH_PLAYER;
             showAnimalExpressionBubble(HORSE_TYPE, 0, 0);
             result = TRUE;
             
@@ -10415,86 +10401,67 @@ bool func_8009B068(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B11C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleWhistleForDog);
 
-void func_8009B11C(void) {
+void handleWhistleForDog(void) {
 
-    if (dogInfo.flags & 4) {
-        dogInfo.flags |= 0x10;
-        dogInfo.unk_17 = 0;
-        playSfx(0x3B);
+    if (dogInfo.flags & DOG_ENTITY_LOADED) {
+        dogInfo.flags |= DOG_FOLLOWING;
+        dogInfo.actionState = 0;
+        playSfx(DOG_BARK);
     }
 
-    if (!(dogInfo.flags & 0x80)) {
+    if (!(dogInfo.flags & DOG_WHISTLED_FOR_DAILY)) {
         adjustDogAffection(1);
-        dogInfo.flags |= 0x80;
+        dogInfo.flags |= DOG_WHISTLED_FOR_DAILY;
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B1BC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleWhistleForHorse);
 
-void func_8009B1BC(void) {
+void handleWhistleForHorse(void) {
     
-    if (horseInfo.flags & 4) {
-        horseInfo.flags |= 0x10;
+    if (horseInfo.flags & HORSE_ENTITY_LOADED) {
+        horseInfo.flags |= HORSE_FOLLOWING;
         horseInfo.actionState = 0;
-        playSfx(0x38);
+        playSfx(HORSE_NEIGH);
     }
     
-    if (!(horseInfo.flags & 0x200)) {
+    if (!(horseInfo.flags & HORSE_WHISTLED_DAILY)) {
         adjustHorseAffection(1);
-        horseInfo.flags |= 0x200;
+        horseInfo.flags |= HORSE_WHISTLED_DAILY;
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B25C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleCallFarmAnimalsWithCowBell);
 
-void func_8009B25C(void) {
+void handleCallFarmAnimalsWithCowBell(void) {
 
     u8 i;
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
-        if (gFarmAnimals[i].flags & 4) {
-            gFarmAnimals[i].flags |= (0x200 | 0x2000);
-            gFarmAnimals[i].unk_1B = 0;
+        if (gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) {
+            gFarmAnimals[i].flags |= (FARM_ANIMAL_APPROACHING | FARM_ANIMAL_FOLLOWING);
+            gFarmAnimals[i].actionState = 0;
         }
         
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B2BC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalFarmAnimalsByType);
 
-u8 func_8009B2BC(u8 type) {
-
-    u8 i;
-    u8 count = 0;
-
-    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
-        
-        if (gFarmAnimals[i].flags & 1 && gFarmAnimals[i].type == type) {
-                count++;
-        }
-        
-    }
-    
-    return count;
-    
-}
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B320);
-
-u8 func_8009B320(void) {
+u8 getTotalFarmAnimalsByType(u8 type) {
 
     u8 i;
     u8 count = 0;
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         
-        if ((gFarmAnimals[i].flags & 1) && (gFarmAnimals[i].flags & 0x80)) {
+        if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE && gFarmAnimals[i].type == type) {
             count++;
         }
         
@@ -10504,16 +10471,36 @@ u8 func_8009B320(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B374);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalPregnantFamAnimals);
 
-u8 func_8009B374(void) {
+u8 getTotalPregnantFamAnimals(void) {
 
     u8 i;
     u8 count = 0;
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         
-        if (gFarmAnimals[i].flags & 1) {
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) && (gFarmAnimals[i].flags & FARM_ANIMAL_PREGNANT)) {
+            count++;
+        }
+        
+    }
+    
+    return count;
+    
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalFarmAnimalsCount);
+
+// check all farm animals + animals going to be born
+u8 getTotalFarmAnimalsCount(void) {
+
+    u8 i;
+    u8 count = 0;
+
+    for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        
+        if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) {
             
             if (gFarmAnimals[i].type == PREGNANT_COW) {
                 count++;
@@ -10529,16 +10516,16 @@ u8 func_8009B374(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B3DC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalCowsCount);
 
-u8 func_8009B3DC(void) {
+u8 getTotalCowsCount(void) {
 
     u8 i;
     u8 count = 0;
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         
-        if (gFarmAnimals[i].flags & 1) {
+        if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) {
             
             // FIXME: should be range
             if ((u8)(gFarmAnimals[i].type - 1) < 2U || (gFarmAnimals[i].type == BABY_COW || gFarmAnimals[i].type == PREGNANT_COW)) {
@@ -10552,9 +10539,9 @@ u8 func_8009B3DC(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B464);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getCowWithHighestAffection);
 
-u8 func_8009B464(void) {
+u8 getCowWithHighestAffection(void) {
 
     u8 i;
     u8 found = 0xFF;
@@ -10562,7 +10549,7 @@ u8 func_8009B464(void) {
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         
-        if ((gFarmAnimals[i].flags & 1) && gFarmAnimals[i].type == ADULT_COW) {
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) && gFarmAnimals[i].type == ADULT_COW) {
 
             if (gFarmAnimals[i].affection >= temp) {
                 found = i;
@@ -10576,16 +10563,16 @@ u8 func_8009B464(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B4EC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalSheepCount);
 
-u8 func_8009B4EC(void) {
+u8 getTotalSheepCount(void) {
 
     u8 i;
     u8 count = 0;
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         
-        if (gFarmAnimals[i].flags & 1) {
+        if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) {
             
             if (PREGNANT_COW < gFarmAnimals[i].type && gFarmAnimals[i].type < SHEARED_SHEEP || gFarmAnimals[i].type == SHEARED_SHEEP) {
                 count++;
@@ -10598,23 +10585,23 @@ u8 func_8009B4EC(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B564);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalChickenCount);
 
-u8 func_8009B564(void) {
+u8 getTotalChickenCount(void) {
 
     u8 i;
     u8 count = 0;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if (gChickens[i].flags & 1) {
+        if (gChickens[i].flags & CHICKEN_ACTIVE) {
             
             // FIXME: should be range
             if ((gChickens[i].type - 1) < 2U) {
                 count++;
             }
 
-            if (gChickens[i].type == CHICKEN_EGG && (gChickens[i].flags & 0x20)) {
+            if (gChickens[i].type == CHICKEN_EGG && (gChickens[i].flags & CHICKEN_EGG_INCUBATING)) {
                 count++;
             }
             
@@ -10626,16 +10613,16 @@ u8 func_8009B564(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B5E0);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getHealthyChickenCount);
 
-u8 func_8009B5E0(void) {
+u8 getHealthyChickenCount(void) {
 
     u8 i;
     u8 count = 0;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if ((gChickens[i].flags & 1) && gChickens[i].type == ADULT_CHICKEN && gChickens[i].condition == CHICKEN_NORMAL) {
+        if ((gChickens[i].flags & CHICKEN_ACTIVE) && gChickens[i].type == ADULT_CHICKEN && gChickens[i].condition == CHICKEN_NORMAL) {
             count++;
         }
 
@@ -10645,16 +10632,16 @@ u8 func_8009B5E0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B658);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getChickenEggCount);
 
-u8 func_8009B658(void) {
+u8 getChickenEggCount(void) {
 
     u8 i;
     u8 count = 0;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if ((gChickens[i].flags & 1) && gChickens[i].type == CHICKEN_EGG) {
+        if ((gChickens[i].flags & CHICKEN_ACTIVE) && gChickens[i].type == CHICKEN_EGG) {
             count++;
         }
 
@@ -10664,9 +10651,9 @@ u8 func_8009B658(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B6B8);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHatchChicken);
 
-void func_8009B6B8() {
+void handleHatchChicken() {
 
     u8 i;
     bool found = FALSE;
@@ -10675,13 +10662,13 @@ void func_8009B6B8() {
     
     while (i < MAX_CHICKENS && !found) {
 
-        if (!(gChickens[i].flags & 1)) {
+        if (!(gChickens[i].flags & CHICKEN_ACTIVE)) {
 
             i++;
 
         } else if (gChickens[i].type == CHICKEN_EGG) {
           
-            if (!(gChickens[i].flags & 0x20)) {
+            if (!(gChickens[i].flags & CHICKEN_EGG_INCUBATING)) {
                 found++;
             }
             
@@ -10693,8 +10680,8 @@ void func_8009B6B8() {
 
     if (found) {
         
-        if (gChickens[i].flags & 4) {
-            if (entities[gChickens[i].entityIndex].flags & 8) {
+        if (gChickens[i].flags & CHICKEN_ENTITY_LOADED) {
+            if (entities[gChickens[i].entityIndex].flags & ENTITY_IS_CURRENTLY_ANIMATED) {
                 deactivateEntity(gChickens[i].entityIndex);
             }
         }
@@ -10705,16 +10692,16 @@ void func_8009B6B8() {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B7BC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getIncubatingEggCount);
 
-u8 func_8009B7BC(void) {
+u8 getIncubatingEggCount(void) {
 
     u8 i;
     u8 sum = 0;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if ((gChickens[i].flags & 1) && (gChickens[i].type == CHICKEN_EGG) && (gChickens[i].flags & 0x20)) {
+        if ((gChickens[i].flags & CHICKEN_ACTIVE) && (gChickens[i].type == CHICKEN_EGG) && (gChickens[i].flags & CHICKEN_EGG_INCUBATING)) {
             sum++;
         }
         
@@ -10734,7 +10721,7 @@ u8 func_8009B828(u8 arg0) {
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
         // FIXME: should be range
-        if ((gFarmAnimals[i].flags & 1) 
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) 
             && (((u8)(gFarmAnimals[i].type - 1) < 2U 
                 || (gFarmAnimals[i].type == BABY_COW || gFarmAnimals[i].type == PREGNANT_COW))
             && gFarmAnimals[i].location == FARM && (arg0 == 0 || (gFarmAnimals[i].milkType == 0)))) {
@@ -10758,73 +10745,74 @@ u8 func_8009B828(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B914);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", setgAnimalSalePrice);
 
-void func_8009B914() {
+void setgAnimalSalePrice() {
 
     u8 temp;
     u16 temp2;
     u16 temp3;
     
-    switch (D_801C4216) {
+    switch (selectedAnimalType) {
 
         case 2:
             
-            if (gFarmAnimals[D_801FC155].milkType == 0) {
+            if (gFarmAnimals[gSelectedAnimalIndex].milkType == 0) {
                 
-                temp2 = D_80114AD4[2];
+                temp2 = goldenMilkInfo[2];
                 
             } else {
 
-                temp = gFarmAnimals[D_801FC155].affection; 
+                temp = gFarmAnimals[gSelectedAnimalIndex].affection; 
 
                 if (temp < 151) {
-                    temp2 = D_80114ABC[2];
+                    temp2 = smallMilkInfo[2];
                 }
                 
                 if (150 < temp && temp < 221) {
-                    temp2 = D_80114AC4[2];
+                    temp2 = mediumMilkInfo[2];
                 }
     
                 if (temp >= 221) {
-                    temp2 = D_80114ACC[2];
+                    temp2 = largeMilkInfo[2];
                 }
                     
             }
 
-            D_801890E0 = temp2;
+            gAnimalSalePrice = temp2;
             
             break;
 
         case 3:
 
-            temp = gFarmAnimals[D_801FC155].affection; 
+            temp = gFarmAnimals[gSelectedAnimalIndex].affection; 
             
             if (temp < 100) {
-                temp3 = D_80114ADC.arr[2];
+                temp3 = sheepWoolInfo.arr[2];
             }
             
             if (99 < temp && temp < 200) {
-                temp3 = D_80114ADC.arr2[2];
+                temp3 = sheepWoolInfo.arr2[2];
             }
 
             if (temp >= 200) {
-                temp3 = D_80114ADC.arr3[2];
+                temp3 = sheepWoolInfo.arr3[2];
             }
 
-            D_801890E0 = temp3;
+            gAnimalSalePrice = temp3;
             
             break;
         
         case 4:
-            D_801890E0 = 500;
+            gAnimalSalePrice = 500;
             break;
 
         default:
             break;
+
     }
 
-    convertNumberToGameVariableString(0x12, D_801890E0, 0);
+    convertNumberToGameVariableString(0x12, gAnimalSalePrice, 0);
     
 }
 
@@ -10836,22 +10824,22 @@ void generateMilkTypeString(u8 index) {
 
     if (CALF < gFarmAnimals[index].type && gFarmAnimals[index].type < BABY_SHEEP) {
 
-        if (!gFarmAnimals[index].milkType) {
+        if (gFarmAnimals[index].milkType == 0) {
             
-            temp = D_80114AD4[0];
+            temp = goldenMilkInfo[0];
             
         } else {
 
             if (gFarmAnimals[index].affection < 151) {
-                temp = D_80114ABC[0];
+                temp = smallMilkInfo[0];
             }
             
             if (150 < gFarmAnimals[index].affection && gFarmAnimals[index].affection < 221) {
-                temp = D_80114AC4[0];
+                temp = mediumMilkInfo[0];
             }
 
             if (gFarmAnimals[index].affection >= 221) {
-                temp = D_80114ACC[0];
+                temp = largeMilkInfo[0];
             }
             
         }
@@ -10859,16 +10847,16 @@ void generateMilkTypeString(u8 index) {
         switch (temp) {
 
             case 0x15:
-                D_8016FBCC[0] = char_S;
+                gMilkTypeString[0] = char_S;
                 break;
             case 0x16:
-                D_8016FBCC[0] = char_M;
+                gMilkTypeString[0] = char_M;
                 break;
             case 0x17:
-                D_8016FBCC[0] = char_L;
+                gMilkTypeString[0] = char_L;
                 break;
             case 0x18:
-                D_8016FBCC[0] = char_G;
+                gMilkTypeString[0] = char_G;
                 break;
             default:
                 break;
@@ -10876,7 +10864,7 @@ void generateMilkTypeString(u8 index) {
         }
         
     } else {
-        D_8016FBCC[0] = 0xF6;
+        gMilkTypeString[0] = 0xF6;
     }
 
 }
@@ -10884,6 +10872,7 @@ void generateMilkTypeString(u8 index) {
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BB70);
 
 // same as func_80061690
+// unused
 void func_8009BB70(void) {
     D_801886D4[0] = 0xF6;
     D_801886D4[1] = 0xF6;
@@ -10893,9 +10882,9 @@ void func_8009BB70(void) {
     D_801886D4[5] = 0xF6;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BBAC);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getBestCowMilkType);
 
-u8 func_8009BBAC(void) {
+u8 getBestCowMilkType(void) {
 
     u8 temp;
     u8 found = 0xFF;
@@ -10903,7 +10892,7 @@ u8 func_8009BBAC(void) {
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
-        if (gFarmAnimals[i].flags & 1) {
+        if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) {
 
             // FIXME: should be range
             if ((u8)(gFarmAnimals[i].type - 1) < 2U || (gFarmAnimals[i].type == BABY_COW || gFarmAnimals[i].type == PREGNANT_COW)) {
@@ -10924,40 +10913,36 @@ u8 func_8009BBAC(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BC44);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getDogBestRacePlacement);
 
-u8 func_8009BC44(void) {
-    return dogInfo.unk_1C;
+u8 getDogBestRacePlacement(void) {
+    return dogInfo.bestRacePlacement;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BC54);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", getHorseBestRacePlacement);
 
-u8 func_8009BC54(void) {
-    return horseInfo.unk_1E;
+u8 getHorseBestRacePlacement(void) {
+    return horseInfo.bestRacePlacement;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BC64);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", randomizeMiscAnimalSpawnVariants);
 
-void func_8009BC64(void) {
+void randomizeMiscAnimalSpawnVariants(void) {
 
     u8 i;
 
     for (i = 0; i < MAX_MISC_ANIMALS; i++) {
-        gMiscAnimals[i].unk_16 = getRandomNumberInRange(0, 3);
+        gMiscAnimals[i].spawnVariant = getRandomNumberInRange(0, 3);
     }
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", showAnimalExpressionBubble);
 
-// show expression bubble when interacting with animals
 void showAnimalExpressionBubble(u8 animalType, u8 animalIndex, u8 arg2) {
 
-    // Entity index 0x30 = globalSprite index 0x1E
-    // tools, holdable items, expression bubbles, field items
-
     deactivateEntity(0x30);
-    loadEntity(0x30, 0x5B, TRUE);
+    loadEntity(0x30, ENTITY_ASSET_HOLDABLE_ITEMS_1, TRUE);
     setCameraTrackingEntity(0x30, FALSE);
 
     switch (animalType) {

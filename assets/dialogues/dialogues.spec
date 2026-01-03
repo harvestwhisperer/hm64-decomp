@@ -637,15 +637,15 @@ beginseg
 endseg
 
 beginseg
-    name "text64Dialogue"
+    name "farmVisitsDialogue"
     flags OBJECT
-    include "build/bin/dialogues/bytecode/text64Dialogue.bin.o"
+    include "build/bin/dialogues/bytecode/farmVisitsDialogue.bin.o"
 endseg
 
 beginseg
-    name "text64DialogueIndex"
+    name "farmVisitsDialogueIndex"
     flags OBJECT
-    include "build/bin/dialogues/bytecode/text64DialogueIndex.bin.o"
+    include "build/bin/dialogues/bytecode/farmVisitsDialogueIndex.bin.o"
 endseg
 
 beginseg

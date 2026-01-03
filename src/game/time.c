@@ -33,9 +33,9 @@ u8 gYear;
 u8 gCurrentSeasonName[6];
 u8 gGlobalSeasonName[6];
 
-//INCLUDE_ASM("asm/nonmatchings/game/time", func_800D7C20);
+//INCLUDE_ASM("asm/nonmatchings/game/time", handleTimeUpdates);
 
-void func_800D7C20(void) {
+void handleTimeUpdates(void) {
     
     if ((getLevelFlags(gBaseMapIndex) & 1) && !checkDailyEventBit(6)) {
         updateClock(TRUE);
@@ -51,7 +51,7 @@ void func_800D7C20(void) {
 
             setPlayerAction(0xFE, 0);
             // stop audio and set callback for loading
-            func_8005C940(1, END_OF_DAY_2);
+            handleExitLevel(1, END_OF_DAY_2);
             
         }
 

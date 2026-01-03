@@ -176,7 +176,7 @@ DECOMPILED_DIALOGUES := \
 	horseRaceDialogue \
 	karenCutscenes1Dialogue \
 	text63Dialogue \
-	text64Dialogue \
+	farmVisitsDialogue \
 	text65Dialogue \
 	eggFestivalDialogue \
 	marriedDialogue \
@@ -272,7 +272,7 @@ DECOMPILED_TEXTS := text1 \
 	text61 \
 	karenCutscenes1 \
 	text63 \
-	text64 \
+	farmVisits \
 	text65 \
 	eggFestival \
 	karenCutscenes2 \

@@ -212,9 +212,9 @@ bool setOverlayScreenSpritesAlpha(u16 spriteIndex, u8 a) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/overlayScreenSprites", func_8004635C);
+//INCLUDE_ASM("asm/nonmatchings/system/overlayScreenSprites", updateOverlayScreenSpriteRGBA);
 
-bool func_8004635C(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5) {
+bool updateOverlayScreenSpriteRGBA(u16 spriteIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, u16 arg5) {
 
     u8 count = 0;
     bool result = FALSE;

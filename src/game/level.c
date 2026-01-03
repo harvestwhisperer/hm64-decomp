@@ -40,7 +40,6 @@ u8 previousMapIndex;
 u8 gEntranceIndex;
 u8 gBaseMapIndex;
 u8 gMapWithSeasonIndex;
-// global rotation
 u8 gCameraRotationOffset;
 
 // data
@@ -360,9 +359,8 @@ volatile u8 exitsToMapIndices[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 };
 
-// FIXME: needs to be Vec3f
-static const Vec3f D_8011FB28[];
-static const Vec3f D_8011FB70[];
+static const Vec3f chickenFeedCoordinates[];
+static const Vec3f barnFodderCoordinates[];
 
 // forward declaration
 void loadLevelGroundObjects(u16 mapIndex);
@@ -392,10 +390,8 @@ void loadLevelFromEntrance(u16 entranceIndex) {
         gMapWithSeasonIndex = gMapWithSeasonIndex + (gSeason - 1);
     }
 
-    // load map
     loadMap(MAIN_MAP_INDEX, gMapWithSeasonIndex);
 
-    // set rotation
     if (gBaseMapIndex == FARM) {
         setInitialMapRotation(MAIN_MAP_INDEX, (defaultMapRotations[gMapWithSeasonIndex] + gCameraRotationOffset) % 8);
     } else {
@@ -687,7 +683,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
             setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
-            if (checkDailyEventBit(0x43)) {
+            if (checkDailyEventBit(FED_DOG)) {
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0x13, -464.0f, 96.0f, 112.0f, 0xFF, 0xFF, 0, 0);
             } else {
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0xF, -464.0f, 96.0f, 112.0f, 0xFF, 0xFF, 0, 0);
@@ -1268,7 +1264,7 @@ void setChickenFeedSprite(u8 itemIndex) {
 
     Vec3f arr[6];
 
-    memcpy(arr, D_8011FB28, 72);
+    memcpy(arr, chickenFeedCoordinates, 72);
 
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
@@ -1276,7 +1272,7 @@ void setChickenFeedSprite(u8 itemIndex) {
     setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
     setSpriteColor(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
 
-    setMapObject(MAIN_MAP_INDEX, itemIndex, MAP_OBJECT_1 + itemIndex, 0xC, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
+    setMapObject(MAIN_MAP_INDEX, itemIndex, MAP_OBJECT_1 + itemIndex, 12, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
     
 }
 
@@ -1286,7 +1282,7 @@ void setBarnFodderSprite(u8 itemIndex) {
 
     Vec3f arr[9];
     
-    memcpy(arr, D_8011FB70, 108);
+    memcpy(arr, barnFodderCoordinates, 108);
 
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
@@ -1299,20 +1295,20 @@ void setBarnFodderSprite(u8 itemIndex) {
 }
 
 // alternate
-// Vec4f D_8011FB70[];
+// Vec4f barnFodderCoordinates[];
 /*
 void setBarnFodderSprite(u8 arg0) {
 
     Vec3f arr[9];
     
     Vec4f* ptr = arr;
-    Vec4f* ptr2 = D_8011FB70;
+    Vec4f* ptr2 = barnFodderCoordinates;
 
     do {    
         *ptr = *ptr2;
         ptr2++;
         ptr++;
-    } while (ptr2 != (D_8011FB70 + 0x6));
+    } while (ptr2 != (barnFodderCoordinates + 0x6));
 
     *(Vec3f*)ptr = *(Vec3f*)ptr2;
 
@@ -1327,8 +1323,7 @@ void setBarnFodderSprite(u8 arg0) {
 }
 */
 
-// FIXME: should be Vec3f
-static const Vec3f D_8011FB28[] = {
+static const Vec3f chickenFeedCoordinates[] = {
     { -120, 0, 56 },
     { -120, 0, 24 },
     { -120, 0, -8 },
@@ -1337,11 +1332,11 @@ static const Vec3f D_8011FB28[] = {
     { -120, 0, -104 },
 };
 
-//INCLUDE_RODATA("asm/nonmatchings/game/level", D_8011FB28);
+//INCLUDE_RODATA("asm/nonmatchings/game/level", chickenFeedCoordinates);
 
-//INCLUDE_RODATA("asm/nonmatchings/game/level", D_8011FB70);
+//INCLUDE_RODATA("asm/nonmatchings/game/level", barnFodderCoordinates);
 
-static const Vec3f D_8011FB70[] = {
+static const Vec3f barnFodderCoordinates[] = {
     { -136.0f, 0.0f, 88.0f },
     { -136.0f, 0.0f, 24.0f },
     { -136.0f, 0.0f, -40.0f },
@@ -1355,7 +1350,6 @@ static const Vec3f D_8011FB70[] = {
 
 //INCLUDE_ASM("asm/nonmatchings/game/level", initializeMapAdditionsForLevel);
 
-// map additions
 void initializeMapAdditionsForLevel(u16 levelIndex) {
 
     switch (levelIndex) {
@@ -1677,7 +1671,7 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
             }
             break;
         case COOP:
-            if (func_8009B564() == 6 && !func_8009B7BC()) {
+            if (getTotalChickenCount() == 6 && getIncubatingEggCount() == 0) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 1);
             }
             break;
@@ -1723,7 +1717,7 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
                     setStaticMapAddition(MAIN_MAP_INDEX, 4);
                 }
             }
-            if (gSeason == SUMMER && gDayOfMonth == 1 && (17 < gHour && gHour < 24) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
+            if (gSeason == SUMMER && gDayOfMonth == 1 && NIGHTTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 1);
                 setStaticMapAddition(MAIN_MAP_INDEX, 2);
             }
@@ -1755,7 +1749,6 @@ u8 getMapFromExit(u8 exitIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/level", getCantEnterDialogueInfoIndex);
 
-// get dialogue info index when can't enter
 u16 getCantEnterDialogueInfoIndex(u16 exitIndex) {
 
     u16 index = 0xFFFF;
@@ -1926,7 +1919,7 @@ u16 getCantEnterDialogueInfoIndex(u16 exitIndex) {
         case TAVERN:
             
             if (gDayOfWeek != SUNDAY) {
-                index = (17 < gHour && gHour < 24) == 0 ? 0xC5 : 0xFFFF;
+                index = NIGHTTIME == 0 ? 0xC5 : 0xFFFF;
             } else {
                 index = 0xC5;
             }
