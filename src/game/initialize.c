@@ -1088,7 +1088,7 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_EMPTY_ENTITY, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_EMPTY_ENTITY, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_1, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItemsAnimationScripts1);
+    initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_1, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItems1AnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_HOLDABLE_ITEMS_1, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_HOLDABLE_ITEMS_1, 12, 12);
     
@@ -1100,7 +1100,7 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_HOLDABLE_ITEMS_2, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_HOLDABLE_ITEMS_2, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_3, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItemsAnimationScripts2);
+    initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_3, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItems2AnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_HOLDABLE_ITEMS_3, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_HOLDABLE_ITEMS_3, 12, 12);
     
@@ -1108,7 +1108,7 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_TOOLS, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_TOOLS, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_4, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItemsAnimationScripts3);
+    initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_4, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItems3AnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_HOLDABLE_ITEMS_4, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_HOLDABLE_ITEMS_4, 12, 12);
     
