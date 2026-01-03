@@ -41,14 +41,9 @@ extern "C" {
     .globl  x
 #endif
 
-#ifdef BBPLAYER
 #define END(proc)           \
     .end    proc           ;\
     .size   proc, . - proc
-#else
-#define END(proc)   \
-    .end    proc
-#endif
 
 #define ABS(x, y)   \
     .globl  x      ;\

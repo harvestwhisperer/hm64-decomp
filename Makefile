@@ -83,7 +83,7 @@ NU_OPTFLAGS := -O3
 
 ULTRALIBVER := -DBUILD_VERSION=7
 
-LDFLAGS := -G 0 -T config/$(REGION)/undefined_funcs.txt -T config/$(REGION)/undefined_syms.txt -T config/$(REGION)/undefined_funcs_auto.txt -T config/$(REGION)/undefined_syms_auto.txt -T $(BSS_LD_SCRIPT) -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
+LDFLAGS := -G 0  -T config/$(REGION)/undefined_syms.txt -T $(BSS_LD_SCRIPT) -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
 
 # Binary asset matching (cutscenes, dialogues, texts)
 
