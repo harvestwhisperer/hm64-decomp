@@ -1,16 +1,19 @@
 #include "common.h"
 
 #include "system/controller.h"
+#include "system/cutscene.h"
 #include "system/dialogue.h"
 #include "system/entity.h"
 #include "system/flags.h"
 #include "system/globalSprites.h"
 #include "system/graphic.h"
+#include "system/map.h"
 #include "system/message.h"
-#include "system/overlayScreenSprites.h"
+#include "system/numberSprites.h"
 #include "system/sprite.h"
 #include "system/mapController.h"
 #include "system/sceneGraph.h"
+#include "system/spriteDMAManager.h"
 
 #include "game/gameStart.h"
 
@@ -112,7 +115,7 @@ void initializeEngine(void) {
     initializeMap();
     initializeMessageBoxes();
     initializeDialogueSessionManagers();
-    initializeOverlayScreenSprites();
+    initializeNumberSprites();
     initializeCutsceneExecutors();
     initializeFlags();
     initializeEntities();

@@ -15,67 +15,67 @@
 #define GRAY 7
 #define JEFF 8
 #define CLIFF 9
-#define KAI 0xA
-#define MAYOR 0xB
-#define MAYOR_WIFE 0xC
-#define LILLIA 0xD
-#define BASIL 0xE
-#define ELLEN 0xF
-#define DOUG 0x10
-#define GOTZ 0x11
-#define SASHA 0x12
-#define POTION_SHOP_DEALER 0x13
-#define KENT 0x14
-#define STU 0x15
-#define MIDWIFE 0x16
-#define MAY 0x17
-#define RICK 0x18
-#define PASTOR 0x19
-#define SHIPPER 0x1A
-#define SAIBARA 0x1B
-#define DUKE 0x1C
-#define GREG 0x1D
-#define CARPENTER_1 0x1E
-#define CARPENTER_2 0x1F
-#define MASTER_CARPENTER 0x20
-#define HARVEST_SPRITE_1 0x21
-#define HARVEST_SPRITE_2 0x22
-#define HARVEST_SPRITE_3 0x23
-#define SYDNEY 0x24
-#define BARLEY 0x25
-#define GOURMET_JUDGE 0x26
-#define PHOTOGRAPHER 0x27
-#define NPC_0x28 0x28
-#define MARIA_HARRIS_BABY 0x29
-#define POPURI_GRAY_BABY 0x2A
-#define ELLI_JEFF_BABY 0x2B
-#define ANN_CLIFF_BABY 0x2C
-#define KAREN_KAI_BABY 0x2D
-#define NPC_0x2E 0x2E
+#define KAI 10
+#define MAYOR 11
+#define MAYOR_WIFE 12
+#define LILLIA 13
+#define BASIL 14
+#define ELLEN 15
+#define DOUG 16
+#define GOTZ 17
+#define SASHA 18
+#define POTION_SHOP_DEALER 19
+#define KENT 20
+#define STU 21
+#define MIDWIFE 22
+#define MAY 23
+#define RICK 24
+#define PASTOR 25
+#define SHIPPER 26
+#define SAIBARA 27
+#define DUKE 28
+#define GREG 29
+#define CARPENTER_1 30
+#define CARPENTER_2 31
+#define MASTER_CARPENTER 32
+#define HARVEST_SPRITE_1 33
+#define HARVEST_SPRITE_2 34
+#define HARVEST_SPRITE_3 35
+#define SYDNEY 36
+#define BARLEY 37
+#define MRS_MANA 38
+#define JOHN 39
+#define GOURMET_JUDGE 40
+#define MARIA_HARRIS_BABY 41
+#define POPURI_GRAY_BABY 42
+#define ELLI_JEFF_BABY 43
+#define ANN_CLIFF_BABY 44
+#define KAREN_KAI_BABY 45
+#define ENTOMOLOGIST 46
 
-#define NPC_ACTIVE 0x1
-#define NPC_NEEDS_UPDATE 0x2
-#define NPC_ENTITY_LOADED 0x4
-#define NPC_ATTACHED 0x8
+#define NPC_ACTIVE 1
+#define NPC_NEEDS_UPDATE 2
+#define NPC_ENTITY_LOADED 4
+#define NPC_ATTACHED 8
 
 // 0x801FB9D0
 typedef struct {
-	/* 0x00*/  Vec3f startingCoordinates;
-	/* 0x0C */ Vec3f currentCoordinates;
-	/* 0x18 */ u16 entityIndex;
-	/* 0x1A */ u8 wanderRadiusX;
-	/* 0x1B */ u8 wanderRadiusZ;
-	/* 0x1C */ u8 levelIndex;
-	/* 0x1D */ u8 movingFlag;
-	/* 0x1E */ u8 behaviorMode;
-	/* 0x1F */ u8 direction;
-	/* 0x20 */ u8 speed;
-	/* 0x21 */ u8 animationState;
-	/* 0x22 */ u8 animationTimer;
-	/* 0x23 */ u8 location;
-	/* 0x24 */ u8 animationIndex1;
-	/* 0x25 */ u8 animationIndex2;
-	/* 0x26 */ u16 flags;
+	Vec3f startingCoordinates;
+	Vec3f currentCoordinates;
+	u16 entityIndex;
+	u8 wanderRadiusX;
+	u8 wanderRadiusZ;
+	u8 levelIndex;
+	u8 movingFlag;
+	u8 behaviorMode;
+	u8 direction;
+	u8 speed;
+	u8 animationState;
+	u8 animationTimer;
+	u8 location;
+	u8 animationIndex1;
+	u8 animationIndex2;
+	u16 flags;
 } npcInfo;
 
 extern void deactivateNPCEntities();

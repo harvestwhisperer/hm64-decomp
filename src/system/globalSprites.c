@@ -2,6 +2,7 @@
 
 #include "system/globalSprites.h"
 
+#include "graphic.h"
 #include "system/memory.h"
 #include "system/sprite.h"
 #include "system/math.h"

@@ -20,6 +20,7 @@
 #include "game/npc.h"
 #include "game/shop.h"
 #include "game/time.h"
+#include "game/transition.h"
 #include "game/weather.h"
 
 #include "mainLoop.h"
@@ -325,6 +326,7 @@ static const s8 directionToTileDeltaZ[12];
 static const u8 toolHeldItemIndices[5][3];
 
 // forward declarations
+void func_80067290(u8 arg0); 
 u8 func_80067A24(u8);                 
 bool func_80067B38(void);
 void handleToolCharging(void);
@@ -423,7 +425,9 @@ void func_8006E240();
 void func_8006E348();                                  
 void func_8006E450();                                  
 void func_8006E574();                                  
-void func_8006E678();                                  
+void func_8006E678();      
+void dismountHorse(void);    
+void handlePlayerInput(void);                              
 
 static inline void resetAction() {
     gPlayer.actionPhaseFrameCounter = 0;
@@ -1415,7 +1419,7 @@ void func_80067290(u8 arg0) {
 
     if (arg0 == 0) {
 
-        if ((getItemFlags(gPlayer.heldItem) & ITEM_IS_ANIMAL_FEED) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_ANIMAL_FEED) && !set) {
 
             if (checkBarnAnimalFeedInteraction(gBaseMapIndex) != 0xFF) {
                 startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
@@ -3023,7 +3027,7 @@ void handlePlayerAnimation(void) {
 }
 
 // probably not necessary
-static inline handleStopHolding() {
+static inline void handleStopHolding() {
     resetAction();
     gItemBeingHeld = 0xFF;
 }
@@ -3049,7 +3053,7 @@ void func_8006A714(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", func_8006A7B0);
 
-static inline updateAnimation(u16 animation) {
+static inline void updateAnimation(u16 animation) {
     
      if (gPlayer.actionPhase == 0) {
         setEntityAnimationWithDirectionChange(ENTITY_PLAYER, animation);

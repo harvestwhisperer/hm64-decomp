@@ -322,6 +322,7 @@ bool func_8004D788(u8 contIndex) {
                 result = TRUE;
             }
         }
+        
     }
     
     return result;

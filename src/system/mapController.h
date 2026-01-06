@@ -18,10 +18,10 @@
 typedef struct {
 	u32 *mapDataIndex; // virtual address for map data dma
 	Vec3f viewPosition;
-	Vec3f unk_10;
-	Vec3f unk_1C;
-	Vec3f unk_28;
-	Vec3f unk_34; 
+	Vec3f viewBoundsCorner0;
+	Vec3f viewBoundsCorner1;
+	Vec3f viewBoundsCorner2;
+	Vec3f viewBoundsCorner3; 
 	u16 mainMapIndex;
 	u16 mapIndex;
 	u8 currentTileX;
@@ -48,7 +48,9 @@ typedef struct {
 } CurrentMapContext;
 */
 
-extern void initializeMapControllers();      
+extern void initializeMapControllers(void);      
+extern bool initializeMapController(u16 index, u16 mapIndex, u32 *mapDataIndex);
+extern bool setMapDataAddresses(u16 mapIndex, void *start, void *end);
 extern bool func_8003BA44(u16 index, u16 mapIndex, u32 *levelMap);
 extern bool loadMap(u16 arg0, u16 mapIndex); 
 extern bool dmaMapAssets(u16, u16);   

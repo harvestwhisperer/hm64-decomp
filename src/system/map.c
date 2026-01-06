@@ -100,7 +100,7 @@ u8 D_80112D10[27][27] = {
     { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
 };
 
-u8 D_80112FEC[480] = {
+u8 gridIndexToTileIndexX[20 * 24] = {
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
     0x10, 0x11, 0x12, 0x13, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B,
     0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -133,7 +133,7 @@ u8 D_80112FEC[480] = {
     0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13,
 };
 
-u8 D_801131CC[484] = {
+u8 gridIndexToTileIndexZ[20 * 24] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
     0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
@@ -449,7 +449,7 @@ bool setMapTranslation(u16 mapIndex, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80034298);
+//INCLUDE_ASM("asm/nonmatchings/system/map", setMapScale);
 
 bool setMapScale(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
@@ -2405,12 +2405,14 @@ void setTerrainQuad(TerrainQuad* quad, u8* quadPtr, u16 tileIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_800387E0);
 
+// inline or unused
 u32* func_800387E0(u16 arg0, u32* arg1) {
     return (u8*)arg1 + arg1[arg0];
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_800387F8);
 
+// inline or unused
 u32* func_800387F8(u16 arg0, u32* arg1) {
     return (u8*)arg1 + arg1[arg0];
 }
@@ -3469,14 +3471,14 @@ void renderGroundObjects(MainMap* mainMap) {
 
                  do {
 
-                     if (mainMap->visibilityGrid[D_801131CC[gridIndex] + mainMap->groundObjects.z][D_80112FEC[gridIndex] + mainMap->groundObjects.x]) {
+                     if (mainMap->visibilityGrid[gridIndexToTileIndexZ[gridIndex] + mainMap->groundObjects.z][gridIndexToTileIndexX[gridIndex] + mainMap->groundObjects.x]) {
 
                          dl = renderGroundObject(dl, mainMap, &mainMap->groundObjectBitmaps[i], count);
 
                          addGroundObjectToSceneGraph(mainMap, 
-                            temp1 + (D_80112FEC[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.x, 
+                            temp1 + (gridIndexToTileIndexX[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.x, 
                             mainMap->groundObjects.unk_12 + mainMap->groundObjectBitmaps[i].coordinates.y, 
-                            temp2 + (D_801131CC[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.z, 
+                            temp2 + (gridIndexToTileIndexZ[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.z, 
                             arr[6], arr[7], startingPositionDl);
                          
                          count++;
@@ -3507,12 +3509,12 @@ void renderGroundObjects(MainMap* mainMap) {
 
                 do {
 
-                    if (mainMap->visibilityGrid[D_801131CC[gridIndex] + mainMap->groundObjects.z][D_80112FEC[gridIndex] + mainMap->groundObjects.x]) {
+                    if (mainMap->visibilityGrid[gridIndexToTileIndexZ[gridIndex] + mainMap->groundObjects.z][gridIndexToTileIndexX[gridIndex] + mainMap->groundObjects.x]) {
                     
                         dl = renderGroundObject(dl, mainMap, &mainMap->groundObjectBitmaps[i], count);
 
-                        arr[2] = temp1 + (D_80112FEC[gridIndex] << 5) + mainMap->groundObjectBitmaps[i].coordinates.x - 0.0f;
-                        arr[4] = temp2 + (D_801131CC[gridIndex] << 5) + mainMap->groundObjectBitmaps[i].coordinates.z - 4.0f;
+                        arr[2] = temp1 + (gridIndexToTileIndexX[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.x - 0.0f;
+                        arr[4] = temp2 + (gridIndexToTileIndexZ[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.z - 4.0f;
                          
                         arr[3] = getTerrainHeightAtPosition(0, 
                             arr[2],

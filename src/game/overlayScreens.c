@@ -9,7 +9,7 @@
 #include "system/globalSprites.h"
 #include "system/math.h"
 #include "system/message.h"
-#include "system/overlayScreenSprites.h"
+#include "system/numberSprites.h"
 #include "system/sprite.h"
 
 #include "game/animals.h"
@@ -30,6 +30,7 @@
 
 #include "mainLoop.h"
 
+#include "assetIndices/dialogues.h"
 #include "assetIndices/maps.h"
 #include "assetIndices/sprites.h"
 
@@ -41,7 +42,6 @@
 
 // bss
 OverlayScreenTable overlayScreenTable;
-RacingContext gRacingContext;
 u32 D_80189858;
 
 u8 D_80205640[10];
@@ -795,10 +795,10 @@ void closeOverlayScreen(void) {
     deactivateSprite(0x8D);
     deactivateSprite(0x8B);
     deactivateSprite(0x8A);
-    deactivateOverlayScreenSprites(0);
+    deactivateNumberSprites(0);
 
     deactivateSprite(0x8E);
-    deactivateOverlayScreenSprites(1);
+    deactivateNumberSprites(1);
     
     deactivateSprite(0x86);
     deactivateSprite(0x82);
@@ -819,25 +819,25 @@ void closeOverlayScreen(void) {
     deactivateSprite(0x85);
     deactivateSprite(0x86);
     
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(2);
-    deactivateOverlayScreenSprites(3);
-    deactivateOverlayScreenSprites(4);
-    deactivateOverlayScreenSprites(5);
-    deactivateOverlayScreenSprites(6);
-    deactivateOverlayScreenSprites(2);
-    deactivateOverlayScreenSprites(3);
-    deactivateOverlayScreenSprites(4);
-    deactivateOverlayScreenSprites(5);
-    deactivateOverlayScreenSprites(6);
-    deactivateOverlayScreenSprites(7);
-    deactivateOverlayScreenSprites(8);
-    deactivateOverlayScreenSprites(9);
-    deactivateOverlayScreenSprites(0xA);
-    deactivateOverlayScreenSprites(0xB);
-    deactivateOverlayScreenSprites(0xC);
-    deactivateOverlayScreenSprites(0xD);
-    deactivateOverlayScreenSprites(0xE);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(2);
+    deactivateNumberSprites(3);
+    deactivateNumberSprites(4);
+    deactivateNumberSprites(5);
+    deactivateNumberSprites(6);
+    deactivateNumberSprites(2);
+    deactivateNumberSprites(3);
+    deactivateNumberSprites(4);
+    deactivateNumberSprites(5);
+    deactivateNumberSprites(6);
+    deactivateNumberSprites(7);
+    deactivateNumberSprites(8);
+    deactivateNumberSprites(9);
+    deactivateNumberSprites(0xA);
+    deactivateNumberSprites(0xB);
+    deactivateNumberSprites(0xC);
+    deactivateNumberSprites(0xD);
+    deactivateNumberSprites(0xE);
 
     for (i = 0; i < 40; i++) {
         deactivateSprite(0xA3 + i);
@@ -904,10 +904,10 @@ void loadClockSprites(void) {
     setSpriteColor(0x8A, 0xFF, 0xFF, 0xFF, 0);
     setSpriteBlendMode(0x8A, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8A, 3, gDayOfWeek);
-    setOverlayScreenSprites(0, 0x8F, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_CLOCK_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_CLOCK_PALETTE_BUFFER, (void*)OVERLAY_SCREEN_CLOCK_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_CLOCK_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 2, 0, 0.0f, 0.0f, 256.0f, 8);
+    setNumberSprites(0, 0x8F, (u32)&_timeUiTextureSegmentRomStart, (u32)&_timeUiTextureSegmentRomEnd, (u32)&_timeUiAssetsIndexSegmentRomStart, (u32)&_timeUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_CLOCK_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_CLOCK_PALETTE_BUFFER, (void*)OVERLAY_SCREEN_CLOCK_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_CLOCK_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 2, 0, 0.0f, 0.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0, (u32)gDayOfMonth, 1, 3);
-    setOverlayScreenSpritesRGBA(0, 255, 255, 255, 255);
+    dmaNumberSprites(0, (u32)gDayOfMonth, 1, 3);
+    setNumberSpritesRGBA(0, 255, 255, 255, 255);
     
 }
 
@@ -942,14 +942,14 @@ void loadMoneySprites(f32 x, f32 y, f32 z, u16 renderingLayer, u32 arg4) {
     setSpriteBlendMode(0x8E, renderingLayer);
     startSpriteAnimation(0x8E, 0, 0);
 
-    setOverlayScreenSprites(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 
+    setNumberSprites(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 
         (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 
         0, 1, 0, 
         x, y, z + 64.0f, 
         10);
 
-    dmaOverlayScreenSprites(1, arg4, 5, 3);
-    setOverlayScreenSpritesRGBA(1, 255, 255, 255, 255);
+    dmaNumberSprites(1, arg4, 5, 3);
+    setNumberSpritesRGBA(1, 255, 255, 255, 255);
 
 }
 
@@ -1049,7 +1049,7 @@ static inline void setMoneySprites() {
     setSpriteBlendMode(0x8E, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8E, 0, 0);
 
-    setOverlayScreenSprites(1, 0x91, 
+    setNumberSprites(1, 0x91, 
         (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 
         (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 
         0, 1, 0, 
@@ -1057,8 +1057,8 @@ static inline void setMoneySprites() {
         10
     );
     
-    dmaOverlayScreenSprites(1, temp, 5, 3);
-    setOverlayScreenSpritesRGBA(1, 255, 255, 255, 255);
+    dmaNumberSprites(1, temp, 5, 3);
+    setNumberSpritesRGBA(1, 255, 255, 255, 255);
 
 }
 
@@ -2577,8 +2577,8 @@ void fadeOutPauseScreenSprites(void) {
         }
     }
     
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(1);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(1);
     
 }
 
@@ -3537,8 +3537,8 @@ void fadeOutToolboxSprites(void) {
         }
     }
 
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(1);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(1);
     
 }
 
@@ -4281,8 +4281,8 @@ void fadeOutFreezerSprites(void) {
         }
     }
 
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(1);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(1);
     
 }
 
@@ -5072,8 +5072,8 @@ void fadeOutCabinetSprites(void) {
         
     }
 
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(1);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(1);
     
 }
 
@@ -5765,8 +5765,8 @@ void fadeOutHouseExtensionsSprites(void) {
     updateSpriteAlpha(0x87, 0, 24);
     updateSpriteAlpha(0x88, 0, 24);
 
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(1);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(1);
 
 }
 
@@ -5817,7 +5817,7 @@ void houseExtensionsSelectionScreenCallback(void) {
 
         case 4:
             
-            if (isDialogueClosing()) {
+            if (checkAllDialoguesCompleted()) {
                 
                 temp = getSelectedMenuRow(0);
                 overlayScreenTable.pageNumber = temp;
@@ -5852,8 +5852,8 @@ void houseExtensionsSelectionScreenCallback(void) {
                         updateSpriteAlpha(0x86, 0, 24);
                         updateSpriteAlpha(0x87, 0, 24);
                         updateSpriteAlpha(0x88, 0, 24);
-                        deactivateOverlayScreenSprites(0);
-                        deactivateOverlayScreenSprites(1);
+                        deactivateNumberSprites(0);
+                        deactivateNumberSprites(1);
                         resetAnimationState(CURSOR_HAND);
                         overlayScreenTable.screenState = 2;
                         gHouseExtensionSelection = overlayScreenTable.cellIndex;
@@ -5922,7 +5922,7 @@ void houseExtensionsSelectionScreenCallback(void) {
                     initializeMessageBox(0, 6, 0x6D, 0);
                     overlayScreenTable.screenState = 6;
                 } else {
-                    initializeDialogueSession(0, 0x3D, 0x21, 0x40);
+                    initializeDialogueSession(0, DIALOGUE_SHOP, 33, 0x40);
                     overlayScreenTable.screenState = 4;
                 }
                 
@@ -5947,8 +5947,8 @@ void houseExtensionsSelectionScreenCallback(void) {
         updateSpriteAlpha(0x86, 0, 24);
         updateSpriteAlpha(0x87, 0, 24);
         updateSpriteAlpha(0x88, 0, 24);
-        deactivateOverlayScreenSprites(0);
-        deactivateOverlayScreenSprites(1);
+        deactivateNumberSprites(0);
+        deactivateNumberSprites(1);
         resetAnimationState(CURSOR_HAND);
         overlayScreenTable.screenState = 2;
         playSfx(1);
@@ -6017,25 +6017,25 @@ void loadEstimateScreenSprites(void) {
         startSpriteAnimation(0x85, temp + 1, 0);
     }
     
-    setOverlayScreenSprites(2, 0x9A, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -60.0f, 4.0f, 256.0f, 8);
-    dmaOverlayScreenSprites(2, getTotalCowsCount(), 1, 3);
-    setOverlayScreenSpritesRGBA(2, 255, 255, 255, 255);
+    setNumberSprites(2, 0x9A, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -60.0f, 4.0f, 256.0f, 8);
+    dmaNumberSprites(2, getTotalCowsCount(), 1, 3);
+    setNumberSpritesRGBA(2, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(3, 0x9B, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -60.0f, -12.0f, 256.0f, 8);
-    dmaOverlayScreenSprites(3, getTotalSheepCount(), 1, 3);
-    setOverlayScreenSpritesRGBA(3, 255, 255, 255, 255);
+    setNumberSprites(3, 0x9B, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -60.0f, -12.0f, 256.0f, 8);
+    dmaNumberSprites(3, getTotalSheepCount(), 1, 3);
+    setNumberSpritesRGBA(3, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(4, 0x9C, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -60.0f, -28.0f, 256.0f, 8);
-    dmaOverlayScreenSprites(4, getTotalChickenCount(), 1, 3);
-    setOverlayScreenSpritesRGBA(4, 255, 255, 255, 255);
+    setNumberSprites(4, 0x9C, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -60.0f, -28.0f, 256.0f, 8);
+    dmaNumberSprites(4, getTotalChickenCount(), 1, 3);
+    setNumberSpritesRGBA(4, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(5, 0x9D, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -16.0f, -44.0f, 256.0f, 8);
-    dmaOverlayScreenSprites(5, gLumber, 3, 3);
-    setOverlayScreenSpritesRGBA(5, 255, 255, 255, 255);
+    setNumberSprites(5, 0x9D, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -16.0f, -44.0f, 256.0f, 8);
+    dmaNumberSprites(5, gLumber, 3, 3);
+    setNumberSpritesRGBA(5, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(6, 0xA0, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -16.0f, -60.0f, 256.0f, 8);
-    dmaOverlayScreenSprites(6, fodderQuantity, 3, 3);
-    setOverlayScreenSpritesRGBA(6, 255, 255, 255, 255);
+    setNumberSprites(6, 0xA0, (u32)&_bulletNumeralTextureSegmentRomStart, (u32)&_bulletNumeralTextureSegmentRomEnd, (u32)&_bulletNumeralAssetsIndexSegmentRomStart, (u32)&_bulletNumeralAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_ESIMATE_SCREEN_NUMBERS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -16.0f, -60.0f, 256.0f, 8);
+    dmaNumberSprites(6, fodderQuantity, 3, 3);
+    setNumberSpritesRGBA(6, 255, 255, 255, 255);
     
     setMessageBoxViewSpacePosition(0, 44.0f, 20.0f, 352.0f);
     setMessageBoxSpriteIndices(0, 0xFF, 0xFF, 0xFF);
@@ -6076,13 +6076,13 @@ void fadeOutEstimateSprites(void) {
     messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags &= ~0x8000;
     
     resetMessageBoxAnimation(0);
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(1);
-    deactivateOverlayScreenSprites(2);
-    deactivateOverlayScreenSprites(3);
-    deactivateOverlayScreenSprites(4);
-    deactivateOverlayScreenSprites(5);
-    deactivateOverlayScreenSprites(6);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(1);
+    deactivateNumberSprites(2);
+    deactivateNumberSprites(3);
+    deactivateNumberSprites(4);
+    deactivateNumberSprites(5);
+    deactivateNumberSprites(6);
     
 }
 
@@ -6310,8 +6310,8 @@ void fadeOutKitchenPictureSprites(void) {
     updateSpriteAlpha(0xAB, 0, 24);
     updateSpriteAlpha(0xAC, 0, 24);
 
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(1);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(1);
 
 }
 
@@ -6689,8 +6689,8 @@ void fadeOutCalendarSprites(void) {
         updateSpriteAlpha(0x8F + i, 0, 24);
     }
     
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(1);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(1);
     
 }
 
@@ -7213,8 +7213,8 @@ void fadeOutRecipeBookSprites(void) {
     updateSpriteAlpha(RECIPE_LABELS_BASE + 14, 0, 24);
     updateSpriteAlpha(RECIPE_LABELS_BASE + 15, 0, 24);
 
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(1);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(1);
 
 }
 
@@ -7705,8 +7705,8 @@ void fadeOutAlbumSprites(void) {
     updateSpriteAlpha(0x85, 0, 24);
     updateSpriteAlpha(0x86, 0, 24);
 
-    deactivateOverlayScreenSprites(0);
-    deactivateOverlayScreenSprites(1);
+    deactivateNumberSprites(0);
+    deactivateNumberSprites(1);
 
 }
 
@@ -7897,8 +7897,8 @@ void albumScreenCallback(void) {
         updateSpriteAlpha(0x84, 0, 24);
         updateSpriteAlpha(0x85, 0, 24);
         updateSpriteAlpha(0x86, 0, 24);
-        deactivateOverlayScreenSprites(0);
-        deactivateOverlayScreenSprites(1);
+        deactivateNumberSprites(0);
+        deactivateNumberSprites(1);
         overlayScreenTable.screenState = 2;
         playSfx(1);
     }
@@ -8515,69 +8515,69 @@ void loadRaceBettingScreenSprites(void) {
     setBilinearFiltering(CURSOR_HAND, 1);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(2, 0x97, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -98.0f, -153.0f, 256.0f, 10);
-    dmaOverlayScreenSprites(2, D_80205204, 3, 3);
-    setOverlayScreenSpritesRGBA(2, 255, 255, 255, 255);
+    setNumberSprites(2, 0x97, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -98.0f, -153.0f, 256.0f, 10);
+    dmaNumberSprites(2, D_80205204, 3, 3);
+    setNumberSpritesRGBA(2, 255, 255, 255, 255);
 
-    setOverlayScreenSprites(3, 0x9B, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -48.0f, 256.0f, 10);
+    setNumberSprites(3, 0x9B, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -48.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(3, gRacingContext.playerBets[gRacingContext.currentRaceIndex][0], 1, 3);
-    setOverlayScreenSpritesRGBA(3, 255, 255, 255, 255);
+    dmaNumberSprites(3, gRacingContext.playerBets[gRacingContext.currentRaceIndex][0], 1, 3);
+    setNumberSpritesRGBA(3, 255, 255, 255, 255);
 
-    setOverlayScreenSprites(4, 0x9D, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -64.0f, 256.0f, 10);
+    setNumberSprites(4, 0x9D, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -64.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(4, gRacingContext.playerBets[gRacingContext.currentRaceIndex][1], 1, 3);
-    setOverlayScreenSpritesRGBA(4, 255, 255, 255, 255);
+    dmaNumberSprites(4, gRacingContext.playerBets[gRacingContext.currentRaceIndex][1], 1, 3);
+    setNumberSpritesRGBA(4, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(5, 0x9F, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -80.0f, 256.0f, 10);
+    setNumberSprites(5, 0x9F, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -80.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(5, gRacingContext.playerBets[gRacingContext.currentRaceIndex][2], 1, 3);
-    setOverlayScreenSpritesRGBA(5, 255, 255, 255, 255);
+    dmaNumberSprites(5, gRacingContext.playerBets[gRacingContext.currentRaceIndex][2], 1, 3);
+    setNumberSpritesRGBA(5, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(6, 0xA1, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -96.0f, 256.0f, 10);
+    setNumberSprites(6, 0xA1, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -96.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(6, gRacingContext.playerBets[gRacingContext.currentRaceIndex][3], 1, 3);
-    setOverlayScreenSpritesRGBA(6, 255, 255, 255, 255);
+    dmaNumberSprites(6, gRacingContext.playerBets[gRacingContext.currentRaceIndex][3], 1, 3);
+    setNumberSpritesRGBA(6, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(7, 0xA3, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -112.0f, 256.0f, 10);
+    setNumberSprites(7, 0xA3, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -112.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(7, gRacingContext.playerBets[gRacingContext.currentRaceIndex][4], 1, 3);
-    setOverlayScreenSpritesRGBA(7, 255, 255, 255, 255);
+    dmaNumberSprites(7, gRacingContext.playerBets[gRacingContext.currentRaceIndex][4], 1, 3);
+    setNumberSpritesRGBA(7, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(8, 0xA5, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -128.0f, 256.0f, 10);
+    setNumberSprites(8, 0xA5, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -128.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(8, gRacingContext.playerBets[gRacingContext.currentRaceIndex][5], 1, 3);
-    setOverlayScreenSpritesRGBA(8, 255, 255, 255, 255);
+    dmaNumberSprites(8, gRacingContext.playerBets[gRacingContext.currentRaceIndex][5], 1, 3);
+    setNumberSpritesRGBA(8, 255, 255, 255, 255);
 
-    setOverlayScreenSprites(9, 0xA7, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, 34.0f, 256.0f, 8);
+    setNumberSprites(9, 0xA7, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, 34.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(9, gRacingContext.displayOddsTop[0], 2, 3);
-    setOverlayScreenSpritesRGBA(9, 255, 255, 255, 255);
+    dmaNumberSprites(9, gRacingContext.displayOddsTop[0], 2, 3);
+    setNumberSpritesRGBA(9, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(0xA, 0xAA, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, 18.0f, 256.0f, 8);
+    setNumberSprites(0xA, 0xAA, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, 18.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xA, gRacingContext.displayOddsTop[1], 2, 3);
-    setOverlayScreenSpritesRGBA(0xA, 255, 255, 255, 255);
+    dmaNumberSprites(0xA, gRacingContext.displayOddsTop[1], 2, 3);
+    setNumberSpritesRGBA(0xA, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(0xB, 0xAD, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, 2.0f, 256.0f, 8);
+    setNumberSprites(0xB, 0xAD, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, 2.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xB, gRacingContext.displayOddsTop[2], 2, 3);
-    setOverlayScreenSpritesRGBA(0xB, 255, 255, 255, 255);
+    dmaNumberSprites(0xB, gRacingContext.displayOddsTop[2], 2, 3);
+    setNumberSpritesRGBA(0xB, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(0xC, 0xB0, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, -14.0f, 256.0f, 8);
+    setNumberSprites(0xC, 0xB0, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, -14.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xC, gRacingContext.oddsAndNames.displayOddsBottom[0], 2, 3);
-    setOverlayScreenSpritesRGBA(0xC, 255, 255, 255, 255);
+    dmaNumberSprites(0xC, gRacingContext.oddsAndNames.displayOddsBottom[0], 2, 3);
+    setNumberSpritesRGBA(0xC, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(0xD, 0xB3, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, -30.0f, 256.0f, 8);
+    setNumberSprites(0xD, 0xB3, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, -30.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xD, gRacingContext.oddsAndNames.displayOddsBottom[1], 2, 3);
-    setOverlayScreenSpritesRGBA(0xD, 255, 255, 255, 255);
+    dmaNumberSprites(0xD, gRacingContext.oddsAndNames.displayOddsBottom[1], 2, 3);
+    setNumberSpritesRGBA(0xD, 255, 255, 255, 255);
     
-    setOverlayScreenSprites(0xE, 0xB6, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, -46.0f, 256.0f, 8);
+    setNumberSprites(0xE, 0xB6, &_raceBettingUiTextureSegmentRomStart, &_raceBettingUiTextureSegmentRomEnd, &_raceBettingUiAssetsIndexSegmentRomStart, &_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, -46.0f, 256.0f, 8);
     
-    dmaOverlayScreenSprites(0xE, gRacingContext.oddsAndNames.displayOddsBottom[2], 2, 3);
-    setOverlayScreenSpritesRGBA(0xE, 255, 255, 255, 255);
+    dmaNumberSprites(0xE, gRacingContext.oddsAndNames.displayOddsBottom[2], 2, 3);
+    setNumberSpritesRGBA(0xE, 255, 255, 255, 255);
     
     initializeRaceBettingMessageBoxes();
     fadeInRaceBettingSprites();
@@ -8712,20 +8712,20 @@ void fadeOutRaceBettingSprites(void) {
     deactivateMessageBox(4);
     deactivateMessageBox(5);
 
-    deactivateOverlayScreenSprites(1);
-    deactivateOverlayScreenSprites(2);
-    deactivateOverlayScreenSprites(3);
-    deactivateOverlayScreenSprites(4);
-    deactivateOverlayScreenSprites(5);
-    deactivateOverlayScreenSprites(6);
-    deactivateOverlayScreenSprites(7);
-    deactivateOverlayScreenSprites(8);
-    deactivateOverlayScreenSprites(9);
-    deactivateOverlayScreenSprites(0xA);
-    deactivateOverlayScreenSprites(0xB);
-    deactivateOverlayScreenSprites(0xC);
-    deactivateOverlayScreenSprites(0xD);
-    deactivateOverlayScreenSprites(0xE);
+    deactivateNumberSprites(1);
+    deactivateNumberSprites(2);
+    deactivateNumberSprites(3);
+    deactivateNumberSprites(4);
+    deactivateNumberSprites(5);
+    deactivateNumberSprites(6);
+    deactivateNumberSprites(7);
+    deactivateNumberSprites(8);
+    deactivateNumberSprites(9);
+    deactivateNumberSprites(0xA);
+    deactivateNumberSprites(0xB);
+    deactivateNumberSprites(0xC);
+    deactivateNumberSprites(0xD);
+    deactivateNumberSprites(0xE);
 
     initializeMainMessageBoxes();
 
@@ -8877,8 +8877,8 @@ void raceBettingScreenCallback(void) {
                 
             }
 
-            dmaOverlayScreenSprites(1, (u32)D_80189858, 5, 3);
-            dmaOverlayScreenSprites(overlayScreenTable.cellIndex + 3, gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex], 1, 3);
+            dmaNumberSprites(1, (u32)D_80189858, 5, 3);
+            dmaNumberSprites(overlayScreenTable.cellIndex + 3, gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex], 1, 3);
                 
             break;
 
@@ -9389,26 +9389,26 @@ void loadRaceResultsScreenSprites(void) {
     setBilinearFiltering(0x85, 1);
     startSpriteAnimation(0x85, 4, 1);
     
-    setOverlayScreenSprites(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -153.0f, 256.0f, 10);
+    setNumberSprites(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -153.0f, 256.0f, 10);
     
     D_80205204 += adjustValue(D_80205204, 
           gRacingContext.displayOddsTop[gRacingContext.finishOrder[0]] * gRacingContext.playerBets[gRacingContext.currentRaceIndex][gRacingContext.finishOrder[0]], 
           9999);
     
-    dmaOverlayScreenSprites(2, D_80205204, 3, 3);
-    setOverlayScreenSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
+    dmaNumberSprites(2, D_80205204, 3, 3);
+    setNumberSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    setOverlayScreenSprites(3, 0x9B, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -137.0f, 256.0f, 10);
-    dmaOverlayScreenSprites(3, gRacingContext.displayOddsTop[gRacingContext.finishOrder[0]] * gRacingContext.playerBets[gRacingContext.currentRaceIndex][gRacingContext.finishOrder[0]], 3, 3);
-    setOverlayScreenSpritesRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
+    setNumberSprites(3, 0x9B, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -137.0f, 256.0f, 10);
+    dmaNumberSprites(3, gRacingContext.displayOddsTop[gRacingContext.finishOrder[0]] * gRacingContext.playerBets[gRacingContext.currentRaceIndex][gRacingContext.finishOrder[0]], 3, 3);
+    setNumberSpritesRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    setOverlayScreenSprites(8, 0xA5, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -24.0f, -112.0f, 256.0f, 10);
-    dmaOverlayScreenSprites(8, gRacingContext.playerBets[gRacingContext.currentRaceIndex][gRacingContext.finishOrder[0]], 1, 3);
-    setOverlayScreenSpritesRGBA(8, 0xFF, 0xFF, 0xFF, 0xFF);
+    setNumberSprites(8, 0xA5, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -24.0f, -112.0f, 256.0f, 10);
+    dmaNumberSprites(8, gRacingContext.playerBets[gRacingContext.currentRaceIndex][gRacingContext.finishOrder[0]], 1, 3);
+    setNumberSpritesRGBA(8, 0xFF, 0xFF, 0xFF, 0xFF);
     
-    setOverlayScreenSprites(9, 0xA7, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 40.0f, -28.0f, 256.0f, 8);
-    dmaOverlayScreenSprites(9, gRacingContext.displayOddsTop[gRacingContext.finishOrder[0]], 2, 3);
-    setOverlayScreenSpritesRGBA(9, 0xFF, 0xFF, 0xFF, 0xFF);
+    setNumberSprites(9, 0xA7, (u32)&_raceBettingUiTextureSegmentRomStart, (u32)&_raceBettingUiTextureSegmentRomEnd, (u32)&_raceBettingUiAssetsIndexSegmentRomStart, (u32)&_raceBettingUiAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 40.0f, -28.0f, 256.0f, 8);
+    dmaNumberSprites(9, gRacingContext.displayOddsTop[gRacingContext.finishOrder[0]], 2, 3);
+    setNumberSpritesRGBA(9, 0xFF, 0xFF, 0xFF, 0xFF);
     
     initializeRaceResultsMessageBoxes();
     fadeInRaceResultsSprites();
@@ -9531,10 +9531,10 @@ void fadeOutRaceResultsSprites(void) {
     deactivateMessageBox(4);
     deactivateMessageBox(5);
 
-    deactivateOverlayScreenSprites(2);
-    deactivateOverlayScreenSprites(3);
-    deactivateOverlayScreenSprites(8);
-    deactivateOverlayScreenSprites(9);
+    deactivateNumberSprites(2);
+    deactivateNumberSprites(3);
+    deactivateNumberSprites(8);
+    deactivateNumberSprites(9);
 
     initializeMainMessageBoxes();
 
@@ -9642,10 +9642,10 @@ void raceResultsScreenCallback(void) {
             deactivateMessageBox(3);
             deactivateMessageBox(4);
             deactivateMessageBox(5);
-            deactivateOverlayScreenSprites(2);
-            deactivateOverlayScreenSprites(3);
-            deactivateOverlayScreenSprites(8);
-            deactivateOverlayScreenSprites(9);
+            deactivateNumberSprites(2);
+            deactivateNumberSprites(3);
+            deactivateNumberSprites(8);
+            deactivateNumberSprites(9);
             initializeMainMessageBoxes();
             
             overlayScreenTable.screenState = 2;
@@ -9719,10 +9719,10 @@ void loadRaceGiftsScreenSprites(void) {
     setBilinearFiltering(0x84, 1);
     startSpriteAnimation(0x84, 4, 1);
     
-    setOverlayScreenSprites(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -24.0f, 6.0f, 256.0f, 10);
+    setNumberSprites(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -24.0f, 6.0f, 256.0f, 10);
     
-    dmaOverlayScreenSprites(2, D_80205204, 3, 3);
-    setOverlayScreenSpritesRGBA(2, 255, 255, 255, 255);
+    dmaNumberSprites(2, D_80205204, 3, 3);
+    setNumberSpritesRGBA(2, 255, 255, 255, 255);
     
     dmaSprite(CURSOR_HAND, (u32)&_dialogueIconsTextureSegmentRomStart, (u32)&_dialogueIconsTextureSegmentRomEnd, (u32)&_dialogueIconsAssetsIndexSegmentRomStart, (u32)&_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setBilinearFiltering(CURSOR_HAND, 1);
@@ -9749,7 +9749,7 @@ void fadeOutRaceGiftsSprites(void) {
     updateSpriteAlpha(0x82, 0, 24);
     updateSpriteAlpha(0x83, 0, 24);
     updateSpriteAlpha(0x84, 0, 24);
-    deactivateOverlayScreenSprites(2);
+    deactivateNumberSprites(2);
 }
 
 //INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_801221CC);
@@ -9784,14 +9784,14 @@ void raceGiftsScreenCallback(void) {
                 setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
                 setMessageBoxInterpolationWithFlags(0, -4, 0);
-                initializeDialogueSession(0, 0x3E, 5, 0x40);
+                initializeDialogueSession(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 5, 0x40);
                 overlayScreenTable.screenState = 5;
             }
             break;
 
         case 5:    
             
-            if (isDialogueClosing()) {
+            if (checkAllDialoguesCompleted()) {
             
                 if (!(getSelectedMenuRow(0))) {
                     
@@ -9819,7 +9819,7 @@ void raceGiftsScreenCallback(void) {
                 updateSpriteAlpha(0x82, 0, 24);
                 updateSpriteAlpha(0x83, 0, 24);
                 updateSpriteAlpha(0x84, 0, 24);
-                deactivateOverlayScreenSprites(2);
+                deactivateNumberSprites(2);
                 overlayScreenTable.screenState = 2;
             }
             
@@ -9846,7 +9846,7 @@ void raceGiftsScreenCallback(void) {
 
         case 7:
             
-            if (isDialogueClosing()) {
+            if (checkAllDialoguesCompleted()) {
                 
                 if (!(getSelectedMenuRow(0))) {
                     
@@ -9939,7 +9939,7 @@ void raceGiftsScreenCallback(void) {
                     
                     if (!(func_800CE828(overlayScreenTable.cellIndex))) {
 label1:
-                        initializeDialogueSession(0, 0x3E, 0xB, 0x40);
+                        initializeDialogueSession(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 11, 0x40);
                         overlayScreenTable.screenState = 7;
 label3:
                         playSfx(0);
@@ -9966,7 +9966,7 @@ label2:
         updateSpriteAlpha(0x82, 0, 24);
         updateSpriteAlpha(0x83, 0, 24);
         updateSpriteAlpha(0x84, 0, 24);
-        deactivateOverlayScreenSprites(2);
+        deactivateNumberSprites(2);
         overlayScreenTable.screenState = 2;
         playSfx(1);
     }
@@ -10165,9 +10165,9 @@ void lotteryScreenCallback(void) {
                 setMessageBoxInterpolationWithFlags(0, -4, 0);
                 
                 if (gBaseMapIndex == 0x32) {
-                    initializeDialogueSession(0, 0x3E, 4, 0x40);
+                    initializeDialogueSession(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 4, 0x40);
                 } else {
-                    initializeDialogueSession(0, 0x3E, 0xA, 0x40);
+                    initializeDialogueSession(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 10, 0x40);
                 }
                 
                 overlayScreenTable.screenState = 4;
@@ -10178,7 +10178,7 @@ void lotteryScreenCallback(void) {
         
         case 4:
 
-            if (isDialogueClosing()) {
+            if (checkAllDialoguesCompleted()) {
                 
                 if (!(getSelectedMenuRow(0))) {
                     

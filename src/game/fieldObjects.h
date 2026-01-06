@@ -269,9 +269,10 @@ extern void randomlyDestroyCrops(u8);
 extern void randomlyResetGreenhouseTiles(u8);         
 extern u16 getFarmGrassTilesSum();     
 extern u16 getFarmMoondropFlowerCount();       
-
+extern u16 getGreenhouseMoondropFlowerCount(void);
 extern u16 getFarmPinkCatMintFlowersCount(void);     
 extern u16 getGreenhousePinkCatMintFlowersCount(void);  
+extern void removePinkCatMintFlowerFromFarm(void);
 
 extern u8 blueMistFlowerPlot;
 

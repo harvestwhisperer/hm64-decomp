@@ -7,12 +7,14 @@
 #include "game/game.h"
 #include "game/level.h"
 #include "game/fieldObjects.h"
-#include "data/fieldTileMaps/fieldTiles.h"
 #include "game/npc.h"
+#include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/time.h"
 
 #include "assetIndices/maps.h"
+
+#include "data/fieldTileMaps/fieldTiles.h"
 
 // bss
 u32 dailyEventBits[32];
@@ -26,7 +28,10 @@ u32 powerNutBits;
 
 // forward declaration
 void toggleSpecialDialogueBit(u16);
-
+void handleWifeHelpsWeeding(void);
+void handleWifeCratesEggs(void);
+void handleWifeHelpsWatering(void);
+void handleWifeFeedsChickens(void);
 
 // same as adjustValue from game.c
 static inline int adjustValue2(int initial, int value, int max) {
@@ -1010,7 +1015,7 @@ void func_8006523C(u16 bitIndex) {
 
 void toggleReadLetterBit(u16 bitIndex) {
     u32 temp = bitIndex;
-    return readMailBits[temp / 32] &= ~(1 << (temp & 0x1F));
+    readMailBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkMailRead);
@@ -1024,7 +1029,7 @@ u32 checkMailRead(u16 bitIndex) {
 
 void setMail(u16 bitIndex) {
     u32 temp = bitIndex;
-    return mailboxBits[temp / 32] |= (1 << (temp & 0x1F));
+    mailboxBits[temp / 32] |= (1 << (temp & 0x1F));
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80065308);

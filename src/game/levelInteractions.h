@@ -18,6 +18,4 @@ extern bool checkWaterableSoilInteraction(u16 mapIndex);
 extern bool checkFishingSpotInteraction(u16 mapIndex);
 extern bool handleLevelInteraction(u16 mapIndex);
 
-extern LevelInteractionsInfo levelInteractionsInfo;
-
 #endif

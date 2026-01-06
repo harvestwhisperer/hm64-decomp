@@ -12,7 +12,6 @@ ROM_PATH = Path(__file__).parent / "../../baserom.us.z64"
 CSV_PATH = Path(__file__).parent / "text_addresses.csv"
 
 VERBOSE = "--verbose" in sys.argv
-LITERAL_MODE = "--literal" in sys.argv  # Output exact control codes for recompilation
 
 rom = None
 
@@ -312,6 +311,75 @@ CONTROL_CODES = {
     9: 'CHARACTER_AVATAR', # Followed by 1-byte animation index
 }
 
+# Game Variable String macros - maps index to semantic name
+# Based on setGameVariableString() calls in initialize.c and other files
+# These are the primary/default meanings; some screens repurpose indices
+GAMEVAR_MACROS = {
+    0x00: 'PLAYER_NAME',
+    0x01: 'FARM_NAME',
+    0x02: 'DOG_NAME',
+    0x03: 'HORSE_NAME',
+    0x04: 'BABY_NAME',
+    0x05: 'FARM_ANIMAL_1_NAME',
+    0x06: 'FARM_ANIMAL_2_NAME',
+    0x07: 'FARM_ANIMAL_3_NAME',
+    0x08: 'FARM_ANIMAL_4_NAME',
+    0x09: 'FARM_ANIMAL_5_NAME',
+    0x0A: 'FARM_ANIMAL_6_NAME',
+    0x0B: 'FARM_ANIMAL_7_NAME',
+    0x0C: 'FARM_ANIMAL_8_NAME',
+    0x0D: 'CURRENT_ANIMAL_NAME',      # Set dynamically by animals.c (chicken or farm animal)
+    0x0E: 'BEST_COW_NAME',            # Cow with highest affection (cutscenes.c)
+    0x0F: 'WIFE_NAME',
+    0x10: 'UNUSED_10',
+    0x11: 'TOOL_USE_COUNTER',         # Watering can/seed use counter
+    0x12: 'PRICE',
+    0x13: 'DEAD_ANIMAL_NAME',
+    0x14: 'CURRENT_SEASON_NAME',
+    0x15: 'DATE_NUMBER',              # Anniversary/birth countdown/death date
+    0x16: 'WIFE_NAME_2',              # Duplicate wife name slot
+    0x17: 'FODDER_AMOUNT',
+    0x18: 'LUMBER_AMOUNT',
+    0x19: 'CHICKEN_1_NAME',
+    0x1A: 'CHICKEN_2_NAME',
+    0x1B: 'CHICKEN_3_NAME',
+    0x1C: 'CHICKEN_4_NAME',
+    0x1D: 'CHICKEN_5_NAME',
+    0x1E: 'CHICKEN_6_NAME',
+    0x1F: 'HORSE_RACE_MEDALS',
+    0x20: 'HARVEST_KING_NAME',
+    0x21: 'NUMBER_21',                # Some 2-digit number
+    0x22: 'UNUSED_22',
+    0x23: 'UNUSED_23',
+    0x24: 'UNUSED_24',
+    0x25: 'MILK_TYPE',                # S/M/L/G milk type letter
+    0x26: 'ANIMAL_MOTHER_NAME',       # Set by levelInteractions.c for births
+    0x27: 'UNUSED_27',
+    0x28: 'RACE_WINNER_1',            # Set by cutscenes.c for race results
+    0x29: 'RACE_WINNER_2',
+    0x2A: 'RACER_1_NAME',             # Set by overlayScreens.c for race display
+    0x2B: 'RACER_2_NAME',
+    0x2C: 'RACER_3_NAME',
+    0x2D: 'RACER_4_NAME',
+    0x2E: 'RACER_5_NAME',
+    0x2F: 'RACER_6_NAME',
+    0x30: 'FLOWER_CARD_POINTS',
+    0x31: 'BAKERY_CARD_POINTS',
+    0x32: 'AFFECTION_DISPLAY_1',      # Girls'/rivals' affection for photo album
+    0x33: 'AFFECTION_DISPLAY_2',
+    0x34: 'AFFECTION_DISPLAY_3',
+    0x35: 'AFFECTION_DISPLAY_4',
+    0x36: 'AFFECTION_DISPLAY_5',
+    0x37: 'AFFECTION_DISPLAY_6',
+    0x38: 'AFFECTION_DISPLAY_7',
+    0x39: 'AFFECTION_DISPLAY_8',
+    0x3A: 'AFFECTION_DISPLAY_9',
+    0x3B: 'AFFECTION_DISPLAY_10',
+    0x3C: 'AFFECTION_DISPLAY_11',
+}
+
+GAMEVAR_MACRO_TO_INDEX = {v: k for k, v in GAMEVAR_MACROS.items()}
+
 BIT_MASKS = [0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01]
 
 def get_offset_array(index_start, index_end):
@@ -411,15 +479,15 @@ class TextDecoder:
         self.char_counter = 0
         self.control_byte = 0
         
-    def decode_stream(self, byte_data, literal_mode=False):
+    def decode_stream(self, byte_data):
         """
         Decode a byte stream into a list of decoded items.
-        
+
         Args:
             byte_data: Bytes, hex string, or list of bytes
-            literal_mode: If True, parse entire segment including content after TEXTEND
-                         (needed for byte-perfect round-trip recompilation).
-                         If False, stop at TEXTEND for human-readable output.
+
+        Always parses the entire segment including content after TEXTEND
+        (needed for detecting junk data that requires RAWBYTES).
         """
 
         if isinstance(byte_data, str):
@@ -428,99 +496,54 @@ class TextDecoder:
 
         elif isinstance(byte_data, list):
             byte_data = bytes(byte_data)
-            
+
         self.position = 0
         self.char_counter = 0
         self.control_byte = 0
         self._current_data = byte_data  # Store reference for parameter extraction
         result = []
-        
+
         while self.position < len(byte_data):
 
             decoded_value = self._decode_next_character(byte_data)
-            
+
             if decoded_value is not None:
                 result.append(decoded_value)
-
-                # In non-literal mode, stop at TEXTEND for readability
-                # In literal mode, continue parsing to capture trailing content for byte-matching
-                if not literal_mode and isinstance(decoded_value, dict):
-                    if decoded_value.get('type') == 'control' and decoded_value.get('name') == 'TEXTEND':
-                        if VERBOSE:
-                            remaining = byte_data[self.position:]
-                            print(f"    Stopping at TEXTEND. Remaining bytes: {remaining.hex()}")
-                        break
-
-                # Check if this is a segment-ending control code (legacy behavior)
-                if isinstance(decoded_value, dict) and decoded_value.get('segment_end'):
-                    if VERBOSE == True:
-                        print(f"    Decode stopped at WAITINPUT at position {self.position}/{len(byte_data)}")
-                    break
-            
-            else:
-
-                if VERBOSE == True:
-                
-                    # stop if next character can't be decoded
-                    print(f"    Decode stopped at position {self.position}/{len(byte_data)}")
-                    
-                    # Show the last few bytes for debugging
-                    start_pos = max(0, self.position - 10)
-                    end_pos = min(len(byte_data), self.position + 10)
-                    context_bytes = byte_data[start_pos:end_pos]
-                    
-                    print(f"    Context bytes around position {self.position}: {context_bytes.hex()}")
-
-                break
                 
         return result
     
     def _decode_next_character(self, data):
 
         if self.position >= len(data):
-            if VERBOSE == True:
-                print(f"    EOF reached at position {self.position}")
             return None
             
         # Read new control byte every 8 characters
         if self.char_counter % 8 == 0:
 
             if self.position >= len(data):
-                if VERBOSE == True:
-                    print(f"    EOF while reading control byte at position {self.position}")
                 return None
 
             self.control_byte = data[self.position]
-            
-            if VERBOSE == True:
-                print(f"    Char {self.char_counter}: New control byte 0x{self.control_byte:02X} at position {self.position}")
-            
             self.position += 1
             
         if self.position >= len(data):
-            if VERBOSE == True:
-                print(f"    EOF after control byte at position {self.position}")
             return None
             
         # Check if this character position needs 2-byte encoding
         bit_index = self.char_counter % 8
         needs_two_bytes = (self.control_byte & BIT_MASKS[bit_index]) != 0
         
-        if VERBOSE == True:
-            print(f"    Char {self.char_counter}: bit_index={bit_index}, needs_two_bytes={needs_two_bytes}")
-        
         if needs_two_bytes:
             
             # Read 2 bytes for control command
             if self.position + 1 >= len(data):
+
                 # Not enough data for 2-byte read - this is an edge case at segment end
                 # Output remaining byte; round-trip check will catch if this causes issues
                 if self.position < len(data):
                     remaining_byte = data[self.position]
                     self.position += 1
                     self.char_counter += 1
-                    if VERBOSE == True:
-                        print(f"    Incomplete 2-byte read at segment end, byte 0x{remaining_byte:02X}")
                     return f'[CHAR:0x{remaining_byte:02X}]'
                 return None
 
@@ -534,20 +557,14 @@ class TextDecoder:
             
             if result in CHAR_MAP:
                 decoded = CHAR_MAP[result]
-                if VERBOSE == True:
-                    print(f"    Read 2-byte character: 0x{result:04X} -> '{decoded}'")
 
             elif result == 0:
-                if VERBOSE == True:
-                    print(f"    Found null terminator (0x0000), ending decode")
                 return None
 
             else:
                 # Invalid 2-byte code - preserve as [WORD:0xXXXX] for round-trip
                 # The transpiler will encode this as a 2-byte value (control bit set)
                 decoded = f'[WORD:0x{result:04X}]'
-                if VERBOSE == True:
-                    print(f"    Invalid 2-byte code 0x{result:04X} -> [WORD:0x{result:04X}]")
                 
         else:
             # Read 1 byte
@@ -556,37 +573,25 @@ class TextDecoder:
     
             result = byte_val
             decoded = self._decode_character(result)
-    
-            if VERBOSE == True:
-                print(f"    Read 1-byte character: 0x{result:02X} -> {decoded}")
             
         self.char_counter += 1
-        
-        # sanity check if addresses are messed up
-        if self.char_counter > 5000:
-            print(f"    ERROR: Processed {self.char_counter} characters - likely incorrect segment size")
-            print(f"    Current position: {self.position}/{len(data)} bytes")
-            return None
             
         return decoded
     
     def _extract_parameter(self, control_code):
         """Extract parameter bytes that follow certain control codes"""
-
-        if VERBOSE == True:
-            print(f"      Extracting parameter for control code {control_code}")
         
         if control_code == 5:  # LOAD_TEXT - 2-byte little-endian parameter
         
             if hasattr(self, '_current_data') and self.position + 1 < len(self._current_data):
+                
                 byte1 = self._current_data[self.position]
                 byte2 = self._current_data[self.position + 1]
+                
                 self.position += 2
+
                 # DON'T increment char_counter here - it messes up control byte timing
                 param = byte1 | (byte2 << 8)  # Little endian
-    
-                if VERBOSE == True:
-                    print(f"      Extracted 2-byte parameter: 0x{param:04X}")
     
                 return param    
         
@@ -598,9 +603,6 @@ class TextDecoder:
                 self.position += 1
 
                 # don't increment char_counter here
-
-                if VERBOSE == True:
-                    print(f"      Extracted 1-byte parameter: 0x{param:02X}")
 
                 return param
 
@@ -627,66 +629,152 @@ class TextDecoder:
             font_index = value - 0xB if value >= 0xB else value
             return {'type': 'unknown', 'raw': value, 'font_index': font_index}
     
-    def decode_and_format(self, byte_data, literal_mode=False):
+    def decode_and_format(self, byte_data):
         """
-        Decode and format as readable text with enhanced control code handling.
-        
-        Args:
-            byte_data: The binary data to decode
-            literal_mode: If True, output exact control codes and parse entire segment
-                         (for byte-perfect recompilation).
-                         If False, stop at TEXTEND and use friendly formatting with 
-                         newlines (for human reading).
+        Decode and format as readable text.
         """
 
-        decoded = self.decode_stream(byte_data, literal_mode=literal_mode)
+        decoded = self.decode_stream(byte_data)
         result = []
-        
+        seen_textend = False
+        post_textend_bytes = []
+
         for item in decoded:
-        
+
             if isinstance(item, dict):
-        
+
                 if item['type'] == 'control':
-        
+
                     if 'parameter' in item:
-                        result.append(f"[{item['name']}:{item['parameter']:02X}]")
-                    else:
-                        if literal_mode:
-                            # Literal mode: just the control code, no extra formatting
-                            result.append(f"[{item['name']}]")
+                        if seen_textend:
+                            # Control codes after TEXTEND - store the raw code for byte-matching
+                            post_textend_bytes.append(item['code'])
                         else:
-                            # Friendly mode: natural newlines, implicit TEXTEND
-                            if item['name'] == 'LINEBREAK':
-                                result.append('\n')  # Natural newline
-                            elif item['name'] == 'SOFTBREAK':
-                                result.append('\n')  # Natural newline (soft)
-                            elif item['name'] == 'TEXTEND':
-                                pass  # Implicit - omit in friendly mode
+                            # Use macro names for INSERT_GAMEVAR if available
+                            if item['name'] == 'INSERT_GAMEVAR' and item['parameter'] in GAMEVAR_MACROS:
+                                result.append(f"[{GAMEVAR_MACROS[item['parameter']]}]")
+                            elif item['name'] in ('WAIT', 'CHARACTER_AVATAR', 'LOAD_TEXT'):
+                                result.append(f"[{item['name']}:{item['parameter']}]")
                             else:
+                                result.append(f"[{item['name']}:{item['parameter']:02X}]")
+                    else:
+
+                        if item['name'] == 'LINEBREAK':
+                            if seen_textend:
+                                # After TEXTEND, capture zero bytes for byte-matching
+                                post_textend_bytes.append(0)
+                                continue
+                            result.append('\n')  # Newline for readability; transpiler converts back
+
+                        elif item['name'] == 'TEXTEND':
+                            # Mark that we've seen TEXTEND - anything after is post-text data
+                            seen_textend = True
+                            # Don't output TEXTEND - transpiler auto-adds it
+
+                        else:
+                            if seen_textend:
+                                # Other control codes after TEXTEND
+                                post_textend_bytes.append(item['code'])
+                            else:
+                                # Keep other control codes explicit (SOFTBREAK, WAIT, etc.)
                                 result.append(f"[{item['name']}]")
-        
+
                 elif item['type'] == 'character':
-                    result.append(item['value'])
-        
+
+                    if seen_textend:
+                        # Characters after TEXTEND need to be preserved for byte-matching
+                        # Find the byte value for this character
+                        char = item['value']
+                        if char in REVERSE_CHAR_MAP:
+                            post_textend_bytes.append(REVERSE_CHAR_MAP[char])
+                    else:
+                        result.append(item['value'])
+
                 elif item['type'] == 'unknown':
-                    result.append(f"[CHAR:0x{item['raw']:02X}→0x{item['font_index']:02X}]")
-        
+                    if seen_textend:
+                        post_textend_bytes.append(item['raw'])
+                    else:
+                        result.append(f"[CHAR:0x{item['raw']:02X}→0x{item['font_index']:02X}]")
+
             else:
-                # Fallback for old format
                 result.append(str(item))
-        
+
+        # If there was content after TEXTEND, preserve it for byte-matching
+        # This includes trailing zeros which are part of the control block padding
+        if post_textend_bytes:
+            hex_str = ''.join(f'{b:02X}' for b in post_textend_bytes)
+            result.append(f'[BLOCK_END:{hex_str}]')
+
         return ''.join(result)
 
-def decode_text_bank(index_start: int, index_end: int, text_start: int, literal_mode: bool = False) -> list:
+
+REVERSE_CHAR_MAP = {v: k for k, v in CHAR_MAP.items()}
+
+# Message box type to line width mapping
+MESSAGE_BOX_TYPES = {
+    'DEFAULT': 16,      # Main dialogue box
+    'MENU': 10,         # Overlay menus, lists
+    'NAMING_SCREEN': 6, # Naming screen input
+}
+
+LINE_WIDTH_TO_TYPE = {v: k for k, v in MESSAGE_BOX_TYPES.items()}
+
+def infer_line_width(decoded_text: str) -> int:
+    """
+    Infer the line width from decoded text by finding the maximum
+    number of printable characters between linebreaks.
+    """
+
+    # SOFTBREAK is output as [SOFTBREAK], treat as line break for width calculation
+    text = decoded_text.replace('[SOFTBREAK]', '\n')
+
+    # Remove control codes for character counting (they don't take display space)
+    # Pattern matches [NAME] or [NAME:123] style codes (including macros with digits like FARM_ANIMAL_1_NAME)
+    control_pattern = re.compile(r'\[[A-Z_0-9]+(?::[0-9]+)?\]')
+
+    max_width = 0
+    for line in text.split('\n'):
+        # Remove control codes from line for accurate character count
+        clean_line = control_pattern.sub('', line)
+        # Count visible characters
+        char_count = len(clean_line)
+        if char_count > max_width:
+            max_width = char_count
+
+    # Return inferred width, or default to 16 if empty/no linebreaks
+    return max_width if max_width > 0 else 16
+
+def infer_message_box_type(decoded_text: str) -> str:
+    """
+    Infer the MESSAGE_BOX_TYPE from decoded text based on line widths.
+
+    Returns the type name (DEFAULT, MENU, NAMING_SCREEN) or DEFAULT if unknown.
+    """
+    
+    line_width = infer_line_width(decoded_text)
+
+    # Try exact match first
+    if line_width in LINE_WIDTH_TO_TYPE:
+        return LINE_WIDTH_TO_TYPE[line_width]
+
+    # For non-standard widths, pick closest known type
+    if line_width <= 6:
+        return 'NAMING_SCREEN'
+    elif line_width <= 10:
+        return 'MENU'
+    else:
+        return 'DEFAULT'
+
+def decode_text_bank(index_start: int, index_end: int, text_start: int) -> list:
     """
     Decode a text bank from ROM.
-    
+
     Args:
         index_start: ROM address of index table start
-        index_end: ROM address of index table end  
+        index_end: ROM address of index table end
         text_start: ROM address of text data start
-        literal_mode: If True, output exact control codes for recompilation.
-                     If False, output friendly format with newlines for reading.
+
+    Returns list of decoded text segments with friendly formatting.
     """
     
     if rom is None:
@@ -749,7 +837,7 @@ def decode_text_bank(index_start: int, index_end: int, text_start: int, literal_
             if VERBOSE == True:
                 print(f"  Starting decode for segment {segment['index']}...")
 
-            decoded = decoder.decode_and_format(segment_data, literal_mode=literal_mode)
+            decoded = decoder.decode_and_format(segment_data)
 
             # There are some junk data segments at the end of a few text banks
             # Check if undecodable data or junk/padding with malformed control bytes
@@ -768,8 +856,9 @@ def decode_text_bank(index_start: int, index_end: int, text_start: int, literal_
                 try:
                     from hm64_text_transpiler import TextEncoder
                     test_encoder = TextEncoder()
-                    test_encoder.auto_textend = False
-                    test_encoder.convert_newlines = False
+                    # auto_textend=True because decode_and_format() omits TEXTEND
+                    # and we need to re-add it for proper round-trip comparison
+                    test_encoder.auto_textend = True
                     # Strip trailing padding from comparison
                     reencoded = test_encoder.encode_text(decoded)
                     original_trimmed = bytes(segment_data).rstrip(b'\x00')
@@ -816,30 +905,35 @@ def decode_text_bank(index_start: int, index_end: int, text_start: int, literal_
     
     return decoded_texts
 
-def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, output_dir: str = None, literal_mode: bool = False) -> str:
+def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, output_dir: str = None) -> str:
     """
     Extract a text bank from ROM and write to individual text files.
-    
+
     Args:
         index_start: ROM address of index table start
         index_end: ROM address of index table end
         text_start: ROM address of text data start
         output_dir: Output directory name (optional)
-        literal_mode: If True, output exact control codes for recompilation.
-                     If False, output friendly format with newlines for reading.
+
+    Output format per file:
+        # MESSAGE_BOX_TYPE: DEFAULT
+        # Text Segment N
+        # Address: 0xXXXXXXXX
+        # Size: N bytes
+        <decoded text with newlines>
     """
     if rom is None:
         set_rom()
-    
+
     if output_dir is None:
         output_dir = f"text-block-0x{text_start:08X}"
-    
+
     assets_path = Path(__file__).parent.parent.parent / "assets" / "text"
     output_path = assets_path / output_dir
-    
+
     output_path.mkdir(parents=True, exist_ok=True)
-    
-    decoded_texts = decode_text_bank(index_start, index_end, text_start, literal_mode=literal_mode)
+
+    decoded_texts = decode_text_bank(index_start, index_end, text_start)
 
     files_written = 0
     for text_info in decoded_texts:
@@ -860,21 +954,25 @@ def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, 
         file_path = output_path / filename
 
         with open(file_path, 'w', encoding='utf-8') as f:
+            decoded_text = text_info.get('decoded_text', '')
 
+            # Infer MESSAGE_BOX_TYPE from line widths
+            box_type = infer_message_box_type(decoded_text)
+            f.write(f"# MESSAGE_BOX_TYPE: {box_type}\n")
+
+            # Segment metadata (for reference, not used by transpiler)
             f.write(f"# Text Segment {text_info['index']}\n")
             f.write(f"# Address: {text_info['start_address']}\n")
             f.write(f"# Size: {text_info['size']} bytes\n")
-            f.write(f"# Raw data: {text_info['raw_data']}\n")
-            f.write("# " + "="*60 + "\n")
 
             if 'error' in text_info:
-                f.write(f"ERROR: {text_info['error']}\n")
-            else:
-                f.write(text_info['decoded_text'])
+                f.write(f"# ERROR: {text_info['error']}\n")
+
+            f.write(decoded_text)
 
         files_written += 1
 
-    # Write bank metadata file with terminator info for the transpiler
+    # Write bank metadata file with terminator/padding info for the transpiler
     metadata_path = output_path / "_metadata.txt"
     with open(metadata_path, 'w', encoding='utf-8') as f:
         f.write("# Text Bank Metadata\n")
@@ -958,11 +1056,11 @@ def process_all_text_banks(command: str = 'write_files'):
         try:
 
             if command == 'write_files':
-                output_path = write_text_bank_to_files(bank['index_start'], bank['index_end'], bank['text_start'], bank['name'], literal_mode=LITERAL_MODE)
+                output_path = write_text_bank_to_files(bank['index_start'], bank['index_end'], bank['text_start'], bank['name'])
                 print(f"Files written to: {output_path}")
-                
+
             elif command == 'decode_bank':
-                decoded_texts = decode_text_bank(bank['index_start'], bank['index_end'], bank['text_start'], literal_mode=LITERAL_MODE)
+                decoded_texts = decode_text_bank(bank['index_start'], bank['index_end'], bank['text_start'])
                 
             elif command == 'analyze_bank':
                 set_rom()
@@ -978,16 +1076,15 @@ def main():
 
     if len(sys.argv) < 2:
         print("Usage:")
-        print("  python hm64_text_utilities.py extract_bank <bank_name> [--literal]")
-        print("  python hm64_text_utilities.py decode_bank <index_start> <index_end> <text_start> [--literal]")
+        print("  python hm64_text_utilities.py extract_bank <bank_name>")
+        print("  python hm64_text_utilities.py decode_bank <index_start> <index_end> <text_start>")
         print("  python hm64_text_utilities.py analyze_bank <index_start> <index_end> <text_start>")
-        print("  python hm64_text_utilities.py write_files <index_start> <index_end> <text_start> [output_dir] [--literal]")
-        print("  python hm64_text_utilities.py process_all [write_files|decode_bank|analyze_bank] [--literal]")
+        print("  python hm64_text_utilities.py write_files <index_start> <index_end> <text_start> [output_dir]")
+        print("  python hm64_text_utilities.py process_all [write_files|decode_bank|analyze_bank]")
         print("  python hm64_text_utilities.py list_banks")
         print("")
         print("Options:")
         print("  --verbose   Enable verbose output")
-        print("  --literal   Output exact control codes for recompilation (vs friendly for reading)")
         sys.exit(1)
 
     cmd = sys.argv[1]
@@ -1028,8 +1125,7 @@ def main():
                 bank_info['index_start'],
                 bank_info['index_end'],
                 bank_info['text_start'],
-                bank_name,
-                literal_mode=LITERAL_MODE
+                bank_name
             )
 
             print(f"Extracted to: {output_path}")
@@ -1051,7 +1147,7 @@ def main():
             print(f"Index: 0x{index_start:08X} - 0x{index_end:08X}")
             print(f"Text:  0x{text_start:08X}")
             
-            decoded_texts = decode_text_bank(index_start, index_end, text_start, literal_mode=LITERAL_MODE)
+            decoded_texts = decode_text_bank(index_start, index_end, text_start)
             
             for text_info in decoded_texts:
                 
@@ -1109,7 +1205,7 @@ def main():
             print(f"Index: 0x{index_start:08X} - 0x{index_end:08X}")
             print(f"Text:  0x{text_start:08X}")
             
-            output_path = write_text_bank_to_files(index_start, index_end, text_start, output_dir, literal_mode=LITERAL_MODE)
+            output_path = write_text_bank_to_files(index_start, index_end, text_start, output_dir)
             print(f"Files written to: {output_path}")
             
         else:

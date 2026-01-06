@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "system/controller.h"
+#include "system/cutscene.h"
 #include "system/dialogue.h"
 #include "system/entity.h"
 #include "system/globalSprites.h"
@@ -18,10 +19,12 @@
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
+#include "game/initialize.h"
 #include "game/items.h"
 #include "game/level.h"
 #include "game/namingScreen.h"
 #include "game/npc.h"
+#include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/shop.h"
 #include "game/time.h"
@@ -42,6 +45,7 @@
 
 // forward declaration
 u8 checkEarthquakeShouldHappen();
+void recruitSpiritFestivalAssistants(void);
 
 Vec4f globalLightingRGBA;
 
@@ -1048,13 +1052,13 @@ inline int adjustValue(int initial, int value, int max) {
 
 // from transition.c
 
-static inline pauseGameplay_2(void) {
+static inline void pauseGameplay_2(void) {
     pauseEntities();
     pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
 }
 
-static inline openOverlayScreen_2(void) {
+static inline void openOverlayScreen_2(void) {
     pauseAllEntityLoads();
     pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
@@ -1441,10 +1445,9 @@ void handleRotationCallback(void) {
 // main loop callback for finishing dialogue
 void handleDialogueCallback(void) {
     
-    // check flag on dialogue box struct
-    if (isDialogueClosing()) {
+    if (checkAllDialoguesCompleted()) {
         
-        if (!(getItemFlags(gPlayer.heldItem) & (0x80 | 0x100 | 0x400 | 0x800))) {
+        if (!(getItemFlags(gPlayer.heldItem) & (ITEM_SMALL_ANIMAL | ITEM_BABY | ITEM_CRIB_PLACEABLE | ITEM_TOOL))) {
             setItemState(gPlayer.itemInfoIndex, 1);
             gPlayer.heldItem = 0;
             gItemBeingHeld = 0xFF;
@@ -1617,7 +1620,7 @@ void mapLoadCallback(void) {
         gSelectedAnimalIndex = bornChickenIndex;
         gChickens[bornChickenIndex].flags &= ~0x100;
         
-        setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
+        setMainLoopCallbackFunctionIndex(NAMING_SCREEN_LOAD);
         toggleLifeEventBit(3);
         setLifeEventBit(0x38);
         
@@ -1654,7 +1657,7 @@ void mapLoadCallback(void) {
         gSelectedAnimalIndex = bornAnimalIndex;
         gFarmAnimals[bornAnimalIndex].flags &= ~0x800;
             
-        setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
+        setMainLoopCallbackFunctionIndex(NAMING_SCREEN_LOAD);
         toggleLifeEventBit(4);
             
         set = TRUE;
@@ -4090,4 +4093,3 @@ static const u16 mailTextIndices[79] = {
      53, 54, 55, 56, 57,
      0, 0, 0, 0
 };
-

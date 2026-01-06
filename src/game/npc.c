@@ -36,12 +36,53 @@ u8 npcTalkingTo;
 
 // data
 u16 npcToEntityAssetIndex[] = { 
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
-    11, 12, 13, 14, 15, 16, 17, 18, 
-    19, 20, 21, 22, 23, 24, 25, 26, 
-    27, 28, 29, 30, 31, 31, 32, 33,
-    33, 33, 34, 35, 41, 40, 37, 97,
-    98, 99, 100, 101, 36 
+    ENTITY_ASSET_MARIA, 
+    ENTITY_ASSET_POPURI, 
+    ENTITY_ASSET_ELLI, 
+    ENTITY_ASSET_ANN, 
+    ENTITY_ASSET_KAREN, 
+    ENTITY_ASSET_BABY, 
+    ENTITY_ASSET_HARRIS, 
+    ENTITY_ASSET_GRAY, 
+    ENTITY_ASSET_JEFF, 
+    ENTITY_ASSET_CLIFF, 
+    ENTITY_ASSET_KAI, 
+    ENTITY_ASSET_MAYOR, 
+    ENTITY_ASSET_MAYOR_WIFE, 
+    ENTITY_ASSET_LILLIA, 
+    ENTITY_ASSET_BASIL, 
+    ENTITY_ASSET_ELLEN, 
+    ENTITY_ASSET_DOUG, 
+    ENTITY_ASSET_GOTZ, 
+    ENTITY_ASSET_SASHA, 
+    ENTITY_ASSET_POTION_SHOP_DEALER, 
+    ENTITY_ASSET_KENT, 
+    ENTITY_ASSET_STU, 
+    ENTITY_ASSET_MIDWIFE, 
+    ENTITY_ASSET_MAY, 
+    ENTITY_ASSET_RICK, 
+    ENTITY_ASSET_PASTOR, 
+    ENTITY_ASSET_SHIPPER, 
+    ENTITY_ASSET_SAIBARA, 
+    ENTITY_ASSET_DUKE, 
+    ENTITY_ASSET_GREG, 
+    ENTITY_ASSET_ASSISTANT_CARPENTER, 
+    ENTITY_ASSET_ASSISTANT_CARPENTER, 
+    ENTITY_ASSET_MASTER_CARPENTER, 
+    ENTITY_ASSET_HARVEST_SPRITE,
+    ENTITY_ASSET_HARVEST_SPRITE, 
+    ENTITY_ASSET_HARVEST_SPRITE, 
+    ENTITY_ASSET_BARLEY, 
+    ENTITY_ASSET_SYDNEY, 
+    ENTITY_ASSET_MRS_MANA, 
+    ENTITY_ASSET_MRS_MANA_SON, 
+    ENTITY_ASSET_GOURMET_JUDGE, 
+    ENTITY_ASSET_MARIA_HARRIS_BABY,
+    ENTITY_ASSET_POPURI_GRAY_BABY, 
+    ENTITY_ASSET_ELLI_JEFF_BABY, 
+    ENTITY_ASSET_ANN_CLIFF_BABY, 
+    ENTITY_ASSET_KAREN_KAI_BABY, 
+    ENTITY_ASSET_ENTOMOLOGIST 
 };
 
 u16 npcToDialogueBytecodeIndex[] = {
@@ -54,8 +95,8 @@ u16 npcToDialogueBytecodeIndex[] = {
 };
 
 // forward declarations
-void handlePhotographerAnimation(void);
-void handleNPC40Animation(void);
+void handleJohnAnimation(void);
+void handleGourmetJudgeAnimation(void);
 void updateNPCMovement(u8);
 void updateNPCRandomWalkWithAnims(u8 index, u8 arg1, u8 arg2);
 void updateNPCComplexAnimation(u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8); 
@@ -99,15 +140,15 @@ void setHarvestSprite2Location(void);
 void setHarvestSprite3Location(void);
 void setSydneyLocation(void);
 void setBarleyLocation(void);
+void setMrsManaLocation(void);
+void setJohnLocation(void);
 void setGourmetJudgeLocation(void);
-void setPhotographerLocation(void);
-void setNPC40Location(void);
 void setMariaHarrisBabyLocation(void);
 void setPopuriGrayBabyLocation(void);
 void setElliJeffBabyLocation(void);
 void setAnnCliffBabyLocation(void);
 void setKarenKaiBabyLocation(void);
-void setNPC46Location(void);
+void setEntomologistLocation(void);
 void handleMariaAnimation(void);
 void handlePopuriAnimation(void);
 void handleElliAnimation(void);
@@ -146,15 +187,15 @@ void handleHarvestSprite2Animation(void);
 void handleHarvestSprite3Animation(void);
 void handleSydneyAnimation(void);
 void handleBarleyAnimation(void);
+void handleMrsManaAnimation(void);
+void handleJohnAnimation(void);
 void handleGourmetJudgeAnimation(void);
-void handlePhotographerAnimation(void);
-void handleNPC40Animation(void);
 void handleMariaHarrisBabyAnimation(void);
 void handlePopuriGrayBabyAnimation(void);
 void handleElliJeffBabyAnimation(void);
 void handleAnnCliffBabyAnimation(void);
 void handleKarenKaiBabyAnimation(void);
-void handleNPC46Animation(void);
+void handleEntomologistAnimation(void);
  
 //INCLUDE_ASM("asm/nonmatchings/game/npc", deactivateNPCEntities);
 
@@ -232,8 +273,8 @@ u8 setupNPCEntity(u8 npcIndex, int currentEntityOffset) {
             case BABY:                               
                 npcs[npcIndex].entityIndex = ENTITY_BABY;
                 break;
-            case PHOTOGRAPHER:
-                npcs[npcIndex].entityIndex = ENTITY_PHOTOGRAPHER;
+            case JOHN:
+                npcs[npcIndex].entityIndex = 29;
                 break;
             case HARRIS:                                 
             case GRAY:                                 
@@ -267,7 +308,7 @@ u8 setupNPCEntity(u8 npcIndex, int currentEntityOffset) {
             case HARVEST_SPRITE_3:                                
             case SYDNEY:                                
             case BARLEY:                                
-            case GOURMET_JUDGE:
+            case MRS_MANA:
             default:
                 npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
                 currentEntityIndex++;
@@ -886,15 +927,15 @@ void setNPCSpawningLocations(void) {
         setHarvestSprite3Location();
         setSydneyLocation();
         setBarleyLocation();
+        setMrsManaLocation();
+        setJohnLocation();
         setGourmetJudgeLocation();
-        setPhotographerLocation();
-        setNPC40Location();
         setMariaHarrisBabyLocation();
         setPopuriGrayBabyLocation();
         setElliJeffBabyLocation();
         setAnnCliffBabyLocation();
         setKarenKaiBabyLocation();
-        setNPC46Location();
+        setEntomologistLocation();
         
     }
 }
@@ -6518,63 +6559,63 @@ void setBarleyLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setGourmetJudgeLocation);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", setMrsManaLocation);
 
-void setGourmetJudgeLocation(void) {
+void setMrsManaLocation(void) {
     
-    npcs[GOURMET_JUDGE].wanderRadiusX = 0x40;
-    npcs[GOURMET_JUDGE].wanderRadiusZ = 0x40;
-    npcs[GOURMET_JUDGE].animationIndex1 = 0;
-    npcs[GOURMET_JUDGE].animationIndex2 = 8;
+    npcs[MRS_MANA].wanderRadiusX = 0x40;
+    npcs[MRS_MANA].wanderRadiusZ = 0x40;
+    npcs[MRS_MANA].animationIndex1 = 0;
+    npcs[MRS_MANA].animationIndex2 = 8;
 
     if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(0x94) && NIGHTTIME) {
 
-        npcs[GOURMET_JUDGE].levelIndex = TAVERN;
-        npcs[GOURMET_JUDGE].startingCoordinates.y = 0;
-        npcs[GOURMET_JUDGE].direction = NORTHWEST;
-        npcs[GOURMET_JUDGE].behaviorMode = 0;
+        npcs[MRS_MANA].levelIndex = TAVERN;
+        npcs[MRS_MANA].startingCoordinates.y = 0;
+        npcs[MRS_MANA].direction = NORTHWEST;
+        npcs[MRS_MANA].behaviorMode = 0;
 
-        npcs[GOURMET_JUDGE].startingCoordinates.x = 128.0f;
-        npcs[GOURMET_JUDGE].startingCoordinates.z = -112.0f;
+        npcs[MRS_MANA].startingCoordinates.x = 128.0f;
+        npcs[MRS_MANA].startingCoordinates.z = -112.0f;
 
-        npcs[GOURMET_JUDGE].flags |= NPC_ACTIVE;
+        npcs[MRS_MANA].flags |= NPC_ACTIVE;
         
     }
 
-    npcs[GOURMET_JUDGE].movingFlag =  npcs[GOURMET_JUDGE].behaviorMode;
+    npcs[MRS_MANA].movingFlag =  npcs[MRS_MANA].behaviorMode;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setPhotographerLocation);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", setJohnLocation);
 
-void setPhotographerLocation(void) {
+void setJohnLocation(void) {
     
-    npcs[PHOTOGRAPHER].wanderRadiusX = 0x40;
-    npcs[PHOTOGRAPHER].wanderRadiusZ = 0x40;
-    npcs[PHOTOGRAPHER].animationIndex1 = 0;
-    npcs[PHOTOGRAPHER].animationIndex2 = 8;
+    npcs[JOHN].wanderRadiusX = 0x40;
+    npcs[JOHN].wanderRadiusZ = 0x40;
+    npcs[JOHN].animationIndex1 = 0;
+    npcs[JOHN].animationIndex2 = 8;
 
     if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(0x94) && (9 < gHour && gHour < 16)) {
 
-        npcs[PHOTOGRAPHER].levelIndex = BARN;
-        npcs[PHOTOGRAPHER].startingCoordinates.y = 0;
-        npcs[PHOTOGRAPHER].direction = SOUTH;
-        npcs[PHOTOGRAPHER].behaviorMode = 0;
+        npcs[JOHN].levelIndex = BARN;
+        npcs[JOHN].startingCoordinates.y = 0;
+        npcs[JOHN].direction = SOUTH;
+        npcs[JOHN].behaviorMode = 0;
 
-        npcs[PHOTOGRAPHER].startingCoordinates.x = -192.0f;
-        npcs[PHOTOGRAPHER].startingCoordinates.z = -256.0f;
+        npcs[JOHN].startingCoordinates.x = -192.0f;
+        npcs[JOHN].startingCoordinates.z = -256.0f;
 
-        npcs[PHOTOGRAPHER].flags |= NPC_ACTIVE;
+        npcs[JOHN].flags |= NPC_ACTIVE;
         
     }
 
-    npcs[PHOTOGRAPHER].movingFlag =  npcs[PHOTOGRAPHER].behaviorMode;
+    npcs[JOHN].movingFlag =  npcs[JOHN].behaviorMode;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setNPC40Location);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", setGourmetJudgeLocation);
 
-void setNPC40Location(void) {
+void setGourmetJudgeLocation(void) {
 
     npcs[40].wanderRadiusX = 0x40;
     npcs[40].wanderRadiusZ = 0x40;
@@ -6988,30 +7029,30 @@ void setKarenKaiBabyLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setNPC46Location);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", setEntomologistLocation);
 
-void setNPC46Location(void) {
+void setEntomologistLocation(void) {
     
-    npcs[NPC_0x2E].wanderRadiusX = 0x40;
-    npcs[NPC_0x2E].wanderRadiusZ = 0x40;
-    npcs[NPC_0x2E].animationIndex1 = 0;
-    npcs[NPC_0x2E].animationIndex2 = 8;
+    npcs[ENTOMOLOGIST].wanderRadiusX = 0x40;
+    npcs[ENTOMOLOGIST].wanderRadiusZ = 0x40;
+    npcs[ENTOMOLOGIST].animationIndex1 = 0;
+    npcs[ENTOMOLOGIST].animationIndex2 = 8;
 
     if (gYear == 2 && gSeason == SPRING && 1 < gDayOfMonth && gDayOfMonth < 21 && (5 < gHour && gHour < 18)) {
 
-        npcs[NPC_0x2E].levelIndex = MOUNTAIN_1;
-        npcs[NPC_0x2E].startingCoordinates.y = 0;
-        npcs[NPC_0x2E].direction = SOUTH;
-        npcs[NPC_0x2E].behaviorMode = 1;
+        npcs[ENTOMOLOGIST].levelIndex = MOUNTAIN_1;
+        npcs[ENTOMOLOGIST].startingCoordinates.y = 0;
+        npcs[ENTOMOLOGIST].direction = SOUTH;
+        npcs[ENTOMOLOGIST].behaviorMode = 1;
 
-        npcs[NPC_0x2E].startingCoordinates.x = -32.0f;
-        npcs[NPC_0x2E].startingCoordinates.z = -64.0f;
+        npcs[ENTOMOLOGIST].startingCoordinates.x = -32.0f;
+        npcs[ENTOMOLOGIST].startingCoordinates.z = -64.0f;
 
-        npcs[NPC_0x2E].flags |= NPC_ACTIVE;
+        npcs[ENTOMOLOGIST].flags |= NPC_ACTIVE;
         
     }
 
-    npcs[NPC_0x2E].movingFlag =  npcs[NPC_0x2E].behaviorMode;
+    npcs[ENTOMOLOGIST].movingFlag =  npcs[ENTOMOLOGIST].behaviorMode;
     
 }
 
@@ -7075,15 +7116,15 @@ void setNPCAnimations(void) {
     handleHarvestSprite3Animation();
     handleSydneyAnimation();
     handleBarleyAnimation();
+    handleMrsManaAnimation();
+    handleJohnAnimation();
     handleGourmetJudgeAnimation();
-    handlePhotographerAnimation();
-    handleNPC40Animation();
     handleMariaHarrisBabyAnimation();
     handlePopuriGrayBabyAnimation();
     handleElliJeffBabyAnimation();
     handleAnnCliffBabyAnimation();
     handleKarenKaiBabyAnimation();
-    handleNPC46Animation();
+    handleEntomologistAnimation();
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/npc", handleMariaAnimation);
@@ -8653,6 +8694,46 @@ void handleBarleyAnimation(void) {
 
 }
 
+//INCLUDE_ASM("asm/nonmatchings/game/npc", handleMrsManaAnimation);
+
+void handleMrsManaAnimation(void) {
+
+    if (npcs[MRS_MANA].flags & NPC_ENTITY_LOADED) {
+        
+        if (checkEntityAnimationStateChanged(npcs[MRS_MANA].entityIndex) && !npcs[MRS_MANA].animationTimer) {
+            updateAnimation(MRS_MANA);
+        }
+
+        if (npcs[MRS_MANA].animationTimer) {
+            npcs[MRS_MANA].animationTimer--; 
+        } 
+        
+        updateNPCMovement(MRS_MANA);
+
+    }   
+
+}
+
+//INCLUDE_ASM("asm/nonmatchings/game/npc", handleJohnAnimation);
+
+void handleJohnAnimation(void) {
+
+    if (npcs[JOHN].flags & NPC_ENTITY_LOADED) {
+        
+        if (checkEntityAnimationStateChanged(npcs[JOHN].entityIndex) && !npcs[JOHN].animationTimer) {
+            updateAnimation(JOHN);
+        }
+
+        if (npcs[JOHN].animationTimer) {
+            npcs[JOHN].animationTimer--; 
+        } 
+        
+        updateNPCMovement(JOHN);
+    
+    }   
+
+}
+
 //INCLUDE_ASM("asm/nonmatchings/game/npc", handleGourmetJudgeAnimation);
 
 void handleGourmetJudgeAnimation(void) {
@@ -8665,46 +8746,6 @@ void handleGourmetJudgeAnimation(void) {
 
         if (npcs[GOURMET_JUDGE].animationTimer) {
             npcs[GOURMET_JUDGE].animationTimer--; 
-        } 
-        
-        updateNPCMovement(GOURMET_JUDGE);
-
-    }   
-
-}
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handlePhotographerAnimation);
-
-void handlePhotographerAnimation(void) {
-
-    if (npcs[PHOTOGRAPHER].flags & NPC_ENTITY_LOADED) {
-        
-        if (checkEntityAnimationStateChanged(npcs[PHOTOGRAPHER].entityIndex) && !npcs[PHOTOGRAPHER].animationTimer) {
-            updateAnimation(PHOTOGRAPHER);
-        }
-
-        if (npcs[PHOTOGRAPHER].animationTimer) {
-            npcs[PHOTOGRAPHER].animationTimer--; 
-        } 
-        
-        updateNPCMovement(PHOTOGRAPHER);
-    
-    }   
-
-}
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleNPC40Animation);
-
-void handleNPC40Animation(void) {
-
-    if (npcs[NPC_0x28].flags & NPC_ENTITY_LOADED) {
-        
-        if (checkEntityAnimationStateChanged(npcs[NPC_0x28].entityIndex) && !npcs[NPC_0x28].animationTimer) {
-            updateAnimation(NPC_0x28);
-        }
-
-        if (npcs[NPC_0x28].animationTimer) {
-            npcs[NPC_0x28].animationTimer--; 
         } 
         
         updateNPCMovement(0x28);
@@ -8928,15 +8969,15 @@ void handleKarenKaiBabyAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleNPC46Animation);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", handleEntomologistAnimation);
 
-void handleNPC46Animation(void) {
+void handleEntomologistAnimation(void) {
 
-    if (npcs[NPC_0x2E].flags & NPC_ENTITY_LOADED) {
+    if (npcs[ENTOMOLOGIST].flags & NPC_ENTITY_LOADED) {
     
-        if (checkEntityAnimationStateChanged(npcs[NPC_0x2E].entityIndex) && npcs[NPC_0x2E].animationTimer == 0) {
+        if (checkEntityAnimationStateChanged(npcs[ENTOMOLOGIST].entityIndex) && npcs[ENTOMOLOGIST].animationTimer == 0) {
 
-            switch (npcs[NPC_0x2E].movingFlag) {
+            switch (npcs[ENTOMOLOGIST].movingFlag) {
 
                 case 0:
                     stopNPCMovement(0x2E);
@@ -8949,8 +8990,8 @@ void handleNPC46Animation(void) {
             }
         }
 
-        if (npcs[NPC_0x2E].animationTimer) {
-            npcs[NPC_0x2E].animationTimer--; 
+        if (npcs[ENTOMOLOGIST].animationTimer) {
+            npcs[ENTOMOLOGIST].animationTimer--; 
         } 
         
         updateNPCMovement(0x2E);

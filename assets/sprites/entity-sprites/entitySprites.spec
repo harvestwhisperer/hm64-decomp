@@ -1135,39 +1135,39 @@ beginseg
 endseg
 
 beginseg
+    name "dogVillageTexture"
+    flags RAW
+    include "build/bin/sprites/entity-sprites/animals/dogVillageTexture.bin.o"
+endseg
+
+beginseg
+    name "dogVillageAssetsIndex"
+    flags RAW
+    include "build/bin/sprites/entity-sprites/animals/dogVillageAssetsIndex.bin.o"
+endseg
+
+beginseg
+    name "dogVillageSpritesheetIndex"
+    flags RAW
+    include "build/bin/sprites/entity-sprites/animals/dogVillageSpritesheetIndex.bin.o"
+endseg
+
+beginseg
     name "dogTexture"
     flags RAW
-    include "build/bin/sprites/entity-sprites/animals/dogTexture.bin.o"
+    include "build/bin/sprites/entity-sprites/title/dogTexture.bin.o"
 endseg
 
 beginseg
     name "dogAssetsIndex"
     flags RAW
-    include "build/bin/sprites/entity-sprites/animals/dogAssetsIndex.bin.o"
+    include "build/bin/sprites/entity-sprites/title/dogAssetsIndex.bin.o"
 endseg
 
 beginseg
     name "dogSpritesheetIndex"
     flags RAW
-    include "build/bin/sprites/entity-sprites/animals/dogSpritesheetIndex.bin.o"
-endseg
-
-beginseg
-    name "dogTitleTexture"
-    flags RAW
-    include "build/bin/sprites/entity-sprites/title/dogTitleTexture.bin.o"
-endseg
-
-beginseg
-    name "dogTitleAssetsIndex"
-    flags RAW
-    include "build/bin/sprites/entity-sprites/title/dogTitleAssetsIndex.bin.o"
-endseg
-
-beginseg
-    name "dogTitleSpritesheetIndex"
-    flags RAW
-    include "build/bin/sprites/entity-sprites/title/dogTitleSpritesheetIndex.bin.o"
+    include "build/bin/sprites/entity-sprites/title/dogSpritesheetIndex.bin.o"
 endseg
 
 beginseg
