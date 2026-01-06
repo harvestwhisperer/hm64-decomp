@@ -224,6 +224,7 @@ typedef struct  {
     MapState mapState; // 0x1A608
 } MainMap;
 
+extern void initializeMap(void);
 extern void func_800337D0(void);    
 extern bool setupMap(u16 mapIndex, u8* grid, void* mesh, u8* terrainQuads, u8** gridToLevelInteractionIndex, u8* coreMapObjectsData, void* tileTextures, void* tilePalettes, void* coreMapObjectsTextures, void* coreMapObjectsPalettes, u8 *mapAdditionsMetadataPtr);
 extern bool deactivateMapSprites(u16 mapIndex);  

@@ -7,6 +7,7 @@
 #include "system/message.h"
 #include "system/globalSprites.h"
 #include "system/interpolation.h"
+#include "system/math.h"
 #include "system/sceneGraph.h"
 #include "system/sprite.h"
 

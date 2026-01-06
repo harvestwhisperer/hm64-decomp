@@ -60,7 +60,7 @@ class CutsceneOpcode(IntEnum):
     SETUP_MAP_ASSET = 27
     ENTITY_MOVE_AND_ANIMATE = 28
     SET_MAP_ROTATION = 29
-    SET_CAMERA_TRACKING_FLAG = 30
+    SET_BEHAVIOR_FLAGS = 30
     SET_MOVEMENT_INFO = 31
     INIT_MESSAGE_BOX_TYPE1 = 32
     WAIT_MESSAGE_BOX = 33
@@ -98,7 +98,7 @@ class CutsceneOpcode(IntEnum):
     WAIT_ENTITY_ANIMATION = 65
     SET_MESSAGE_BOX_ASSETS = 66
     SET_ENTITY_TRACKING_TARGET = 67
-    UPDATE_CAMERA_FLAGS = 68
+    SET_ALT_ANIMATION_FLAG = 68
     WAIT_MAP_LOAD = 69
     BRANCH_ON_ENTITY_DIR = 70
     SET_ENTITY_PHYSICS_FLAGS = 71
@@ -172,7 +172,7 @@ COMMAND_SPECS = {
     27: ("CMD_SETUP_MAP_ASSET", 4, [('mapIndex', 'u16')]), # func_80049228
     28: ("CMD_ENTITY_MOVE_AND_ANIMATE", 8, [('distance', 'u16'), ('direction', 'u8'), ('speed', 'u8'), ('pad', 'pad16')]), # func_80049350
     29: ("CMD_SET_MAP_ROTATION", 8, [('mapIndex', 'u16'), ('arg1', 'u8'), ('rotation', 'u8'), ('pad', 'pad16')]), # func_800495F0
-    30: ("CMD_SET_CAMERA_TRACKING_FLAG", 4, [('flag', 'u8'), ('pad', 'pad8')]), # func_8004969C
+    30: ("CMD_SET_BEHAVIOR_FLAGS", 4, [('flags', 'u8'), ('pad', 'pad8')]), # func_8004969C
     31: ("CMD_SET_MOVEMENT_INFO", 8, [('movement_distance', 'u8'), ('pad', 'pad8'), ('collision_width', 'u16'), ('collision_height', 'u16')]),
     32: ("CMD_INIT_MESSAGE_BOX_TYPE1", 8, [('box', 'u16'), ('bank', 'u16'), ('index', 'u16')]),
     33: ("CMD_WAIT_MESSAGE_BOX_CLOSED", 4, [('box', 'u16')]), # func_800498B0
@@ -210,7 +210,7 @@ COMMAND_SPECS = {
     65: ("CMD_WAIT_ENTITY_ANIMATION", 4, [('pad', 'pad16')]), # func_8004B5F0
     66: ("CMD_SET_MESSAGE_BOX_ASSETS", 8, [('spriteIndex', 'u16'), ('dialogueWindowIndex', 'u8'), ('overlayIconIndex', 'u8'), ('characterAvatarIndex', 'u8'), ('pad', 'pad8')]),
     67: ("CMD_SET_ENTITY_TRACKING_TARGET", 12, [('target_sprite', 'u16'), ('x', 's16'), ('y', 's16'), ('z', 's16'), ('tracking_mode', 'u8'), ('pad', 'pad8')]),
-    68: ("CMD_UPDATE_CAMERA_FLAGS", 4, [('flags', 'u16')]), # func_8004B920
+    68: ("CMD_SET_ALT_ANIMATION_FLAG", 4, [('useAltAnimations', 'u16')]), # func_8004B920
     69: ("CMD_WAIT_MAP_LOAD", 4, [('map', 'u16')]), # func_8004B9A0
     70: ("CMD_BRANCH_ON_ENTITY_DIR", 8, [('entity', 'u16'), ('direction', 'u8'), ('pad', 'pad8'), ('target', 'rel16')]),
     71: ("CMD_SET_ENTITY_PHYSICS_FLAGS", 4, [('flags', 'u16')]),
@@ -1374,11 +1374,10 @@ class CutsceneBytecodeParser:
                 rot_str = format_direction(rot, self.enable_labels)
                 params = [("map_idx", idx), ("flag", f"0x{flag:X}"), ("rot", rot_str)]
 
-            elif opcode == 30: # SET_CAMERA_TRACKING_FLAG
-                flag = self.read_u8()
+            elif opcode == 30: # SET_BEHAVIOR_FLAGS
+                flags = self.read_u8()
                 self.pos += 1
-                flag_str = format_boolean(flag)
-                params = [("flag", flag_str)]
+                params = [("flags", f"0x{flags:02X}")]
 
             elif opcode == 31: # SET_MOVEMENT_INFO
                 dist = self.read_u8()
@@ -1578,10 +1577,10 @@ class CutsceneBytecodeParser:
                     ("tracking_mode", f"0x{tracking_mode:X}")
                 ]
 
-            elif opcode == 68: # UPDATE_CAMERA_FLAGS
-                flag = self.read_u16()
-                flag_str = format_boolean(flag)
-                params = [("flag", flag_str)]
+            elif opcode == 68: # SET_ALT_ANIMATION_FLAG
+                useAltAnimations = self.read_u16()
+                flag_str = format_boolean(useAltAnimations)
+                params = [("useAltAnimations", flag_str)]
 
             elif opcode == 69: # WAIT_MAP_CONTROLLER
                  idx = self.read_u16()

@@ -18,28 +18,35 @@ import re
 from pathlib import Path
 from typing import List, Tuple, Optional
 
-from hm64_text_utilities import CHAR_MAP, CONTROL_CODES
+from hm64_text_utilities import CHAR_MAP, CONTROL_CODES, GAMEVAR_MACRO_TO_INDEX
 
 # Create reverse mappings for encoding
 REVERSE_CHAR_MAP = {v: k for k, v in CHAR_MAP.items()}
 REVERSE_CONTROL_CODES = {v: k for k, v in CONTROL_CODES.items()}
 
-CONTROL_CODE_PATTERN = re.compile(r'\[([A-Z_]+)(?::([0-9A-Fa-f]+))?\]')
+CONTROL_CODE_PATTERN = re.compile(r'\[([A-Z_0-9]+)(?::([0-9A-Fa-f]+))?\]')
 
 RAW_CHAR_PATTERN = re.compile(r'\[CHAR:0x([0-9A-Fa-f]{2})(?:→0x[0-9A-Fa-f]{2})?\]')
 RAW_WORD_PATTERN = re.compile(r'\[WORD:0x([0-9A-Fa-f]{4})\]')
 RAWBYTES_PATTERN = re.compile(r'\[RAWBYTES:([0-9A-Fa-f]+)\]')
+BLOCK_END_PATTERN = re.compile(r'\[BLOCK_END:([0-9A-Fa-f]+)\]')
 METADATA_PATTERN = re.compile(r'^#\s*([A-Z_]+):\s*(.+)$')
+
+# Message box type to line width mapping
+MESSAGE_BOX_TYPES = {
+    'DEFAULT': 16,      # Main dialogue box
+    'MENU': 10,         # Overlay menus, lists
+    'NAMING_SCREEN': 6, # Naming screen input
+}
 
 class TextEncoder:
     """Encodes text strings into the game's compressed binary format"""
 
     def __init__(self):
         self.verbose = False
-        self.auto_linebreak = False
+        self.auto_linebreak = False  # Default: exact reproduction; opt-in for auto-wrapping
         self.line_width = 16  # Default to main dialogue box width
         self.auto_textend = True  # Default enabled for user friendliness
-        self.convert_newlines = True  # Default: convert \n to [LINEBREAK]
 
     def encode_text(self, text: str, metadata: dict = None) -> bytes:
         """
@@ -55,14 +62,19 @@ class TextEncoder:
 
         # Apply metadata settings if provided
         if metadata:
-            if 'LINE_WIDTH' in metadata:
+            # MESSAGE_BOX_TYPE takes precedence over LINE_WIDTH
+            if 'MESSAGE_BOX_TYPE' in metadata:
+                box_type = metadata['MESSAGE_BOX_TYPE'].upper().strip()
+                if box_type in MESSAGE_BOX_TYPES:
+                    self.line_width = MESSAGE_BOX_TYPES[box_type]
+                else:
+                    raise ValueError(f"Unknown MESSAGE_BOX_TYPE: {box_type}. Valid types: {', '.join(MESSAGE_BOX_TYPES.keys())}")
+            elif 'LINE_WIDTH' in metadata:
                 self.line_width = int(metadata['LINE_WIDTH'])
             if 'AUTO_LINEBREAK' in metadata:
                 self.auto_linebreak = metadata['AUTO_LINEBREAK'].lower() in ['true', 'yes', '1']
             if 'AUTO_TEXTEND' in metadata:
                 self.auto_textend = metadata['AUTO_TEXTEND'].lower() in ['true', 'yes', '1']
-            if 'CONVERT_NEWLINES' in metadata:
-                self.convert_newlines = metadata['CONVERT_NEWLINES'].lower() in ['true', 'yes', '1']
 
         if not text.strip():
             return b'\x00\x00\x00\x00'
@@ -89,19 +101,33 @@ class TextEncoder:
         if not content_check:
             return b'\x00\x00\x00\x00'
 
-        # Preprocess text if auto features are enabled
-        if self.convert_newlines and not self.auto_linebreak:
-            # Simple newline conversion (auto_linebreak handles this itself)
+        # Handle linebreaks based on mode
+        if self.auto_linebreak:
+            # Auto-generate linebreaks based on message box width (for modding)
+            text = self._add_automatic_linebreaks(text)
+        else:
+            # Convert newlines to [LINEBREAK] codes exactly (for matching)
             text = self._convert_newlines_to_linebreaks(text)
 
-        if self.auto_linebreak:
-            text = self._add_automatic_linebreaks(text)
+        # Extract [BLOCK_END:XX] if present (bytes to place after TEXTEND for byte-matching)
+        block_end_bytes = b''
+        block_end_match = BLOCK_END_PATTERN.search(text)
+        if block_end_match:
+            block_end_bytes = bytes.fromhex(block_end_match.group(1))
+            text = text[:block_end_match.start()] + text[block_end_match.end():]
+            if self.verbose:
+                print(f"Extracted BLOCK_END bytes: {block_end_bytes.hex()}")
 
-        if self.auto_textend and text.strip() and not text.rstrip().endswith('[TEXTEND]'):
-            text = text.rstrip() + '[TEXTEND]'
+        if self.auto_textend and text.strip() and not text.endswith('[TEXTEND]'):
+            # Don't use rstrip() - it would remove meaningful trailing spaces from the text
+            text = text + '[TEXTEND]'
 
         # Parse the text into a list of character codes
         char_codes = self._parse_text_to_codes(text)
+
+        # Add BLOCK_END bytes as additional codes after TEXTEND
+        for byte_val in block_end_bytes:
+            char_codes.append(byte_val)
 
         if self.verbose:
             print(f"Parsed {len(char_codes)} character codes")
@@ -138,14 +164,30 @@ class TextEncoder:
                 control_name = match.group(1)
                 param_str = match.group(2)
 
-                if control_name in REVERSE_CONTROL_CODES:
+                # Check for gamevar macros first (e.g., [PLAYER_NAME] -> INSERT_GAMEVAR:00)
+                if control_name in GAMEVAR_MACRO_TO_INDEX:
+                    gamevar_index = GAMEVAR_MACRO_TO_INDEX[control_name]
+                    codes.append(7)  # INSERT_GAMEVAR control code
+                    codes.append(('param1', gamevar_index))
+
+                    if self.verbose:
+                        print(f"Found gamevar macro: {control_name} -> INSERT_GAMEVAR:{gamevar_index:02X}")
+
+                    i = match.end()
+                    continue
+
+                elif control_name in REVERSE_CONTROL_CODES:
                     control_code = REVERSE_CONTROL_CODES[control_name]
                     codes.append(control_code)
 
                     # Add parameter if present
                     if param_str is not None:
 
-                        param = int(param_str, 16)
+                        # WAIT, CHARACTER_AVATAR, LOAD_TEXT use decimal for readability
+                        if control_code in (3, 5, 9):  # WAIT, LOAD_TEXT, CHARACTER_AVATAR
+                            param = int(param_str, 10)
+                        else:
+                            param = int(param_str, 16)
 
                         # Determine parameter size based on control code
                         if control_code == 5:  # LOAD_TEXT - 2-byte parameter
@@ -201,30 +243,27 @@ class TextEncoder:
         return codes
 
     def _convert_newlines_to_linebreaks(self, text: str) -> str:
-
+        """
+        Convert newlines in text to [LINEBREAK] codes for exact reproduction.
+        Used when AUTO_LINEBREAK is false (default for matching).
+        """
         # Replace Windows line endings first
         text = text.replace('\r\n', '\n')
-        
+
         # Remove everything after [TEXTEND] (decoder artifacts from reading padding)
         textend_pos = text.find('[TEXTEND]')
         if textend_pos >= 0:
             text = text[:textend_pos + len('[TEXTEND]')]
-        
+
         # Remove newlines immediately after [LINEBREAK] or [SOFTBREAK] (redundant)
         text = re.sub(r'(\[(?:LINEBREAK|SOFTBREAK)\])\n', r'\1', text)
-        
-        # Remove newlines immediately before [TEXTEND] (formatting artifact)
-        text = re.sub(r'\n+(?=\[TEXTEND\])', '', text)
-        
-        # Remove trailing newlines
-        text = text.rstrip('\n')
-        
-        # Convert remaining newlines to [LINEBREAK]
+
+        # Convert all newlines to [LINEBREAK] - preserve trailing ones for matching
         text = text.replace('\n', '[LINEBREAK]')
-        
+
         if self.verbose:
             print(f"Converted newlines to [LINEBREAK] codes")
-        
+
         return text
 
     def _add_automatic_linebreaks(self, text: str) -> str:
@@ -270,11 +309,12 @@ class TextEncoder:
                 i += 1
 
             elif text[i] in '\r\n':
-                # Manual line break - save current word and add linebreak
+                # Treat newlines as whitespace (for readability in source files)
+                # Actual linebreaks are auto-generated based on line width
                 if current_word:
                     tokens.append(('word', ''.join(current_word)))
                     current_word = []
-                tokens.append(('newline', text[i]))
+                tokens.append(('space', ' '))
                 i += 1
 
             else:
@@ -289,17 +329,7 @@ class TextEncoder:
         # Now process tokens into lines
         for token_type, token_value in tokens:
 
-            if token_type == 'newline':
-                # Manual newline - respect it (but only if not already a [LINEBREAK])
-                if not current_line or current_line[-1] != '[LINEBREAK]':
-                    current_line.append('[LINEBREAK]')
-                # Start new line
-                if current_line:
-                    lines.append(''.join(current_line))
-                current_line = []
-                current_length = 0
-
-            elif token_type == 'control':
+            if token_type == 'control':
                 # Control codes don't count toward line length
                 # But linebreak control codes should reset the line
                 if token_value == '[LINEBREAK]' or token_value == '[SOFTBREAK]':
@@ -385,7 +415,7 @@ class TextEncoder:
         while i < len(codes):
             code = codes[i]
 
-            # Handle parameter bytes (these don't count as characters)
+            # Handle parameter bytes (don't count towards 8-char block boundary)
             if isinstance(code, tuple):
 
                 param_type, param_value = code
@@ -401,7 +431,7 @@ class TextEncoder:
                 i += 1
                 continue
 
-            # Every 8 characters, write the control byte and character data
+            # Every 8 bytes, write the control byte and data
             if char_count > 0 and char_count % 8 == 0:
                 self._write_control_block(output, control_byte, pending_chars)
                 control_byte = 0
@@ -424,7 +454,7 @@ class TextEncoder:
             char_count += 1
             i += 1
 
-        # Write any remaining characters
+        # Write any remaining data
         if pending_chars:
             self._write_control_block(output, control_byte, pending_chars)
 
@@ -481,7 +511,8 @@ def parse_metadata(text: str) -> tuple:
             continue
         clean_lines.append(line)
 
-    clean_text = '\n'.join(clean_lines).strip('\n')
+    # Preserve leading/trailing newlines - they represent LINEBREAK codes
+    clean_text = '\n'.join(clean_lines)
     return metadata, clean_text
 
 class TextTranspiler:
@@ -491,11 +522,11 @@ class TextTranspiler:
 
         self.bank_name = bank_name
         self.index_name = f"{bank_name}Index"
-        
+
         # Output buffers
         self.data_lines: List[str] = []
         self.index_lines: List[str] = []
-        
+
         # Tracking
         self.segment_offsets: List[int] = []
         self.current_offset = 0
@@ -504,15 +535,13 @@ class TextTranspiler:
         self.warnings: List[str] = []
 
     def transpile_directory(self, input_dir: Path,
-                           auto_textend: bool = True,
-                           convert_newlines: bool = True) -> Tuple[str, str]:
+                           auto_textend: bool = True) -> Tuple[str, str]:
         """
         Transpile a directory of text files to assembly.
 
         Args:
             input_dir: Directory containing text files (text000.txt, text001.txt, etc.)
             auto_textend: Automatically add [TEXTEND] if missing
-            convert_newlines: Convert newlines to [LINEBREAK] codes
 
         Returns:
             Tuple of (data_asm, index_asm) strings
@@ -521,10 +550,11 @@ class TextTranspiler:
             self.errors.append(f"Input directory does not exist: {input_dir}")
             return "", ""
 
-        # Read metadata file first (contains terminator and padding info)
+        # Read metadata file (contains terminator and padding info for index building)
         terminator_indices = []
         padding_segments = {}  # idx -> size
         total_segments = 0
+
         metadata_path = input_dir / "_metadata.txt"
         if metadata_path.exists():
             with open(metadata_path, 'r', encoding='utf-8') as f:
@@ -581,8 +611,6 @@ class TextTranspiler:
         encoder = TextEncoder()
         encoder.verbose = self.verbose
         encoder.auto_textend = auto_textend
-        encoder.convert_newlines = convert_newlines
-        encoder.auto_linebreak = False
 
         # Compile all text segments
         segments: List[Tuple[int, bytes]] = []
@@ -752,19 +780,17 @@ class TextTranspiler:
 
 def transpile_text_bank(input_dir: Path, output_dir: Path = None,
                         bank_name: str = None, verbose: bool = False,
-                        auto_textend: bool = True,
-                        convert_newlines: bool = True) -> Tuple[Optional[Path], Optional[Path]]:
+                        auto_textend: bool = True) -> Tuple[Optional[Path], Optional[Path]]:
     """
     Transpile a text bank directory to assembly files.
-    
+
     Args:
         input_dir: Directory containing text files
         output_dir: Output directory for .s files (default: same as input)
         bank_name: Name for the bank symbols (default: derived from directory)
         verbose: Enable verbose output
         auto_textend: Automatically add [TEXTEND] if missing
-        convert_newlines: Convert newlines to [LINEBREAK] codes
-        
+
     Returns:
         Tuple of (data_path, index_path) for generated files
     """
@@ -783,9 +809,8 @@ def transpile_text_bank(input_dir: Path, output_dir: Path = None,
     transpiler.verbose = verbose
 
     data_asm, index_asm = transpiler.transpile_directory(
-        input_dir, 
-        auto_textend=auto_textend,
-        convert_newlines=convert_newlines
+        input_dir,
+        auto_textend=auto_textend
     )
 
     for warning in transpiler.warnings:
@@ -810,12 +835,12 @@ def transpile_text_bank(input_dir: Path, output_dir: Path = None,
     return data_path, index_path
 
 
-def verify_roundtrip(input_dir: Path, rom_path: Path, 
+def verify_roundtrip(input_dir: Path, rom_path: Path,
                      index_start: int, index_end: int, text_start: int,
-                     verbose: bool = False, literal_input: bool = False) -> bool:
+                     verbose: bool = False) -> bool:
     """
     Verify that recompiled text matches original ROM data.
-    
+
     Args:
         input_dir: Directory containing text files
         rom_path: Path to the base ROM
@@ -823,39 +848,27 @@ def verify_roundtrip(input_dir: Path, rom_path: Path,
         index_end: ROM address of index table end
         text_start: ROM address of text data start
         verbose: Enable verbose output
-        literal_input: If True, text files are in literal mode format
-                      (no auto-TEXTEND, no newline conversion)
-        
+
     Returns:
         True if data matches, False otherwise
     """
 
     rom_data = rom_path.read_bytes()
-    
+
     text_end = index_start
-    
+
     original_text = rom_data[text_start:text_end]
     original_index = rom_data[index_start:index_end]
-    
+
     txt_files = sorted(input_dir.glob("text*.txt"))
-    
+
     if not txt_files:
         print(f"No text files found in {input_dir}")
         return False
-    
+
     encoder = TextEncoder()
-    
-    if literal_input:
-        # Literal mode: text files contain exact control codes including trailing content
-        encoder.auto_textend = False
-        encoder.convert_newlines = False
-    else:
-        # Readable mode: auto-add TEXTEND, convert newlines
-        encoder.auto_textend = True
-        encoder.convert_newlines = True
-    
-    encoder.auto_linebreak = False
-    
+    encoder.auto_textend = True
+
     compiled_segments = []
     offsets = []
     current_offset = 0
@@ -949,10 +962,6 @@ Examples:
                                    help='Enable verbose output')
     transpile_parser.add_argument('--no-auto-textend', action='store_true',
                                    help='Disable automatic [TEXTEND] insertion')
-    transpile_parser.add_argument('--no-convert-newlines', action='store_true',
-                                   help='Disable newline to [LINEBREAK] conversion')
-    transpile_parser.add_argument('--literal', action='store_true',
-                                   help='Literal mode input (equivalent to --no-auto-textend --no-convert-newlines)')
 
     verify_parser = subparsers.add_parser('verify',
                                            help='Verify compiled output matches ROM')
@@ -968,27 +977,18 @@ Examples:
                                 help='Text data start address (hex)')
     verify_parser.add_argument('-v', '--verbose', action='store_true',
                                 help='Enable verbose output')
-    verify_parser.add_argument('--literal', action='store_true',
-                                help='Text files are in literal mode (exact control codes, no auto-processing)')
 
     args = parser.parse_args()
 
     if args.command == 'transpile':
-        # --literal is an alias for `--no-auto-textend --no-convert-newlines`
-        if args.literal:
-            auto_textend = False
-            convert_newlines = False
-        else:
-            auto_textend = not args.no_auto_textend
-            convert_newlines = not args.no_convert_newlines
-        
+        auto_textend = not args.no_auto_textend
+
         data_path, index_path = transpile_text_bank(
             args.input,
             output_dir=args.output,
             bank_name=args.name,
             verbose=args.verbose,
-            auto_textend=auto_textend,
-            convert_newlines=convert_newlines
+            auto_textend=auto_textend
         )
         sys.exit(0 if data_path else 1)
 
@@ -996,17 +996,16 @@ Examples:
         index_start = int(args.index_start, 16)
         index_end = int(args.index_end, 16)
         text_start = int(args.text_start, 16)
-        
+
         success = verify_roundtrip(
             args.input,
             args.rom,
             index_start,
             index_end,
             text_start,
-            verbose=args.verbose,
-            literal_input=args.literal
+            verbose=args.verbose
         )
-        
+
         sys.exit(0 if success else 1)
 
     else:

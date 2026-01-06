@@ -9,7 +9,7 @@
 #include "system/map.h"
 #include "system/mapController.h"
 #include "system/message.h"
-#include "system/overlayScreenSprites.h"
+#include "system/numberSprites.h"
 #include "system/globalSprites.h"
 
 #include "game/animals.h"
@@ -22,6 +22,7 @@
 #include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/time.h"
+#include "game/transition.h"
 
 #include "mainLoop.h"
 
@@ -623,8 +624,8 @@ void shopDialogueCallback(void) {
                 loadShopIcons();
 
                 if (shopItemMaxQuantities[shopContext.storeItemIndex] >= 2) {
-                    setOverlayScreenSprites(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsAssetsIndexSegmentRomStart, &_shopIconsAssetsIndexSegmentRomEnd, (u8*)SHOP_ICONS_TEXTURE_BUFFER, (u16*)SHOP_ICONS_PALETTE_BUFFER, (AnimationFrameMetadata*)SHOP_ICONS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)SHOP_ICONS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 2, 0, -16.0f, 64.0f, 256.0f, 10);
-                    dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
+                    setNumberSprites(0, 0x8F, &_shopIconsTextureSegmentRomStart, &_shopIconsTextureSegmentRomEnd, &_shopIconsAssetsIndexSegmentRomStart, &_shopIconsAssetsIndexSegmentRomEnd, (u8*)SHOP_ICONS_TEXTURE_BUFFER, (u16*)SHOP_ICONS_PALETTE_BUFFER, (AnimationFrameMetadata*)SHOP_ICONS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)SHOP_ICONS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 2, 0, -16.0f, 64.0f, 256.0f, 10);
+                    dmaNumberSprites(0, shopContext.quantity, 1, 3);
                     updateShopQuantityArrows(shopItemMaxQuantities[shopContext.storeItemIndex]);
                 }
                 
@@ -685,7 +686,7 @@ void shopDialogueCallback(void) {
                     
                         shopContext.quantity++;
                     
-                        dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
+                        dmaNumberSprites(0, shopContext.quantity, 1, 3);
                         convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
                     
                         if (shopItemMaxQuantities[shopContext.storeItemIndex] >= 2) {
@@ -711,7 +712,7 @@ void shopDialogueCallback(void) {
                     
                         shopContext.quantity--;
                     
-                        dmaOverlayScreenSprites(0, shopContext.quantity, 1, 3);
+                        dmaNumberSprites(0, shopContext.quantity, 1, 3);
                         convertNumberToGameVariableString(0x12, shopContext.quantity * prices[shopContext.storeItemIndex], 0);
 
                         if (shopItemMaxQuantities[shopContext.storeItemIndex] >= 2) {
@@ -731,7 +732,7 @@ void shopDialogueCallback(void) {
 
                 if (!set) {
 
-                    deactivateOverlayScreenSprites(0);
+                    deactivateNumberSprites(0);
 
                     resetAnimationState(0x82);
                     resetAnimationState(0x83);
@@ -758,7 +759,7 @@ void shopDialogueCallback(void) {
 
                 if (!set) {
                     
-                    deactivateOverlayScreenSprites(0);
+                    deactivateNumberSprites(0);
 
                     deactivateSprite(0x82);
                     deactivateSprite(0x83);
@@ -782,7 +783,7 @@ void shopDialogueCallback(void) {
 
             temp = handlePurchase(shopContext.storeItemIndex, shopContext.quantity);
 
-            dmaOverlayScreenSprites(1, gGold, 8, 3);
+            dmaNumberSprites(1, gGold, 8, 3);
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
             setMessageBoxSpriteIndices(0, 0, 0, 0);
             setMessageBoxInterpolationWithFlags(0, -4, 0);

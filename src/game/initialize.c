@@ -43,6 +43,7 @@
 
 #include "buffers/buffers.h"
 
+#include "assetIndices/dialogues.h"
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
 #include "assetIndices/sequences.h"
@@ -59,6 +60,7 @@ void loadMapAddresses(void);
 void registerMainLoopCallbacks(void);
 void initializeDialogueVariables(void);
 void initializeTextAddresses(void);
+void initializeMainMessageBoxes(void);
 
 static inline void setStartingTime() {
     gYear = 1;
@@ -702,8 +704,8 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(TITLE_SCREEN, titleScreenMainLoopCallback);
 
     // naming screen
-    registerMainLoopCallback(NAMING_SCREEN, loadNamingScreenCallback);
-    registerMainLoopCallback(NAMING_SCREEN_LOAD, namingScreenCallback);
+    registerMainLoopCallback(NAMING_SCREEN_LOAD, loadNamingScreenCallback);
+    registerMainLoopCallback(NAMING_SCREEN, namingScreenCallback);
 
     // game file
     registerMainLoopCallback(SELECT_GAME, gameSelectCallback);
@@ -968,7 +970,7 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_SQUIRREL, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_SQUIRREL, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_BIRD, &_birdTextureSegmentRomStart, &_birdTextureSegmentRomEnd, &_birdAssetsIndexSegmentRomStart, &_birdAssetsIndexSegmentRomEnd, &_birdSpritesheetIndexSegmentRomStart, &_birdSpritesheetIndexSegmentRomEnd, 1, 0, &dogRaceAnimationScripts);
+    initializeEntityAsset(ENTITY_ASSET_BIRD, &_birdTextureSegmentRomStart, &_birdTextureSegmentRomEnd, &_birdAssetsIndexSegmentRomStart, &_birdAssetsIndexSegmentRomEnd, &_birdSpritesheetIndexSegmentRomStart, &_birdSpritesheetIndexSegmentRomEnd, 1, 0, &birdAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_BIRD, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_BIRD, 12, 12);
     
@@ -976,11 +978,11 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_CAT, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_CAT, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_DOG, &_dogTextureSegmentRomStart, &_dogTextureSegmentRomEnd, &_dogAssetsIndexSegmentRomStart, &_dogAssetsIndexSegmentRomEnd, &_dogSpritesheetIndexSegmentRomStart, &_dogSpritesheetIndexSegmentRomEnd, 1, 2, &dogAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_DOG, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_DOG, 12, 12);
+    initializeEntityAsset(ENTITY_ASSET_DOG_VILLAGE, &_dogVillageTextureSegmentRomStart, &_dogVillageTextureSegmentRomEnd, &_dogVillageAssetsIndexSegmentRomStart, &_dogVillageAssetsIndexSegmentRomEnd, &_dogVillageSpritesheetIndexSegmentRomStart, &_dogVillageSpritesheetIndexSegmentRomEnd, 1, 2, &dogVillageAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_DOG_VILLAGE, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_DOG_VILLAGE, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_PLAYER_DOG, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, 1, 0, &dogTitleAnimationScripts);
+    initializeEntityAsset(ENTITY_ASSET_PLAYER_DOG, &_dogTextureSegmentRomStart, &_dogTextureSegmentRomEnd, &_dogAssetsIndexSegmentRomStart, &_dogAssetsIndexSegmentRomEnd, &_dogSpritesheetIndexSegmentRomStart, &_dogSpritesheetIndexSegmentRomEnd, 1, 0, &dogAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_PLAYER_DOG, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_PLAYER_DOG, 12, 12);
     
@@ -1044,7 +1046,7 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_CICADA, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_CICADA, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_WHITE_BUTTERFLY, &_whiteButterflyTextureSegmentRomStart, &_whiteButterflyTextureSegmentRomEnd, &_whiteButterflyAssetsIndexSegmentRomStart, &_whiteButterflyAssetsIndexSegmentRomEnd, &_whiteButterflySpritesheetIndexSegmentRomStart, &_whiteButterflySpritesheetIndexSegmentRomEnd, 1, 2, &birdAnimationScripts);
+    initializeEntityAsset(ENTITY_ASSET_WHITE_BUTTERFLY, &_whiteButterflyTextureSegmentRomStart, &_whiteButterflyTextureSegmentRomEnd, &_whiteButterflyAssetsIndexSegmentRomStart, &_whiteButterflyAssetsIndexSegmentRomEnd, &_whiteButterflySpritesheetIndexSegmentRomStart, &_whiteButterflySpritesheetIndexSegmentRomEnd, 1, 2, &whiteButterflyAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_WHITE_BUTTERFLY, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_WHITE_BUTTERFLY, 12, 12);
     
@@ -1430,6 +1432,7 @@ void initializeTextAddresses(void) {
 
 void initializeGameVariableStrings(void) {
     
+    // also set as current naming screen name
     setGameVariableString(0, gPlayer.name, 6);
     setGameVariableString(1, gFarmName, 6);
     setGameVariableString(2, dogInfo.name, 6);
@@ -1444,21 +1447,29 @@ void initializeGameVariableStrings(void) {
     setGameVariableString(0xA, gFarmAnimals[5].name, 6);
     setGameVariableString(0xB, gFarmAnimals[6].name, 6);
     setGameVariableString(0xC, gFarmAnimals[7].name, 6);
+
+    // 1-15 repurposed by gameFile.c
     
+    // 0xD = chicken or farm animal name
+
+    // cow name
     setGameVariableString(0xE, D_80237380, 6);
     
     setGameVariableString(0xF, gWifeName, 6);
     
+    // unused
     setGameVariableString(0x10, D_801FB5C4, 6);
+
+    // watering can use/seed use counter
     setGameVariableString(0x11, D_801594E0, 3);
-    // prices
+    // price
     setGameVariableString(0x12, D_801A8B50, 8);
 
     setGameVariableString(0x13, gDeadAnimalName, 6);
 
     setGameVariableString(0x14, gCurrentSeasonName, 6);
     
-    // current day of the month
+    // anniversary date; animal birth countdown; animal death dat
     setGameVariableString(0x15, D_801FC152, 2);
 
     setGameVariableString(0x16, gWifeName, 6);
@@ -1475,24 +1486,33 @@ void initializeGameVariableStrings(void) {
     setGameVariableString(0x1D, gChickens[4].name, 6);
     setGameVariableString(0x1E, gChickens[5].name, 6);
     
-    // unsued
+    // horse race medal pieces
     setGameVariableString(0x1F, D_8020563B, 4);
 
     setGameVariableString(0x20, gHarvestKingName, 6);
 
-    // unused
     setGameVariableString(0x21, D_801806C8, 2);
+
+    // unused
     setGameVariableString(0x22, D_80170268, 6);
     setGameVariableString(0x23, D_801FC156, 6);
     setGameVariableString(0x24, D_80204B3C, 6);
+
     setGameVariableString(0x25, gMilkTypeString, 1);
+
+    // 0x26 = farm animal mother name
+
+    // unused
     setGameVariableString(0x27, D_801886D4, 6);
 
     // 0x2A-0x2F set by overlay screens (horse/dog race)
 
-    // unused
+    // flower card points
     setGameVariableString(0x30, D_801594E6, 3);
+    // bakery card points
     setGameVariableString(0x31, D_8016F6E0, 3);
+
+    // girls' and rivals' affection
     setGameVariableString(0x32, D_80182D90[0], 3);
     setGameVariableString(0x33, D_80182D90[1], 3);
     setGameVariableString(0x34, D_80182D90[2], 3);
@@ -1530,81 +1550,81 @@ void initializeDialogueSystem(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/initialize", setDialogueBytecodeAddresses);
 
 void setDialogueBytecodeAddresses(void) {
-
-    setDialogueBytecodeAddressInfo(0, TEXT_1_TEXT_INDEX, 0, &_text1DialogueIndexSegmentRomStart, &_text1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(1, DIARY_TEXT_INDEX, 2, &_diaryDialogueIndexSegmentRomStart, &_diaryDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_diaryDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x3D, SHOP_TEXT_INDEX, 6, &_shopDialogueIndexSegmentRomStart, &_shopDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_shopDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x3E, FESTIVAL_OVERLAY_SELECTIONS_TEXT_INDEX, 4, &_festivalOverlaySelectionsDialogueIndexSegmentRomStart, &_festivalOverlaySelectionsDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_festivalOverlaySelectionsDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x44, LIBRARY_TEXT_INDEX, 1, &_libraryDialogueIndexSegmentRomStart, &_libraryDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_libraryDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(9, MARIA_TEXT_INDEX, 0x15, &_mariaDialogueIndexSegmentRomStart, &_mariaDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mariaDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(8, POPURI_TEXT_INDEX, 0x14, &_popuriDialogueIndexSegmentRomStart, &_popuriDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_popuriDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(2, ELLI_TEXT_INDEX, 0xB, &_elliDialogueIndexSegmentRomStart, &_elliDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_elliDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0xA, ANN_TEXT_INDEX, 0x17, &_annDialogueIndexSegmentRomStart, &_annDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_annDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(4, KAREN_TEXT_INDEX, 0xD, &_karenDialogueIndexSegmentRomStart, &_karenDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_karenDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x3F, BABY_TEXT_INDEX, 0x44, &_babyDialogueIndexSegmentRomStart, &_babyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_babyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(7, HARRIS_TEXT_INDEX, 0x13, &_harrisDialogueIndexSegmentRomStart, &_harrisDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_harrisDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0xB, GRAY_TEXT_INDEX, 0x19, &_grayDialogueIndexSegmentRomStart, &_grayDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_grayDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(6, JEFF_TEXT_INDEX, 0x11, &_jeffDialogueIndexSegmentRomStart, &_jeffDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_jeffDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(5, CLIFF_TEXT_INDEX, 0x10, &_cliffDialogueIndexSegmentRomStart, &_cliffDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_cliffDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(3, KAI_TEXT_INDEX, 0xC, &_kaiDialogueIndexSegmentRomStart, &_kaiDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_kaiDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x1F, MAYOR_TEXT_INDEX, 0x21, &_mayorDialogueIndexSegmentRomStart, &_mayorDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mayorDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x24, MAYOR_WIFE_TEXT_INDEX, 0x27, &_mayorWifeDialogueIndexSegmentRomStart, &_mayorWifeDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mayorWifeDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x14, LILLIA_TEXT_INDEX, 0x1B, &_lilliaDialogueIndexSegmentRomStart, &_lilliaDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_lilliaDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x13, BASIL_TEXT_INDEX, 0x1A, &_basilDialogueIndexSegmentRomStart, &_basilDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_basilDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0xC, ELLEN_TEXT_INDEX, 0x28, &_ellenDialogueIndexSegmentRomStart, &_ellenDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_ellenDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x12, DOUG_TEXT_INDEX, 0x18, &_dougDialogueIndexSegmentRomStart, &_dougDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_dougDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0xD, GOTZ_TEXT_INDEX, 0xE, &_gotzDialogueIndexSegmentRomStart, &_gotzDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_gotzDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0xE, SASHA_TEXT_INDEX, 0xF, &_sashaDialogueIndexSegmentRomStart, &_sashaDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_sashaDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x26, POTION_SHOP_DEALER_TEXT_INDEX, 0x26, &_potionShopDealerDialogueIndexSegmentRomStart, &_potionShopDealerDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_potionShopDealerDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0xF, KENT_TEXT_INDEX, 0x12, &_kentDialogueIndexSegmentRomStart, &_kentDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_kentDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x11, STU_TEXT_INDEX, 0x29, &_stuDialogueIndexSegmentRomStart, &_stuDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_stuDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x16, MIDWIFE_TEXT_INDEX, 0x2A, &_midwifeDialogueIndexSegmentRomStart, &_midwifeDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_midwifeDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x10, MAY_TEXT_INDEX, 0x16, &_mayDialogueIndexSegmentRomStart, &_mayDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mayDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x21, RICK_TEXT_INDEX, 0x23, &_rickDialogueIndexSegmentRomStart, &_rickDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_rickDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x25, PASTOR_TEXT_INDEX, 0x2B, &_pastorDialogueIndexSegmentRomStart, &_pastorDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_pastorDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x18, SHIPPER_TEXT_INDEX, 0x1D, &_shipperDialogueIndexSegmentRomStart, &_shipperDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_shipperDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x15, SAIBARA_TEXT_INDEX, 0x2C, &_saibaraDialogueIndexSegmentRomStart, &_saibaraDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_saibaraDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x17, DUKE_TEXT_INDEX, 0x1C, &_dukeDialogueIndexSegmentRomStart, &_dukeDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_dukeDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x20, GREG_TEXT_INDEX, 0x22, &_gregDialogueIndexSegmentRomStart, &_gregDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_gregDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x1C, ASSISTANT_CARPENTERS_TEXT_INDEX, 0x1F, &_assistantCarpenters1DialogueIndexSegmentRomStart, &_assistantCarpenters1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_assistantCarpenters1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x1D, ASSISTANT_CARPENTERS_TEXT_INDEX, 0x1F, &_assistantCarpenters2DialogueIndexSegmentRomStart, &_assistantCarpenters2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_assistantCarpenters2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x1E, MASTER_CARPENTER_TEXT_INDEX, 0x20, &_masterCarpenterDialogueIndexSegmentRomStart, &_masterCarpenterDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_masterCarpenterDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x19, HARVEST_SPRITES_TEXT_INDEX, 0x1E, &_harvestSprites1DialogueIndexSegmentRomStart, &_harvestSprites1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_harvestSprites1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x1A, HARVEST_SPRITES_TEXT_INDEX, 0x1E, &_harvestSprites2DialogueIndexSegmentRomStart, &_harvestSprites2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_harvestSprites2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x1B, HARVEST_SPRITES_TEXT_INDEX, 0x1E, &_harvestSprites3DialogueIndexSegmentRomStart, &_harvestSprites3DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_harvestSprites3DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x22, BARLEY_TEXT_INDEX, 0x24, &_barleyDialogueIndexSegmentRomStart, &_barleyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_barleyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x23, SYDNEY_TEXT_INDEX, 0x25, &_sydneyDialogueIndexSegmentRomStart, &_sydneyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_sydneyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x40, MRS_MANA_AND_JOHN_TEXT_INDEX, 0x45, &_mrsManaAndJohn1DialogueIndexSegmentRomStart, &_mrsManaAndJohn1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mrsManaAndJohn1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x41, MRS_MANA_AND_JOHN_TEXT_INDEX, 0x45, &_mrsManaAndJohn2DialogueIndexSegmentRomStart, &_mrsManaAndJohn2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mrsManaAndJohn2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x42, ADDITIONAL_NPCS_TEXT_INDEX, 0x46, &_additionalNpcs1DialogueIndexSegmentRomStart, &_additionalNpcs1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_additionalNpcs1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x43, NPC_BABY_TEXT_INDEX, 0x47, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x43, NPC_BABY_TEXT_INDEX, 0x47, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x43, NPC_BABY_TEXT_INDEX, 0x47, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x43, NPC_BABY_TEXT_INDEX, 0x47, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x43, NPC_BABY_TEXT_INDEX, 0x47, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x45, ADDITIONAL_NPCS_TEXT_INDEX, 0x46, &_additionalNpcs2DialogueIndexSegmentRomStart, &_additionalNpcs2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_additionalNpcs2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x35, FARM_VISITS_TEXT_INDEX, 0x3F, &_farmVisitsDialogueIndexSegmentRomStart, &_farmVisitsDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_farmVisitsDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x36, TEXT_65_TEXT_INDEX, 0x40, &_text65DialogueIndexSegmentRomStart, &_text65DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text65DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x27, CUTSCENES_1_TEXT_INDEX, 0x2D, &_cutscenes1DialogueIndexSegmentRomStart, &_cutscenes1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_cutscenes1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x2F, TEXT_54_TEXT_INDEX, 0x35, &_text54DialogueIndexSegmentRomStart, &_text54DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text54DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x38, MARRIED_DIALOGUES_TEXT_INDEX, 0x3B, &_marriedDialogueIndexSegmentRomStart, &_marriedDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_marriedDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x39, TEXT_61_TEXT_INDEX, 0x3C, &_text61DialogueIndexSegmentRomStart, &_text61DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text61DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x33, KAREN_CUTSCENES_1_TEXT_INDEX, 0x3D, &_karenCutscenes1DialogueIndexSegmentRomStart, &_karenCutscenes1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_karenCutscenes1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x34, TEXT_63_TEXT_INDEX, 0x3E, &_text63DialogueIndexSegmentRomStart, &_text63DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text63DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x3C, KAREN_CUTSCENES_2_TEXT_INDEX, 0x42, &_karenCutscenes2DialogueIndexSegmentRomStart, &_karenCutscenes2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_karenCutscenes2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x30, TEXT_55_TEXT_INDEX, 0x36, &_text55DialogueIndexSegmentRomStart, &_text55DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text55DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x32, HORSE_RACE_TEXT_INDEX, 0x3A, &_horseRaceDialogueIndexSegmentRomStart, &_horseRaceDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_horseRaceDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x29, TEXT_49_TEXT_INDEX, 0x30, &_text49DialogueIndexSegmentRomStart, &_text49DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text49DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x2E, VEGETABLE_FESTIVAL_TEXT_INDEX, 0x43, &_vegetableFestivalDialogueIndexSegmentRomStart, &_vegetableFestivalDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_vegetableFestivalDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x28, TEXT_48_TEXT_INDEX, 0x2F, &_text48DialogueIndexSegmentRomStart, &_text48DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text48DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x2C, TEXT_52_TEXT_INDEX, 0x33, &_text52DialogueIndexSegmentRomStart, &_text52DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text52DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x2A, TEXT_50_TEXT_INDEX, 0x31, &_text50DialogueIndexSegmentRomStart, &_text50DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text50DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x2B, TEXT_51_TEXT_INDEX, 0x32, &_text51DialogueIndexSegmentRomStart, &_text51DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text51DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x31, TEXT_56_TEXT_INDEX, 0x37, &_text56DialogueIndexSegmentRomStart, &_text56DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text56DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x37, EGG_FESTIVAL_TEXT_INDEX, 0x41, &_eggFestivalDialogueIndexSegmentRomStart, &_eggFestivalDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_eggFestivalDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x2D, DOG_RACE_TEXT_INDEX, 0x34, &_dogRaceDialogueIndexSegmentRomStart, &_dogRaceDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_dogRaceDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x3B, NEW_YEAR_FESTIVAL_TEXT_INDEX, 0x38, &_newYearFestivalDialogueIndexSegmentRomStart, &_newYearFestivalDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_newYearFestivalDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
-    setDialogueBytecodeAddressInfo(0x3A, NAMING_SCREEN_TEXT_INDEX, 0xA, &_namingScreenDialogueIndexSegmentRomStart, &_namingScreenDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_namingScreenDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT1, TEXT_1_TEXT_INDEX, TEXT_1_TEXT_INDEX, &_text1DialogueIndexSegmentRomStart, &_text1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_DIARY, DIARY_TEXT_INDEX, DIARY_TEXT_INDEX, &_diaryDialogueIndexSegmentRomStart, &_diaryDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_diaryDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_SHOP, SHOP_TEXT_INDEX, SHOP_TEXT_INDEX, &_shopDialogueIndexSegmentRomStart, &_shopDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_shopDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, FESTIVAL_OVERLAY_SELECTIONS_TEXT_INDEX, FESTIVAL_OVERLAY_SELECTIONS_TEXT_INDEX, &_festivalOverlaySelectionsDialogueIndexSegmentRomStart, &_festivalOverlaySelectionsDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_festivalOverlaySelectionsDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_LIBRARY, LIBRARY_TEXT_INDEX, LIBRARY_TEXT_INDEX, &_libraryDialogueIndexSegmentRomStart, &_libraryDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_libraryDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_MARIA, MARIA_TEXT_INDEX, MARIA_TEXT_INDEX, &_mariaDialogueIndexSegmentRomStart, &_mariaDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mariaDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_POPURI, POPURI_TEXT_INDEX, POPURI_TEXT_INDEX, &_popuriDialogueIndexSegmentRomStart, &_popuriDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_popuriDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_ELLI, ELLI_TEXT_INDEX, ELLI_TEXT_INDEX, &_elliDialogueIndexSegmentRomStart, &_elliDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_elliDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_ANN, ANN_TEXT_INDEX, ANN_TEXT_INDEX, &_annDialogueIndexSegmentRomStart, &_annDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_annDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_KAREN, KAREN_TEXT_INDEX, KAREN_TEXT_INDEX, &_karenDialogueIndexSegmentRomStart, &_karenDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_karenDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_BABY, BABY_TEXT_INDEX, BABY_TEXT_INDEX, &_babyDialogueIndexSegmentRomStart, &_babyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_babyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_HARRIS, HARRIS_TEXT_INDEX, HARRIS_TEXT_INDEX, &_harrisDialogueIndexSegmentRomStart, &_harrisDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_harrisDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_GRAY, GRAY_TEXT_INDEX, GRAY_TEXT_INDEX, &_grayDialogueIndexSegmentRomStart, &_grayDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_grayDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_JEFF, JEFF_TEXT_INDEX, JEFF_TEXT_INDEX, &_jeffDialogueIndexSegmentRomStart, &_jeffDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_jeffDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_CLIFF, CLIFF_TEXT_INDEX, CLIFF_TEXT_INDEX, &_cliffDialogueIndexSegmentRomStart, &_cliffDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_cliffDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_KAI, KAI_TEXT_INDEX, KAI_TEXT_INDEX, &_kaiDialogueIndexSegmentRomStart, &_kaiDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_kaiDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_MAYOR, MAYOR_TEXT_INDEX, MAYOR_TEXT_INDEX, &_mayorDialogueIndexSegmentRomStart, &_mayorDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mayorDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_MAYOR_WIFE, MAYOR_WIFE_TEXT_INDEX, MAYOR_WIFE_TEXT_INDEX, &_mayorWifeDialogueIndexSegmentRomStart, &_mayorWifeDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mayorWifeDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_LILLIA, LILLIA_TEXT_INDEX, LILLIA_TEXT_INDEX, &_lilliaDialogueIndexSegmentRomStart, &_lilliaDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_lilliaDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_BASIL, BASIL_TEXT_INDEX, BASIL_TEXT_INDEX, &_basilDialogueIndexSegmentRomStart, &_basilDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_basilDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_ELLEN, ELLEN_TEXT_INDEX, ELLEN_TEXT_INDEX, &_ellenDialogueIndexSegmentRomStart, &_ellenDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_ellenDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_DOUG, DOUG_TEXT_INDEX, DOUG_TEXT_INDEX, &_dougDialogueIndexSegmentRomStart, &_dougDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_dougDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_GOTZ, GOTZ_TEXT_INDEX, GOTZ_TEXT_INDEX, &_gotzDialogueIndexSegmentRomStart, &_gotzDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_gotzDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_SASHA, SASHA_TEXT_INDEX, SASHA_TEXT_INDEX, &_sashaDialogueIndexSegmentRomStart, &_sashaDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_sashaDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_POTION_SHOP_DEALER, POTION_SHOP_DEALER_TEXT_INDEX, POTION_SHOP_DEALER_TEXT_INDEX, &_potionShopDealerDialogueIndexSegmentRomStart, &_potionShopDealerDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_potionShopDealerDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_KENT, KENT_TEXT_INDEX, KENT_TEXT_INDEX, &_kentDialogueIndexSegmentRomStart, &_kentDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_kentDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_STU, STU_TEXT_INDEX, STU_TEXT_INDEX, &_stuDialogueIndexSegmentRomStart, &_stuDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_stuDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_MIDWIFE, MIDWIFE_TEXT_INDEX, MIDWIFE_TEXT_INDEX, &_midwifeDialogueIndexSegmentRomStart, &_midwifeDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_midwifeDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_MAY, MAY_TEXT_INDEX, MAY_TEXT_INDEX, &_mayDialogueIndexSegmentRomStart, &_mayDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mayDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_RICK, RICK_TEXT_INDEX, RICK_TEXT_INDEX, &_rickDialogueIndexSegmentRomStart, &_rickDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_rickDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_PASTOR, PASTOR_TEXT_INDEX, PASTOR_TEXT_INDEX, &_pastorDialogueIndexSegmentRomStart, &_pastorDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_pastorDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_SHIPPER, SHIPPER_TEXT_INDEX, SHIPPER_TEXT_INDEX, &_shipperDialogueIndexSegmentRomStart, &_shipperDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_shipperDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_SAIBARA, SAIBARA_TEXT_INDEX, SAIBARA_TEXT_INDEX, &_saibaraDialogueIndexSegmentRomStart, &_saibaraDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_saibaraDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_DUKE, DUKE_TEXT_INDEX, DUKE_TEXT_INDEX, &_dukeDialogueIndexSegmentRomStart, &_dukeDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_dukeDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_GREG, GREG_TEXT_INDEX, GREG_TEXT_INDEX, &_gregDialogueIndexSegmentRomStart, &_gregDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_gregDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_ASSISTANT_CARPENTERS_1, ASSISTANT_CARPENTERS_TEXT_INDEX, ASSISTANT_CARPENTERS_TEXT_INDEX, &_assistantCarpenters1DialogueIndexSegmentRomStart, &_assistantCarpenters1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_assistantCarpenters1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_ASSISTANT_CARPENTERS_2, ASSISTANT_CARPENTERS_TEXT_INDEX, ASSISTANT_CARPENTERS_TEXT_INDEX, &_assistantCarpenters2DialogueIndexSegmentRomStart, &_assistantCarpenters2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_assistantCarpenters2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_MASTER_CARPENTER, MASTER_CARPENTER_TEXT_INDEX, MASTER_CARPENTER_TEXT_INDEX, &_masterCarpenterDialogueIndexSegmentRomStart, &_masterCarpenterDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_masterCarpenterDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_HARVEST_SPRITES_1, HARVEST_SPRITES_TEXT_INDEX, HARVEST_SPRITES_TEXT_INDEX, &_harvestSprites1DialogueIndexSegmentRomStart, &_harvestSprites1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_harvestSprites1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_HARVEST_SPRITES_2, HARVEST_SPRITES_TEXT_INDEX, HARVEST_SPRITES_TEXT_INDEX, &_harvestSprites2DialogueIndexSegmentRomStart, &_harvestSprites2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_harvestSprites2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_HARVEST_SPRITES_3, HARVEST_SPRITES_TEXT_INDEX, HARVEST_SPRITES_TEXT_INDEX, &_harvestSprites3DialogueIndexSegmentRomStart, &_harvestSprites3DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_harvestSprites3DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_BARLEY, BARLEY_TEXT_INDEX, BARLEY_TEXT_INDEX, &_barleyDialogueIndexSegmentRomStart, &_barleyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_barleyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_SYDNEY, SYDNEY_TEXT_INDEX, SYDNEY_TEXT_INDEX, &_sydneyDialogueIndexSegmentRomStart, &_sydneyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_sydneyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_MRS_MANA_AND_JOHN_1, MRS_MANA_AND_JOHN_TEXT_INDEX, MRS_MANA_AND_JOHN_TEXT_INDEX, &_mrsManaAndJohn1DialogueIndexSegmentRomStart, &_mrsManaAndJohn1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mrsManaAndJohn1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_MRS_MANA_AND_JOHN_2, MRS_MANA_AND_JOHN_TEXT_INDEX, MRS_MANA_AND_JOHN_TEXT_INDEX, &_mrsManaAndJohn2DialogueIndexSegmentRomStart, &_mrsManaAndJohn2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_mrsManaAndJohn2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_ADDITIONAL_NPCS_1, ADDITIONAL_NPCS_TEXT_INDEX, ADDITIONAL_NPCS_TEXT_INDEX, &_additionalNpcs1DialogueIndexSegmentRomStart, &_additionalNpcs1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_additionalNpcs1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_NPC_BABY, NPC_BABY_TEXT_INDEX, NPC_BABY_TEXT_INDEX, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_NPC_BABY, NPC_BABY_TEXT_INDEX, NPC_BABY_TEXT_INDEX, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_NPC_BABY, NPC_BABY_TEXT_INDEX, NPC_BABY_TEXT_INDEX, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_NPC_BABY, NPC_BABY_TEXT_INDEX, NPC_BABY_TEXT_INDEX, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_NPC_BABY, NPC_BABY_TEXT_INDEX, NPC_BABY_TEXT_INDEX, &_npcBabyDialogueIndexSegmentRomStart, &_npcBabyDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_npcBabyDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_ADDITIONAL_NPCS_2, ADDITIONAL_NPCS_TEXT_INDEX, ADDITIONAL_NPCS_TEXT_INDEX, &_additionalNpcs2DialogueIndexSegmentRomStart, &_additionalNpcs2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_additionalNpcs2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_FARM_VISITS, FARM_VISITS_TEXT_INDEX, FARM_VISITS_TEXT_INDEX, &_farmVisitsDialogueIndexSegmentRomStart, &_farmVisitsDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_farmVisitsDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_65, TEXT_65_TEXT_INDEX, TEXT_65_TEXT_INDEX, &_text65DialogueIndexSegmentRomStart, &_text65DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text65DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_CUTSCENES_1, CUTSCENES_1_TEXT_INDEX, CUTSCENES_1_TEXT_INDEX, &_cutscenes1DialogueIndexSegmentRomStart, &_cutscenes1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_cutscenes1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_54, TEXT_54_TEXT_INDEX, TEXT_54_TEXT_INDEX, &_text54DialogueIndexSegmentRomStart, &_text54DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text54DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_MARRIED, MARRIED_DIALOGUES_TEXT_INDEX, MARRIED_DIALOGUES_TEXT_INDEX, &_marriedDialogueIndexSegmentRomStart, &_marriedDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_marriedDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_61, TEXT_61_TEXT_INDEX, TEXT_61_TEXT_INDEX, &_text61DialogueIndexSegmentRomStart, &_text61DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text61DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_KAREN_CUTSCENES_1, KAREN_CUTSCENES_1_TEXT_INDEX, KAREN_CUTSCENES_1_TEXT_INDEX, &_karenCutscenes1DialogueIndexSegmentRomStart, &_karenCutscenes1DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_karenCutscenes1DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_63, TEXT_63_TEXT_INDEX, TEXT_63_TEXT_INDEX, &_text63DialogueIndexSegmentRomStart, &_text63DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text63DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_KAREN_CUTSCENES_2, KAREN_CUTSCENES_2_TEXT_INDEX, KAREN_CUTSCENES_2_TEXT_INDEX, &_karenCutscenes2DialogueIndexSegmentRomStart, &_karenCutscenes2DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_karenCutscenes2DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_55, TEXT_55_TEXT_INDEX, TEXT_55_TEXT_INDEX, &_text55DialogueIndexSegmentRomStart, &_text55DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text55DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_HORSE_RACE, HORSE_RACE_TEXT_INDEX, HORSE_RACE_TEXT_INDEX, &_horseRaceDialogueIndexSegmentRomStart, &_horseRaceDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_horseRaceDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_49, TEXT_49_TEXT_INDEX, TEXT_49_TEXT_INDEX, &_text49DialogueIndexSegmentRomStart, &_text49DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text49DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_VEGETABLE_FESTIVAL, VEGETABLE_FESTIVAL_TEXT_INDEX, VEGETABLE_FESTIVAL_TEXT_INDEX, &_vegetableFestivalDialogueIndexSegmentRomStart, &_vegetableFestivalDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_vegetableFestivalDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_48, TEXT_48_TEXT_INDEX, TEXT_48_TEXT_INDEX, &_text48DialogueIndexSegmentRomStart, &_text48DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text48DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_52, TEXT_52_TEXT_INDEX, TEXT_52_TEXT_INDEX, &_text52DialogueIndexSegmentRomStart, &_text52DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text52DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_50, TEXT_50_TEXT_INDEX, TEXT_50_TEXT_INDEX, &_text50DialogueIndexSegmentRomStart, &_text50DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text50DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_51, TEXT_51_TEXT_INDEX, TEXT_51_TEXT_INDEX, &_text51DialogueIndexSegmentRomStart, &_text51DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text51DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_TEXT_56, TEXT_56_TEXT_INDEX, TEXT_56_TEXT_INDEX, &_text56DialogueIndexSegmentRomStart, &_text56DialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_text56DialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_EGG_FESTIVAL, EGG_FESTIVAL_TEXT_INDEX, EGG_FESTIVAL_TEXT_INDEX, &_eggFestivalDialogueIndexSegmentRomStart, &_eggFestivalDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_eggFestivalDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_DOG_RACE, DOG_RACE_TEXT_INDEX, DOG_RACE_TEXT_INDEX, &_dogRaceDialogueIndexSegmentRomStart, &_dogRaceDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_dogRaceDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_NEW_YEAR_FESTIVAL, NEW_YEAR_FESTIVAL_TEXT_INDEX, NEW_YEAR_FESTIVAL_TEXT_INDEX, &_newYearFestivalDialogueIndexSegmentRomStart, &_newYearFestivalDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_newYearFestivalDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
+    setDialogueBytecodeAddressInfo(DIALOGUE_NAMING_SCREEN, NAMING_SCREEN_TEXT_INDEX, NAMING_SCREEN_TEXT_INDEX, &_namingScreenDialogueIndexSegmentRomStart, &_namingScreenDialogueIndexSegmentRomEnd, (u32*)DIALOGUE_BYTECODE_INDEX_BUFFER, &_namingScreenDialogueSegmentRomStart, (void*)DIALOGUE_BYTECODE_BUFFER);
 
 }
 

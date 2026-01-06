@@ -4,6 +4,7 @@
 
 #include "system/audio.h"
 #include "system/controller.h"
+#include "system/cutscene.h"
 #include "system/entity.h"
 #include "system/globalSprites.h"
 #include "system/map.h"
@@ -13,6 +14,7 @@
 
 #include "game/animals.h"
 #include "game/cutscenes.h"
+#include "game/fieldObjects.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameFile.h"
@@ -25,6 +27,7 @@
 #include "game/overlayScreens.h"
 #include "game/player.h"
 #include "game/time.h"
+#include "game/tv.h"
 #include "game/weather.h"
 
 #include "mainLoop.h"
@@ -530,7 +533,7 @@ void resumeGameplay(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", pauseGameplay);
 
-void inline pauseGameplay(void) {
+inline void pauseGameplay(void) {
     pauseEntities();
     pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);

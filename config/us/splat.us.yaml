@@ -82,7 +82,7 @@ segments:
       - [ 0x181C0, c, system/audio]
       - [ 0x18D70, c, system/message]
       - [ 0x1E360, c, system/dialogue]
-      - [ 0x211E0, c, system/overlayScreenSprites]
+      - [ 0x211E0, c, system/numberSprites]
       - [ 0x21C60, c, system/cutscene]
       - [ 0x281A0, c, system/controller]
       - [ 0x28FA0, c, system/memory]
@@ -354,7 +354,7 @@ segments:
       - [ 0xEDD00, .data, system/staticGfx]
       - [ 0xEDE80, .data, system/paddingData]
       - [ 0xEE110, .data, system/map]
-      - [ 0xEE7B0, .data, system/overlayScreenSprites]
+      - [ 0xEE7B0, .data, system/numberSprites]
       - [ 0xEE7D0, .data, system/cutscene]
       - [ 0xEE980, .data, data/fieldTileMaps/fieldTiles]
       - [ 0xEEF20, .data, game/game]
@@ -434,8 +434,8 @@ segments:
           - { start: 0xF6048, type: animationScriptData, name: data/animationScripts/mrsManaSon }
           - { start: 0xF6068, type: animationScriptData, name: data/animationScripts/kappa }
           - { start: 0xF606C, type: animationScriptData, name: data/animationScripts/harvestGoddess }
-          - { start: 0xF6090, type: animationScriptData, name: data/animationScripts/dogTitle }
-          - { start: 0xF6240, type: animationScriptData, name: data/animationScripts/dog }
+          - { start: 0xF6090, type: animationScriptData, name: data/animationScripts/dog }
+          - { start: 0xF6240, type: animationScriptData, name: data/animationScripts/dogVillage }
           - { start: 0xF6330, type: animationScriptData, name: data/animationScripts/chicken }
           - { start: 0xF63A0, type: animationScriptData, name: data/animationScripts/chick }
           - { start: 0xF63D0, type: animationScriptData, name: data/animationScripts/cow }
@@ -454,10 +454,10 @@ segments:
           - { start: 0xF6C90, type: animationScriptData, name: data/animationScripts/hawk }
           - { start: 0xF6CD0, type: animationScriptData, name: data/animationScripts/bunny }
           - { start: 0xF6D10, type: animationScriptData, name: data/animationScripts/mouse }
-          - { start: 0xF6D34, type: animationScriptData, name: data/animationScripts/dogRace }
+          - { start: 0xF6D34, type: animationScriptData, name: data/animationScripts/bird }
           - { start: 0xF6D64, type: animationScriptData, name: data/animationScripts/crab }
           - { start: 0xF6D84, type: animationScriptData, name: data/animationScripts/snake }
-          - { start: 0xF6DA4, type: animationScriptData, name: data/animationScripts/bird }
+          - { start: 0xF6DA4, type: animationScriptData, name: data/animationScripts/whiteButterfly }
           - { start: 0xF6DB4, type: animationScriptData, name: data/animationScripts/ladybug }
           - { start: 0xF6DBC, type: animationScriptData, name: data/animationScripts/cicada }
           - { start: 0xF6DC4, type: animationScriptData, name: data/animationScripts/hornedBeetle }
@@ -1965,32 +1965,32 @@ segments:
     dir: sprites/entity-sprites/animals
     start: 0x5FD540
 
-  - name: dogTexture
+  - name: dogVillageTexture
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x5FD670
 
-  - name: dogAssetsIndex
+  - name: dogVillageAssetsIndex
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x60E7F0
 
-  - name: dogSpritesheetIndex
+  - name: dogVillageSpritesheetIndex
     type: bin
     dir: sprites/entity-sprites/animals
     start: 0x60E810
 
-  - name: dogTitleTexture
+  - name: dogTexture
     type: bin
     dir: sprites/entity-sprites/title
     start: 0x60EC20
 
-  - name: dogTitleAssetsIndex
+  - name: dogAssetsIndex
     type: bin
     dir: sprites/entity-sprites/title
     start: 0x630EC0
 
-  - name: dogTitleSpritesheetIndex
+  - name: dogSpritesheetIndex
     type: bin
     dir: sprites/entity-sprites/title
     start: 0x630EE0

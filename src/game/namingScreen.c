@@ -13,6 +13,7 @@
 #include "game/animals.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
+#include "game/gameStart.h"
 #include "game/level.h"
 #include "game/npc.h"
 #include "game/player.h"
@@ -23,6 +24,7 @@
 
 #include "buffers/buffers.h"
 
+#include "assetIndices/dialogues.h"
 #include "assetIndices/sequences.h"
 #include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
@@ -39,20 +41,20 @@ NamingScreenContext namingScreenContext;
 
 // data
 // japanese strings
-u8 D_8011C680[13][6] = {
-    0x6E, 0x77, 0xE1, 0xFF, 0xFF, 0xFF,
-    0x96, 0x94, 0x77, 0xFF, 0xFF, 0xFF,
-    0x53, 0x77, 0x9D, 0xFF, 0xFF, 0xFF,
-    0x76, 0x7D, 0xFF, 0xFF, 0xFF, 0xFF,
-    0x55, 0x79, 0x7D, 0xFF, 0xFF, 0xFF,
-    0x69, 0x77, 0x5C, 0xFF, 0xFF, 0xFF,
-    0x80, 0x79, 0x51, 0xFF, 0xFF, 0xFF,
-    0x84, 0x9F, 0x6B, 0xFF, 0xFF, 0xFF,
-    0x57, 0x77, 0x6B, 0xFF, 0xFF, 0xFF,
-    0x55, 0x51, 0xFF, 0xFF, 0xFF, 0xFF,
-    0x58, 0x7D, 0x5F, 0xFF, 0xFF, 0xFF,
-    0x74, 0x52, 0xFF, 0xFF, 0xFF, 0xFF,
-    0x71, 0x51, 0xFF, 0xFF, 0xFF, 0xFF
+u8 D_8011C680[13][6] = { 
+    { 0x6E, 0x77, 0xE1, 0xFF, 0xFF, 0xFF },
+    { 0x96, 0x94, 0x77, 0xFF, 0xFF, 0xFF },
+    { 0x53, 0x77, 0x9D, 0xFF, 0xFF, 0xFF },
+    { 0x76, 0x7D, 0xFF, 0xFF, 0xFF, 0xFF },
+    { 0x55, 0x79, 0x7D, 0xFF, 0xFF, 0xFF },
+    { 0x69, 0x77, 0x5C, 0xFF, 0xFF, 0xFF },
+    { 0x80, 0x79, 0x51, 0xFF, 0xFF, 0xFF },
+    { 0x84, 0x9F, 0x6B, 0xFF, 0xFF, 0xFF },
+    { 0x57, 0x77, 0x6B, 0xFF, 0xFF, 0xFF },
+    { 0x55, 0x51, 0xFF, 0xFF, 0xFF, 0xFF },
+    { 0x58, 0x7D, 0x5F, 0xFF, 0xFF, 0xFF },
+    { 0x74, 0x52, 0xFF, 0xFF, 0xFF, 0xFF },
+    { 0x71, 0x51, 0xFF, 0xFF, 0xFF, 0xFF }
 };
 
 // columns x rows
@@ -122,6 +124,9 @@ void updateBottomRowUI(void);
 void snapCursorToOKButton(void);
 void loadSeasonSelectionSprites(void);
 void handleSeasonSelectionInput(void);
+void moveSeasonCursorHorizontally(void);
+void moveSeasonCursorVertically(void);
+void handleNamingGridInput(void);
 
 
 static inline int getSpriteIndexFromFlags(u16 flags) {
@@ -162,13 +167,12 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     setCurrentAudioSequence(NAMING_SCREEN_THEME);
     setAudioSequenceVolume(NAMING_SCREEN_THEME, SEQUENCE_VOLUME);
     
-    setMainLoopCallbackFunctionIndex(NAMING_SCREEN_LOAD);
+    setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/namingScreen", namingScreenCallback);
 
-// main loop callback
 void namingScreenCallback(void) {
 
     s32 i;
@@ -353,7 +357,7 @@ void namingScreenCallback(void) {
             }
     
             if (namingScreenContext.dialogueIndex != 0xFFFF) {
-                initializeDialogueSession(0, 0x3A, namingScreenContext.dialogueIndex, 0);
+                initializeDialogueSession(0, DIALOGUE_NAMING_SCREEN, namingScreenContext.dialogueIndex, 0);
                 namingScreenContext.dialogueIndex = 0xFFFF;
                 return;
             }
@@ -688,7 +692,7 @@ bool selectCharacterOrConfirm(void) {
             
             if (temp3 == 0) {
 
-                initializeDialogueSession(0, 0x3A, 8, 0);
+                initializeDialogueSession(0, DIALOGUE_NAMING_SCREEN, 8, 0);
                 namingScreenContext.flags |= NAMING_SCREEN_EMPTY_NAME_ERROR;
             
             } else if (namingScreenContext.screenType == 0) {
@@ -719,7 +723,7 @@ bool selectCharacterOrConfirm(void) {
             } else {
 
                 namingScreenContext.flags |= (NAMING_SCREEN_STATE_ANIMAL_CONFIRM << NAMING_SCREEN_SCREEN_STATE_SHIFT);
-                initializeDialogueSession(0, 0x3A, 0xB, 0);
+                initializeDialogueSession(0, DIALOGUE_NAMING_SCREEN, 11, 0);
             
             }
 

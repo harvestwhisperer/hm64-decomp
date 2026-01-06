@@ -22,7 +22,8 @@ Vec3f currentWorldRotationAngles;
 
 // forward declarations
 void updateMapViewport(MapController*); 
- 
+void handleMapRotation(u16 mapIndex);
+
 // y rotations for maps
 static const f32 yRotationAngles[];
                     
@@ -59,21 +60,21 @@ void initializeMapControllers(void) {
         mapControllers[i].currentTileX = 0;
         mapControllers[i].currentTileZ = 0;
         
-        mapControllers[i].unk_10.x = 0;
-        mapControllers[i].unk_10.y = 0;
-        mapControllers[i].unk_10.z = 0;
+        mapControllers[i].viewBoundsCorner0.x = 0;
+        mapControllers[i].viewBoundsCorner0.y = 0;
+        mapControllers[i].viewBoundsCorner0.z = 0;
 
-        mapControllers[i].unk_1C.x = 0;
-        mapControllers[i].unk_1C.y = 0;
-        mapControllers[i].unk_1C.z = 0;
+        mapControllers[i].viewBoundsCorner1.x = 0;
+        mapControllers[i].viewBoundsCorner1.y = 0;
+        mapControllers[i].viewBoundsCorner1.z = 0;
 
-        mapControllers[i].unk_28.x = 0;
-        mapControllers[i].unk_28.y = 0;
-        mapControllers[i].unk_28.z = 0;
+        mapControllers[i].viewBoundsCorner2.x = 0;
+        mapControllers[i].viewBoundsCorner2.y = 0;
+        mapControllers[i].viewBoundsCorner2.z = 0;
 
-        mapControllers[i].unk_34.x = 0;
-        mapControllers[i].unk_34.y = 0;
-        mapControllers[i].unk_34.z = 0;
+        mapControllers[i].viewBoundsCorner3.x = 0;
+        mapControllers[i].viewBoundsCorner3.y = 0;
+        mapControllers[i].viewBoundsCorner3.z = 0;
     
     }
 }
@@ -121,21 +122,21 @@ bool initializeMapController(u16 index, u16 mapIndex, u32 *mapDataIndex) {
         mapControllers[index].currentTileX = 0;
         mapControllers[index].currentTileZ = 0;
 
-        mapControllers[index].unk_10.x = 0;
-        mapControllers[index].unk_10.y = 0;
-        mapControllers[index].unk_10.z = 0;
+        mapControllers[index].viewBoundsCorner0.x = 0;
+        mapControllers[index].viewBoundsCorner0.y = 0;
+        mapControllers[index].viewBoundsCorner0.z = 0;
 
-        mapControllers[index].unk_1C.x = 0;
-        mapControllers[index].unk_1C.y = 0;
-        mapControllers[index].unk_1C.z = 0;
+        mapControllers[index].viewBoundsCorner1.x = 0;
+        mapControllers[index].viewBoundsCorner1.y = 0;
+        mapControllers[index].viewBoundsCorner1.z = 0;
 
-        mapControllers[index].unk_28.x = 0;
-        mapControllers[index].unk_28.y = 0;
-        mapControllers[index].unk_28.z = 0;
+        mapControllers[index].viewBoundsCorner2.x = 0;
+        mapControllers[index].viewBoundsCorner2.y = 0;
+        mapControllers[index].viewBoundsCorner2.z = 0;
 
-        mapControllers[index].unk_34.x = 0;
-        mapControllers[index].unk_34.y = 0;
-        mapControllers[index].unk_34.z = 0;
+        mapControllers[index].viewBoundsCorner3.x = 0;
+        mapControllers[index].viewBoundsCorner3.y = 0;
+        mapControllers[index].viewBoundsCorner3.z = 0;
 
     }
     
@@ -420,17 +421,17 @@ bool setMapBoundaries(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 
     
     if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) {
 
-        mapControllers[mapIndex].unk_10.x = arg1;
-        mapControllers[mapIndex].unk_10.z = arg2;
+        mapControllers[mapIndex].viewBoundsCorner0.x = arg1;
+        mapControllers[mapIndex].viewBoundsCorner0.z = arg2;
 
-        mapControllers[mapIndex].unk_1C.x = arg3;
-        mapControllers[mapIndex].unk_1C.z = arg4;
+        mapControllers[mapIndex].viewBoundsCorner1.x = arg3;
+        mapControllers[mapIndex].viewBoundsCorner1.z = arg4;
 
-        mapControllers[mapIndex].unk_28.x = arg5;
-        mapControllers[mapIndex].unk_28.z = arg6;
+        mapControllers[mapIndex].viewBoundsCorner2.x = arg5;
+        mapControllers[mapIndex].viewBoundsCorner2.z = arg6;
 
-        mapControllers[mapIndex].unk_34.x = arg7;
-        mapControllers[mapIndex].unk_34.z = arg8;
+        mapControllers[mapIndex].viewBoundsCorner3.x = arg7;
+        mapControllers[mapIndex].viewBoundsCorner3.z = arg8;
         
         result = TRUE;
     }
@@ -448,14 +449,14 @@ f32 getClampedMapX(u16 mapIndex, f32 x) {
 
     if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) { 
 
-        if (mapControllers[mapIndex].unk_10.x < x && mapControllers[mapIndex].unk_34.x < x) {
+        if (mapControllers[mapIndex].viewBoundsCorner0.x < x && mapControllers[mapIndex].viewBoundsCorner3.x < x) {
             
-            if (!(x < mapControllers[mapIndex].unk_1C.x) || !(x < mapControllers[mapIndex].unk_28.x)) {
-                result = mapControllers[mapIndex].unk_1C.x;
+            if (!(x < mapControllers[mapIndex].viewBoundsCorner1.x) || !(x < mapControllers[mapIndex].viewBoundsCorner2.x)) {
+                result = mapControllers[mapIndex].viewBoundsCorner1.x;
             } 
             
         } else {
-            result = mapControllers[mapIndex].unk_10.x;
+            result = mapControllers[mapIndex].viewBoundsCorner0.x;
         }
     }
     
@@ -472,14 +473,14 @@ f32 getClampedMapZ(u16 mapIndex, f32 z) {
     
     if (mapIndex == MAIN_MAP_INDEX && mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) {
 
-        if (z < mapControllers[mapIndex].unk_10.z && z < mapControllers[mapIndex].unk_1C.z) {
+        if (z < mapControllers[mapIndex].viewBoundsCorner0.z && z < mapControllers[mapIndex].viewBoundsCorner1.z) {
 
-            if (!(z > mapControllers[mapIndex].unk_28.z) || !(z > mapControllers[mapIndex].unk_34.z)) {
-                result = mapControllers[mapIndex].unk_28.z;
+            if (!(z > mapControllers[mapIndex].viewBoundsCorner2.z) || !(z > mapControllers[mapIndex].viewBoundsCorner3.z)) {
+                result = mapControllers[mapIndex].viewBoundsCorner2.z;
             }
             
         } else {
-            result = mapControllers[mapIndex].unk_10.z;
+            result = mapControllers[mapIndex].viewBoundsCorner0.z;
         }
     } 
 

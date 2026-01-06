@@ -14,12 +14,12 @@
 #define ITEM_THROWABLE                  0x0008  // General holdable item behavior
 #define ITEM_PLACEABLE_ON_GROUND        0x0010  // Can place on ground (rock, log)
 #define ITEM_INCUBATOR_PLACEABLE        0x0020  // Can place in incubator (egg)
-#define ITEM_IS_ANIMAL_FEED             0x0040  // Can place in feed trough (fodder)
-#define ITEM_IS_SMALL_ANIMAL            0x0080  // Small holdable animal
-#define ITEM_IS_BABY                    0x0100  // Baby that can be held
+#define ITEM_ANIMAL_FEED                0x0040  // Can place in feed trough (fodder)
+#define ITEM_SMALL_ANIMAL               0x0080  // Small holdable animal
+#define ITEM_BABY                       0x0100  // Baby that can be held
 #define ITEM_FREEZER_STORABLE           0x0200  // Can store in freezer
 #define ITEM_CRIB_PLACEABLE             0x0400
-#define ITEM_IS_TOOL                    0x0800  // Is a tool
+#define ITEM_TOOL                       0x0800  // Is a tool
 #define ITEM_CABINET_STORABLE           0x1000  // Can store in cabinet
 #define ITEM_LUMBER_STORABLE            0x2000
 #define ITEM_HAS_ALCOHOL                0x4000  // Has alcohol effect
@@ -257,6 +257,7 @@ extern void updateHeldItemState();
 extern u8 getToolLevel(u8 tool);
 extern u8 getItemStaminaIncreaseValue(u16 index);
 extern u8 getItemFatigueReductionValue(u16 index);
+extern u8 func_800D5390(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4);
 
 extern ItemContext itemInfo[10];
 extern ToolUse toolUse;

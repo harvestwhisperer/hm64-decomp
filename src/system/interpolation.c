@@ -70,7 +70,8 @@ void initializeInterpolator(Interpolator* interpolator, s16 rate, s16 frameRate)
 
 s16 calculateInterpolatorStep(Interpolator* interpolator) {
 
-    s16 temp = interpolator;
+    // ??
+    s16 temp = (s16)interpolator;
     
     if (interpolator->rate < 0) {
         temp = (interpolator->frameRate % (~(interpolator->rate) + 1)) == 0;

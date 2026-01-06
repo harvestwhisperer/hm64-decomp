@@ -31,9 +31,9 @@ inline OSPiHandle* sramInit(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/memory", func_8004DC48);
+//INCLUDE_ASM("asm/nonmatchings/system/memory", sramLoad);
 
-void func_8004DC48(void* devAddr, void* dramAddr, u32 size) {
+void sramLoad(void* devAddr, void* dramAddr, u32 size) {
 
     OSPiHandle* handle = sramInit();
     OSIoMesg osIoMesg;
@@ -54,9 +54,9 @@ void func_8004DC48(void* devAddr, void* dramAddr, u32 size) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/memory", func_8004DD7C);
+//INCLUDE_ASM("asm/nonmatchings/system/memory", sramWrite);
 
-void func_8004DD7C(void *devAddr, void *dramAddr, u32 size) {
+void sramWrite(void *devAddr, void *dramAddr, u32 size) {
 
     OSPiHandle *handle = sramInit();
     OSIoMesg osIoMesg; 

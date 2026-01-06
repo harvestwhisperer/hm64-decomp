@@ -116,6 +116,7 @@ extern bool setBitmapAnchor(u16 index, s16, s16);
 extern u8 *setSpriteDMAInfo(u16 index, u32 *start, u8 *timg, u8 *romAddr);
 extern u32 getTextureLength(u16 arg0, u32 arg1[]);
 extern void updateBitmaps(void);
+extern void resetBitmaps(void);
 
 extern BitmapObject bitmaps[MAX_BITMAPS];
 

@@ -17,7 +17,7 @@
 
 // forward declarations
 void updateCutsceneSpriteAnimation(u16);                               
-void func_800475B4(u16 index);
+void endCutsceneSpriteAnimationSequence(u16 index);
 void updateCutsceneEntityMovement(u16);                               
 void updateCutsceneMapViewPosition(u16);        
 void cutsceneHandlerAdjustAnimationDataPtr(u16 index);
@@ -38,38 +38,38 @@ void cutsceneHandlerDeactivateExecutor(u16);
 void cutsceneHandlerDMASprite(u16);
 void cutsceneHandlerSetEntityAnimations(u16);
 void cutsceneHandlerDoDMA(u16);
-void func_80048B90(u16);
-void func_80048BEC(u16);
-void cutsceneHandlerUpdateCutsceneIndex(u16);
-void func_80048CA4(u16);
-void func_80048DA8(u16);
-void func_80048E98(u16);
+void cutsceneHandlerSetU8Value(u16);
+void cutsceneHandlerSetU16Value(u16);
+void cutsceneHandlerSetU32Value(u16);
+void cutsceneHandlerBranchU8VarInRange(u16);
+void cutsceneHandlerBranchU16VarInRange(u16);
+void cutsceneHandlerBranchU32VarInRange(u16);
 void cutsceneHandlerSetSpecialBit(u16);
-void cutsceneHandlerToggleSpecialBit(u16);
+void cutsceneHandlerClearSpecialBit(u16);
 void cutsceneHandlerBranchOnSpecialBit(u16);
-void func_8004910C(u16);
-void func_80049228(u16);
-void func_80049350(u16);
-void func_800495F0(u16);
-void func_8004969C(u16);
+void cutsceneHandlerSetAssetRotation(u16);
+void cutsceneHandlerSetupMapAsset(u16);
+void cutsceneHandlerEntityMoveAndAnimate(u16);
+void cutsceneHandlerSetMapRotation(u16);
+void cutsceneHandlerSetBehaviorFlags(u16);
 void cutsceneHandlerSetMovementInformation(u16);
 void cutsceneHandlerInitializeMessageBoxType1(u16);
-void func_800498B0(u16);
+void cutsceneHandlerWaitMessageBoxClosed(u16);
 void cutsceneHandlerSetMessageBoxViewSpacePosition(u16);
-void func_80049A28(u16);
-void func_80049AC4(u16);
+void cutsceneHandlerResetMessageBoxAvatar(u16);
+void cutsceneHandlerEntityRun(u16);
 void cutsceneHandlerSetEntityAnimation(u16);
 void cutsceneHandlerSetEntityAnimationWithDirectionChange(u16);
 void cutsceneHandlerSetCallbackBytecodePtr(u16);
 void cutsceneHandlerPauseEntity(u16);
 void cutsceneHandlerTogglePauseEntity(u16);
 void cutsceneHandlerFlipEntityDirection(u16);
-void func_8004A0A8(u16);
-void func_8004A0F4(u16);
-void func_8004A140(u16);
+void cutsceneHandlerPauseEntities(u16);
+void cutsceneHandlerTogglePauseEntities(u16);
+void cutsceneHandlerFlipEntityAnimation(u16);
 void cutsceneHandlerSetEntityNonCollidable(u16);
 void cutsceneHandlerSetupEntity(u16);
-void func_8004A320(u16);
+void cutsceneHandlerSetEntityMapSpaceIndependentFlag(u16);
 void cutsceneHandlerLoadMap(u16);
 void cutsceneHandlerSetEntityMapSpaceIndependent(u16);
 void cutsceneHandlerSetRGBA(u16);
@@ -77,48 +77,48 @@ void cutsceneHandlerUpdateRGBA(u16);
 void cutsceneHandlerUpdateU8Value(u16);
 void cutsceneHandlerUpdateU16Value(u16);
 void cutsceneHandlerUpdateU32Value(u16);
-void func_8004ACE4(u16);
+void cutsceneHandlerDeactivateMapObjects(u16);
 void cutsceneHandlerUpdateGlobalRGBA(u16);
 void cutsceneHandlerDeactivateSprites(u16);
 void cutsceneHandlerDeactivateMapControllers(u16);
-void func_8004B0E8(u16);
+void cutsceneHandlerWaitRgbaFinished(u16);
 void cutsceneHandlerCheckEntityCollision(u16);
 void cutsceneHandlerInitializeDialogueSession(u16);
 void cutsceneHandlerWaitForDialogueInput(u16);
-void func_8004B538(u16);
-void func_8004B5F0(u16);
+void cutsceneHandlerBranchOnDialogue(u16);
+void cutsceneHandlerWaitEntityAnimation(u16);
 void cutsceneHandlerSetMessageBoxAssetIndices(u16);
 void cutsceneHandlerSetEntityTrackingTarget(u16);
-void func_8004B920(u16);
-void func_8004B9A0(u16);
+void cutsceneHandlerSetAltAnimationFlag(u16);
+void cutsceneHandlerWaitMapLoad(u16);
 void cutsceneHandlerBranchOnEntityDirection(u16);
 void cutsceneHandlerSetEntityPhysicsFlags(u16);
 void cutsceneHandlerSetEntityPalette(u16);
 void cutsceneHandlerSetEntitySpriteDimensions(u16);
-void func_8004BE14(u16);
+void cutsceneHandlerSetShadowFlags(u16);
 void cutsceneHandlerSetSpriteScale(u16);
 void cutsceneHandlerSetSpriteRenderngLayer(u16);
 void cutsceneHandlerInitializeMessageBoxType2(u16);
-void func_8004C0D0(u16);
-void func_8004C148(u16);
-void func_8004C258(u16);
+void cutsceneHandlerInitMapAddition(u16);
+void cutsceneHandlerBranchOnRandom(u16);
+void cutsceneHandlerBranchIfU16PtrInRange(u16);
 void cutsceneHandlerPauseExecutor(u16);
 void cutsceneHandlerTogglePauseExecutor(u16);
 void cutsceneHandlerPauseAllChildExecutors(u16);
 void cutsceneHandlerTogglePauseAllChildExecutors(u16);
 void cutsceneHandlerSetSpritePalette(u16);
-void func_8004C5D8(u16);
+void cutsceneHandlerBranchIfU8PtrInRange(u16);
 void cutsceneHandlerSetAudioSequence(u16);
 void cutsceneHandlerStopAudioSequenceWithFadeOut(u16);
 void cutsceneHandlerSetAudioSequenceVolume(u16);
 void cutsceneHandlerSetSfx(u16);
 void cutsceneHandlerIdleWhileAudioSequencePlaying(u16);
 void cutsceneHandlerUpdateMessageBoxRGBA(u16);
-void func_8004CA80(u16);
+void cutsceneHandlerWaitMessageBoxReady(u16);
 void cutsceneHandlerSetSpriteBilinearFiltering(u16);
 void cutsceneHandlerSetMapAddition(u16);
 void cutsceneHandlerSetMapGroundObject(u16);
-void func_8004CCF0(u16);
+void cutsceneHandlerSetMessageInterpolation(u16);
 
 // data
 void (*cutsceneCommandHandlers[])(u16) = {
@@ -139,38 +139,38 @@ void (*cutsceneCommandHandlers[])(u16) = {
     cutsceneHandlerDMASprite,
     cutsceneHandlerSetEntityAnimations,
     cutsceneHandlerDoDMA,
-    func_80048B90,
-    func_80048BEC,
-    cutsceneHandlerUpdateCutsceneIndex,
-    func_80048CA4,
-    func_80048DA8,
-    func_80048E98,
+    cutsceneHandlerSetU8Value,
+    cutsceneHandlerSetU16Value,
+    cutsceneHandlerSetU32Value,
+    cutsceneHandlerBranchU8VarInRange,
+    cutsceneHandlerBranchU16VarInRange,
+    cutsceneHandlerBranchU32VarInRange,
     cutsceneHandlerSetSpecialBit,
-    cutsceneHandlerToggleSpecialBit,
+    cutsceneHandlerClearSpecialBit,
     cutsceneHandlerBranchOnSpecialBit,
-    func_8004910C,
-    func_80049228,
-    func_80049350,
-    func_800495F0,
-    func_8004969C,
+    cutsceneHandlerSetAssetRotation,
+    cutsceneHandlerSetupMapAsset,
+    cutsceneHandlerEntityMoveAndAnimate,
+    cutsceneHandlerSetMapRotation,
+    cutsceneHandlerSetBehaviorFlags,
     cutsceneHandlerSetMovementInformation,
     cutsceneHandlerInitializeMessageBoxType1,
-    func_800498B0,
+    cutsceneHandlerWaitMessageBoxClosed,
     cutsceneHandlerSetMessageBoxViewSpacePosition,
-    func_80049A28,
-    func_80049AC4,
+    cutsceneHandlerResetMessageBoxAvatar,
+    cutsceneHandlerEntityRun,
     cutsceneHandlerSetEntityAnimation,
     cutsceneHandlerSetEntityAnimationWithDirectionChange,
     cutsceneHandlerSetCallbackBytecodePtr,
     cutsceneHandlerPauseEntity,
     cutsceneHandlerTogglePauseEntity,
     cutsceneHandlerFlipEntityDirection,
-    func_8004A0A8,
-    func_8004A0F4,
-    func_8004A140,
+    cutsceneHandlerPauseEntities,
+    cutsceneHandlerTogglePauseEntities,
+    cutsceneHandlerFlipEntityAnimation,
     cutsceneHandlerSetEntityNonCollidable,
     cutsceneHandlerSetupEntity,
-    func_8004A320,
+    cutsceneHandlerSetEntityMapSpaceIndependentFlag,
     cutsceneHandlerLoadMap,
     cutsceneHandlerSetEntityMapSpaceIndependent,
     cutsceneHandlerSetRGBA,
@@ -178,48 +178,48 @@ void (*cutsceneCommandHandlers[])(u16) = {
     cutsceneHandlerUpdateU8Value,
     cutsceneHandlerUpdateU16Value,
     cutsceneHandlerUpdateU32Value,
-    func_8004ACE4,
+    cutsceneHandlerDeactivateMapObjects,
     cutsceneHandlerUpdateGlobalRGBA,
     cutsceneHandlerDeactivateSprites,
     cutsceneHandlerDeactivateMapControllers,
-    func_8004B0E8,
+    cutsceneHandlerWaitRgbaFinished,
     cutsceneHandlerCheckEntityCollision,
     cutsceneHandlerInitializeDialogueSession,
     cutsceneHandlerWaitForDialogueInput,
-    func_8004B538,
-    func_8004B5F0,
+    cutsceneHandlerBranchOnDialogue,
+    cutsceneHandlerWaitEntityAnimation,
     cutsceneHandlerSetMessageBoxAssetIndices,
     cutsceneHandlerSetEntityTrackingTarget,
-    func_8004B920,
-    func_8004B9A0,
+    cutsceneHandlerSetAltAnimationFlag,
+    cutsceneHandlerWaitMapLoad,
     cutsceneHandlerBranchOnEntityDirection,
     cutsceneHandlerSetEntityPhysicsFlags,
     cutsceneHandlerSetEntityPalette,
     cutsceneHandlerSetEntitySpriteDimensions,
-    func_8004BE14,
+    cutsceneHandlerSetShadowFlags,
     cutsceneHandlerSetSpriteScale,
     cutsceneHandlerSetSpriteRenderngLayer,
     cutsceneHandlerInitializeMessageBoxType2,
-    func_8004C0D0,
-    func_8004C148,
-    func_8004C258,
+    cutsceneHandlerInitMapAddition,
+    cutsceneHandlerBranchOnRandom,
+    cutsceneHandlerBranchIfU16PtrInRange,
     cutsceneHandlerPauseExecutor,
     cutsceneHandlerTogglePauseExecutor,
     cutsceneHandlerPauseAllChildExecutors,
     cutsceneHandlerTogglePauseAllChildExecutors,
     cutsceneHandlerSetSpritePalette,
-    func_8004C5D8,
+    cutsceneHandlerBranchIfU8PtrInRange,
     cutsceneHandlerSetAudioSequence,
     cutsceneHandlerStopAudioSequenceWithFadeOut,
     cutsceneHandlerSetAudioSequenceVolume,
     cutsceneHandlerSetSfx,
     cutsceneHandlerIdleWhileAudioSequencePlaying,
     cutsceneHandlerUpdateMessageBoxRGBA,
-    func_8004CA80,
+    cutsceneHandlerWaitMessageBoxReady,
     cutsceneHandlerSetSpriteBilinearFiltering,
     cutsceneHandlerSetMapAddition,
     cutsceneHandlerSetMapGroundObject,
-    func_8004CCF0
+    cutsceneHandlerSetMessageInterpolation
 };
 
 // unused
@@ -266,7 +266,7 @@ void initializeCutsceneExecutors(void) {
         cutsceneExecutors[i].targetPosition.y = 0;
         cutsceneExecutors[i].targetPosition.z = 0;
 
-        cutsceneExecutors[i].cameraFlags = 0;
+        cutsceneExecutors[i].behaviorFlags = 0;
     }
 }
 
@@ -292,7 +292,7 @@ bool spawnCutsceneExecutor(u16 index, void *bytecodePtr) {
             cutsceneExecutors[index].movementVector.y = 0;
             cutsceneExecutors[index].movementVector.z = 0;
 
-            cutsceneExecutors[index].flags = 1;
+            cutsceneExecutors[index].flags = CUTSCENE_ASSET_ACTIVE;
             
             result = TRUE;
             
@@ -494,9 +494,9 @@ void updateCutsceneExecutors(void) {
                 cutsceneExecutors[i].coordinates.z = mapControllers[cutsceneExecutors[i].assetIndex].viewPosition.z;
             }
 
-            if (cutsceneExecutors[i].waitFrames) {
+            if (cutsceneExecutors[i].waitFrames != 0) {
                  cutsceneExecutors[i].waitFrames--;
-                if (cutsceneExecutors[i].waitFrames) {
+                if (cutsceneExecutors[i].waitFrames != 0) {
                     goto skip_callback;
                 }
             }
@@ -515,7 +515,7 @@ skip_callback:
                 cutsceneExecutors[i].coordinates.y += cutsceneExecutors[i].frameDelta.y;
                 cutsceneExecutors[i].coordinates.z += cutsceneExecutors[i].frameDelta.z;
 
-                if (!cutsceneExecutors[i].waitFrames)  {
+                if (cutsceneExecutors[i].waitFrames == 0)  {
                     goto inner_loop;
                 } else {
                     break;
@@ -569,7 +569,7 @@ loop:
             
             if (animation == 0xFFFF) {
                 
-                func_800475B4(index);
+                endCutsceneSpriteAnimationSequence(index);
                 goto check;
                 
 label:
@@ -614,11 +614,11 @@ label:
                     cutsceneExecutors[index].coordinates.z + cutsceneExecutors[index].movementVector.z);
     
                 if (flag == 0xFE) {
-                    cutsceneExecutors[index].flags |= 4;
+                    cutsceneExecutors[index].flags |= CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT;
                     // FIXME: fake
                     asm("");
                 } else {
-                    cutsceneExecutors[index].flags &= ~4;
+                    cutsceneExecutors[index].flags &= ~CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT;
                 }
                 
             }
@@ -633,7 +633,7 @@ label:
     
         if (cutsceneExecutors[index].animationFrameCounter == 0xFF) {
     
-            if (getSpriteAnimationStateChangedFlag(cutsceneExecutors[index].assetIndex) && !(cutsceneExecutors[index].flags & 4)) {
+            if (getSpriteAnimationStateChangedFlag(cutsceneExecutors[index].assetIndex) && !(cutsceneExecutors[index].flags & CUTSCENE_ANIMATION_LOOP)) {
                 cutsceneExecutors[index].animationFrameCounter = 0;
             } 
             
@@ -648,11 +648,11 @@ check:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_800475B4);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", endCutsceneSpriteAnimationSequence);
 
-void func_800475B4(u16 index) {
+void endCutsceneSpriteAnimationSequence(u16 index) {
     cutsceneExecutors[index].animationFrameCounter = 1;
-    cutsceneExecutors[index].flags &= ~2;
+    cutsceneExecutors[index].flags &= ~CUTSCENE_ASSET_BEHAVIOR_WANDER;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerAdjustAnimationDataPtr); 
@@ -681,11 +681,11 @@ void updateCutsceneEntityMovement(u16 index) {
     f32 f7;
     f32 f8;
     
-    if ((cutsceneExecutors[index].cameraFlags & (4 | 8))) {
+    if ((cutsceneExecutors[index].behaviorFlags & (CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT | CUTSCENE_ASSET_BEHAVIOR_DIRECT_MOVEMENT))) {
 
-        if (!(entities[cutsceneExecutors[index].assetIndex].flags & 0x40)) {
+        if (!(entities[cutsceneExecutors[index].assetIndex].flags & ENTITY_PAUSED)) {
 
-            if (cutsceneExecutors[index].cameraFlags & 2) {
+            if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_WANDER) {
                 
                 if (!getRandomNumberInRange(0, 16)) {
     
@@ -707,15 +707,15 @@ void updateCutsceneEntityMovement(u16 index) {
                         cutsceneExecutors[index].movementVector.y = vec.y;
                         cutsceneExecutors[index].movementVector.z = vec.z;
 
-                        if (cutsceneExecutors[index].cameraFlags & 4) {
+                        if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT) {
 
-                            if (cutsceneExecutors[index].cameraFlags & 0x10) {
+                            if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {
                                 setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex5);
                             } else {
                                 setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex2);
                             }
                             
-                        } else if (cutsceneExecutors[index].cameraFlags & 0x10) {
+                        } else if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {
                             setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex6);
                         } else {
                             setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex3);
@@ -727,7 +727,7 @@ void updateCutsceneEntityMovement(u16 index) {
                         cutsceneExecutors[index].movementVector.y = 0.0f;
                         cutsceneExecutors[index].movementVector.z = 0.0f;
     
-                        if (cutsceneExecutors[index].cameraFlags & 0x10) {
+                        if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {
                             setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex4);
                         } else {
                             setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex1);
@@ -741,7 +741,7 @@ void updateCutsceneEntityMovement(u16 index) {
                 
                 if (cutsceneExecutors[index].frameDelta.x == 0.0f && cutsceneExecutors[index].frameDelta.y == 0.0f && cutsceneExecutors[index].frameDelta.z == 0.0f) {
     
-                    if (cutsceneExecutors[index].cameraFlags & 0x10) {    
+                    if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {    
                         setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex4);
                     } else {
                         setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex1);
@@ -763,7 +763,7 @@ void updateCutsceneEntityMovement(u16 index) {
             
         } else {
             
-            if (cutsceneExecutors[index].cameraFlags & 0x10) {    
+            if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {    
                 setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex4);
             } else {
                 setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex1);
@@ -788,9 +788,9 @@ void updateCutsceneEntityMovement(u16 index) {
             entityAssetDescriptors[entities[cutsceneExecutors[index].assetIndex].entityAssetIndex].spriteWidth,
             entityAssetDescriptors[entities[cutsceneExecutors[index].assetIndex].entityAssetIndex].spriteHeight)) 
         
-        || entities[cutsceneExecutors[index].assetIndex].flags & 0x80) {
+        || entities[cutsceneExecutors[index].assetIndex].flags & ENTITY_Y_MOVEMENT) {
 
-            if (cutsceneExecutors[index].cameraFlags & 2) {
+            if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_WANDER) {
     
                 f1 = cutsceneExecutors[index].targetPosition.x + cutsceneExecutors[index].collisionWidth;
                 f2 = cutsceneExecutors[index].coordinates.x + cutsceneExecutors[index].movementVector.x;
@@ -836,7 +836,7 @@ setMovementVector:
         
         }     
 end:
-    if (cutsceneExecutors[index].cameraFlags & 1) {
+    if (cutsceneExecutors[index].behaviorFlags & 1) {
         setCameraTrackingEntity(cutsceneExecutors[index].assetIndex, TRUE);
     } else {
         setCameraTrackingEntity(cutsceneExecutors[index].assetIndex, FALSE);
@@ -865,7 +865,7 @@ void cutsceneHandlerSetAnimationDataPtrWithFlag(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 2;
     
     cutsceneExecutors[index].animationFrameCounter = 0;
-    cutsceneExecutors[index].flags |= 2;
+    cutsceneExecutors[index].flags |= CUTSCENE_SPRITE_ASSET;
 
 }
 
@@ -875,7 +875,7 @@ void cutsceneHandlerSetAnimationDataPtr(u16 index) {
 
     u32 offset;
 
-    CutsceneJumpCmd *ptr = (CutsceneJumpCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetAnimDataPtrCmd *ptr = (CutsceneSetAnimDataPtrCmd*)cutsceneExecutors[index].bytecodePtr;
     
     cutsceneExecutors[index].bytecodePtr += 2;
     
@@ -1036,7 +1036,7 @@ void cutsceneHandlerReturnFromSubroutine(u16 index) {
 
 void cutsceneHandlerBranchOnCurrentButton(u16 index) {
 
-    CutsceneBranchOnCurrentButton* ptr = (CutsceneBranchOnCurrentButton*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneBranchOnCurrentButtonCmd* ptr = (CutsceneBranchOnCurrentButtonCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -1056,7 +1056,7 @@ void cutsceneHandlerBranchOnCurrentButton(u16 index) {
 
 void cutsceneHandlerBranchOnButtonPressed(u16 index) {
 
-    CutsceneBranchOnButtonPressed* ptr = cutsceneExecutors[index].bytecodePtr;
+    CutsceneBranchOnButtonPressedCmd* ptr = cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -1076,7 +1076,7 @@ void cutsceneHandlerBranchOnButtonPressed(u16 index) {
 
 void cutsceneHandlerBranchOnButtonRepeat(u16 index) {
 
-    CutsceneBranchOnButtonRepeat* ptr = (CutsceneBranchOnButtonRepeat*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneBranchOnButtonRepeatCmd* ptr = (CutsceneBranchOnButtonRepeatCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -1096,7 +1096,7 @@ void cutsceneHandlerBranchOnButtonRepeat(u16 index) {
 
 void cutsceneHandlerSpawnExecutor(u16 index) {
 
-    CutsceneExecutorInitializationCmd* ptr = (CutsceneExecutorInitializationCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSpawnExecutorCmd* ptr = (CutsceneSpawnExecutorCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 executorIndex;
     s32 offset;
@@ -1123,7 +1123,7 @@ void cutsceneHandlerSpawnExecutor(u16 index) {
 
 void cutsceneHandlerSetOtherExecutorBytecodePtr(u16 index) {
 
-    CutsceneExecutorSetPtrCmd* ptr = (CutsceneExecutorSetPtrCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetOtherExecutorPtrCmd* ptr = (CutsceneSetOtherExecutorPtrCmd*)cutsceneExecutors[index].bytecodePtr;
     u16 executorIndex;
     u32 offset;
     u32 spawnedPtr;
@@ -1188,10 +1188,10 @@ void cutsceneHandlerDMASprite(u16 index) {
     u32* spritesheetIndexVaddr;
     u16 assetType;
 
-    CutsceneSpriteCmd1* ptr;
+    CutsceneDmaSpriteIndexCmd* ptr;
     CutsceneSpriteDMAManagerCmd* ptr2;
 
-    ptr = (CutsceneSpriteCmd1*)cutsceneExecutors[index].bytecodePtr;
+    ptr = (CutsceneDmaSpriteIndexCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -1383,7 +1383,7 @@ void cutsceneHandlerSetEntityAnimations(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    if (cutsceneExecutors[index].cameraFlags & 0x10) {
+    if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {
         setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex4);
     } else {
         setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex1);
@@ -1391,10 +1391,10 @@ void cutsceneHandlerSetEntityAnimations(u16 index) {
 
     setEntityMapSpaceIndependent(cutsceneExecutors[index].assetIndex, FALSE);
 
-    cutsceneExecutors[index].flags |= 8;
+    cutsceneExecutors[index].flags |= CUTSCENE_ENTITY_ASSET;
     
-    cutsceneExecutors[index].cameraFlags |= 1;
-    cutsceneExecutors[index].cameraFlags &= ~(2 | 4);
+    cutsceneExecutors[index].behaviorFlags |= CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY;
+    cutsceneExecutors[index].behaviorFlags &= ~(CUTSCENE_ASSET_BEHAVIOR_WANDER | CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT);
     
 }
 
@@ -1426,17 +1426,17 @@ void cutsceneHandlerDoDMA(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80048B90);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetU8Value);
 
 // set u8 value
 // FIXME: should be reading u32 value for ptr
-void func_80048B90(u16 index) {
+void cutsceneHandlerSetU8Value(u16 index) {
 
     u8 value;
 
-    CutsceneSetU8Value* ptr2;
+    CutsceneSetU8ValueCmd* ptr2;
     
-    CutsceneSetU8Value* ptr = (CutsceneSetU8Value*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetU8ValueCmd* ptr = (CutsceneSetU8ValueCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
@@ -1445,7 +1445,7 @@ void func_80048B90(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 2;
 
     // FIXME: something not right
-    ptr2 = *(CutsceneSetU8Value**)cutsceneExecutors[index].bytecodePtr;
+    ptr2 = *(CutsceneSetU8ValueCmd**)cutsceneExecutors[index].bytecodePtr;
     
     cutsceneExecutors[index].bytecodePtr += 4;
 
@@ -1453,13 +1453,13 @@ void func_80048B90(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80048BEC);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetU16Value);
 
 // set u16 value
 // sets D_80189824
-void func_80048BEC(u16 index) {
+void cutsceneHandlerSetU16Value(u16 index) {
 
-    CutsceneSetU16Value* ptr = (CutsceneSetU16Value*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetU16ValueCmd* ptr = (CutsceneSetU16ValueCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 unk_2;
     u16* unk_4;
@@ -1478,11 +1478,11 @@ void func_80048BEC(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerUpdateCutsceneIndex);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetU32Value);
 
-void cutsceneHandlerUpdateCutsceneIndex(u16 index) {
+void cutsceneHandlerSetU32Value(u16 index) {
 
-    CutsceneUpdateCutsceneIndexCmd* ptr = (CutsceneUpdateCutsceneIndexCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetU32ValueCmd* ptr = (CutsceneSetU32ValueCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u32 cutsceneIndex;
     u32* cutsceneIndexPtr;
@@ -1501,11 +1501,11 @@ void cutsceneHandlerUpdateCutsceneIndex(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80048CA4);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerBranchU8VarInRange);
 
 // branch if u8 variable outside range
 // i.e., gHour
-void func_80048CA4(u16 index) {
+void cutsceneHandlerBranchU8VarInRange(u16 index) {
 
     u8* variablePtr;
     u16 min;
@@ -1540,10 +1540,10 @@ func_end:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80048DA8);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerBranchU16VarInRange);
 
 // Branch if u16 variable outside range
-void func_80048DA8(u16 index) {
+void cutsceneHandlerBranchU16VarInRange(u16 index) {
     
     u16* variablePtr;
     u16 min;
@@ -1580,10 +1580,10 @@ func_end:
         
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80048E98);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerBranchU32VarInRange);
 
 // branch if u32 value outside range
-void func_80048E98(u16 index) {
+void cutsceneHandlerBranchU32VarInRange(u16 index) {
 
     CutsceneBranchU32VariableWithinRange* ptr = (CutsceneBranchU32VariableWithinRange*)cutsceneExecutors[index].bytecodePtr;
 
@@ -1645,11 +1645,11 @@ void cutsceneHandlerSetSpecialBit(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerToggleSpecialBit);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerClearSpecialBit);
 
-void cutsceneHandlerToggleSpecialBit(u16 index) {
+void cutsceneHandlerClearSpecialBit(u16 index) {
 
-    CutsceneToggleSpecialBitToggleCmd* ptr = (CutsceneToggleSpecialBitToggleCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneClearSpecialBitCmd* ptr = (CutsceneClearSpecialBitCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 bit;
     u32* bitfield;
@@ -1696,11 +1696,11 @@ void cutsceneHandlerBranchOnSpecialBit(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004910C);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetAssetRotation);
 
-void func_8004910C(u16 index) {
+void cutsceneHandlerSetAssetRotation(u16 index) {
 
-    CutsceneEntityDirectionCmd* ptr = (CutsceneEntityDirectionCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetAssetRotationCmd* ptr = (CutsceneSetAssetRotationCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
@@ -1718,12 +1718,12 @@ void func_8004910C(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80049228);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetupMapAsset);
 
 // set up cutscene object as map asset
-void func_80049228(u16 index) {
+void cutsceneHandlerSetupMapAsset(u16 index) {
 
-    CutsceneMapControllerCmd2 *ptr = cutsceneExecutors[index].bytecodePtr;
+    CutsceneMapControllerIndexCmd *ptr = (CutsceneMapControllerIndexCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -1735,13 +1735,13 @@ void func_80049228(u16 index) {
     enableMapController(cutsceneExecutors[index].assetIndex);
     setMainMapIndex(cutsceneExecutors[index].assetIndex);
 
-    cutsceneExecutors[index].flags |= 0x10;
+    cutsceneExecutors[index].flags |= CUTSCENE_MAP_ASSET;
     
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80049350);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerEntityMoveAndAnimate);
 
-void func_80049350(u16 index) {
+void cutsceneHandlerEntityMoveAndAnimate(u16 index) {
 
     Vec3f vec;
     
@@ -1760,7 +1760,7 @@ void func_80049350(u16 index) {
     cutsceneExecutors[index].bytecodePtr++;
     cutsceneExecutors[index].bytecodePtr += 2;
     
-    if (cutsceneExecutors[index].cameraFlags & 0x10) {
+    if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {
         setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex5);
     } else {
         setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex2);
@@ -1769,7 +1769,7 @@ void func_80049350(u16 index) {
     setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
     
     // ghost of dead code
-    if (cutsceneExecutors[index].cameraFlags & 0x10) {
+    if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {
         vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
     } else {
         vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
@@ -1779,15 +1779,15 @@ void func_80049350(u16 index) {
     cutsceneExecutors[index].frameDelta.y = vec.y;
     cutsceneExecutors[index].frameDelta.z = vec.z;
     
-    cutsceneExecutors[index].cameraFlags |= 4;
+    cutsceneExecutors[index].behaviorFlags |= CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_800495F0);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetMapRotation);
 
-void func_800495F0(u16 index) {
+void cutsceneHandlerSetMapRotation(u16 index) {
 
-    CutsceneMapControllerSetRotationFlagCmd* ptr = (CutsceneMapControllerSetRotationFlagCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetMapRotationCmd* ptr = (CutsceneSetMapRotationCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 mapIndex;
     u8 arg1, rotation;
@@ -1812,24 +1812,24 @@ void func_800495F0(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004969C);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetBehaviorFlags);
 
-// set camera tracking flag
-void func_8004969C(u16 index) {
+// set behavior flags
+void cutsceneHandlerSetBehaviorFlags(u16 index) {
 
-    CutsceneCameraFlagsCmd* ptr = (CutsceneCameraFlagsCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetBehaviorFlagsCmd* ptr = (CutsceneSetBehaviorFlagsCmd*)cutsceneExecutors[index].bytecodePtr;
     
-    u8 cameraFlags;
+    u8 behaviorFlags;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    cameraFlags = ptr->cameraFlags;
+    behaviorFlags = ptr->behaviorFlags;
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
-    cutsceneExecutors[index].cameraFlags &= ~1;
-    cutsceneExecutors[index].cameraFlags |= cameraFlags;  
-    cutsceneExecutors[index].cameraFlags |= 4;
+    cutsceneExecutors[index].behaviorFlags &= ~CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY;
+    cutsceneExecutors[index].behaviorFlags |= behaviorFlags;  
+    cutsceneExecutors[index].behaviorFlags |= CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT;
     
 }
 
@@ -1856,7 +1856,7 @@ void cutsceneHandlerSetMovementInformation(u16 index) {
     
     cutsceneExecutors[index].targetPosition = cutsceneExecutors[index].coordinates;
     
-    cutsceneExecutors[index].cameraFlags |= (2 | 4);
+    cutsceneExecutors[index].behaviorFlags |= (CUTSCENE_ASSET_BEHAVIOR_WANDER | CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT);
     
 }
 
@@ -1864,7 +1864,7 @@ void cutsceneHandlerSetMovementInformation(u16 index) {
 
 void cutsceneHandlerInitializeMessageBoxType1(u16 index) {
     
-    CutsceneMessageBoxInitializeType1Cmd* ptr = (CutsceneMessageBoxInitializeType1Cmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneInitMessageBoxType1Cmd* ptr = (CutsceneInitMessageBoxType1Cmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 messageBoxIndex;
     u16 textAddressesIndex;
@@ -1888,11 +1888,11 @@ void cutsceneHandlerInitializeMessageBoxType1(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_800498B0);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerWaitMessageBoxClosed);
 
-void func_800498B0(u16 index) {
+void cutsceneHandlerWaitMessageBoxClosed(u16 index) {
 
-    CutsceneDialogueWaitCmd* ptr = (CutsceneDialogueWaitCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneWaitMessageBoxClosedCmd* ptr = (CutsceneWaitMessageBoxClosedCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 messageBoxIndex;
 
@@ -1902,7 +1902,7 @@ void func_800498B0(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    if (!(messageBoxes[messageBoxIndex].flags & 4)) {
+    if (!(messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_TEXT_COMPLETE)) {
 
         cutsceneExecutors[index].waitFrames = 1;
         cutsceneExecutors[index].bytecodePtr -= 4;
@@ -1915,7 +1915,7 @@ void func_800498B0(u16 index) {
 
 void cutsceneHandlerSetMessageBoxViewSpacePosition(u16 index) {
 
-    CutsceneMessageBoxViewSpaceCmd* ptr = (CutsceneMessageBoxViewSpaceCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetMessageBoxPositionCmd* ptr = (CutsceneSetMessageBoxPositionCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 messageBoxIndex;
     f32 x, y, z;
@@ -1942,12 +1942,12 @@ void cutsceneHandlerSetMessageBoxViewSpacePosition(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80049A28);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerResetMessageBoxAvatar);
 
 // reset message box avatar
-void func_80049A28(u16 index) {
+void cutsceneHandlerResetMessageBoxAvatar(u16 index) {
 
-    CutsceneUnknownMessageBoxCmd* ptr = (CutsceneUnknownMessageBoxCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneResetMessageBoxAvatarCmd* ptr = (CutsceneResetMessageBoxAvatarCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 messageBoxIndex;
     
@@ -1957,15 +1957,15 @@ void func_80049A28(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    messageBoxes[messageBoxIndex].flags &= ~0x8000;
+    messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
 
     resetMessageBoxAnimation(messageBoxIndex);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80049AC4);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerEntityRun);
 
-void func_80049AC4(u16 index) {
+void cutsceneHandlerEntityRun(u16 index) {
         
     Vec3f vec;
     
@@ -1984,7 +1984,7 @@ void func_80049AC4(u16 index) {
     cutsceneExecutors[index].bytecodePtr++;
     cutsceneExecutors[index].bytecodePtr += 2;
     
-    if (cutsceneExecutors[index].cameraFlags & 0x10) {
+    if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {
         setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex6);
     } else {
         setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex3);
@@ -1993,7 +1993,7 @@ void func_80049AC4(u16 index) {
     setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
     
     // dead code
-    if (cutsceneExecutors[index].cameraFlags & 0x10) {
+    if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {
         vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
     } else {
         vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
@@ -2003,7 +2003,7 @@ void func_80049AC4(u16 index) {
     cutsceneExecutors[index].frameDelta.y = vec.y;
     cutsceneExecutors[index].frameDelta.z = vec.z;
     
-    cutsceneExecutors[index].cameraFlags |= 8;
+    cutsceneExecutors[index].behaviorFlags |= CUTSCENE_ASSET_BEHAVIOR_DIRECT_MOVEMENT;
     
 }
 
@@ -2023,7 +2023,7 @@ void cutsceneHandlerSetEntityAnimation(u16 index) {
     
     setEntityAnimation(cutsceneExecutors[index].assetIndex, animation);
     
-    cutsceneExecutors[index].cameraFlags &= ~(4 | 8);
+    cutsceneExecutors[index].behaviorFlags &= ~(CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT | CUTSCENE_ASSET_BEHAVIOR_DIRECT_MOVEMENT);
     
 }
 
@@ -2043,7 +2043,7 @@ void cutsceneHandlerSetEntityAnimationWithDirectionChange(u16 index) {
     
     setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, animation);
     
-    cutsceneExecutors[index].cameraFlags &= ~(4 | 8);
+    cutsceneExecutors[index].behaviorFlags &= ~(CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT | CUTSCENE_ASSET_BEHAVIOR_DIRECT_MOVEMENT);
     
 }
 
@@ -2071,7 +2071,7 @@ void cutsceneHandlerSetCallbackBytecodePtr(u16 index) {
 
 void cutsceneHandlerPauseEntity(u16 index) {
 
-    CutsceneEntityPauseCmd* ptr = (CutsceneEntityPauseCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutscenePauseEntityCmd* ptr = (CutscenePauseEntityCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 entityIndex;
 
@@ -2089,7 +2089,7 @@ void cutsceneHandlerPauseEntity(u16 index) {
 
 void cutsceneHandlerTogglePauseEntity(u16 index) {
     
-    CutsceneEntityTogglePauseCmd* ptr = (CutsceneEntityTogglePauseCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneTogglePauseEntityCmd* ptr = (CutsceneTogglePauseEntityCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 entityIndex;
 
@@ -2109,7 +2109,7 @@ void cutsceneHandlerFlipEntityDirection(u16 index) {
 
     u16 entityIndex;
     
-    CutsceneEntitySetDirectionCmd* ptr = (CutsceneEntitySetDirectionCmd*)cutsceneExecutors[index].bytecodePtr; 
+    CutsceneFlipEntityDirectionCmd* ptr = (CutsceneFlipEntityDirectionCmd*)cutsceneExecutors[index].bytecodePtr; 
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -2121,10 +2121,10 @@ void cutsceneHandlerFlipEntityDirection(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004A0A8);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerPauseEntities);
 
 // set flags on all active sprites, rendered and global
-void func_8004A0A8(u16 index) {
+void cutsceneHandlerPauseEntities(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
     
@@ -2132,9 +2132,9 @@ void func_8004A0A8(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004A0F4);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerTogglePauseEntities);
 
-void func_8004A0F4(u16 index) {
+void cutsceneHandlerTogglePauseEntities(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
 
@@ -2142,13 +2142,13 @@ void func_8004A0F4(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004A140);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerFlipEntityAnimation);
 
-void func_8004A140(u16 index) {
+void cutsceneHandlerFlipEntityAnimation(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr = cutsceneExecutors[index].bytecodePtr + 4;
 
-    if (cutsceneExecutors[index].cameraFlags & 0x10) {
+    if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS) {
         setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex4);
     } else {
         setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].animationIndex1);
@@ -2170,7 +2170,7 @@ void cutsceneHandlerSetEntityNonCollidable(u16 index) {
 
 void cutsceneHandlerSetupEntity(u16 index) {
 
-    CutsceneEntityLoadCmd* ptr = (CutsceneEntityLoadCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetupEntityCmd* ptr = (CutsceneSetupEntityCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 entityIndex;
     u16 entityAssetIndex;
@@ -2200,12 +2200,12 @@ void cutsceneHandlerSetupEntity(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004A320);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetEntityMapSpaceIndependentFlag);
 
 // unused handler
-void func_8004A320(u16 index) {
+void cutsceneHandlerSetEntityMapSpaceIndependentFlag(u16 index) {
 
-    CutsceneSetEntityUnknownFlagCmd* ptr = (CutsceneSetEntityUnknownFlagCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetEntityMapSpaceIndependentFlagCmd* ptr = (CutsceneSetEntityMapSpaceIndependentFlagCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 flag;
 
@@ -2223,7 +2223,7 @@ void func_8004A320(u16 index) {
 
 void cutsceneHandlerLoadMap(u16 index) {
 
-    CutsceneMapControllerLoadMapCmd* ptr = (CutsceneMapControllerLoadMapCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneLoadMapCmd* ptr = (CutsceneLoadMapCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 mapDataIndex;
     u16 mapIndex;
@@ -2250,7 +2250,7 @@ void cutsceneHandlerSetEntityMapSpaceIndependent(u16 index) {
 
     setEntityMapSpaceIndependent(cutsceneExecutors[index].assetIndex, TRUE);
     
-    cutsceneExecutors[index].flags &= ~8;
+    cutsceneExecutors[index].flags &= ~CUTSCENE_ASSET_BEHAVIOR_DIRECT_MOVEMENT;
     
 }
 
@@ -2438,12 +2438,12 @@ void cutsceneHandlerUpdateU32Value(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004ACE4);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerDeactivateMapObjects);
 
 // deactivate map auxillary objects (map objects and weather sprites)
-void func_8004ACE4(u16 index) {
+void cutsceneHandlerDeactivateMapObjects(u16 index) {
 
-    CutsceneMapControllerCmd3* ptr = (CutsceneMapControllerCmd3*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneDeactivateMapObjectsCmd* ptr = (CutsceneDeactivateMapObjectsCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 mapIndex;
     
@@ -2528,9 +2528,9 @@ void cutsceneHandlerDeactivateMapControllers(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004B0E8);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerWaitRgbaFinished);
 
-void func_8004B0E8(u16 index) {
+void cutsceneHandlerWaitRgbaFinished(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
@@ -2573,7 +2573,7 @@ void cutsceneHandlerCheckEntityCollision(u16 index) {
     u16 collisionWidth;
     u16 collisionHeight;
 
-    CutsceneEntityCollisionCheckCmd *ptr = (CutsceneEntityCollisionCheckCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneCheckEntityCollisionCmd *ptr = (CutsceneCheckEntityCollisionCmd*)cutsceneExecutors[index].bytecodePtr;
     
     cutsceneExecutors[index].bytecodePtr += 2;   
 
@@ -2601,7 +2601,7 @@ void cutsceneHandlerCheckEntityCollision(u16 index) {
 
 void cutsceneHandlerInitializeDialogueSession(u16 index) {
 
-    CutsceneDialogueInitializeCmd* ptr = (CutsceneDialogueInitializeCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneInitDialogueSessionCmd* ptr = (CutsceneInitDialogueSessionCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 dialoguesIndex;
     u16 dialogueBytecodeAddressIndex;
@@ -2629,7 +2629,7 @@ void cutsceneHandlerInitializeDialogueSession(u16 index) {
 
 void cutsceneHandlerWaitForDialogueInput(u16 index) {
 
-    CutsceneDialoguesWaitCmd* ptr = (CutsceneDialoguesWaitCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneWaitForDialogueInputCmd* ptr = (CutsceneWaitForDialogueInputCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 dialoguesIndex;
 
@@ -2639,21 +2639,19 @@ void cutsceneHandlerWaitForDialogueInput(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    if (!(dialogues[dialoguesIndex].sessionManager.flags & 4)) {
-
+    if (!(dialogues[dialoguesIndex].sessionManager.flags & DIALOGUE_COMPLETED)) {
         cutsceneExecutors[index].waitFrames = 1;
         cutsceneExecutors[index].bytecodePtr -= 4;
-        
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004B538);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerBranchOnDialogue);
 
 // branch on dialogue (unk_17 value)
-void func_8004B538(u16 index) {
+void cutsceneHandlerBranchOnDialogue(u16 index) {
 
-    CutsceneDialoguesUnknownCmd* ptr = (CutsceneDialoguesUnknownCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneBranchOnDialogueCmd* ptr = (CutsceneBranchOnDialogueCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 dialoguesIndex;
     u16 unk;
@@ -2679,9 +2677,9 @@ void func_8004B538(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004B5F0);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerWaitEntityAnimation);
 
-void func_8004B5F0(u16 index) {
+void cutsceneHandlerWaitEntityAnimation(u16 index) {
 
     u16* base = cutsceneExecutors[index].bytecodePtr; 
     
@@ -2713,7 +2711,7 @@ void func_8004B5F0(u16 index) {
 
 void cutsceneHandlerSetMessageBoxAssetIndices(u16 index) {
 
-    CutsceneMessageBoxSetupCmd* ptr = (CutsceneMessageBoxSetupCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetMessageBoxAssetsCmd* ptr = (CutsceneSetMessageBoxAssetsCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 spriteIndex;
     u8 dialogueWindowIndex;
@@ -2747,7 +2745,7 @@ void cutsceneHandlerSetMessageBoxAssetIndices(u16 index) {
 
 void cutsceneHandlerSetEntityTrackingTarget(u16 index) {
 
-    CutsceneEntityUnknownCmd* ptr = (CutsceneEntityUnknownCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetEntityTrackingTargetCmd* ptr = (CutsceneSetEntityTrackingTargetCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 targetEntityIndex;
     s16 x, y, z;
@@ -2786,46 +2784,42 @@ void cutsceneHandlerSetEntityTrackingTarget(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004B920);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetAltAnimationFlag);
 
 // seems unused
-void func_8004B920(u16 index) {
+void cutsceneHandlerSetAltAnimationFlag(u16 index) {
 
-    CutsceneCameraFlagsUpdateCmd* ptr = (CutsceneCameraFlagsUpdateCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetAltAnimationFlagCmd* ptr = (CutsceneSetAltAnimationFlagCmd*)cutsceneExecutors[index].bytecodePtr;
 
-    u16 unk_2;
-
-    cutsceneExecutors[index].bytecodePtr += 2;
-
-    unk_2 = ptr->unk_2;
+    u16 useAltAnimations;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    if (unk_2) {
-        cutsceneExecutors[index].cameraFlags |= 0x10;
+    useAltAnimations = ptr->useAltAnimations;
+
+    cutsceneExecutors[index].bytecodePtr += 2;
+
+    if (useAltAnimations) {
+        cutsceneExecutors[index].behaviorFlags |= CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS;
     } else {
-        cutsceneExecutors[index].cameraFlags &= ~0x10;
+        cutsceneExecutors[index].behaviorFlags &= ~CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS;
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004B9A0);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerWaitMapLoad);
 
-void func_8004B9A0(u16 index) {
+void cutsceneHandlerWaitMapLoad(u16 index) {
 
-    CutsceneMapControllerCmd2* ptr = (CutsceneMapControllerCmd2*)cutsceneExecutors[index].bytecodePtr; 
+    CutsceneMapControllerIndexCmd* ptr = (CutsceneMapControllerIndexCmd*)cutsceneExecutors[index].bytecodePtr; 
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    if (!(mapControllers[ptr->index].flags & (0x8 | 0x10))) {
-        
+    if (!(mapControllers[ptr->index].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE))) {
         cutsceneExecutors[index].bytecodePtr += 2;
-
     } else {
-
         cutsceneExecutors[index].bytecodePtr = ptr;
         cutsceneExecutors[index].waitFrames = 1;
-        
     }
 
 }
@@ -2834,7 +2828,7 @@ void func_8004B9A0(u16 index) {
 
 void cutsceneHandlerBranchOnEntityDirection(u16 index) {
 
-    CutsceneEntityBranchOnEntityDirectionCmd* ptr = (CutsceneEntityBranchOnEntityDirectionCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneBranchOnEntityDirectionCmd* ptr = (CutsceneBranchOnEntityDirectionCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 entityIndex;
     u8 targetDirecton;
@@ -2866,7 +2860,7 @@ void cutsceneHandlerBranchOnEntityDirection(u16 index) {
 
 void cutsceneHandlerSetEntityPhysicsFlags(u16 index) {
 
-    CutsceneEntitySetFlagsCmd* ptr = (CutsceneEntitySetFlagsCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetEntityPhysicsFlagsCmd* ptr = (CutsceneSetEntityPhysicsFlagsCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 temp;
 
@@ -2905,7 +2899,7 @@ void cutsceneHandlerSetEntityPhysicsFlags(u16 index) {
 
 void cutsceneHandlerSetEntityPalette(u16 index) {
 
-    CutsceneEntitySetPaletteIndexCmd* ptr = (CutsceneEntitySetPaletteIndexCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetEntityPaletteCmd* ptr = (CutsceneSetEntityPaletteCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 paletteIndex;
 
@@ -2939,14 +2933,14 @@ void cutsceneHandlerSetEntitySpriteDimensions(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004BE14);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetShadowFlags);
 
-void func_8004BE14(u16 index) {
+void cutsceneHandlerSetShadowFlags(u16 index) {
 
     u16 entityAssetIndex;
     u16 flags;
     
-    CutsceneEntitySetShadowFlagsCmd* ptr = (CutsceneEntitySetShadowFlagsCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetShadowFlagsCmd* ptr = (CutsceneSetShadowFlagsCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
@@ -2990,7 +2984,7 @@ void cutsceneHandlerSetSpriteScale(u16 index) {
 
 void cutsceneHandlerSetSpriteRenderngLayer(u16 index) {
 
-    CutsceneSpriteSetRenderingLayerCmd* ptr = (CutsceneSpriteSetRenderingLayerCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetSpriteRenderingLayerCmd* ptr = (CutsceneSetSpriteRenderingLayerCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 renderingLayerFlags;
 
@@ -3010,7 +3004,7 @@ void cutsceneHandlerSetSpriteRenderngLayer(u16 index) {
 
 void cutsceneHandlerInitializeMessageBoxType2(u16 index) {
 
-    CutsceneMessageBoxInitializeType2Cmd* ptr = (CutsceneMessageBoxInitializeType2Cmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneInitMessageBoxType2Cmd* ptr = (CutsceneInitMessageBoxType2Cmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 messageBoxIndex;
     u16 textAddressesIndex;
@@ -3034,14 +3028,14 @@ void cutsceneHandlerInitializeMessageBoxType2(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004C0D0);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerInitMapAddition);
 
-void func_8004C0D0(u16 index) {
+void cutsceneHandlerInitMapAddition(u16 index) {
 
     u16 mapAdditionIndex;
     u16 flag;
     
-    CutsceneMapAdditionsCmd* ptr = (CutsceneMapAdditionsCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneInitMapAdditionCmd* ptr = (CutsceneInitMapAdditionCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
@@ -3058,12 +3052,12 @@ void func_8004C0D0(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004C148);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerBranchOnRandom);
 
 // branch on random value
-void func_8004C148(u16 index) {
+void cutsceneHandlerBranchOnRandom(u16 index) {
 
-    CutsceneBranchOnRandomValue* ptr= (CutsceneBranchOnRandomValue*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneBranchOnRandomCmd* ptr= (CutsceneBranchOnRandomCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 unk_2;
     u16 unk_4;
@@ -3092,11 +3086,11 @@ void func_8004C148(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004C258);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerBranchIfU16PtrInRange);
 
-void func_8004C258(u16 index) {
+void cutsceneHandlerBranchIfU16PtrInRange(u16 index) {
 
-    CutsceneBranchOnU16Value* ptr = (CutsceneBranchOnU16Value*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneBranchIfU16PtrInRangeCmd* ptr = (CutsceneBranchIfU16PtrInRangeCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16* unk_4;
     u16* unk_8;
@@ -3131,7 +3125,7 @@ void func_8004C258(u16 index) {
 
 void cutsceneHandlerPauseExecutor(u16 index) {
 
-    CutsceneExecutorPauseExecutorCmd* ptr = (CutsceneExecutorPauseExecutorCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutscenePauseExecutorCmd* ptr = (CutscenePauseExecutorCmd*)cutsceneExecutors[index].bytecodePtr;
     u16 executorIndex;
     
     cutsceneExecutors[index].bytecodePtr += 2;
@@ -3149,7 +3143,7 @@ void cutsceneHandlerPauseExecutor(u16 index) {
 
 void cutsceneHandlerTogglePauseExecutor(u16 index) {
 
-    CutsceneExecutorTogglePauseExecutorCmd* ptr = (CutsceneExecutorTogglePauseExecutorCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneTogglePauseExecutorCmd* ptr = (CutsceneTogglePauseExecutorCmd*)cutsceneExecutors[index].bytecodePtr;
     u16 executorIndex;
     
     cutsceneExecutors[index].bytecodePtr += 2;
@@ -3214,7 +3208,7 @@ void cutsceneHandlerSetSpritePalette(u16 index) {
 
     u16 paletteIndex;
     
-    CutsceneSpriteSetPaletteCmd* ptr = (CutsceneSpriteSetPaletteCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetSpritePaletteCmd* ptr = (CutsceneSetSpritePaletteCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
@@ -3226,11 +3220,11 @@ void cutsceneHandlerSetSpritePalette(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004C5D8);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerBranchIfU8PtrInRange);
 
-void func_8004C5D8(u16 index) {
+void cutsceneHandlerBranchIfU8PtrInRange(u16 index) {
 
-    CutsceneBranchOnU8Value* ptr = (CutsceneBranchOnU8Value*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneBranchIfU8PtrInRangeCmd* ptr = (CutsceneBranchIfU8PtrInRangeCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u8* temp1;
     u8* temp2;
@@ -3272,7 +3266,7 @@ void cutsceneHandlerSetAudioSequence(u16 index) {
     u8 *sequenceStart;
     u8 *sequenceEnd;
 
-    CutsceneAudioSetAudioSequenceCmd* ptr = (CutsceneAudioSetAudioSequenceCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetAudioSequenceCmd* ptr = (CutsceneSetAudioSequenceCmd*)cutsceneExecutors[index].bytecodePtr;
     
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -3324,7 +3318,7 @@ void cutsceneHandlerSetAudioSequence(u16 index) {
 
 void cutsceneHandlerStopAudioSequenceWithFadeOut(u16 index) {
 
-    CutsceneAudioStopAudioSequenceWithFadeOutCmd* ptr = (CutsceneAudioStopAudioSequenceWithFadeOutCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneStopSequenceWithFadeCmd* ptr = (CutsceneStopSequenceWithFadeCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 sequenceIndex;
     u32 speed;
@@ -3347,7 +3341,7 @@ void cutsceneHandlerStopAudioSequenceWithFadeOut(u16 index) {
 
 void cutsceneHandlerSetAudioSequenceVolume(u16 index) {
 
-    CutsceneAudioSetAudioSequenceVolumeCmd* ptr = (CutsceneAudioSetAudioSequenceVolumeCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetAudioSequenceVolumeCmd* ptr = (CutsceneSetAudioSequenceVolumeCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 sequenceIndex;
     s32 targetVolume;
@@ -3375,7 +3369,7 @@ void cutsceneHandlerSetAudioSequenceVolume(u16 index) {
 
 void cutsceneHandlerSetSfx(u16 index) {
 
-    CutsceneAudioSetSfxCmd* ptr = (CutsceneAudioSetSfxCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetSfxCmd* ptr = (CutsceneSetSfxCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u32 sfxIndex;
     u16 volume;
@@ -3401,7 +3395,7 @@ void cutsceneHandlerSetSfx(u16 index) {
 
 void cutsceneHandlerIdleWhileAudioSequencePlaying(u16 index) {
 
-    CutsceneAudioIdleWhilePlayingCmd* ptr = (CutsceneAudioIdleWhilePlayingCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneIdleWhileSequencePlayingCmd* ptr = (CutsceneIdleWhileSequencePlayingCmd*)cutsceneExecutors[index].bytecodePtr;
 
     u16 sequenceIndex;
 
@@ -3410,14 +3404,10 @@ void cutsceneHandlerIdleWhileAudioSequencePlaying(u16 index) {
     sequenceIndex = ptr->sequenceIndex;
 
     if (!gAudioSequences[sequenceIndex].flags) {
-        
         cutsceneExecutors[index].bytecodePtr += 2;
-        
     } else {
-
         cutsceneExecutors[index].bytecodePtr = ptr;
         cutsceneExecutors[index].waitFrames = 1;
-    
     }
 
 }
@@ -3433,7 +3423,7 @@ void cutsceneHandlerUpdateMessageBoxRGBA(u16 index) {
     u8 a;
     s16 flags;
 
-    CutsceneMessageBoxRGBACmd* ptr = (CutsceneMessageBoxRGBACmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneUpdateMessageBoxRgbaCmd* ptr = (CutsceneUpdateMessageBoxRgbaCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -3465,13 +3455,13 @@ void cutsceneHandlerUpdateMessageBoxRGBA(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004CA80);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerWaitMessageBoxReady);
 
-void func_8004CA80(u16 index) {
+void cutsceneHandlerWaitMessageBoxReady(u16 index) {
 
     u16 messageBoxIndex;
     
-    CutsceneMessageBoxIndexCmd* ptr = (CutsceneMessageBoxIndexCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneWaitMessageBoxReadyCmd* ptr = (CutsceneWaitMessageBoxReadyCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
@@ -3480,10 +3470,8 @@ void func_8004CA80(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 2;
 
     if (!checkMessageBoxRGBAComplete(messageBoxIndex)) {
-
         cutsceneExecutors[index].waitFrames = 1;
         cutsceneExecutors[index].bytecodePtr -= 4;
-        
     }
     
 }
@@ -3492,7 +3480,7 @@ void func_8004CA80(u16 index) {
 
 void cutsceneHandlerSetSpriteBilinearFiltering(u16 index) {
 
-    CutsceneSpriteSetBilinearFilteringCmd* ptr = (CutsceneSpriteSetBilinearFilteringCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetSpriteBilinearCmd* ptr = (CutsceneSetSpriteBilinearCmd*)cutsceneExecutors[index].bytecodePtr;
     u16 useBilinearFiltering;
 
     cutsceneExecutors[index].bytecodePtr += 2;
@@ -3509,7 +3497,7 @@ void cutsceneHandlerSetSpriteBilinearFiltering(u16 index) {
 
 void cutsceneHandlerSetMapAddition(u16 index) {
 
-    CutsceneMapSetMapAdditionsCmd* ptr = (CutsceneMapSetMapAdditionsCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetMapAdditionCmd* ptr = (CutsceneSetMapAdditionCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 mapAdditionIndex;
     u8 x;
@@ -3544,7 +3532,7 @@ void cutsceneHandlerSetMapGroundObject(u16 index) {
     u8 x;
     u8 z;
 
-    CutsceneMapSetGroundObjectCmd* ptr = (CutsceneMapSetGroundObjectCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneSetMapGroundObjectCmd* ptr = (CutsceneSetMapGroundObjectCmd*)cutsceneExecutors[index].bytecodePtr;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
@@ -3567,9 +3555,9 @@ void cutsceneHandlerSetMapGroundObject(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_8004CCF0);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerSetMessageInterpolation);
 
-void func_8004CCF0(u16 index) {
+void cutsceneHandlerSetMessageInterpolation(u16 index) {
     
     s16 messageBoxIndex;
     s16 rate;

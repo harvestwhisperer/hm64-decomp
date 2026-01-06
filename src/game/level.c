@@ -365,6 +365,9 @@ static const Vec3f barnFodderCoordinates[];
 // forward declaration
 void loadLevelGroundObjects(u16 mapIndex);
 void setBarnFodderSprite(u8 itemIndex);
+void setAdditionalMapAdditionsForLevel(u16 mapIndex);
+void loadLevelMapObjects(u16 levelIndex);
+void initializeMapAdditionsForLevel(u16 levelIndex);
 
 //INCLUDE_ASM("asm/nonmatchings/game/level", setEntrance);
 

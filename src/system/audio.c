@@ -1,8 +1,13 @@
 #include "common.h"
 
+#include "nualstl_n.h"
+
 #include "system/audio.h"
 
 #include "game/gameAudio.h"
+
+extern void nuAuStlSeqPlayerDataSet(u8 player_no, u8* seq_addr, u32 seq_size);
+extern musHandle nuAuStlSeqPlayerPlay2(u8 player_no);
 
 // rodata
 #define MIN_SFX_FREQUENCY (double)-6
@@ -15,6 +20,7 @@ s32 gAudioSequenceVolume;
 // shared bss (gameAudio.c)
 Sfx gSfx[4];
 SequenceInfo gAudioSequences[4];
+
 
 //INCLUDE_ASM("asm/nonmatchings/system/audio", initializeAudio);
 

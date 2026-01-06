@@ -14,6 +14,7 @@
 #define ENTITY_INITIALIZED 0x4
 #define ENTITY_IS_CURRENTLY_ANIMATED 0x8
 #define ENTITY_ANIMATION_DIRECTION_CHANGE 0x10
+#define ENTITY_CAMERA_TRACKING 0x20
 #define ENTITY_PAUSED 0x40 
 #define ENTITY_Y_MOVEMENT 0x80
 #define ENTITY_MAP_SPACE_INDEPENDENT 0x100
@@ -89,14 +90,16 @@ typedef struct {
 	void *vaddrPalette;
 	void *vaddrUnknownAssetSheet;
 	void *vaddrAnimationMetadata;
-	u16 unk_20; // related to animation, offset
-	u16 unk_22; // related to animation, arg2 of startSpriteAnimation
+	u16 animationIndex;
+	u16 frameIndex;
 } ShadowSpriteDescriptor;
 
 extern void initializeEntities(void);
+extern bool initializeEntityAsset(u16 entityAssetIndex, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32 arg5, u32 arg6, u8 arg7, u8 arg8, u16* arg9);
 extern bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex, u8* vaddrTexture1, u8* vaddrTexture2, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationMetadata, u32* vaddrTextureToPaletteLookup, u32* vaddrSpritesheetIndex);
 extern bool initializeAnimalEntity(u16 index, u16* arg1, AnimationFrameMetadata* arg2, u32* arg3, u32* arg4);
 extern bool loadEntity(u16, u16, u8);      
+extern void loadAllPendingEntities(void);
 extern bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 arg9, u8 argA);           
 extern bool setEntityAttachmentOffset(u16 entityIndex, s16, s16, s16);
 extern bool setMainMapIndex(u16 arg0);     

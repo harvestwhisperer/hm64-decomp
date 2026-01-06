@@ -18,6 +18,9 @@
                     
 // forward declarations           
 void setGlobalSeasonName(u8);
+void toggleMonthlyLetterBits(void);
+void setupNewYear(void);
+void updateClock(u8);
 
 // shared bss
 u8 gSeconds;

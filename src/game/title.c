@@ -318,7 +318,7 @@ void initializeTitleScreen(u8 arg0) {
 //INCLUDE_ASM("asm/nonmatchings/game/title", loadDogTitleSprite);
 
 void loadDogTitleSprite(void) {
-    dmaSprite(DOG_TITLE_SPRITE, &_dogTitleTextureSegmentRomStart, &_dogTitleTextureSegmentRomEnd, &_dogTitleAssetsIndexSegmentRomStart, &_dogTitleAssetsIndexSegmentRomEnd, &_dogTitleSpritesheetIndexSegmentRomStart, &_dogTitleSpritesheetIndexSegmentRomEnd, (u8*)DOG_TITLE_TEXTURE_1_BUFFER, (u8*)DOG_TITLE_TEXTURE_2_BUFFER, (u16*)DOG_TITLE_PALETTE_BUFFER, (void*)DOG_TITLE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DOG_TITLE_SPRITESHEET_INDEX_BUFFER, (u32*)DOG_TITLE_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 1, 0);
+    dmaSprite(DOG_TITLE_SPRITE, &_dogTextureSegmentRomStart, &_dogTextureSegmentRomEnd, &_dogAssetsIndexSegmentRomStart, &_dogAssetsIndexSegmentRomEnd, &_dogSpritesheetIndexSegmentRomStart, &_dogSpritesheetIndexSegmentRomEnd, (u8*)DOG_TITLE_TEXTURE_1_BUFFER, (u8*)DOG_TITLE_TEXTURE_2_BUFFER, (u16*)DOG_TITLE_PALETTE_BUFFER, (void*)DOG_TITLE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DOG_TITLE_SPRITESHEET_INDEX_BUFFER, (u32*)DOG_TITLE_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 1, 0);
     setSpriteViewSpacePosition(DOG_TITLE_SPRITE, 64.0f, -80.0f, 56.0f);
     setSpriteScale(DOG_TITLE_SPRITE, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DOG_TITLE_SPRITE, 0, 0, 0);
@@ -605,7 +605,7 @@ void titleScreenMainLoopCallback(void) {
                 deactivateTitleScreenSprites();
                 
                 if (titleScreenContext.rowHighlighted == 0) {
-                    initLoadGameScreen(FALSE);
+                    inititalizeLoadGameScreen(FALSE);
                 } else {
                     launchIntroCutscene(HOW_TO_PLAY_CUTSCENE, 0, 0);
                 }

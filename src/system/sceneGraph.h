@@ -49,6 +49,7 @@ extern bool addSceneNodeScaling(u16 index, f32 arg1, f32 arg2, f32 arg3);
 extern bool addSceneNodeRotation(u16 index, f32 arg1, f32 arg2, f32 arg3);
 extern void func_800293B8(void);
 extern Gfx* renderSceneGraph(Gfx* dl, SceneMatrices* arg1);
+extern void resetSceneNodeCounter(void);
 
 extern Vec3f previousWorldRotationAngles;
 extern Vec3f currentWorldRotationAngles;

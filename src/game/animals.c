@@ -106,12 +106,16 @@ SheepItemInfo sheepWoolInfo = {
 // forward declarations
 void setAnimalState(u8, u8, u8, u8, u8);               
 void adjustFarmAnimalAffection(u8, s8); 
-u8 initializeNewFarmAnimal(u8 arg0, u8 arg1);
 void setFarmAnimalLocation(u8); 
+void resetFarmAnimalLocation(u8 mapIndex, u8 animalIndex);
 void updateDog();                                  
 void updateHorse();                                  
 void updateHorseGrown();                                 
 void updateHorseNotGrown();       
+void updateHorseAge(void);
+void updateFarmAnimalStartOfDay(u8 index);
+void updateChickenStartOfDay(u8 index);
+void updateDogAffectionIfFed(void);
 u8 spawnMiscAnimal(u8 index, u8 direction, f32 x, f32 y, f32 z);          
 void initializeDogEntity();                                  
 void initializeChickenEntity(u8);                               
@@ -121,6 +125,24 @@ void initializeMiscAnimalEntity(u8, u8);
 void updateChicken(u8);                               
 void updateFarmAnimal(u8);                               
 void updateMiscAnimal(u8);     
+void updateAdultCowNormal(u8 index);      
+void updateAdultCowHappy(u8 index);
+void updateAdultCowMad(u8 index);
+void updateAdultCowSick(u8 index);          
+void updateBabyCow(u8 index); 
+void updatePregnantCow(u8 index);
+void updateAdultChickenNormal(u8 index);
+void updateAdultChickenStarved(u8 index);
+void updateChick(u8 index);
+void updateChickenEgg(u8 index);
+void updateAdultChickenStarved(u8 index);
+void updateCalf(u8 index);
+void updateMiscDog(u8 index);    
+void updateBabySheep(u8 index);
+void updateAdultSheepNormal(u8 index);
+void updateAdultSheepSick(u8 index);
+void updateShearedSheepNormal(u8 index);
+void updateShearedSheepSick(u8 index);
 void updatePlayerDog(u8);
 void updateVillageDog(u8);
 void updateCat(u8);
@@ -142,7 +164,8 @@ void updateHornedBeetle(u8);
 void updateStagBeetle(u8);
 void setgAnimalSalePrice(void);
 void updateDragonfly(u8);
-void updateCricket(u8);                         
+void updateCricket(u8);                
+void updateDogActionState(void);         
 void showAnimalExpressionBubble(u8, u8, u8);
 
 
@@ -2487,7 +2510,7 @@ void initializeMiscAnimalEntity(u8 index, u8 arg1) {
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_PLAYER_DOG, TRUE);
                 break;
             case MISC_ANIMAL_NPC_DOG:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG, TRUE);
+                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG_VILLAGE, TRUE);
                 break;
             case MISC_ANIMAL_CAT:
                 loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CAT, TRUE);

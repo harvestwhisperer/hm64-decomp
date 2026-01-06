@@ -10,6 +10,8 @@ BASEROM := baserom.$(REGION).z64
 VERBOSE := 0
 PERMUTER ?= 0
 
+MODERN_GCC ?= 0
+
 # Directories
 
 SRC_DIRS := src
@@ -31,12 +33,19 @@ KMC_PATH := $(TOOLS_DIR)/gcc-2.7.2/
 
 CROSS := mips-linux-gnu-
 
-CC := $(KMC_PATH)gcc
 AS := $(CROSS)as
 LD := $(CROSS)ld
 OBJCOPY := $(CROSS)objcopy
 CPP := gcc -E -P -x c
 MKLDSCRIPT := $(TOOLS_DIR)/build/mkldscript
+
+ifeq ($(MODERN_GCC),1)
+  CC := $(CROSS)gcc
+  CC_FLAG :=
+else
+  CC := $(KMC_PATH)gcc
+  CC_FLAG := -B $(KMC_PATH)
+endif
 
 # Common recipe command to create output directory
 MKDIR = @mkdir -p $(dir $@)
@@ -59,14 +68,45 @@ OBJECTS := $(SPEC_O_FILES)
 # Flags
 
 MACROS := -D_LANGUAGE_C -D_MIPS_SZLONG=32 -D_MIPS_SZINT=32 -DSUPPORT_NAUDIO -DNU_SYSTEM -DF3DEX_GBI_2 -DN_MICRO -DLANG_JAPANESE=0 -DUSE_EPI -DNDEBUG -D_AUDIOVISIBLE -DN_AUDIO
-CFLAGS_COMMON := -G0 -mips3 -mgp32 -mfp32 -Wa,-Iinclude -funsigned-char
+
+# Common flags for both compilers
+CFLAGS_COMMON := -G0 -mgp32 -mfp32 -funsigned-char
+
+ifeq ($(MODERN_GCC),1)
+  # Modern GCC flags for N64/VR4300
+  CFLAGS_COMMON += -march=vr4300 -mtune=vr4300 -mfix4300
+  CFLAGS_COMMON += -mabi=32 -mno-abicalls -fno-PIC -mno-shared
+  CFLAGS_COMMON += -ffreestanding -fno-builtin
+  CFLAGS_COMMON += -EB
+  CFLAGS_COMMON += -Wall -Wno-unused-variable -Wno-unused-parameter -Wno-pointer-sign -Wno-incompatible-pointer-types -Wno-int-conversion
+  MACROS += -DMODERN_GCC
+else
+  # Original KMC GCC 2.7.2 flags
+  CFLAGS_COMMON += -mips3
+  CFLAGS_COMMON += -Wa,-Iinclude
+endif
 
 CFLAGS := $(CFLAGS_COMMON) $(MACROS)
-HASM_ASFLAGS := -mips3 -nostdinc -fno-PIC -mno-abicalls -G 0 -mgp32 -mfp32 -mabi32
+
+# Assembly flags - note -mabi32 (old) vs -mabi=32 (modern)
+ifeq ($(MODERN_GCC),1)
+  HASM_ASFLAGS := -march=vr4300 -mabi=32 -mno-abicalls -fno-PIC -G 0 -mgp32 -mfp32 -nostdinc
+  # Modern GCC doesn't need -o32 (covered by -mabi=32)
+  OS_ASM_FLAG :=
+else
+  HASM_ASFLAGS := -mips3 -nostdinc -fno-PIC -mno-abicalls -G 0 -mgp32 -mfp32 -mabi32
+  # Old GCC needs -o32 for OS assembly
+  OS_ASM_FLAG := -o32
+endif
+
 ASFLAGS := -G 0 -I include -mips3
-CPPFLAGS := -I. -I include -I src -I lib/nusys-1/include -I lib/libultra/include -I lib/libmus/include/PR -I lib/gcc/include
+CPPFLAGS := -I. -I include -I src -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libmus/include/PR -I lib/gcc/include
 
 HASM_AS_DEFINES := -D_LANGUAGE_ASSEMBLY -DMIPSEB -D_ULTRA64 -D_MIPS_SIM=1
+
+ifeq ($(MODERN_GCC),1)
+  HASM_AS_DEFINES += -DMODERN_GCC
+endif
 
 LIBULTRA_CPP_FLAGS := -I lib/libultra/include -I lib/libultra/include/PR -I lib/gcc/include
 LIBMUS_CPP_FLAGS := -I lib/libmus/include/PR -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libultra/src/libnaudio
@@ -318,6 +358,11 @@ build/lib/libultra/src/io/aisetnextbuf.o: ULTRALIBVER := -DBUILD_VERSION=6
 
 # Targets
 
+ifeq ($(MODERN_GCC),1)
+  $(info Building with modern GCC (non-matching))
+  $(info Compiler: $(CC))
+endif
+
 all: check
 
 clean:
@@ -413,78 +458,77 @@ extract-cutscenes:
 
 # Main code segment
 
-# need to pass -B <dir> to gcc to prevent it from fetching system default cc1
 $(BUILD_DIR)/src/mainproc.o: src/mainproc.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/src/mainLoop.o: src/mainLoop.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/src/game/%.o: src/game/%.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/src/system/%.o: src/system/%.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/src/buffers/%.o: src/buffers/%.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/src/data/%.o: src/data/%.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $< 
+	$(CC) $(CC_FLAG) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
 
 # Lib
 
 $(BUILD_DIR)/lib/libmus/src/player.o: lib/libmus/src/player.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(LIBMUS_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBMUS_CPP_FLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(LIBMUS_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBMUS_CPP_FLAGS) -c -o $@ $<
 
 # nusys
 
 $(BUILD_DIR)/lib/nusys-1/src/nusys/%.o: lib/nusys-1/src/nusys/%.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUSYS_CPP_FLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUSYS_CPP_FLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/lib/nusys-1/src/nualstl/%.o: lib/nusys-1/src/nualstl/%.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUALSTL_CPP_FLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUALSTL_CPP_FLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/lib/nusys-1/src/sample/nunospak/%.o: lib/nusys-1/src/sample/nunospak/%.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUSYS_CPP_FLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUSYS_CPP_FLAGS) -c -o $@ $<
 
 # libkmc
 
 $(BUILD_DIR)/lib/libkmc/src/%.o: lib/libkmc/src/%.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(LIBKMC_CPP_FLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(LIBKMC_CPP_FLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/lib/libkmc/src/%.o: lib/libkmc/src/%.s
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) -c $(LIBKMC_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
+	$(CC) $(CC_FLAG) -c $(LIBKMC_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
 
 # libultra
 
 $(BUILD_DIR)/lib/libultra/src/%.o: lib/libultra/src/%.c
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) $(LIBULTRA_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBULTRA_CPP_FLAGS) -c -o $@ $<
+	$(CC) $(CC_FLAG) $(LIBULTRA_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBULTRA_CPP_FLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/lib/libultra/src/gu/%.o: lib/libultra/src/gu/%.s
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+	$(CC) $(CC_FLAG) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
 
 $(BUILD_DIR)/lib/libultra/src/libc/%.o: lib/libultra/src/libc/%.s
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+	$(CC) $(CC_FLAG) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
 
 $(BUILD_DIR)/lib/libultra/src/os/%.o: lib/libultra/src/os/%.s
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -o32 -x assembler-with-cpp -o $@ $<
+	$(CC) $(CC_FLAG) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) $(OS_ASM_FLAG) -x assembler-with-cpp -o $@ $<
 
 $(BUILD_DIR)/lib/libultra/src/os/unusedPadding.o: lib/libultra/src/os/unusedPadding.s
 	$(MKDIR)
@@ -492,8 +536,7 @@ $(BUILD_DIR)/lib/libultra/src/os/unusedPadding.o: lib/libultra/src/os/unusedPadd
 
 $(BUILD_DIR)/lib/libultra/src/rmon/%.o: lib/libultra/src/rmon/%.s
 	$(MKDIR)
-# 	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-	$(CC) -B $(KMC_PATH) -c -I lib/libultra/include $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
+	$(CC) $(CC_FLAG) -c -I lib/libultra/include $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
 
 # ucode
 
@@ -506,7 +549,7 @@ $(BUILD_DIR)/lib/ucode/%.o: lib/ucode/%.s
 
 $(BUILD_DIR)/config/$(REGION)/header.o: config/$(REGION)/header.s
 	$(MKDIR)
-	$(CC) -B $(KMC_PATH) -c $(NUSYS_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
+	$(CC) $(CC_FLAG) -c $(NUSYS_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
 
 # Makerom segments
 
@@ -552,8 +595,8 @@ $(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_ASSETS_DIR)/%.s
 # Extract texts to assets directory and transpile to assembly (generates two files: bytecode and index)
 # The transpiler produces both Text.s and TextIndex.s
 $(TEXT_ASSETS_DIR)/%Text.s:
-	$(V)cd $(TOOLS_DIR)/assets && python3 hm64_text_utilities.py extract_bank $* --literal
-	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/ --literal
+	$(V)cd $(TOOLS_DIR)/assets && python3 hm64_text_utilities.py extract_bank $*
+	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/
 
 # Mark dependency
 $(TEXT_ASSETS_DIR)/%TextIndex.s: $(TEXT_ASSETS_DIR)/%Text.s
@@ -599,7 +642,7 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/system/audio.o \
 	$(BUILD_DIR)/src/system/message.o \
 	$(BUILD_DIR)/src/system/dialogue.o \
-	$(BUILD_DIR)/src/system/overlayScreenSprites.o \
+	$(BUILD_DIR)/src/system/numberSprites.o \
 	$(BUILD_DIR)/src/system/cutscene.o \
 	$(BUILD_DIR)/src/system/controller.o \
 	$(BUILD_DIR)/src/system/memory.o \
@@ -917,7 +960,7 @@ check: $(TARGET)
 	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
 
 
-.PHONY: all clean clean-texts clean-artifacts setup split submodules rebuild rerun check codesegment
+.PHONY: all modern clean clean-texts clean-artifacts setup split submodules rebuild rerun check codesegment
 .PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
 .PHONY: extract-animation-sprites extract-animations extract-gifs
 .PHONY: extract-texts extract-dialogues extract-map-sprites extract-cutscenes

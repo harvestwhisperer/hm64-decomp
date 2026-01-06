@@ -211,6 +211,7 @@ extern void updateFarmStatusRain(void);
 extern void updateFarmStatusSnow(void);     
 extern void updateFarmStatusTyphoon(void);     
 extern s32 getSumNpcAffection(void);
+extern void func_80064CF0(void);
 
 extern void func_800657B4();
 extern void func_800657C4();

@@ -336,7 +336,7 @@ bool loadEntity(u16 index, u16 entityAssetIndex, bool transformExempt) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", initializeShadowSprite);
 
-bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 arg9, u8 argA) {
+bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 animationIndex, u8 frameIndex) {
 
     bool result = FALSE;
     
@@ -350,8 +350,8 @@ bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u
         shadowSpriteDescriptors[index].vaddrPalette = arg6;
         shadowSpriteDescriptors[index].vaddrUnknownAssetSheet = arg7;
         shadowSpriteDescriptors[index].vaddrAnimationMetadata = arg8;
-        shadowSpriteDescriptors[index].unk_20 = arg9;
-        shadowSpriteDescriptors[index].unk_22 = argA;
+        shadowSpriteDescriptors[index].animationIndex = animationIndex;
+        shadowSpriteDescriptors[index].frameIndex = frameIndex;
     }
 
     return result;
@@ -1014,9 +1014,9 @@ bool setCameraTrackingEntity(u16 entityIndex, u16 flag) {
         if (entities[entityIndex].flags & ENTITY_ACTIVE) { 
 
             if (flag) {
-                entities[entityIndex].flags |= 0x20;
+                entities[entityIndex].flags |= ENTITY_CAMERA_TRACKING;
             } else {
-                entities[entityIndex].flags &= ~0x20;
+                entities[entityIndex].flags &= ~ENTITY_CAMERA_TRACKING;
             }
 
             result = TRUE;
@@ -2142,9 +2142,9 @@ void updateEntityPhysics(u16 index) {
 
     entities[index].flags &= ~ENTITY_TOUCHING_GROUND;
 
-    if (entities[index].flags & 0x200) {
+    if (entities[index].flags & ENTITY_TRACKING_ACTIVE) {
 
-        if (!(mapControllers[gMainMapIndex].flags & (0x8 | 0x10))) {
+        if (!(mapControllers[gMainMapIndex].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE))) {
 
             // FIXME: something off here 
             if (((entities[index].trackingMode + 2) & 0xFF) < 2U) {
@@ -2212,7 +2212,7 @@ void updateEntityPhysics(u16 index) {
         entities[index].coordinates.x += appliedMovement.x;
         entities[index].coordinates.z += appliedMovement.z;
 
-        if (entities[index].flags & 0x20) {
+        if (entities[index].flags & ENTITY_CAMERA_TRACKING) {
 
             tempX = entities[index].coordinates.x;
             tempZ = entities[index].coordinates.z;
@@ -2297,11 +2297,11 @@ void updateEntities(void) {
             
             entities[i].unk_66 = 0;
 
-            if (!(entities[i].flags & ENTITY_PAUSED) || (entities[i].flags & 0x200)) {
+            if (!(entities[i].flags & ENTITY_PAUSED) || (entities[i].flags & ENTITY_TRACKING_ACTIVE)) {
                 
                 updateEntityPhysics(i);
 
-                 if (entities[i].flags & 0x200) {
+                 if (entities[i].flags & ENTITY_TRACKING_ACTIVE) {
                     if (entities[i].trackingMode == 0xFE) {
                         entities[i].direction = entities[entities[i].targetEntityIndex].direction;
                     }
@@ -2323,7 +2323,7 @@ void updateEntities(void) {
                 entities[i].coordinates.x + mainMap[MAIN_MAP_INDEX].mapGrid.tileSizeX / 2,
                 entities[i].coordinates.z + mainMap[MAIN_MAP_INDEX].mapGrid.tileSizeZ / 2);
             
-            if (mainMap[MAIN_MAP_INDEX].visibilityGrid[(u8)tileCoordinates.z][(u8)tileCoordinates.x] || entities[i].flags & 0x20) {
+            if (mainMap[MAIN_MAP_INDEX].visibilityGrid[(u8)tileCoordinates.z][(u8)tileCoordinates.x] || entities[i].flags & ENTITY_CAMERA_TRACKING) {
 
                 if ((directionalOffset + entities[i].animationIndices.animationIndex) != entities[i].animationIndices.nextAnimationIndex) {
                     
@@ -2367,8 +2367,8 @@ void updateEntities(void) {
                     if (globalSprites[entities[i].shadowSpriteIndex].viewSpacePosition.y <= entities[i].viewSpacePosition.y) {
 
                         startSpriteAnimation(entities[i].shadowSpriteIndex, 
-                             shadowSpriteDescriptors[entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex].unk_20,
-                             shadowSpriteDescriptors[entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex].unk_22);
+                             shadowSpriteDescriptors[entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex].animationIndex,
+                             shadowSpriteDescriptors[entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex].frameIndex);
                                              
                     } else {
                         resetAnimationState(entities[i].shadowSpriteIndex);

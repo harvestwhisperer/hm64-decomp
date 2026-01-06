@@ -464,8 +464,111 @@ BUILTIN_CONSTANTS = {
     'HOW_TO_PLAY_TEXT_INDEX': 72,
 
     'TRUE': 1,
-    'FALSE': 0
+    'FALSE': 0,
 
+    'CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY': 1,
+
+}
+
+# =============================================================================
+# STRUCT TYPE DEFINITIONS
+# =============================================================================
+
+# Struct member definitions: (offset, type) or (offset, type, count) for arrays
+# For 2D arrays: (offset, type, dim1, dim2)
+STRUCT_TYPES = {
+    # Player struct at 0x80189060
+    'Player': {
+        'currentStamina': (0x00, 'u8'),
+        'name': (0x01, 'u8', 6),
+        'toolHeldCounter': (0x08, 'u16'),
+        'toolUseCounters': (0x0A, 'u16', 5),
+        'currentToolLevel': (0x14, 'u8'),
+        'toolSlots': (0x15, 'u8', 8),
+        'currentTool': (0x1D, 'u8'),
+        'bottleContents': (0x1E, 'u8'),
+        'toolLevels': (0x1F, 'u8', 5),
+        'belongingsSlots': (0x24, 'u8', 8),
+        'heldItem': (0x2C, 'u8'),
+        'itemInfoIndex': (0x2D, 'u8'),
+        'keyItemSlots': (0x2E, 'u8', 24),
+        'unk_46': (0x46, 'u8'),
+        'unk_47': (0x47, 'u8'),
+        'coordinates': (0x48, 'f32', 3),
+        'movementVector': (0x54, 'f32', 3),
+        'velocity': (0x60, 'f32'),
+        'actionHandler': (0x64, 'u16'),
+        'animationHandler': (0x66, 'u16'),
+        'actionPhaseFrameCounter': (0x68, 'u16'),
+        'actionPhase': (0x6A, 'u8'),
+        'shopItemIndex': (0x6B, 'u8'),
+        'heldAnimalIndex': (0x6C, 'u8'),
+        'direction': (0x6D, 'u8'),
+        'savedDirection': (0x6E, 'u8'),
+        'actionTimer': (0x6F, 'u8'),
+        'groundObjectIndex': (0x70, 'u8'),
+        'fatigueCounter': (0x71, 'u8'),
+        'staminaExhaustionLevel': (0x72, 'u8'),
+        'fatigueThreshold': (0x73, 'u8'),
+        'fishingSpotType': (0x74, 'u8'),
+        'unused': (0x75, 'u8'),
+        'flags': (0x76, 'u16'),
+    },
+
+    # Dog struct at 0x801886B0
+    # Note: 1 byte padding after name for Vec3f alignment
+    'Dog': {
+        'affection': (0x00, 'u8'),
+        'name': (0x01, 'u8', 6),
+        'coordinates': (0x08, 'f32', 3),
+        'entityIndex': (0x14, 'u16'),
+        'location': (0x16, 'u8'),
+        'actionState': (0x17, 'u8'),
+        'direction': (0x18, 'u8'),
+        'speed': (0x19, 'u8'),
+        'stateTimer': (0x1A, 'u8'),
+        'unk_1B': (0x1B, 'u8'),
+        'bestRacePlacement': (0x1C, 'u8'),
+        'flags': (0x1E, 'u16'),
+    },
+
+    # Horse struct at 0x8016FDD0
+    # Note: 1 byte padding after name for Vec3f alignment
+    'Horse': {
+        'affection': (0x00, 'u8'),
+        'name': (0x01, 'u8', 6),
+        'coordinates': (0x08, 'f32', 3),
+        'entityIndex': (0x14, 'u16'),
+        'location': (0x16, 'u8'),
+        'actionState': (0x17, 'u8'),
+        'direction': (0x18, 'u8'),
+        'speed': (0x19, 'u8'),
+        'stateTimer': (0x1A, 'u8'),
+        'unk_1B': (0x1B, 'u8'),
+        'grown': (0x1C, 'u8'),
+        'age': (0x1D, 'u8'),
+        'bestRacePlacement': (0x1E, 'u8'),
+        'unk_1F': (0x1F, 'u8'),
+        'flags': (0x20, 'u16'),
+    },
+
+    # RacingContext struct at 0x801C3DA0
+    'RacingContext': {
+        'displayOddsTop': (0x00, 'u16', 3),
+        # oddsAndNames union at 0x06 - support both views
+        'oddsAndNames': (0x06, 'u8', 6),  # raw bytes view
+        'oddsAndNames.displayOddsBottom': (0x06, 'u16', 3),  # u16[3] view
+        'oddsAndNames.racerNameLookup': (0x06, 'u8', 1, 6),  # u8[1][6] view
+        'racerNames': (0x0C, 'u8', 6, 6),
+        'playerBets': (0x30, 'u8', 3, 6),
+        'racerOdds': (0x42, 'u8', 3, 6),
+        'racerNameIndices': (0x54, 'u8', 6, 3),
+        'finishOrder': (0x66, 'u8', 6),
+        'currentRaceIndex': (0x6C, 'u8'),
+        'playerRaceNumber': (0x6D, 'u8'),
+        'unk_6E': (0x6E, 'u8'),
+        'betPlacedFlags': (0x6F, 'u8', 3),
+    },
 }
 
 # =============================================================================
@@ -600,6 +703,7 @@ class CutsceneTranspiler:
         self.buffer_base: Optional[int] = None  # Buffer base address from .buffer directive
         self.locals: Dict[str, Dict] = {}  # name -> {offset, type, size} for buffer-local variables
         self.next_local_offset: int = 0  # Next available offset for auto-allocated buffer-local vars
+        self.structs: Dict[str, str] = {}  # instance_name -> type_name for struct member access
         
     # Element sizes for array type specifiers
     ARRAY_TYPE_SIZES = {
@@ -626,6 +730,7 @@ class CutsceneTranspiler:
         self.buffer_base = None
         self.locals = {}
         self.next_local_offset = 0
+        self.structs = {}
 
         lines = self.parser.parse_file(source)
 
@@ -642,6 +747,8 @@ class CutsceneTranspiler:
                 self._collect_array(line)
             elif line.is_directive and line.directive_name == '.local':
                 self._collect_local(line)
+            elif line.is_directive and line.directive_name == '.struct':
+                self._collect_struct(line)
             else:
                 code_lines.append(line)
         
@@ -799,7 +906,31 @@ class CutsceneTranspiler:
         
         else:
             self.errors.append(f"Line {line.line_num}: .array requires name and type (e.g., .array npcAffection, u8)")
-    
+
+    def _collect_struct(self, line: SourceLine):
+        """Collect a struct instance declaration
+
+        Syntax: .struct instanceName, TypeName
+        Example: .struct gPlayer, Player
+                 .struct horseInfo, Horse
+
+        The instance name can then be used with member access syntax:
+        e.g., gPlayer.currentStamina, horseInfo.name[2]
+        """
+
+        args = line.directive_args
+
+        if len(args) >= 2:
+            instance_name = args[0]
+            type_name = args[1]
+
+            if type_name in STRUCT_TYPES:
+                self.structs[instance_name] = type_name
+            else:
+                self.errors.append(f"Line {line.line_num}: Unknown struct type '{type_name}'")
+        else:
+            self.errors.append(f"Line {line.line_num}: .struct requires instance and type (e.g., .struct gPlayer, Player)")
+
     def _emit_variables(self):
         """Emit variable declarations at start of section"""
         
@@ -1013,6 +1144,10 @@ class CutsceneTranspiler:
             # Handled in first pass by _collect_local - should not reach here
             pass
 
+        elif directive == '.struct':
+            # Handled in first pass by _collect_struct - should not reach here
+            pass
+
         else:
             self.warnings.append(f"Line {line.line_num}: Unknown directive {directive}")
             
@@ -1183,6 +1318,13 @@ class CutsceneTranspiler:
         if s == 'buffer' or s.startswith('buffer+'):
             return self._resolve_buffer_ref(s)
 
+        # Check for struct member access: instance.member or instance.member[index]
+        # Must check before array indexing since structs can have array members
+        if '.' in s and not s.startswith('.'):
+            result = self._resolve_struct_access(s)
+            if result is not None:
+                return result
+
         # Check for array indexing syntax: arrayName[index]
         if '[' in s and s.endswith(']'):
             return self._resolve_array_access(s)
@@ -1309,6 +1451,112 @@ class CutsceneTranspiler:
             return array_name
         else:
             return f"{array_name} + {offset}"
+
+    def _resolve_struct_access(self, s: str) -> Optional[str]:
+        """
+        Resolve struct member access: instance.member or instance.member[index]
+        Returns: resolved expression, or None if not a struct access
+
+        Examples:
+            gPlayer.currentStamina -> gPlayer + 0
+            gPlayer.name[2] -> gPlayer + 3  (offset 1 + 2*1)
+            gRacingContext.racerOdds[1][2] -> gRacingContext + 0x44
+        """
+
+        # Split on first dot to get instance name
+        dot_idx = s.index('.')
+        instance = s[:dot_idx].strip()
+        rest = s[dot_idx + 1:].strip()
+
+        # Check if this is a known struct instance
+        if instance not in self.structs:
+            # Not a registered struct - return None to try other resolution
+            return None
+
+        type_name = self.structs[instance]
+        struct_def = STRUCT_TYPES[type_name]
+
+        # Parse member name and optional indices
+        # Handle cases like: member, member[0], member[0][1]
+        member_name = rest
+        indices = []
+
+        # Extract all bracketed indices
+        while '[' in member_name:
+            bracket_idx = member_name.index('[')
+            end_bracket = member_name.index(']')
+            index_expr = member_name[bracket_idx + 1:end_bracket]
+            indices.append(self._resolve_index(index_expr))
+            # Remove the index from member name and continue
+            member_name = member_name[:bracket_idx] + member_name[end_bracket + 1:]
+
+        member_name = member_name.strip()
+
+        if member_name not in struct_def:
+            self.errors.append(f"Line {self.current_line}: Unknown member '{member_name}' in struct type '{type_name}'")
+            return s
+
+        member_info = struct_def[member_name]
+        base_offset = member_info[0]
+        elem_type = member_info[1]
+
+        # Get element size - handle f32 specially
+        if elem_type == 'f32':
+            elem_size = 4
+        else:
+            elem_size = self.ARRAY_TYPE_SIZES.get(elem_type, 1)
+
+        # Calculate total offset with indices
+        total_offset = base_offset
+
+        if indices:
+            # Get array dimensions from member_info (after offset and type)
+            if len(member_info) > 2:
+                dims = member_info[2:]  # Tuple of dimensions
+
+                # For multi-dimensional arrays, calculate offset
+                # dims = (6, 3) means arr[6][3], so arr[i][j] = base + (i * 3 + j) * elem_size
+                if len(indices) == 1:
+                    # Single index into array
+                    total_offset += indices[0] * elem_size
+                elif len(indices) == 2 and len(dims) >= 2:
+                    # 2D array access: arr[i][j] = base + (i * inner_dim + j) * elem_size
+                    inner_dim = dims[1] if len(dims) >= 2 else 1
+                    total_offset += (indices[0] * inner_dim + indices[1]) * elem_size
+                else:
+                    # General case for more dimensions
+                    stride = elem_size
+                    for i in range(len(indices) - 1, -1, -1):
+                        total_offset += indices[i] * stride
+                        if i > 0 and i - 1 < len(dims) - 1:
+                            stride *= dims[len(dims) - len(indices) + i]
+            else:
+                # Indexing a scalar member - emit warning
+                self.warnings.append(f"Line {self.current_line}: Indexing non-array member '{member_name}'")
+                total_offset += indices[0] * elem_size
+
+        # Return linker expression
+        if total_offset == 0:
+            return instance
+        else:
+            return f"{instance} + {total_offset}"
+
+    def _resolve_index(self, index_expr: str) -> int:
+        """Resolve an index expression to an integer value"""
+
+        index_expr = index_expr.strip()
+
+        if index_expr in BUILTIN_CONSTANTS:
+            return BUILTIN_CONSTANTS[index_expr]
+        elif index_expr.startswith('0x') or index_expr.startswith('0X'):
+            return int(index_expr, 16)
+        elif index_expr.startswith('-'):
+            return int(index_expr)
+        elif index_expr.isdigit():
+            return int(index_expr)
+        else:
+            self.warnings.append(f"Line {self.current_line}: Unknown index '{index_expr}', using 0")
+            return 0
 
 
 # =============================================================================

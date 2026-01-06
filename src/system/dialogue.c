@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include "system/audio.h"
 #include "system/controller.h" 
 #include "system/dialogue.h"
 #include "system/math.h"
@@ -424,15 +425,15 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", isDialogueClosing);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", checkAllDialoguesCompleted);
 
-bool isDialogueClosing(void) {
+bool checkAllDialoguesCompleted(void) {
 
     bool result = FALSE;
     u16 i;
 
     for (i = 0; i < 1; i++) {
-        if (dialogues[i].sessionManager.flags & 4) {
+        if (dialogues[i].sessionManager.flags & DIALOGUE_COMPLETED) {
             result = TRUE;
         }
     }
@@ -450,7 +451,7 @@ bool closeDialogueSession(u16 index) {
     if (index == 0 && dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE) {
 
         if (!(dialogues[index].sessionManager.flags & 0x40)) {
-            messageBoxes[dialogues[index].sessionManager.mainMessageBoxIndex].flags &= ~0x8000;
+            messageBoxes[dialogues[index].sessionManager.mainMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
         }
 
         resetMessageBoxAnimation(dialogues[index].sessionManager.mainMessageBoxIndex);
@@ -470,7 +471,7 @@ bool closeDialogueSession(u16 index) {
 
 void cleanupDialogueOverlayBox(u16 index) {
 
-    messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags &= ~0x8000;
+    messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
     
     resetMessageBoxAnimation(dialogues[index].sessionManager.overlayMessageBoxIndex);
     
@@ -921,7 +922,7 @@ void updateCurrentDialogue(u16 index) {
                 if (dialogues[index].sessionManager.flags & 0x80) {
                     initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, dialogues[index].bytecodeExecutor.textIndex, 0);
                 } else {
-                    initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, dialogues[index].bytecodeExecutor.textIndex, 0x8000);
+                    initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, dialogues[index].bytecodeExecutor.textIndex, MESSAGE_BOX_MODE_UNKNOWN);
                 }
                 
                 finishCurrentDialogueBlockProcessing = TRUE;
@@ -1202,7 +1203,7 @@ void updateDialogues(void) {
             
             if (dialogues[i].sessionManager.flags & DIALOGUE_WAIT_FOR_MESSAGE_BOX) {
                 
-                if ((messageBoxes[dialogues[i].sessionManager.mainMessageBoxIndex].flags & 4) || (messageBoxes[dialogues[i].sessionManager.mainMessageBoxIndex].flags & 0x20000)) {
+                if ((messageBoxes[dialogues[i].sessionManager.mainMessageBoxIndex].flags & MESSAGE_BOX_TEXT_COMPLETE) || (messageBoxes[dialogues[i].sessionManager.mainMessageBoxIndex].flags & 0x20000)) {
                     dialogues[i].sessionManager.flags &= ~DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                 }
                 

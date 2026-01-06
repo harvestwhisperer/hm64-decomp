@@ -23,6 +23,7 @@
 #include "game/shop.h"
 #include "game/time.h"
 #include "game/title.h"
+#include "game/transition.h"
 #include "game/weather.h"
 
 #include "mainLoop.h"
@@ -33,11 +34,12 @@
 #include "data/fieldTileMaps/cutsceneFieldTiles.h"
 #include "data/fieldTileMaps/fieldTiles.h"
 
+#include "assetIndices/dialogues.h"
 #include "assetIndices/cutscenes.h"
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
 #include "assetIndices/sprites.h"
-                                  
+
 // forward declarations
 u16 setBeachCutscenes(void);                          
 u16 setCaveCutscenes(void);                          
@@ -115,6 +117,8 @@ u32 D_80237A00;
 
 u8 cutsceneLevelInteractionIndex;
 u8 interactedWithLevelInteractionIndex;
+
+RacingContext gRacingContext;
 
 
 // shared (with overlayScreens.c)
@@ -961,7 +965,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         if (!set) {
             if (checkLifeEventBit(0x41) && !checkLifeEventBit(0x42) && gSeason == WINTER && (5 < gHour && gHour < 18) && gHarvestKing != 4 && gHarvestCoinFinder != 4) {
                 
-                if (MARRIED_TO_ANN && npcAffection[CLIFF] >= 150 && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+                if (checkLifeEventBit(MARRIED) && gWife == ANN && npcAffection[CLIFF] >= 150 && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
                     setLifeEventBit(0x42);
                     setLifeEventBit(0x2D);
                     gCutsceneIndex = 0xD5;
@@ -1188,7 +1192,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         if (!set) {
             
             if (!checkLifeEventBit(0x72) && blueMistFlowerPlot >= 0xC2 && npcAffection[POPURI] >= 200 && gWeather == SUNNY && gSeason == SUMMER && gDayOfMonth == 30 && (5 < gHour && gHour < 18) 
-                    && ((MARRIED_TO_POPURI) || (!checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)))) {
+                    && ((checkLifeEventBit(MARRIED) && gWife == POPURI) || (!checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)))) {
                 
                 blueMistFlowerPlot = 0;
                 pondFieldTiles[5][3] = 0;
@@ -1560,7 +1564,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
             
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(POPURI_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (17 < gHour && gHour < 21) && MARRIED_TO_POPURI) {
+            if (!checkDailyEventBit(POPURI_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (17 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == POPURI) {
                 setDailyEventBit(POPURI_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xF0;
                 loadCutscene(arg0);
@@ -1570,7 +1574,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
             
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(ELLI_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (17 < gHour && gHour < 21) && MARRIED_TO_ELLI) {
+            if (!checkDailyEventBit(ELLI_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (17 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == ELLI) {
                 setDailyEventBit(ELLI_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xF1;
                 loadCutscene(arg0);
@@ -1580,7 +1584,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
             
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(ANN_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (17 < gHour && gHour < 21) && MARRIED_TO_ANN) {
+            if (!checkDailyEventBit(ANN_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (17 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == ANN) {
                 setDailyEventBit(ANN_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xF2;
                 loadCutscene(arg0);
@@ -1590,7 +1594,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
             
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (17 < gHour && gHour < 21) && MARRIED_TO_KAREN) {
+            if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 1 && gWeather == SUNNY && (17 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == KAREN) {
                 setDailyEventBit(KAREN_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xF3;
                 loadCutscene(arg0);
@@ -1610,7 +1614,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(POPURI_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (17 < gHour && gHour < 21) && MARRIED_TO_POPURI) {
+            if (!checkDailyEventBit(POPURI_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (17 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == POPURI) {
                 setDailyEventBit(POPURI_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xF5;
                 loadCutscene(arg0);
@@ -1620,7 +1624,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(ELLI_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (17 < gHour && gHour < 21) && MARRIED_TO_ELLI) {
+            if (!checkDailyEventBit(ELLI_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (17 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == ELLI) {
                 setDailyEventBit(ELLI_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xF6;
                 loadCutscene(arg0);
@@ -1630,7 +1634,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(ANN_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (17 < gHour && gHour < 21) && MARRIED_TO_ANN) {
+            if (!checkDailyEventBit(ANN_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (17 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == ANN) {
                 setDailyEventBit(ANN_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xF7;
                 loadCutscene(arg0);
@@ -1640,7 +1644,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (17 < gHour && gHour < 21) && MARRIED_TO_KAREN) {
+            if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 24 && gWeather == SUNNY && (17 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == KAREN) {
                 setDailyEventBit(KAREN_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xF8;
                 loadCutscene(arg0);
@@ -1660,7 +1664,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
             
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(POPURI_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (16 < gHour && gHour < 21) && MARRIED_TO_POPURI && npcAffection[POPURI] >= 220) {
+            if (!checkDailyEventBit(POPURI_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (16 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == POPURI && npcAffection[POPURI] >= 220) {
                 setDailyEventBit(POPURI_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xA1;
                 loadCutscene(arg0);
@@ -1670,7 +1674,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(ELLI_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (16 < gHour && gHour < 21) && MARRIED_TO_ELLI && npcAffection[ELLI] >= 220) {
+            if (!checkDailyEventBit(ELLI_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (16 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == ELLI && npcAffection[ELLI] >= 220) {
                 setDailyEventBit(ELLI_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xAD;
                 loadCutscene(arg0);
@@ -1680,7 +1684,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(ANN_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (16 < gHour && gHour < 21) && MARRIED_TO_ANN && npcAffection[ANN] >= 220) {
+            if (!checkDailyEventBit(ANN_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (16 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == ANN && npcAffection[ANN] >= 220) {
                 setDailyEventBit(ANN_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xB8;
                 loadCutscene(arg0);
@@ -1690,7 +1694,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (16 < gHour && gHour < 21) && MARRIED_TO_KAREN && npcAffection[KAREN] >= 220) {
+            if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == SUMMER && gDayOfMonth == 7 && gWeather == SUNNY && (16 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == KAREN && npcAffection[KAREN] >= 220) {
                 setDailyEventBit(KAREN_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xC5;
                 loadCutscene(arg0);
@@ -1710,7 +1714,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }       
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(POPURI_MARRIAGE_CUTSCENE) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (16 < gHour && gHour < 21) && MARRIED_TO_POPURI && npcAffection[POPURI] >= 220) {
+            if (!checkDailyEventBit(POPURI_MARRIAGE_CUTSCENE) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (16 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == POPURI && npcAffection[POPURI] >= 220) {
                 setDailyEventBit(POPURI_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xA2;
                 loadCutscene(arg0);
@@ -1720,7 +1724,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }      
     
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(ELLI_MARRIAGE_CUTSCENE) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (16 < gHour && gHour < 21) && MARRIED_TO_ELLI && npcAffection[ELLI] >= 220) {
+            if (!checkDailyEventBit(ELLI_MARRIAGE_CUTSCENE) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (16 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == ELLI && npcAffection[ELLI] >= 220) {
                 setDailyEventBit(ELLI_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xAE;
                 loadCutscene(arg0);
@@ -1730,7 +1734,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }        
             
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(ANN_MARRIAGE_CUTSCENE) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (16 < gHour && gHour < 21) && MARRIED_TO_ANN && npcAffection[ANN] >= 220) {
+            if (!checkDailyEventBit(ANN_MARRIAGE_CUTSCENE) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (16 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == ANN && npcAffection[ANN] >= 220) {
                 setDailyEventBit(ANN_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xB9;
                 loadCutscene(arg0);
@@ -1740,7 +1744,7 @@ u16 setFarmVisitCutscenes(u8 arg0) {
         }     
             
         if (!set && arg0 == 0) {
-            if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (16 < gHour && gHour < 21) && MARRIED_TO_KAREN && npcAffection[KAREN] >= 220) {
+            if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == AUTUMN && gDayOfMonth == 9 && gWeather == SUNNY && (16 < gHour && gHour < 21) && checkLifeEventBit(MARRIED) && gWife == KAREN && npcAffection[KAREN] >= 220) {
                 setDailyEventBit(KAREN_MARRIAGE_CUTSCENE);
                 gCutsceneIndex = 0xC6;
                 loadCutscene(arg0);
@@ -2085,7 +2089,7 @@ u16 setMoonMountainCutscenes(void) {
     bool set = FALSE;
     u16 index = 0xFFFF;
 
-    if (gSeason == SUMMER && gDayOfMonth == 1 && NIGHTTIME && NOT_MARRIED && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+    if (gSeason == SUMMER && gDayOfMonth == 1 && NIGHTTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
         gCutsceneIndex = MOUNTAIN_FIREWORKS;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
@@ -2093,7 +2097,7 @@ u16 setMoonMountainCutscenes(void) {
     }
     
     if (!set) {
-        if (gSeason == WINTER && gDayOfMonth == 24 && NIGHTTIME && NOT_MARRIED && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+        if (gSeason == WINTER && gDayOfMonth == 24 && NIGHTTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
             gCutsceneIndex = STARRY_NIGHT_MOON_MOUNTAIN;
             loadCutscene(0);
             gCutsceneFlags |= (2 | 4);
@@ -2248,7 +2252,7 @@ u16 setHouseCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && MARRIED_TO_POPURI && npcAffection[POPURI] < 100) {
+        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && checkLifeEventBit(MARRIED) && gWife == POPURI && npcAffection[POPURI] < 100) {
             setDailyEventBit(FARM_MORNING_VISIT);
             setLifeEventBit(WIFE_LEFT);
             gCutsceneIndex = POPURI_LEAVES_MARRIAGE;
@@ -2259,7 +2263,7 @@ u16 setHouseCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && MARRIED_TO_ELLI && npcAffection[ELLI] < 100) {
+        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && checkLifeEventBit(MARRIED) && gWife == ELLI && npcAffection[ELLI] < 100) {
             setDailyEventBit(FARM_MORNING_VISIT);
             setLifeEventBit(WIFE_LEFT);
             gCutsceneIndex = ELLI_LEAVES_MARRIAGE;
@@ -2270,7 +2274,7 @@ u16 setHouseCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && MARRIED_TO_ANN && npcAffection[ANN] < 100) {
+        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && checkLifeEventBit(MARRIED) && gWife == ANN && npcAffection[ANN] < 100) {
             setDailyEventBit(FARM_MORNING_VISIT);
             setLifeEventBit(WIFE_LEFT);
             gCutsceneIndex = ANN_LEAVES_MARRIAGE;
@@ -2281,7 +2285,7 @@ u16 setHouseCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && MARRIED_TO_KAREN && npcAffection[KAREN] < 100) {
+        if (!checkDailyEventBit(FARM_MORNING_VISIT) && !checkLifeEventBit(WIFE_LEFT) && (5 < gHour && gHour < 18) && checkLifeEventBit(MARRIED) && gWife == KAREN && npcAffection[KAREN] < 100) {
             setDailyEventBit(FARM_MORNING_VISIT);
             setLifeEventBit(WIFE_LEFT);
             gCutsceneIndex = KAREN_LEAVES_MARRIAGE;
@@ -2614,7 +2618,7 @@ u16 setRanchStoreCutscenes(void) {
 
     u16 index = 0xFFFF;
      
-    if (!(checkLifeEventBit(ANN_SICK_VISIT)) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[ANN] >= 120 && (2 <= gWeather && gWeather < 4) && gDayOfWeek == SUNDAY && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
+    if (!(checkLifeEventBit(ANN_SICK_VISIT)) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[ANN] >= 120 && (2 <= gWeather && gWeather < 4) && gDayOfWeek == SUNDAY && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED)) {
         setLifeEventBit(ANN_SICK_VISIT);
         setDailyEventBit(0x59);
         gCutsceneIndex = ANN_SICK_VISIT_CUTSCENE;
@@ -2622,7 +2626,7 @@ u16 setRanchStoreCutscenes(void) {
         gCutsceneFlags |= (2 | 4);
     }
      
-    if (MARRIED_TO_ANN && checkLifeEventBit(WIFE_LEFT)) {
+    if (checkLifeEventBit(MARRIED) && gWife == ANN && checkLifeEventBit(WIFE_LEFT)) {
         gCutsceneIndex = ANN_REPAIR_MARRIAGE;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
@@ -2687,7 +2691,7 @@ u16 setVineyardHouseCutscenes(void) {
     
     u16 index = 0xFFFF;
     
-    if (!checkLifeEventBit(KAREN_SICK_VISIT) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[KAREN] >= 120U && (2 <= gWeather && gWeather < 4) && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+    if (!checkLifeEventBit(KAREN_SICK_VISIT) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[KAREN] >= 120U && (2 <= gWeather && gWeather < 4) && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
         setLifeEventBit(KAREN_SICK_VISIT);
         setDailyEventBit(0x5A);
         gCutsceneIndex = KAREN_SICK;
@@ -2695,7 +2699,7 @@ u16 setVineyardHouseCutscenes(void) {
         gCutsceneFlags |= (2 | 4);
     }
     
-    if (MARRIED_TO_KAREN && checkLifeEventBit(WIFE_LEFT)) {
+    if (checkLifeEventBit(MARRIED) && gWife == KAREN && checkLifeEventBit(WIFE_LEFT)) {
         gCutsceneIndex = 0x2C8;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
@@ -2713,7 +2717,7 @@ u16 setVineyardCellarCutscenes(void) {
 
     set = FALSE;
     
-    if (!checkLifeEventBit(KAREN_YELLOW_HEART_EVENT_CUTSCENE) && checkLifeEventBit(0x67) && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == VINEYARD) {
+    if (!checkLifeEventBit(KAREN_YELLOW_HEART_EVENT_CUTSCENE) && checkLifeEventBit(0x67) && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == VINEYARD) {
                
         setLifeEventBit(KAREN_YELLOW_HEART_EVENT_CUTSCENE);
         setDailyEventBit(0x4F);
@@ -2727,7 +2731,7 @@ u16 setVineyardCellarCutscenes(void) {
 
     }
     
-    if (!set && checkDailyEventBit(0x4F) && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == VINEYARD_CELLAR_BASEMENT) {
+    if (!set && checkDailyEventBit(0x4F) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED) && previousMapIndex == VINEYARD_CELLAR_BASEMENT) {
         gCutsceneIndex = KAREN_YELLOW_HEART_EVENT_4;
         gCutsceneFlags |= (2 | 4);
         loadCutscene(0);
@@ -3059,7 +3063,7 @@ u16 setFlowerShopCutscenes(void) {
     
     u16 index = 0xFFFF;
     
-    if (!checkLifeEventBit(POPURI_SICK_CUTSCENE) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[POPURI] >= 120 && (2 <= gWeather && gWeather < 4) && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+    if (!checkLifeEventBit(POPURI_SICK_CUTSCENE) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[POPURI] >= 120 && (2 <= gWeather && gWeather < 4) && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
         setLifeEventBit(POPURI_SICK_CUTSCENE);
         setDailyEventBit(0x57);
         gCutsceneIndex = POPURI_SICK;
@@ -3067,7 +3071,7 @@ u16 setFlowerShopCutscenes(void) {
         gCutsceneFlags |= (2 | 4);
     }
     
-    if (MARRIED_TO_POPURI && checkLifeEventBit(WIFE_LEFT)) {
+    if (checkLifeEventBit(MARRIED) && gWife == POPURI && checkLifeEventBit(WIFE_LEFT)) {
         gCutsceneIndex = 0x1BC;
         loadCutscene(0);
         gCutsceneFlags |= (2 | 4);
@@ -3235,7 +3239,7 @@ u16 setChurchCutscenes(void) {
     bool set = FALSE;
     u16 index = 0xFFFF;
 
-    if (gSeason == WINTER && gDayOfMonth == 24 && NIGHTTIME && NOT_MARRIED) {     
+    if (gSeason == WINTER && gDayOfMonth == 24 && NIGHTTIME && !checkLifeEventBit(MARRIED)) {     
         gCutsceneIndex = STARRY_NIGHT_FESTIVAL;
         loadCutscene(0);
         set = TRUE;
@@ -3472,7 +3476,7 @@ u16 setBeachCutscenes(void) {
     }
     
     if (!set) {
-        if (gSeason == SUMMER && gDayOfMonth == 1 && NIGHTTIME && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+        if (gSeason == SUMMER && gDayOfMonth == 1 && NIGHTTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
             gCutsceneIndex = BEACH_FIREWORKS;
             loadCutscene(0);
             set = TRUE;
@@ -3481,7 +3485,7 @@ u16 setBeachCutscenes(void) {
     }
     
     if (!set) {
-        if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 10 && (5 < gHour && gHour < 18) && NOT_MARRIED) {
+        if (!checkDailyEventBit(KAREN_MARRIAGE_CUTSCENE) && gSeason == WINTER && gDayOfMonth == 10 && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED)) {
             setDailyEventBit(KAREN_MARRIAGE_CUTSCENE);
             gCutsceneIndex = 0x2F1;
             loadCutscene(0);
@@ -3491,7 +3495,7 @@ u16 setBeachCutscenes(void) {
     }
 
     if (!set) {
-        if (gSeason == WINTER && gDayOfMonth == 24 && NIGHTTIME && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+        if (gSeason == WINTER && gDayOfMonth == 24 && NIGHTTIME && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
             gCutsceneIndex = 0x2F4;
             loadCutscene(0);
             gCutsceneFlags |= (2 | 4);
@@ -3500,7 +3504,7 @@ u16 setBeachCutscenes(void) {
     }
     
     if (!set) {
-        if (!checkLifeEventBit(0xCA) && npcAffection[KAREN] < 101 && (5 < gHour && gHour < 18) && (gYear >= 3 || (gYear == 2 && gSeason == WINTER)) && (NOT_MARRIED || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED) && gFlowerFestivalGoddess != 4) {
+        if (!checkLifeEventBit(0xCA) && npcAffection[KAREN] < 101 && (5 < gHour && gHour < 18) && (gYear >= 3 || (gYear == 2 && gSeason == WINTER)) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED) && gFlowerFestivalGoddess != 4) {
             setLifeEventBit(0xCA);
             setLifeEventBit(0x2F);
             setSpecialDialogueBit(0x23);
@@ -3512,7 +3516,7 @@ u16 setBeachCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(KAREN_AND_ELLI_BEACH_CUTSCENE) && npcAffection[ELLI] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && (NOT_MARRIED || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+        if (!checkLifeEventBit(KAREN_AND_ELLI_BEACH_CUTSCENE) && npcAffection[ELLI] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
             setLifeEventBit(KAREN_AND_ELLI_BEACH_CUTSCENE);
             gCutsceneIndex = KAREN_AND_ELLI;
             gCutsceneFlags |= (2 | 4);
@@ -3522,7 +3526,7 @@ u16 setBeachCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0x9C) && NOT_MARRIED && npcAffection[KAREN] >= 250 && gWeather == SUNNY && (14 < gHour && gHour < 24) && NOT_MARRIED && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+        if (!checkLifeEventBit(0x9C) && !checkLifeEventBit(MARRIED) && npcAffection[KAREN] >= 250 && gWeather == SUNNY && (14 < gHour && gHour < 24) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
             setLifeEventBit(0x9C);
             gCutsceneIndex = KAREN_PINK_HEART_EVENT;
             gCutsceneFlags |= (2 | 4);
@@ -3532,7 +3536,7 @@ u16 setBeachCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0x9D) && checkLifeEventBit(0x20) && npcAffection[KAI] >= 180 && gWeather == SUNNY && NIGHTTIME && (NOT_MARRIED || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
+        if (!checkLifeEventBit(0x9D) && checkLifeEventBit(0x20) && npcAffection[KAI] >= 180 && gWeather == SUNNY && NIGHTTIME && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && !checkLifeEventBit(KAREN_KAI_MARRIED)) {
             setLifeEventBit(0x9D);
             gCutsceneIndex = 0x2EF;
             gCutsceneFlags |= (2 | 4);
@@ -3559,7 +3563,7 @@ u16 setRoadCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xCD) && bakeryCardPoints >= 6 && npcAffection[ANN] >= 150 && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == RANCH) {
+        if (!checkLifeEventBit(0xCD) && bakeryCardPoints >= 6 && npcAffection[ANN] >= 150 && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == RANCH) {
             setLifeEventBit(0xCD);
             gCutsceneIndex = 0x321;
             gCutsceneFlags |= (2 | 4);
@@ -3590,7 +3594,7 @@ u16 setRoadCutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(ANN_SPRAINED_ANKLE_CUTSCENE) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[ANN] >= 180 && (5 < gHour && gHour < 18) && NOT_MARRIED && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == FARM) {
+        if (!checkLifeEventBit(ANN_SPRAINED_ANKLE_CUTSCENE) && !checkDailyEventBit(FESTIVAL_DAY_TYPE_2) && npcAffection[ANN] >= 180 && (5 < gHour && gHour < 18) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && previousMapIndex == FARM) {
             setLifeEventBit(ANN_SPRAINED_ANKLE_CUTSCENE);
             setDailyEventBit(0x59);
             gCutsceneIndex = ANN_SPRAINED_ANKLE;
@@ -4156,7 +4160,7 @@ void handleCutsceneCompletion(void) {
                         
                     }
                     
-                    handleExitLevel(1, NAMING_SCREEN);
+                    handleExitLevel(1, NAMING_SCREEN_LOAD);
                     break;
 
                 case 7:
@@ -4258,7 +4262,7 @@ void handleCutsceneCompletion(void) {
                         case 0x20:                          
                             if (gHour >= 6) {
                                 gNamingScreenIndex = 4;
-                                handleExitLevel(1, NAMING_SCREEN);
+                                handleExitLevel(1, NAMING_SCREEN_LOAD);
                             } else {
                                 setMainLoopCallbackFunctionIndex(END_OF_DAY_1);                             
                             }
@@ -4361,7 +4365,7 @@ void handleCutsceneCompletion(void) {
                         case RANCH_GET_HORSE:                         
                         case 0x299:                         
                             gNamingScreenIndex = 3;
-                            handleExitLevel(1, NAMING_SCREEN);
+                            handleExitLevel(1, NAMING_SCREEN_LOAD);
                             setLifeEventBit(HAVE_HORSE);
                             break;
                         case 0x28B:                         
@@ -5295,9 +5299,7 @@ void handleCutsceneCompletion(void) {
             
         }
 
-        // UI strings flags
-
-        // FIXME: struct addressesing needs to be fixed
+        // horse/dog race flags
         if (gCutsceneCompletionFlags & 4) {
             setGameVariableString(0x28, gRacingContext.oddsAndNames.racerNameLookup[gRaceFinishOrder[0]], 6);
             setGameVariableString(0x29, gRacingContext.oddsAndNames.racerNameLookup[gRaceFinishOrder[1]], 6);
@@ -5305,7 +5307,6 @@ void handleCutsceneCompletion(void) {
         }
 
         // sprite color flags
-
         if (gCutsceneCompletionFlags & 0x40) {
             setSpritePaletteIndex(0x62, 0);
             gCutsceneCompletionFlags &= ~0x40;

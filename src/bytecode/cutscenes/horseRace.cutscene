@@ -35,6 +35,12 @@
 .array lifeEventBits, u32
 .array dailyEventBits, u32
 
+.struct gRacingContext, RacingContext
+
+#define MARIA 0
+
+#define MARRIED 0
+
 .entry
     SET_SPECIAL_BIT 13, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 14, gCutsceneCompletionFlags
@@ -67,7 +73,7 @@
 .sub_129834:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
-    SET_CAMERA_TRACKING_FLAG TRUE
+    SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
 .branch_129854:
@@ -103,7 +109,7 @@
 .executor_1_129908:
     SETUP_ENTITY 1, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -192, 0, -32
     SET_ASSET_ROTATION 6
 
@@ -124,7 +130,7 @@
 .executor_2_129960:
     SETUP_ENTITY 2, 13, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -192, 0, 16
     SET_ASSET_ROTATION 6
 
@@ -145,7 +151,7 @@
 .executor_3_1299B8:
     SETUP_ENTITY 3, 1, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -128, 0, -64
     SET_ASSET_ROTATION 0
 
@@ -159,10 +165,10 @@
     EXECUTE_SUBROUTINE .sub_129814
     BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_129B18
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_129A70
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_129A3C
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_129A3C
 
 .sub_129A1C:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection, .branch_129A4C
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[MARIA], .branch_129A4C
     INIT_DIALOGUE_SESSION 0, 50, 1
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITIES
@@ -187,7 +193,7 @@
 
 .branch_129A70:
     BRANCH_ON_SPECIAL_BIT 17, lifeEventBits + 0x8, .branch_129AEC
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_129A8C
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_129A8C
     EXECUTE_SUBROUTINE .sub_129A1C
 
 .branch_129A8C:
@@ -217,7 +223,7 @@
     EXECUTE_SUBROUTINE .sub_129A54
 
 .branch_129AEC:
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_129AFC
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_129AFC
     EXECUTE_SUBROUTINE .sub_129A1C
 
 .branch_129AFC:
@@ -229,7 +235,7 @@
     EXECUTE_SUBROUTINE .sub_129A54
 
 .branch_129B18:
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_129B3C
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_129B3C
     BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_129B58
     INIT_MESSAGE_BOX_TYPE1 0, 58, 45
     EXECUTE_SUBROUTINE .sub_129A54
@@ -245,7 +251,7 @@
 .branch_129B58:
     INIT_MESSAGE_BOX_TYPE1 0, 58, 46
     EXECUTE_SUBROUTINE .sub_129A54
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_129B7C
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_129B7C
     INIT_MESSAGE_BOX_TYPE1 0, 58, 44
     EXECUTE_SUBROUTINE .sub_129A54
 
@@ -260,7 +266,7 @@
 .executor_4_129B98:
     SETUP_ENTITY 4, 27, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -96, 0, -290
     SET_ASSET_ROTATION 0
 
@@ -281,7 +287,7 @@
 .executor_5_129BF0:
     SETUP_ENTITY 5, 46, 1
     SET_ENTITY_ANIMATIONS 5, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -32, 0, -96
     SET_ASSET_ROTATION 4
 
@@ -302,7 +308,7 @@
 .executor_6_129C48:
     SETUP_ENTITY 6, 47, 1
     SET_ENTITY_ANIMATIONS 6, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -64, 0, -160
     SET_ASSET_ROTATION 4
 
@@ -323,7 +329,7 @@
 .executor_7_129CA0:
     SETUP_ENTITY 7, 48, 1
     SET_ENTITY_ANIMATIONS 7, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -64, 0, -128
     SET_ASSET_ROTATION 6
 
@@ -376,7 +382,7 @@
 
 .branch_129DC8:
     BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_129DF4
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_129E34
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_129E34
     BRANCH_U8_VAR_WITHIN_RANGE 0, 80, npcAffection + 0x4, .branch_129DF4
 
 .branch_129DEC:
@@ -418,7 +424,7 @@
 .executor_1_129EAC:
     SETUP_ENTITY 1, 21, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -64, 0, 144
     SET_ASSET_ROTATION 0
 
@@ -480,7 +486,7 @@
 .executor_2_129FBC:
     SETUP_ENTITY 2, 22, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -96, 0, 144
     SET_ASSET_ROTATION 0
 
@@ -531,7 +537,7 @@
 .executor_3_12A098:
     SETUP_ENTITY 3, 20, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -16, 0, 144
     SET_ASSET_ROTATION 0
 
@@ -584,7 +590,7 @@
 .executor_4_12A180:
     SETUP_ENTITY 4, 25, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -128, 0, 80
     SET_ASSET_ROTATION 0
 
@@ -651,7 +657,7 @@
 .executor_5_12A298:
     SETUP_ENTITY 5, 2, 1
     SET_ENTITY_ANIMATIONS 5, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 64, 0, 112
     SET_ASSET_ROTATION 0
 
@@ -669,7 +675,7 @@
     EXECUTE_SUBROUTINE .sub_129814
     BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A3F0
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_12A3BC
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_12A32C
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12A32C
 
 .sub_12A308:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection + 0x1, .branch_12A360
@@ -723,7 +729,7 @@
     EXECUTE_SUBROUTINE .sub_12A38C
 
 .branch_12A3BC:
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_12A3CC
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12A3CC
     EXECUTE_SUBROUTINE .sub_12A308
 
 .branch_12A3CC:
@@ -735,7 +741,7 @@
     EXECUTE_SUBROUTINE .sub_12A2C0
 
 .branch_12A3F0:
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_12A408
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12A408
     INIT_MESSAGE_BOX_TYPE1 0, 58, 56
     EXECUTE_SUBROUTINE .sub_12A368
 
@@ -757,7 +763,7 @@
 .executor_6_12A448:
     SETUP_ENTITY 6, 8, 1
     SET_ENTITY_ANIMATIONS 6, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 192, 0, 80
     SET_ASSET_ROTATION 0
 
@@ -822,7 +828,7 @@
 .executor_7_12A56C:
     SETUP_ENTITY 7, 4, 1
     SET_ENTITY_ANIMATIONS 7, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 96, 0, 24
     SET_ASSET_ROTATION 0
 
@@ -836,7 +842,7 @@
     EXECUTE_SUBROUTINE .sub_129814
     BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A6D0
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_12A654
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_12A5FC
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12A5FC
 
 .sub_12A5D0:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection + 0x3, .branch_12A630
@@ -878,7 +884,7 @@
 
 .branch_12A654:
     BRANCH_ON_SPECIAL_BIT 5, D_801C3F78, .branch_12A68C
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_12A670
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12A670
     EXECUTE_SUBROUTINE .sub_12A5D0
 
 .branch_12A670:
@@ -922,7 +928,7 @@
 .executor_8_12A700:
     SETUP_ENTITY 8, 9, 1
     SET_ENTITY_ANIMATIONS 8, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -64, 0, -172
     SET_ASSET_ROTATION 0
 
@@ -965,7 +971,7 @@
 .executor_9_12A7B8:
     SETUP_ENTITY 9, 3, 1
     SET_ENTITY_ANIMATIONS 9, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 0, 0, -144
     SET_ASSET_ROTATION 0
 
@@ -991,7 +997,7 @@
 
 .branch_12A828:
     EXECUTE_SUBROUTINE .sub_12A810
-    BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .branch_12A844
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12A844
     INIT_MESSAGE_BOX_TYPE1 0, 58, 60
     EXECUTE_SUBROUTINE .sub_12A818
 
@@ -1017,7 +1023,7 @@
 .executor_10_12A890:
     SETUP_ENTITY 10, 7, 1
     SET_ENTITY_ANIMATIONS 10, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -96, 0, -8
     SET_ASSET_ROTATION 0
 
@@ -1060,7 +1066,7 @@
 .executor_11_12A948:
     SETUP_ENTITY 11, 10, 1
     SET_ENTITY_ANIMATIONS 11, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 160, 0, -112
     SET_ASSET_ROTATION 0
 
@@ -1111,7 +1117,7 @@
 .executor_12_12AA24:
     SETUP_ENTITY 12, 11, 1
     SET_ENTITY_ANIMATIONS 12, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 32, 0, -80
     SET_ASSET_ROTATION 0
 
@@ -1146,7 +1152,7 @@
 .executor_13_12AAB8:
     SETUP_ENTITY 13, 5, 1
     SET_ENTITY_ANIMATIONS 13, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 128, 0, 56
     SET_ASSET_ROTATION 0
 
@@ -1191,7 +1197,7 @@
 .executor_14_12AB7C:
     SETUP_ENTITY 14, 42, 1
     SET_ENTITY_ANIMATIONS 14, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 128, 0, 144
     SET_ASSET_ROTATION 0
 
@@ -1202,7 +1208,7 @@
 .executor_15_12ABB0:
     SETUP_ENTITY 15, 43, 1
     SET_ENTITY_ANIMATIONS 15, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 160, 0, 144
     SET_ASSET_ROTATION 0
     EXECUTE_SUBROUTINE .sub_12ABA4
@@ -1727,12 +1733,12 @@
 
 .sub_12B908:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext, .branch_12B970
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext, .branch_12B974
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext, .branch_12B988
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext, .branch_12B99C
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext, .branch_12B9B0
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext, .branch_12B9C4
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext.displayOddsTop[0], .branch_12B970
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext.displayOddsTop[0], .branch_12B974
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext.displayOddsTop[0], .branch_12B988
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext.displayOddsTop[0], .branch_12B99C
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext.displayOddsTop[0], .branch_12B9B0
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext.displayOddsTop[0], .branch_12B9C4
     EXECUTE_SUBROUTINE .sub_12B9D8
 
 .branch_12B970:
@@ -1918,12 +1924,12 @@
 
 .sub_12BD34:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext + 0x2, .branch_12BD9C
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext + 0x2, .branch_12BDA0
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext + 0x2, .branch_12BDB4
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext + 0x2, .branch_12BDC8
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext + 0x2, .branch_12BDDC
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext + 0x2, .branch_12BDF0
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext.displayOddsTop[1], .branch_12BD9C
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext.displayOddsTop[1], .branch_12BDA0
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext.displayOddsTop[1], .branch_12BDB4
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext.displayOddsTop[1], .branch_12BDC8
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext.displayOddsTop[1], .branch_12BDDC
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext.displayOddsTop[1], .branch_12BDF0
     EXECUTE_SUBROUTINE .sub_12BE04
 
 .branch_12BD9C:
@@ -2109,12 +2115,12 @@
 
 .sub_12C160:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext + 0x4, .branch_12C1C8
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext + 0x4, .branch_12C1CC
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext + 0x4, .branch_12C1E0
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext + 0x4, .branch_12C1F4
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext + 0x4, .branch_12C208
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext + 0x4, .branch_12C21C
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext.displayOddsTop[2], .branch_12C1C8
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext.displayOddsTop[2], .branch_12C1CC
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext.displayOddsTop[2], .branch_12C1E0
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext.displayOddsTop[2], .branch_12C1F4
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext.displayOddsTop[2], .branch_12C208
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext.displayOddsTop[2], .branch_12C21C
     EXECUTE_SUBROUTINE .sub_12C230
 
 .branch_12C1C8:
@@ -2300,12 +2306,12 @@
 
 .sub_12C58C:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext + 0x6, .branch_12C5F4
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext + 0x6, .branch_12C5F8
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext + 0x6, .branch_12C60C
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext + 0x6, .branch_12C620
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext + 0x6, .branch_12C634
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext + 0x6, .branch_12C648
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext.oddsAndNames.displayOddsBottom[0], .branch_12C5F4
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext.oddsAndNames.displayOddsBottom[0], .branch_12C5F8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext.oddsAndNames.displayOddsBottom[0], .branch_12C60C
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext.oddsAndNames.displayOddsBottom[0], .branch_12C620
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext.oddsAndNames.displayOddsBottom[0], .branch_12C634
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext.oddsAndNames.displayOddsBottom[0], .branch_12C648
     EXECUTE_SUBROUTINE .sub_12C65C
 
 .branch_12C5F4:
@@ -2491,12 +2497,12 @@
 
 .sub_12C9B8:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext + 0x8, .branch_12CA20
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext + 0x8, .branch_12CA24
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext + 0x8, .branch_12CA38
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext + 0x8, .branch_12CA4C
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext + 0x8, .branch_12CA60
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext + 0x8, .branch_12CA74
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext.oddsAndNames.displayOddsBottom[1], .branch_12CA20
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext.oddsAndNames.displayOddsBottom[1], .branch_12CA24
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext.oddsAndNames.displayOddsBottom[1], .branch_12CA38
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext.oddsAndNames.displayOddsBottom[1], .branch_12CA4C
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext.oddsAndNames.displayOddsBottom[1], .branch_12CA60
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext.oddsAndNames.displayOddsBottom[1], .branch_12CA74
     EXECUTE_SUBROUTINE .sub_12CA88
 
 .branch_12CA20:
@@ -2682,12 +2688,12 @@
 
 .sub_12CDE4:
     SET_ANIM_DATA_PTR .anim_12B8F4
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext + 0xA, .branch_12CE4C
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext + 0xA, .branch_12CE50
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext + 0xA, .branch_12CE64
-    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext + 0xA, .branch_12CE78
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext + 0xA, .branch_12CE8C
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext + 0xA, .branch_12CEA0
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 2, gRacingContext.oddsAndNames.displayOddsBottom[2], .branch_12CE4C
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 6, gRacingContext.oddsAndNames.displayOddsBottom[2], .branch_12CE50
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 15, gRacingContext.oddsAndNames.displayOddsBottom[2], .branch_12CE64
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 30, gRacingContext.oddsAndNames.displayOddsBottom[2], .branch_12CE78
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 50, gRacingContext.oddsAndNames.displayOddsBottom[2], .branch_12CE8C
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 70, gRacingContext.oddsAndNames.displayOddsBottom[2], .branch_12CEA0
     EXECUTE_SUBROUTINE .sub_12CEB4
 
 .branch_12CE4C:
@@ -4534,7 +4540,7 @@
 .executor_1_12FE34:
     SETUP_ENTITY 1, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 0, 0, 0, 0
-    SET_CAMERA_TRACKING_FLAG FALSE
+    SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -224, 0, 64
     SET_ASSET_ROTATION 1
 

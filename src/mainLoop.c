@@ -2,17 +2,21 @@
 
 #include "mainLoop.h"
 
+#include "stdlib.h"
+
 #include "system/audio.h"
 #include "system/controller.h"
 #include "system/cutscene.h"
+#include "system/entity.h"
 #include "system/flags.h"
 #include "system/globalSprites.h"
 #include "system/graphic.h"
 #include "system/message.h"
-#include "system/overlayScreenSprites.h"
+#include "system/numberSprites.h"
 #include "system/sprite.h"
 #include "system/mapController.h"
 #include "system/sceneGraph.h"
+#include "system/spriteDMAManager.h"
 
 #include "mainproc.h"
 
@@ -28,6 +32,8 @@ void *currentGfxTaskPtr;
 void func_80026284(void);
 void handleGraphicsUpdate(int pendingGfx);
 void updateMainLoopTimer(int pendingGfx);
+
+extern s32 __osSpSetPc(u32 pc);
 
   
 //INCLUDE_ASM("asm/nonmatchings/mainLoop", mainLoop)
@@ -80,7 +86,7 @@ void mainLoop(void) {
             updateEntities();
             updateMapController();
             updateMapGraphics();
-            updateOverlayScreenSprites();
+            updateNumberSprites();
             updateSprites(); 
             dmaSprites(); 
             updateBitmaps(); 

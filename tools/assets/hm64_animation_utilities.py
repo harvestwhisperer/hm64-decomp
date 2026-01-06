@@ -167,14 +167,21 @@ def compose_frame_anchored(layer_imgs: List[Image.Image], anchors: List[Tuple[in
     anchors:    list[tuple[int,int]]   (anchor_x, anchor_y), same order as layer_imgs
 
     Returns a composed RGBA frame where each layer's anchor lands at the same pivot.
+
+    The game's setupBitmapVertices (graphic.c) positions sprites such that:
+    - X: sprite center is at anchorX (left edge = anchorX - width/2)
+    - Y: sprite center is at -anchorY (top edge = -anchorY - height/2)
     """
 
     # compute each layer's rectangle in pivot space (anchor at 0,0)
     rects = []
     for im, (ax, ay) in zip(layer_imgs, anchors):
         w, h = im.size
-        left = -ax
-        top  = -ay
+        # Game formula: center_x = ax, center_y = -ay
+        # So: left = center_x - w/2 = ax - w/2
+        #     top  = center_y - h/2 = -ay - h/2
+        left = ax - w // 2
+        top  = -ay - h // 2
         rects.append((left, top, left + w, top + h))
 
     # set overall bounding box
@@ -248,17 +255,15 @@ def build_gif_for_anim_dir(
         # start counting at 1
         frame_num = idx + 1
 
-        # bitmaps are layered in reverse order
+        # In the game (globalSprites.c:setBitmapFromSpriteObject), bitmaps are drawn
+        # in reverse order: bitmap[n-1] first (bottom), bitmap[0] last (top).
+        # For PIL, we paste bottom layers first, so we need reverse order too.
         layer_entries = sorted(frame_to_layers.get(frame_num, []), reverse=True)
 
-        """
-        layer_entries = [
-            (1, Path("animation100-frame-1-1.png")),
-            (2, Path("animation100-frame-1-2.png")),
-            (3, Path("animation100-frame-1-3.png")),
-        ]
-        """
-        
+        # After sorting reverse by layer number:
+        # layer_entries = [(3, path3), (2, path2), (1, path1)]
+        # This means: layer 3 (bitmap_metadata[2]) first, layer 1 (bitmap_metadata[0]) last
+
         if not layer_entries:
             # skip if no PNG for frame; some animations have a frame count of 0
             continue
@@ -277,9 +282,14 @@ def build_gif_for_anim_dir(
             print(f"continuing, n <= 0")
             continue
 
-        # load layer images and anchors (in filename layer order)
+        # Load layer images in reverse order (layer 3, 2, 1 -> bottom to top)
         imgs = [Image.open(p).convert("RGBA") for p in layer_paths[:n]]
-        anchors = [(int(m["anchor_x"]), int(m["anchor_y"])) for m in bm_meta[:n]]
+
+        # CRITICAL: Anchors must match the image order!
+        # layer_paths are in reverse order (layer n, n-1, ..., 1)
+        # So we need anchors in reverse order too: bm_meta[n-1], bm_meta[n-2], ..., bm_meta[0]
+        reversed_bm_meta = list(reversed(bm_meta[:n]))
+        anchors = [(int(m["anchor_x"]), int(m["anchor_y"])) for m in reversed_bm_meta]
 
         # compose one RGBA frame
         frame_img = compose_frame_anchored(imgs, anchors)

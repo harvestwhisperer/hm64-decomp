@@ -22,6 +22,8 @@ void setCameraLookAt(Camera*, f32, f32, f32, f32, f32, f32, f32, f32, f32);
 void setCameraOrthographicValues(Camera*, f32, f32, f32, f32, f32, f32); 
 void setCameraPerspectiveValues(Camera*, f32, f32, f32, f32);    
 
+volatile u8 renderScene();
+
 
 // bss
 static LookAt gSPLookAtBufferA;
@@ -132,7 +134,7 @@ volatile u8 doViewportGfxTask(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", renderScene);
 
-volatile u8 renderScene(s32 arg0, s32 arg1) {
+volatile u8 renderScene() {
 
     Gfx *dl = sceneGraphDisplayList[gGraphicsBufferIndex];
     

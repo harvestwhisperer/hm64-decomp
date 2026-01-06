@@ -7,5 +7,6 @@
 
 extern void initializeAll(void);   
 extern void initializeMainMessageBoxes(void); 
+extern void initializeGameVariables(void);
 
 #endif

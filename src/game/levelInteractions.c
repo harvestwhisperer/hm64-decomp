@@ -3,6 +3,7 @@
 #include "game/levelInteractions.h"
 
 #include "system/controller.h"
+#include "system/cutscene.h"
 #include "system/dialogue.h"
 #include "system/entity.h"
 #include "system/globalSprites.h"
@@ -24,6 +25,7 @@
 #include "game/player.h"
 #include "game/shop.h"
 #include "game/time.h"
+#include "game/tv.h"
 #include "game/transition.h"
 #include "game/weather.h"
 
@@ -4611,4 +4613,4 @@ bool handleBeachLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
 // FIXME:
 // hack to get this rodata to align along 10 bytes
-static const padding[2] = { 0, 0 };
+static const u32 padding[2] = { 0, 0 };
