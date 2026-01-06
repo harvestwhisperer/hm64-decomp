@@ -57,7 +57,7 @@ void cutsceneHandlerInitializeMessageBoxType1(u16);
 void cutsceneHandlerWaitMessageBoxClosed(u16);
 void cutsceneHandlerSetMessageBoxViewSpacePosition(u16);
 void cutsceneHandlerResetMessageBoxAvatar(u16);
-void cutsceneHandlerEntityRun(u16);
+void cutsceneHandlerEntityMove(u16);
 void cutsceneHandlerSetEntityAnimation(u16);
 void cutsceneHandlerSetEntityAnimationWithDirectionChange(u16);
 void cutsceneHandlerSetCallbackBytecodePtr(u16);
@@ -158,7 +158,7 @@ void (*cutsceneCommandHandlers[])(u16) = {
     cutsceneHandlerWaitMessageBoxClosed,
     cutsceneHandlerSetMessageBoxViewSpacePosition,
     cutsceneHandlerResetMessageBoxAvatar,
-    cutsceneHandlerEntityRun,
+    cutsceneHandlerEntityMove,
     cutsceneHandlerSetEntityAnimation,
     cutsceneHandlerSetEntityAnimationWithDirectionChange,
     cutsceneHandlerSetCallbackBytecodePtr,
@@ -1963,9 +1963,9 @@ void cutsceneHandlerResetMessageBoxAvatar(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerEntityRun);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerEntityMove);
 
-void cutsceneHandlerEntityRun(u16 index) {
+void cutsceneHandlerEntityMove(u16 index) {
         
     Vec3f vec;
     

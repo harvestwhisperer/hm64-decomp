@@ -584,10 +584,10 @@ typedef struct {
     u16 entityCollidedWithIndex;
     u16 targetButtonMask;
     u16 animationIndex1;
-    u16 animationIndex2;
+    u16 animationIndex2; // movement animation
     u16 animationIndex3;
     u16 animationIndex4;
-    u16 animationIndex5;
+    u16 animationIndex5; // movement animation
     u16 animationIndex6;
     u16 collisionWidth;
     u16 collisionHeight;
@@ -610,6 +610,5 @@ extern bool spawnCutsceneExecutor(u16 index, void *bytecodePtr);
 extern void deactivateCutsceneExecutors(void);   
 extern void pauseAllCutsceneExecutors(void);     
 extern void resumeCutsceneExecutors(void);    
-extern inline int func_80046D50(int adjustment, int value, int max);
 
 #endif
