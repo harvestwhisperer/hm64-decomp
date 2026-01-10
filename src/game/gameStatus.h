@@ -20,11 +20,12 @@
 #define PICKED_UP_BABY 0x16
 // 0x18 = thanksgiving mayor house
 #define FARM_MORNING_VISIT 0x17
-#define MARIA_MARRIAGE_CUTSCENE 0x18
-#define POPURI_MARRIAGE_CUTSCENE 0x19
-#define ELLI_MARRIAGE_CUTSCENE 0x1A
-#define ANN_MARRIAGE_CUTSCENE 0x1B
-#define KAREN_MARRIAGE_CUTSCENE 0x1C
+#define MARIA_MARRIAGE_CUTSCENE_DAILY 0x18
+#define POPURI_MARRIAGE_CUTSCENE_DAILY 0x19
+#define ELLI_MARRIAGE_CUTSCENE_DAILY 0x1A
+#define ANN_MARRIAGE_CUTSCENE_DAILY 0x1B
+#define KAREN_MARRIAGE_CUTSCENE_DAILY 0x1C
+#define MOUNTAIN_1_CUTSCENE_DAILY 0x21
 // 0x1D/1E --> fall farm animals
 #define FESTIVAL_DAY_TYPE_1 0x2D
 #define FESTIVAL_DAY_TYPE_2 0x30
@@ -32,8 +33,13 @@
 #define HORSE_RACE 0x41
 #define FED_DOG 0x43
 #define HELD_ANIMAL 0x44
+#define HARVEST_GODDESS_OFFERING 0x45
+#define HARVEST_GODDESS_INTERACTION 0x46
+#define KAPPA_FISH_OFFERING_DAILY 0x47
+#define KAPPA_LARGE_FISH_OFFERING_DAILY 0x48
 #define FESTIVAL 0x4D
 #define FESTIVAL_2 0x4E
+#define BIRTH_EVENT_DAILY 0x52
 // sick/sprained ankle
 #define HELD_BABY 0x55
 #define MARIA_ABSENT 0x56
@@ -103,6 +109,8 @@
 // #define HAVE_STUFFED_HORSE 0x58
 // #define HAVE_CUSHION 0x5A
 #define WON_CALENDAR_STICKERS_FROM_RAFFLE 0x5B
+#define MET_KAPPA 0x5E
+#define KAPPA_POWER_NUT 0x5F
 #define PUPPIES 0x69
 #define MARIA_FARM_GIFT_1 0x6D
 #define MARIA_FARM_GIFT_2 0x6E
@@ -184,6 +192,26 @@
 
 #define MAX_LETTERS 80
 
+#define PHOTO_GRANDPA 1
+#define PHOTO_SOWING_FESTIVAL 2
+#define PHOTO_HORSE_RACE 4
+#define PHOTO_COW_FESTIVAL 8
+#define PHOTO_SEA_FESTIVAL 0x10
+#define PHOTO_HOT_SPRINGS 0x20
+#define PHOTO_DOG_RACE 0x40
+#define PHOTO_WEDDING 0x80
+#define PHOTO_BIRTH 0x100
+#define PHOTO_MARIA_FIREFLIES 0x200
+#define PHOTO_POPURI_BLUE_MIST 0x400
+#define PHOTO_ELLI_ESSENCE_OF_MOONDROP 0x800
+#define PHOTO_ANN_RABBIT 0x1000
+#define PHOTO_KAREN_KEIFU_FAIRIES 0x2000
+#define PHOTO_HOME_EXTENSIONS 0x4000
+#define PHOTO_PARTY 0x8000
+
+/* power nut bits */
+#define FISHING_POWER_NUT 4
+
 extern u32 checkDailyEventBit(u16 bitIndex);
 extern void setDailyEventBit(u16 bitIndex);
 extern void toggleDailyEventBit(u16 bitIndex);   
@@ -200,7 +228,7 @@ extern u32 checkMailRead(u16);
 extern void setMail(u16);      
 extern void toggleReadLetterBit(u16);      
 
-void setAlbumPicture(u8 pictureBitIndex);
+void setAlbumPictureFromLetter(u8 pictureBitIndex);
 extern void setRecipes(void);  
 
 extern void handleWifeMorningHelp(void); 
@@ -223,6 +251,6 @@ extern u32 recipesBits[1];
 extern u32 readMailBits[];
 extern u32 mailboxBits[];
 extern u32 albumBits;
-extern u32 powerNutBits;
+extern u32 acquiredPowerNutBits;
 
 #endif

@@ -186,6 +186,7 @@ static const char* const stmtNames[] = {
     [STMT_after] = "after",
     [STMT_align] = "align",
     [STMT_beginseg] = "beginseg",
+    [STMT_boot_bss] = "boot_bss",
     [STMT_compress] = "compress",
     [STMT_endseg] = "endseg",
     [STMT_entry] = "entry",
@@ -299,6 +300,19 @@ bool parse_segment_statement(struct Segment* currSeg, STMTId stmt, char* args, i
 
         case STMT_pad_text:
             currSeg->includes[currSeg->includesCount - 1].linkerPadding += 0x10;
+            break;
+
+        case STMT_stack:
+            currSeg->stack = strdup(args);
+            break;
+
+        case STMT_entry:
+            currSeg->entry = strdup(args);
+            break;
+
+        case STMT_boot_bss:
+            if (!parse_quoted_string(args, &currSeg->bss_seg))
+                util_fatal_error("line %i: invalid segment name for 'boot_bss'", lineNum);
             break;
 
         default:
@@ -443,6 +457,12 @@ void free_single_segment_elements(struct Segment* segment) {
     if (segment->includes != NULL) {
         free(segment->includes);
     }
+    if (segment->stack != NULL) {
+        free(segment->stack);
+    }
+    if (segment->entry != NULL) {
+        free(segment->entry);
+    }
 }
 
 void free_rom_spec(struct Segment* segments, int segment_count) {
@@ -451,6 +471,10 @@ void free_rom_spec(struct Segment* segments, int segment_count) {
     for (i = 0; i < segment_count; i++) {
         if (segments[i].includes != NULL)
             free(segments[i].includes);
+        if (segments[i].stack != NULL)
+            free(segments[i].stack);
+        if (segments[i].entry != NULL)
+            free(segments[i].entry);
     }
     free(segments);
 }

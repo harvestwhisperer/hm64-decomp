@@ -87,9 +87,9 @@ u8 sramSignature[16] = { 0x50, 0x41, 0x43, 0x4B, 0x49, 0x4E, 0x53, 0x4F, 0x46, 0
 
 /* helpers */
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", inititalizeLoadGameScreen);
+//INCLUDE_ASM("asm/nonmatchings/game/gameFile", initializeLoadGameScreen);
 
-void inititalizeLoadGameScreen(bool controllerPakEnabled) {
+void initializeLoadGameScreen(bool controllerPakEnabled) {
     
     if (!controllerPakEnabled) {
         loadGameScreenContext.showControllerPakScreen = 0;
@@ -307,7 +307,7 @@ void setupDiaryMessageBoxes(void) {
             setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
             setMessageBoxButtonMask(0, BUTTON_A);
             setMessageBoxScrollSpeed(0, 1);
-            initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 1, MESSAGE_BOX_MODE_NO_INPUT);
+            initializeMessageBox(0, TEXT_1_TEXT_INDEX, 1, MESSAGE_BOX_MODE_NO_INPUT);
         }
 
         if (loadGameScreenContext.flags[1] & 1) {
@@ -321,7 +321,7 @@ void setupDiaryMessageBoxes(void) {
             setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
             setMessageBoxButtonMask(1, BUTTON_A);
             setMessageBoxScrollSpeed(1, 1);
-            initializeMessageBox(1, 0, 2, MESSAGE_BOX_MODE_NO_INPUT);
+            initializeMessageBox(1, TEXT_1_TEXT_INDEX, 2, MESSAGE_BOX_MODE_NO_INPUT);
         }
 
         if (loadGameScreenContext.flags[2] & 1) {
@@ -335,7 +335,7 @@ void setupDiaryMessageBoxes(void) {
             setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
             setMessageBoxButtonMask(2, BUTTON_A);
             setMessageBoxScrollSpeed(2, 1);
-            initializeMessageBox(2, 0, 3, MESSAGE_BOX_MODE_NO_INPUT);
+            initializeMessageBox(2, TEXT_1_TEXT_INDEX, 3, MESSAGE_BOX_MODE_NO_INPUT);
         }
 
         if (loadGameScreenContext.flags[3] & 1) {
@@ -349,7 +349,7 @@ void setupDiaryMessageBoxes(void) {
             setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
             setMessageBoxButtonMask(3, BUTTON_A);
             setMessageBoxScrollSpeed(3, 1);
-            initializeMessageBox(3, 0, 4, MESSAGE_BOX_MODE_NO_INPUT);
+            initializeMessageBox(3, TEXT_1_TEXT_INDEX, 4, MESSAGE_BOX_MODE_NO_INPUT);
         }
 
     } else {
@@ -365,7 +365,7 @@ void setupDiaryMessageBoxes(void) {
             setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
             setMessageBoxButtonMask(0, BUTTON_A);
             setMessageBoxScrollSpeed(0, 1);
-            initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 1, MESSAGE_BOX_MODE_NO_INPUT);
+            initializeMessageBox(0, TEXT_1_TEXT_INDEX, 1, MESSAGE_BOX_MODE_NO_INPUT);
         }
         
         if (loadGameScreenContext.flags[1] & 1) {
@@ -379,7 +379,7 @@ void setupDiaryMessageBoxes(void) {
             setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
             setMessageBoxButtonMask(1, BUTTON_A);
             setMessageBoxScrollSpeed(1, 1);
-            initializeMessageBox(1, 0, 2, MESSAGE_BOX_MODE_NO_INPUT);
+            initializeMessageBox(1, TEXT_1_TEXT_INDEX, 2, MESSAGE_BOX_MODE_NO_INPUT);
         }
 
     }
@@ -1404,20 +1404,20 @@ void initializeNewGameState(void) {
     fodderQuantity = 0;
     gSeasonTomorrow = 0;
     
-    D_801FC154 = 0;
-    D_80204DF4 = 0;
-    D_80237458 = 0;
-    D_8018A725 = 0;
-    D_802373E8 = 0;
-    D_8013DC2C = 0;
-    D_801FAD91 = 0;
-    D_801C3E28 = 0;
-    D_801C3F70 = 0;
-    D_80205636 = 0;
+    turnipSeedsQuantity = 0;
+    potatoSeedsQuantity = 0;
+    eggplantSeedsQuantity = 0;
+    cabbageSeedsQuantity = 0;
+    strawberrySeedsQuantity = 0;
+    tomatoSeedsQuantity = 0;
+    cornSeedsQuantity = 0;
+    grassSeedsQuantity = 0;
+    moondropSeedsQuantity = 0;
+    pinkCatMintSeedsQuantity = 0;
     
     gHarvestKing = 6;
 
-    D_802373A8 = 0;
+    blueMistSeedsQuantity = 0;
     
     gMaximumStamina = 0;
     gPlayer.currentStamina = 0;
@@ -1451,20 +1451,20 @@ void initializeNewGameState(void) {
     babyBirthdaySeason = 0;
     babyBirthdayDate = 0;
     
-    powerNutBits = 0;
+    acquiredPowerNutBits = 0;
     D_80205204 = 0;
     flowerShopPoints = 0;
     bakeryCardPoints = 0;
     
     gElliGrievingCounter = 0;
     
-    D_801654F4 = 0;
-    D_80237414 = 0;
-    D_801FB6FC = 0;
-    D_801C3F80 = 0;
-    D_801806C0 = 0;
-    D_80188F60 = 0;
-    D_801FB5D0 = 0;
+    totalTurnipsShipped = 0;
+    totalPotatoesShipped = 0;
+    totalEggplantsShipped = 0;
+    totalCabbageShipped = 0;
+    totalStrawberriesShipped = 0;
+    totalTomatoesShipped = 0;
+    totalCornShipped = 0;
     
     gTotalMilkShipped = 0;
     gTotalEggsShipped = 0;
@@ -1774,17 +1774,17 @@ bool loadGameFromSram(u8 saveSlot, bool gamePakEnabled) {
     fodderQuantity = buff->fodderQuantity;
     gSeasonTomorrow = buff->seasonTomorrow;
 
-    D_801FC154 = buff->unk_2D;
-    D_80204DF4 = buff->unk_2E;
-    D_80237458 = buff->unk_2F;
-    D_8018A725 = buff->unk_30;
-    D_802373E8 = buff->unk_31;
-    D_8013DC2C = buff->unk_32;
-    D_801FAD91 = buff->unk_33;
-    D_801C3E28 = buff->unk_34;
-    D_801C3F70 = buff->unk_35;
-    D_80205636 = buff->unk_36;
-    D_802373A8 = buff->unk_37;
+    turnipSeedsQuantity = buff->turnipSeedsQuantity;
+    potatoSeedsQuantity = buff->potatoSeedsQuantity;
+    eggplantSeedsQuantity = buff->eggplantSeedsQuantity;
+    cabbageSeedsQuantity = buff->cabbageSeedsQuantity;
+    strawberrySeedsQuantity = buff->strawberrySeedsQuantity;
+    tomatoSeedsQuantity = buff->tomatoSeedsQuantity;
+    cornSeedsQuantity = buff->cornSeedsQuantity;
+    grassSeedsQuantity = buff->grassSeedsQuantity;
+    moondropSeedsQuantity = buff->moondropSeedsQuantity;
+    pinkCatMintSeedsQuantity = buff->pinkCatMintSeedsQuantity;
+    blueMistSeedsQuantity = buff->blueMistSeedsQuantity;
 
     gMaximumStamina = buff->maximumStamina;
     gPlayer.currentStamina = buff->currentStamina;
@@ -1817,19 +1817,19 @@ bool loadGameFromSram(u8 saveSlot, bool gamePakEnabled) {
     babyBirthdaySeason = buff->babyBirthdaySeason;
     babyBirthdayDate = buff->babyBirthdayDate;
 
-    powerNutBits = buff->powerNutBits;
+    acquiredPowerNutBits = buff->acquiredPowerNutBits;
     D_80205204 = buff->unk_58;
     flowerShopPoints = buff->flowerShopPoints;
     bakeryCardPoints = buff->bakeryCardPoints;
     gElliGrievingCounter = buff->elliGrievingCounter;
 
-    D_801654F4 = buff->unk_60;
-    D_80237414 = buff->unk_64;
-    D_801FB6FC = buff->unk_68;
-    D_801C3F80 = buff->unk_6E;
-    D_801806C0 = buff->unk_70;
-    D_80188F60 = buff->unk_74;
-    D_801FB5D0 = buff->unk_78;
+    totalTurnipsShipped = buff->unk_60;
+    totalPotatoesShipped = buff->unk_64;
+    totalEggplantsShipped = buff->unk_68;
+    totalCabbageShipped = buff->unk_6E;
+    totalStrawberriesShipped = buff->unk_70;
+    totalTomatoesShipped = buff->unk_74;
+    totalCornShipped = buff->unk_78;
 
     gTotalMilkShipped = buff->totalMilkShipped;
     gTotalEggsShipped = buff->totalEggsShipped;
@@ -2146,17 +2146,17 @@ bool saveGameToSram(u8 saveSlot) {
     sramBuffer.fodderQuantity = fodderQuantity;
     sramBuffer.seasonTomorrow = gSeasonTomorrow;
 
-    sramBuffer.unk_2D = D_801FC154;
-    sramBuffer.unk_2E = D_80204DF4;
-    sramBuffer.unk_2F = D_80237458;
-    sramBuffer.unk_30 = D_8018A725;
-    sramBuffer.unk_31 = D_802373E8;
-    sramBuffer.unk_32 = D_8013DC2C;
-    sramBuffer.unk_33 = D_801FAD91;
-    sramBuffer.unk_34 = D_801C3E28;
-    sramBuffer.unk_35 = D_801C3F70;
-    sramBuffer.unk_36 = D_80205636;
-    sramBuffer.unk_37 = D_802373A8;
+    sramBuffer.turnipSeedsQuantity = turnipSeedsQuantity;
+    sramBuffer.potatoSeedsQuantity = potatoSeedsQuantity;
+    sramBuffer.eggplantSeedsQuantity = eggplantSeedsQuantity;
+    sramBuffer.cabbageSeedsQuantity = cabbageSeedsQuantity;
+    sramBuffer.strawberrySeedsQuantity = strawberrySeedsQuantity;
+    sramBuffer.tomatoSeedsQuantity = tomatoSeedsQuantity;
+    sramBuffer.cornSeedsQuantity = cornSeedsQuantity;
+    sramBuffer.grassSeedsQuantity = grassSeedsQuantity;
+    sramBuffer.moondropSeedsQuantity = moondropSeedsQuantity;
+    sramBuffer.pinkCatMintSeedsQuantity = pinkCatMintSeedsQuantity;
+    sramBuffer.blueMistSeedsQuantity = blueMistSeedsQuantity;
 
     sramBuffer.maximumStamina = gMaximumStamina;
     sramBuffer.currentStamina = gPlayer.currentStamina;
@@ -2189,19 +2189,19 @@ bool saveGameToSram(u8 saveSlot) {
     sramBuffer.babyBirthdaySeason = babyBirthdaySeason;
     sramBuffer.babyBirthdayDate = babyBirthdayDate;
 
-    sramBuffer.powerNutBits = powerNutBits;
+    sramBuffer.acquiredPowerNutBits = acquiredPowerNutBits;
     sramBuffer.unk_58 = D_80205204;
     sramBuffer.flowerShopPoints = flowerShopPoints;
     sramBuffer.bakeryCardPoints = bakeryCardPoints;
     sramBuffer.elliGrievingCounter = gElliGrievingCounter;
 
-    sramBuffer.unk_60 = D_801654F4;
-    sramBuffer.unk_64 = D_80237414;
-    sramBuffer.unk_68 = D_801FB6FC;
-    sramBuffer.unk_6E = D_801C3F80;
-    sramBuffer.unk_70 = D_801806C0;
-    sramBuffer.unk_74 = D_80188F60;
-    sramBuffer.unk_78 = D_801FB5D0;
+    sramBuffer.unk_60 = totalTurnipsShipped;
+    sramBuffer.unk_64 = totalPotatoesShipped;
+    sramBuffer.unk_68 = totalEggplantsShipped;
+    sramBuffer.unk_6E = totalCabbageShipped;
+    sramBuffer.unk_70 = totalStrawberriesShipped;
+    sramBuffer.unk_74 = totalTomatoesShipped;
+    sramBuffer.unk_78 = totalCornShipped;
 
     sramBuffer.totalMilkShipped = gTotalMilkShipped;
     sramBuffer.totalEggsShipped = gTotalEggsShipped;
@@ -2727,7 +2727,7 @@ void setupRankingListMessageBoxes(bool noFadeIn) {
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
     setMessageBoxButtonMask(0, BUTTON_A);
     setMessageBoxScrollSpeed(0, 1);
-    initializeMessageBox(0, 0, 7, MESSAGE_BOX_MODE_NO_INPUT);
+    initializeMessageBox(0, TEXT_1_TEXT_INDEX, 7, MESSAGE_BOX_MODE_NO_INPUT);
     
     deactivateMessageBox(1);
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
@@ -2739,7 +2739,7 @@ void setupRankingListMessageBoxes(bool noFadeIn) {
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
     setMessageBoxButtonMask(1, BUTTON_A);
     setMessageBoxScrollSpeed(1, 1);
-    initializeMessageBox(1, 0, 8, MESSAGE_BOX_MODE_NO_INPUT);
+    initializeMessageBox(1, TEXT_1_TEXT_INDEX, 8, MESSAGE_BOX_MODE_NO_INPUT);
     
     deactivateMessageBox(2);
     initializeEmptyMessageBox(2, (u8*)MESSAGE_BOX_3_TEXT_BUFFER);
@@ -2751,7 +2751,7 @@ void setupRankingListMessageBoxes(bool noFadeIn) {
     setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
     setMessageBoxButtonMask(2, BUTTON_A);
     setMessageBoxScrollSpeed(2, 1);
-    initializeMessageBox(2, 0, 9, MESSAGE_BOX_MODE_NO_INPUT);
+    initializeMessageBox(2, TEXT_1_TEXT_INDEX, 9, MESSAGE_BOX_MODE_NO_INPUT);
     
     deactivateMessageBox(3);
     initializeEmptyMessageBox(3, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
@@ -2763,7 +2763,7 @@ void setupRankingListMessageBoxes(bool noFadeIn) {
     setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
     setMessageBoxButtonMask(3, BUTTON_A);
     setMessageBoxScrollSpeed(3, 1);
-    initializeMessageBox(3, 0, 10, MESSAGE_BOX_MODE_NO_INPUT);
+    initializeMessageBox(3, TEXT_1_TEXT_INDEX, 10, MESSAGE_BOX_MODE_NO_INPUT);
     
     deactivateMessageBox(4);
     initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_5_TEXT_BUFFER);
@@ -2775,7 +2775,7 @@ void setupRankingListMessageBoxes(bool noFadeIn) {
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, BUTTON_A);
     setMessageBoxScrollSpeed(4, 1);
-    initializeMessageBox(4, 0, 11, MESSAGE_BOX_MODE_NO_INPUT);
+    initializeMessageBox(4, TEXT_1_TEXT_INDEX, 11, MESSAGE_BOX_MODE_NO_INPUT);
 
     // render percentages
     if (gFarmRankingData.flags[0] & RANKING_FLAG_ACTIVE) {
@@ -2883,18 +2883,19 @@ void setupRankingDetailMessageBoxes(u8 slot) {
     setGameVariableString(10, (u8*)&gFarmRankingData.farmNames[slot + 35], 6);
 
     deactivateMessageBox(0);
+    
     initializeEmptyMessageBox(0, (u8*)MESSAGE_BOX_1_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(0, -28.0f, 72.0f, 0.0f);
     setMessageBoxLineAndRowSizes(0, 0xA, 2);
     setMessageBoxSpacing(0, 0, 2);
     setMessageBoxFont(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(0, -4, 2);
-
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
-    setMessageBoxButtonMask(0, 0x8000);
+    setMessageBoxButtonMask(0, BUTTON_A);
     setMessageBoxScrollSpeed(0, 1);
-    initializeMessageBox(0, 0, 0xC, MESSAGE_BOX_MODE_NO_INPUT);
+    initializeMessageBox(0, TEXT_1_TEXT_INDEX, 0xC, MESSAGE_BOX_MODE_NO_INPUT);
     deactivateMessageBox(1);
+
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, -40.0f, 40.0f, 0.0f);
     setMessageBoxLineAndRowSizes(1, 0xA, 2);
@@ -2902,9 +2903,10 @@ void setupRankingDetailMessageBoxes(u8 slot) {
     setMessageBoxFont(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
-    setMessageBoxButtonMask(1, 0x8000);
+    setMessageBoxButtonMask(1, BUTTON_A);
     setMessageBoxScrollSpeed(1, 1);
-    initializeMessageBox(1, 0, 0xD, MESSAGE_BOX_MODE_NO_INPUT);
+
+    initializeMessageBox(1, TEXT_1_TEXT_INDEX, 13, MESSAGE_BOX_MODE_NO_INPUT);
 
     if (gFarmRankingData.flags[slot] & 2) {
 
@@ -2918,7 +2920,7 @@ void setupRankingDetailMessageBoxes(u8 slot) {
         setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
         setMessageBoxButtonMask(2, 0x8000);
         setMessageBoxScrollSpeed(2, 1);
-        initializeMessageBox(2, 0, 0xE, MESSAGE_BOX_MODE_NO_INPUT);
+        initializeMessageBox(2, TEXT_1_TEXT_INDEX, 14, MESSAGE_BOX_MODE_NO_INPUT);
 
     }
 
@@ -2933,7 +2935,7 @@ void setupRankingDetailMessageBoxes(u8 slot) {
         setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
         setMessageBoxButtonMask(3, 0x8000);
         setMessageBoxScrollSpeed(3, 1);
-        initializeMessageBox(3, 0, 0xF, MESSAGE_BOX_MODE_NO_INPUT);
+        initializeMessageBox(3, TEXT_1_TEXT_INDEX, 15, MESSAGE_BOX_MODE_NO_INPUT);
     }
     
     deactivateMessageBox(4);
@@ -2946,7 +2948,7 @@ void setupRankingDetailMessageBoxes(u8 slot) {
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, 0x8000);
     setMessageBoxScrollSpeed(4, 1);
-    initializeMessageBox(4, 0, 0x10, MESSAGE_BOX_MODE_NO_INPUT);
+    initializeMessageBox(4, TEXT_1_TEXT_INDEX, 16, MESSAGE_BOX_MODE_NO_INPUT);
 
     if (gFarmRankingData.flags[slot] & 8) {
         deactivateMessageBox(5);
@@ -2959,7 +2961,7 @@ void setupRankingDetailMessageBoxes(u8 slot) {
         setMessageBoxSpriteIndices(5, 0xFF, 0, 0);
         setMessageBoxButtonMask(5, 0x8000);
         setMessageBoxScrollSpeed(5, 1);
-        initializeMessageBox(5, 0, 0x11, MESSAGE_BOX_MODE_NO_INPUT);
+        initializeMessageBox(5, TEXT_1_TEXT_INDEX, 17, MESSAGE_BOX_MODE_NO_INPUT);
     }
 
     setNumberSprites(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 48.0f, 80.0f, 16.0f, 0xA);
@@ -3217,7 +3219,7 @@ void farmRankingScreenCallback(void) {
                 deactivateNumberSprites(8);
                 deactivateNumberSprites(9);
                 
-                inititalizeLoadGameScreen(TRUE);
+                initializeLoadGameScreen(TRUE);
                 
             }
             
@@ -3800,67 +3802,67 @@ void countRankingPhotos(u8 slot) {
 
     gFarmRankingData.photoCount[slot] = 0;
 
-    if (albumBits & 1) {
+    if (albumBits & PHOTO_GRANDPA) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 2) {
+    if (albumBits & PHOTO_SOWING_FESTIVAL) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 4) {
+    if (albumBits & PHOTO_HORSE_RACE) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 8) {
+    if (albumBits & PHOTO_COW_FESTIVAL) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x10) {
+    if (albumBits & PHOTO_SEA_FESTIVAL) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x20) {
+    if (albumBits & PHOTO_HOT_SPRINGS) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x40) {
+    if (albumBits & PHOTO_DOG_RACE) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x80) {
+    if (albumBits & PHOTO_WEDDING) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x100) {
+    if (albumBits & PHOTO_BIRTH) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x200) {
+    if (albumBits & PHOTO_MARIA_FIREFLIES) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x400) {
+    if (albumBits & PHOTO_POPURI_BLUE_MIST) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x800) {
+    if (albumBits & PHOTO_ELLI_ESSENCE_OF_MOONDROP) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x1000) {
+    if (albumBits & PHOTO_ANN_RABBIT) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x2000) {
+    if (albumBits & PHOTO_KAREN_KEIFU_FAIRIES) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x4000) {
+    if (albumBits & PHOTO_HOME_EXTENSIONS) {
         gFarmRankingData.photoCount[slot]++;
     }
 
-    if (albumBits & 0x8000) {
+    if (albumBits & PHOTO_PARTY) {
         gFarmRankingData.photoCount[slot]++;
     }
 

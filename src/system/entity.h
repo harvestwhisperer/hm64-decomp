@@ -33,12 +33,12 @@ typedef struct {
 
 // 0x801FC160
 typedef struct {
-	void *vaddrTexture1; // 00
-	void *vaddrTexture2; // 04
-	void *vaddrPalette;  // 08
-	void *vaddrAnimationMetadata; // 0C
-	void *vaddrTextureToPaletteLookup; // 10
-	void *vaddrSpritesheetIndex; // 14
+	u8 *vaddrTexture1; // 00
+	u8 *vaddrTexture2; // 04
+	u16 *vaddrPalette;  // 08
+	AnimationFrameMetadata *vaddrAnimationMetadata; // 0C
+	u32 *vaddrTextureToPaletteLookup; // 10
+	u32 *vaddrSpritesheetIndex; // 14
 	Vec3f attachmentOffset; // 18-20
 	u16 targetEntityIndex; // 24, for tracking one sprite to another (holdable items, expression bubbles, etc.)
 	u8 trackingMode; // 26

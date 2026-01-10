@@ -127,115 +127,46 @@ LDFLAGS := -G 0  -T config/$(REGION)/undefined_syms.txt -T $(BSS_LD_SCRIPT) -T $
 
 # Binary asset matching (cutscenes, dialogues, texts)
 
-ALL_CUTSCENES := farmBusiness farmVisits familyCutscenes cutsceneBank4 cutsceneBank5 \
-	annCutscenes karenCutscenes1 cutsceneBank8 mariaCutscenes karenCutscenes2 \
-	sowingFestival horseRace flowerFestival squareFireworks fireworksFestival \
-	fireflyFestival seaFestival cowFestival harvestFestival eggFestival \
-	dogRace spiritFestival newYearFestival funeralIntro evaluationEnding \
-	demos howToPlay
+# Cutscenes
+# DSL source in src/bytecode/cutscenes/, ASM output to assets/cutscenes/
 
-ifeq ($(REGION),us)
-# All US cutscenes are decompiled to DSL
-DECOMPILED_CUTSCENES := $(ALL_CUTSCENES)
-else
-DECOMPILED_CUTSCENES :=
-endif
-
-# Directories
 CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
 CUTSCENE_ASSETS_DIR := assets/cutscenes
 CUTSCENE_BUILD_DIR := $(BUILD_DIR)/bin/cutscenes
 
-# Transpilers
 CUTSCENE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_cutscene_transpiler.py
-CUTSCENE_UTILITIES := python3 $(TOOLS_DIR)/assets/hm64_cutscene_utilities.py
 
-# Decompiled cutscene files (DSL -> ASM)
-# DSL source in src/bytecode/cutscenes/, ASM output to assets/cutscenes/
-CUTSCENE_DSL := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_SRC_DIR)/$(bank).cutscene)
-CUTSCENE_ASM := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_ASSETS_DIR)/$(bank).s)
-CUTSCENE_OBJ := $(foreach bank,$(DECOMPILED_CUTSCENES),$(CUTSCENE_BUILD_DIR)/$(bank).bin.o)
+CUTSCENE_OBJECTS := \
+	$(CUTSCENE_BUILD_DIR)/farmBusiness.bin.o \
+	$(CUTSCENE_BUILD_DIR)/farmVisits.bin.o \
+	$(CUTSCENE_BUILD_DIR)/familyCutscenes.bin.o \
+	$(CUTSCENE_BUILD_DIR)/roadCutscenes.bin.o \
+	$(CUTSCENE_BUILD_DIR)/mountainCutscenes.bin.o \
+	$(CUTSCENE_BUILD_DIR)/ranchCutscenes.bin.o \
+	$(CUTSCENE_BUILD_DIR)/vineyardCutscenes.bin.o \
+	$(CUTSCENE_BUILD_DIR)/village1Cutscenes.bin.o \
+	$(CUTSCENE_BUILD_DIR)/village2Cutscenes.bin.o \
+	$(CUTSCENE_BUILD_DIR)/beachCutscenes.bin.o \
+	$(CUTSCENE_BUILD_DIR)/sowingFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/horseRace.bin.o \
+	$(CUTSCENE_BUILD_DIR)/flowerFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/vegetableFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/fireworksFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/fireflyFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/seaFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/cowFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/harvestFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/eggFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/dogRace.bin.o \
+	$(CUTSCENE_BUILD_DIR)/spiritFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/newYearFestival.bin.o \
+	$(CUTSCENE_BUILD_DIR)/funeralIntro.bin.o \
+	$(CUTSCENE_BUILD_DIR)/evaluationEnding.bin.o \
+	$(CUTSCENE_BUILD_DIR)/demos.bin.o \
+	$(CUTSCENE_BUILD_DIR)/howToPlay.bin.o
 
-# Non-decompiled cutscenes: extract ASM directly from ROM
-TRANSPILED_CUTSCENES := $(filter-out $(DECOMPILED_CUTSCENES),$(ALL_CUTSCENES))
-TRANSPILED_CUTSCENE_ASM := $(foreach bank,$(TRANSPILED_CUTSCENES),$(CUTSCENE_ASSETS_DIR)/$(bank).s)
-TRANSPILED_CUTSCENE_OBJ := $(foreach bank,$(TRANSPILED_CUTSCENES),$(CUTSCENE_BUILD_DIR)/$(bank).bin.o)
-
-ifeq ($(REGION),us)
-DECOMPILED_DIALOGUES := \
-	text1Dialogue \
-	diaryDialogue \
-	elliDialogue \
-	kaiDialogue \
-	karenDialogue \
-	cliffDialogue \
-	jeffDialogue \
-	harrisDialogue \
-	popuriDialogue \
-	mariaDialogue \
-	annDialogue \
-	grayDialogue \
-	ellenDialogue \
-	gotzDialogue \
-	sashaDialogue \
-	kentDialogue \
-	mayDialogue \
-	stuDialogue \
-	dougDialogue \
-	basilDialogue \
-	lilliaDialogue \
-	saibaraDialogue \
-	midwifeDialogue \
-	dukeDialogue \
-	shipperDialogue \
-	harvestSprites1Dialogue \
-	harvestSprites2Dialogue \
-	harvestSprites3Dialogue \
-	assistantCarpenters1Dialogue \
-	assistantCarpenters2Dialogue \
-	masterCarpenterDialogue \
-	mayorDialogue \
-	gregDialogue \
-	rickDialogue \
-	barleyDialogue \
-	sydneyDialogue \
-	mayorWifeDialogue \
-	pastorDialogue \
-	potionShopDealerDialogue \
-	cutscenes1Dialogue \
-	text48Dialogue \
-	text49Dialogue \
-	text50Dialogue \
-	text51Dialogue \
-	text52Dialogue \
-	dogRaceDialogue \
-	vegetableFestivalDialogue \
-	text54Dialogue \
-	text55Dialogue \
-	text56Dialogue \
-	horseRaceDialogue \
-	karenCutscenes1Dialogue \
-	text63Dialogue \
-	farmVisitsDialogue \
-	text65Dialogue \
-	eggFestivalDialogue \
-	marriedDialogue \
-	text61Dialogue \
-	namingScreenDialogue \
-	newYearFestivalDialogue \
-	karenCutscenes2Dialogue \
-	shopDialogue \
-	festivalOverlaySelectionsDialogue \
-	babyDialogue \
-	mrsManaAndJohn1Dialogue \
-	mrsManaAndJohn2Dialogue \
-	libraryDialogue \
-	additionalNpcs1Dialogue \
-	npcBabyDialogue \
-	additionalNpcs2Dialogue
-else
-DECOMPILED_DIALOGUES :=
-endif
+# Dialogues
+# DSL source in src/bytecode/dialogues/, ASM output to assets/dialogues/
 
 DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
 DIALOGUE_ASSETS_DIR := assets/dialogues
@@ -243,9 +174,147 @@ DIALOGUE_BUILD_DIR := $(BUILD_DIR)/bin/dialogues/bytecode
 
 DIALOGUE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_dialogue_transpiler.py
 
-DIALOGUE_DSL := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_SRC_DIR)/$(bank).dialogue)
-DIALOGUE_ASM := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_ASSETS_DIR)/$(bank).s $(DIALOGUE_ASSETS_DIR)/$(bank)Index.s)
-DIALOGUE_OBJ := $(foreach bank,$(DECOMPILED_DIALOGUES),$(DIALOGUE_BUILD_DIR)/$(bank).bin.o $(DIALOGUE_BUILD_DIR)/$(bank)Index.bin.o)
+DIALOGUE_OBJECTS := \
+	$(DIALOGUE_BUILD_DIR)/text1Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text1DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/diaryDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/diaryDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/elliDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/elliDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/kaiDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/kaiDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/karenDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/karenDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/cliffDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/cliffDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/jeffDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/jeffDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/harrisDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/harrisDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/popuriDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/popuriDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mariaDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mariaDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/annDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/annDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/grayDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/grayDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/ellenDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/ellenDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/gotzDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/gotzDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/sashaDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/sashaDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/kentDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/kentDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mayDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mayDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/stuDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/stuDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/dougDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/dougDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/basilDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/basilDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/lilliaDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/lilliaDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/saibaraDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/saibaraDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/midwifeDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/midwifeDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/dukeDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/dukeDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/shipperDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/shipperDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/harvestSprites1Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/harvestSprites1DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/harvestSprites2Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/harvestSprites2DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/harvestSprites3Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/harvestSprites3DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/assistantCarpenters1Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/assistantCarpenters1DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/assistantCarpenters2Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/assistantCarpenters2DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/masterCarpenterDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/masterCarpenterDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mayorDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mayorDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/gregDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/gregDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/rickDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/rickDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/barleyDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/barleyDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/sydneyDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/sydneyDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mayorWifeDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mayorWifeDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/pastorDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/pastorDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/potionShopDealerDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/potionShopDealerDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/cutscenes1Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/cutscenes1DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text48Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text48DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text49Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text49DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text50Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text50DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text51Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text51DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text52Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text52DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/dogRaceDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/dogRaceDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/vegetableFestivalDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/vegetableFestivalDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text54Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text54DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text55Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text55DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text56Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text56DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/horseRaceDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/horseRaceDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/vineyardCutscenesDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/vineyardCutscenesDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text63Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text63DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/farmVisitsDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/farmVisitsDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text65Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text65DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/eggFestivalDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/eggFestivalDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/marriedDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/marriedDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text61Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/text61DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/namingScreenDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/namingScreenDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/newYearFestivalDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/newYearFestivalDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/beachCutscenesDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/beachCutscenesDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/shopDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/shopDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/festivalOverlaySelectionsDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/festivalOverlaySelectionsDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/babyDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/babyDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mrsManaAndJohn1Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mrsManaAndJohn1DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mrsManaAndJohn2Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mrsManaAndJohn2DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/libraryDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/libraryDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/additionalNpcs1Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/additionalNpcs1DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/npcBabyDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/npcBabyDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/additionalNpcs2Dialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/additionalNpcs2DialogueIndex.bin.o
 
 ifeq ($(REGION),us)
 
@@ -310,12 +379,12 @@ DECOMPILED_TEXTS := text1 \
 	horseRace \
 	marriedDialogues \
 	text61 \
-	karenCutscenes1 \
+	vineyardCutscenes \
 	text63 \
 	farmVisits \
 	text65 \
 	eggFestival \
-	karenCutscenes2 \
+	beachCutscenes \
 	vegetableFestival \
 	baby \
 	mrsManaAndJohn \
@@ -330,9 +399,6 @@ TEXT_ASSETS_DIR := assets/text
 TEXT_BUILD_DIR := $(BUILD_DIR)/bin/text
 
 TEXT_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_text_transpiler.py
-
-TEXT_ASM := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
-TEXT_OBJ := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_BUILD_DIR)/$(bank)Text.bin.o $(TEXT_BUILD_DIR)/$(bank)TextIndex.bin.o)
 
 ifeq ($(VERBOSE),0)
 V := @
@@ -365,52 +431,33 @@ endif
 
 all: check
 
+jp-%:
+	$(MAKE) -f Makefile.jp $*
+
+jp:
+	$(MAKE) -f Makefile.jp
+
 clean:
-	@rm -rf build
 	@rm -rf asm
 	@rm -rf bin
-# don't remove spec files or text source files (for modding workflow)
-	@find assets -type f ! -name "*.spec" ! -name "*.txt" -delete 2>/dev/null || true
+	@rm -rf build
+# remove transpiled bytecode .s files
+	@find assets -type f -name "*.s" -delete 2>/dev/null || true
+	@rm -f $(LD_SCRIPT)
+	@rm -f $(BASENAME).elf
+	@rm -f $(BASENAME).map
+	@rm -f $(TARGET)
+
+clean-assets:
+	@find assets -type f ! -name "*.spec" -delete 2>/dev/null || true
 # clean up empty directories
 	@find assets -type d -empty -delete 2>/dev/null || true
-	@rm -f $(LD_SCRIPT)
-	@rm -f $(BASENAME).elf
-	@rm -f $(BASENAME).map
-	@rm -f $(TARGET)
-	@rm -f ${DIALOGUE_ASM}
-	@rm -f ${TEXT_ASM}
 
-# Explicitly clean extracted text source files (modding workflow)
-clean-texts:
-	@find $(TEXT_ASSETS_DIR) -name "text*.txt" -delete 2>/dev/null || true
-	@find $(TEXT_ASSETS_DIR) -name "_metadata.txt" -delete 2>/dev/null || true
-	@find $(TEXT_ASSETS_DIR) -type d -empty -delete 2>/dev/null || true
-	@echo "Cleaned extracted text files from $(TEXT_ASSETS_DIR)"
-
-clean-artifacts:
-	@rm -rf build
-	@rm -f $(LD_SCRIPT)
-	@rm -f $(BASENAME).elf
-	@rm -f $(BASENAME).map
-	@rm -f $(TARGET)
-	@rm -f $(CUTSCENE_ASM) $(TRANSPILED_CUTSCENE_ASM)
-	@rm -f ${DIALOGUE_ASM}
-	@rm -f ${TEXT_ASM}
-
-submodules:
-	git submodule update
-
-ifeq ($(REGION),jp)
 split:
-	$(V)python3 -m splat split ./config/$(REGION)/splat.$(REGION).yaml
-else
-split:
-	$(V)python3 -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts
-endif
+# only extract what's needed and don't generate linker script
+	$(V)python3 -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts seq hm64map
 
 setup: clean split
-
-rebuild: clean-artifacts $(LD_SCRIPT) check
 
 rerun: clean $(LD_SCRIPT) check
 
@@ -441,20 +488,12 @@ extract-gifs:
 extract-texts:
 	@cd tools/assets && python3 ./hm64_text_utilities.py process_all write_files
 
-extract-dialogues:
-	@cd tools/assets && python3 ./hm64_dialogue_utilities.py decode_all
-
 extract-map-sprites:
 	@cd tools/assets && python3 ./hm64_map_utilities.py write_all_textures
 
 extract-fonts:
 	@cd tools/assets && python3 ./hm64_font_utilities.py extract_all
 	@cd tools/assets && python3 ./hm64_font_utilities.py extract_all_palettes
-
-extract-cutscenes:
-	@cd tools/assets && python3 hm64_cutscene_utilities.py --all --labels --scan --verbose-scan --output-dir ../../$(CUTSCENE_ASSETS_DIR)
-	@cd tools/assets && python3 hm64_cutscene_utilities.py --all --labels --graph --output-dir ../../$(CUTSCENE_ASSETS_DIR)
-	@cd tools/assets && python3 hm64_cutscene_utilities.py --all --labels --asm --output-dir ../../$(CUTSCENE_ASSETS_DIR)
 
 # Main code segment
 
@@ -557,29 +596,23 @@ $(BUILD_DIR)/makerom/ipl3.o: bin/makerom/ipl3.bin
 	$(MKDIR)
 	$(OBJCOPY) -I binary -O elf32-tradbigmips -B mips $< $@
 
-$(BUILD_DIR)/makerom/entry.o: asm/makerom/entry.s
+$(BUILD_DIR)/makerom/entry.o: makerom/entry.s
 	$(MKDIR)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 # Asset building
 
-# Decompiled cutscenes: transpile DSL to assembly (outputs to assets/cutscenes/)
+# Transpile cutscene DSL to assembly
 $(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
 	@mkdir -p $(CUTSCENE_ASSETS_DIR)
 	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
 
-# Non-decompiled cutscenes: extract assembly from ROM (also outputs to assets/cutscenes/)
-$(TRANSPILED_CUTSCENE_ASM): $(CUTSCENE_ASSETS_DIR)/%.s: $(BASEROM)
-	@mkdir -p $(CUTSCENE_ASSETS_DIR)
-	$(V)cd $(TOOLS_DIR)/assets && python3 hm64_cutscene_utilities.py --bank $* --asm --output-dir ../../$(CUTSCENE_ASSETS_DIR)
-
-# All cutscenes: assemble from assets/cutscenes/
+# Cutscenes: assemble from assets/cutscenes/
 $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
 	$(MKDIR)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
-# Transpile dialogue DSL to assembly (outputs to assets/dialogues/)
-# The transpiler produces both .s and Index.s
+# Transpile dialogue DSL to assembly
 $(DIALOGUE_ASSETS_DIR)/%.s: $(DIALOGUE_SRC_DIR)/%.dialogue
 	@mkdir -p $(DIALOGUE_ASSETS_DIR)
 	$(V)$(DIALOGUE_TRANSPILER) transpile $< -n $* -o $(DIALOGUE_ASSETS_DIR)/
@@ -593,7 +626,6 @@ $(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_ASSETS_DIR)/%.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 # Extract texts to assets directory and transpile to assembly (generates two files: bytecode and index)
-# The transpiler produces both Text.s and TextIndex.s
 $(TEXT_ASSETS_DIR)/%Text.s:
 	$(V)cd $(TOOLS_DIR)/assets && python3 hm64_text_utilities.py extract_bank $*
 	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/
@@ -608,13 +640,16 @@ $(TEXT_BUILD_DIR)/%Text.bin.o: $(TEXT_ASSETS_DIR)/%Text.s
 $(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
-# $(TEXT_ASSETS_DIR)/%Text.s:
-# 	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/ --literal
-
 # Rest of code and extracted binary files
 
 $(BUILD_DIR)/%.s.o: %.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+$(BUILD_DIR)/%.hm64map.o: %.hm64map
+	$(V)$(LD) -r -b binary -o $@ $<
+
+$(BUILD_DIR)/%.seq.o: %.seq
+	$(V)$(LD) -r -b binary -o $@ $<
 
 $(BUILD_DIR)/%.bin.o: %.bin
 	$(V)$(LD) -r -b binary -o $@ $<
@@ -960,12 +995,16 @@ check: $(TARGET)
 	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
 
 
-.PHONY: all modern clean clean-texts clean-artifacts setup split submodules rebuild rerun check codesegment
+.PHONY: all modern clean clean-assets setup split rerun check codesegment
 .PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
 .PHONY: extract-animation-sprites extract-animations extract-gifs
 .PHONY: extract-texts extract-dialogues extract-map-sprites extract-cutscenes
 
+CUTSCENE_ASM := $(patsubst $(CUTSCENE_BUILD_DIR)/%.bin.o,$(CUTSCENE_ASSETS_DIR)/%.s,$(CUTSCENE_OBJECTS))
+DIALOGUE_ASM := $(patsubst $(DIALOGUE_BUILD_DIR)/%.bin.o,$(DIALOGUE_ASSETS_DIR)/%.s,$(DIALOGUE_OBJECTS))
+TEXT_ASM := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
+
 # Prevent Make from deleting intermediate .s files
-.SECONDARY: $(CUTSCENE_ASM) $(TRANSPILED_CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
+.SECONDARY: $(CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
 
 MAKEFLAGS += --no-builtin-rules

@@ -6,6 +6,7 @@
 *.o
 *.s
 *.inc.c
+!/src/data/animationScripts/characterAvatars.inc.c
 *.bin
 *.elf
 *.d
@@ -19,6 +20,9 @@
 !mozart-sample.mid
 *.txt
 asm/
+!makerom/entry.s
+*.seq
+*.hm64map
 assets/**/*.png
 assets/**/*.ci
 assets/**/*.pal

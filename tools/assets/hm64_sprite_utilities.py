@@ -3,7 +3,7 @@ import json
 import numpy as np
 from n64img.image import CI4, CI8, Image
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional, Dict
 import sys
 import argparse
 
@@ -13,31 +13,94 @@ SPRITES_DIR = SCRIPT_DIR / "../../assets/sprites"
 SPRITE_ADDRESSES_CSV_PATH = SCRIPT_DIR / "sprite_addresses.csv"
 ROM_PATH = SCRIPT_DIR / "../../baserom.us.z64"
 
+_rom: Optional[memoryview] = None
+_csv_cache: Optional[List[List[str]]] = None
+_label_to_row_cache: Optional[Dict[str, Tuple[int, str, List[str]]]] = None
+
+# Legacy alias for backward compatibility
 rom = None
 
 KEEP_INTERMEDIATE_FILES = False
 
-def set_rom():
-    global rom
-    rom = memoryview(ROM_PATH.read_bytes())
 
-def check_asset_addresses_exist(label: str) -> Tuple[int, str]:
+def _ensure_caches():
+    """Ensure CSV and label caches are populated."""
+    global _csv_cache, _label_to_row_cache
+
+    if _csv_cache is None:
+        _load_csv_cache()
+
+
+def _load_csv_cache():
+    """Load and cache CSV data."""
+    global _csv_cache, _label_to_row_cache
+
+    _csv_cache = []
+    _label_to_row_cache = {}
 
     with open(SPRITE_ADDRESSES_CSV_PATH, newline="", encoding="utf-8") as f:
         reader = csv.reader(f)
-        for idx, row in enumerate(reader, start=0):
+        for idx, row in enumerate(reader):
+            row = [cell.strip() for cell in row]
+            _csv_cache.append(row)
+
+            # Build label lookup
             if len(row) == 6:
-                # 6 columns (type-1): addr1, addr2, addr3, addr4, label, subdir
-                if row[4] == label:
-                    return (idx, "type-1")
+                label = row[4]
+                asset_type = "type-1"
             elif len(row) == 5:
-                # 5 columns (type-2): addr1, addr2, addr3, label, subdir
-                if row[3] == label:
-                    return (idx, "type-2")
+                label = row[3]
+                asset_type = "type-2"
             else:
                 continue
 
-        return (-1, "none")
+            _label_to_row_cache[label] = (idx, asset_type, row)
+
+
+def clear_caches():
+    """Clear all caches (useful for testing or reloading)."""
+    global _rom, _csv_cache, _label_to_row_cache, rom
+    _rom = None
+    _csv_cache = None
+    _label_to_row_cache = None
+    rom = None
+
+
+def get_cached_row_by_index(idx: int) -> Optional[List[str]]:
+    """Get cached CSV row by index."""
+    _ensure_caches()
+    if 0 <= idx < len(_csv_cache):
+        return _csv_cache[idx]
+    return None
+
+def set_rom():
+    """Load ROM into memory (cached)."""
+    global rom, _rom
+    if _rom is None:
+        _rom = memoryview(ROM_PATH.read_bytes())
+    rom = _rom
+
+
+def get_rom() -> memoryview:
+    """Get ROM memoryview, loading if necessary."""
+    global _rom, rom
+    if _rom is None:
+        set_rom()
+    return _rom
+
+
+def check_asset_addresses_exist(label: str) -> Tuple[int, str]:
+    """
+    Check if asset exists and return (row_index, asset_type).
+    Uses cached CSV data for performance.
+    """
+    _ensure_caches()
+
+    if label in _label_to_row_cache:
+        idx, asset_type, _ = _label_to_row_cache[label]
+        return (idx, asset_type)
+
+    return (-1, "none")
 
 def get_sprite_subdir(row: list) -> str:
     """Get the subdirectory from the CSV row (last column)."""
@@ -252,18 +315,15 @@ def get_palette(asset_addresses: List[str], sprite_index: int, asset_type: str) 
     return rom[palette_start_address:palette_end_address].tobytes()
 
 def write_all_textures() -> None:
+    """Write all textures for all sprites. Uses cached CSV data."""
 
-    if rom == None:
-        set_rom()
+    _ensure_caches()
+    set_rom()
 
     outdir = SPRITES_DIR
     outdir.mkdir(parents=True, exist_ok=True)
 
-    with open(SPRITE_ADDRESSES_CSV_PATH) as f:
-        reader = csv.reader(f)
-        addresses_list = list(tuple(line) for line in reader)
-
-    for idx, row in enumerate(addresses_list):
+    for idx, row in enumerate(_csv_cache):
         subdir = get_sprite_subdir(row)
         if len(row) == 6:
             write_textures_for_sprite(row[4], subdir)
@@ -275,9 +335,10 @@ def write_all_textures() -> None:
     return
 
 def write_textures_for_sprite(sprite_name: str, subdir: str = "") -> None:
+    """Write all textures for a sprite. Uses cached CSV data."""
 
-    if rom == None:
-        set_rom()
+    _ensure_caches()
+    set_rom()
 
     result, asset_type = check_asset_addresses_exist(sprite_name)
 
@@ -295,11 +356,7 @@ def write_textures_for_sprite(sprite_name: str, subdir: str = "") -> None:
     outdir = basedir / sprite_name
     outdir.mkdir(parents=True, exist_ok=True)
 
-    with open(SPRITE_ADDRESSES_CSV_PATH) as f:
-        reader = csv.reader(f)
-        addresses_list = list(tuple(line) for line in reader)
-
-    asset_addresses = addresses_list[result]
+    asset_addresses = get_cached_row_by_index(result)
 
     sprite_count = get_sprite_count(asset_addresses, asset_type)
 
@@ -336,15 +393,15 @@ def write_textures_for_sprite(sprite_name: str, subdir: str = "") -> None:
     return
 
 def write_texture_from_csv_row_and_index(row: int, sprite_index: int, filename: str, output_path: Path) -> None:
+    """Write a texture from CSV row index and sprite index. Uses cached CSV data."""
 
-    if rom == None:
-        set_rom()
+    _ensure_caches()
+    set_rom()
 
-    with open(SPRITE_ADDRESSES_CSV_PATH) as f:
-        reader = csv.reader(f)
-        addresses_list = list(tuple(line) for line in reader)
-
-    asset_addresses = addresses_list[row]
+    asset_addresses = get_cached_row_by_index(row)
+    if asset_addresses is None:
+        print(f"Invalid row index: {row}")
+        return
 
     if (len(asset_addresses) == 6):
         asset_type = "type-1"
@@ -421,11 +478,15 @@ if __name__ == "__main__":
     KEEP_INTERMEDIATE_FILES = args.keep_intermediate_files
 
     if args.command == "write_textures_for_sprite":
+
         if not args.target:
             parser.error("The command 'write_textures_for_sprite' requires a sprite name.")
+
         # Look up subdir from CSV for the given sprite name
         with open(SPRITE_ADDRESSES_CSV_PATH) as f:
+
             reader = csv.reader(f)
+            
             for row in reader:
                 sprite_name_idx = 4 if len(row) == 6 else 3 if len(row) == 5 else -1
                 if sprite_name_idx >= 0 and row[sprite_name_idx] == args.target:

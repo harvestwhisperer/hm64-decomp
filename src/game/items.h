@@ -8,28 +8,50 @@
 #define MAX_TOOLS 30
 
   /* holdable item flags */
-#define ITEM_EATABLE                    0x0001  // Can eat / put in dog bowl
-#define ITEM_RUCKSACK_STORABLE          0x0002  // Can store in rucksack / throw at water
-#define ITEM_SHIPPABLE                  0x0004  // Can ship in shipping bin
-#define ITEM_THROWABLE                  0x0008  // General holdable item behavior
-#define ITEM_PLACEABLE_ON_GROUND        0x0010  // Can place on ground (rock, log)
-#define ITEM_INCUBATOR_PLACEABLE        0x0020  // Can place in incubator (egg)
-#define ITEM_ANIMAL_FEED                0x0040  // Can place in feed trough (fodder)
-#define ITEM_SMALL_ANIMAL               0x0080  // Small holdable animal
-#define ITEM_BABY                       0x0100  // Baby that can be held
-#define ITEM_FREEZER_STORABLE           0x0200  // Can store in freezer
+#define ITEM_EATABLE                    0x0001  
+#define ITEM_RUCKSACK_STORABLE          0x0002   
+#define ITEM_SHIPPABLE                  0x0004   
+#define ITEM_THROWABLE                  0x0008  
+#define ITEM_PLACEABLE_ON_GROUND        0x0010  
+#define ITEM_INCUBATOR_PLACEABLE        0x0020   
+#define ITEM_ANIMAL_FEED                0x0040   
+#define ITEM_SMALL_ANIMAL               0x0080  
+#define ITEM_BABY                       0x0100   
+#define ITEM_FREEZER_STORABLE           0x0200   
 #define ITEM_CRIB_PLACEABLE             0x0400
-#define ITEM_TOOL                       0x0800  // Is a tool
-#define ITEM_CABINET_STORABLE           0x1000  // Can store in cabinet
+#define ITEM_TOOL                       0x0800  
+#define ITEM_CABINET_STORABLE           0x1000  
 #define ITEM_LUMBER_STORABLE            0x2000
-#define ITEM_HAS_ALCOHOL                0x4000  // Has alcohol effect
-#define ITEM_SHIPPABLE_TIMED            0x8000  // Only shippable 8am-5pm
+#define ITEM_HAS_ALCOHOL                0x4000  
+#define ITEM_HARVEST_GODDESS_OFFERABLE  0x8000 
 
 /* ItemContext flags */
-#define ITEM_CONTEXT_ACTIVE             0x01  // Item slot is active/in use
-#define ITEM_CONTEXT_USE_POSITION       0x02  // Use explicit position field
-#define ITEM_CONTEXT_HAS_DIRECTION_FRAME     0x04  // Update frame based on rotation
-#define ITEM_CONTEXT_USE_ATTACHMENT     0x08  // Use attachment offset field
+#define ITEM_CONTEXT_ACTIVE             0x01  
+#define ITEM_CONTEXT_USE_POSITION       0x02  
+#define ITEM_CONTEXT_HAS_DIRECTION_FRAME 0x04  
+#define ITEM_CONTEXT_USE_ATTACHMENT     0x08 
+
+/* Item state indices */
+#define ITEM_STATE_INACTIVE             0   
+#define ITEM_STATE_CLEANUP              1   // Wait then clear (after throw lands, shipping, etc.)
+#define ITEM_STATE_HELD                 2   
+#define ITEM_STATE_THROW_START          3  
+#define ITEM_STATE_THROW_MOTION         4  
+#define ITEM_STATE_THROW_FLIGHT         5   
+#define ITEM_STATE_PICKUP               6   
+#define ITEM_STATE_PICKUP_DONE          7   
+#define ITEM_STATE_PLACE                8   
+#define ITEM_STATE_PUT_DOWN             9   
+#define ITEM_STATE_EATING               10  
+#define ITEM_STATE_THROW_LANDED         12  
+#define ITEM_STATE_RAISED               13  
+#define ITEM_STATE_SHIP                 14 
+#define ITEM_STATE_DIALOGUE_SELECTION          16 
+#define ITEM_STATE_DOG_BOWL             17  
+#define ITEM_STATE_FEED_DOG             18  
+#define ITEM_STATE_RAISED_ALT           19 
+#define ITEM_STATE_DROP_IN_WATER        20  
+#define ITEM_STATE_TOOL_ACQUIRED        21  
 
 /* tools */
 #define SICKLE 1
@@ -200,19 +222,16 @@
 /* bottle contents */
 #define EMPTY 0
 
-/* power nut bits */
-#define FISHING_POWER_NUT 4
-
 // 0x80204DF8
 typedef struct {
-    Vec3f position;              // 0x00 - World coordinates (used with flags & 2)
-    Vec3f movement;              // 0x0C - Movement vector for thrown items
-    Vec3f attachmentOffset;      // 0x18 - Offset when attached to player (flags & 8)
-    u16 unk_24;                  // 0x24 - Unknown, initialized to 0
-    u16 itemAnimationFrameCounter; // 0x26 - Frame counter for animations/physics
-    u16 heldItemIndex;           // 0x28 - Index into item arrays
-    u8 stateIndex;               // 0x2A - Current state (0=inactive, 1=animating, etc.)
-    u8 flags;                    // 0x2B - Active flags
+    Vec3f position;             
+    Vec3f movement;              
+    Vec3f attachmentOffset;      
+    u16 unk_24;                  
+    u16 itemAnimationFrameCounter; 
+    u16 heldItemIndex;           
+    u8 stateIndex;               
+    u8 flags;                
 } ItemContext;
 
 // 0x80189828
@@ -257,63 +276,39 @@ extern void updateHeldItemState();
 extern u8 getToolLevel(u8 tool);
 extern u8 getItemStaminaIncreaseValue(u16 index);
 extern u8 getItemFatigueReductionValue(u16 index);
-extern u8 func_800D5390(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4);
+extern u8 allocateThrownItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4);
 
 extern ItemContext itemInfo[10];
 extern ToolUse toolUse;
 
-// TODO: label
-// tomatoes shipped
-extern u32 D_80188F60;
-// cabbages shipped
-extern u32 D_801C3F80;
-// corn shipped
-extern u32 D_801FB5D0;
-// turnips shipped
-extern u32 D_801654F4;
-// eggplants shipped
-extern u32 D_801FB6FC;
-// potatoes shipped
-extern u32 D_80237414;
-// strawberries shipped
-extern u32 D_801806C0;
+extern u32 totalTomatoesShipped;
+extern u32 totalCabbageShipped;
+extern u32 totalCornShipped;
+extern u32 totalTurnipsShipped;
+extern u32 totalEggplantsShipped;
+extern u32 totalPotatoesShipped;
+extern u32 totalStrawberriesShipped;
 
-extern u32 D_801654F4;
-
-// TODO: labels
-// seed counters
-// turnip
-extern u8 D_801FC154;
-// potato
-extern u8 D_80204DF4;
-// eggplant
-extern u8 D_80237458;
-// cabbage
-extern u8 D_8018A725;
-// strawberry
-extern u8 D_802373E8;
-// tomato
-extern u8 D_8013DC2C;
-// corn
-extern u8 D_801FAD91;
-// grass seeds
-extern u8 D_801C3E28;
-// moondrop flower
-extern u8 D_801C3F70;
-// pink cat mint
-extern u8 D_80205636;
-// blue mist
-extern u8 D_802373A8;
+extern u8 turnipSeedsQuantity;
+extern u8 potatoSeedsQuantity;
+extern u8 eggplantSeedsQuantity;
+extern u8 cabbageSeedsQuantity;
+extern u8 strawberrySeedsQuantity;
+extern u8 tomatoSeedsQuantity;
+extern u8 cornSeedsQuantity;
+extern u8 grassSeedsQuantity;
+extern u8 moondropSeedsQuantity;
+extern u8 pinkCatMintSeedsQuantity;
+extern u8 blueMistSeedsQuantity;
 
 extern u16 fodderQuantity;
 extern u16 chickenFeedQuantity;
+
 extern u8 wateringCanUses;
 
-extern u8 gItemBeingHeld;
-
-extern u8 D_802373A8;
-extern u16 chickenFeedQuantity;
 extern u8 upgradedToolIndex;
 extern u8 upgradedToolLevelIndex;
+
+extern u8 gItemBeingHeld;
 
 #endif

@@ -571,7 +571,7 @@ void handlePickUpShopItem(u8 shopItemIndex) {
 
     if (checkCanPickUpShopItem(shopItemIndex)) {
 
-        gPlayer.itemInfoIndex = initializeHeldItem(shopItemToItemInfoIndices[shopItemIndex], 6, shopItemAnimationIndices[shopItemIndex], 0, 0);
+        gPlayer.itemInfoIndex = initializeHeldItem(shopItemToItemInfoIndices[shopItemIndex], ITEM_STATE_PICKUP, shopItemAnimationIndices[shopItemIndex], 0, 0);
         playSfx(PICKING_UP_SFX);
 
         if (shopItemSpriteIndexOffsets[shopItemIndex] != 0xFF) {
@@ -579,7 +579,7 @@ void handlePickUpShopItem(u8 shopItemIndex) {
         }
     }
 
-    setPlayerAction(0xB, 0xD);
+    setPlayerAction(SHOPPING, ANIM_SHOPPING);
     
 }
 
@@ -908,9 +908,9 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 result = 3;
                 
-                if ((D_801FC154 + quantity) < MAX_SEEDS + 1) {
+                if ((turnipSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(TURNIP_SEEDS);
-                    D_801FC154 += adjustValue(D_801FC154, quantity, MAX_SEEDS);
+                    turnipSeedsQuantity += adjustValue(turnipSeedsQuantity, quantity, MAX_SEEDS);
                 }
                 
                 break;
@@ -919,9 +919,9 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 result = 3;
                 
-                if ((D_80204DF4 + quantity) < MAX_SEEDS + 1) {
+                if ((potatoSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(POTATO_SEEDS);
-                    D_80204DF4 += adjustValue(D_80204DF4, quantity, MAX_SEEDS);
+                    potatoSeedsQuantity += adjustValue(potatoSeedsQuantity, quantity, MAX_SEEDS);
                 }
                 
                 break;
@@ -930,9 +930,9 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 result = 3;
                 
-                if ((D_8018A725 + quantity) < MAX_SEEDS + 1) {
+                if ((cabbageSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(CABBAGE_SEEDS);
-                    D_8018A725 += adjustValue(D_8018A725, quantity, MAX_SEEDS);
+                    cabbageSeedsQuantity += adjustValue(cabbageSeedsQuantity, quantity, MAX_SEEDS);
                 }
                 
                 break;
@@ -941,9 +941,9 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 result = 3;
                 
-                if ((D_801C3E28 + quantity) < MAX_SEEDS + 1) {
+                if ((grassSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(GRASS_SEEDS);
-                    D_801C3E28 += adjustValue(D_801C3E28, quantity, MAX_SEEDS);
+                    grassSeedsQuantity += adjustValue(grassSeedsQuantity, quantity, MAX_SEEDS);
                 }
                 
                 break;
@@ -952,9 +952,9 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 
                 result = 3;
                 
-                if ((D_8013DC2C + quantity) < MAX_SEEDS + 1) {
+                if ((tomatoSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(TOMATO_SEEDS);
-                    D_8013DC2C += adjustValue(D_8013DC2C, quantity, MAX_SEEDS);
+                    tomatoSeedsQuantity += adjustValue(tomatoSeedsQuantity, quantity, MAX_SEEDS);
                 }
                 
                 break;
@@ -963,9 +963,9 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 result = 3;
                 
-                if ((D_801FAD91 + quantity) < MAX_SEEDS + 1) {
+                if ((cornSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(CORN_SEEDS);
-                    D_801FAD91 += adjustValue(D_801FAD91, quantity, MAX_SEEDS);
+                    cornSeedsQuantity += adjustValue(cornSeedsQuantity, quantity, MAX_SEEDS);
                 }
 
                 break;
@@ -974,9 +974,9 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 result = 3;
                 
-                if ((D_80237458 + quantity) < MAX_SEEDS + 1) {
+                if ((eggplantSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(EGGPLANT_SEEDS);
-                    D_80237458 += adjustValue(D_80237458, quantity, MAX_SEEDS);
+                    eggplantSeedsQuantity += adjustValue(eggplantSeedsQuantity, quantity, MAX_SEEDS);
                 }
                 
                 break;
@@ -985,9 +985,9 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 
                 result = 3;
                 
-                if ((D_802373E8 + quantity) < MAX_SEEDS + 1) {
+                if ((strawberrySeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(STRAWBERRY_SEEDS);
-                    D_802373E8 += adjustValue(D_802373E8, quantity, MAX_SEEDS);
+                    strawberrySeedsQuantity += adjustValue(strawberrySeedsQuantity, quantity, MAX_SEEDS);
                 }
                 
                 break;
@@ -996,10 +996,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 
                 result = 3;
                 
-                if ((D_801C3F70 + quantity) < MAX_SEEDS + 1) {
+                if ((moondropSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     
                     result = storeTool(MOON_DROP_SEEDS);
-                    D_801C3F70 += adjustValue(D_801C3F70, quantity, MAX_SEEDS);
+                    moondropSeedsQuantity += adjustValue(moondropSeedsQuantity, quantity, MAX_SEEDS);
 
                     if (!checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
                         
@@ -1022,10 +1022,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 result = 3;
                 
-                if ((D_802373A8 + quantity) < MAX_BLUE_MIST_SEEDS + 1) {
+                if ((blueMistSeedsQuantity + quantity) < MAX_BLUE_MIST_SEEDS + 1) {
                     
                     result = storeTool(BLUE_MIST_SEEDS);
-                    D_802373A8 += adjustValue(D_802373A8, quantity, MAX_BLUE_MIST_SEEDS);
+                    blueMistSeedsQuantity += adjustValue(blueMistSeedsQuantity, quantity, MAX_BLUE_MIST_SEEDS);
 
                     if (!checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
                         
@@ -1404,10 +1404,10 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             
             case 0x35:
 
-                if ((D_80205636 + quantity) < 20 + 1) {
+                if ((pinkCatMintSeedsQuantity + quantity) < 20 + 1) {
                     
                     result = storeTool(PINK_CAT_MINT_SEEDS);
-                    D_80205636 += adjustValue(D_80205636, quantity, 20);
+                    pinkCatMintSeedsQuantity += adjustValue(pinkCatMintSeedsQuantity, quantity, 20);
 
                     if (checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
                         flowerShopPoints += adjustValue(flowerShopPoints, quantity, MAX_FLOWER_SHOP_POINTS);
@@ -1763,7 +1763,7 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
         case 0x37:
 
-            if (gCutsceneIndex == SQUARE_FIREWORKS) {
+            if (gCutsceneIndex == FIREWORKS_FESTIVAL) {
                 if (!checkHaveTool(EMPTY_BOTTLE)) {
                     result = 1;
                 }

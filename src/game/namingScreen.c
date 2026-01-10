@@ -35,9 +35,12 @@
 extern void loadCutscene(void);
 extern u16 gCutsceneIndex;
 
-
 // bss
 NamingScreenContext namingScreenContext;
+
+// this is a hack to get the original total bss size for the main code segment
+// bss addresses are assigned partially via their alphabetical order (z = to ensure last in this case)
+u8 z[0xFAC20];
 
 // data
 // japanese strings
@@ -232,7 +235,7 @@ void namingScreenCallback(void) {
             setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
             setMessageBoxInterpolationWithFlags(3, 1, 1);
             setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
-            initializeMessageBox(3, 0xA, 0xD, MESSAGE_BOX_MODE_NO_INPUT);
+            initializeMessageBox(3, NAMING_SCREEN_TEXT_INDEX, 13, MESSAGE_BOX_MODE_NO_INPUT);
             setMessageBoxRGBA(3, 0, 0, 0, 0);
             setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             
@@ -243,7 +246,7 @@ void namingScreenCallback(void) {
             setMessageBoxFont(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
             setMessageBoxInterpolationWithFlags(4, 1, 1);
             setMessageBoxSpriteIndices(4, 0xFF, 0xFF, 0xFF);
-            initializeMessageBox(4, 0xA, temp2 + 0xE, MESSAGE_BOX_MODE_NO_INPUT);
+            initializeMessageBox(4, NAMING_SCREEN_TEXT_INDEX, temp2 + 14, MESSAGE_BOX_MODE_NO_INPUT);
             setMessageBoxRGBA(4, 0, 0, 0, 0);
             setMessageBoxRGBAWithTransition(4, 0xFF, 0xFF, 0xFF, 0xFF, 8);
             
@@ -300,7 +303,7 @@ void namingScreenCallback(void) {
                     loadCutscene();
                      
                     exitOverlayScreen();
-                    setLevelLighting(8, 1);
+                    setLevelLighting(8, MAIN_GAME);
                      
                     return;
                  
@@ -334,7 +337,7 @@ void namingScreenCallback(void) {
                         loadCutscene();
 
                         exitOverlayScreen();
-                        setLevelLighting(8, 1);
+                        setLevelLighting(8, MAIN_GAME);
                      
                     return;
                  
@@ -343,7 +346,7 @@ void namingScreenCallback(void) {
                  case 7:
                     setLevelAudio(gBaseMapIndex, gSeason, gHour);
                     exitOverlayScreen();
-                    setLevelLighting(8, 1);
+                    setLevelLighting(8, MAIN_GAME);
                     return;
                  
              }
@@ -606,7 +609,7 @@ void loadNameSelectionSprites(void) {
     setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(3, 1, 1);
     setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
-    initializeMessageBox(3, 0xA, 0xD, MESSAGE_BOX_MODE_NO_INPUT);
+    initializeMessageBox(3, NAMING_SCREEN_TEXT_INDEX, 13, MESSAGE_BOX_MODE_NO_INPUT);
     setMessageBoxRGBA(3, 0, 0, 0, 0);
     setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
     

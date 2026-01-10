@@ -52,7 +52,7 @@ void handleTimeUpdates(void) {
         
         if (!checkDailyEventBit(0xE)) {
 
-            setPlayerAction(0xFE, 0);
+            setPlayerAction(254, ANIM_DEFAULT);
             // stop audio and set callback for loading
             handleExitLevel(1, END_OF_DAY_2);
             
@@ -63,8 +63,7 @@ void handleTimeUpdates(void) {
         toggleDailyEventBit(0xE);
 
         if (gCutsceneCompletionFlags >= 0) {
-            // do global lighting
-            setLevelLighting(1, 0);
+            setLevelLighting(1, NO_OP);
         }
 
     }

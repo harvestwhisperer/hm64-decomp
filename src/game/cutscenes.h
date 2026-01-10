@@ -32,7 +32,7 @@ extern u16 handleTimedDailyCutscenes(u8);
 extern u16 handleEndOfDayCutscenes();        
 extern u16 setDreamCutscenes();   
 extern void handleCutsceneCompletion();   
-extern void loadCutscene(u8);  
+extern void loadCutscene(bool morningVisit);  
 
 extern u16 gCutsceneIndex;
 extern u32 gCutsceneFlags;

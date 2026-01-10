@@ -613,15 +613,15 @@ beginseg
 endseg
 
 beginseg
-    name "karenCutscenes1Dialogue"
+    name "vineyardCutscenesDialogue"
     flags OBJECT
-    include "build/bin/dialogues/bytecode/karenCutscenes1Dialogue.bin.o"
+    include "build/bin/dialogues/bytecode/vineyardCutscenesDialogue.bin.o"
 endseg
 
 beginseg
-    name "karenCutscenes1DialogueIndex"
+    name "vineyardCutscenesDialogueIndex"
     flags OBJECT
-    include "build/bin/dialogues/bytecode/karenCutscenes1DialogueIndex.bin.o"
+    include "build/bin/dialogues/bytecode/vineyardCutscenesDialogueIndex.bin.o"
 endseg
 
 beginseg
@@ -721,15 +721,15 @@ beginseg
 endseg
 
 beginseg
-    name "karenCutscenes2Dialogue"
+    name "beachCutscenesDialogue"
     flags OBJECT
-    include "build/bin/dialogues/bytecode/karenCutscenes2Dialogue.bin.o"
+    include "build/bin/dialogues/bytecode/beachCutscenesDialogue.bin.o"
 endseg
 
 beginseg
-    name "karenCutscenes2DialogueIndex"
+    name "beachCutscenesDialogueIndex"
     flags OBJECT
-    include "build/bin/dialogues/bytecode/karenCutscenes2DialogueIndex.bin.o"
+    include "build/bin/dialogues/bytecode/beachCutscenesDialogueIndex.bin.o"
 endseg
 
 beginseg

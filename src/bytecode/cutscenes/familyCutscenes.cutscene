@@ -95,7 +95,7 @@
     BRANCH_U16_VAR_WITHIN_RANGE 56, 56, gCutsceneIndex, .branch_10E9C8
 
 .sub_109CBC:
-    SET_U32_VALUE 0, 2150584320
+    SET_U32_VALUE 0, var0
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 

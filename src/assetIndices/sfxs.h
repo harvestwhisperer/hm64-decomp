@@ -15,6 +15,7 @@
 #define SELECT_2 7
 // pause screen, dialogue box
 #define MENU_OPEN_SFX 8
+// 9 gallop
 #define WHISTLE 10
 #define SICKLE_SFX 11
 #define SILVER_SICKLE_SFX 12
@@ -34,6 +35,7 @@
 #define MILKER_SFX 30
 #define BRUSH_SFX 31
 #define BELL_SFX 32
+#define CLIPPERS_SFX 34
 #define SHIMMER_SFX 35
 #define PICKING_UP_SFX 36
 #define PUTTING_DOWN_SFX 37

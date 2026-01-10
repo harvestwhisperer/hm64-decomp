@@ -19,6 +19,7 @@ beginseg
     include "$(BUILD_DIR)/makerom/ipl3.o"
 endseg
 
+// TODO: move this the code segment and have mkldscript/makerom handle the STACK argument and BOOT flags
 beginseg
     name "entry"
     address 0x80025C00
@@ -215,13 +216,13 @@ beginwave
     include "cutsceneBank5"
     include "annCutscenes"
     include "karenCutscenes1"
-    include "cutsceneBank8"
+    include "village1Cutscenes"
     include "mariaCutscenes"
     include "karenCutscenes2"
     include "sowingFestival"
     include "horseRace"
     include "flowerFestival"
-    include "squareFireworks"
+    include "vegetableFestival"
     include "fireworksFestival"
     include "fireflyFestival"
     include "seaFestival"

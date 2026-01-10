@@ -12,8 +12,8 @@
 #include "game/npc.h"
 
 // bss
-EntityAssetDescriptor entityAssetDescriptors[MAX_ENTITY_ASSETS];
 Entity entities[MAX_ENTITIES];
+EntityAssetDescriptor entityAssetDescriptors[MAX_ENTITY_ASSETS];
 ShadowSpriteDescriptor shadowSpriteDescriptors[3];
 
 // forward declarations
