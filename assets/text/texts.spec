@@ -733,15 +733,15 @@ beginseg
 endseg
 
 beginseg
-    name "karenCutscenes1Text"
+    name "vineyardCutscenesText"
     flags RAW
-    include "build/bin/text/karenCutscenes1Text.bin.o"
+    include "build/bin/text/vineyardCutscenesText.bin.o"
 endseg
 
 beginseg
-    name "karenCutscenes1TextIndex"
+    name "vineyardCutscenesTextIndex"
     flags RAW
-    include "build/bin/text/karenCutscenes1TextIndex.bin.o"
+    include "build/bin/text/vineyardCutscenesTextIndex.bin.o"
 endseg
 
 beginseg
@@ -793,15 +793,15 @@ beginseg
 endseg
 
 beginseg
-    name "karenCutscenes2Text"
+    name "beachCutscenesText"
     flags RAW
-    include "build/bin/text/karenCutscenes2Text.bin.o"
+    include "build/bin/text/beachCutscenesText.bin.o"
 endseg
 
 beginseg
-    name "karenCutscenes2TextIndex"
+    name "beachCutscenesTextIndex"
     flags RAW
-    include "build/bin/text/karenCutscenes2TextIndex.bin.o"
+    include "build/bin/text/beachCutscenesTextIndex.bin.o"
 endseg
 
 beginseg

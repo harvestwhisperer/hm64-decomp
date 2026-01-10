@@ -97,7 +97,7 @@ inline void launchIntroCutscene(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
 
     gCutsceneIndex = cutsceneIndex;
 
-    loadCutscene(0);
+    loadCutscene(FALSE);
     
     loadLevelFromEntrance(gEntranceIndex);
  
@@ -149,7 +149,7 @@ void loadLevel(u8 arg0) {
 
         switch (gCutsceneIndex) {
 
-            case SQUARE_FIREWORKS:
+            case FIREWORKS_FESTIVAL:
             case SOWING_FESTIVAL_POTION_SHOP_DEALER ... SOWING_FESTIVAL_HARRIS:
             case HORSE_RACE_SQUARE ... HORSE_RACE_STARTING_ANNOUNCEMENT:
             case FLOWER_FESTIVAL:
@@ -160,7 +160,7 @@ void loadLevel(u8 arg0) {
             case EGG_FESTIVAL:
             case DOG_RACE_SQUARE ... DOG_RACE_AFTER_RACE:
             // spirit festival
-            case 0x546 ... 0x548:
+            case 1350 ... 1352:
             case NEW_YEAR_FESTIVAL:
                 initializeEntityInstances(2);
                 break;            
@@ -191,10 +191,10 @@ void loadLevel(u8 arg0) {
    if (checkDailyEventBit(0x54)) {
 
         if (checkDailyEventBit(0x53)) {
-            setPlayerAction(6, 8);
+            setPlayerAction(EATING, ANIM_EATING);
             gPlayer.heldItem = RICE_CAKE;
         } else {
-            setPlayerAction(0, 0);
+            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
             gPlayer.heldItem = 0;
         }
 
@@ -553,11 +553,11 @@ void exitOverlayScreen(void) {
     setupLevelMap(gBaseMapIndex);
     //setupLevelMap(currentMapContext.currentMapIndex);
     
-    setPlayerAction(0xFE, 0);
+    setPlayerAction(254, ANIM_DEFAULT);
     updatePlayerAction();
     
     setMainLoopCallbackFunctionIndex(MAIN_GAME);
-    setPlayerAction(0, 0);
+    setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
 
 }
 

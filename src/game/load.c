@@ -45,7 +45,6 @@ void func_800598E0(void) {
     }
     
     randomizeNPCLocations();
-    // animals
     randomizeMiscAnimalSpawnVariants();
     setDefaultGroundObjectsForLevel();
     

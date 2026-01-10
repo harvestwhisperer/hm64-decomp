@@ -2748,6 +2748,7 @@ void setupCoreMapObjectSprites(MainMap* mainMap) {
                     
                 }
 
+                // for front-facing sprites (used with sprites rendered on walls, etc.)
                 if (coreMapObjects[k].flags & CORE_MAP_OBJECT_APPLY_ROTATION) {
 
                     rotationX = mainMap->mapGlobals.rotation.x;
@@ -2782,6 +2783,7 @@ void setupCoreMapObjectSprites(MainMap* mainMap) {
                     
                     }
                 
+                // sprites with renders that are pre-rotated
                 } else {
                     rotationX = 0.0f;
                     rotationY = 0.0f;

@@ -47,9 +47,9 @@ typedef struct {
 	u32 *paletteIndexPtr; // 0xC
 	u8 *spriteToPaletteMappingPtr; // 0x10
 	u8 *texturePtr[2]; // 0x14
-	void *romTexturePtr; // 0x1C
-	void *animationFrameMetadataPtr; // 0x20
-	void *bitmapMetadataPtr; // 0x24
+	u8 *romTexturePtr; // 0x1C
+	AnimationFrameMetadata *animationFrameMetadataPtr; // 0x20
+	BitmapMetadata *bitmapMetadataPtr; // 0x24
 	AnimationFrameMetadata animationFrameMetadata; // 0x28
 	Vec3f viewSpacePosition; // 0x2C
 	Vec3f scale; // 0x38

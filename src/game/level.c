@@ -1750,9 +1750,9 @@ u8 getMapFromExit(u8 exitIndex) {
     return exitsToMapIndices[exitIndex];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", getCantEnterDialogueInfoIndex);
+//INCLUDE_ASM("asm/nonmatchings/game/level", getCantEnterTextIndex);
 
-u16 getCantEnterDialogueInfoIndex(u16 exitIndex) {
+u16 getCantEnterTextIndex(u16 exitIndex) {
 
     u16 index = 0xFFFF;
 
@@ -1839,6 +1839,7 @@ u16 getCantEnterDialogueInfoIndex(u16 exitIndex) {
                         }
                     }
                 }
+                
             }
             
             break;

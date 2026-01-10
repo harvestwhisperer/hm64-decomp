@@ -25,36 +25,35 @@
 #include "assetIndices/maps.h"
 #include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
+#include "assetIndices/texts.h"
 
 // bss
 ToolUse toolUse;
 ItemContext itemInfo[10];
 
 // shared bss (load game screen)
-// items shippd
-// strawberries shipped
-u32 D_801806C0;
-u32 D_80188F60;
-u32 D_801C3F80;
-u32 D_801FB5D0;
-u32 D_801FB6FC;
-u32 D_80237414;
+u32 totalStrawberriesShipped;
+u32 totalTomatoesShipped;
+u32 totalCabbageShipped;
+u32 totalCornShipped;
+u32 totalEggplantsShipped;
+u32 totalPotatoesShipped;
 
-u8 D_8013DC2C;
-u8 D_8018A725;
-u8 D_801C3E28;
-u8 D_801C3F70;
-u8 D_801FAD91;
-u8 D_801FC154;
-u8 D_80204DF4;
-u8 D_80205636;
-u8 D_802373E8;
-u8 D_80237458;
+u8 tomatoSeedsQuantity;
+u8 cabbageSeedsQuantity;
+u8 grassSeedsQuantity;
+u8 moondropSeedsQuantity;
+u8 cornSeedsQuantity;
+u8 turnipSeedsQuantity;
+u8 potatoSeedsQuantity;
+u8 pinkCatMintSeedsQuantity;
+u8 strawberrySeedsQuantity;
+u8 eggplantSeedsQuantity;
 
-u32 D_801654F4;
+u32 totalTurnipsShipped;
 
 // consumable tool counters (seeds, feed)
-u8 D_802373A8;
+u8 blueMistSeedsQuantity;
 u16 chickenFeedQuantity;
 u16 fodderQuantity;
 u8 wateringCanUses;
@@ -623,12 +622,12 @@ void useMiraclePotion();
 void useCowMedicine();
 void useGrassSeeds();
 void useEmptyBottle();
-u8 func_800D5488(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4);
+u8 allocateGroundItemSlot(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4);
 void setItemPosition(u8 index, f32 arg1, f32 arg2, f32 arg3);
 void loadHeldItemEntity(u8, u16);   
 bool handlePutDownHeldItem(u8 itemIndex);
 void processItemShipping(u8 index);
-void func_800D6B58(u8 arg0, u8 index);
+void handleItemDroppedInWater(u8 arg0, u8 index);
 u8 getHeldItemIndex(u8);
 u16 getItemFlags(u16 index);
 
@@ -1096,7 +1095,7 @@ void useSickle(void) {
 
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
            
-        temp3 = func_800D5488(1, 12, temp4, 0, 8);
+        temp3 = allocateGroundItemSlot(1, ITEM_STATE_THROW_LANDED, temp4, 0, 8);
 
         vec = getGroundObjectWorldPosition(0, (u8)vec.x, (u8)vec.z);
         setItemPosition(temp3, vec.x, vec.y, vec.z);
@@ -1345,7 +1344,7 @@ void useAx(void) {
                     
                 }
 
-                groundObjectIndex = func_800D5488(1, 0xC, 0x3D, 0, 8);
+                groundObjectIndex = allocateGroundItemSlot(1, ITEM_STATE_THROW_LANDED, 0x3D, 0, 8);
 
                 vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                 vec.x += vec2.x;
@@ -1438,7 +1437,7 @@ void useHammer(void) {
                     
                     toolUse.boulderHitCounter = 0;
                     
-                    groundObjectIndex = func_800D5488(1, 12, 2, 0, 8);
+                    groundObjectIndex = allocateGroundItemSlot(1, 12, 2, 0, 8);
                     
                     vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                     vec.x += vec2.x;
@@ -1513,7 +1512,7 @@ void useHammer(void) {
 
                         }
 
-                        groundObjectIndex = func_800D5488(1, 12, temp, 0, 8);
+                        groundObjectIndex = allocateGroundItemSlot(1, 12, temp, 0, 8);
 
                         vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                         vec.x += vec2.x;
@@ -2339,7 +2338,7 @@ void handleBlueFeatherUse(void) {
 
     getBlueFeatherResponse(npcTalkingTo, 0);
     
-    npcs[npcTalkingTo].movingFlag = npcs[npcTalkingTo].behaviorMode;
+    npcs[npcTalkingTo].animationMode = npcs[npcTalkingTo].defaultAnimationMode;
     
     setSpecialDialogueBit(0x135);
     
@@ -2476,9 +2475,9 @@ inline u8 initializeHeldItem(u8 index, u8 arg1, u32 heldItemIndex, s32 hasDirect
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5390);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", allocateThrownItemSlot);
 
-u8 func_800D5390(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
+u8 allocateThrownItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
     
     u8 found = FALSE;
     int tempBit = 1;
@@ -2515,9 +2514,9 @@ u8 func_800D5390(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
     return index;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5488);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", allocateGroundItemSlot);
 
-u8 func_800D5488(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
+u8 allocateGroundItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
     
     u8 found = FALSE;
     
@@ -2551,9 +2550,9 @@ u8 func_800D5488(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
 
 void clearHeldItemSlot(u8 index) {
 
-    if (itemInfo[index].flags & ITEM_CONTEXT_ACTIVE) {        
+    if (itemInfo[index].flags & ITEM_CONTEXT_ACTIVE) {
         deactivateEntity(ENTITY_ITEM_BASE_INDEX + index);
-        itemInfo[index].stateIndex = 0;
+        itemInfo[index].stateIndex = ITEM_STATE_INACTIVE;
         itemInfo[index].flags = 0;
     }
 
@@ -2633,8 +2632,8 @@ void loadHeldItemEntity(u8 itemIndex, u16 heldItemIndex) {
 
     setEntityShadow(ENTITY_ITEM_BASE_INDEX + itemIndex, 2);
 
-    itemInfo[itemIndex].stateIndex = 0;
-    
+    itemInfo[itemIndex].stateIndex = ITEM_STATE_INACTIVE;
+
 }
 
 u16 getItemFlags(u16 index) {
@@ -3031,14 +3030,14 @@ bool handlePutDownHeldItem(u8 itemIndex) {
             npcs[BABY].levelIndex = HOUSE;
             npcs[BABY].startingCoordinates.y = 0;
             npcs[BABY].direction = SOUTHWEST;
-            npcs[BABY].behaviorMode = 1;
+            npcs[BABY].defaultAnimationMode = NPC_ANIM_WANDER;
             npcs[BABY].animationIndex1 = 0;
-            npcs[BABY].movingFlag = 1;
+            npcs[BABY].animationMode = NPC_ANIM_WANDER;
 
             npcs[BABY].startingCoordinates.x = -192.0f;
             npcs[BABY].startingCoordinates.z = -64.0f;
             
-            npcs[BABY].flags |= 1;
+            npcs[BABY].flags |= NPC_ACTIVE;
             
             setDailyEventBit(PICKED_UP_BABY);
             setupNPCEntity(BABY, 0);
@@ -3062,9 +3061,9 @@ bool handlePutDownHeldItem(u8 itemIndex) {
             npcs[BABY].flags |= 1;
 
             npcs[BABY].direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            npcs[BABY].behaviorMode = 3;
-            npcs[BABY].animationIndex1 = 0x39;
-            npcs[BABY].movingFlag = 3;
+            npcs[BABY].defaultAnimationMode = NPC_ANIM_CUSTOM;
+            npcs[BABY].animationIndex1 = 57;
+            npcs[BABY].animationMode = NPC_ANIM_CUSTOM;
             
             setDailyEventBit(PICKED_UP_BABY);
             setupNPCEntity(BABY, 0);
@@ -3099,7 +3098,7 @@ void showHeldItemText(u8 index) {
             break;
     }
 
-    showTextBox(1, 6, temp, 0, 2);
+    showTextBox(1, SHOP_TEXT_INDEX, temp, 0, 2);
 
 }
 
@@ -3122,7 +3121,7 @@ void showHeldItemText(u8 index) {
 //     temp2 = D_80118000[index];
     
 // func_end:
-//     showTextBox(1, 6, temp2, 0, 2);
+//     showTextBox(1, SHOP_TEXT_INDEX, temp2, 0, 2);
 // }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processItemShipping);
@@ -3134,41 +3133,41 @@ void processItemShipping(u8 index) {
     dailyShippingBinValue += adjustValue(dailyShippingBinValue, itemShippingValues[index], MAX_TOTAL_SHIPPING);
      
     switch (index) {
-        case 13:
-            D_801654F4 += adjustValue(D_801654F4, 1, MAX_ITEM_SHIPPING_VALUE);
+        case TURNIP:
+            totalTurnipsShipped += adjustValue(totalTurnipsShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case 14:
-            D_80237414 += adjustValue(D_80237414, 1, MAX_ITEM_SHIPPING_VALUE);
+        case POTATO:
+            totalPotatoesShipped += adjustValue(totalPotatoesShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case 18:
-            D_801FB6FC += adjustValue(D_801FB6FC, 1, MAX_ITEM_SHIPPING_VALUE);
+        case EGGPLANT:
+            totalEggplantsShipped += adjustValue(totalEggplantsShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case 15:
-            D_801C3F80 += adjustValue(D_801C3F80, 1, MAX_ITEM_SHIPPING_VALUE);
+        case CABBAGE:
+            totalCabbageShipped += adjustValue(totalCabbageShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case 19:
-            D_801806C0 += adjustValue(D_801806C0, 1, MAX_ITEM_SHIPPING_VALUE);
+        case STRAWBERRY:
+            totalStrawberriesShipped += adjustValue(totalStrawberriesShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case 16:
-            D_80188F60 += adjustValue(D_80188F60, 1, MAX_ITEM_SHIPPING_VALUE);
+        case TOMATO:
+            totalTomatoesShipped += adjustValue(totalTomatoesShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case 17:
-            D_801FB5D0 += adjustValue(D_801FB5D0, 1, MAX_ITEM_SHIPPING_VALUE);
+        case CORN:
+            totalCornShipped += adjustValue(totalCornShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case 21:
-        case 22:
-        case 23:
-        case 24:
+        case SMALL_MILK:
+        case MEDIUM_MILK:
+        case LARGE_MILK:
+        case GOLDEN_MILK:
             gTotalMilkShipped += adjustValue(gTotalMilkShipped, 1, MAX_ANIMAL_ITEM_SHIPPED);
             break;
-        case 20:
+        case EGG_HELD_ITEM:
             gTotalEggsShipped += adjustValue(gTotalEggsShipped, 1, MAX_ANIMAL_ITEM_SHIPPED);
             break;
             
@@ -3178,17 +3177,12 @@ void processItemShipping(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D6B28);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleFeedDog);
 
-// put food in dog bowl
-void func_800D6B28(void) {
-
+inline void handleFeedDog(void) {
     setMapObjectAnimation(MAIN_MAP_INDEX, 0, 19);
     setDailyEventBit(FED_DOG);
-
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D6B58);
 
 static inline void setVec3f(u8 index, f32 x, f32 y, f32 z) {
 
@@ -3198,9 +3192,9 @@ static inline void setVec3f(u8 index, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D6B58);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleItemDroppedInWater);
 
-void func_800D6B58(u8 arg0, u8 itemIndex) {
+void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
 
     u8 temp;
     u8 temp2;
@@ -3247,13 +3241,13 @@ void func_800D6B58(u8 arg0, u8 itemIndex) {
 
             // FIXME: use a range
             // fish
-            if (!checkLifeEventBit(0x5E) && !checkDailyEventBit(0x21) && (itemInfo[itemIndex].heldItemIndex - 0x25) < 2U && 8 < gHour && gHour < 17) {
-                setDailyEventBit(0x47);
+            if (!checkLifeEventBit(MET_KAPPA) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY) && (itemInfo[itemIndex].heldItemIndex - 0x25) < 2U && 8 < gHour && gHour < 17) {
+                setDailyEventBit(KAPPA_FISH_OFFERING_DAILY);
             }
 
             // check kappa power nut
-            if (!checkLifeEventBit(0x5F) && !checkDailyEventBit(0x21) && itemInfo[itemIndex].heldItemIndex == 0x27 && 8 < gHour && gHour < 17) {
-                setDailyEventBit(0x48);
+            if (!checkLifeEventBit(KAPPA_POWER_NUT) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY) && itemInfo[itemIndex].heldItemIndex == LARGE_FISH && 8 < gHour && gHour < 17) {
+                setDailyEventBit(KAPPA_LARGE_FISH_OFFERING_DAILY);
             }
 
         }
@@ -3271,8 +3265,8 @@ void func_800D6B58(u8 arg0, u8 itemIndex) {
         }
         
         if (!(gCutsceneFlags & 1)) {
-            if (!checkDailyEventBit(0x46) && (itemFlags[itemInfo[itemIndex].heldItemIndex] & 0x8000) && 8 < gHour && gHour < 17 ) {
-                setDailyEventBit(0x45);    
+            if (!checkDailyEventBit(HARVEST_GODDESS_INTERACTION) && (itemFlags[itemInfo[itemIndex].heldItemIndex] & ITEM_HARVEST_GODDESS_OFFERABLE) && 8 < gHour && gHour < 17) {
+                setDailyEventBit(HARVEST_GODDESS_OFFERING);    
             }
         }
 
@@ -3314,7 +3308,7 @@ void updateHeldItemState(void) {
                 
                 switch (itemInfo[i].stateIndex) {
 
-                    case 2:
+                    case ITEM_STATE_HELD:
                         loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
                         itemInfo[i].attachmentOffset.x = 0;
                         itemInfo[i].attachmentOffset.y = y;
@@ -3322,7 +3316,7 @@ void updateHeldItemState(void) {
                         itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
 
-                    case 16:
+                    case ITEM_STATE_DIALOGUE_SELECTION:
                         loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
                         itemInfo[i].attachmentOffset.x = x;
@@ -3330,8 +3324,8 @@ void updateHeldItemState(void) {
                         itemInfo[i].attachmentOffset.z = z3;
                         itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
-                    
-                    case 21:
+
+                    case ITEM_STATE_TOOL_ACQUIRED:
                         loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
                         itemInfo[i].attachmentOffset.x = x;
@@ -3340,17 +3334,17 @@ void updateHeldItemState(void) {
                         itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
 
-                    case 3:
+                    case ITEM_STATE_THROW_START:
                         loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
                         itemInfo[i].attachmentOffset.x = 0.0f;
                         itemInfo[i].attachmentOffset.y = y2;
                         itemInfo[i].attachmentOffset.z = z2;
-                        itemInfo[i].stateIndex = 4;
+                        itemInfo[i].stateIndex = ITEM_STATE_THROW_MOTION;
                         itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
-                        break;                  
+                        break;
 
-                    case 4:    
-                        
+                    case ITEM_STATE_THROW_MOTION:
+
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0xFFFF, 0xFF);
 
                         vec = getMovementVectorFromDirection(4.0f, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX), 0.0f);
@@ -3358,13 +3352,13 @@ void updateHeldItemState(void) {
                         itemInfo[i].movement = vec;
 
                         itemInfo[i].movement.y = entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y;
-                        
+
                         itemInfo[i].itemAnimationFrameCounter = 0;
-                        itemInfo[i].stateIndex = 5;
+                        itemInfo[i].stateIndex = ITEM_STATE_THROW_FLIGHT;
 
                         break;
 
-                    case 5:
+                    case ITEM_STATE_THROW_FLIGHT:
                         
                         if (entities[ENTITY_ITEM_BASE_INDEX + i].flags & 0x800) {
                             
@@ -3378,7 +3372,7 @@ void updateHeldItemState(void) {
                             setEntityTracksCollisions(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                             enableEntityMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
 
-                            itemInfo[i].stateIndex = 12;
+                            itemInfo[i].stateIndex = ITEM_STATE_THROW_LANDED;
 
                             set = TRUE;
 
@@ -3387,15 +3381,15 @@ void updateHeldItemState(void) {
                             // parabolic equation for throwing items
                             entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y = itemInfo[i].movement.y + (f32)(itemInfo[i].itemAnimationFrameCounter * itemInfo[i].itemAnimationFrameCounter) * -0.5f;
                             itemInfo[i].itemAnimationFrameCounter++;
-                            
+
                         }
-                        
+
                         break;
 
                     default:
                         break;
 
-                    case 12:
+                    case ITEM_STATE_THROW_LANDED:
 
                         deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
                         loadEntity(ENTITY_ITEM_BASE_INDEX + i, 0x5E, 1);
@@ -3409,58 +3403,58 @@ void updateHeldItemState(void) {
                         enableEntityMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                         setEntityAnimation(ENTITY_ITEM_BASE_INDEX + i, itemSpriteAnimations[itemInfo[i].heldItemIndex][gSeason-1]);
 
-                        itemInfo[i].stateIndex = 1;
+                        itemInfo[i].stateIndex = ITEM_STATE_CLEANUP;
 
                         if (itemFlags[itemInfo[i].heldItemIndex] & ITEM_EATABLE) {
                             gHappiness += adjustValue(gHappiness, -1, MAX_HAPPINESS);
-                        } 
+                        }
 
                         break;
 
-                    case 6:
+                    case ITEM_STATE_PICKUP:
 
                         itemInfo[i].attachmentOffset.x = 0;
                         itemInfo[i].attachmentOffset.y = z3;
                         itemInfo[i].attachmentOffset.z = z;
-                        
+
                         itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
                         loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
 
                         break;
 
-                    case 7:
+                    case ITEM_STATE_PICKUP_DONE:
                         itemInfo[i].attachmentOffset.x = 0;
                         itemInfo[i].attachmentOffset.y = y;
                         itemInfo[i].attachmentOffset.z = z;
-                        itemInfo[i].stateIndex = 0;
-                        
+                        itemInfo[i].stateIndex = ITEM_STATE_INACTIVE;
+
                         itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
                         break;
-                    
-                    case 8:
+
+                    case ITEM_STATE_PLACE:
                         itemInfo[i].attachmentOffset.x = 0;
                         itemInfo[i].attachmentOffset.y = z3;
                         itemInfo[i].attachmentOffset.z = z;
-                    
+
                         itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
                         break;
-                    
-                    case 9:
-                        
+
+                    case ITEM_STATE_PUT_DOWN:
+
                         handlePutDownHeldItem(i);
-       
+
                         if (itemInfo[i].flags & ITEM_CONTEXT_ACTIVE) {
                             deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
-                            itemInfo[i].stateIndex = 0;
+                            itemInfo[i].stateIndex = ITEM_STATE_INACTIVE;
                             itemInfo[i].flags = 0;
                         }
-                        
+
                         break;
 
-                    case 10:
+                    case ITEM_STATE_EATING:
                         
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
                         
@@ -3471,17 +3465,18 @@ void updateHeldItemState(void) {
 
                         break;
 
-                    case 14:
-                        
+                    case ITEM_STATE_SHIP:
+
                         processItemShipping(itemInfo[i].heldItemIndex);
 
-                        switch (gBaseMapIndex) {        
+                        switch (gBaseMapIndex) {
 
-                            case FARM:                     
+                            // update shipping bin geometry
+                            case FARM:
                                 activateMapAddition(MAIN_MAP_INDEX, 18, 0);
                                 playSfx(ITEM_PLUCK_SFX);
                                 break;
-                     
+
                             case BARN:
                                 activateMapAddition(MAIN_MAP_INDEX, 0, 0);
                                 playSfx(ITEM_PLUCK_SFX);
@@ -3491,49 +3486,49 @@ void updateHeldItemState(void) {
                                 activateMapAddition(MAIN_MAP_INDEX, 0, 0);
                                 playSfx(ITEM_PLUCK_SFX);
                                 break;
-                            
-                            case GREENHOUSE:                     
+
+                            case GREENHOUSE:
                                 activateMapAddition(MAIN_MAP_INDEX, 0, 0);
                                 playSfx(ITEM_PLUCK_SFX);
                                 break;
-                            
+
                         }
-                        
+
                         deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
-                        itemInfo[i].stateIndex = 1;
+                        itemInfo[i].stateIndex = ITEM_STATE_CLEANUP;
 
                         break;
 
-                    case 17:
+                    case ITEM_STATE_DOG_BOWL:
                         itemInfo[i].attachmentOffset.x = 0.0f;
                         itemInfo[i].attachmentOffset.y = 8.0f;
                         itemInfo[i].attachmentOffset.z = z;
                         itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
-                    
-                    case 18:
-                        setMapObjectAnimation(MAIN_MAP_INDEX, 0, 19);
-                        setDailyEventBit(FED_DOG);
+
+                    case ITEM_STATE_FEED_DOG:
+                        handleFeedDog();
                         deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
-                        itemInfo[i].stateIndex = 1;
+                        itemInfo[i].stateIndex = ITEM_STATE_CLEANUP;
                         break;
-                    
-                    case 13:
-                    case 19:
+
+                    case ITEM_STATE_RAISED:
+                    case ITEM_STATE_RAISED_ALT:
                         itemInfo[i].attachmentOffset.x = 0.0f;
                         itemInfo[i].attachmentOffset.y = y2;
                         itemInfo[i].attachmentOffset.z = z2;
                         itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
-                    
-                    case 20:
-                        func_800D6B58(itemInfo[i].heldItemIndex, i);
-                        playSfx(0x28);
-                        itemInfo[i].stateIndex = 1;
+
+                    case ITEM_STATE_DROP_IN_WATER:
+                        handleItemDroppedInWater(itemInfo[i].heldItemIndex, i);
+                        playSfx(FISHING_ROD_CAST);
+                        itemInfo[i].stateIndex = ITEM_STATE_CLEANUP;
                         break;
-                    
-                    case 1:
-                        
+
+                    // after throwing item
+                    case ITEM_STATE_CLEANUP:
+
                         // wait 30 frames before removing item
                         if (checkEntityAnimationStateChanged(ENTITY_ITEM_BASE_INDEX + i) || !(itemInfo[i].itemAnimationFrameCounter < 30)) {
 
@@ -3543,44 +3538,45 @@ void updateHeldItemState(void) {
 
                                 // FIXME: fake match in order to get float registers right
                                 if (y2) {
-                                    itemInfo[i].stateIndex = 0;                                    
+                                    itemInfo[i].stateIndex = ITEM_STATE_INACTIVE;
                                 } else {
-                                    itemInfo[i].stateIndex = 0;
+                                    itemInfo[i].stateIndex = ITEM_STATE_INACTIVE;
                                 }
-                                
+
                                 if (z2) {
                                     itemInfo[i].flags = 0;
                                 } else {
                                     itemInfo[i].flags = 0;
                                 }
-                                
+
                             }
                             
-                            if (checkDailyEventBit(0x45)) {
+                            if (checkDailyEventBit(HARVEST_GODDESS_OFFERING)) {
                                 
                                 if (checkSpecialDialogueBit(0x25)) {
                                     
                                     if (!checkSpecialDialogueBit(0x14B)) {
-                                         gCutsceneIndex = 0x158;
+                                        // initial harvest goddess offering
+                                         gCutsceneIndex = 344;
                                     } else {
-                                         gCutsceneIndex = 0x155;
+                                         gCutsceneIndex = 341;
                                     }
                                     
                                 } else {
-                                    gCutsceneIndex = 0x155;
+                                    gCutsceneIndex = 341;
                                 }
                                 
                                 loadCutscene(0);
                                 
                             }
                             
-                            if (checkDailyEventBit(0x47)) {
-                                gCutsceneIndex = 0x150;
+                            if (checkDailyEventBit(KAPPA_FISH_OFFERING_DAILY)) {
+                                gCutsceneIndex = 336;
                                 loadCutscene(0);
                             }
                             
-                            if (checkDailyEventBit(0x48)) {
-                                gCutsceneIndex = 0x151;
+                            if (checkDailyEventBit(KAPPA_LARGE_FISH_OFFERING_DAILY)) {
+                                gCutsceneIndex = 337;
                                 loadCutscene(0);
                             } 
                             

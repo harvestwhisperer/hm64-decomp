@@ -9,6 +9,7 @@ typedef enum {
     STMT_after,
     STMT_align,
     STMT_beginseg,
+    STMT_boot_bss,
     STMT_compress,
     STMT_endseg,
     STMT_entry,
@@ -43,12 +44,13 @@ typedef struct Segment {
     char* after;
     uint32_t flags;
     uint32_t address;
-    uint32_t stack;
+    char* stack;        
     uint32_t align;
     uint32_t romalign;
     uint32_t increment;
-    uint32_t entry;
+    char* entry;       
     uint32_t number;
+    char* bss_seg;
     struct Include* includes;
     int includesCount;
     bool compress;

@@ -17,45 +17,45 @@ beginseg
 endseg
 
 beginseg
-    name "cutsceneBank4"
+    name "roadCutscenes"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank4.bin.o"
+    include "build/bin/cutscenes/roadCutscenes.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank5"
+    name "mountainCutscenes"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank5.bin.o"
+    include "build/bin/cutscenes/mountainCutscenes.bin.o"
 endseg
 
 beginseg
-    name "annCutscenes"
+    name "ranchCutscenes"
     flags OBJECT
-    include "build/bin/cutscenes/annCutscenes.bin.o"
+    include "build/bin/cutscenes/ranchCutscenes.bin.o"
 endseg
 
 beginseg
-    name "karenCutscenes1"
+    name "vineyardCutscenes"
     flags OBJECT
-    include "build/bin/cutscenes/karenCutscenes1.bin.o"
+    include "build/bin/cutscenes/vineyardCutscenes.bin.o"
 endseg
 
 beginseg
-    name "cutsceneBank8"
+    name "village1Cutscenes"
     flags OBJECT
-    include "build/bin/cutscenes/cutsceneBank8.bin.o"
+    include "build/bin/cutscenes/village1Cutscenes.bin.o"
 endseg
 
 beginseg
-    name "mariaCutscenes"
+    name "village2Cutscenes"
     flags OBJECT
-    include "build/bin/cutscenes/mariaCutscenes.bin.o"
+    include "build/bin/cutscenes/village2Cutscenes.bin.o"
 endseg
 
 beginseg
-    name "karenCutscenes2"
+    name "beachCutscenes"
     flags OBJECT
-    include "build/bin/cutscenes/karenCutscenes2.bin.o"
+    include "build/bin/cutscenes/beachCutscenes.bin.o"
 endseg
 
 beginseg
@@ -77,9 +77,9 @@ beginseg
 endseg
 
 beginseg
-    name "squareFireworks"
+    name "vegetableFestival"
     flags OBJECT
-    include "build/bin/cutscenes/squareFireworks.bin.o"
+    include "build/bin/cutscenes/vegetableFestival.bin.o"
 endseg
 
 beginseg

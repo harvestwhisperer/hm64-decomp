@@ -36,6 +36,7 @@
 #include "buffers/buffers.h"
 
 #include "assetIndices/cutscenes.h"
+#include "assetIndices/dialogues.h"
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
 #include "assetIndices/sfxs.h"
@@ -1068,7 +1069,7 @@ static inline void openOverlayScreen_2(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", showTextBox);
 
-inline void showTextBox(u16 messageBoxType, u16 dialogueInfoIndex, u16 dialogueIndex, u32 flag, u16 flags) {
+inline void showTextBox(u16 messageBoxType, u16 textBankIndex, u16 textIndex, u32 flag, u16 flags) {
   
     pauseGameplay_2();
     
@@ -1090,13 +1091,13 @@ inline void showTextBox(u16 messageBoxType, u16 dialogueInfoIndex, u16 dialogueI
 
     setMessageBoxInterpolationWithFlags(0, -4, flags);
   
-    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, dialogueInfoIndex, dialogueIndex, flag);
+    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, textBankIndex, textIndex, flag);
   
     setMainLoopCallbackFunctionIndex(MESSAGE_BOX);
     
     controllers[CONTROLLER_1].buttonPressed = 0;
 
-    setPlayerAction(0, 0);
+    setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
     
 }
 
@@ -1126,135 +1127,143 @@ inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dia
 
     controllers[CONTROLLER_1].buttonPressed = 0;
     
-    setPlayerAction(0, 0);
+    setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
 
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", showPinkOverlayText);
 
-// show pink overlay texts basd on level interaction/animals/cutscene
-void showPinkOverlayText(u8 arg0) {
+void showPinkOverlayText(u8 dialogueMenuIndex) {
 
-    gameLoopContext.unk_6 = arg0;
+    gameLoopContext.dialogueMenuIndex = dialogueMenuIndex;
 
-    switch (arg0) {
-        default:
-            break;
+    switch (dialogueMenuIndex) {
+
+        // diary menus
         case 0:
-            showMessageBox(1, 1, 0, 0, 2);
+            showMessageBox(1, DIALOGUE_DIARY, 0, 0, 2);
             break;
         case 1:
-            showMessageBox(1, 1, 1, 0, 2);
-            break;    
+            showMessageBox(1, DIALOGUE_DIARY, 1, 0, 2);
+            break;
+            
+        // shop selection
         case 2:
-            showMessageBox(0, 0x3D, 0xC, 0x40, 0);
+            showMessageBox(0, DIALOGUE_SHOP, 12, 0x40, 0);
             break;         
         case 3:
-            showMessageBox(0, 0x3D, 0xB, 0x40, 0);
+            showMessageBox(0, DIALOGUE_SHOP, 11, 0x40, 0);
             break;          
         case 4:
-            showMessageBox(0, 0x3D, 0x12, 0x40, 0);
+            showMessageBox(0, DIALOGUE_SHOP, 18, 0x40, 0);
             break;       
         case 5:
-            showMessageBox(0, 0x3D, 0xD, 0x40, 0);
+            showMessageBox(0, DIALOGUE_SHOP, 13, 0x40, 0);
             break;        
         case 6:
-            showMessageBox(0, 0x3D, 0xE, 0x40, 0);
+            showMessageBox(0, DIALOGUE_SHOP, 14, 0x40, 0);
             break;      
         case 7:
-            showMessageBox(0, 0x3D, 0xF, 0x40, 0);
+            showMessageBox(0, DIALOGUE_SHOP, 15, 0x40, 0);
             break;      
+
+        // festivals
         case 8:
-            showMessageBox(0, 0x3E, 7, 0x40, 0);
+            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 7, 0x40, 0);
             break;      
         case 9:
-            showMessageBox(0, 0x3E, 6, 0x40, 0);
+            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 6, 0x40, 0);
             break;    
         case 10:
-            showMessageBox(0, 0x3E, 2, 0x40, 0);
+            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 2, 0x40, 0);
             break;  
         case 11:
-            showMessageBox(0, 0x3E, 0, 0x40, 0);
+            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 0, 0x40, 0);
             break;        
         case 12:
-            showMessageBox(0, 0x3E, 1, 0x40, 0);
-            break;          
+            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 1, 0x40, 0);
+            break;
+            
+        // library
         case 13:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, 0x44, 0, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 0, 0, 2);
             } else {
-                showMessageBox(1, 0x44, 10, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 10, 0, 2);
             }            
             break;
         case 14:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, 0x44, 1, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 1, 0x40, 2);
             } else {
-                showMessageBox(1, 0x44, 0xB, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 11, 0, 2);
             }
             break;
         case 15:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, 0x44, 2, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 2, 0x40, 2);
             } else {
-                showMessageBox(1, 0x44, 0xC, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 12, 0, 2);
             }
             break; 
         case 16:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, 0x44, 3, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 3, 0x40, 2);
             } else {
-                showMessageBox(1, 0x44, 0xD, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 13, 0, 2);
             }
             break;   
         case 17:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, 0x44, 4, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 4, 0x40, 2);
             } else {
-                showMessageBox(1, 0x44, 0xE, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 14, 0, 2);
             }
             break;     
         case 18:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, 0x44, 5, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 5, 0x40, 2);
             } else {
-                showMessageBox(1, 0x44, 0xF, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 15, 0, 2);
             }
             break;        
         case 19:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, 0x44, 6, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 6, 0x40, 2);
             } else {
-                showMessageBox(1, 0x44, 0x10, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 16, 0, 2);
             }
             break;        
         case 20:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, 0x44, 7, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 7, 0x40, 2);
             } else {
-                showMessageBox(1, 0x44, 0x11, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 17, 0, 2);
             }
             break;       
         case 21:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, 0x44, 8, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 8, 0x40, 2);
             } else {
-                showMessageBox(1, 0x44, 0x12, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 18, 0, 2);
             }
             break;       
         case 22:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, 0x44, 9, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 9, 0x40, 2);
             } else {
-                showMessageBox(1, 0x44, 0x13, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, 19, 0, 2);
             }
             break;     
+        
+        // diary
         case 23:
-            showMessageBox(1, 1, 0x15, 0, 2);
-            break;    
+            showMessageBox(1, DIALOGUE_DIARY, 21, 0, 2);
+            break;
+
     }
 
-    setMainLoopCallbackFunctionIndex(PINK_OVERLAY_TEXT);
+    setMainLoopCallbackFunctionIndex(DIALOGUE_SELECTION);
 
 }
 
@@ -1281,7 +1290,7 @@ void setMapAudioAndLighting(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", setLevelLighting);
 
-void setLevelLighting(s16 arg0, u16 arg1) {
+void setLevelLighting(s16 rate, u16 callbackFunctionIndex) {
 
     Vec4f vec;
     
@@ -1319,15 +1328,15 @@ void setLevelLighting(s16 arg0, u16 arg1) {
         getDefaultLevelLighting(&globalLightingRGBA, gBaseMapIndex);
     }
     
-    if (arg0 == 0) {
+    if (rate == 0) {
         
         setEntitiesRGBA(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
         setMapControllerRGBA(MAIN_MAP_INDEX, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a);
         
     } else if (globalLightingRGBA.r != previousLightingRGBA.r || globalLightingRGBA.g != previousLightingRGBA.g || globalLightingRGBA.b != previousLightingRGBA.b || globalLightingRGBA.a != previousLightingRGBA.a) {
         
-        setEntitiesRGBAWithTransition(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
-        setMapControllerRGBAWithTransition(0, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, arg0);
+        setEntitiesRGBAWithTransition(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, rate);
+        setMapControllerRGBAWithTransition(0, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, rate);
         
         if (!checkDailyEventBit(0x4B)) {
             setAudioSequenceVolume(gCurrentAudioSequenceIndex, gAudioSequenceVolume);
@@ -1340,9 +1349,9 @@ void setLevelLighting(s16 arg0, u16 arg1) {
     previousLightingRGBA.b = globalLightingRGBA.b;
     previousLightingRGBA.a = globalLightingRGBA.a;
 
-    gameLoopContext.callbackIndex = arg1;
+    gameLoopContext.callbackIndex = callbackFunctionIndex;
     
-    if (arg1) {
+    if (callbackFunctionIndex) {
         setMainLoopCallbackFunctionIndex(LEVEL_LOAD);
         togglePauseEntities();
         resumeCutsceneExecutors();
@@ -1374,10 +1383,10 @@ inline void handleExitLevel(u16 arg0, u16 callbackIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", loadOverlayScreen);
 
-void loadOverlayScreen(u16 arg0, u16 arg1) {
-    gameLoopContext.unk_4 = arg0;
-    gameLoopContext.unk_2 = 0;
-    gameLoopContext.callbackIndex = arg1;
+void loadOverlayScreen(u16 delayedFramesCount, u16 callbackFunctionIndex) {
+    gameLoopContext.delayedFramesCount = delayedFramesCount;
+    gameLoopContext.frameCount = 0;
+    gameLoopContext.callbackIndex = callbackFunctionIndex;
     setMainLoopCallbackFunctionIndex(OVERLAY_SCREEN_LOAD);
 }
 
@@ -1415,14 +1424,14 @@ void exitLevelCallback(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CB50);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setOverlayScreenCallbackWithDelay);
 
-void func_8005CB50(void) {
+void setOverlayScreenCallbackWithDelay(void) {
 
-    if (gameLoopContext.unk_2 >= gameLoopContext.unk_4) {
+    if (gameLoopContext.frameCount >= gameLoopContext.delayedFramesCount) {
         setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
     } else {
-        gameLoopContext.unk_2++;
+        gameLoopContext.frameCount++;
     }
 
 }
@@ -1607,7 +1616,7 @@ void mapLoadCallback(void) {
     toggleDailyEventBit(0x12);
     toggleDailyEventBit(0x13);
 
-    setPlayerAction(0, 0);
+    setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
 
     loadLevel(1);
     
@@ -1698,7 +1707,7 @@ void mapLoadCallback(void) {
 
 // FIXME: clean up/rename inlines
 
-static inline void inline1(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+static inline void pickUpShopItem(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 
     switch (arg0) {                   
         case 0:                                 
@@ -1752,7 +1761,7 @@ static inline void inline3() {
     
     closeDialogueSession(0);
 
-    setPlayerAction(0, 0);
+    setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
     setMainLoopCallbackFunctionIndex(MAIN_GAME);
 
 }
@@ -1782,8 +1791,7 @@ static inline void launchIntroCutscene_2(u16 cutsceneIndex, u16 entranceIndex, u
 
     gCutsceneIndex = cutsceneIndex;
 
-    // trigger cutscene and load cutscene assets
-    loadCutscene(0);
+    loadCutscene(FALSE);
     
     loadLevelFromEntrance(gEntranceIndex);
     setupPlayerEntity(gEntranceIndex, 0);
@@ -1800,7 +1808,7 @@ static inline void launchIntroCutscene_2(u16 cutsceneIndex, u16 entranceIndex, u
 
 void pinkOverlayMenuCallback() {
 
-    u8 temp;
+    u8 selectedMenuRow;
 
     if (dialogues[0].sessionManager.flags & 4) {
         
@@ -1808,12 +1816,13 @@ void pinkOverlayMenuCallback() {
         resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
-        temp = getSelectedMenuRow(0);
+        selectedMenuRow = getSelectedMenuRow(0);
 
-        switch (gameLoopContext.unk_6) {
+        switch (gameLoopContext.dialogueMenuIndex) {
 
-            case 0:                                     
-                switch (temp) {                      
+            case 0:          
+
+                switch (selectedMenuRow) {                      
                     case 0:
                         // show another message box                 
                         showPinkOverlayText(1);
@@ -1836,48 +1845,50 @@ void pinkOverlayMenuCallback() {
             
             // diary
             case 1:
-                switch (temp) {
+
+                switch (selectedMenuRow) {
                      
                     // write in diary/save game
                     case 0:                                 
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                        setPlayerAction(8, 10);
+                        setPlayerAction(GETTING_INTO_BED, ANIM_GET_INTO_BED);
                         setDailyEventBit(7);
                         break;
                         
                     // don't write
                     case 1:                                 
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                        setPlayerAction(8, 10);
+                        setPlayerAction(GETTING_INTO_BED, ANIM_GET_INTO_BED);
                         break;
 
                     case 2:
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
+
                 }
                 
                 break;
 
             case 2:                       
-                inline1(temp, 11, 12, 13, 18);
+                pickUpShopItem(selectedMenuRow, 11, 12, 13, 18);
                 break;
 
             case 3:
-                inline1(temp, 14, 15, 16, 17);
+                pickUpShopItem(selectedMenuRow, 14, 15, 16, 17);
                 break;
 
             case 4:       
-                inline2(temp, 40, 41, 42, 43, 44);
+                inline2(selectedMenuRow, 40, 41, 42, 43, 44);
                 break;
 
             case 5:                                     
-                switch (temp) {                    
+                switch (selectedMenuRow) {                    
                     case 0:
                         // show another message box               
                         showPinkOverlayText(6);
                         break;
                     case 1:                                
-                        showTextBox(0, 6, 0x55, 0, 0);
+                        showTextBox(0, SHOP_TEXT_INDEX, 0x55, 0, 0);
                         setDailyEventBit(2);
                         setDailyEventBit(5);
                         break;
@@ -1890,12 +1901,12 @@ void pinkOverlayMenuCallback() {
                 break;
 
             case 6:                                
-                inline1(temp, 30, 31, 32, 33);
+                pickUpShopItem(selectedMenuRow, 30, 31, 32, 33);
                 break;
 
             case 7: 
 
-                switch (temp) {                   
+                switch (selectedMenuRow) {                   
 
                     case 0:                         
 
@@ -1934,8 +1945,10 @@ void pinkOverlayMenuCallback() {
                 
                 break;
 
-            case 8:                         
-                switch (temp) {                    
+            case 8:                
+
+                switch (selectedMenuRow) {         
+
                     case 0:                                 
                         
                         dialogues[0].sessionManager.flags &= ~0x40;
@@ -1948,7 +1961,7 @@ void pinkOverlayMenuCallback() {
                         setDailyEventBit(0x1E);
                         setDailyEventBit(0x20);
                         // cow festival
-                        gCowFestivalEnteredCowIndex= gSelectedAnimalIndex;
+                        gCowFestivalEnteredCowIndex = gSelectedAnimalIndex;
                         break;
                         
                     case 1:                                 
@@ -1960,11 +1973,12 @@ void pinkOverlayMenuCallback() {
                 
                 break;
 
-            case 9:                                     
-                if (temp >= 5) {
+            case 9:                
+
+                if (selectedMenuRow >= 5) {
                     gVoteForFlowerFestivalGoddess = 0xFF;
                 } else {
-                    gVoteForFlowerFestivalGoddess = temp;
+                    gVoteForFlowerFestivalGoddess = selectedMenuRow;
                 }
                 
                 dialogues[0].sessionManager.flags &= ~0x40;
@@ -1972,8 +1986,9 @@ void pinkOverlayMenuCallback() {
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 break;
             
-            case 10:                                    
-                switch (temp) {                   
+            case 10:                
+
+                switch (selectedMenuRow) {                   
                     case 0:                                 
                         handlePickUpShopItem(50);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1987,14 +2002,15 @@ void pinkOverlayMenuCallback() {
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 3:                                 
-                        showTextBox(0, 4, 31, 0, 0);
+                        showTextBox(0, FESTIVALS_TEXT_INDEX, 31, 0, 0);
                         break; 
                     }
                 
                     break;
 
-            case 11:                     
-                switch (temp) {                     
+            case 11:                 
+
+                switch (selectedMenuRow) {                     
                     case 0:                                 
                         handlePickUpShopItem(45);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2008,14 +2024,15 @@ void pinkOverlayMenuCallback() {
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 3:
-                        showTextBox(0, 4, 20, 0, 0);
+                        showTextBox(0, FESTIVALS_TEXT_INDEX, 20, 0, 0);
                         break;
                     }
                 
                 break;
 
-            case 12:                                    
-                switch (temp) {                     
+            case 12:                   
+
+                switch (selectedMenuRow) {                     
                     case 0:                                 
                         handlePickUpShopItem(47);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -2029,680 +2046,698 @@ void pinkOverlayMenuCallback() {
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;    
                     case 3:
-                        showTextBox(0, 4, 20, 0, 0);
+                        showTextBox(0, FESTIVALS_TEXT_INDEX, 20, 0, 0);
                         break;
                     }
                 
                 break;
 
             case 13:                                    
+
                 if (gSeason == SPRING || gSeason == WINTER) {
-                    if (gPlayer.actionHandler == 0x1E || temp == 3) {
-                        switch (temp) {             
+
+                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+
+                        switch (selectedMenuRow) {             
                             case 0:                         
-                                showTextBox(1, 1, 0, 0, 0);
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 0, 0, 0);
                                 break;
                             case 1:                         
-                                showTextBox(1, 1, 1, 0, 0);
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 1, 0, 0);
                                 break;
                             case 2:                         
-                                showTextBox(1, 1, 2, 0, 0);
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 2, 0, 0);
                                 break;
                             case 3:
                                 dialogues[0].sessionManager.flags &= ~0x40;
                                 closeDialogueSession(0);
-                                setPlayerAction(0, 0);
+                                setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
                                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                                 break;
                             }
                         
                         setItemState(gPlayer.itemInfoIndex, 1);
                         gPlayer.heldItem = 0;
-                        break;
+
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
+
+                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
                     
-                    setPlayerAction(0x1E, 0x1F);
-                    setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                    break;
-                }
-                
-                if (gPlayer.actionHandler == 0x1E || temp == 3) {
-                    
-                    switch (temp) {                 
+                    switch (selectedMenuRow) {                 
                         case 0:                             
-                            showTextBox(1, 1, 3, 0, 0);
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 3, 0, 0);
                             break;
                         case 1:                             
-                            showTextBox(1, 1, 4, 0, 0);
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 4, 0, 0);
                             break;     
                         case 2:                             
-                            showTextBox(1, 1, 5, 0, 0);
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 5, 0, 0);
                             break;
                         case 3:
                             dialogues[0].sessionManager.flags &= ~0x40;
                             closeDialogueSession(0);
-                            setPlayerAction(0, 0);
+                            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
                     setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
-                    break;
-                    
+
+                } else {
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
-                
-                setPlayerAction(0x1E, 0x1F);
-                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+
                 break;
 
-            case 14:                                    
+            case 14:                                   
+
                 if (gSeason == SPRING || gSeason == WINTER) {
-                    if (gPlayer.actionHandler == 0x1E || temp == 3) {
-                        switch (temp) {            
+
+                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+
+                        switch (selectedMenuRow) {            
                             case 0:                        
-                                showTextBox(1, 1, 9, 0, 0);
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 9, 0, 0);
                                 break;
                             case 1:                        
-                                showTextBox(1, 1, 10, 0, 0);
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 10, 0, 0);
                                 break;
                             case 2:                        
-                                showTextBox(1, 1, 11, 0, 0);
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 11, 0, 0);
                                 break;
                             case 3:
                                 dialogues[0].sessionManager.flags &= ~0x40;
                                 closeDialogueSession(0);
-                                setPlayerAction(0, 0);
+                                setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
                                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                                 break;
                             }
                         
                         setItemState(gPlayer.itemInfoIndex, 1);
                         gPlayer.heldItem = 0;
-                        break;
                         
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                     
-                    setPlayerAction(0x1E, 0x1F);
-                    setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                    break;
-                }
-                
-                if (gPlayer.actionHandler == 0x1E || temp == 3) {
-                    switch (temp) {                
+                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+
+                    switch (selectedMenuRow) {                
                         case 0:                             
-                            showTextBox(1, 1, 6, 0, 0);
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 6, 0, 0);
                             break;
                         case 1:                             
-                            showTextBox(1, 1, 7, 0, 0);
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 7, 0, 0);
                             break;
                         case 2:                             
-                            showTextBox(1, 1, 8, 0, 0);
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 8, 0, 0);
                             break;
                         case 3:
                             dialogues[0].sessionManager.flags &= ~0x40;
                             closeDialogueSession(0);
-                            setPlayerAction(0, 0);
+                            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                     }
                 
                     setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
-                    break;
                     
+                } else {
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
-                
-                setPlayerAction(0x1E, 0x1F);
-                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+
                 break;
 
 
-        case 15:                                    
-            if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.actionHandler == 0x1E || temp == 3) {
-                    switch (temp) {             
-                        case 0:                         
-                            showTextBox(1, 1, 12, 0, 0);
+            case 15:                 
+
+                if (gSeason == SPRING || gSeason == WINTER) {
+
+                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+
+                        switch (selectedMenuRow) {             
+                            case 0:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 12, 0, 0);
+                                break;
+                            case 1:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 13, 0, 0);
+                                break;
+                            case 2:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 14, 0, 0);
+                                break;
+                            case 3:
+                                dialogues[0].sessionManager.flags &= ~0x40;
+                                closeDialogueSession(0);
+                                setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+                                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                                break;
+                            }
+                        
+                        setItemState(gPlayer.itemInfoIndex, 1);
+                        gPlayer.heldItem = 0;
+
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                    }
+                    
+                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+
+                    switch (selectedMenuRow) {                         
+                        case 0:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 15, 0, 0);
                             break;
-                        case 1:                         
-                            showTextBox(1, 1, 13, 0, 0);
+                        case 1:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 16, 0, 0);
                             break;
-                        case 2:                         
-                            showTextBox(1, 1, 14, 0, 0);
+                        case 2:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 17, 0, 0);
                             break;
                         case 3:
                             dialogues[0].sessionManager.flags &= ~0x40;
                             closeDialogueSession(0);
-                            setPlayerAction(0, 0);
+                            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
                     setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
-                    break;
+
+                } else {
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
-                
-                setPlayerAction(0x1E, 0x1F);
-                setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                break;
-            }
-            
-            if (gPlayer.actionHandler == 0x1E || temp == 3) {
-                switch (temp) {                         
-                    case 0:                             
-                        showTextBox(1, 1, 15, 0, 0);
-                        break;
-                    case 1:                             
-                        showTextBox(1, 1, 16, 0, 0);
-                        break;
-                    case 2:                             
-                        showTextBox(1, 1, 17, 0, 0);
-                        break;
-                    case 3:
-                        dialogues[0].sessionManager.flags &= ~0x40;
-                        closeDialogueSession(0);
-                        setPlayerAction(0, 0);
-                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                        break;
-                    }
-                
-                setItemState(gPlayer.itemInfoIndex, 1);
-                gPlayer.heldItem = 0;
-                break;
-                
-            }
-            
-                setPlayerAction(0x1E, 0x1F);
-                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+
                 break;
 
-        case 16:                                    
-            if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.actionHandler == 0x1E || temp == 3) {
-                    switch (temp) {             
-                        case 0:                         
-                            showTextBox(1, 1, 18, 0, 0);
+            case 16:   
+
+                if (gSeason == SPRING || gSeason == WINTER) {
+
+                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+
+                        switch (selectedMenuRow) {             
+                            case 0:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 18, 0, 0);
+                                break;
+                            case 1:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 19, 0, 0);
+                                break;
+                            case 2:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 20, 0, 0);
+                                break;                        
+                            case 3:
+                                dialogues[0].sessionManager.flags &= ~0x40;
+                                closeDialogueSession(0);
+                                setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+                                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                                break;
+                            }
+                        
+                            setItemState(gPlayer.itemInfoIndex, 1);
+                            gPlayer.heldItem = 0;
+
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                    }
+
+                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+
+                    switch (selectedMenuRow) {                 
+                        case 0:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 21, 0, 0);
                             break;
-                        case 1:                         
-                            showTextBox(1, 1, 19, 0, 0);
+                        case 1:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 22, 0, 0);
                             break;
-                        case 2:                         
-                            showTextBox(1, 1, 20, 0, 0);
-                            break;                        
+                        case 2:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 23, 0, 0);
+                            break;
                         case 3:
                             dialogues[0].sessionManager.flags &= ~0x40;
                             closeDialogueSession(0);
-                            setPlayerAction(0, 0);
+                            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
                         setItemState(gPlayer.itemInfoIndex, 1);
                         gPlayer.heldItem = 0;
-                        break;
-                    }
-                
-                    setPlayerAction(0x1E, 0x1F);
-                    setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                    break;
-                }
-            
-            if (gPlayer.actionHandler == 0x1E || temp == 3) {
-                switch (temp) {                 
-                    case 0:                             
-                        showTextBox(1, 1, 21, 0, 0);
-                        break;
-                    case 1:                             
-                        showTextBox(1, 1, 22, 0, 0);
-                        break;
-                    case 2:                             
-                        showTextBox(1, 1, 23, 0, 0);
-                        break;
-                    case 3:
-                        dialogues[0].sessionManager.flags &= ~0x40;
-                        closeDialogueSession(0);
-                        setPlayerAction(0, 0);
-                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                        break;
-                    }
-                
-                    setItemState(gPlayer.itemInfoIndex, 1);
-                    gPlayer.heldItem = 0;
-                    break;
-                }
-            
-            setPlayerAction(0x1E, 0x1F);
-            setMainLoopCallbackFunctionIndex(MAIN_GAME);
-            break;
 
-        case 17:                                    
-            if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.actionHandler == 0x1E || temp == 4) {
-                    switch (temp) {            
-                        case 0:                         
-                            showTextBox(1, 1, 25, 0, 0);
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                    }
+                
+                break;
+
+            case 17:   
+
+                if (gSeason == SPRING || gSeason == WINTER) {
+
+                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                        switch (selectedMenuRow) {            
+                            case 0:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 25, 0, 0);
+                                break;
+                            case 1:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 26, 0, 0);
+                                break;
+                            case 2:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 27, 0, 0);
+                                break;
+                            case 3:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 24, 0, 0);
+                                break;
+                            case 4:
+                                dialogues[0].sessionManager.flags &= ~0x40;
+                                closeDialogueSession(0);
+                                setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+                                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                                break;
+                            }
+                        
+                        setItemState(gPlayer.itemInfoIndex, 1);
+                        gPlayer.heldItem = 0;
+
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                    }
+                
+                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                    switch (selectedMenuRow) {                
+                        case 0:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 28, 0, 0);
                             break;
-                        case 1:                         
-                            showTextBox(1, 1, 26, 0, 0);
+                        case 1:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 29, 0, 0);
                             break;
-                        case 2:                         
-                            showTextBox(1, 1, 27, 0, 0);
+                        case 2:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 30, 0, 0);
                             break;
-                        case 3:                         
-                            showTextBox(1, 1, 24, 0, 0);
-                            break;
-                        case 4:
+                        case 3:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 31, 0, 0);
+                            break;                       
+                        case 4:        
                             dialogues[0].sessionManager.flags &= ~0x40;
                             closeDialogueSession(0);
-                            setPlayerAction(0, 0);
+                            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
-                    
-                    setItemState(gPlayer.itemInfoIndex, 1);
-                    gPlayer.heldItem = 0;
-                    break;
-                }
                 
-                setPlayerAction(0x1E, 0x1F);
-                setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                break;
-            }
-            
-            if (gPlayer.actionHandler == 0x1E || temp == 4) {
-                switch (temp) {                
-                    case 0:                             
-                        showTextBox(1, 1, 28, 0, 0);
-                        break;
-                    case 1:                             
-                        showTextBox(1, 1, 29, 0, 0);
-                        break;
-                    case 2:                             
-                        showTextBox(1, 1, 30, 0, 0);
-                        break;
-                    case 3:                             
-                        showTextBox(1, 1, 31, 0, 0);
-                        break;                       
-                    case 4:        
-                        dialogues[0].sessionManager.flags &= ~0x40;
-                        closeDialogueSession(0);
-                        setPlayerAction(0, 0);
+                        setItemState(gPlayer.itemInfoIndex, 1);
+                        gPlayer.heldItem = 0;
+
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                        break;
                     }
-            
-                    setItemState(gPlayer.itemInfoIndex, 1);
-                    gPlayer.heldItem = 0;
-                    break;
-                }
         
-            setPlayerAction(0x1E, 0x1F);
-            setMainLoopCallbackFunctionIndex(MAIN_GAME);
-            break;
+                break;
 
-        case 18:                                    
-            if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.actionHandler == 0x1E || temp == 4) {
-                    switch (temp) {             
-                        case 0:                         
-                            showTextBox(1, 1, 32, 0, 0);
+            case 18:                             
+
+                if (gSeason == SPRING || gSeason == WINTER) {
+
+                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                        switch (selectedMenuRow) {             
+                            case 0:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 32, 0, 0);
+                                break;
+                            case 1:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 33, 0, 0);
+                                break;
+                            case 2:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 34, 0, 0);
+                                break;
+                            case 3:
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 35, 0, 0);
+                                break;
+                            case 4:
+                                dialogues[0].sessionManager.flags &= ~0x40;
+                                closeDialogueSession(0);
+                                setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+                                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                                break;
+                            }
+                        
+                        setItemState(gPlayer.itemInfoIndex, 1);
+                        gPlayer.heldItem = 0;
+
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                    }
+                    
+                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                    switch (selectedMenuRow) {                 
+                        case 0:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 36, 0, 0);
                             break;
-                        case 1:                         
-                            showTextBox(1, 1, 33, 0, 0);
+                        case 1:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 37, 0, 0);
                             break;
-                        case 2:                         
-                            showTextBox(1, 1, 34, 0, 0);
+                        case 2:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 38, 0, 0);
                             break;
                         case 3:
-                            showTextBox(1, 1, 35, 0, 0);
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 39, 0, 0);
                             break;
                         case 4:
                             dialogues[0].sessionManager.flags &= ~0x40;
                             closeDialogueSession(0);
-                            setPlayerAction(0, 0);
+                            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
-                            
                         }
                     
-                        setItemState(gPlayer.itemInfoIndex, 1);
-                        gPlayer.heldItem = 0;
-                        break;
-                    }
+                    setItemState(gPlayer.itemInfoIndex, 1);
+                    gPlayer.heldItem = 0;
                 
-                    setPlayerAction(0x1E, 0x1F);
+                } else {
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                    break;
                 }
+
+                break;
             
-            if (gPlayer.actionHandler == 0x1E || temp == 4) {
-                switch (temp) {                 
-                    case 0:                             
-                        showTextBox(1, 1, 36, 0, 0);
-                        break;
-                    case 1:                             
-                        showTextBox(1, 1, 37, 0, 0);
-                        break;
-                    case 2:                             
-                        showTextBox(1, 1, 38, 0, 0);
-                        break;
-                    case 3:
-                        showTextBox(1, 1, 39, 0, 0);
-                        break;
-                    case 4:
-                        dialogues[0].sessionManager.flags &= ~0x40;
-                        closeDialogueSession(0);
-                        setPlayerAction(0, 0);
+            case 19:            
+
+                if (gSeason == SPRING || gSeason == WINTER) {
+
+                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                        switch (selectedMenuRow) {             
+                            case 0:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 40, 0, 0);
+                                break;
+                            case 1:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 41, 0, 0);
+                                break;
+                            case 2:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 42, 0, 0);
+                                break;
+                            case 3:
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 43, 0, 0);
+                                break;
+                            case 4:
+                                dialogues[0].sessionManager.flags &= ~0x40;
+                                closeDialogueSession(0);
+                                setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+                                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                                break;
+                            }
+                        
+                        setItemState(gPlayer.itemInfoIndex, 1);
+                        gPlayer.heldItem = 0;
+
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                        break;
                     }
-                
-                    setItemState(gPlayer.itemInfoIndex, 1);
-                    gPlayer.heldItem = 0;
-                    break;
-                }
-            
-            setPlayerAction(0x1E, 0x1F);
-            setMainLoopCallbackFunctionIndex(MAIN_GAME);
-            break;
-        
-        case 19:                                    
-            if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.actionHandler == 0x1E || temp == 4) {
-                    switch (temp) {             
-                        case 0:                         
-                            showTextBox(1, 1, 40, 0, 0);
+
+                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                    switch (selectedMenuRow) {                 
+                        case 0:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 44, 0, 0);
                             break;
-                        case 1:                         
-                            showTextBox(1, 1, 41, 0, 0);
+                        case 1:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 45, 0, 0);
                             break;
-                        case 2:                         
-                            showTextBox(1, 1, 42, 0, 0);
+                        case 2:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 46, 0, 0);
                             break;
                         case 3:
-                            showTextBox(1, 1, 43, 0, 0);
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 47, 0, 0);
                             break;
                         case 4:
                             dialogues[0].sessionManager.flags &= ~0x40;
                             closeDialogueSession(0);
-                            setPlayerAction(0, 0);
+                            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
-                    
-                        setItemState(gPlayer.itemInfoIndex, 1);
-                        gPlayer.heldItem = 0;
-                        break;
-                    }
                 
-                    setPlayerAction(0x1E, 0x1F);
+                    setItemState(gPlayer.itemInfoIndex, 1);
+                    gPlayer.heldItem = 0;
+
+                } else {
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                    break;
                 }
+
+                break;
             
-            if (gPlayer.actionHandler == 0x1E || temp == 4) {
-                switch (temp) {                 
-                    case 0:                             
-                        showTextBox(1, 1, 44, 0, 0);
-                        break;
-                    case 1:                             
-                        showTextBox(1, 1, 45, 0, 0);
-                        break;
-                    case 2:                             
-                        showTextBox(1, 1, 46, 0, 0);
-                        break;
-                    case 3:
-                        showTextBox(1, 1, 47, 0, 0);
-                        break;
-                    case 4:
-                        dialogues[0].sessionManager.flags &= ~0x40;
-                        closeDialogueSession(0);
-                        setPlayerAction(0, 0);
+            case 20:                                    
+
+                if (gSeason == SPRING || gSeason == WINTER) {
+
+                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                        switch (selectedMenuRow) {             
+                            case 0:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 48, 0, 0);
+                                break;
+                            case 1:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 49, 0, 0);
+                                break;
+                            case 2:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 50, 0, 0);
+                                break;
+                            case 3:
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 51, 0, 0);
+                                break;
+                            case 4:
+                                dialogues[0].sessionManager.flags &= ~0x40;
+                                closeDialogueSession(0);
+                                setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+                                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                                break;
+                            }
+                        
+                        setItemState(gPlayer.itemInfoIndex, 1);
+                        gPlayer.heldItem = 0;
+
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                        break;
                     }
-                
-                    setItemState(gPlayer.itemInfoIndex, 1);
-                    gPlayer.heldItem = 0;
-                    break;
-                }
-            
-            setPlayerAction(0x1E, 0x1F);
-            setMainLoopCallbackFunctionIndex(MAIN_GAME);
-            break;
-        
-        case 20:                                    
-            if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.actionHandler == 0x1E || temp == 4) {
-                    switch (temp) {             
-                        case 0:                         
-                            showTextBox(1, 1, 48, 0, 0);
+
+                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                    
+                    switch (selectedMenuRow) {                 
+                        case 0:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 52, 0, 0);
                             break;
-                        case 1:                         
-                            showTextBox(1, 1, 49, 0, 0);
+                        case 1:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 53, 0, 0);
                             break;
-                        case 2:                         
-                            showTextBox(1, 1, 50, 0, 0);
+                        case 2:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 54, 0, 0);
                             break;
-                        case 3:
-                            showTextBox(1, 1, 51, 0, 0);
+                        case 3:   
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 55, 0, 0);
                             break;
                         case 4:
                             dialogues[0].sessionManager.flags &= ~0x40;
                             closeDialogueSession(0);
-                            setPlayerAction(0, 0);
+                            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
                             setMainLoopCallbackFunctionIndex(MAIN_GAME);
                             break;
                         }
                     
-                        setItemState(gPlayer.itemInfoIndex, 1);
-                        gPlayer.heldItem = 0;
-                        break;
-                    }
-                
-                setPlayerAction(0x1E, 0x1F);
-                setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                break;
-            }
-            
-            if (gPlayer.actionHandler == 0x1E || temp == 4) {
-                switch (temp) {                 
-                    case 0:                             
-                        showTextBox(1, 1, 52, 0, 0);
-                        break;
-                    case 1:                             
-                        showTextBox(1, 1, 53, 0, 0);
-                        break;
-                    case 2:                             
-                        showTextBox(1, 1, 54, 0, 0);
-                        break;
-                    case 3:   
-                        showTextBox(1, 1, 55, 0, 0);
-                        break;
-                    case 4:
-                        dialogues[0].sessionManager.flags &= ~0x40;
-                        closeDialogueSession(0);
-                        setPlayerAction(0, 0);
-                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                        break;
-                    }
-                
-                setItemState(gPlayer.itemInfoIndex, 1);
-                gPlayer.heldItem = 0;
-                break;
-            }
-            
-            setPlayerAction(0x1E, 0x1F);
-            setMainLoopCallbackFunctionIndex(MAIN_GAME);
-            break;
-
-        case 21:                                    
-            if (gSeason == SPRING || gSeason == WINTER) {
-                if (gPlayer.actionHandler == 0x1E || temp == 4) {
-                    switch (temp) {             
-                        case 0:                         
-                            showTextBox(1, 1, 56, 0, 0);
-                            break;
-                        case 1:                         
-                            showTextBox(1, 1, 57, 0, 0);
-                            break;
-                        case 2:                         
-                            showTextBox(1, 1, 58, 0, 0);
-                            break;
-                        case 3:
-                            showTextBox(1, 1, 59, 0, 0);
-                            break;
-                        case 4:
-                            dialogues[0].sessionManager.flags &= ~0x40;
-                            closeDialogueSession(0);
-                            setPlayerAction(0, 0);
-                            setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                            break;
-                        }
-                
-                    setItemState(gPlayer.itemInfoIndex, 1);
-                    gPlayer.heldItem = 0;
-                    break;
-                
-                }
-                
-                setPlayerAction(0x1E, 0x1F);
-                setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                break;
-            }
-            
-            if (gPlayer.actionHandler == 0x1E || temp == 4) {
-
-                switch (temp) {       
-
-                    case 0:                             
-                        showTextBox(1, 1, 60, 0, 0);
-                        break;
-                    case 1:                             
-                        showTextBox(1, 1, 61, 0, 0);
-                        break;
-                    case 2:                             
-                        showTextBox(1, 1, 62, 0, 0);
-                        break;
-                    case 3:
-                        showTextBox(1, 1, 63, 0, 0);
-                        break;
-                    case 4:
-                        dialogues[0].sessionManager.flags &= ~0x40;
-                        closeDialogueSession(0);
-                        setPlayerAction(0, 0);
-                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                        break;
-
-                    }
-                
                     setItemState(gPlayer.itemInfoIndex, 1);
                     gPlayer.heldItem = 0;
 
-                    break;
-
-                }
-            
-            setPlayerAction(0x1E, 0x1F);
-            setMainLoopCallbackFunctionIndex(MAIN_GAME);
-
-            break;
-
-        case 22:             
-
-            if (gSeason == SPRING || gSeason == WINTER) {
-
-                if (gPlayer.actionHandler == 0x1E || temp == 4) {
-
-                    switch (temp) {             
-                        case 0:                         
-                            showTextBox(1, 1, 64, 0, 0);
-                            break;
-                        case 1:                         
-                            showTextBox(1, 1, 65, 0, 0);
-                            break;
-                        case 2:                         
-                            showTextBox(1, 1, 66, 0, 0);
-                            break;
-                        case 3:
-                            showTextBox(1, 1, 67, 0, 0);
-                            break;
-                        case 4:
-                            dialogues[0].sessionManager.flags &= ~0x40;
-                            closeDialogueSession(0);
-                            setPlayerAction(0, 0);
-                            setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                            break;
-                        }
-                    
-                        setItemState(gPlayer.itemInfoIndex, 1);
-                        gPlayer.heldItem = 0;
-                        break;
-                    }
-                
-                    setPlayerAction(0x1E, 0x1F);
+                } else {
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                    break;
                 }
-            
-            if (gPlayer.actionHandler == 0x1E || temp == 4) {
 
-                switch (temp) {                 
-                    case 0:                             
-                        showTextBox(1, 1, 68, 0, 0);
-                        break;
-                    case 1:                             
-                        showTextBox(1, 1, 69, 0, 0);
-                        break;
-                    case 2:                             
-                        showTextBox(1, 1, 70, 0, 0);
-                        break;
-                    case 3:
-                        showTextBox(1, 1, 71, 0, 0);
-                        break;
-                    case 4:
-                        dialogues[0].sessionManager.flags &= ~0x40;
-                        closeDialogueSession(0);
-                        setPlayerAction(0, 0);
-                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
-                        break;
-                    }
-                
-                setItemState(gPlayer.itemInfoIndex, 1);
-                gPlayer.heldItem = 0;
                 break;
-                
-            }
-            
-            setPlayerAction(0x1E, 0x1F);
-            setMainLoopCallbackFunctionIndex(MAIN_GAME);
-            break;
 
-        case 23:           
+            case 21:                                   
 
-            switch (temp) {                
+                if (gSeason == SPRING || gSeason == WINTER) {
 
-                case 0:                 
-                
-                    // TODO: could move this condition to a macro
-                    if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(HAVE_BABY) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && getFarmGrassTilesSum() >= 384 && gMaximumStamina >= 190 && gHappiness >= 250 && getHealthyChickenCount() && D_801886D2 >= 10) {          
-                        albumBits |= 0x8000;  
-                    }
+                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                        switch (selectedMenuRow) {             
+                            case 0:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 56, 0, 0);
+                                break;
+                            case 1:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 57, 0, 0);
+                                break;
+                            case 2:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 58, 0, 0);
+                                break;
+                            case 3:
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 59, 0, 0);
+                                break;
+                            case 4:
+                                dialogues[0].sessionManager.flags &= ~0x40;
+                                closeDialogueSession(0);
+                                setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+                                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                                break;
+                            }
                     
-                    setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
-                    break;
-                
-                case 1:                      
-                    launchIntroCutscene_2(0x5AA, 0x61, 1);
-                    break;
+                        setItemState(gPlayer.itemInfoIndex, 1);
+                        gPlayer.heldItem = 0;
+                    
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                    }
+
+                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                    switch (selectedMenuRow) {       
+
+                        case 0:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 60, 0, 0);
+                            break;
+                        case 1:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 61, 0, 0);
+                            break;
+                        case 2:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 62, 0, 0);
+                            break;
+                        case 3:
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 63, 0, 0);
+                            break;
+                        case 4:
+                            dialogues[0].sessionManager.flags &= ~0x40;
+                            closeDialogueSession(0);
+                            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+                            setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                            break;
+
+                        }
+                    
+                        setItemState(gPlayer.itemInfoIndex, 1);
+                        gPlayer.heldItem = 0;
+
+                } else {
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
-            
-            break;
+
+                break;
+
+            case 22:             
+
+                if (gSeason == SPRING || gSeason == WINTER) {
+
+                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                        switch (selectedMenuRow) {             
+                            case 0:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 64, 0, 0);
+                                break;
+                            case 1:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 65, 0, 0);
+                                break;
+                            case 2:                         
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 66, 0, 0);
+                                break;
+                            case 3:
+                                showTextBox(1, LIBRARY_TEXT_INDEX, 67, 0, 0);
+                                break;
+                            case 4:
+                                dialogues[0].sessionManager.flags &= ~0x40;
+                                closeDialogueSession(0);
+                                setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+                                setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                                break;
+                            }
+                        
+                            setItemState(gPlayer.itemInfoIndex, 1);
+                            gPlayer.heldItem = 0;
+
+                    } else {
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                    }
+
+                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+
+                    switch (selectedMenuRow) {                 
+                        case 0:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 68, 0, 0);
+                            break;
+                        case 1:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 69, 0, 0);
+                            break;
+                        case 2:                             
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 70, 0, 0);
+                            break;
+                        case 3:
+                            showTextBox(1, LIBRARY_TEXT_INDEX, 71, 0, 0);
+                            break;
+                        case 4:
+                            dialogues[0].sessionManager.flags &= ~0x40;
+                            closeDialogueSession(0);
+                            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+                            setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                            break;
+                        }
+                    
+                    setItemState(gPlayer.itemInfoIndex, 1);
+                    gPlayer.heldItem = 0;
+                    
+                } else {
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setMainLoopCallbackFunctionIndex(MAIN_GAME);
+                }
+                
+                break;
+
+            case 23:           
+
+                switch (selectedMenuRow) {                
+
+                    case 0:                 
+                    
+                        // TODO: could move this condition to a macro
+                        if (calculateHouseExtensionScore() == 6 && checkLifeEventBit(MARRIED) && npcAffection[gWife] >= 250 && checkLifeEventBit(HAVE_BABY) && dogInfo.affection >= 200 && getSumNpcAffection() >= 2500 && getFarmGrassTilesSum() >= 384 && gMaximumStamina >= 190 && gHappiness >= 250 && getHealthyChickenCount() && D_801886D2 >= 10) {          
+                            albumBits |= PHOTO_PARTY;  
+                        }
+                        
+                        setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
+
+                        break;
+                    
+                    case 1:                      
+                        launchIntroCutscene_2(FUNERAL, 0x61, 1);
+                        break;
+
+                }
+                
+                break;
 
         }
+
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", waitForAudioFinishCallback);
@@ -2713,9 +2748,9 @@ void waitForAudioFinishCallback(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", cutsceneCompletionCallback);
+//INCLUDE_ASM("asm/nonmatchings/game/game", dreamCutscenesCallback);
 
-void cutsceneCompletionCallback(void) {
+void dreamCutscenesCallback(void) {
     handleCutsceneCompletion();
 } 
 
@@ -2731,21 +2766,21 @@ void endOfFestivalDayCallback1(void) {
         setMessageBoxInterpolationWithFlags(MAIN_MESSAGE_BOX_INDEX, -4, 0);
         
         switch (gCutsceneIndex) {
-            case 0x81 ... 0x82:
-            case 0x8B:              
-            case 0x195 ... 0x199:
-                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 4, 0x4D, 0);
+            case 129 ... 130:
+            case 139:              
+            case 405 ... 409:
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, FESTIVALS_TEXT_INDEX, 77, 0);
                 break;
             case SEA_FESTIVAL:
             case EGG_FESTIVAL:
             case NEW_YEAR_FESTIVAL:
-                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 4, 0x4A, 0);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, FESTIVALS_TEXT_INDEX, 74, 0);
                 break;
-            case 0x1A0:
-                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 4, 0x4C, 0);
+            case 416:
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, FESTIVALS_TEXT_INDEX, 76, 0);
                 break;
             default:
-                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 4, 0x4B, 0);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, FESTIVALS_TEXT_INDEX, 75, 0);
                 break;
         }
         
@@ -2788,7 +2823,7 @@ void endOfDayCallback1(void) {
         
         // dream cutscenes
         if (setDreamCutscenes()) {
-            setMainLoopCallbackFunctionIndex(3);
+            setMainLoopCallbackFunctionIndex(DREAM_CUTSCENES);
             return;
         }
         
@@ -2871,7 +2906,7 @@ void endOfDayCallback2(void) {
 
         // dream cutscenes
         if (setDreamCutscenes()) {
-            setMainLoopCallbackFunctionIndex(3);
+            setMainLoopCallbackFunctionIndex(DREAM_CUTSCENES);
             return;
         }
 
@@ -3133,7 +3168,6 @@ void clearHeldItemsAtEndOfDay(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", checkBacheloretteReadyForMarriage);
 
-// check if girl is ready to get married for blue feather to appear
 bool checkBacheloretteReadyForMarriage(void) {
     
     bool result;
@@ -3159,8 +3193,6 @@ bool checkBacheloretteReadyForMarriage(void) {
     return result;
 
 }
-
-// func_800611E0
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", setWifeNameString);
 
@@ -3213,7 +3245,6 @@ void setWifeNameString(u8 wife) {
     }
 }
 
-// func_80061354
 //INCLUDE_ASM("asm/nonmatchings/game/game", setDefaultBabyName);
 
 void setDefaultBabyName(u8 wife) {
@@ -3367,7 +3398,6 @@ u8 handlePurchaseHouseExtension(u8 houseExtensionIndex) {
     
 }
 
-// func_80061860
 //INCLUDE_ASM("asm/nonmatchings/game/game", setFlowerFestivalGoddess);
 
 void setFlowerFestivalGoddess(void) {
@@ -3388,7 +3418,6 @@ void setFlowerFestivalGoddess(void) {
 
 }
 
-// func_800618EC
 //INCLUDE_ASM("asm/nonmatchings/game/game", getBacholeretteWithHighestAffection);
 
 u8 getBacholeretteWithHighestAffection(u8 affectionLevel) {
@@ -3424,9 +3453,9 @@ u8 getBacholeretteWithHighestAffection(u8 affectionLevel) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80061A1C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", setSpritiFestivalRecruits);
 
-inline void func_80061A1C(u8 numberOfSpiritFestivalAssistants, u8 npcIndex) {
+inline void setSpritiFestivalRecruits(u8 numberOfSpiritFestivalAssistants, u8 npcIndex) {
     switch (numberOfSpiritFestivalAssistants) {                   
         case 1:
             spiritFestivalAssistant1 = npcIndex;
@@ -3441,11 +3470,8 @@ inline void func_80061A1C(u8 numberOfSpiritFestivalAssistants, u8 npcIndex) {
 }
 
 static inline void setSpiritFestivalAssistant(u8 npcIndex) {
-    
     numberOfSpiritFestivalAssistantsRecruited++;
-
-    func_80061A1C(numberOfSpiritFestivalAssistantsRecruited, npcIndex);
-
+    setSpritiFestivalRecruits(numberOfSpiritFestivalAssistantsRecruited, npcIndex);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", recruitSpiritFestivalAssistants);
@@ -3453,73 +3479,52 @@ static inline void setSpiritFestivalAssistant(u8 npcIndex) {
 void recruitSpiritFestivalAssistants(void) {
     
     if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA)) {
-        
         toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA);
-        
         setSpiritFestivalAssistant(MARIA+1);
-        
     }
     
     if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI)) {
-        
         toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI);
-        
         setSpiritFestivalAssistant(ELLI+1);
     }
 
     if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI)) {
-        
         toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI);
-        
         setSpiritFestivalAssistant(POPURI+1);
     }
     
     if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN)) {
-        
         toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN);
-        
         setSpiritFestivalAssistant(ANN+1);
     }
     
    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN)) {
-        
         toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN);
-       
         setSpiritFestivalAssistant(KAREN+1);
     } 
 
    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS)) {
-        
         toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS);
-       
         setSpiritFestivalAssistant(HARRIS);
     }
 
    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY)) {
-        
         toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY);
-       
         setSpiritFestivalAssistant(GRAY);
     } 
 
    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF)) {
-        
         toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF);
-       
         setSpiritFestivalAssistant(JEFF);
     } 
 
    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF)) {
-        
         toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF);
-       
         setSpiritFestivalAssistant(CLIFF);
     } 
 
    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI)) {
-        
         toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI);
-       
         setSpiritFestivalAssistant(KAI);
 
     } 
@@ -3532,6 +3537,7 @@ void recruitSpiritFestivalAssistants(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", setRecipes);
 
+// TODO: label recipes
 void setRecipes(void) {
 
     if (checkSpecialDialogueBit(7)) {
@@ -3642,7 +3648,6 @@ void setRecipes(void) {
 
 }
 
-// func_800623E4
 //INCLUDE_ASM("asm/nonmatchings/game/game", handleHouseConstruction);
 
 u8 handleHouseConstruction(u8 day) {
@@ -3727,10 +3732,9 @@ u8 handleHouseConstruction(u8 day) {
 }
 */
 
-// func_8006252C
 //INCLUDE_ASM("asm/nonmatchings/game/game", setLetters);
 
-// TODO: label bits/use flags
+// TODO: label mail bits
 void setLetters(void) {
 
     if (!checkMailRead(0) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
@@ -4034,15 +4038,13 @@ void setLetters(void) {
 
 }
 
-// mailTextIndices
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80063A2C);
+//INCLUDE_ASM("asm/nonmatchings/game/game", getTextIndexFromLetterIndex);
 
-// get text index for letter
-u16 func_80063A2C(u8 index) {
+u16 getTextIndexFromLetterIndex(u8 index) {
 
     u16 arr[80];
     
-    memcpy(arr,  mailTextIndices, 0xA0);
+    memcpy(arr, mailTextIndices, 0xA0);
 
     return arr[index];
 

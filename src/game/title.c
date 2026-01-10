@@ -605,7 +605,7 @@ void titleScreenMainLoopCallback(void) {
                 deactivateTitleScreenSprites();
                 
                 if (titleScreenContext.rowHighlighted == 0) {
-                    inititalizeLoadGameScreen(FALSE);
+                    initializeLoadGameScreen(FALSE);
                 } else {
                     launchIntroCutscene(HOW_TO_PLAY_CUTSCENE, 0, 0);
                 }

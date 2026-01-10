@@ -55,6 +55,7 @@ segments:
     start: 0x1000
     vram: 0x80025C00
     dir: makerom
+    extract: false
     subsegments:
       - [0x1000, hasm, entry]
 
@@ -470,7 +471,7 @@ segments:
           - { start: 0xF7010, type: animationScriptData, name: data/animationScripts/holdableItems2 }
           - { start: 0xF70A0, type: animationScriptData, name: data/animationScripts/tools }
           - { start: 0xF7100, type: animationScriptData, name: data/animationScripts/holdableItems3 }
-          - { start: 0xF7118, type: animationScriptData, name: data/animationScripts/characterAvatar }
+          - { start: 0xF7118, type: animationScriptData, name: data/animationScripts/characterAvatars, extract: false }
 
       - [ 0xF71B0, .data, data/audio/sfx]
       - [ 0xF7A80, .data, game/namingScreen]
@@ -799,28 +800,28 @@ segments:
     start: 0x109920
     
   # cliff leaving, shady salesman, ann sprained ankle
-  - name: cutsceneBank4
+  - name: roadCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x10EA80
 
   # girl cutscenes
-  - name: cutsceneBank5
+  - name: mountainCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x10F980
 
   # ann cutscenes
-  - name: annCutscenes
+  - name: ranchCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x115310
 
   # karen cutscenes
-  - name: karenCutscenes1
+  - name: vineyardCutscenes
     type: bin
     dir: cutscenes
     extract: false
@@ -835,14 +836,14 @@ segments:
     vram: 0x802F5000
   
   # maria cutscenes
-  - name: mariaCutscenes
+  - name: village2Cutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x120910
 
   # karen cutscenes 2 (beach fireworks, heart events)
-  - name: karenCutscenes2
+  - name: beachCutscenes
     type: bin
     dir: cutscenes
     extract: false
@@ -2590,464 +2591,464 @@ segments:
   #   padding/end, 8 bytes
   
   - name: ranchSpringMap
-    type: bin
+    type: hm64map
     dir: maps/ranch
     start: 0x800530
 
   - name: ranchSummerMap
-    type: bin
+    type: hm64map
     dir: maps/ranch
     start: 0x80D9D0
 
   - name: ranchFallMap
-    type: bin
+    type: hm64map
     dir: maps/ranch
     start: 0x81AE30
 
   - name: ranchWinterMap
-    type: bin
+    type: hm64map
     dir: maps/ranch
     start: 0x828FC0
 
   - name: annsRoomMap
-    type: bin
+    type: hm64map
     dir: maps/ranch
     start: 0x836420
 
   - name: ranchBarnMap
-    type: bin
+    type: hm64map
     dir: maps/ranch
     start: 0x83DC90
 
   - name: ranchStoreMap
-    type: bin
+    type: hm64map
     dir: maps/ranch
     start: 0x849700
 
   - name: ranchHouseMap
-    type: bin
+    type: hm64map
     dir: maps/ranch
     start: 0x84F100
 
   - name: emptyMap1
-    type: bin
+    type: hm64map
     dir: maps/unknown
     start: 0x856B80
 
   - name: beachSpringMap
-    type: bin
+    type: hm64map
     dir: maps/beach
     start: 0x856B90
   
   - name: beachSummerMap
-    type: bin
+    type: hm64map
     dir: maps/beach
     start: 0x85EE70
 
   - name: beachFallMap
-    type: bin
+    type: hm64map
     dir: maps/beach
     start: 0x867150
 
   - name: beachWinterMap
-    type: bin
+    type: hm64map
     dir: maps/beach
     start: 0x86F430
 
   - name: raceTrackSpringMap
-    type: bin
-    dir: maps/race-track
+    type: hm64map
+    dir: maps/raceTrack
     start: 0x877710
 
   # empty
   - name: raceTrackSummerMap
-    type: bin
-    dir: maps/race-track
+    type: hm64map
+    dir: maps/raceTrack
     start: 0x87F510
 
   - name: raceTrackFallMap
-    type: bin
-    dir: maps/race-track
+    type: hm64map
+    dir: maps/raceTrack
     start: 0x87F520
 
   - name: raceTrackWinterMap
-    type: bin
-    dir: maps/race-track
+    type: hm64map
+    dir: maps/raceTrack
     start: 0x887320
 
   - name: mountain1SpringMap
-    type: bin
-    dir: maps/mountain/mountain-1
+    type: hm64map
+    dir: maps/mountain/mountain1
     start: 0x88F120
 
   - name: mountain1SummerMap
-    type: bin
-    dir: maps/mountain/mountain-1
+    type: hm64map
+    dir: maps/mountain/mountain1
     start: 0x8A6C20
 
   - name: mountain1FallMap
-    type: bin
-    dir: maps/mountain/mountain-1
+    type: hm64map
+    dir: maps/mountain/mountain1
     start: 0x8BE720
 
   - name: mountain1WinterMap
-    type: bin
-    dir: maps/mountain/mountain-1
+    type: hm64map
+    dir: maps/mountain/mountain1
     start: 0x8D6220
 
   - name: mountain2SpringMap
-    type: bin
-    dir: maps/mountain/mountain-2
+    type: hm64map
+    dir: maps/mountain/mountain2
     start: 0x8ED8E0
 
   - name: mountain2SummerMap
-    type: bin
-    dir: maps/mountain/mountain-2
+    type: hm64map
+    dir: maps/mountain/mountain2
     start: 0x905980
 
   - name: mountain2FallMap
-    type: bin
-    dir: maps/mountain/mountain-2
+    type: hm64map
+    dir: maps/mountain/mountain2
     start: 0x91D8A0
 
   - name: mountain2WinterMap
-    type: bin
-    dir: maps/mountain/mountain-2
+    type: hm64map
+    dir: maps/mountain/mountain2
     start: 0x9357C0
 
   - name: topOfMountain1SpringMap
-    type: bin
-    dir: maps/mountain/top-of-mountain-1
+    type: hm64map
+    dir: maps/mountain/topOfMountain1
     start: 0x94D6E0
 
   - name: topOfMountain1SummerMap
-    type: bin
-    dir: maps/mountain/top-of-mountain-1
+    type: hm64map
+    dir: maps/mountain/topOfMountain1
     start: 0x961BD0
 
   - name: topOfMountain1FallMap
-    type: bin
-    dir: maps/mountain/top-of-mountain-1
+    type: hm64map
+    dir: maps/mountain/topOfMountain1
     start: 0x975E50
 
   - name: topOfMountain1WinterMap
-    type: bin
-    dir: maps/mountain/top-of-mountain-1
+    type: hm64map
+    dir: maps/mountain/topOfMountain1
     start: 0x98A0D0
 
   - name: moonMountainSpringMap
-    type: bin
-    dir: maps/mountain/moon-mountain
+    type: hm64map
+    dir: maps/mountain/moonMountain
     start: 0x99F9C0
 
   - name: moonMountainSummerMap
-    type: bin
-    dir: maps/mountain/moon-mountain
+    type: hm64map
+    dir: maps/mountain/moonMountain
     start: 0x9B4530
 
   - name: moonMountainFallMap
-    type: bin
-    dir: maps/mountain/moon-mountain
+    type: hm64map
+    dir: maps/mountain/moonMountain
     start: 0x9C90A0
 
   - name: moonMountainWinterMap
-    type: bin
-    dir: maps/mountain/moon-mountain
+    type: hm64map
+    dir: maps/mountain/moonMountain
     start: 0x9DDC10
 
   - name: carpentersHutMap
-    type: bin
-    dir: maps/carpenter-hut
+    type: hm64map
+    dir: maps/carpenterHut
     start: 0x9F2780
 
   - name: dumplingHouseMap
-    type: bin
-    dir: maps/dumpling-house
+    type: hm64map
+    dir: maps/dumplingHouse
     start: 0x9FAA80
 
   - name: pondSpringMap
-    type: bin
+    type: hm64map
     dir: maps/pond
     start: 0xA04C80
 
   - name: pondSummerMap
-    type: bin
+    type: hm64map
     dir: maps/pond
     start: 0xA0CEC0
 
   - name: pondFallMap
-    type: bin
+    type: hm64map
     dir: maps/pond
     start: 0xA14F10
 
   - name: pondWinterMap
-    type: bin
+    type: hm64map
     dir: maps/pond
     start: 0xA1CF60
 
   - name: ellisRoomMap
-    type: bin
+    type: hm64map
     dir: maps/bakery
     start: 0xA24FB0
 
   - name: bakeryMap
-    type: bin
+    type: hm64map
     dir: maps/bakery
     start: 0xA2C350
 
   - name: village1SpringMap
-    type: bin
-    dir: maps/village/village-1
+    type: hm64map
+    dir: maps/village/village1
     start: 0xA33460
 
   - name: village1SummerMap
-    type: bin
-    dir: maps/village/village-1
+    type: hm64map
+    dir: maps/village/village1
     start: 0xA4C640
 
   - name: village1FallMap
-    type: bin
-    dir: maps/village/village-1
+    type: hm64map
+    dir: maps/village/village1
     start: 0xA65820
 
   - name: village1WinterMap
-    type: bin
-    dir: maps/village/village-1
+    type: hm64map
+    dir: maps/village/village1
     start: 0xA7F2B0
 
   - name: village2SpringMap
-    type: bin
-    dir: maps/village/village-2
+    type: hm64map
+    dir: maps/village/village2
     start: 0xA98210
 
   - name: village2SummerMap
-    type: bin
-    dir: maps/village/village-2
+    type: hm64map
+    dir: maps/village/village2
     start: 0xAAC2C0
 
   - name: village2FallMap
-    type: bin
-    dir: maps/village/village-2
+    type: hm64map
+    dir: maps/village/village2
     start: 0xAC0370
 
   - name: village2WinterMap
-    type: bin
-    dir: maps/village/village-2
+    type: hm64map
+    dir: maps/village/village2
     start: 0xAD4420
 
   - name: popurisRoomMap
-    type: bin
-    dir: maps/flower-shop
+    type: hm64map
+    dir: maps/flowerShop
     start: 0xAE84D0
 
   - name: flowerShopMap
-    type: bin
-    dir: maps/flower-shop
+    type: hm64map
+    dir: maps/flowerShop
     start: 0xAEF920
 
   - name: churchMap
-    type: bin
+    type: hm64map
     dir: maps/church
     start: 0xAF4F00
 
   - name: souvenirShopMap
-    type: bin
-    dir: maps/souvenir-shop
+    type: hm64map
+    dir: maps/souvenirShop
     start: 0xAFAAC0 
 
   - name: squareSpringMap
-    type: bin
+    type: hm64map
     dir: maps/square
     start: 0xAFF110
 
   - name: squareSummerMap
-    type: bin
+    type: hm64map
     dir: maps/square
     start: 0xB0E3C0
 
   - name: squareFallMap
-    type: bin
+    type: hm64map
     dir: maps/square
     start: 0xB1D460
 
   - name: squareWinterMap
-    type: bin
+    type: hm64map
     dir: maps/square
     start: 0xB2C500
 
   - name: ricksShopMap
-    type: bin
-    dir: maps/rick-shop
+    type: hm64map
+    dir: maps/rickShop
     start: 0xB38990
 
   - name: midwifesHouseMap
-    type: bin
+    type: hm64map
     dir: maps/midwife
     start: 0xB3CE10
 
   - name: tavernMap
-    type: bin
+    type: hm64map
     dir: maps/tavern
     start: 0xB41CC0
 
   - name: libraryMap
-    type: bin
+    type: hm64map
     dir: maps/library
     start: 0xB4A9C0
 
   - name: mariasRoomMap
-    type: bin
-    dir: maps/mayors-house
+    type: hm64map
+    dir: maps/mayorsHouse
     start: 0xB4E440
 
   - name: mayorsHouseMap
-    type: bin
-    dir: maps/mayors-house
+    type: hm64map
+    dir: maps/mayorsHouse
     start: 0xB543D0
 
   - name: potionShopBackroomMap
-    type: bin
-    dir: maps/potion-shop
+    type: hm64map
+    dir: maps/potionShop
     start: 0xB5B0B0
 
   - name: potionShopMap
-    type: bin
-    dir: maps/potion-shop
+    type: hm64map
+    dir: maps/potionShop
     start: 0xB60990
 
   # referenced in getCantEnterDialogueInfoIndex
   - name: emptyMap2
-    type: bin
+    type: hm64map
     dir: maps/unknown
     start: 0xB64E30
 
   - name: spriteCaveMap
-    type: bin
+    type: hm64map
     dir: maps/cave
     start: 0xB64E40
 
   - name: caveMap
-    type: bin
+    type: hm64map
     dir: maps/cave
     start: 0xB6AAC0
 
   - name: emptyMineMap
-    type: bin
+    type: hm64map
     dir: maps/mine
     start: 0xB6E700
 
   - name: mineMap
-    type: bin
+    type: hm64map
     dir: maps/mine
     start: 0xB6E710
 
   - name: karensRoomMap
-    type: bin
+    type: hm64map
     dir: maps/vineyard
     start: 0xB6FB70
 
   - name: vineyardSpringMap
-    type: bin
+    type: hm64map
     dir: maps/vineyard
     start: 0xB7AFB0
 
   - name: vineyardSummerMap
-    type: bin
+    type: hm64map
     dir: maps/vineyard
     start: 0xB8B840
 
   - name: vineyardFallMap
-    type: bin
+    type: hm64map
     dir: maps/vineyard
     start: 0xB9C0D0
 
   - name: vineyardWinterMap
-    type: bin
+    type: hm64map
     dir: maps/vineyard
     start: 0xBAC960
 
   - name: vineyardHouseMap
-    type: bin
+    type: hm64map
     dir: maps/vineyard
     start: 0xBBCD10
 
   - name: vineyardCellar1Map
-    type: bin
+    type: hm64map
     dir: maps/vineyard
     start: 0xBC5710
 
   - name: vineyardCellar2Map
-    type: bin
+    type: hm64map
     dir: maps/vineyard
     start: 0xBC9C30
 
   - name: roadSpringMap
-    type: bin
+    type: hm64map
     dir: maps/road
     start: 0xBD1C80
 
   - name: roadSummerMap
-    type: bin
+    type: hm64map
     dir: maps/road
     start: 0xBDBD50
 
   - name: roadFallMap
-    type: bin
+    type: hm64map
     dir: maps/road
     start: 0xBE5E20
 
   - name: roadWinterMap
-    type: bin
+    type: hm64map
     dir: maps/road
     start: 0xBEFEF0
 
   - name: farmSpringMap
-    type: bin
+    type: hm64map
     dir: maps/farm
     start: 0xBF9FC0
 
   - name: farmSummerMap
-    type: bin
+    type: hm64map
     dir: maps/farm
     start: 0xC13C40
 
   - name: farmFallMap
-    type: bin
+    type: hm64map
     dir: maps/farm
     start: 0xC2D8C0
 
   - name: farmWinterMap
-    type: bin
+    type: hm64map
     dir: maps/farm
     start: 0xC47540
 
   - name: greenhouseMap
-    type: bin
+    type: hm64map
     dir: maps/greenhouse
     start: 0xC609F0
 
   - name: houseMap
-    type: bin
+    type: hm64map
     dir: maps/house
     start: 0xC64D60
 
   - name: barnMap
-    type: bin
+    type: hm64map
     dir: maps/farm
     start: 0xC72FB0
 
   - name: coopMap
-    type: bin
+    type: hm64map
     dir: maps/farm
     start: 0xC7DE40
 
   - name: kitchenMap
-    type: bin
+    type: hm64map
     dir: maps/house
     start: 0xC840E0
 
   - name: bathroomMap
-    type: bin
+    type: hm64map
     dir: maps/house
     start: 0xC8D5C0
 
@@ -4668,13 +4669,13 @@ segments:
     extract: false
     start: 0xE714D0
 
-  - name: karenCutscenes1Text
+  - name: vineyardCutscenesText
     type: bin
     dir: text
     extract: false
     start: 0xE71690
 
-  - name: karenCutscenes1TextIndex
+  - name: vineyardCutscenesTextIndex
     type: bin
     dir: text
     extract: false
@@ -4728,13 +4729,13 @@ segments:
     extract: false
     start: 0xE82B30
 
-  - name: karenCutscenes2Text
+  - name: beachCutscenesText
     type: bin
     dir: text
     extract: false
     start: 0xE82C40
 
-  - name: karenCutscenes2TextIndex
+  - name: beachCutscenesTextIndex
     type: bin
     dir: text
     extract: false
@@ -5414,13 +5415,13 @@ segments:
     extract: false
     start: 0xE91F90
 
-  - name: karenCutscenes1Dialogue
+  - name: vineyardCutscenesDialogue
     type: bin
     dir: dialogues/bytecode
     extract: false
     start: 0xE91FB0
 
-  - name: karenCutscenes1DialogueIndex
+  - name: vineyardCutscenesDialogueIndex
     type: bin
     dir: dialogues/bytecode
     extract: false
@@ -5522,13 +5523,13 @@ segments:
     extract: false
     start: 0xE92600
 
-  - name: karenCutscenes2Dialogue
+  - name: beachCutscenesDialogue
     type: bin
     dir: dialogues/bytecode
     extract: false
     start: 0xE92610
 
-  - name: karenCutscenes2DialogueIndex
+  - name: beachCutscenesDialogueIndex
     type: bin
     dir: dialogues/bytecode
     extract: false
@@ -5656,340 +5657,340 @@ segments:
 
   # music
   - name: opening
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFD8510
 
   - name: title
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFDAD00
 
   - name: sportsFestival1
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFDD6C0
 
   - name: goodbye
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFDFB50
 
   - name: spring
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFE12F0
 
   - name: summer
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFE27B0
 
   - name: autumn
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFE4D20
 
   - name: winter
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFE5E50
 
   - name: namingScreen
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFE6E60
 
   - name: festivalTheme
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFE7E00
 
   - name: sportsFestival2
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFE9040
 
   - name: spiritFestivalTheme
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFEAB70
 
   - name: dogRaceTheme
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFEB8F0
 
   - name: racingFestival
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFED5F0
 
   - name: festivalDance
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFEEA40
 
   - name: mountain
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFEF9F0
 
   - name: village
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF1CD0
 
   - name: pond
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF3760
 
   - name: church
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF4160
 
   - name: tavern
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF4750
 
   - name: wedding
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF6300
 
   - name: newYearSunrise
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF6ED0
 
   - name: credits
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF7D80
 
   - name: brokenMusicBox
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF9370
 
   - name: musicBox
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF95A0
 
   - name: flutePerformance
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF9840
 
   - name: organPerformance
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF99F0
 
   - name: ocarinaPerformance
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF9BC0
 
   - name: sleighBells
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF9DC0
 
   - name: badEnding
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFF9F40
 
   - name: vocalPerformance
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFA7B0
 
   - name: ensemblePerformance
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFA950
 
   - name: drumPerformance
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFAF80
 
   - name: typhoonAmbience1
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFB090
 
   - name: typhoonAmbience2
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFB700
 
   - name: nightAmbienceSpring
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFC530
 
   - name: nightAmbienceSummer
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFC9F0
 
   - name: nightAmbienceAutumn
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFCC40
 
   - name: starryNightFestival
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFCE10
 
   - name: beachAmbience1
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFD490
 
   - name: beachAmbience2
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFD680
 
   # sfx
   - name: bird1
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFD820
 
   - name: bird2
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFD920
 
   - name: seq44
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFDA20
 
   - name: cicada
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFDA30
 
   - name: seq46
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFDB80
 
   - name: seq47
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFDBA0
 
   - name: seq48
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFDCD0
 
   - name: fireworksSfx
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFDCF0
 
   - name: seq50
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFDEE0
 
   - name: horseGallopFast
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFDEF0
 
   - name: horseGallop1
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFE520
 
   - name: horseGallop2
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFE620
 
   - name: horseGallop3
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFE720
 
   - name: water1
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFE820
 
   - name: water2
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFE920
 
   - name: hammer
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFEA30
 
   - name: seq58
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFEB30
 
   - name: seq59
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFEC30
 
   - name: seq60
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFED40
 
   # blue feather/animal medicine
   - name: shimmer
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFEE40
 
   - name: seeds
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFEF50
 
   - name: cowBell
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFF070
 
   # unused engine sfx?
   - name: seq64
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFF180
 
   - name: sickle
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFF350
 
   - name: hoe
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFF470
 
   - name: fanfare
-    type: bin
+    type: seq
     dir: audio/sequences
     start: 0xFFF580
 

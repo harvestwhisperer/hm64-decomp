@@ -96,4 +96,4 @@
 #include "holdableItems2.inc.c"
 #include "tools.inc.c"
 #include "holdableItems3.inc.c"
-#include "characterAvatar.inc.c"
+#include "characterAvatars.inc.c"

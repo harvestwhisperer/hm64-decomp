@@ -22,6 +22,7 @@
 #include "game/time.h"
 #include "game/weather.h"
 
+#include "assetIndices/dialogues.h"
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
 
@@ -86,19 +87,60 @@ u16 npcToEntityAssetIndex[] = {
 };
 
 u16 npcToDialogueBytecodeIndex[] = {
-    9, 8, 2, 10, 4, 63, 7, 11, 6, 5, 
-    3, 31, 36, 20, 19, 12, 18, 13, 14,
-    38, 15, 17, 22, 16, 33, 37, 24, 21,
-    23, 32, 28, 29, 30, 25, 26, 27, 34,
-    35, 64, 65, 66, 67, 67, 67, 67, 67, 
-    69
+    DIALOGUE_MARIA, 
+    DIALOGUE_POPURI, 
+    DIALOGUE_ELLI, 
+    DIALOGUE_ANN, 
+    DIALOGUE_KAREN, 
+    DIALOGUE_BABY, 
+    DIALOGUE_HARRIS, 
+    DIALOGUE_GRAY, 
+    DIALOGUE_JEFF, 
+    DIALOGUE_CLIFF, 
+    DIALOGUE_KAI, 
+    DIALOGUE_MAYOR, 
+    DIALOGUE_MAYOR_WIFE, 
+    DIALOGUE_LILLIA, 
+    DIALOGUE_BASIL, 
+    DIALOGUE_ELLEN, 
+    DIALOGUE_DOUG, 
+    DIALOGUE_GOTZ, 
+    DIALOGUE_SASHA,
+    DIALOGUE_POTION_SHOP_DEALER, 
+    DIALOGUE_KENT, 
+    DIALOGUE_STU, 
+    DIALOGUE_MIDWIFE, 
+    DIALOGUE_MAY, 
+    DIALOGUE_RICK, 
+    DIALOGUE_PASTOR, 
+    DIALOGUE_SHIPPER, 
+    DIALOGUE_SAIBARA,
+    DIALOGUE_DUKE, 
+    DIALOGUE_GREG, 
+    DIALOGUE_ASSISTANT_CARPENTERS_1, 
+    DIALOGUE_ASSISTANT_CARPENTERS_2, 
+    DIALOGUE_MASTER_CARPENTER, 
+    DIALOGUE_HARVEST_SPRITE_1, 
+    DIALOGUE_HARVEST_SPRITE_2, 
+    DIALOGUE_HARVEST_SPRITE_3, 
+    DIALOGUE_BARLEY,
+    DIALOGUE_SYDNEY, 
+    DIALOGUE_MRS_MANA_AND_JOHN_1, 
+    DIALOGUE_MRS_MANA_AND_JOHN_2, 
+    DIALOGUE_ADDITIONAL_NPCS_1, 
+    DIALOGUE_NPC_BABY, 
+    DIALOGUE_NPC_BABY, 
+    DIALOGUE_NPC_BABY, 
+    DIALOGUE_NPC_BABY, 
+    DIALOGUE_NPC_BABY, 
+    DIALOGUE_ADDITIONAL_NPCS_2
 };
 
 // forward declarations
 void handleJohnAnimation(void);
 void handleGourmetJudgeAnimation(void);
 void updateNPCMovement(u8);
-void updateNPCRandomWalkWithAnims(u8 index, u8 arg1, u8 arg2);
+void updateNPCRandomAnimationWithAnims(u8 index, u8 arg1, u8 arg2);
 void updateNPCComplexAnimation(u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8); 
 void updateNPCSpecialAnimation(u8 npcIndex);
 u8 getNPCBabyCarryingState(u8);
@@ -210,7 +252,7 @@ void deactivateNPCEntities(void) {
         }
         
         npcs[i].flags = 0;
-        npcs[i].movingFlag = 0;
+        npcs[i].animationMode = NPC_ANIM_IDLE;
         npcs[i].animationIndex1 = 0;
         npcs[i].animationIndex2 = 0;
         npcs[i].animationState = 0;
@@ -430,16 +472,16 @@ void updateNPCMovement(u8 npcIndex) {
     f32 f1, f2, f3;
     f32 f4, f5, f6;
     
-    if (npcs[npcIndex].movingFlag == 0x10) {
+    if (npcs[npcIndex].animationMode == NPC_ANIM_TALKING) {
 
         direction = (gPlayer.direction + 4) % 8;        
 
         setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, npcs[npcIndex].animationIndex1);
-        npcs[npcIndex].movingFlag = npcs[npcIndex].behaviorMode;
+        npcs[npcIndex].animationMode = npcs[npcIndex].defaultAnimationMode;
         
     }
 
-    if (npcs[npcIndex].movingFlag == 0x20) {
+    if (npcs[npcIndex].animationMode == NPC_ANIM_FACE_PLAYER) {
         direction = (gPlayer.direction + 4) % 8;        
         setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, npcs[npcIndex].animationIndex1);
     }
@@ -484,14 +526,14 @@ inline void stopNPCMovement(u8 npcIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", updateNPCRandomWalk);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", updateNPCRandomAnimation);
 
 // FIXME: should be inline?
-void updateNPCRandomWalk(u8 index) {
+void updateNPCRandomAnimation(u8 index) {
     
     u16 temp;
     
-    if (!npcs[index].animationState) {
+    if (npcs[index].animationState == 0) {
 
         npcs[index].speed = 0;
         npcs[index].animationTimer = 0;
@@ -550,13 +592,13 @@ inline void stopNPCWithAnimation(u8 index, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", updateNPCRandomWalkWithAnims);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", updateNPCRandomAnimationWithAnims);
 
-void updateNPCRandomWalkWithAnims(u8 index, u8 arg1, u8 arg2) {
+void updateNPCRandomAnimationWithAnims(u8 index, u8 arg1, u8 arg2) {
 
     u16 temp;
     
-    if (!npcs[index].animationState) {
+    if (npcs[index].animationState == 0) {
 
         npcs[index].speed = 0;
         npcs[index].animationTimer = 0;
@@ -1072,12 +1114,12 @@ void setMariaLocation(void) {
 
      u8 result;
 
-    npcs[MARIA].wanderRadiusX = 0x40;
-    npcs[MARIA].wanderRadiusZ = 0x40;
+    npcs[MARIA].wanderRadiusX = 64;
+    npcs[MARIA].wanderRadiusZ = 64;
     npcs[MARIA].animationIndex1 = 0;
     npcs[MARIA].animationIndex2 = 8;
 
-    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && !checkDailyEventBit(0x56)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(0x56)) {
 
         if (checkLifeEventBit(MARRIED) && gWife == MARIA) {
 
@@ -1086,7 +1128,7 @@ void setMariaLocation(void) {
                 npcs[MARIA].levelIndex = HOUSE;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
                 npcs[MARIA].direction = SOUTH;
-                npcs[MARIA].behaviorMode = 0;
+                npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[MARIA].startingCoordinates.x = -128.0f;
                 npcs[MARIA].startingCoordinates.z = -64.0f;
                 npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1102,7 +1144,7 @@ void setMariaLocation(void) {
                         npcs[MARIA].levelIndex = CHURCH;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
                         npcs[MARIA].direction = SOUTHWEST;
-                        npcs[MARIA].behaviorMode = 0;
+                        npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[MARIA].startingCoordinates.x = -112.0f;
                         npcs[MARIA].startingCoordinates.z = -192.0f;
                         npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1112,7 +1154,7 @@ void setMariaLocation(void) {
                         npcs[MARIA].levelIndex = LIBRARY;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
                         npcs[MARIA].direction = SOUTHWEST;
-                        npcs[MARIA].behaviorMode = 0;
+                        npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[MARIA].startingCoordinates.x = 48.0f;
                         npcs[MARIA].startingCoordinates.z = -96.0f;
                         npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1124,7 +1166,7 @@ void setMariaLocation(void) {
                     npcs[MARIA].levelIndex = FARM;
                     npcs[MARIA].startingCoordinates.y = 0.0f;
                     npcs[MARIA].direction = SOUTHWEST;
-                    npcs[MARIA].behaviorMode = 0;
+                    npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[MARIA].startingCoordinates.x = -256.0f;
                     npcs[MARIA].startingCoordinates.z = -240.0f;
                     npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1136,7 +1178,7 @@ void setMariaLocation(void) {
                     npcs[MARIA].startingCoordinates.y = 0.0f;
                     npcs[MARIA].startingCoordinates.z = 0.0f;
                     npcs[MARIA].direction = SOUTHWEST;
-                    npcs[MARIA].behaviorMode = 1;
+                    npcs[MARIA].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[MARIA].flags |= NPC_ACTIVE;
                     
                 }
@@ -1148,7 +1190,7 @@ void setMariaLocation(void) {
                 npcs[MARIA].levelIndex = KITCHEN;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
                 npcs[MARIA].direction = NORTHWEST;
-                npcs[MARIA].behaviorMode = 0;
+                npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[MARIA].startingCoordinates.x = -160.0f;
                 npcs[MARIA].startingCoordinates.z = -64.0f;
                 npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1162,7 +1204,7 @@ void setMariaLocation(void) {
                 npcs[MARIA].startingCoordinates.y = 0.0f;
                 npcs[MARIA].startingCoordinates.z = 0.0f;
                 npcs[MARIA].direction = SOUTHWEST;
-                npcs[MARIA].behaviorMode = 1;
+                npcs[MARIA].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[MARIA].flags |= NPC_ACTIVE;
                 
             }
@@ -1172,7 +1214,7 @@ void setMariaLocation(void) {
                 npcs[MARIA].levelIndex = KITCHEN;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
                 npcs[MARIA].direction = NORTHWEST;
-                npcs[MARIA].behaviorMode = 0;
+                npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[MARIA].startingCoordinates.x = -160.0f;
                 npcs[MARIA].startingCoordinates.z = -64.0f;
                 npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1184,7 +1226,7 @@ void setMariaLocation(void) {
                 npcs[MARIA].levelIndex = HOUSE;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
                 npcs[MARIA].direction = SOUTHEAST;
-                npcs[MARIA].behaviorMode = 0;
+                npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[MARIA].startingCoordinates.x = -128.0f;
                 npcs[MARIA].startingCoordinates.z = -112.0f;
                 npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1196,7 +1238,7 @@ void setMariaLocation(void) {
                 npcs[MARIA].levelIndex = HOUSE;
                 npcs[MARIA].startingCoordinates.y = 0.0f;
                 npcs[MARIA].direction = SOUTHWEST;
-                npcs[MARIA].behaviorMode = 4;
+                npcs[MARIA].defaultAnimationMode = NPC_ANIM_FIXED;
                 npcs[MARIA].startingCoordinates.x = -192.0f;
                 npcs[MARIA].startingCoordinates.z = -160.0f;
                 npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1226,7 +1268,7 @@ void setMariaLocation(void) {
                             npcs[MARIA].levelIndex = LIBRARY;
                             npcs[MARIA].startingCoordinates.y = 0.0f;
                             npcs[MARIA].direction = SOUTHWEST;
-                            npcs[MARIA].behaviorMode = 0;
+                            npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[MARIA].startingCoordinates.x = 48.0f;
                             npcs[MARIA].startingCoordinates.z = -96.0f;
                             npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1247,7 +1289,7 @@ void setMariaLocation(void) {
                                     npcs[MARIA].startingCoordinates.x = 0.0f;
                                     npcs[MARIA].startingCoordinates.y = 0.0f;
                                     npcs[MARIA].direction = SOUTHWEST;
-                                    npcs[MARIA].behaviorMode = 0;
+                                    npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[MARIA].startingCoordinates.z = -144.0f;
                                     npcs[MARIA].flags |= NPC_ACTIVE;
                                     
@@ -1262,7 +1304,7 @@ void setMariaLocation(void) {
                                     npcs[MARIA].startingCoordinates.y = 0.0f;
                                     npcs[MARIA].startingCoordinates.z = 0.0f;
                                     npcs[MARIA].direction = SOUTHWEST;
-                                    npcs[MARIA].behaviorMode = 0;
+                                    npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[MARIA].flags |= NPC_ACTIVE;
                                     
                                 }
@@ -1276,7 +1318,7 @@ void setMariaLocation(void) {
                                 npcs[MARIA].levelIndex = MAYOR_HOUSE;
                                 npcs[MARIA].startingCoordinates.y = 0.0f;
                                 npcs[MARIA].direction = SOUTHWEST;
-                                npcs[MARIA].behaviorMode = 0;
+                                npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[MARIA].startingCoordinates.x = -128.0f;
                                 npcs[MARIA].startingCoordinates.z = -32.0f;
                                 npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1294,7 +1336,7 @@ void setMariaLocation(void) {
                         npcs[MARIA].levelIndex = MAYOR_HOUSE;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
                         npcs[MARIA].direction = SOUTHWEST;
-                        npcs[MARIA].behaviorMode = 0;
+                        npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[MARIA].startingCoordinates.x = -128.0f;
                         npcs[MARIA].startingCoordinates.z = -32.0f;
                         npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1308,7 +1350,7 @@ void setMariaLocation(void) {
                         npcs[MARIA].levelIndex = MAYOR_HOUSE;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
                         npcs[MARIA].direction = SOUTHWEST;
-                        npcs[MARIA].behaviorMode = 0;
+                        npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[MARIA].startingCoordinates.x = -128.0f;
                         npcs[MARIA].startingCoordinates.z = -32.0f;
                         npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1318,7 +1360,7 @@ void setMariaLocation(void) {
                         npcs[MARIA].levelIndex = CHURCH;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
                         npcs[MARIA].direction = SOUTHWEST;
-                        npcs[MARIA].behaviorMode = 0;
+                        npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[MARIA].startingCoordinates.x = -112.0f;
                         npcs[MARIA].startingCoordinates.z = -192.0f;
                         npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1346,7 +1388,7 @@ void setMariaLocation(void) {
                                 npcs[MARIA].startingCoordinates.x = 0.0f;
                                 npcs[MARIA].startingCoordinates.y = 0.0f;
                                 npcs[MARIA].direction = SOUTHWEST;
-                                npcs[MARIA].behaviorMode = 0;
+                                npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[MARIA].startingCoordinates.z = -144.0f;
                                 npcs[MARIA].flags |= NPC_ACTIVE;
                                 
@@ -1357,7 +1399,7 @@ void setMariaLocation(void) {
                             npcs[MARIA].levelIndex = MOUNTAIN_1;
                             npcs[MARIA].startingCoordinates.y = 0.0f;
                             npcs[MARIA].direction = SOUTHWEST;
-                            npcs[MARIA].behaviorMode = 1;
+                            npcs[MARIA].defaultAnimationMode = NPC_ANIM_WANDER;
                             npcs[MARIA].startingCoordinates.x = 128.0f;
                             npcs[MARIA].startingCoordinates.z = 128.0f;
                             npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1373,7 +1415,7 @@ void setMariaLocation(void) {
                             npcs[MARIA].levelIndex = MAYOR_HOUSE;
                             npcs[MARIA].startingCoordinates.y = 0.0f;
                             npcs[MARIA].direction = SOUTHWEST;
-                            npcs[MARIA].behaviorMode = 0;
+                            npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[MARIA].startingCoordinates.x = -128.0f;
                             npcs[MARIA].startingCoordinates.z = -32.0f;
                             npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1389,7 +1431,7 @@ void setMariaLocation(void) {
                         npcs[MARIA].levelIndex = LIBRARY;
                         npcs[MARIA].startingCoordinates.y = 0.0f;
                         npcs[MARIA].direction = SOUTHWEST;
-                        npcs[MARIA].behaviorMode = 0;
+                        npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[MARIA].startingCoordinates.x = 48.0f;
                         npcs[MARIA].startingCoordinates.z = -96.0f;
                         npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1409,7 +1451,7 @@ void setMariaLocation(void) {
                                 npcs[MARIA].levelIndex = MOUNTAIN_2;
                                 npcs[MARIA].startingCoordinates.y = 0.0f;
                                 npcs[MARIA].direction = SOUTH;
-                                npcs[MARIA].behaviorMode = 0;
+                                npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[MARIA].startingCoordinates.x = -208.0f;
                                 npcs[MARIA].startingCoordinates.z = -160.0f;
                                 npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1425,7 +1467,7 @@ void setMariaLocation(void) {
                                 npcs[MARIA].levelIndex = POND;
                                 npcs[MARIA].startingCoordinates.y = 0.0f;
                                 npcs[MARIA].direction = SOUTHEAST;
-                                npcs[MARIA].behaviorMode = 0;
+                                npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[MARIA].startingCoordinates.x = -96.0f;
                                 npcs[MARIA].startingCoordinates.z = -32.0f;
                                 npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1443,7 +1485,7 @@ void setMariaLocation(void) {
                             npcs[MARIA].levelIndex = MAYOR_HOUSE;
                             npcs[MARIA].startingCoordinates.y = 0.0f;
                             npcs[MARIA].direction = SOUTHWEST;
-                            npcs[MARIA].behaviorMode = 0;
+                            npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[MARIA].startingCoordinates.x = -128.0f;
                             npcs[MARIA].startingCoordinates.z = -32.0f;
                             npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1463,7 +1505,7 @@ void setMariaLocation(void) {
                             npcs[MARIA].levelIndex = MAYOR_HOUSE;
                             npcs[MARIA].startingCoordinates.y = 0.0f;
                             npcs[MARIA].direction = SOUTHWEST;
-                            npcs[MARIA].behaviorMode = 0;
+                            npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[MARIA].startingCoordinates.x = -128.0f;
                             npcs[MARIA].startingCoordinates.z = -32.0f;
                             npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1477,7 +1519,7 @@ void setMariaLocation(void) {
                             npcs[MARIA].levelIndex = CHURCH;
                             npcs[MARIA].startingCoordinates.y = 0;
                             npcs[MARIA].direction = SOUTHWEST;
-                            npcs[MARIA].behaviorMode = 0;
+                            npcs[MARIA].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[MARIA].startingCoordinates.x = -112.0f;
                             npcs[MARIA].startingCoordinates.z = -192.0f;
                             npcs[MARIA].flags |= NPC_ACTIVE;
@@ -1496,7 +1538,7 @@ void setMariaLocation(void) {
                         npcs[MARIA].startingCoordinates.y = 0.0f;
                         npcs[MARIA].startingCoordinates.z = 0.0f;
                         npcs[MARIA].direction = SOUTHWEST;
-                        npcs[MARIA].behaviorMode = 2;
+                        npcs[MARIA].defaultAnimationMode = NPC_ANIM_SPECIAL;
                         npcs[MARIA].startingCoordinates.x = -224.0f;
                         npcs[MARIA].flags |= NPC_ACTIVE;
 
@@ -1512,7 +1554,7 @@ void setMariaLocation(void) {
         
     }
 
-    npcs[MARIA].movingFlag = npcs[MARIA].behaviorMode;
+    npcs[MARIA].animationMode = npcs[MARIA].defaultAnimationMode;
     
 }
 
@@ -1522,12 +1564,12 @@ void setPopuriLocation(void) {
 
     u8 result;
 
-    npcs[POPURI].wanderRadiusX = 0x40;
-    npcs[POPURI].wanderRadiusZ = 0x40;
+    npcs[POPURI].wanderRadiusX = 64;
+    npcs[POPURI].wanderRadiusZ = 64;
     npcs[POPURI].animationIndex1 = 0;
     npcs[POPURI].animationIndex2 = 8;
 
-    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && !checkDailyEventBit(0x57)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(0x57)) {
 
         if (checkLifeEventBit(MARRIED) && gWife == POPURI) {
 
@@ -1536,7 +1578,7 @@ void setPopuriLocation(void) {
                 npcs[POPURI].levelIndex = HOUSE;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
                 npcs[POPURI].direction = SOUTH;
-                npcs[POPURI].behaviorMode = 0;
+                npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[POPURI].startingCoordinates.x = -128.0f;
                 npcs[POPURI].startingCoordinates.z = -64.0f;
                 npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1556,7 +1598,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].levelIndex = MOUNTAIN_2;    
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
                                 npcs[POPURI].direction = SOUTHWEST;
-                                npcs[POPURI].behaviorMode = 1;
+                                npcs[POPURI].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[POPURI].startingCoordinates.x = -224.0f;
                                 npcs[POPURI].startingCoordinates.z = -96.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1568,7 +1610,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].levelIndex = KITCHEN;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
                                 npcs[POPURI].direction = SOUTHWEST;
-                                npcs[POPURI].behaviorMode = 1;
+                                npcs[POPURI].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[POPURI].startingCoordinates.x = -160.0f;
                                 npcs[POPURI].startingCoordinates.z = -64.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1584,7 +1626,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].levelIndex = FLOWER_SHOP;    
                             npcs[POPURI].startingCoordinates.y = 0.0f;
                             npcs[POPURI].direction = SOUTHEAST;
-                            npcs[POPURI].behaviorMode = 0;
+                            npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[POPURI].startingCoordinates.x = -112.0f;
                             npcs[POPURI].startingCoordinates.z = 64.0f;
                             npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1600,7 +1642,7 @@ void setPopuriLocation(void) {
                         npcs[POPURI].levelIndex = FARM;
                         npcs[POPURI].startingCoordinates.y = 0.0f;
                         npcs[POPURI].direction = SOUTHWEST;
-                        npcs[POPURI].behaviorMode = 0;
+                        npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[POPURI].startingCoordinates.x = 320.0f;
                         npcs[POPURI].startingCoordinates.z = -352.0f;
                         npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1610,7 +1652,7 @@ void setPopuriLocation(void) {
                         npcs[POPURI].levelIndex = KITCHEN;
                         npcs[POPURI].startingCoordinates.y = 0.0f;
                         npcs[POPURI].direction = SOUTHWEST;
-                        npcs[POPURI].behaviorMode = 1;
+                        npcs[POPURI].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[POPURI].startingCoordinates.x = -160.0f;
                         npcs[POPURI].startingCoordinates.z = -64.0f;
                         npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1626,7 +1668,7 @@ void setPopuriLocation(void) {
                 npcs[POPURI].levelIndex = KITCHEN;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
                 npcs[POPURI].direction = NORTHWEST;
-                npcs[POPURI].behaviorMode = 0;
+                npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[POPURI].startingCoordinates.x = -160.0f;
                 npcs[POPURI].startingCoordinates.z = -64.0f;
                 npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1640,7 +1682,7 @@ void setPopuriLocation(void) {
                 npcs[POPURI].startingCoordinates.y = 0.0f;
                 npcs[POPURI].startingCoordinates.z = 0.0f;
                 npcs[POPURI].direction = SOUTHWEST;
-                npcs[POPURI].behaviorMode = 1;
+                npcs[POPURI].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[POPURI].flags |= NPC_ACTIVE;
                 
             }
@@ -1650,7 +1692,7 @@ void setPopuriLocation(void) {
                 npcs[POPURI].levelIndex = KITCHEN;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
                 npcs[POPURI].direction = NORTHWEST;
-                npcs[POPURI].behaviorMode = 0;
+                npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[POPURI].startingCoordinates.x = -160.0f;
                 npcs[POPURI].startingCoordinates.z = -64.0f;
                 npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1662,7 +1704,7 @@ void setPopuriLocation(void) {
                 npcs[POPURI].levelIndex = HOUSE;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
                 npcs[POPURI].direction = SOUTHEAST;
-                npcs[POPURI].behaviorMode = 0;
+                npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[POPURI].startingCoordinates.x = -128.0f;
                 npcs[POPURI].startingCoordinates.z = -112.0f;
                 npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1674,7 +1716,7 @@ void setPopuriLocation(void) {
                 npcs[POPURI].levelIndex = HOUSE;
                 npcs[POPURI].startingCoordinates.y = 0.0f;
                 npcs[POPURI].direction = SOUTHWEST;
-                npcs[POPURI].behaviorMode = 4;
+                npcs[POPURI].defaultAnimationMode = NPC_ANIM_FIXED;
                 npcs[POPURI].startingCoordinates.x = -192.0f;
                 npcs[POPURI].startingCoordinates.z = -160.0f;
                 npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1710,9 +1752,9 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].flags |= NPC_ACTIVE;
 
                                 if (getNPCBabyCarryingState(POPURI) == 1) {
-                                    npcs[POPURI].behaviorMode = 1;
+                                    npcs[POPURI].defaultAnimationMode = NPC_ANIM_WANDER;
                                 } else {
-                                    npcs[POPURI].behaviorMode = 3;
+                                    npcs[POPURI].defaultAnimationMode = NPC_ANIM_CUSTOM;
                                 }
 
                                 setSpecialDialogueBit(0x46);
@@ -1722,7 +1764,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].levelIndex = RANCH_STORE;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
                                 npcs[POPURI].direction = NORTHWEST;
-                                npcs[POPURI].behaviorMode = 0;
+                                npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[POPURI].startingCoordinates.x = 64.0f;
                                 npcs[POPURI].startingCoordinates.z = 64.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1738,7 +1780,7 @@ void setPopuriLocation(void) {
                         npcs[POPURI].levelIndex = RANCH_STORE;
                         npcs[POPURI].startingCoordinates.y = 0.0f;
                         npcs[POPURI].direction = NORTHWEST;
-                        npcs[POPURI].behaviorMode = 0;
+                        npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[POPURI].startingCoordinates.x = 64.0f;
                         npcs[POPURI].startingCoordinates.z = 64.0f;
                         npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1762,7 +1804,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].levelIndex = VILLAGE_1;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
                             npcs[POPURI].direction = SOUTHWEST;
-                            npcs[POPURI].behaviorMode = 3;
+                            npcs[POPURI].defaultAnimationMode = NPC_ANIM_CUSTOM;
                             npcs[POPURI].startingCoordinates.x = 96.0f;
                             npcs[POPURI].startingCoordinates.z = -224.0f;
                             npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1776,7 +1818,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].levelIndex = FLOWER_SHOP;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
                             npcs[POPURI].direction = SOUTHEAST;
-                            npcs[POPURI].behaviorMode = 0;
+                            npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[POPURI].startingCoordinates.x = -112.0f;
                             npcs[POPURI].startingCoordinates.z = 64.0f;
                             npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1798,7 +1840,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].levelIndex = MOUNTAIN_2;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
                                 npcs[POPURI].direction = SOUTHWEST;
-                                npcs[POPURI].behaviorMode = 1;
+                                npcs[POPURI].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[POPURI].startingCoordinates.x = -224.0f;
                                 npcs[POPURI].startingCoordinates.z = -128.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1815,7 +1857,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
                                 npcs[POPURI].startingCoordinates.z = 0.0f;
                                 npcs[POPURI].direction = NORTHEAST;
-                                npcs[POPURI].behaviorMode = 0;
+                                npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[POPURI].startingCoordinates.x = 64.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;  
 
@@ -1832,7 +1874,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].levelIndex = FLOWER_SHOP;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
                             npcs[POPURI].direction = SOUTHEAST;
-                            npcs[POPURI].behaviorMode = 0;
+                            npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[POPURI].startingCoordinates.x = -112.0f;
                             npcs[POPURI].startingCoordinates.z = 64.0f;
                             npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1854,7 +1896,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].levelIndex = MOUNTAIN_2;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
                                 npcs[POPURI].direction = SOUTHEAST;
-                                npcs[POPURI].behaviorMode = 1;
+                                npcs[POPURI].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[POPURI].startingCoordinates.x = -128.0f;
                                 npcs[POPURI].startingCoordinates.z = -416.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1870,7 +1912,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].levelIndex = POND;
                                 npcs[POPURI].startingCoordinates.y = 0.0f;
                                 npcs[POPURI].direction = SOUTHEAST;
-                                npcs[POPURI].behaviorMode = 0;
+                                npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[POPURI].startingCoordinates.x = -224.0f;
                                 npcs[POPURI].startingCoordinates.z = -96.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1886,7 +1928,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].levelIndex = FLOWER_SHOP;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
                             npcs[POPURI].direction = SOUTHEAST;
-                            npcs[POPURI].behaviorMode = 0;
+                            npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[POPURI].startingCoordinates.x = -112.0f;
                             npcs[POPURI].startingCoordinates.z = 64.0f;
                             npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1905,7 +1947,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].levelIndex = RANCH;
                             npcs[POPURI].startingCoordinates.y = 0.0f;
                             npcs[POPURI].direction = SOUTHEAST;
-                            npcs[POPURI].behaviorMode = 0;
+                            npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[POPURI].startingCoordinates.x = -32.0f;
                             npcs[POPURI].startingCoordinates.z = -96.0f;
                             npcs[POPURI].flags |= NPC_ACTIVE;
@@ -1923,7 +1965,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].startingCoordinates.y = 0.0f;
                             npcs[POPURI].startingCoordinates.z = 0.0f;
                             npcs[POPURI].direction = SOUTHWEST;
-                            npcs[POPURI].behaviorMode = 0;
+                            npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[POPURI].flags |= NPC_ACTIVE;
     
                             setSpecialDialogueBit(0x93);
@@ -1944,7 +1986,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].startingCoordinates.y = 0.0f;
                             npcs[POPURI].startingCoordinates.z = 0.0f;
                             npcs[POPURI].direction = SOUTHWEST;
-                            npcs[POPURI].behaviorMode = 2;
+                            npcs[POPURI].defaultAnimationMode = NPC_ANIM_SPECIAL;
                             npcs[POPURI].startingCoordinates.x = -224.0f;
                             npcs[POPURI].flags |= NPC_ACTIVE;
     
@@ -1964,7 +2006,7 @@ void setPopuriLocation(void) {
                         npcs[POPURI].levelIndex = MOUNTAIN_2;
                         npcs[POPURI].startingCoordinates.y = 0.0f;
                         npcs[POPURI].direction = SOUTHWEST;
-                        npcs[POPURI].behaviorMode = 0;
+                        npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[POPURI].startingCoordinates.x = -64.0f;
                         npcs[POPURI].startingCoordinates.z = -160.0f;
                         npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1982,7 +2024,7 @@ void setPopuriLocation(void) {
                         npcs[POPURI].levelIndex = FLOWER_SHOP;
                         npcs[POPURI].startingCoordinates.y = 0.0f;
                         npcs[POPURI].direction = SOUTHEAST;
-                        npcs[POPURI].behaviorMode = 0;
+                        npcs[POPURI].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[POPURI].startingCoordinates.x = -112.0f;
                         npcs[POPURI].startingCoordinates.z = 64.0f;
                         npcs[POPURI].flags |= NPC_ACTIVE;  
@@ -1997,7 +2039,7 @@ void setPopuriLocation(void) {
         
     }
 
-    npcs[POPURI].movingFlag = npcs[POPURI].behaviorMode;
+    npcs[POPURI].animationMode = npcs[POPURI].defaultAnimationMode;
     
 }
 
@@ -2007,12 +2049,12 @@ void setElliLocation(void) {
 
     u8 result;
 
-    npcs[ELLI].wanderRadiusX = 0x40;
-    npcs[ELLI].wanderRadiusZ = 0x40;
+    npcs[ELLI].wanderRadiusX = 64;
+    npcs[ELLI].wanderRadiusZ = 64;
     npcs[ELLI].animationIndex1 = 0;
     npcs[ELLI].animationIndex2 = 8;
 
-    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && !checkDailyEventBit(0x58)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(0x58)) {
 
         if (checkLifeEventBit(MARRIED) && gWife == ELLI) {
 
@@ -2021,7 +2063,7 @@ void setElliLocation(void) {
                 npcs[ELLI].levelIndex = HOUSE;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
                 npcs[ELLI].direction = SOUTH;
-                npcs[ELLI].behaviorMode = 0;
+                npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[ELLI].startingCoordinates.x = -128.0f;
                 npcs[ELLI].startingCoordinates.z = -64.0f;
                 npcs[ELLI].flags |= NPC_ACTIVE;
@@ -2037,7 +2079,7 @@ void setElliLocation(void) {
                         npcs[ELLI].levelIndex = BAKERY;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
                         npcs[ELLI].direction = SOUTHWEST;
-                        npcs[ELLI].behaviorMode = 0;
+                        npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[ELLI].startingCoordinates.x = -32.0f;
                         npcs[ELLI].startingCoordinates.z = 16.0f;
                         npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2047,7 +2089,7 @@ void setElliLocation(void) {
                         npcs[ELLI].levelIndex = MOUNTAIN_2;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
                         npcs[ELLI].direction = NORTHWEST;
-                        npcs[ELLI].behaviorMode = 0;
+                        npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[ELLI].startingCoordinates.x = 96.0f;
                         npcs[ELLI].startingCoordinates.z = -64.0f;
                         npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2059,7 +2101,7 @@ void setElliLocation(void) {
                         npcs[ELLI].levelIndex = KITCHEN;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
                         npcs[ELLI].direction = SOUTHWEST;
-                        npcs[ELLI].behaviorMode = 1;
+                        npcs[ELLI].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[ELLI].startingCoordinates.x = -160.0f;
                         npcs[ELLI].startingCoordinates.z = -64.0f;
                         npcs[ELLI].flags |= NPC_ACTIVE;
@@ -2074,7 +2116,7 @@ void setElliLocation(void) {
                         npcs[ELLI].startingCoordinates.y = 0.0f;
                         npcs[ELLI].startingCoordinates.z = 0.0f;
                         npcs[ELLI].direction = SOUTHWEST;
-                        npcs[ELLI].behaviorMode = 0;
+                        npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[ELLI].startingCoordinates.x = -448.0f;
                         npcs[ELLI].flags |= NPC_ACTIVE;
                         
@@ -2083,7 +2125,7 @@ void setElliLocation(void) {
                         npcs[ELLI].levelIndex = KITCHEN;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
                         npcs[ELLI].direction = SOUTHWEST;
-                        npcs[ELLI].behaviorMode = 1;
+                        npcs[ELLI].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[ELLI].startingCoordinates.x = -160.0f;
                         npcs[ELLI].startingCoordinates.z = -64.0f;
                         npcs[ELLI].flags |= NPC_ACTIVE;
@@ -2099,7 +2141,7 @@ void setElliLocation(void) {
                 npcs[ELLI].levelIndex = KITCHEN;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
                 npcs[ELLI].direction = NORTHWEST;
-                npcs[ELLI].behaviorMode = 1;
+                npcs[ELLI].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[ELLI].startingCoordinates.x = -128.0f;
                 npcs[ELLI].startingCoordinates.z = -128.0f;
                 npcs[ELLI].flags |= NPC_ACTIVE;
@@ -2111,7 +2153,7 @@ void setElliLocation(void) {
                 npcs[ELLI].levelIndex = KITCHEN;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
                 npcs[ELLI].direction = SOUTHWEST;
-                npcs[ELLI].behaviorMode = 1;
+                npcs[ELLI].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[ELLI].startingCoordinates.x = -160.0f;
                 npcs[ELLI].startingCoordinates.z = -64.0f;
                 npcs[ELLI].flags |= NPC_ACTIVE;
@@ -2123,7 +2165,7 @@ void setElliLocation(void) {
                 npcs[ELLI].levelIndex = KITCHEN;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
                 npcs[ELLI].direction = NORTHWEST;
-                npcs[ELLI].behaviorMode = 0;
+                npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[ELLI].startingCoordinates.x = -160.0f;
                 npcs[ELLI].startingCoordinates.z = -64.0f;
                 npcs[ELLI].flags |= NPC_ACTIVE;
@@ -2135,7 +2177,7 @@ void setElliLocation(void) {
                 npcs[ELLI].levelIndex = HOUSE;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
                 npcs[ELLI].direction = SOUTHEAST;
-                npcs[ELLI].behaviorMode = 0;
+                npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[ELLI].startingCoordinates.x = -128.0f;
                 npcs[ELLI].startingCoordinates.z = -112.0f;
                 npcs[ELLI].flags |= NPC_ACTIVE;
@@ -2147,7 +2189,7 @@ void setElliLocation(void) {
                 npcs[ELLI].levelIndex = HOUSE;
                 npcs[ELLI].startingCoordinates.y = 0.0f;
                 npcs[ELLI].direction = SOUTHWEST;
-                npcs[ELLI].behaviorMode = 4;
+                npcs[ELLI].defaultAnimationMode = NPC_ANIM_FIXED;
                 npcs[ELLI].startingCoordinates.x = -192.0f;
                 npcs[ELLI].startingCoordinates.z = -160.0f;
                 npcs[ELLI].flags |= NPC_ACTIVE;
@@ -2179,7 +2221,7 @@ void setElliLocation(void) {
                                         npcs[ELLI].levelIndex = MOUNTAIN_2;
                                         npcs[ELLI].startingCoordinates.y = 0.0f;
                                         npcs[ELLI].direction = NORTHWEST;
-                                        npcs[ELLI].behaviorMode = 0;
+                                        npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                                         npcs[ELLI].startingCoordinates.x = 96.0f;
                                         npcs[ELLI].startingCoordinates.z = -64.0f;
                                         npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2197,7 +2239,7 @@ void setElliLocation(void) {
                                         npcs[ELLI].levelIndex = BAKERY;
                                         npcs[ELLI].startingCoordinates.y = 0.0f;
                                         npcs[ELLI].direction = SOUTHWEST;
-                                        npcs[ELLI].behaviorMode = 1;
+                                        npcs[ELLI].defaultAnimationMode = NPC_ANIM_WANDER;
                                         npcs[ELLI].startingCoordinates.x = -32.0f;
                                         npcs[ELLI].startingCoordinates.z = 16.0f;
                                         npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2213,7 +2255,7 @@ void setElliLocation(void) {
                                         npcs[ELLI].levelIndex = MOUNTAIN_1;
                                         npcs[ELLI].startingCoordinates.y = 0.0f;
                                         npcs[ELLI].direction = SOUTHWEST;
-                                        npcs[ELLI].behaviorMode = 0;
+                                        npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                                         npcs[ELLI].startingCoordinates.x = 112.0f;
                                         npcs[ELLI].startingCoordinates.z = -32.0f;
                                         npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2235,7 +2277,7 @@ void setElliLocation(void) {
                                 npcs[ELLI].levelIndex = FLOWER_SHOP;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
                                 npcs[ELLI].direction = SOUTHWEST;
-                                npcs[ELLI].behaviorMode = 0;
+                                npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[ELLI].startingCoordinates.x = 32.0f;
                                 npcs[ELLI].startingCoordinates.z = -16.0f;
                                 npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2249,7 +2291,7 @@ void setElliLocation(void) {
                                 npcs[ELLI].levelIndex = VILLAGE_1;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
                                 npcs[ELLI].direction = NORTHWEST;
-                                npcs[ELLI].behaviorMode = 0;
+                                npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[ELLI].startingCoordinates.x = 352.0f;
                                 npcs[ELLI].startingCoordinates.z = 96.0f;
                                 npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2269,7 +2311,7 @@ void setElliLocation(void) {
                                 npcs[ELLI].levelIndex = BAKERY;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
                                 npcs[ELLI].direction = SOUTHWEST;
-                                npcs[ELLI].behaviorMode = 1;
+                                npcs[ELLI].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[ELLI].startingCoordinates.x = -32.0f;
                                 npcs[ELLI].startingCoordinates.z = 16.0f;
                                 npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2287,7 +2329,7 @@ void setElliLocation(void) {
                         npcs[ELLI].levelIndex = BAKERY;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
                         npcs[ELLI].direction = SOUTHWEST;
-                        npcs[ELLI].behaviorMode = 1;
+                        npcs[ELLI].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[ELLI].startingCoordinates.x = -32.0f;
                         npcs[ELLI].startingCoordinates.z = 16.0f;
                         npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2317,7 +2359,7 @@ void setElliLocation(void) {
                                 npcs[ELLI].levelIndex = BAKERY;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
                                 npcs[ELLI].direction = SOUTHWEST;
-                                npcs[ELLI].behaviorMode = 1;
+                                npcs[ELLI].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[ELLI].startingCoordinates.x = -32.0f;
                                 npcs[ELLI].startingCoordinates.z = 16.0f;
                                 npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2331,7 +2373,7 @@ void setElliLocation(void) {
                                 npcs[ELLI].levelIndex = BAKERY;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
                                 npcs[ELLI].direction = SOUTHWEST;
-                                npcs[ELLI].behaviorMode = 0;
+                                npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[ELLI].startingCoordinates.x = -32.0f;
                                 npcs[ELLI].startingCoordinates.z = 16.0f;
                                 npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2351,7 +2393,7 @@ void setElliLocation(void) {
                         npcs[ELLI].levelIndex = FLOWER_SHOP;
                         npcs[ELLI].startingCoordinates.y = 0.0f;
                         npcs[ELLI].direction = SOUTHWEST;
-                        npcs[ELLI].behaviorMode = 0;
+                        npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[ELLI].startingCoordinates.x = 32.0f;
                         npcs[ELLI].startingCoordinates.z = -16.0f;
                         npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2367,7 +2409,7 @@ void setElliLocation(void) {
                             npcs[ELLI].levelIndex = VILLAGE_1;
                             npcs[ELLI].startingCoordinates.y = 0.0f;
                             npcs[ELLI].direction = NORTHWEST;
-                            npcs[ELLI].behaviorMode = 0;
+                            npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[ELLI].startingCoordinates.x = 352.0f;
                             npcs[ELLI].startingCoordinates.z = 96.0f;
                             npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2377,7 +2419,7 @@ void setElliLocation(void) {
                             npcs[ELLI].levelIndex = BAKERY;
                             npcs[ELLI].startingCoordinates.y = 0.0f;
                             npcs[ELLI].direction = SOUTHWEST;
-                            npcs[ELLI].behaviorMode = 0;
+                            npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[ELLI].startingCoordinates.x = -32.0f;
                             npcs[ELLI].startingCoordinates.z = 16.0f;
                             npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2399,7 +2441,7 @@ void setElliLocation(void) {
                                 npcs[ELLI].levelIndex = MOUNTAIN_2;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
                                 npcs[ELLI].direction = NORTHWEST;
-                                npcs[ELLI].behaviorMode = 0;
+                                npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[ELLI].startingCoordinates.x = 96.0f;
                                 npcs[ELLI].startingCoordinates.z = -64.0f;
                                 npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2415,7 +2457,7 @@ void setElliLocation(void) {
                                 npcs[ELLI].levelIndex = MOUNTAIN_1;
                                 npcs[ELLI].startingCoordinates.y = 0.0f;
                                 npcs[ELLI].direction = SOUTHWEST;
-                                npcs[ELLI].behaviorMode = 0;
+                                npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[ELLI].startingCoordinates.x = 112.0f;
                                 npcs[ELLI].startingCoordinates.z = -32.0f;
                                 npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2434,7 +2476,7 @@ void setElliLocation(void) {
                             npcs[ELLI].levelIndex = BAKERY;
                             npcs[ELLI].startingCoordinates.y = 0.0f;
                             npcs[ELLI].direction = SOUTHWEST;
-                            npcs[ELLI].behaviorMode = 0;
+                            npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[ELLI].startingCoordinates.x = -32.0f;
                             npcs[ELLI].startingCoordinates.z = 16.0f;
                             npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2455,7 +2497,7 @@ void setElliLocation(void) {
                             npcs[ELLI].startingCoordinates.y = 0.0f;
                             npcs[ELLI].startingCoordinates.z = 0.0f;
                             npcs[ELLI].direction = SOUTHWEST;
-                            npcs[ELLI].behaviorMode = 2;
+                            npcs[ELLI].defaultAnimationMode = NPC_ANIM_SPECIAL;
                             npcs[ELLI].startingCoordinates.x = -224.0f;
                             npcs[ELLI].flags |= NPC_ACTIVE;  
     
@@ -2472,7 +2514,7 @@ void setElliLocation(void) {
                             npcs[ELLI].levelIndex = BEACH;
                             npcs[ELLI].startingCoordinates.y = 0.0f;
                             npcs[ELLI].direction = NORTHEAST;
-                            npcs[ELLI].behaviorMode = 0;
+                            npcs[ELLI].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[ELLI].startingCoordinates.x = -128.0f;
                             npcs[ELLI].startingCoordinates.z = 160.0f;
                             npcs[ELLI].flags |= NPC_ACTIVE;  
@@ -2491,7 +2533,7 @@ void setElliLocation(void) {
         
     }
 
-    npcs[ELLI].movingFlag = npcs[ELLI].behaviorMode;
+    npcs[ELLI].animationMode = npcs[ELLI].defaultAnimationMode;
     
 }
 
@@ -2501,12 +2543,12 @@ void setAnnLocation(void) {
 
     u8 result;
 
-    npcs[ANN].wanderRadiusX = 0x40;
-    npcs[ANN].wanderRadiusZ = 0x40;
+    npcs[ANN].wanderRadiusX = 64;
+    npcs[ANN].wanderRadiusZ = 64;
     npcs[ANN].animationIndex1 = 0;
     npcs[ANN].animationIndex2 = 8;
 
-    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && !checkDailyEventBit(0x59)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(0x59)) {
 
         if (checkLifeEventBit(MARRIED) && gWife == ANN) {
 
@@ -2515,7 +2557,7 @@ void setAnnLocation(void) {
                 npcs[ANN].levelIndex = HOUSE;
                 npcs[ANN].startingCoordinates.y = 0.0f;
                 npcs[ANN].direction = SOUTH;
-                npcs[ANN].behaviorMode = 0;
+                npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[ANN].startingCoordinates.x = -128.0f;
                 npcs[ANN].startingCoordinates.z = -64.0f;
                 npcs[ANN].flags |= NPC_ACTIVE;
@@ -2533,7 +2575,7 @@ void setAnnLocation(void) {
                         npcs[ANN].startingCoordinates.y = 0.0f;
                         npcs[ANN].startingCoordinates.z = 0.0f;
                         npcs[ANN].direction = SOUTHWEST;
-                        npcs[ANN].behaviorMode = 0;
+                        npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[ANN].flags |= NPC_ACTIVE;  
 
                         setSpecialDialogueBit(0xA1);
@@ -2545,7 +2587,7 @@ void setAnnLocation(void) {
                             npcs[ANN].levelIndex = RANCH;
                             npcs[ANN].startingCoordinates.y = 0.0f;
                             npcs[ANN].direction = SOUTHWEST;
-                            npcs[ANN].behaviorMode = 1;
+                            npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                             npcs[ANN].startingCoordinates.x = -64.0f;
                             npcs[ANN].startingCoordinates.z = 128.0f;
                             npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2557,7 +2599,7 @@ void setAnnLocation(void) {
                             npcs[ANN].startingCoordinates.y = 0.0f;
                             npcs[ANN].startingCoordinates.z = 0.0f;
                             npcs[ANN].direction = SOUTHWEST;
-                            npcs[ANN].behaviorMode = 1;
+                            npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                             npcs[ANN].flags |= NPC_ACTIVE;
                             
                         } else {
@@ -2569,7 +2611,7 @@ void setAnnLocation(void) {
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].startingCoordinates.z = 0.0f;
                                 npcs[ANN].direction = SOUTHWEST;
-                                npcs[ANN].behaviorMode = 1;
+                                npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[ANN].flags |= NPC_ACTIVE;
                                 
                             } else {
@@ -2579,7 +2621,7 @@ void setAnnLocation(void) {
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].startingCoordinates.z = 0.0f;
                                 npcs[ANN].direction = SOUTHWEST;
-                                npcs[ANN].behaviorMode = 1;
+                                npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[ANN].flags |= NPC_ACTIVE;
                                 
                             }
@@ -2595,7 +2637,7 @@ void setAnnLocation(void) {
                         npcs[ANN].levelIndex = FARM;
                         npcs[ANN].startingCoordinates.y = 0.0f;
                         npcs[ANN].direction = SOUTHWEST;
-                        npcs[ANN].behaviorMode = 0;
+                        npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[ANN].startingCoordinates.x = -256.0f;
                         npcs[ANN].startingCoordinates.z = -320.0f;
                         npcs[ANN].flags |= NPC_ACTIVE;
@@ -2609,7 +2651,7 @@ void setAnnLocation(void) {
                             npcs[ANN].startingCoordinates.y = 0.0f;
                             npcs[ANN].startingCoordinates.z = 0.0f;
                             npcs[ANN].direction = SOUTHWEST;
-                            npcs[ANN].behaviorMode = 1;
+                            npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                             npcs[ANN].flags |= NPC_ACTIVE;
                             
                         } else {
@@ -2621,7 +2663,7 @@ void setAnnLocation(void) {
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].startingCoordinates.z = 0.0f;
                                 npcs[ANN].direction = SOUTHWEST;
-                                npcs[ANN].behaviorMode = 1;
+                                npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[ANN].flags |= NPC_ACTIVE;
                                 
                             } else {
@@ -2631,7 +2673,7 @@ void setAnnLocation(void) {
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].startingCoordinates.z = 0.0f;
                                 npcs[ANN].direction = SOUTHWEST;
-                                npcs[ANN].behaviorMode = 1;
+                                npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[ANN].flags |= NPC_ACTIVE;
                                 
                             }
@@ -2649,7 +2691,7 @@ void setAnnLocation(void) {
                 npcs[ANN].levelIndex = KITCHEN;
                 npcs[ANN].startingCoordinates.y = 0.0f;
                 npcs[ANN].direction = NORTHWEST;
-                npcs[ANN].behaviorMode = 0;
+                npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[ANN].startingCoordinates.x = -160.0f;
                 npcs[ANN].startingCoordinates.z = -64.0f;
                 npcs[ANN].flags |= NPC_ACTIVE;
@@ -2663,7 +2705,7 @@ void setAnnLocation(void) {
                 npcs[ANN].startingCoordinates.y = 0.0f;
                 npcs[ANN].startingCoordinates.z = 0.0f;
                 npcs[ANN].direction = SOUTHWEST;
-                npcs[ANN].behaviorMode = 1;
+                npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[ANN].flags |= NPC_ACTIVE;
                 
             }
@@ -2673,7 +2715,7 @@ void setAnnLocation(void) {
                 npcs[ANN].levelIndex = KITCHEN;
                 npcs[ANN].startingCoordinates.y = 0.0f;
                 npcs[ANN].direction = NORTHWEST;
-                npcs[ANN].behaviorMode = 0;
+                npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[ANN].startingCoordinates.x = -160.0f;
                 npcs[ANN].startingCoordinates.z = -64.0f;
                 npcs[ANN].flags |= NPC_ACTIVE;
@@ -2685,7 +2727,7 @@ void setAnnLocation(void) {
                 npcs[ANN].levelIndex = HOUSE;
                 npcs[ANN].startingCoordinates.y = 0.0f;
                 npcs[ANN].direction = SOUTHEAST;
-                npcs[ANN].behaviorMode = 0;
+                npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[ANN].startingCoordinates.x = -128.0f;
                 npcs[ANN].startingCoordinates.z = -112.0f;
                 npcs[ANN].flags |= NPC_ACTIVE;
@@ -2697,7 +2739,7 @@ void setAnnLocation(void) {
                 npcs[ANN].levelIndex = HOUSE;
                 npcs[ANN].startingCoordinates.y = 0.0f;
                 npcs[ANN].direction = SOUTHWEST;
-                npcs[ANN].behaviorMode = 4;
+                npcs[ANN].defaultAnimationMode = NPC_ANIM_FIXED;
                 npcs[ANN].startingCoordinates.x = -192.0f;
                 npcs[ANN].startingCoordinates.z = -160.0f;
                 npcs[ANN].flags |= NPC_ACTIVE;
@@ -2729,7 +2771,7 @@ void setAnnLocation(void) {
                                 npcs[ANN].levelIndex = RANCH;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].direction = SOUTHWEST;
-                                npcs[ANN].behaviorMode = 1;
+                                npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[ANN].startingCoordinates.x = -64.0f;
                                 npcs[ANN].startingCoordinates.z = 128.0f;
                                 npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2743,7 +2785,7 @@ void setAnnLocation(void) {
                                 npcs[ANN].levelIndex = RANCH_HOUSE;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].direction = SOUTHEAST;
-                                npcs[ANN].behaviorMode = 0;
+                                npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[ANN].startingCoordinates.x = -192.0f;
                                 npcs[ANN].startingCoordinates.z = -32.0f;
                                 npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2767,7 +2809,7 @@ void setAnnLocation(void) {
                                         npcs[ANN].levelIndex = MOUNTAIN_2;
                                         npcs[ANN].startingCoordinates.y = 0.0f;
                                         npcs[ANN].direction = SOUTHWEST;
-                                        npcs[ANN].behaviorMode = 0;
+                                        npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                                         npcs[ANN].startingCoordinates.x = -64.0f;
                                         npcs[ANN].startingCoordinates.z = -160.0f;
                                         npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2781,7 +2823,7 @@ void setAnnLocation(void) {
                                         npcs[ANN].levelIndex = CAVE;
                                         npcs[ANN].startingCoordinates.y = 0.0f;
                                         npcs[ANN].direction = SOUTHWEST;
-                                        npcs[ANN].behaviorMode = 0;
+                                        npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                                         npcs[ANN].startingCoordinates.x = 64.0f;
                                         npcs[ANN].startingCoordinates.z = -224.0f;
                                         npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2795,7 +2837,7 @@ void setAnnLocation(void) {
                                         npcs[ANN].levelIndex = RANCH_HOUSE;
                                         npcs[ANN].startingCoordinates.y = 0.0f;
                                         npcs[ANN].direction = SOUTHEAST;
-                                        npcs[ANN].behaviorMode = 0;
+                                        npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                                         npcs[ANN].startingCoordinates.x = -192.0f;
                                         npcs[ANN].startingCoordinates.z = -32.0f;
                                         npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2811,7 +2853,7 @@ void setAnnLocation(void) {
                             npcs[ANN].levelIndex = RANCH_BARN;
                             npcs[ANN].startingCoordinates.y = 0.0f;
                             npcs[ANN].direction = SOUTHWEST;
-                            npcs[ANN].behaviorMode = 0;
+                            npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[ANN].startingCoordinates.x = -128.0f;
                             npcs[ANN].startingCoordinates.z = -292.0f;
                             npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2844,7 +2886,7 @@ void setAnnLocation(void) {
                                 npcs[ANN].levelIndex = RANCH;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].direction = SOUTHWEST;
-                                npcs[ANN].behaviorMode = 1;
+                                npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[ANN].startingCoordinates.x = -64.0f;
                                 npcs[ANN].startingCoordinates.z = 128.0f;
                                 npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2858,7 +2900,7 @@ void setAnnLocation(void) {
                                 npcs[ANN].levelIndex = RANCH_BARN;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].direction = SOUTHWEST;
-                                npcs[ANN].behaviorMode = 0;
+                                npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[ANN].startingCoordinates.x = -128.0f;
                                 npcs[ANN].startingCoordinates.z = -292.0f;
                                 npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2884,7 +2926,7 @@ void setAnnLocation(void) {
                                     npcs[ANN].levelIndex = MOUNTAIN_1;
                                     npcs[ANN].startingCoordinates.y = 0.0f;
                                     npcs[ANN].direction = SOUTHWEST;
-                                    npcs[ANN].behaviorMode = 0;
+                                    npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[ANN].startingCoordinates.x = 128.0f;
                                     npcs[ANN].startingCoordinates.z = 32.0f;
                                     npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2902,7 +2944,7 @@ void setAnnLocation(void) {
                                     npcs[ANN].levelIndex = MOUNTAIN_2;
                                     npcs[ANN].startingCoordinates.y = 0.0f;
                                     npcs[ANN].direction = SOUTHWEST;
-                                    npcs[ANN].behaviorMode = 0;
+                                    npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[ANN].startingCoordinates.x = -64.0f;
                                     npcs[ANN].startingCoordinates.z = -160.0f;
                                     npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2919,7 +2961,7 @@ void setAnnLocation(void) {
                                     npcs[ANN].levelIndex = VINEYARD;
                                     npcs[ANN].startingCoordinates.y = 0.0f;
                                     npcs[ANN].direction = SOUTHWEST;
-                                    npcs[ANN].behaviorMode = 0;
+                                    npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[ANN].startingCoordinates.x = 16.0f;
                                     npcs[ANN].startingCoordinates.z = -144.0f;
                                     npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2940,7 +2982,7 @@ void setAnnLocation(void) {
                                     npcs[ANN].startingCoordinates.y = 0.0f;
                                     npcs[ANN].startingCoordinates.z = 0.0f;
                                     npcs[ANN].direction = SOUTHWEST;
-                                    npcs[ANN].behaviorMode = 0;
+                                    npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[ANN].flags |= NPC_ACTIVE;  
             
                                     setSpecialDialogueBit(0xA1);
@@ -2960,7 +3002,7 @@ void setAnnLocation(void) {
                             npcs[ANN].levelIndex = RANCH_STORE;
                             npcs[ANN].startingCoordinates.y = 0.0f;
                             npcs[ANN].direction = SOUTHWEST;
-                            npcs[ANN].behaviorMode = 0;
+                            npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[ANN].startingCoordinates.x = 80.0f;
                             npcs[ANN].startingCoordinates.z = -144.0f;
                             npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2983,7 +3025,7 @@ void setAnnLocation(void) {
                                 npcs[ANN].levelIndex = POND;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].direction = SOUTHWEST;
-                                npcs[ANN].behaviorMode = 0;
+                                npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[ANN].startingCoordinates.x = 80.0f;
                                 npcs[ANN].startingCoordinates.z = -176.0f;
                                 npcs[ANN].flags |= NPC_ACTIVE;  
@@ -2997,7 +3039,7 @@ void setAnnLocation(void) {
                                 npcs[ANN].levelIndex = RANCH;
                                 npcs[ANN].startingCoordinates.y = 0.0f;
                                 npcs[ANN].direction = SOUTHWEST;
-                                npcs[ANN].behaviorMode = 1;
+                                npcs[ANN].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[ANN].startingCoordinates.x = 256.0f;
                                 npcs[ANN].startingCoordinates.z = 128.0f;
                                 npcs[ANN].flags |= NPC_ACTIVE;  
@@ -3013,7 +3055,7 @@ void setAnnLocation(void) {
                             npcs[ANN].levelIndex = RANCH_BARN;
                             npcs[ANN].startingCoordinates.y = 0.0f;
                             npcs[ANN].direction = SOUTHWEST;
-                            npcs[ANN].behaviorMode = 0;
+                            npcs[ANN].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[ANN].startingCoordinates.x = -128.0f;
                             npcs[ANN].startingCoordinates.z = -292.0f;
                             npcs[ANN].flags |= NPC_ACTIVE;  
@@ -3032,7 +3074,7 @@ void setAnnLocation(void) {
                         npcs[ANN].startingCoordinates.y = 0.0f;
                         npcs[ANN].startingCoordinates.z = 0.0f;
                         npcs[ANN].direction = SOUTHWEST;
-                        npcs[ANN].behaviorMode = 2;
+                        npcs[ANN].defaultAnimationMode = NPC_ANIM_SPECIAL;
                         npcs[ANN].startingCoordinates.x = -224.0f;
                         npcs[ANN].flags |= NPC_ACTIVE;  
 
@@ -3049,7 +3091,7 @@ void setAnnLocation(void) {
         
     }
 
-    npcs[ANN].movingFlag = npcs[ANN].behaviorMode;
+    npcs[ANN].animationMode = npcs[ANN].defaultAnimationMode;
     
 }
 
@@ -3059,12 +3101,12 @@ void setKarenLocation(void) {
 
     u8 result;
 
-    npcs[KAREN].wanderRadiusX = 0x40;
-    npcs[KAREN].wanderRadiusZ = 0x40;
+    npcs[KAREN].wanderRadiusX = 64;
+    npcs[KAREN].wanderRadiusZ = 64;
     npcs[KAREN].animationIndex1 = 0;
     npcs[KAREN].animationIndex2 = 8;
 
-    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && !checkLifeEventBit(0x2F) && !checkDailyEventBit(0x5A)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkLifeEventBit(0x2F) && !checkDailyEventBit(0x5A)) {
 
         if (checkLifeEventBit(MARRIED) && gWife == KAREN) {
 
@@ -3073,7 +3115,7 @@ void setKarenLocation(void) {
                 npcs[KAREN].levelIndex = HOUSE;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
                 npcs[KAREN].direction = SOUTH;
-                npcs[KAREN].behaviorMode = 0;
+                npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[KAREN].startingCoordinates.x = -128.0f;
                 npcs[KAREN].startingCoordinates.z = -64.0f;
                 npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3092,7 +3134,7 @@ void setKarenLocation(void) {
                             npcs[KAREN].startingCoordinates.y = 0.0f;
                             npcs[KAREN].startingCoordinates.z = 0.0f;
                             npcs[KAREN].direction = SOUTHEAST;
-                            npcs[KAREN].behaviorMode = 0;
+                            npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[KAREN].startingCoordinates.x = -224.0f;
                             npcs[KAREN].flags |= NPC_ACTIVE;
 
@@ -3106,7 +3148,7 @@ void setKarenLocation(void) {
                             npcs[KAREN].startingCoordinates.y = 0.0f;
                             npcs[KAREN].startingCoordinates.z = 0.0f;
                             npcs[KAREN].direction = NORTHWEST;
-                            npcs[KAREN].behaviorMode = 1;
+                            npcs[KAREN].defaultAnimationMode = NPC_ANIM_WANDER;
                             npcs[KAREN].startingCoordinates.x = -32.0f;
                             npcs[KAREN].flags |= NPC_ACTIVE;
                             
@@ -3117,7 +3159,7 @@ void setKarenLocation(void) {
                             npcs[KAREN].levelIndex = MOUNTAIN_1;
                             npcs[KAREN].startingCoordinates.y = 0.0f;
                             npcs[KAREN].direction = SOUTHEAST;
-                            npcs[KAREN].behaviorMode = 1;
+                            npcs[KAREN].defaultAnimationMode = NPC_ANIM_WANDER;
                             npcs[KAREN].startingCoordinates.x = 96.0f;
                             npcs[KAREN].startingCoordinates.z = 96.0f;
                             npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3133,7 +3175,7 @@ void setKarenLocation(void) {
                     npcs[KAREN].levelIndex = FARM;
                     npcs[KAREN].startingCoordinates.y = 0.0f;
                     npcs[KAREN].direction = SOUTHWEST;
-                    npcs[KAREN].behaviorMode = 0;
+                    npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[KAREN].startingCoordinates.x = -256.0f;
                     npcs[KAREN].startingCoordinates.z = -320.0f;
                     npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3143,7 +3185,7 @@ void setKarenLocation(void) {
                     npcs[KAREN].levelIndex = KITCHEN;
                     npcs[KAREN].startingCoordinates.y = 0.0f;
                     npcs[KAREN].direction = NORTHWEST;
-                    npcs[KAREN].behaviorMode = 1;
+                    npcs[KAREN].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[KAREN].startingCoordinates.x = -160.0f;
                     npcs[KAREN].startingCoordinates.z = -64.0f;
                     npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3157,7 +3199,7 @@ void setKarenLocation(void) {
                 npcs[KAREN].levelIndex = KITCHEN;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
                 npcs[KAREN].direction = NORTHWEST;
-                npcs[KAREN].behaviorMode = 0;
+                npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[KAREN].startingCoordinates.x = -160.0f;
                 npcs[KAREN].startingCoordinates.z = -64.0f;
                 npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3171,7 +3213,7 @@ void setKarenLocation(void) {
                 npcs[KAREN].startingCoordinates.y = 0.0f;
                 npcs[KAREN].startingCoordinates.z = 0.0f;
                 npcs[KAREN].direction = SOUTHWEST;
-                npcs[KAREN].behaviorMode = 1;
+                npcs[KAREN].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[KAREN].flags |= NPC_ACTIVE;
                 
             }
@@ -3181,7 +3223,7 @@ void setKarenLocation(void) {
                 npcs[KAREN].levelIndex = KITCHEN;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
                 npcs[KAREN].direction = NORTHWEST;
-                npcs[KAREN].behaviorMode = 0;
+                npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[KAREN].startingCoordinates.x = -160.0f;
                 npcs[KAREN].startingCoordinates.z = -64.0f;
                 npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3193,7 +3235,7 @@ void setKarenLocation(void) {
                 npcs[KAREN].levelIndex = HOUSE;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
                 npcs[KAREN].direction = SOUTHEAST;
-                npcs[KAREN].behaviorMode = 0;
+                npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[KAREN].startingCoordinates.x = -128.0f;
                 npcs[KAREN].startingCoordinates.z = -112.0f;
                 npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3205,7 +3247,7 @@ void setKarenLocation(void) {
                 npcs[KAREN].levelIndex = HOUSE;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
                 npcs[KAREN].direction = SOUTHWEST;
-                npcs[KAREN].behaviorMode = 4;
+                npcs[KAREN].defaultAnimationMode = NPC_ANIM_FIXED;
                 npcs[KAREN].startingCoordinates.x = -192.0f;
                 npcs[KAREN].startingCoordinates.z = -160.0f;
                 npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3233,7 +3275,7 @@ void setKarenLocation(void) {
                                 npcs[KAREN].startingCoordinates.y = 0.0f;
                                 npcs[KAREN].startingCoordinates.z = 0.0f;
                                 npcs[KAREN].direction = SOUTHEAST;
-                                npcs[KAREN].behaviorMode = 0;
+                                npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[KAREN].startingCoordinates.x = -224.0f;
                                 npcs[KAREN].flags |= NPC_ACTIVE;
             
@@ -3251,7 +3293,7 @@ void setKarenLocation(void) {
                                 npcs[KAREN].levelIndex = VINEYARD;
                                 npcs[KAREN].startingCoordinates.y = 0.0f;
                                 npcs[KAREN].direction = NORTHEAST;
-                                npcs[KAREN].behaviorMode = 1;
+                                npcs[KAREN].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[KAREN].startingCoordinates.x = 192.0f;
                                 npcs[KAREN].startingCoordinates.z = 192.0f;
                                 npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3272,7 +3314,7 @@ void setKarenLocation(void) {
                                     npcs[KAREN].levelIndex = VINEYARD_CELLAR_BASEMENT;
                                     npcs[KAREN].startingCoordinates.y = 0.0f;
                                     npcs[KAREN].direction = NORTHWEST;
-                                    npcs[KAREN].behaviorMode = 0;
+                                    npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[KAREN].startingCoordinates.x = -32.0f;
                                     npcs[KAREN].startingCoordinates.z = -128.0f;
                                     npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3291,7 +3333,7 @@ void setKarenLocation(void) {
                             npcs[KAREN].startingCoordinates.y = 0.0f;
                             npcs[KAREN].startingCoordinates.z = 0.0f;
                             npcs[KAREN].direction = SOUTHWEST;
-                            npcs[KAREN].behaviorMode = 3;
+                            npcs[KAREN].defaultAnimationMode = NPC_ANIM_CUSTOM;
                             npcs[KAREN].startingCoordinates.x = -192.0f;
                             npcs[KAREN].flags |= NPC_ACTIVE;
                                               
@@ -3308,7 +3350,7 @@ void setKarenLocation(void) {
                             npcs[KAREN].levelIndex = VINEYARD_CELLAR;
                             npcs[KAREN].startingCoordinates.y = 0.0f;
                             npcs[KAREN].direction = NORTHWEST;
-                            npcs[KAREN].behaviorMode = 0;
+                            npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[KAREN].startingCoordinates.x = -80.0f;
                             npcs[KAREN].startingCoordinates.z = -112.0f;
                             npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3332,7 +3374,7 @@ void setKarenLocation(void) {
                 npcs[KAREN].levelIndex = VINEYARD;
                 npcs[KAREN].startingCoordinates.y = 0.0f;
                 npcs[KAREN].direction = NORTHEAST;
-                npcs[KAREN].behaviorMode = 1;
+                npcs[KAREN].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[KAREN].startingCoordinates.x = 192.0f;
                 npcs[KAREN].startingCoordinates.z = 192.0f;
                 npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3358,7 +3400,7 @@ void setKarenLocation(void) {
                                     npcs[KAREN].levelIndex = MOUNTAIN_2;
                                     npcs[KAREN].startingCoordinates.y = 0.0f;
                                     npcs[KAREN].direction = SOUTHWEST;
-                                    npcs[KAREN].behaviorMode = 0;
+                                    npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[KAREN].startingCoordinates.x = -80.0f;
                                     npcs[KAREN].startingCoordinates.z = 160.0f;
                                     npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3376,7 +3418,7 @@ void setKarenLocation(void) {
                                     npcs[KAREN].levelIndex = BEACH;
                                     npcs[KAREN].startingCoordinates.y = 0.0f;
                                     npcs[KAREN].direction = SOUTHEAST;
-                                    npcs[KAREN].behaviorMode = 0;
+                                    npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[KAREN].startingCoordinates.x = -96.0f;
                                     npcs[KAREN].startingCoordinates.z = 176.0f;
                                     npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3407,7 +3449,7 @@ void setKarenLocation(void) {
                     npcs[KAREN].startingCoordinates.y = 0.0f;
                     npcs[KAREN].startingCoordinates.z = 0.0f;
                     npcs[KAREN].direction = SOUTHEAST;
-                    npcs[KAREN].behaviorMode = 0;
+                    npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[KAREN].startingCoordinates.x = -224.0f;
                     npcs[KAREN].flags |= NPC_ACTIVE;
 
@@ -3426,7 +3468,7 @@ void setKarenLocation(void) {
                     npcs[KAREN].startingCoordinates.y = 0.0f;
                     npcs[KAREN].startingCoordinates.z = 0.0f;
                     npcs[KAREN].direction = SOUTHWEST;
-                    npcs[KAREN].behaviorMode = 3;
+                    npcs[KAREN].defaultAnimationMode = NPC_ANIM_CUSTOM;
                     npcs[KAREN].startingCoordinates.x = -192.0f;
                     npcs[KAREN].flags |= NPC_ACTIVE;
                     
@@ -3441,7 +3483,7 @@ void setKarenLocation(void) {
                     npcs[KAREN].levelIndex = TAVERN;
                     npcs[KAREN].startingCoordinates.y = 0.0f;
                     npcs[KAREN].direction = SOUTHWEST;
-                    npcs[KAREN].behaviorMode = 1;
+                    npcs[KAREN].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[KAREN].startingCoordinates.x = 64.0f;
                     npcs[KAREN].startingCoordinates.z = -32.0f;
                     npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3455,7 +3497,7 @@ void setKarenLocation(void) {
                     npcs[KAREN].levelIndex = TAVERN;
                     npcs[KAREN].startingCoordinates.y = 0;
                     npcs[KAREN].direction = SOUTHWEST;
-                    npcs[KAREN].behaviorMode = 0;
+                    npcs[KAREN].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[KAREN].startingCoordinates.x = -64.0f;
                     npcs[KAREN].startingCoordinates.z = -64.0f;
                     npcs[KAREN].flags |= NPC_ACTIVE;
@@ -3474,7 +3516,7 @@ void setKarenLocation(void) {
                         npcs[KAREN].startingCoordinates.y = 0.0f;
                         npcs[KAREN].startingCoordinates.z = 0.0f;
                         npcs[KAREN].direction = SOUTHWEST;
-                        npcs[KAREN].behaviorMode = 2;
+                        npcs[KAREN].defaultAnimationMode = NPC_ANIM_SPECIAL;
                         npcs[KAREN].startingCoordinates.x = -224.0f;
                         npcs[KAREN].flags |= NPC_ACTIVE;
 
@@ -3490,7 +3532,7 @@ void setKarenLocation(void) {
         
     }
 
-    npcs[KAREN].movingFlag = npcs[KAREN].behaviorMode;
+    npcs[KAREN].animationMode = npcs[KAREN].defaultAnimationMode;
     
 }
 
@@ -3502,10 +3544,10 @@ void setBabyLocation(void) {
     
     toggleDailyEventBit(0x16);
 
-    if (!checkDailyEventBit(0x52) && !checkLifeEventBit(0xD9) && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
 
-        npcs[BABY].wanderRadiusX = 0x40;
-        npcs[BABY].wanderRadiusZ = 0x40;
+        npcs[BABY].wanderRadiusX = 64;
+        npcs[BABY].wanderRadiusZ = 64;
         npcs[BABY].animationIndex1 = 0;
         npcs[BABY].animationIndex2 = 8;
 
@@ -3521,7 +3563,7 @@ void setBabyLocation(void) {
                 npcs[BABY].startingCoordinates.z = 0.0f;
                 npcs[BABY].flags |= (NPC_ACTIVE | NPC_ATTACHED);
                 npcs[BABY].direction = npcs[gWife].direction;
-                npcs[BABY].behaviorMode = 0;
+                npcs[BABY].defaultAnimationMode = NPC_ANIM_IDLE;
                 
             }
             
@@ -3532,7 +3574,7 @@ void setBabyLocation(void) {
             npcs[BABY].levelIndex = HOUSE;
             npcs[BABY].startingCoordinates.y = 0.0f;
             npcs[BABY].direction = SOUTHWEST;
-            npcs[BABY].behaviorMode = 1;
+            npcs[BABY].defaultAnimationMode = NPC_ANIM_WANDER;
             npcs[BABY].startingCoordinates.x = -192.0f;
             npcs[BABY].startingCoordinates.z = -64.0f;
             npcs[BABY].flags |= NPC_ACTIVE;
@@ -3546,7 +3588,7 @@ void setBabyLocation(void) {
             npcs[BABY].levelIndex = HOUSE;
             npcs[BABY].startingCoordinates.y = 0.0f;
             npcs[BABY].direction = SOUTHWEST;
-            npcs[BABY].behaviorMode = 2;
+            npcs[BABY].defaultAnimationMode = NPC_ANIM_SPECIAL;
             npcs[BABY].startingCoordinates.x = -192.0f;
             npcs[BABY].startingCoordinates.z = -64.0f;
             npcs[BABY].flags |= NPC_ACTIVE;
@@ -3565,7 +3607,7 @@ void setBabyLocation(void) {
                 npcs[BABY].startingCoordinates.z = npcs[gWife].startingCoordinates.z;
                 npcs[BABY].flags |= NPC_ACTIVE;
                 npcs[BABY].direction = npcs[gWife].direction;
-                npcs[BABY].behaviorMode = 3;
+                npcs[BABY].defaultAnimationMode = NPC_ANIM_CUSTOM;
                 npcs[BABY].animationIndex1 = 0x39;
                 npcs[BABY].animationIndex2 = 0x41;
                 
@@ -3580,7 +3622,7 @@ void setBabyLocation(void) {
                 npcs[BABY].levelIndex = HOUSE;
                 npcs[BABY].startingCoordinates.y = 0.0f;
                 npcs[BABY].direction = SOUTHWEST;
-                npcs[BABY].behaviorMode = 5;
+                npcs[BABY].defaultAnimationMode = NPC_ANIM_BABY_CRIB;
                 npcs[BABY].startingCoordinates.x = -194.0f;
                 npcs[BABY].startingCoordinates.z = -64.0f;
                 npcs[BABY].flags |= NPC_ACTIVE;
@@ -3599,7 +3641,7 @@ void setBabyLocation(void) {
                 npcs[BABY].startingCoordinates.z = npcs[gWife].startingCoordinates.z;
                 npcs[BABY].flags |= NPC_ACTIVE;
                 npcs[BABY].direction = npcs[gWife].direction;
-                npcs[BABY].behaviorMode = 4;
+                npcs[BABY].defaultAnimationMode = NPC_ANIM_FIXED;
                 npcs[BABY].animationIndex1 = 0xE;
                 npcs[BABY].animationIndex2 = 0x16;
                 
@@ -3607,7 +3649,7 @@ void setBabyLocation(void) {
             
         }
         
-        npcs[BABY].movingFlag = npcs[BABY].behaviorMode;
+        npcs[BABY].animationMode = npcs[BABY].defaultAnimationMode;
         
     }
     
@@ -3633,7 +3675,7 @@ void setHarrisLocation(void) {
                 npcs[HARRIS].startingCoordinates.y = 0.0f;
                 npcs[HARRIS].startingCoordinates.z = 0.0f;
                 npcs[HARRIS].direction = SOUTHWEST;
-                npcs[HARRIS].behaviorMode = 1;
+                npcs[HARRIS].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[HARRIS].flags |= NPC_ACTIVE;
                 
                 
@@ -3644,7 +3686,7 @@ void setHarrisLocation(void) {
                 npcs[HARRIS].startingCoordinates.y = 0.0f;
                 npcs[HARRIS].startingCoordinates.z = 0.0f;
                 npcs[HARRIS].direction = SOUTHWEST;
-                npcs[HARRIS].behaviorMode = 1;
+                npcs[HARRIS].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[HARRIS].flags |= NPC_ACTIVE;
                 
             }
@@ -3660,7 +3702,7 @@ void setHarrisLocation(void) {
                     npcs[HARRIS].levelIndex = MOUNTAIN_1;
                     npcs[HARRIS].startingCoordinates.y = 0.0f;
                     npcs[HARRIS].direction = SOUTHWEST;
-                    npcs[HARRIS].behaviorMode = 1;
+                    npcs[HARRIS].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[HARRIS].startingCoordinates.x = -16.0f;
                     npcs[HARRIS].startingCoordinates.z = 128.0f;
                     npcs[HARRIS].flags |= NPC_ACTIVE;                    
@@ -3672,7 +3714,7 @@ void setHarrisLocation(void) {
                     npcs[HARRIS].startingCoordinates.y = 0.0f;
                     npcs[HARRIS].startingCoordinates.z = 0.0f;
                     npcs[HARRIS].direction = SOUTHWEST;
-                    npcs[HARRIS].behaviorMode = 1;
+                    npcs[HARRIS].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[HARRIS].startingCoordinates.x = -64.0f;
                     npcs[HARRIS].flags |= NPC_ACTIVE;
                     break;
@@ -3682,7 +3724,7 @@ void setHarrisLocation(void) {
                     npcs[HARRIS].levelIndex = RANCH;
                     npcs[HARRIS].startingCoordinates.y = 0.0f;
                     npcs[HARRIS].direction = SOUTHWEST;
-                    npcs[HARRIS].behaviorMode = 1;
+                    npcs[HARRIS].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[HARRIS].startingCoordinates.x = 160.0f;
                     npcs[HARRIS].startingCoordinates.z = -320.0f;
                     npcs[HARRIS].flags |= NPC_ACTIVE;
@@ -3703,7 +3745,7 @@ void setHarrisLocation(void) {
             npcs[HARRIS].levelIndex = LIBRARY;
             npcs[HARRIS].startingCoordinates.y = 0.0f;
             npcs[HARRIS].direction = SOUTHEAST;
-            npcs[HARRIS].behaviorMode = 0;
+            npcs[HARRIS].defaultAnimationMode = NPC_ANIM_IDLE;
             npcs[HARRIS].startingCoordinates.x = 32.0f;
             npcs[HARRIS].startingCoordinates.z = 96.0f;
             npcs[HARRIS].flags |= NPC_ACTIVE;
@@ -3718,7 +3760,7 @@ void setHarrisLocation(void) {
         npcs[HARRIS].startingCoordinates.y = 0.0f;
         npcs[HARRIS].startingCoordinates.z = 0.0f;
         npcs[HARRIS].direction = SOUTHWEST;
-        npcs[HARRIS].behaviorMode = 0;
+        npcs[HARRIS].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[HARRIS].startingCoordinates.x = -144.0f;
         npcs[HARRIS].flags |= NPC_ACTIVE;
 
@@ -3726,7 +3768,7 @@ void setHarrisLocation(void) {
         
     }
 
-    npcs[HARRIS].movingFlag = npcs[HARRIS].behaviorMode;
+    npcs[HARRIS].animationMode = npcs[HARRIS].defaultAnimationMode;
     
     
 }
@@ -3735,8 +3777,8 @@ void setHarrisLocation(void) {
 
 void setGrayLocation(void) {
 
-    npcs[GRAY].wanderRadiusX = 0x40;
-    npcs[GRAY].wanderRadiusZ = 0x40;
+    npcs[GRAY].wanderRadiusX = 64;
+    npcs[GRAY].wanderRadiusZ = 64;
     npcs[GRAY].animationIndex1 = 0;
     npcs[GRAY].animationIndex2 = 8;
 
@@ -3754,7 +3796,7 @@ void setGrayLocation(void) {
                 npcs[GRAY].levelIndex = RANCH_BARN;
                 npcs[GRAY].startingCoordinates.y = 0.0f;
                 npcs[GRAY].direction = SOUTHWEST;
-                npcs[GRAY].behaviorMode = 1;
+                npcs[GRAY].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[GRAY].startingCoordinates.x = -128.0f;
                 npcs[GRAY].startingCoordinates.z = -48.0f;
                 npcs[GRAY].flags |= NPC_ACTIVE;
@@ -3768,7 +3810,7 @@ void setGrayLocation(void) {
                     npcs[GRAY].levelIndex = RANCH;
                     npcs[GRAY].startingCoordinates.y = 0.0f;
                     npcs[GRAY].direction = SOUTHWEST;
-                    npcs[GRAY].behaviorMode = 1;
+                    npcs[GRAY].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[GRAY].startingCoordinates.x = -160.0f;
                     npcs[GRAY].startingCoordinates.z = 128.0f;
                     npcs[GRAY].flags |= NPC_ACTIVE;
@@ -3780,7 +3822,7 @@ void setGrayLocation(void) {
                     npcs[GRAY].startingCoordinates.y = 0.0f;
                     npcs[GRAY].startingCoordinates.z = 0.0f;
                     npcs[GRAY].direction = SOUTHWEST;
-                    npcs[GRAY].behaviorMode = 2;
+                    npcs[GRAY].defaultAnimationMode = NPC_ANIM_SPECIAL;
                     npcs[GRAY].flags |= NPC_ACTIVE;
                     
                 }
@@ -3798,7 +3840,7 @@ void setGrayLocation(void) {
                     npcs[GRAY].levelIndex = MOUNTAIN_2;
                     npcs[GRAY].startingCoordinates.y = 0.0f;
                     npcs[GRAY].direction = SOUTHEAST;
-                    npcs[GRAY].behaviorMode = 0;
+                    npcs[GRAY].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[GRAY].startingCoordinates.x = -128.0f;
                     npcs[GRAY].startingCoordinates.z = 352.0f;
                     npcs[GRAY].flags |= NPC_ACTIVE;
@@ -3810,7 +3852,7 @@ void setGrayLocation(void) {
                 npcs[GRAY].levelIndex = RANCH_HOUSE;
                 npcs[GRAY].startingCoordinates.y = 0.0f;
                 npcs[GRAY].direction = SOUTHWEST;
-                npcs[GRAY].behaviorMode = 1;
+                npcs[GRAY].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[GRAY].startingCoordinates.x = -64.0f;
                 npcs[GRAY].startingCoordinates.z = -64.0f;
                 npcs[GRAY].flags |= NPC_ACTIVE;
@@ -3825,7 +3867,7 @@ void setGrayLocation(void) {
         npcs[GRAY].startingCoordinates.y = 0.0f;
         npcs[GRAY].startingCoordinates.z = 0.0f;
         npcs[GRAY].direction = SOUTHWEST;
-        npcs[GRAY].behaviorMode = 0;
+        npcs[GRAY].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[GRAY].startingCoordinates.x = 80.0f;
         npcs[GRAY].flags |= NPC_ACTIVE;
 
@@ -3833,7 +3875,7 @@ void setGrayLocation(void) {
         
     }
 
-    npcs[GRAY].movingFlag = npcs[GRAY].behaviorMode;
+    npcs[GRAY].animationMode = npcs[GRAY].defaultAnimationMode;
     
 }
 
@@ -3841,8 +3883,8 @@ void setGrayLocation(void) {
 
 void setJeffLocation(void) {
 
-    npcs[JEFF].wanderRadiusX = 0x40;
-    npcs[JEFF].wanderRadiusZ = 0x40;
+    npcs[JEFF].wanderRadiusX = 64;
+    npcs[JEFF].wanderRadiusZ = 64;
     npcs[JEFF].animationIndex1 = 0;
     npcs[JEFF].animationIndex2 = 8;
 
@@ -3858,7 +3900,7 @@ void setJeffLocation(void) {
                     npcs[JEFF].levelIndex = BAKERY;
                     npcs[JEFF].startingCoordinates.y = 0.0f;
                     npcs[JEFF].direction = SOUTHWEST;
-                    npcs[JEFF].behaviorMode = 0;
+                    npcs[JEFF].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[JEFF].startingCoordinates.x = -96.0f;
                     npcs[JEFF].startingCoordinates.z = -96.0f;
                     npcs[JEFF].flags |= NPC_ACTIVE;
@@ -3879,7 +3921,7 @@ void setJeffLocation(void) {
                             npcs[JEFF].levelIndex = MOUNTAIN_1;
                             npcs[JEFF].startingCoordinates.y = 0.0f;
                             npcs[JEFF].direction = NORTHWEST;
-                            npcs[JEFF].behaviorMode = 2;
+                            npcs[JEFF].defaultAnimationMode = NPC_ANIM_SPECIAL;
                             npcs[JEFF].startingCoordinates.x = -224.0f;
                             npcs[JEFF].startingCoordinates.z = -128.0f;
                             npcs[JEFF].flags |= NPC_ACTIVE;
@@ -3895,7 +3937,7 @@ void setJeffLocation(void) {
                             npcs[JEFF].levelIndex = MOUNTAIN_1;
                             npcs[JEFF].startingCoordinates.y = 0.0f;
                             npcs[JEFF].direction = NORTHEAST;
-                            npcs[JEFF].behaviorMode = 0;
+                            npcs[JEFF].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[JEFF].startingCoordinates.x = 192.0f;
                             npcs[JEFF].startingCoordinates.z = 48.0f;
                             npcs[JEFF].flags |= NPC_ACTIVE;
@@ -3921,7 +3963,7 @@ void setJeffLocation(void) {
                     npcs[JEFF].levelIndex = BAKERY;
                     npcs[JEFF].startingCoordinates.y = 0.0f;
                     npcs[JEFF].direction = SOUTHWEST;
-                    npcs[JEFF].behaviorMode = 0;
+                    npcs[JEFF].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[JEFF].startingCoordinates.x = -96.0f;
                     npcs[JEFF].startingCoordinates.z = -96.0f;
                     npcs[JEFF].flags |= NPC_ACTIVE;
@@ -3939,7 +3981,7 @@ void setJeffLocation(void) {
                         npcs[JEFF].levelIndex = MOUNTAIN_1;
                         npcs[JEFF].startingCoordinates.y = 0.0f;
                         npcs[JEFF].direction = NORTHWEST;
-                        npcs[JEFF].behaviorMode = 2;
+                        npcs[JEFF].defaultAnimationMode = NPC_ANIM_SPECIAL;
                         npcs[JEFF].startingCoordinates.x = -224.0f;
                         npcs[JEFF].startingCoordinates.z = -128.0f;
                         npcs[JEFF].flags |= NPC_ACTIVE;
@@ -3957,7 +3999,7 @@ void setJeffLocation(void) {
             npcs[JEFF].levelIndex = TAVERN;
             npcs[JEFF].startingCoordinates.y = 0.0f;
             npcs[JEFF].direction = NORTHEAST;
-            npcs[JEFF].behaviorMode = 0;
+            npcs[JEFF].defaultAnimationMode = NPC_ANIM_IDLE;
             npcs[JEFF].startingCoordinates.x = -160.0f;
             npcs[JEFF].startingCoordinates.z = -64.0f;
             npcs[JEFF].flags |= NPC_ACTIVE;
@@ -3968,7 +4010,7 @@ void setJeffLocation(void) {
         
     }
 
-    npcs[JEFF].movingFlag = npcs[JEFF].behaviorMode;
+    npcs[JEFF].animationMode = npcs[JEFF].defaultAnimationMode;
     
 }
 
@@ -3976,8 +4018,8 @@ void setJeffLocation(void) {
 
 void setCliffLocation(void) {
 
-    npcs[CLIFF].wanderRadiusX = 0x40;
-    npcs[CLIFF].wanderRadiusZ = 0x40;
+    npcs[CLIFF].wanderRadiusX = 64;
+    npcs[CLIFF].wanderRadiusZ = 64;
     npcs[CLIFF].animationIndex1 = 0;
     npcs[CLIFF].animationIndex2 = 8;
 
@@ -4000,7 +4042,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].levelIndex = RANCH;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].direction = SOUTHEAST;
-                            npcs[CLIFF].behaviorMode = 1;
+                            npcs[CLIFF].defaultAnimationMode = NPC_ANIM_WANDER;
                             npcs[CLIFF].startingCoordinates.x = 64.0f;
                             npcs[CLIFF].startingCoordinates.z = 128.0f;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4014,7 +4056,7 @@ void setCliffLocation(void) {
                         npcs[CLIFF].startingCoordinates.y = 0.0f;
                         npcs[CLIFF].startingCoordinates.z = -256.0f;
                         npcs[CLIFF].direction = SOUTHWEST;
-                        npcs[CLIFF].behaviorMode = 0;
+                        npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[CLIFF].flags |= NPC_ACTIVE;
                     
                     }
@@ -4032,7 +4074,7 @@ void setCliffLocation(void) {
                                 npcs[CLIFF].levelIndex = MOUNTAIN_2;
                                 npcs[CLIFF].startingCoordinates.y = 0.0f;
                                 npcs[CLIFF].direction = SOUTH;
-                                npcs[CLIFF].behaviorMode = 0;
+                                npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[CLIFF].startingCoordinates.x = -224.0f;
                                 npcs[CLIFF].startingCoordinates.z = 160.0f;
                                 npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4042,7 +4084,7 @@ void setCliffLocation(void) {
                                 npcs[CLIFF].levelIndex = CAVE;
                                 npcs[CLIFF].startingCoordinates.y = 0.0f;
                                 npcs[CLIFF].direction = SOUTHEAST;
-                                npcs[CLIFF].behaviorMode = 0;
+                                npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[CLIFF].startingCoordinates.x = -256.0f;
                                 npcs[CLIFF].startingCoordinates.z = -128.0f;
                                 npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4058,7 +4100,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].levelIndex = CARPENTER_HUT;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].direction = EAST;
-                            npcs[CLIFF].behaviorMode = 0;
+                            npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[CLIFF].startingCoordinates.x = -144.0f;
                             npcs[CLIFF].startingCoordinates.z = 80.0f;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4084,7 +4126,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].levelIndex = MOUNTAIN_2;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].direction = SOUTH;
-                            npcs[CLIFF].behaviorMode = 0;
+                            npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[CLIFF].startingCoordinates.x = -224.0f;
                             npcs[CLIFF].startingCoordinates.z = 160.0f;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4101,7 +4143,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].startingCoordinates.z = 0.0f;
                             npcs[CLIFF].direction = NORTHWEST;
-                            npcs[CLIFF].behaviorMode = 0;
+                            npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[CLIFF].startingCoordinates.x = 192.0f;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
                             
@@ -4117,7 +4159,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].startingCoordinates.z = 0.0f;
                             npcs[CLIFF].direction = SOUTHEAST;
-                            npcs[CLIFF].behaviorMode = 1;
+                            npcs[CLIFF].defaultAnimationMode = NPC_ANIM_WANDER;
                             npcs[CLIFF].startingCoordinates.x = -224.0f;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
                             
@@ -4132,7 +4174,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].levelIndex = RANCH;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].direction = SOUTHEAST;
-                            npcs[CLIFF].behaviorMode = 0;
+                            npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[CLIFF].startingCoordinates.x = -32.0f;
                             npcs[CLIFF].startingCoordinates.z = -96.0f;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4148,7 +4190,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].levelIndex = MOUNTAIN_2;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].direction = NORTHWEST;
-                            npcs[CLIFF].behaviorMode = 0;
+                            npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[CLIFF].startingCoordinates.x = 64.0f;
                             npcs[CLIFF].startingCoordinates.z = -160.0f;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4167,7 +4209,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].startingCoordinates.z = 0.0f;
                             npcs[CLIFF].direction = SOUTHWEST;
-                            npcs[CLIFF].behaviorMode = 1;
+                            npcs[CLIFF].defaultAnimationMode = NPC_ANIM_WANDER;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
                             
                         }
@@ -4183,7 +4225,7 @@ void setCliffLocation(void) {
                     npcs[CLIFF].levelIndex = CAVE;
                     npcs[CLIFF].startingCoordinates.y = 0.0f;
                     npcs[CLIFF].direction = SOUTHEAST;
-                    npcs[CLIFF].behaviorMode = 0;
+                    npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[CLIFF].startingCoordinates.x = -256.0f;
                     npcs[CLIFF].startingCoordinates.z = -128.0f;
                     npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4193,7 +4235,7 @@ void setCliffLocation(void) {
                     npcs[CLIFF].levelIndex = CARPENTER_HUT;
                     npcs[CLIFF].startingCoordinates.y = 0.0f;
                     npcs[CLIFF].direction = EAST;
-                    npcs[CLIFF].behaviorMode = 0;
+                    npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[CLIFF].startingCoordinates.x = -144.0f;
                     npcs[CLIFF].startingCoordinates.z = 80.0f;
                     npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4213,7 +4255,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].levelIndex = MOUNTAIN_1;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].direction = SOUTHEAST;
-                            npcs[CLIFF].behaviorMode = 0;
+                            npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[CLIFF].startingCoordinates.x = 96.0f;
                             npcs[CLIFF].startingCoordinates.z = -16.0f;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4234,7 +4276,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].levelIndex = TAVERN;
                             npcs[CLIFF].startingCoordinates.y = 0.0f;
                             npcs[CLIFF].direction = NORTHEAST;
-                            npcs[CLIFF].behaviorMode = 0;
+                            npcs[CLIFF].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[CLIFF].startingCoordinates.x = 80.0f;
                             npcs[CLIFF].startingCoordinates.z = -64.0f;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
@@ -4251,7 +4293,7 @@ void setCliffLocation(void) {
             
         }
         
-         npcs[CLIFF].movingFlag = npcs[CLIFF].behaviorMode;
+         npcs[CLIFF].animationMode = npcs[CLIFF].defaultAnimationMode;
         
     } 
     
@@ -4261,8 +4303,8 @@ void setCliffLocation(void) {
 
 void setKaiLocation(void) {
 
-    npcs[KAI].wanderRadiusX = 0x40;
-    npcs[KAI].wanderRadiusZ = 0x40;
+    npcs[KAI].wanderRadiusX = 64;
+    npcs[KAI].wanderRadiusZ = 64;
     npcs[KAI].animationIndex1 = 0;
     npcs[KAI].animationIndex2 = 8;
 
@@ -4281,7 +4323,7 @@ void setKaiLocation(void) {
                         npcs[KAI].startingCoordinates.y = 0.0f;
                         npcs[KAI].startingCoordinates.z = -64.0f;
                         npcs[KAI].direction = SOUTHWEST;
-                        npcs[KAI].behaviorMode = 1;
+                        npcs[KAI].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[KAI].flags |= NPC_ACTIVE;
 
                     }
@@ -4293,7 +4335,7 @@ void setKaiLocation(void) {
                         npcs[KAI].levelIndex = VINEYARD_CELLAR_BASEMENT;
                         npcs[KAI].startingCoordinates.y = 0;
                         npcs[KAI].direction = SOUTHWEST;
-                        npcs[KAI].behaviorMode = 1;
+                        npcs[KAI].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[KAI].startingCoordinates.x = -32.0f;
                         npcs[KAI].startingCoordinates.z = -64.0f;
                         npcs[KAI].flags |= NPC_ACTIVE;
@@ -4307,7 +4349,7 @@ void setKaiLocation(void) {
                     npcs[KAI].levelIndex = BEACH;
                     npcs[KAI].startingCoordinates.y = 0;
                     npcs[KAI].direction = SOUTHEAST;
-                    npcs[KAI].behaviorMode = 0;
+                    npcs[KAI].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[KAI].startingCoordinates.x = -224.0f;
                     npcs[KAI].startingCoordinates.z = -32.0f;
                     npcs[KAI].flags |= NPC_ACTIVE;
@@ -4321,7 +4363,7 @@ void setKaiLocation(void) {
                     npcs[KAI].startingCoordinates.y = 0.0f;
                     npcs[KAI].startingCoordinates.z = 0.0f;
                     npcs[KAI].direction = SOUTHWEST;
-                    npcs[KAI].behaviorMode = 1;
+                    npcs[KAI].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[KAI].flags |= NPC_ACTIVE;
                     
                 }
@@ -4332,7 +4374,7 @@ void setKaiLocation(void) {
                     npcs[KAI].levelIndex = VINEYARD_CELLAR;
                     npcs[KAI].startingCoordinates.y = 0.0f;
                     npcs[KAI].direction = SOUTHEAST;
-                    npcs[KAI].behaviorMode = 0;
+                    npcs[KAI].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[KAI].startingCoordinates.x = -64.0f;
                     npcs[KAI].startingCoordinates.z = -64.0f;
                     npcs[KAI].flags |= NPC_ACTIVE;
@@ -4354,7 +4396,7 @@ void setKaiLocation(void) {
                         npcs[KAI].startingCoordinates.y = 0;
                         npcs[KAI].startingCoordinates.z = -64.0f;
                         npcs[KAI].direction = 0;
-                        npcs[KAI].behaviorMode = 1;
+                        npcs[KAI].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[KAI].flags |= NPC_ACTIVE;
                         
                     }
@@ -4366,7 +4408,7 @@ void setKaiLocation(void) {
                         npcs[KAI].levelIndex = VINEYARD_CELLAR_BASEMENT;
                         npcs[KAI].startingCoordinates.y = 0;
                         npcs[KAI].direction = SOUTHWEST;
-                        npcs[KAI].behaviorMode = 1;
+                        npcs[KAI].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[KAI].startingCoordinates.x = -32.0f;
                         npcs[KAI].startingCoordinates.z = -64.0f;
                         npcs[KAI].flags |= NPC_ACTIVE;
@@ -4382,7 +4424,7 @@ void setKaiLocation(void) {
                     npcs[KAI].levelIndex = VINEYARD_CELLAR;
                     npcs[KAI].startingCoordinates.y = 0;
                     npcs[KAI].direction = SOUTHEAST;
-                    npcs[KAI].behaviorMode = 0;
+                    npcs[KAI].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[KAI].startingCoordinates.x = -64.0f;
                     npcs[KAI].startingCoordinates.z = -64.0f;
                     npcs[KAI].flags |= NPC_ACTIVE;
@@ -4396,7 +4438,7 @@ void setKaiLocation(void) {
                     npcs[KAI].levelIndex = TAVERN;
                     npcs[KAI].startingCoordinates.y = 0.0f;
                     npcs[KAI].direction = NORTHEAST;
-                    npcs[KAI].behaviorMode = 0;
+                    npcs[KAI].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[KAI].startingCoordinates.x = -144.0f;
                     npcs[KAI].startingCoordinates.z = 96.0f;
                     npcs[KAI].flags |= NPC_ACTIVE;
@@ -4407,7 +4449,7 @@ void setKaiLocation(void) {
             
         }
         
-        npcs[KAI].movingFlag = npcs[KAI].behaviorMode;
+        npcs[KAI].animationMode = npcs[KAI].defaultAnimationMode;
         
     }
     
@@ -4417,8 +4459,8 @@ void setKaiLocation(void) {
 
 void setMayorLocation(void) {
 
-    npcs[MAYOR].wanderRadiusX = 0x40;
-    npcs[MAYOR].wanderRadiusZ = 0x40;
+    npcs[MAYOR].wanderRadiusX = 64;
+    npcs[MAYOR].wanderRadiusZ = 64;
     npcs[MAYOR].animationIndex1 = 0;
     npcs[MAYOR].animationIndex2 = 8;
 
@@ -4432,7 +4474,7 @@ void setMayorLocation(void) {
                     npcs[MAYOR].levelIndex = CHURCH;
                     npcs[MAYOR].startingCoordinates.y = 0;
                     npcs[MAYOR].direction = NORTHEAST;
-                    npcs[MAYOR].behaviorMode = 0;
+                    npcs[MAYOR].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[MAYOR].startingCoordinates.x = -80.0f;
                     npcs[MAYOR].startingCoordinates.z = -32.0f;
                     npcs[MAYOR].flags |= NPC_ACTIVE;
@@ -4452,7 +4494,7 @@ void setMayorLocation(void) {
                         npcs[MAYOR].levelIndex = VILLAGE_2;
                         npcs[MAYOR].startingCoordinates.y = 0;
                         npcs[MAYOR].direction = SOUTHWEST;
-                        npcs[MAYOR].behaviorMode = 1;
+                        npcs[MAYOR].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[MAYOR].startingCoordinates.x = -224.0f;
                         npcs[MAYOR].startingCoordinates.z = 32.0f;
                         npcs[MAYOR].flags |= NPC_ACTIVE;
@@ -4464,7 +4506,7 @@ void setMayorLocation(void) {
                         npcs[MAYOR].levelIndex = VILLAGE_1;
                         npcs[MAYOR].startingCoordinates.y = 0;
                         npcs[MAYOR].direction = SOUTHEAST;
-                        npcs[MAYOR].behaviorMode = 1;
+                        npcs[MAYOR].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[MAYOR].startingCoordinates.x = -128.0f;
                         npcs[MAYOR].startingCoordinates.z = -64.0f;
                         npcs[MAYOR].flags |= NPC_ACTIVE;
@@ -4481,7 +4523,7 @@ void setMayorLocation(void) {
                         npcs[MAYOR].levelIndex = VILLAGE_1;
                         npcs[MAYOR].startingCoordinates.y = 0;
                         npcs[MAYOR].direction = SOUTHWEST;
-                        npcs[MAYOR].behaviorMode = 1;
+                        npcs[MAYOR].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[MAYOR].startingCoordinates.x = -224.0f;
                         npcs[MAYOR].startingCoordinates.z = 288.0f;
                         npcs[MAYOR].flags |= NPC_ACTIVE;
@@ -4492,7 +4534,7 @@ void setMayorLocation(void) {
                         npcs[MAYOR].levelIndex = LIBRARY;
                         npcs[MAYOR].startingCoordinates.y = 0;
                         npcs[MAYOR].direction = SOUTHWEST;
-                        npcs[MAYOR].behaviorMode = 0;
+                        npcs[MAYOR].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[MAYOR].startingCoordinates.x = 64.0f;
                         npcs[MAYOR].startingCoordinates.z = 64.0f;
                         npcs[MAYOR].flags |= NPC_ACTIVE;
@@ -4508,13 +4550,13 @@ void setMayorLocation(void) {
         npcs[MAYOR].levelIndex = MAYOR_HOUSE;
         npcs[MAYOR].startingCoordinates.y = 0;
         npcs[MAYOR].direction = SOUTHWEST;
-        npcs[MAYOR].behaviorMode = 0;
+        npcs[MAYOR].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[MAYOR].startingCoordinates.x = 16.0f;
         npcs[MAYOR].startingCoordinates.z = -32.0f;
         npcs[MAYOR].flags |= NPC_ACTIVE;
     }
 
-    npcs[MAYOR].movingFlag = npcs[MAYOR].behaviorMode;
+    npcs[MAYOR].animationMode = npcs[MAYOR].defaultAnimationMode;
     
 }
 
@@ -4522,8 +4564,8 @@ void setMayorLocation(void) {
 
 void setMayorWifeLocation(void) {
 
-    npcs[MAYOR_WIFE].wanderRadiusX = 0x40;
-    npcs[MAYOR_WIFE].wanderRadiusZ = 0x40;
+    npcs[MAYOR_WIFE].wanderRadiusX = 64;
+    npcs[MAYOR_WIFE].wanderRadiusZ = 64;
     npcs[MAYOR_WIFE].animationIndex1 = 0;
     npcs[MAYOR_WIFE].animationIndex2 = 8;
 
@@ -4541,7 +4583,7 @@ void setMayorWifeLocation(void) {
                     npcs[MAYOR_WIFE].levelIndex = LIBRARY;
                     npcs[MAYOR_WIFE].startingCoordinates.y = 0;
                     npcs[MAYOR_WIFE].direction = 0;
-                    npcs[MAYOR_WIFE].behaviorMode = 0;
+                    npcs[MAYOR_WIFE].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[MAYOR_WIFE].startingCoordinates.x = 48.0f;
                     npcs[MAYOR_WIFE].startingCoordinates.z = -96.0f;
                     npcs[MAYOR_WIFE].flags |= NPC_ACTIVE;
@@ -4562,7 +4604,7 @@ void setMayorWifeLocation(void) {
                     npcs[MAYOR_WIFE].levelIndex = CHURCH;
                     npcs[MAYOR_WIFE].startingCoordinates.y = 0;
                     npcs[MAYOR_WIFE].direction = NORTHEAST;
-                    npcs[MAYOR_WIFE].behaviorMode = 0;
+                    npcs[MAYOR_WIFE].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[MAYOR_WIFE].startingCoordinates.x = -112.0f;
                     npcs[MAYOR_WIFE].startingCoordinates.z = -32.0f;
                     npcs[MAYOR_WIFE].flags |= NPC_ACTIVE;
@@ -4579,7 +4621,7 @@ void setMayorWifeLocation(void) {
                     npcs[MAYOR_WIFE].levelIndex = MAYOR_HOUSE;
                     npcs[MAYOR_WIFE].startingCoordinates.y = 0;
                     npcs[MAYOR_WIFE].direction = SOUTHWEST;
-                    npcs[MAYOR_WIFE].behaviorMode = 1;
+                    npcs[MAYOR_WIFE].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[MAYOR_WIFE].startingCoordinates.x = -64.0f;
                     npcs[MAYOR_WIFE].startingCoordinates.z = -64.0f;
                     npcs[MAYOR_WIFE].flags |= NPC_ACTIVE;
@@ -4593,7 +4635,7 @@ void setMayorWifeLocation(void) {
                     npcs[MAYOR_WIFE].levelIndex = BAKERY;
                     npcs[MAYOR_WIFE].startingCoordinates.y = 0;
                     npcs[MAYOR_WIFE].direction = SOUTHWEST;
-                    npcs[MAYOR_WIFE].behaviorMode = 0;
+                    npcs[MAYOR_WIFE].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[MAYOR_WIFE].startingCoordinates.x = 64.0f;
                     npcs[MAYOR_WIFE].startingCoordinates.z = -32.0f;
                     npcs[MAYOR_WIFE].flags |= NPC_ACTIVE;
@@ -4607,7 +4649,7 @@ void setMayorWifeLocation(void) {
                     npcs[MAYOR_WIFE].levelIndex = MAYOR_HOUSE;
                     npcs[MAYOR_WIFE].startingCoordinates.y = 0;
                     npcs[MAYOR_WIFE].direction = SOUTHWEST;
-                    npcs[MAYOR_WIFE].behaviorMode = 1;
+                    npcs[MAYOR_WIFE].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[MAYOR_WIFE].startingCoordinates.x = -64.0f;
                     npcs[MAYOR_WIFE].startingCoordinates.z = -64.0f;
                     npcs[MAYOR_WIFE].flags |= NPC_ACTIVE;
@@ -4621,13 +4663,13 @@ void setMayorWifeLocation(void) {
         npcs[MAYOR_WIFE].levelIndex = MAYOR_HOUSE;
         npcs[MAYOR_WIFE].startingCoordinates.y = 0;
         npcs[MAYOR_WIFE].direction = NORTHWEST;
-        npcs[MAYOR_WIFE].behaviorMode = 0;
+        npcs[MAYOR_WIFE].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[MAYOR_WIFE].startingCoordinates.x = 64.0f;
         npcs[MAYOR_WIFE].startingCoordinates.z = 16.0f;
         npcs[MAYOR_WIFE].flags |= NPC_ACTIVE;
     }
     
-    npcs[MAYOR_WIFE].movingFlag = npcs[MAYOR_WIFE].behaviorMode;
+    npcs[MAYOR_WIFE].animationMode = npcs[MAYOR_WIFE].defaultAnimationMode;
     
 }
 
@@ -4635,8 +4677,8 @@ void setMayorWifeLocation(void) {
 
 void setLilliaLocation(void) {
 
-    npcs[LILLIA].wanderRadiusX = 0x40;
-    npcs[LILLIA].wanderRadiusZ = 0x40;
+    npcs[LILLIA].wanderRadiusX = 64;
+    npcs[LILLIA].wanderRadiusZ = 64;
     npcs[LILLIA].animationIndex2 = 8;
     npcs[LILLIA].animationIndex1 = 0;
 
@@ -4650,7 +4692,7 @@ void setLilliaLocation(void) {
                 npcs[LILLIA].levelIndex = SQUARE;
                 npcs[LILLIA].startingCoordinates.y = 0;
                 npcs[LILLIA].direction = NORTHEAST;
-                npcs[LILLIA].behaviorMode = 0;
+                npcs[LILLIA].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[LILLIA].startingCoordinates.x = -144.0f;
                 npcs[LILLIA].startingCoordinates.z = 256.0f;
                 npcs[LILLIA].flags |= NPC_ACTIVE;
@@ -4666,7 +4708,7 @@ DEFAULT:
                 npcs[LILLIA].levelIndex = FLOWER_SHOP;
                 npcs[LILLIA].startingCoordinates.y = 0;
                 npcs[LILLIA].direction = SOUTHWEST;
-                npcs[LILLIA].behaviorMode = 0;
+                npcs[LILLIA].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[LILLIA].startingCoordinates.x = 64.0f;
                 npcs[LILLIA].startingCoordinates.z = -128.0f;
                 npcs[LILLIA].flags |= NPC_ACTIVE;
@@ -4676,7 +4718,7 @@ DEFAULT:
 
     }
     
-    npcs[LILLIA].movingFlag = npcs[LILLIA].behaviorMode;
+    npcs[LILLIA].animationMode = npcs[LILLIA].defaultAnimationMode;
 
 }
 
@@ -4684,8 +4726,8 @@ DEFAULT:
 
 void setBasilLocation(void) {
 
-    npcs[BASIL].wanderRadiusX = 0x40;
-    npcs[BASIL].wanderRadiusZ = 0x40;
+    npcs[BASIL].wanderRadiusX = 64;
+    npcs[BASIL].wanderRadiusZ = 64;
     npcs[BASIL].animationIndex1 = 0;
     npcs[BASIL].animationIndex2 = 8;
 
@@ -4699,7 +4741,7 @@ void setBasilLocation(void) {
                 npcs[BASIL].levelIndex = SQUARE;
                 npcs[BASIL].startingCoordinates.y = 0;
                 npcs[BASIL].direction = NORTHEAST;
-                npcs[BASIL].behaviorMode = 0;
+                npcs[BASIL].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[BASIL].startingCoordinates.x = -176.0f;
                 npcs[BASIL].startingCoordinates.z = 256.0f;
                 npcs[BASIL].flags |= NPC_ACTIVE;
@@ -4710,7 +4752,7 @@ void setBasilLocation(void) {
                 npcs[BASIL].levelIndex = VILLAGE_1;
                 npcs[BASIL].startingCoordinates.y = 0;
                 npcs[BASIL].direction = SOUTHEAST;
-                npcs[BASIL].behaviorMode = 0;
+                npcs[BASIL].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[BASIL].startingCoordinates.x = 128.0f;
                 npcs[BASIL].startingCoordinates.z = -416.0f;
                 npcs[BASIL].flags |= NPC_ACTIVE;
@@ -4722,7 +4764,7 @@ void setBasilLocation(void) {
                 npcs[BASIL].levelIndex = MOUNTAIN_1;
                 npcs[BASIL].startingCoordinates.y = 0;
                 npcs[BASIL].direction = NORTHEAST;
-                npcs[BASIL].behaviorMode = 1;
+                npcs[BASIL].defaultAnimationMode = NPC_ANIM_WANDER;
                 npcs[BASIL].startingCoordinates.x = 192.0f;
                 npcs[BASIL].startingCoordinates.z = -64.0f;
                 npcs[BASIL].flags |= NPC_ACTIVE;
@@ -4736,7 +4778,7 @@ NOT_SUNNY:
                 npcs[BASIL].levelIndex = FLOWER_SHOP;
                 npcs[BASIL].startingCoordinates.y = 0;
                 npcs[BASIL].direction = SOUTHWEST;
-                npcs[BASIL].behaviorMode = 0;
+                npcs[BASIL].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[BASIL].startingCoordinates.x = -48.0f;
                 npcs[BASIL].startingCoordinates.z = -64.0f;
                 npcs[BASIL].flags |= NPC_ACTIVE;
@@ -4750,14 +4792,14 @@ NOT_SUNNY:
         npcs[BASIL].levelIndex = 0x3B;
         npcs[BASIL].startingCoordinates.y = 0;
         npcs[BASIL].direction = SOUTHEAST;
-        npcs[BASIL].behaviorMode = 0;
+        npcs[BASIL].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[BASIL].startingCoordinates.x = 32.0f;
         npcs[BASIL].startingCoordinates.z = 48.0f;
         npcs[BASIL].flags |= NPC_ACTIVE;
     }
 
 FUNC_END:
-    npcs[BASIL].movingFlag = npcs[BASIL].behaviorMode;
+    npcs[BASIL].animationMode = npcs[BASIL].defaultAnimationMode;
     
 }
 
@@ -4765,8 +4807,8 @@ FUNC_END:
 
 void setEllenLocation(void) {
 
-    npcs[ELLEN].wanderRadiusX = 0x40;
-    npcs[ELLEN].wanderRadiusZ = 0x40;
+    npcs[ELLEN].wanderRadiusX = 64;
+    npcs[ELLEN].wanderRadiusZ = 64;
     npcs[ELLEN].animationIndex1 = 0;
     npcs[ELLEN].animationIndex2 = 8;
     
@@ -4777,7 +4819,7 @@ void setEllenLocation(void) {
                 npcs[ELLEN].levelIndex = VILLAGE_1;
                 npcs[ELLEN].startingCoordinates.y = 0;
                 npcs[ELLEN].direction = SOUTHWEST;
-                npcs[ELLEN].behaviorMode = 0;
+                npcs[ELLEN].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[ELLEN].startingCoordinates.x = 320.0f;
                 npcs[ELLEN].startingCoordinates.z = 128.0f;
                 npcs[ELLEN].flags |= NPC_ACTIVE;
@@ -4789,7 +4831,7 @@ void setEllenLocation(void) {
                 npcs[ELLEN].levelIndex = BAKERY;
                 npcs[ELLEN].startingCoordinates.y = 0;
                 npcs[ELLEN].direction = SOUTHWEST;
-                npcs[ELLEN].behaviorMode = 0;
+                npcs[ELLEN].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[ELLEN].startingCoordinates.x = -128.0f;
                 npcs[ELLEN].startingCoordinates.z = -32.0f;
                 npcs[ELLEN].flags |= NPC_ACTIVE;
@@ -4800,7 +4842,7 @@ void setEllenLocation(void) {
 
     }
     
-    npcs[ELLEN].movingFlag = npcs[ELLEN].behaviorMode;
+    npcs[ELLEN].animationMode = npcs[ELLEN].defaultAnimationMode;
 
 }
 
@@ -4811,8 +4853,8 @@ void setDougLocation(void) {
     int temp = gDayOfWeek;
     int temp2;
 
-    npcs[DOUG].wanderRadiusX = 0x40;
-    npcs[DOUG].wanderRadiusZ = 0x40;
+    npcs[DOUG].wanderRadiusX = 64;
+    npcs[DOUG].wanderRadiusZ = 64;
     npcs[DOUG].animationIndex1 = 0;
     npcs[DOUG].animationIndex2 = 8;
 
@@ -4821,7 +4863,7 @@ void setDougLocation(void) {
         npcs[DOUG].levelIndex = RANCH_STORE;
         npcs[DOUG].startingCoordinates.y = 0;
         npcs[DOUG].direction = SOUTHEAST;
-        npcs[DOUG].behaviorMode = 0;
+        npcs[DOUG].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[DOUG].startingCoordinates.x = -96.0f;
         npcs[DOUG].startingCoordinates.z = 64.0f;
         npcs[DOUG].flags |= NPC_ACTIVE;
@@ -4831,13 +4873,13 @@ void setDougLocation(void) {
         npcs[DOUG].levelIndex = TAVERN;
         npcs[DOUG].startingCoordinates.y = 0;
         npcs[DOUG].direction = NORTHWEST;
-        npcs[DOUG].behaviorMode = 0;
+        npcs[DOUG].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[DOUG].startingCoordinates.x = -96.0f;
         npcs[DOUG].startingCoordinates.z = 48.0f;
         npcs[DOUG].flags |= NPC_ACTIVE;
     }
 
-    npcs[DOUG].movingFlag = npcs[DOUG].behaviorMode;
+    npcs[DOUG].animationMode = npcs[DOUG].defaultAnimationMode;
     
 }
 
@@ -4845,8 +4887,8 @@ void setDougLocation(void) {
 
 void setGotzLocation(void) {
 
-    npcs[GOTZ].wanderRadiusX = 0x40;
-    npcs[GOTZ].wanderRadiusZ = 0x40;
+    npcs[GOTZ].wanderRadiusX = 64;
+    npcs[GOTZ].wanderRadiusZ = 64;
     npcs[GOTZ].animationIndex1 = 0;
     npcs[GOTZ].animationIndex2 = 8;
 
@@ -4863,7 +4905,7 @@ void setGotzLocation(void) {
                     npcs[GOTZ].levelIndex = VINEYARD;
                     npcs[GOTZ].startingCoordinates.y = 0.0f;
                     npcs[GOTZ].direction = SOUTHWEST;
-                    npcs[GOTZ].behaviorMode = 0;
+                    npcs[GOTZ].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[GOTZ].startingCoordinates.x = 128.0f;
                     npcs[GOTZ].startingCoordinates.z = -128.0f;
                     npcs[GOTZ].flags |= NPC_ACTIVE;
@@ -4877,7 +4919,7 @@ void setGotzLocation(void) {
                         npcs[GOTZ].levelIndex = VINEYARD;
                         npcs[GOTZ].startingCoordinates.y = 0.0f;
                         npcs[GOTZ].direction = SOUTHWEST;
-                        npcs[GOTZ].behaviorMode = 3;
+                        npcs[GOTZ].defaultAnimationMode = NPC_ANIM_CUSTOM;
                         npcs[GOTZ].startingCoordinates.x = -192.0f;
                         npcs[GOTZ].startingCoordinates.z = -64.0f;
                         npcs[GOTZ].flags |= NPC_ACTIVE;
@@ -4895,7 +4937,7 @@ void setGotzLocation(void) {
                     npcs[GOTZ].levelIndex = VINEYARD_HOUSE;
                     npcs[GOTZ].startingCoordinates.y = 0.0f;
                     npcs[GOTZ].direction = SOUTH;
-                    npcs[GOTZ].behaviorMode = 0;
+                    npcs[GOTZ].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[GOTZ].startingCoordinates.x = -160.0f;
                     npcs[GOTZ].startingCoordinates.z = -32.0f;
                     npcs[GOTZ].flags |= NPC_ACTIVE;
@@ -4913,7 +4955,7 @@ void setGotzLocation(void) {
             npcs[GOTZ].levelIndex = VINEYARD_HOUSE;
             npcs[GOTZ].startingCoordinates.y = 0.0f;
             npcs[GOTZ].direction = SOUTH;
-            npcs[GOTZ].behaviorMode = 0;
+            npcs[GOTZ].defaultAnimationMode = NPC_ANIM_IDLE;
             npcs[GOTZ].startingCoordinates.x = -160.0f;
             npcs[GOTZ].startingCoordinates.z = -32.0f;
             npcs[GOTZ].flags |= NPC_ACTIVE;
@@ -4929,7 +4971,7 @@ void setGotzLocation(void) {
             npcs[GOTZ].levelIndex = TAVERN;
             npcs[GOTZ].startingCoordinates.y = 0.0f;
             npcs[GOTZ].direction = SOUTHWEST;
-            npcs[GOTZ].behaviorMode = 0;
+            npcs[GOTZ].defaultAnimationMode = NPC_ANIM_IDLE;
             npcs[GOTZ].startingCoordinates.x = 80.0f;
             npcs[GOTZ].startingCoordinates.z = -160.0f;
             npcs[GOTZ].flags |= NPC_ACTIVE;
@@ -4939,7 +4981,7 @@ void setGotzLocation(void) {
             
     }
         
-    npcs[GOTZ].movingFlag = npcs[GOTZ].behaviorMode;
+    npcs[GOTZ].animationMode = npcs[GOTZ].defaultAnimationMode;
     
 }
 
@@ -4947,8 +4989,8 @@ void setGotzLocation(void) {
 
 void setSashaLocation(void) {
 
-    npcs[SASHA].wanderRadiusX = 0x40;
-    npcs[SASHA].wanderRadiusZ = 0x40;
+    npcs[SASHA].wanderRadiusX = 64;
+    npcs[SASHA].wanderRadiusZ = 64;
     npcs[SASHA].animationIndex1 = 0;
     npcs[SASHA].animationIndex2 = 8;
 
@@ -4957,7 +4999,7 @@ void setSashaLocation(void) {
         npcs[SASHA].levelIndex = VINEYARD_HOUSE;
         npcs[SASHA].startingCoordinates.y = 0.0f;
         npcs[SASHA].direction = SOUTHWEST;
-        npcs[SASHA].behaviorMode = 0;
+        npcs[SASHA].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[SASHA].startingCoordinates.x = -128.0f;
         npcs[SASHA].startingCoordinates.z = -96.0f;
         npcs[SASHA].flags |= NPC_ACTIVE;
@@ -4971,7 +5013,7 @@ void setSashaLocation(void) {
             npcs[SASHA].levelIndex = VINEYARD;
             npcs[SASHA].startingCoordinates.y = 0.0f;
             npcs[SASHA].direction = SOUTHWEST;
-            npcs[SASHA].behaviorMode = 3;
+            npcs[SASHA].defaultAnimationMode = NPC_ANIM_CUSTOM;
             npcs[SASHA].startingCoordinates.x = -192.0f;
             npcs[SASHA].startingCoordinates.z = 64.0f;
             npcs[SASHA].flags |= NPC_ACTIVE;
@@ -4980,7 +5022,7 @@ void setSashaLocation(void) {
         
     }
     
-    npcs[SASHA].movingFlag = npcs[SASHA].behaviorMode;
+    npcs[SASHA].animationMode = npcs[SASHA].defaultAnimationMode;
     
 }
 
@@ -4988,9 +5030,9 @@ void setSashaLocation(void) {
 
 void setPotionShopDealerLocation(void) {
 
-    npcs[POTION_SHOP_DEALER].wanderRadiusX = 0x40;
+    npcs[POTION_SHOP_DEALER].wanderRadiusX = 64;
     npcs[POTION_SHOP_DEALER].animationIndex2 = 8;
-    npcs[POTION_SHOP_DEALER].wanderRadiusZ = 0x40;
+    npcs[POTION_SHOP_DEALER].wanderRadiusZ = 64;
     npcs[POTION_SHOP_DEALER].animationIndex1 = 0;
 
     if (gWeather == SUNNY) {
@@ -5008,7 +5050,7 @@ void setPotionShopDealerLocation(void) {
                     npcs[POTION_SHOP_DEALER].levelIndex = POTION_SHOP;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.y = 0.0f;
                     npcs[POTION_SHOP_DEALER].direction = SOUTHEAST;
-                    npcs[POTION_SHOP_DEALER].behaviorMode = 0;
+                    npcs[POTION_SHOP_DEALER].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.x = -96.0f;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.z = -16.0f;
                     npcs[POTION_SHOP_DEALER].flags |= NPC_ACTIVE;
@@ -5027,7 +5069,7 @@ void setPotionShopDealerLocation(void) {
                         npcs[POTION_SHOP_DEALER].levelIndex = MOUNTAIN_2;
                         npcs[POTION_SHOP_DEALER].startingCoordinates.y = 0.0f;
                         npcs[POTION_SHOP_DEALER].direction = SOUTH;
-                        npcs[POTION_SHOP_DEALER].behaviorMode = 1;
+                        npcs[POTION_SHOP_DEALER].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[POTION_SHOP_DEALER].startingCoordinates.x = -112.0f;
                         npcs[POTION_SHOP_DEALER].startingCoordinates.z = 192.0f;
                         npcs[POTION_SHOP_DEALER].flags |= NPC_ACTIVE;
@@ -5039,7 +5081,7 @@ void setPotionShopDealerLocation(void) {
                     npcs[POTION_SHOP_DEALER].levelIndex = CAVE;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.y = 0.0f;
                     npcs[POTION_SHOP_DEALER].direction = SOUTH;
-                    npcs[POTION_SHOP_DEALER].behaviorMode = 0;
+                    npcs[POTION_SHOP_DEALER].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.x = -288.0f;
                     npcs[POTION_SHOP_DEALER].startingCoordinates.z = -224.0f;
                     npcs[POTION_SHOP_DEALER].flags |= NPC_ACTIVE;
@@ -5055,14 +5097,14 @@ void setPotionShopDealerLocation(void) {
         npcs[POTION_SHOP_DEALER].levelIndex = POTION_SHOP;
         npcs[POTION_SHOP_DEALER].startingCoordinates.y = 0.0f;
         npcs[POTION_SHOP_DEALER].direction = SOUTHEAST;
-        npcs[POTION_SHOP_DEALER].behaviorMode = 0;
+        npcs[POTION_SHOP_DEALER].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[POTION_SHOP_DEALER].startingCoordinates.x = -96.0f;
         npcs[POTION_SHOP_DEALER].startingCoordinates.z = -16.0f;
         npcs[POTION_SHOP_DEALER].flags |= NPC_ACTIVE;
             
     }
         
-    npcs[POTION_SHOP_DEALER].movingFlag = npcs[POTION_SHOP_DEALER].behaviorMode;
+    npcs[POTION_SHOP_DEALER].animationMode = npcs[POTION_SHOP_DEALER].defaultAnimationMode;
     
 }
 
@@ -5099,7 +5141,7 @@ void setKentLocation(void) {
                                     npcs[KENT].levelIndex = MOUNTAIN_2;
                                     npcs[KENT].startingCoordinates.y = 0.0f;
                                     npcs[KENT].direction = SOUTHWEST;
-                                    npcs[KENT].behaviorMode = 1;
+                                    npcs[KENT].defaultAnimationMode = NPC_ANIM_WANDER;
                                     npcs[KENT].startingCoordinates.x = -160.0f;
                                     npcs[KENT].startingCoordinates.z = -160.0f;
                                     npcs[KENT].flags |= NPC_ACTIVE;
@@ -5118,7 +5160,7 @@ void setKentLocation(void) {
                                     npcs[KENT].startingCoordinates.y = 0.0f;
                                     npcs[KENT].startingCoordinates.z = 0.0f;
                                     npcs[KENT].direction = SOUTHEAST;
-                                    npcs[KENT].behaviorMode = 1;
+                                    npcs[KENT].defaultAnimationMode = NPC_ANIM_WANDER;
                                     npcs[KENT].startingCoordinates.x = -32.0f;
                                     npcs[KENT].flags |= NPC_ACTIVE;
                                     
@@ -5134,7 +5176,7 @@ void setKentLocation(void) {
                                     npcs[KENT].startingCoordinates.y = 0.0f;
                                     npcs[KENT].startingCoordinates.z = 0.0f;
                                     npcs[KENT].direction = SOUTH;
-                                    npcs[KENT].behaviorMode = 0;
+                                    npcs[KENT].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[KENT].startingCoordinates.x = 288.0f;
                                     npcs[KENT].flags |= NPC_ACTIVE;
                                     
@@ -5155,7 +5197,7 @@ void setKentLocation(void) {
                                 npcs[KENT].levelIndex = BEACH;
                                 npcs[KENT].startingCoordinates.y = 0.0f;
                                 npcs[KENT].direction = SOUTHEAST;
-                                npcs[KENT].behaviorMode = 0;
+                                npcs[KENT].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[KENT].startingCoordinates.x = -224.0f;
                                 npcs[KENT].startingCoordinates.z = -96.0f;
                                 npcs[KENT].flags |= NPC_ACTIVE;
@@ -5169,7 +5211,7 @@ void setKentLocation(void) {
                                 npcs[KENT].levelIndex = MOUNTAIN_2;
                                 npcs[KENT].startingCoordinates.y = 0.0f;
                                 npcs[KENT].direction = SOUTHWEST;
-                                npcs[KENT].behaviorMode = 1;
+                                npcs[KENT].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[KENT].startingCoordinates.x = -128.0f;
                                 npcs[KENT].startingCoordinates.z = -160.0f;
                                 npcs[KENT].flags |= NPC_ACTIVE;
@@ -5191,7 +5233,7 @@ void setKentLocation(void) {
                                 npcs[KENT].levelIndex = POTION_SHOP_BEDROOM;
                                 npcs[KENT].startingCoordinates.y = 0.0f;
                                 npcs[KENT].direction = SOUTHWEST;
-                                npcs[KENT].behaviorMode = 0;
+                                npcs[KENT].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[KENT].startingCoordinates.x = 32.0f;
                                 npcs[KENT].startingCoordinates.z = -32.0f;
                                 npcs[KENT].flags |= NPC_ACTIVE;
@@ -5205,7 +5247,7 @@ void setKentLocation(void) {
                                 npcs[KENT].levelIndex = MOUNTAIN_2;
                                 npcs[KENT].startingCoordinates.y = 0.0f;
                                 npcs[KENT].direction = SOUTHWEST;
-                                npcs[KENT].behaviorMode = 1;
+                                npcs[KENT].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[KENT].startingCoordinates.x = -128.0f;
                                 npcs[KENT].startingCoordinates.z = -160.0f;
                                 npcs[KENT].flags |= NPC_ACTIVE;
@@ -5233,7 +5275,7 @@ void setKentLocation(void) {
                     npcs[KENT].levelIndex = CHURCH;
                     npcs[KENT].startingCoordinates.y = 0.0f;
                     npcs[KENT].direction = 4;
-                    npcs[KENT].behaviorMode = 0;
+                    npcs[KENT].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[KENT].startingCoordinates.x = 48.0f;
                     npcs[KENT].startingCoordinates.z = -32.0f;
                     npcs[KENT].flags |= NPC_ACTIVE;
@@ -5246,7 +5288,7 @@ void setKentLocation(void) {
                     npcs[KENT].startingCoordinates.x = 0.0f;
                     npcs[KENT].startingCoordinates.y = 0.0f;
                     npcs[KENT].direction = NORTHWEST;
-                    npcs[KENT].behaviorMode = 1;
+                    npcs[KENT].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[KENT].startingCoordinates.z = 352.0f;
                     npcs[KENT].flags |= NPC_ACTIVE;
                              
@@ -5265,7 +5307,7 @@ void setKentLocation(void) {
                         npcs[KENT].startingCoordinates.y = 0.0f;
                         npcs[KENT].startingCoordinates.z = 0.0f;
                         npcs[KENT].direction = NORTHEAST;
-                        npcs[KENT].behaviorMode = 2;
+                        npcs[KENT].defaultAnimationMode = NPC_ANIM_SPECIAL;
                         npcs[KENT].flags |= NPC_ACTIVE;
                         
                     }
@@ -5277,7 +5319,7 @@ void setKentLocation(void) {
                         npcs[KENT].levelIndex = MOUNTAIN_1;
                         npcs[KENT].startingCoordinates.y = 0.0f;
                         npcs[KENT].direction = SOUTHEAST;
-                        npcs[KENT].behaviorMode = 1;
+                        npcs[KENT].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[KENT].startingCoordinates.x = 64.0f;
                         npcs[KENT].startingCoordinates.z = -96.0f;
                         npcs[KENT].flags |= NPC_ACTIVE;
@@ -5299,7 +5341,7 @@ void setKentLocation(void) {
             npcs[KENT].levelIndex = VILLAGE_2;
             npcs[KENT].startingCoordinates.y = 0.0f;
             npcs[KENT].direction = SOUTHWEST;
-            npcs[KENT].behaviorMode = 0;
+            npcs[KENT].defaultAnimationMode = NPC_ANIM_IDLE;
             npcs[KENT].startingCoordinates.x = 412.0f;
             npcs[KENT].startingCoordinates.z = -64.0f;
             npcs[KENT].flags |= NPC_ACTIVE;
@@ -5312,13 +5354,13 @@ void setKentLocation(void) {
         npcs[KENT].startingCoordinates.x = 0.0f;
         npcs[KENT].startingCoordinates.y = 0.0f;
         npcs[KENT].direction = NORTHWEST;
-        npcs[KENT].behaviorMode = 0;
+        npcs[KENT].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[KENT].startingCoordinates.z = -16.0f;
         npcs[KENT].flags |= NPC_ACTIVE;
             
     }
 
-    npcs[KENT].movingFlag = npcs[KENT].behaviorMode;
+    npcs[KENT].animationMode = npcs[KENT].defaultAnimationMode;
     
 }
 
@@ -5327,7 +5369,7 @@ void setKentLocation(void) {
 void setStuLocation(void) {
     
     // FIXME: seems fake
-    int temp = 0x40;
+    int temp = 64;
 
     npcs[STU].wanderRadiusX = temp;
     npcs[STU].wanderRadiusZ = temp;
@@ -5355,7 +5397,7 @@ void setStuLocation(void) {
                                     npcs[STU].levelIndex = MOUNTAIN_2;
                                     npcs[STU].startingCoordinates.y = 0.0f;
                                     npcs[STU].direction = SOUTHWEST;
-                                    npcs[STU].behaviorMode = 1;
+                                    npcs[STU].defaultAnimationMode = NPC_ANIM_WANDER;
                                     npcs[STU].startingCoordinates.x = -160.0f;
                                     npcs[STU].startingCoordinates.z = -160.0f;
                                     npcs[STU].flags |= NPC_ACTIVE;
@@ -5371,7 +5413,7 @@ void setStuLocation(void) {
                                     npcs[STU].levelIndex = LIBRARY;
                                     npcs[STU].startingCoordinates.y = 0.0f;
                                     npcs[STU].direction = SOUTHEAST;
-                                    npcs[STU].behaviorMode = 1;
+                                    npcs[STU].defaultAnimationMode = NPC_ANIM_WANDER;
                                     npcs[STU].startingCoordinates.x = -64.0f;
                                     npcs[STU].startingCoordinates.z = -64.0f;
                                     npcs[STU].flags |= NPC_ACTIVE;
@@ -5388,7 +5430,7 @@ void setStuLocation(void) {
                                     npcs[STU].startingCoordinates.y = 0.0f;
                                     npcs[STU].startingCoordinates.z = 0.0f;
                                     npcs[STU].direction = SOUTH;
-                                    npcs[STU].behaviorMode = 0;
+                                    npcs[STU].defaultAnimationMode = NPC_ANIM_IDLE;
                                     npcs[STU].startingCoordinates.x = 256.0f;
                                     npcs[STU].flags |= NPC_ACTIVE;
                                     
@@ -5409,7 +5451,7 @@ void setStuLocation(void) {
                                 npcs[STU].levelIndex = BEACH;
                                 npcs[STU].startingCoordinates.y = 0.0f;
                                 npcs[STU].direction = SOUTHEAST;
-                                npcs[STU].behaviorMode = 0;
+                                npcs[STU].defaultAnimationMode = NPC_ANIM_IDLE;
                                 npcs[STU].startingCoordinates.x = -224.0f;
                                 npcs[STU].startingCoordinates.z = -128.0f;
                                 npcs[STU].flags |= NPC_ACTIVE;
@@ -5423,7 +5465,7 @@ void setStuLocation(void) {
                                 npcs[STU].levelIndex = MOUNTAIN_2;
                                 npcs[STU].startingCoordinates.y = 0.0f;
                                 npcs[STU].direction = SOUTHWEST;
-                                npcs[STU].behaviorMode = 1;
+                                npcs[STU].defaultAnimationMode = NPC_ANIM_WANDER;
                                 npcs[STU].startingCoordinates.x = -160.0f;
                                 npcs[STU].startingCoordinates.z = -160.0f;
                                 npcs[STU].flags |= NPC_ACTIVE;
@@ -5442,7 +5484,7 @@ void setStuLocation(void) {
                             npcs[STU].startingCoordinates.x = 0.0f;
                             npcs[STU].startingCoordinates.y = 0.0f;
                             npcs[STU].direction = SOUTHWEST;
-                            npcs[STU].behaviorMode = 0;
+                            npcs[STU].defaultAnimationMode = NPC_ANIM_IDLE;
                             npcs[STU].startingCoordinates.z = -32.0f;
                             npcs[STU].flags |= NPC_ACTIVE;
                         
@@ -5465,7 +5507,7 @@ void setStuLocation(void) {
                     npcs[STU].levelIndex = CHURCH;
                     npcs[STU].startingCoordinates.y = 0.0f;
                     npcs[STU].direction = 4;
-                    npcs[STU].behaviorMode = 0;
+                    npcs[STU].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[STU].startingCoordinates.x = 80.0f;
                     npcs[STU].startingCoordinates.z = -32.0f;
                     npcs[STU].flags |= NPC_ACTIVE;
@@ -5477,7 +5519,7 @@ void setStuLocation(void) {
                     npcs[STU].levelIndex = VILLAGE_1;
                     npcs[STU].startingCoordinates.y = 0.0f;
                     npcs[STU].direction = NORTHWEST;
-                    npcs[STU].behaviorMode = 1;
+                    npcs[STU].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[STU].startingCoordinates.x = 32.0f;
                     npcs[STU].startingCoordinates.z = 352.0f;
                     npcs[STU].flags |= NPC_ACTIVE;
@@ -5496,7 +5538,7 @@ void setStuLocation(void) {
                         npcs[STU].startingCoordinates.y = 0.0f;
                         npcs[STU].startingCoordinates.z = 0.0f;
                         npcs[STU].direction = NORTHEAST;
-                        npcs[STU].behaviorMode = 1;
+                        npcs[STU].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[STU].startingCoordinates.x = -32.0f;
                         npcs[STU].flags |= NPC_ACTIVE;
                         
@@ -5509,7 +5551,7 @@ void setStuLocation(void) {
                         npcs[STU].levelIndex = MOUNTAIN_1;
                         npcs[STU].startingCoordinates.y = 0.0f;
                         npcs[STU].direction = SOUTHEAST;
-                        npcs[STU].behaviorMode = 1;
+                        npcs[STU].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[STU].startingCoordinates.x = 64.0f;
                         npcs[STU].startingCoordinates.z = -64.0f;
                         npcs[STU].flags |= NPC_ACTIVE;
@@ -5532,7 +5574,7 @@ void setStuLocation(void) {
                 npcs[STU].startingCoordinates.x = 0.0f;
                 npcs[STU].startingCoordinates.y = 0.0f;
                 npcs[STU].direction = SOUTHWEST;
-                npcs[STU].behaviorMode = 0;
+                npcs[STU].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[STU].startingCoordinates.z = -32.0f;
                 npcs[STU].flags |= NPC_ACTIVE;
                 
@@ -5545,7 +5587,7 @@ void setStuLocation(void) {
                 npcs[STU].levelIndex = VILLAGE_2;
                 npcs[STU].startingCoordinates.y = 0.0f;
                 npcs[STU].direction = SOUTHWEST;
-                npcs[STU].behaviorMode = 0;
+                npcs[STU].defaultAnimationMode = NPC_ANIM_IDLE;
                 npcs[STU].startingCoordinates.x = 444.0f;
                 npcs[STU].startingCoordinates.z = -64.0f;
                 npcs[STU].flags |= NPC_ACTIVE;
@@ -5561,13 +5603,13 @@ void setStuLocation(void) {
         npcs[STU].startingCoordinates.x = 0.0f;
         npcs[STU].startingCoordinates.y = 0.0f;
         npcs[STU].direction = NORTHWEST;
-        npcs[STU].behaviorMode = 0;
+        npcs[STU].defaultAnimationMode = NPC_ANIM_IDLE;
         npcs[STU].startingCoordinates.z = -48.0f;
         npcs[STU].flags |= NPC_ACTIVE;
             
     }
 
-    npcs[STU].movingFlag = npcs[STU].behaviorMode;
+    npcs[STU].animationMode = npcs[STU].defaultAnimationMode;
     
 }
 
@@ -5575,12 +5617,12 @@ void setStuLocation(void) {
 
 void setMidwifeLocation(void) {
 
-    npcs[MIDWIFE].wanderRadiusX = 0x40;
-    npcs[MIDWIFE].wanderRadiusZ = 0x40;
+    npcs[MIDWIFE].wanderRadiusX = 64;
+    npcs[MIDWIFE].wanderRadiusZ = 64;
     npcs[MIDWIFE].animationIndex1 = 0;
     npcs[MIDWIFE].animationIndex2 = 8;
 
-    if (!checkDailyEventBit(0x52)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY)) {
 
         if (gWeather == SUNNY) {
 
@@ -5593,7 +5635,7 @@ void setMidwifeLocation(void) {
                         npcs[MIDWIFE].levelIndex = VILLAGE_2;
                         npcs[MIDWIFE].startingCoordinates.y = 0.0f;
                         npcs[MIDWIFE].direction = SOUTHWEST;
-                        npcs[MIDWIFE].behaviorMode = 1;
+                        npcs[MIDWIFE].defaultAnimationMode = NPC_ANIM_WANDER;
                         npcs[MIDWIFE].startingCoordinates.x = 48.0f;
                         npcs[MIDWIFE].startingCoordinates.z = -64.0f;
                         npcs[MIDWIFE].flags |= NPC_ACTIVE;
@@ -5614,7 +5656,7 @@ void setMidwifeLocation(void) {
                         npcs[MIDWIFE].levelIndex = MIDWIFE_HOUSE;
                         npcs[MIDWIFE].startingCoordinates.y = 0.0f;
                         npcs[MIDWIFE].direction = SOUTHWEST;
-                        npcs[MIDWIFE].behaviorMode = 0;
+                        npcs[MIDWIFE].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[MIDWIFE].startingCoordinates.x = -16.0f;
                         npcs[MIDWIFE].startingCoordinates.z = -32.0f;
                         npcs[MIDWIFE].flags |= NPC_ACTIVE;
@@ -5631,7 +5673,7 @@ void setMidwifeLocation(void) {
             npcs[MIDWIFE].levelIndex = MIDWIFE_HOUSE;
             npcs[MIDWIFE].startingCoordinates.y = 0.0f;
             npcs[MIDWIFE].direction = SOUTHWEST;
-            npcs[MIDWIFE].behaviorMode = 0;
+            npcs[MIDWIFE].defaultAnimationMode = NPC_ANIM_IDLE;
             npcs[MIDWIFE].startingCoordinates.x = -16.0f;
             npcs[MIDWIFE].startingCoordinates.z = -32.0f;
             npcs[MIDWIFE].flags |= NPC_ACTIVE;
@@ -5640,7 +5682,7 @@ void setMidwifeLocation(void) {
             
     }
     
-    npcs[MIDWIFE].movingFlag = npcs[MIDWIFE].behaviorMode;
+    npcs[MIDWIFE].animationMode = npcs[MIDWIFE].defaultAnimationMode;
     
 }
 
@@ -5648,8 +5690,8 @@ void setMidwifeLocation(void) {
 
 void setMayLocation(void) {
     
-    npcs[MAY].wanderRadiusX = 0x40;
-    npcs[MAY].wanderRadiusZ = 0x40;
+    npcs[MAY].wanderRadiusX = 64;
+    npcs[MAY].wanderRadiusZ = 64;
     npcs[MAY].animationIndex2 = 8;
     npcs[MAY].animationIndex1 = 0;
 
@@ -5666,7 +5708,7 @@ void setMayLocation(void) {
                         npcs[MAY].levelIndex = SQUARE;
                         npcs[MAY].startingCoordinates.y = 0.0f;
                         npcs[MAY].direction = NORTHEAST;
-                        npcs[MAY].behaviorMode = 0;
+                        npcs[MAY].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[MAY].startingCoordinates.x = -32.0f;
                         npcs[MAY].startingCoordinates.z = -320.0f;
                         npcs[MAY].flags |= NPC_ACTIVE;
@@ -5680,7 +5722,7 @@ void setMayLocation(void) {
                         npcs[MAY].levelIndex = MOUNTAIN_2;
                         npcs[MAY].startingCoordinates.y = 0.0f;
                         npcs[MAY].direction = SOUTHEAST;
-                        npcs[MAY].behaviorMode = 0;
+                        npcs[MAY].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[MAY].startingCoordinates.x = -160.0f;
                         npcs[MAY].startingCoordinates.z = 288.0f;
                         npcs[MAY].flags |= NPC_ACTIVE;
@@ -5697,7 +5739,7 @@ void setMayLocation(void) {
                     npcs[MAY].levelIndex = CHURCH;
                     npcs[MAY].startingCoordinates.y = 0.0f;
                     npcs[MAY].direction = NORTHEAST;
-                    npcs[MAY].behaviorMode = 0;
+                    npcs[MAY].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[MAY].startingCoordinates.x = -96.0f;
                     npcs[MAY].startingCoordinates.z = -32.0f;
                     npcs[MAY].flags |= NPC_ACTIVE;
@@ -5709,7 +5751,7 @@ void setMayLocation(void) {
                     npcs[MAY].levelIndex = VILLAGE_2;
                     npcs[MAY].startingCoordinates.y = 0.0f;
                     npcs[MAY].direction = NORTHEAST;
-                    npcs[MAY].behaviorMode = 0;
+                    npcs[MAY].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[MAY].startingCoordinates.x = -64.0f;
                     npcs[MAY].startingCoordinates.z = 64.0f;
                     npcs[MAY].flags |= NPC_ACTIVE;
@@ -5725,7 +5767,7 @@ void setMayLocation(void) {
                     npcs[MAY].levelIndex = VILLAGE_2;
                     npcs[MAY].startingCoordinates.y = 0.0f;
                     npcs[MAY].direction = SOUTHWEST;
-                    npcs[MAY].behaviorMode = 1;
+                    npcs[MAY].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[MAY].startingCoordinates.x = 48.f;
                     npcs[MAY].startingCoordinates.z = -64.0f;
                     npcs[MAY].flags |= NPC_ACTIVE;
@@ -5744,7 +5786,7 @@ void setMayLocation(void) {
             npcs[MAY].startingCoordinates.x = 0.0f;
             npcs[MAY].startingCoordinates.y = 0.0f;
             npcs[MAY].direction = SOUTHEAST;
-            npcs[MAY].behaviorMode = 0;
+            npcs[MAY].defaultAnimationMode = NPC_ANIM_IDLE;
             npcs[MAY].startingCoordinates.z = -64.0f;
             npcs[MAY].flags |= NPC_ACTIVE;
         
@@ -5757,7 +5799,7 @@ void setMayLocation(void) {
             npcs[MAY].levelIndex = MIDWIFE_HOUSE;
             npcs[MAY].startingCoordinates.y = 0.0f;
             npcs[MAY].direction = SOUTHEAST;
-            npcs[MAY].behaviorMode = 0;
+            npcs[MAY].defaultAnimationMode = NPC_ANIM_IDLE;
             npcs[MAY].startingCoordinates.x = -96.0f;
             npcs[MAY].startingCoordinates.z = -32.0f;
             npcs[MAY].flags |= NPC_ACTIVE;
@@ -5766,7 +5808,7 @@ void setMayLocation(void) {
         
     }
         
-    npcs[MAY].movingFlag = npcs[MAY].behaviorMode;
+    npcs[MAY].animationMode = npcs[MAY].defaultAnimationMode;
     
 }
 
@@ -5774,8 +5816,8 @@ void setMayLocation(void) {
 
 void setRickLocation(void) {
 
-    npcs[RICK].wanderRadiusX = 0x40;
-    npcs[RICK].wanderRadiusZ = 0x40;
+    npcs[RICK].wanderRadiusX = 64;
+    npcs[RICK].wanderRadiusZ = 64;
     npcs[RICK].animationIndex2 = 8;
     npcs[RICK].animationIndex1 = 0;
 
@@ -5792,7 +5834,7 @@ void setRickLocation(void) {
                         npcs[RICK].levelIndex = SQUARE;
                         npcs[RICK].startingCoordinates.y = 0.0f;
                         npcs[RICK].direction = SOUTHEAST;
-                        npcs[RICK].behaviorMode = 0;
+                        npcs[RICK].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[RICK].startingCoordinates.x = -192.0f;
                         npcs[RICK].startingCoordinates.z = -32.0f;
                         npcs[RICK].flags |= NPC_ACTIVE;
@@ -5813,7 +5855,7 @@ void setRickLocation(void) {
                     npcs[RICK].startingCoordinates.y = 0.0f;
                     npcs[RICK].startingCoordinates.z = 0.0f;
                     npcs[RICK].direction = SOUTHWEST;
-                    npcs[RICK].behaviorMode = 1;
+                    npcs[RICK].defaultAnimationMode = NPC_ANIM_WANDER;
                     npcs[RICK].flags |= NPC_ACTIVE;
                     
                 }
@@ -5828,7 +5870,7 @@ void setRickLocation(void) {
                     npcs[RICK].levelIndex = RICK_STORE;
                     npcs[RICK].startingCoordinates.y = 0.0f;
                     npcs[RICK].direction = SOUTHWEST;
-                    npcs[RICK].behaviorMode = 0;
+                    npcs[RICK].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[RICK].startingCoordinates.x = -96.0f;
                     npcs[RICK].startingCoordinates.z = -96.0f;
                     npcs[RICK].flags |= NPC_ACTIVE;
@@ -5846,7 +5888,7 @@ void setRickLocation(void) {
                         npcs[RICK].levelIndex = VILLAGE_1;
                         npcs[RICK].startingCoordinates.y = 0.0f;
                         npcs[RICK].direction = SOUTHEAST;
-                        npcs[RICK].behaviorMode = 0;
+                        npcs[RICK].defaultAnimationMode = NPC_ANIM_IDLE;
                         npcs[RICK].startingCoordinates.x = -96.0f;
                         npcs[RICK].startingCoordinates.z = 160.0f;
                         npcs[RICK].flags |= NPC_ACTIVE;
@@ -5862,7 +5904,7 @@ void setRickLocation(void) {
         
     } 
         
-    npcs[RICK].movingFlag = npcs[RICK].behaviorMode;
+    npcs[RICK].animationMode = npcs[RICK].defaultAnimationMode;
     
 }
 
@@ -5870,8 +5912,8 @@ void setRickLocation(void) {
 
 void setPastorLocation(void) {
 
-    npcs[PASTOR].wanderRadiusX = 0x40;
-    npcs[PASTOR].wanderRadiusZ = 0x40;
+    npcs[PASTOR].wanderRadiusX = 64;
+    npcs[PASTOR].wanderRadiusZ = 64;
     npcs[PASTOR].animationIndex2 = 8;
     npcs[PASTOR].animationIndex1 = 0;
 
@@ -5891,7 +5933,7 @@ void setPastorLocation(void) {
                     npcs[PASTOR].levelIndex = CHURCH;
                     npcs[PASTOR].startingCoordinates.y = 0.0f;
                     npcs[PASTOR].direction = SOUTHWEST;
-                    npcs[PASTOR].behaviorMode = 0;
+                    npcs[PASTOR].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[PASTOR].startingCoordinates.x = -16.0f;
                     npcs[PASTOR].startingCoordinates.z = -192.0f;
                     npcs[PASTOR].flags |= NPC_ACTIVE;
@@ -5908,7 +5950,7 @@ void setPastorLocation(void) {
                     npcs[PASTOR].levelIndex = VILLAGE_1;
                     npcs[PASTOR].startingCoordinates.y = 0.0f;
                     npcs[PASTOR].direction = SOUTHWEST;
-                    npcs[PASTOR].behaviorMode = 0;
+                    npcs[PASTOR].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[PASTOR].startingCoordinates.x = -128.0f;
                     npcs[PASTOR].startingCoordinates.z = -128.0f;
                     npcs[PASTOR].flags |= NPC_ACTIVE;
@@ -5927,12 +5969,12 @@ void setPastorLocation(void) {
         npcs[PASTOR].startingCoordinates.y = 0.0f;
         npcs[PASTOR].startingCoordinates.z = 0.0f;
         npcs[PASTOR].direction = SOUTHWEST;
-        npcs[PASTOR].behaviorMode = 1;
+        npcs[PASTOR].defaultAnimationMode = NPC_ANIM_WANDER;
         npcs[PASTOR].flags |= NPC_ACTIVE;
             
     }
         
-    npcs[PASTOR].movingFlag = npcs[PASTOR].behaviorMode;
+    npcs[PASTOR].animationMode = npcs[PASTOR].defaultAnimationMode;
     
 }
 
@@ -5940,8 +5982,8 @@ void setPastorLocation(void) {
 
 void setShipperLocation(void) {
 
-    npcs[SHIPPER].wanderRadiusX = 0x40;
-    npcs[SHIPPER].wanderRadiusZ = 0x40;
+    npcs[SHIPPER].wanderRadiusX = 64;
+    npcs[SHIPPER].wanderRadiusZ = 64;
     npcs[SHIPPER].animationIndex1 = 0;
     npcs[SHIPPER].animationIndex2 = 8;
 
@@ -5950,7 +5992,7 @@ void setShipperLocation(void) {
         npcs[SHIPPER].levelIndex = TAVERN;
         npcs[SHIPPER].startingCoordinates.y = 0.0f;
         npcs[SHIPPER].direction = NORTHWEST;
-        npcs[SHIPPER].behaviorMode = 0;
+        npcs[SHIPPER].defaultAnimationMode = NPC_ANIM_IDLE;
     
         npcs[SHIPPER].startingCoordinates.x = 128.0f;
         npcs[SHIPPER].startingCoordinates.z = 64.0f;
@@ -5959,7 +6001,7 @@ void setShipperLocation(void) {
 
     }
 
-    npcs[SHIPPER].movingFlag =  npcs[SHIPPER].behaviorMode;
+    npcs[SHIPPER].animationMode =  npcs[SHIPPER].defaultAnimationMode;
     
 }
 
@@ -5967,8 +6009,8 @@ void setShipperLocation(void) {
 
 void setSaibaraLocation(void) {
 
-    npcs[SAIBARA].wanderRadiusX = 0x40;
-    npcs[SAIBARA].wanderRadiusZ = 0x40;
+    npcs[SAIBARA].wanderRadiusX = 64;
+    npcs[SAIBARA].wanderRadiusZ = 64;
     npcs[SAIBARA].animationIndex2 = 8;
     npcs[SAIBARA].animationIndex1 = 0;
 
@@ -5984,7 +6026,7 @@ void setSaibaraLocation(void) {
                     npcs[SAIBARA].startingCoordinates.y = 0.0f;
                     npcs[SAIBARA].startingCoordinates.z = 0.0f;
                     npcs[SAIBARA].direction = SOUTHEAST;
-                    npcs[SAIBARA].behaviorMode = 0;
+                    npcs[SAIBARA].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[SAIBARA].startingCoordinates.x = -128.0f;
                     npcs[SAIBARA].flags |= NPC_ACTIVE;
                     
@@ -6003,7 +6045,7 @@ void setSaibaraLocation(void) {
                     npcs[SAIBARA].levelIndex = SOUVENIR_SHOP;
                     npcs[SAIBARA].startingCoordinates.y = 0.0f;
                     npcs[SAIBARA].direction = SOUTHWEST;
-                    npcs[SAIBARA].behaviorMode = 0;
+                    npcs[SAIBARA].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[SAIBARA].startingCoordinates.x = 16.0f;
                     npcs[SAIBARA].startingCoordinates.z = -64.0f;
                     npcs[SAIBARA].flags |= NPC_ACTIVE;
@@ -6021,7 +6063,7 @@ void setSaibaraLocation(void) {
             npcs[SAIBARA].levelIndex = SOUVENIR_SHOP;
             npcs[SAIBARA].startingCoordinates.y = 0.0f;
             npcs[SAIBARA].direction = SOUTHWEST;
-            npcs[SAIBARA].behaviorMode = 0;
+            npcs[SAIBARA].defaultAnimationMode = NPC_ANIM_IDLE;
             npcs[SAIBARA].startingCoordinates.x = 16.0f;
             npcs[SAIBARA].startingCoordinates.z = -64.0f;
             npcs[SAIBARA].flags |= NPC_ACTIVE;
@@ -6030,7 +6072,7 @@ void setSaibaraLocation(void) {
         
     }
 
-    npcs[SAIBARA].movingFlag = npcs[SAIBARA].behaviorMode;
+    npcs[SAIBARA].animationMode = npcs[SAIBARA].defaultAnimationMode;
     
 }
 
@@ -6040,8 +6082,8 @@ void setDukeLocation(void) {
 
     int temp = gDayOfWeek;
 
-    npcs[DUKE].wanderRadiusX = 0x40;
-    npcs[DUKE].wanderRadiusZ = 0x40;
+    npcs[DUKE].wanderRadiusX = 64;
+    npcs[DUKE].wanderRadiusZ = 64;
     npcs[DUKE].animationIndex1 = 0;
     npcs[DUKE].animationIndex2 = 8;
 
@@ -6052,7 +6094,7 @@ void setDukeLocation(void) {
                 npcs[DUKE].levelIndex = TAVERN;
                 npcs[DUKE].startingCoordinates.y = 0.0f;
                 npcs[DUKE].direction = 0;
-                npcs[DUKE].behaviorMode = 0;
+                npcs[DUKE].defaultAnimationMode = NPC_ANIM_IDLE;
             
                 npcs[DUKE].startingCoordinates.x = -128.0f;
                 npcs[DUKE].startingCoordinates.z = -128.0f;
@@ -6066,7 +6108,7 @@ void setDukeLocation(void) {
         
     }
 
-    npcs[DUKE].movingFlag =  npcs[DUKE].behaviorMode;
+    npcs[DUKE].animationMode =  npcs[DUKE].defaultAnimationMode;
 
 }
 
@@ -6076,8 +6118,8 @@ void setDukeLocation(void) {
     
         int temp = gDayOfWeek;
 
-        npcs[DUKE].wanderRadiusX = 0x40;
-        npcs[DUKE].wanderRadiusZ = 0x40;
+        npcs[DUKE].wanderRadiusX = 64;
+        npcs[DUKE].wanderRadiusZ = 64;
         npcs[DUKE].animationIndex1 = 0;
         npcs[DUKE].animationIndex2 = 8;
 
@@ -6086,7 +6128,7 @@ void setDukeLocation(void) {
         npcs[DUKE].levelIndex = TAVERN;
         npcs[DUKE].startingCoordinates.y = 0.0f;
         npcs[DUKE].direction = 0;
-        npcs[DUKE].behaviorMode = 0;
+        npcs[DUKE].defaultAnimationMode = NPC_ANIM_IDLE;
 
         npcs[DUKE].startingCoordinates.x = -128.0f;
         npcs[DUKE].startingCoordinates.z = -128.0f;
@@ -6095,7 +6137,7 @@ void setDukeLocation(void) {
         
     }
 
-    npcs[DUKE].movingFlag =  npcs[DUKE].behaviorMode;
+    npcs[DUKE].animationMode =  npcs[DUKE].defaultAnimationMode;
     
 }
 */
@@ -6104,8 +6146,8 @@ void setDukeLocation(void) {
 
 void setGregLocation(void) {
 
-    npcs[GREG].wanderRadiusX = 0x40;
-    npcs[GREG].wanderRadiusZ = 0x40;
+    npcs[GREG].wanderRadiusX = 64;
+    npcs[GREG].wanderRadiusZ = 64;
     npcs[GREG].animationIndex1 = 0;
     npcs[GREG].animationIndex2 = 8;
 
@@ -6128,7 +6170,7 @@ void setGregLocation(void) {
                 
                         npcs[GREG].startingCoordinates.y = 0;
                         npcs[GREG].direction = NORTHWEST;
-                        npcs[GREG].behaviorMode = 0;
+                        npcs[GREG].defaultAnimationMode = NPC_ANIM_IDLE;
                         
                         npcs[GREG].startingCoordinates.x = -160.0f;
                         npcs[GREG].startingCoordinates.z = -128.0f;
@@ -6145,7 +6187,7 @@ void setGregLocation(void) {
                 
                         npcs[GREG].startingCoordinates.y = 0;
                         npcs[GREG].direction = SOUTHEAST;
-                        npcs[GREG].behaviorMode = 0;
+                        npcs[GREG].defaultAnimationMode = NPC_ANIM_IDLE;
                         
                         npcs[GREG].startingCoordinates.x = 96.0f;
                         npcs[GREG].startingCoordinates.z = 32.0f;
@@ -6166,7 +6208,7 @@ void setGregLocation(void) {
             
                     npcs[GREG].startingCoordinates.y = 0;
                     npcs[GREG].direction = SOUTHEAST;
-                    npcs[GREG].behaviorMode = 0;
+                    npcs[GREG].defaultAnimationMode = NPC_ANIM_IDLE;
                     
                     npcs[GREG].startingCoordinates.x = -96.0f;
                     npcs[GREG].startingCoordinates.z = 176.0f;
@@ -6181,7 +6223,7 @@ void setGregLocation(void) {
         
     }
 
-    npcs[GREG].movingFlag = npcs[GREG].behaviorMode;
+    npcs[GREG].animationMode = npcs[GREG].defaultAnimationMode;
     
 }
 
@@ -6189,8 +6231,8 @@ void setGregLocation(void) {
 
 void setCarpenter1Location(void) {
 
-    npcs[CARPENTER_1].wanderRadiusX = 0x40;
-    npcs[CARPENTER_1].wanderRadiusZ = 0x40;
+    npcs[CARPENTER_1].wanderRadiusX = 64;
+    npcs[CARPENTER_1].wanderRadiusZ = 64;
     npcs[CARPENTER_1].animationIndex1 = 0;
     npcs[CARPENTER_1].animationIndex2 = 8;
 
@@ -6211,7 +6253,7 @@ void setCarpenter1Location(void) {
                     npcs[CARPENTER_1].startingCoordinates.x = 0.0f;
                     npcs[CARPENTER_1].startingCoordinates.y = 0;
                     npcs[CARPENTER_1].direction = SOUTHWEST;
-                    npcs[CARPENTER_1].behaviorMode = 2;
+                    npcs[CARPENTER_1].defaultAnimationMode = NPC_ANIM_SPECIAL;
                     npcs[CARPENTER_1].startingCoordinates.z = 32.0f;
                     npcs[CARPENTER_1].flags |= NPC_ACTIVE;
                     
@@ -6224,7 +6266,7 @@ void setCarpenter1Location(void) {
                     npcs[CARPENTER_1].startingCoordinates.y = 0.0f;
                     npcs[CARPENTER_1].startingCoordinates.z = 0.0f;
                     npcs[CARPENTER_1].direction = SOUTHWEST;
-                    npcs[CARPENTER_1].behaviorMode = 0;
+                    npcs[CARPENTER_1].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[CARPENTER_1].flags |= NPC_ACTIVE;
 
                 }
@@ -6238,7 +6280,7 @@ void setCarpenter1Location(void) {
                     npcs[CARPENTER_1].startingCoordinates.y = 0;
                     npcs[CARPENTER_1].startingCoordinates.z = 0.0f;
                     npcs[CARPENTER_1].direction = SOUTHEAST;
-                    npcs[CARPENTER_1].behaviorMode = 0;
+                    npcs[CARPENTER_1].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[CARPENTER_1].startingCoordinates.x = -80.0f;
                     npcs[CARPENTER_1].flags |= NPC_ACTIVE;
                 
@@ -6252,7 +6294,7 @@ void setCarpenter1Location(void) {
     
             npcs[CARPENTER_1].startingCoordinates.y = 0;
             npcs[CARPENTER_1].direction = SOUTHEAST;
-            npcs[CARPENTER_1].behaviorMode = 0;
+            npcs[CARPENTER_1].defaultAnimationMode = NPC_ANIM_IDLE;
             npcs[CARPENTER_1].startingCoordinates.x = -304.0f;
             npcs[CARPENTER_1].startingCoordinates.z = -80.0f;
             npcs[CARPENTER_1].flags |= NPC_ACTIVE;
@@ -6261,7 +6303,7 @@ void setCarpenter1Location(void) {
         
     } 
 
-    npcs[CARPENTER_1].movingFlag = npcs[CARPENTER_1].behaviorMode;
+    npcs[CARPENTER_1].animationMode = npcs[CARPENTER_1].defaultAnimationMode;
     
 }
 
@@ -6269,8 +6311,8 @@ void setCarpenter1Location(void) {
 
 void setCarpenter2Location(void) {
 
-    npcs[CARPENTER_2].wanderRadiusX = 0x40;
-    npcs[CARPENTER_2].wanderRadiusZ = 0x40;
+    npcs[CARPENTER_2].wanderRadiusX = 64;
+    npcs[CARPENTER_2].wanderRadiusZ = 64;
     npcs[CARPENTER_2].animationIndex1 = 0;
     npcs[CARPENTER_2].animationIndex2 = 8;
 
@@ -6292,7 +6334,7 @@ void setCarpenter2Location(void) {
                         npcs[CARPENTER_2].levelIndex = MOUNTAIN_2;
                         npcs[CARPENTER_2].startingCoordinates.y = 0;
                         npcs[CARPENTER_2].direction = SOUTHWEST;
-                        npcs[CARPENTER_2].behaviorMode = 2;
+                        npcs[CARPENTER_2].defaultAnimationMode = NPC_ANIM_SPECIAL;
                         npcs[CARPENTER_2].startingCoordinates.x = -224.0f;
                         npcs[CARPENTER_2].startingCoordinates.z = 64.0f;
                         npcs[CARPENTER_2].flags |= NPC_ACTIVE;
@@ -6304,7 +6346,7 @@ void setCarpenter2Location(void) {
                     npcs[CARPENTER_2].levelIndex = 0x21;
                     npcs[CARPENTER_2].startingCoordinates.y = 0.0f;
                     npcs[CARPENTER_2].direction = NORTHEAST;
-                    npcs[CARPENTER_2].behaviorMode = 0;
+                    npcs[CARPENTER_2].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[CARPENTER_2].startingCoordinates.x = 64.0f;
                     npcs[CARPENTER_2].startingCoordinates.z = -112.0f;
                     npcs[CARPENTER_2].flags |= NPC_ACTIVE;
@@ -6319,7 +6361,7 @@ void setCarpenter2Location(void) {
                     npcs[CARPENTER_2].startingCoordinates.y = 0;
                     npcs[CARPENTER_2].startingCoordinates.z = 0.0f;
                     npcs[CARPENTER_2].direction = NORTHWEST;
-                    npcs[CARPENTER_2].behaviorMode = 0;
+                    npcs[CARPENTER_2].defaultAnimationMode = NPC_ANIM_IDLE;
                     npcs[CARPENTER_2].startingCoordinates.x = 16.0f;
                     npcs[CARPENTER_2].flags |= NPC_ACTIVE;
                 
@@ -6334,14 +6376,14 @@ void setCarpenter2Location(void) {
             npcs[CARPENTER_2].startingCoordinates.y = 0;
             npcs[CARPENTER_2].startingCoordinates.z = 0.0f;
             npcs[CARPENTER_2].direction = SOUTHWEST;
-            npcs[CARPENTER_2].behaviorMode = 1;
+            npcs[CARPENTER_2].defaultAnimationMode = NPC_ANIM_WANDER;
             npcs[CARPENTER_2].flags |= NPC_ACTIVE;
         
         }
         
     } 
 
-    npcs[CARPENTER_2].movingFlag = npcs[CARPENTER_2].behaviorMode;
+    npcs[CARPENTER_2].animationMode = npcs[CARPENTER_2].defaultAnimationMode;
     
 }
 
@@ -6349,8 +6391,8 @@ void setCarpenter2Location(void) {
 
 void setMasterCarpenterLocation(void) {
 
-    npcs[MASTER_CARPENTER].wanderRadiusX = 0x40;
-    npcs[MASTER_CARPENTER].wanderRadiusZ = 0x40;
+    npcs[MASTER_CARPENTER].wanderRadiusX = 64;
+    npcs[MASTER_CARPENTER].wanderRadiusZ = 64;
     npcs[MASTER_CARPENTER].animationIndex1 = 0;
     npcs[MASTER_CARPENTER].animationIndex2 = 8;
 
@@ -6369,7 +6411,7 @@ void setMasterCarpenterLocation(void) {
         
                 npcs[MASTER_CARPENTER].startingCoordinates.y = 0;
                 npcs[MASTER_CARPENTER].direction = SOUTHWEST;
-                npcs[MASTER_CARPENTER].behaviorMode = 0;
+                npcs[MASTER_CARPENTER].defaultAnimationMode = NPC_ANIM_IDLE;
                 
                 npcs[MASTER_CARPENTER].startingCoordinates.x = -112.0f;
                 npcs[MASTER_CARPENTER].startingCoordinates.z = 112.0f;
@@ -6384,7 +6426,7 @@ void setMasterCarpenterLocation(void) {
     
             npcs[MASTER_CARPENTER].startingCoordinates.y = 0;
             npcs[MASTER_CARPENTER].direction = SOUTHWEST;
-            npcs[MASTER_CARPENTER].behaviorMode = 2;
+            npcs[MASTER_CARPENTER].defaultAnimationMode = NPC_ANIM_SPECIAL;
             
             npcs[MASTER_CARPENTER].startingCoordinates.x = -32.0f;
             npcs[MASTER_CARPENTER].startingCoordinates.z = -48.0f;
@@ -6395,7 +6437,7 @@ void setMasterCarpenterLocation(void) {
         
     } 
 
-    npcs[MASTER_CARPENTER].movingFlag = npcs[MASTER_CARPENTER].behaviorMode;
+    npcs[MASTER_CARPENTER].animationMode = npcs[MASTER_CARPENTER].defaultAnimationMode;
     
 }
 
@@ -6403,8 +6445,8 @@ void setMasterCarpenterLocation(void) {
 
 void setHarvestSprite1Location(void) {
 
-    npcs[HARVEST_SPRITE_1].wanderRadiusX = 0x40;
-    npcs[HARVEST_SPRITE_1].wanderRadiusZ = 0x40;
+    npcs[HARVEST_SPRITE_1].wanderRadiusX = 64;
+    npcs[HARVEST_SPRITE_1].wanderRadiusZ = 64;
     npcs[HARVEST_SPRITE_1].animationIndex1 = 0;
     npcs[HARVEST_SPRITE_1].animationIndex2 = 8;
 
@@ -6413,7 +6455,7 @@ void setHarvestSprite1Location(void) {
         npcs[HARVEST_SPRITE_1].levelIndex = CAVE;
         npcs[HARVEST_SPRITE_1].startingCoordinates.y = 0.0f;
         npcs[HARVEST_SPRITE_1].direction = 0;
-        npcs[HARVEST_SPRITE_1].behaviorMode = 1;
+        npcs[HARVEST_SPRITE_1].defaultAnimationMode = NPC_ANIM_WANDER;
     
         npcs[HARVEST_SPRITE_1].startingCoordinates.x = -32.0f;
         npcs[HARVEST_SPRITE_1].startingCoordinates.z = -192.0f;
@@ -6422,7 +6464,7 @@ void setHarvestSprite1Location(void) {
 
     }
 
-    npcs[HARVEST_SPRITE_1].movingFlag =  npcs[HARVEST_SPRITE_1].behaviorMode;
+    npcs[HARVEST_SPRITE_1].animationMode =  npcs[HARVEST_SPRITE_1].defaultAnimationMode;
     
 }
 
@@ -6431,8 +6473,8 @@ void setHarvestSprite1Location(void) {
 
 void setHarvestSprite2Location(void) {
 
-    npcs[HARVEST_SPRITE_2].wanderRadiusX = 0x40;
-    npcs[HARVEST_SPRITE_2].wanderRadiusZ = 0x40;
+    npcs[HARVEST_SPRITE_2].wanderRadiusX = 64;
+    npcs[HARVEST_SPRITE_2].wanderRadiusZ = 64;
     npcs[HARVEST_SPRITE_2].animationIndex1 = 0;
     npcs[HARVEST_SPRITE_2].animationIndex2 = 8;
 
@@ -6441,7 +6483,7 @@ void setHarvestSprite2Location(void) {
         npcs[HARVEST_SPRITE_2].levelIndex = HARVEST_SPRITE_CAVE;
         npcs[HARVEST_SPRITE_2].startingCoordinates.y = 0.0f;
         npcs[HARVEST_SPRITE_2].direction = SOUTHWEST;
-        npcs[HARVEST_SPRITE_2].behaviorMode = 0;
+        npcs[HARVEST_SPRITE_2].defaultAnimationMode = NPC_ANIM_IDLE;
     
         npcs[HARVEST_SPRITE_2].startingCoordinates.x = -128.0f;
         npcs[HARVEST_SPRITE_2].startingCoordinates.z = -128.0f;
@@ -6450,7 +6492,7 @@ void setHarvestSprite2Location(void) {
 
     }
 
-    npcs[HARVEST_SPRITE_2].movingFlag =  npcs[HARVEST_SPRITE_2].behaviorMode;
+    npcs[HARVEST_SPRITE_2].animationMode =  npcs[HARVEST_SPRITE_2].defaultAnimationMode;
     
 }
 
@@ -6458,8 +6500,8 @@ void setHarvestSprite2Location(void) {
 
 void setHarvestSprite3Location(void) {
 
-    npcs[HARVEST_SPRITE_3].wanderRadiusX = 0x40;
-    npcs[HARVEST_SPRITE_3].wanderRadiusZ = 0x40;
+    npcs[HARVEST_SPRITE_3].wanderRadiusX = 64;
+    npcs[HARVEST_SPRITE_3].wanderRadiusZ = 64;
     npcs[HARVEST_SPRITE_3].animationIndex1 = 0;
     npcs[HARVEST_SPRITE_3].animationIndex2 = 8;
 
@@ -6468,7 +6510,7 @@ void setHarvestSprite3Location(void) {
         npcs[HARVEST_SPRITE_3].levelIndex = HARVEST_SPRITE_CAVE;
         npcs[HARVEST_SPRITE_3].startingCoordinates.y = 0.0f;
         npcs[HARVEST_SPRITE_3].direction = NORTHWEST;
-        npcs[HARVEST_SPRITE_3].behaviorMode = 0;
+        npcs[HARVEST_SPRITE_3].defaultAnimationMode = NPC_ANIM_IDLE;
     
         npcs[HARVEST_SPRITE_3].startingCoordinates.x = 64.0f;
         npcs[HARVEST_SPRITE_3].startingCoordinates.z = -64.0f;
@@ -6477,7 +6519,7 @@ void setHarvestSprite3Location(void) {
 
     }
 
-    npcs[HARVEST_SPRITE_3].movingFlag =  npcs[HARVEST_SPRITE_3].behaviorMode;
+    npcs[HARVEST_SPRITE_3].animationMode =  npcs[HARVEST_SPRITE_3].defaultAnimationMode;
     
 }
 
@@ -6485,8 +6527,8 @@ void setHarvestSprite3Location(void) {
 
 void setSydneyLocation(void) {
 
-    npcs[SYDNEY].wanderRadiusX = 0x40;
-    npcs[SYDNEY].wanderRadiusZ = 0x40;
+    npcs[SYDNEY].wanderRadiusX = 64;
+    npcs[SYDNEY].wanderRadiusZ = 64;
     npcs[SYDNEY].animationIndex1 = 0;
     npcs[SYDNEY].animationIndex2 = 8;
 
@@ -6495,7 +6537,7 @@ void setSydneyLocation(void) {
         npcs[SYDNEY].levelIndex = MOON_MOUNTAIN;
         npcs[SYDNEY].startingCoordinates.y = 0.0f;
         npcs[SYDNEY].direction = NORTHWEST;
-        npcs[SYDNEY].behaviorMode = 1;
+        npcs[SYDNEY].defaultAnimationMode = NPC_ANIM_WANDER;
 
         npcs[SYDNEY].startingCoordinates.x = 64.0F;
         npcs[SYDNEY].startingCoordinates.z = -32.0f;
@@ -6507,7 +6549,7 @@ void setSydneyLocation(void) {
         npcs[SYDNEY].levelIndex = DUMPLING_HOUSE;
         npcs[SYDNEY].startingCoordinates.y = 0.0f;
         npcs[SYDNEY].direction = SOUTHEAST;
-        npcs[SYDNEY].behaviorMode = 0;
+        npcs[SYDNEY].defaultAnimationMode = NPC_ANIM_IDLE;
 
         npcs[SYDNEY].startingCoordinates.x = -128.0f;
         npcs[SYDNEY].startingCoordinates.z = -128.0f;
@@ -6516,7 +6558,7 @@ void setSydneyLocation(void) {
 
     }
 
-    npcs[SYDNEY].movingFlag =  npcs[SYDNEY].behaviorMode;
+    npcs[SYDNEY].animationMode =  npcs[SYDNEY].defaultAnimationMode;
     
 }
 
@@ -6524,8 +6566,8 @@ void setSydneyLocation(void) {
 
 void setBarleyLocation(void) {
 
-    npcs[BARLEY].wanderRadiusX = 0x40;
-    npcs[BARLEY].wanderRadiusZ = 0x40;
+    npcs[BARLEY].wanderRadiusX = 64;
+    npcs[BARLEY].wanderRadiusZ = 64;
     npcs[BARLEY].animationIndex1 = 0;
     npcs[BARLEY].animationIndex2 = 8;
 
@@ -6534,7 +6576,7 @@ void setBarleyLocation(void) {
         npcs[BARLEY].levelIndex = DUMPLING_HOUSE;
         npcs[BARLEY].startingCoordinates.y = 0.0f;
         npcs[BARLEY].direction = 0;
-        npcs[BARLEY].behaviorMode = 1;
+        npcs[BARLEY].defaultAnimationMode = NPC_ANIM_WANDER;
 
         npcs[BARLEY].startingCoordinates.x = -32.0f;
         npcs[BARLEY].startingCoordinates.z = -128.0f;
@@ -6547,7 +6589,7 @@ void setBarleyLocation(void) {
         npcs[BARLEY].startingCoordinates.x = 0.0f;
         npcs[BARLEY].startingCoordinates.y = 0.0f;
         npcs[BARLEY].direction = SOUTHWEST;
-        npcs[BARLEY].behaviorMode = 0;
+        npcs[BARLEY].defaultAnimationMode = NPC_ANIM_IDLE;
 
         npcs[BARLEY].startingCoordinates.z = -192.0f;
 
@@ -6555,7 +6597,7 @@ void setBarleyLocation(void) {
 
     }
 
-    npcs[BARLEY].movingFlag =  npcs[BARLEY].behaviorMode;
+    npcs[BARLEY].animationMode =  npcs[BARLEY].defaultAnimationMode;
     
 }
 
@@ -6563,8 +6605,8 @@ void setBarleyLocation(void) {
 
 void setMrsManaLocation(void) {
     
-    npcs[MRS_MANA].wanderRadiusX = 0x40;
-    npcs[MRS_MANA].wanderRadiusZ = 0x40;
+    npcs[MRS_MANA].wanderRadiusX = 64;
+    npcs[MRS_MANA].wanderRadiusZ = 64;
     npcs[MRS_MANA].animationIndex1 = 0;
     npcs[MRS_MANA].animationIndex2 = 8;
 
@@ -6573,7 +6615,7 @@ void setMrsManaLocation(void) {
         npcs[MRS_MANA].levelIndex = TAVERN;
         npcs[MRS_MANA].startingCoordinates.y = 0;
         npcs[MRS_MANA].direction = NORTHWEST;
-        npcs[MRS_MANA].behaviorMode = 0;
+        npcs[MRS_MANA].defaultAnimationMode = NPC_ANIM_IDLE;
 
         npcs[MRS_MANA].startingCoordinates.x = 128.0f;
         npcs[MRS_MANA].startingCoordinates.z = -112.0f;
@@ -6582,7 +6624,7 @@ void setMrsManaLocation(void) {
         
     }
 
-    npcs[MRS_MANA].movingFlag =  npcs[MRS_MANA].behaviorMode;
+    npcs[MRS_MANA].animationMode =  npcs[MRS_MANA].defaultAnimationMode;
     
 }
 
@@ -6590,8 +6632,8 @@ void setMrsManaLocation(void) {
 
 void setJohnLocation(void) {
     
-    npcs[JOHN].wanderRadiusX = 0x40;
-    npcs[JOHN].wanderRadiusZ = 0x40;
+    npcs[JOHN].wanderRadiusX = 64;
+    npcs[JOHN].wanderRadiusZ = 64;
     npcs[JOHN].animationIndex1 = 0;
     npcs[JOHN].animationIndex2 = 8;
 
@@ -6600,7 +6642,7 @@ void setJohnLocation(void) {
         npcs[JOHN].levelIndex = BARN;
         npcs[JOHN].startingCoordinates.y = 0;
         npcs[JOHN].direction = SOUTH;
-        npcs[JOHN].behaviorMode = 0;
+        npcs[JOHN].defaultAnimationMode = NPC_ANIM_IDLE;
 
         npcs[JOHN].startingCoordinates.x = -192.0f;
         npcs[JOHN].startingCoordinates.z = -256.0f;
@@ -6609,7 +6651,7 @@ void setJohnLocation(void) {
         
     }
 
-    npcs[JOHN].movingFlag =  npcs[JOHN].behaviorMode;
+    npcs[JOHN].animationMode =  npcs[JOHN].defaultAnimationMode;
     
 }
 
@@ -6617,40 +6659,40 @@ void setJohnLocation(void) {
 
 void setGourmetJudgeLocation(void) {
 
-    npcs[40].wanderRadiusX = 0x40;
-    npcs[40].wanderRadiusZ = 0x40;
-    npcs[40].animationIndex1 = 0;
-    npcs[40].animationIndex2 = 8;
+    npcs[GOURMET_JUDGE].wanderRadiusX = 64;
+    npcs[GOURMET_JUDGE].wanderRadiusZ = 64;
+    npcs[GOURMET_JUDGE].animationIndex1 = 0;
+    npcs[GOURMET_JUDGE].animationIndex2 = 8;
 
-    if (checkLifeEventBit(0x20) && npcs[40].location == 0 && (8 < gHour && gHour < 17)) {
+    if (checkLifeEventBit(0x20) && npcs[GOURMET_JUDGE].location == 0 && (8 < gHour && gHour < 17)) {
 
-        npcs[40].levelIndex = ROAD;
-        npcs[40].startingCoordinates.y = 0;
-        npcs[40].direction = NORTHEAST;
-        npcs[40].behaviorMode = 1;
+        npcs[GOURMET_JUDGE].levelIndex = ROAD;
+        npcs[GOURMET_JUDGE].startingCoordinates.y = 0;
+        npcs[GOURMET_JUDGE].direction = NORTHEAST;
+        npcs[GOURMET_JUDGE].defaultAnimationMode = NPC_ANIM_WANDER;
 
-        npcs[40].startingCoordinates.x = -32.0f;
-        npcs[40].startingCoordinates.z = 64.0f;
+        npcs[GOURMET_JUDGE].startingCoordinates.x = -32.0f;
+        npcs[GOURMET_JUDGE].startingCoordinates.z = 64.0f;
 
-        npcs[40].flags |= NPC_ACTIVE;
+        npcs[GOURMET_JUDGE].flags |= NPC_ACTIVE;
 
     }
 
     if (checkLifeEventBit(0x19) && (8 < gHour && gHour < 17)) {
         
-        npcs[40].levelIndex = VILLAGE_1;
-        npcs[40].startingCoordinates.y = 0;
-        npcs[40].direction = SOUTHWEST;
-        npcs[40].behaviorMode = 1;
+        npcs[GOURMET_JUDGE].levelIndex = VILLAGE_1;
+        npcs[GOURMET_JUDGE].startingCoordinates.y = 0;
+        npcs[GOURMET_JUDGE].direction = SOUTHWEST;
+        npcs[GOURMET_JUDGE].defaultAnimationMode = NPC_ANIM_WANDER;
 
-        npcs[40].startingCoordinates.x = 320.0f;
-        npcs[40].startingCoordinates.z = 288.0f;
+        npcs[GOURMET_JUDGE].startingCoordinates.x = 320.0f;
+        npcs[GOURMET_JUDGE].startingCoordinates.z = 288.0f;
 
-        npcs[40].flags |= NPC_ACTIVE;
+        npcs[GOURMET_JUDGE].flags |= NPC_ACTIVE;
     
     }
 
-     npcs[40].movingFlag =  npcs[40].behaviorMode; 
+     npcs[GOURMET_JUDGE].animationMode =  npcs[GOURMET_JUDGE].defaultAnimationMode; 
     
 }
 
@@ -6663,8 +6705,8 @@ void setMariaHarrisBabyLocation(void) {
     
     u8 temp;
     
-    npcs[MARIA_HARRIS_BABY].wanderRadiusX = 0x40;
-    npcs[MARIA_HARRIS_BABY].wanderRadiusZ = 0x40;
+    npcs[MARIA_HARRIS_BABY].wanderRadiusX = 64;
+    npcs[MARIA_HARRIS_BABY].wanderRadiusZ = 64;
     npcs[MARIA_HARRIS_BABY].animationIndex1 = 0;
     npcs[MARIA_HARRIS_BABY].animationIndex2 = 0;
 
@@ -6678,7 +6720,7 @@ void setMariaHarrisBabyLocation(void) {
             npcs[MARIA_HARRIS_BABY].startingCoordinates.y = 0.0f;
             npcs[MARIA_HARRIS_BABY].startingCoordinates.z = 0.0f;
 
-            npcs[MARIA_HARRIS_BABY].behaviorMode = 0;
+            npcs[MARIA_HARRIS_BABY].defaultAnimationMode = NPC_ANIM_IDLE;
 
             npcs[MARIA_HARRIS_BABY].animationIndex1 = 8;
             npcs[MARIA_HARRIS_BABY].animationIndex2 = 8;
@@ -6708,7 +6750,7 @@ void setMariaHarrisBabyLocation(void) {
             
             rotateVector3D(vec1, &npcs[MARIA_HARRIS_BABY].startingCoordinates, rotationAngles);
 
-            npcs[MARIA_HARRIS_BABY].behaviorMode = 1;
+            npcs[MARIA_HARRIS_BABY].defaultAnimationMode = NPC_ANIM_WANDER;
 
             npcs[MARIA_HARRIS_BABY].animationIndex1 = 0;
             npcs[MARIA_HARRIS_BABY].animationIndex2 = 0;
@@ -6725,7 +6767,7 @@ void setMariaHarrisBabyLocation(void) {
         
     }
 
-    npcs[MARIA_HARRIS_BABY].movingFlag = npcs[MARIA_HARRIS_BABY].behaviorMode;
+    npcs[MARIA_HARRIS_BABY].animationMode = npcs[MARIA_HARRIS_BABY].defaultAnimationMode;
     
 }
 
@@ -6738,8 +6780,8 @@ void setPopuriGrayBabyLocation(void) {
     
     u8 temp;
     
-    npcs[POPURI_GRAY_BABY].wanderRadiusX = 0x40;
-    npcs[POPURI_GRAY_BABY].wanderRadiusZ = 0x40;
+    npcs[POPURI_GRAY_BABY].wanderRadiusX = 64;
+    npcs[POPURI_GRAY_BABY].wanderRadiusZ = 64;
     npcs[POPURI_GRAY_BABY].animationIndex1 = 0;
     npcs[POPURI_GRAY_BABY].animationIndex2 = 0;
 
@@ -6753,7 +6795,7 @@ void setPopuriGrayBabyLocation(void) {
             npcs[POPURI_GRAY_BABY].startingCoordinates.y = 0.0f;
             npcs[POPURI_GRAY_BABY].startingCoordinates.z = 0.0f;
 
-            npcs[POPURI_GRAY_BABY].behaviorMode = 0;
+            npcs[POPURI_GRAY_BABY].defaultAnimationMode = NPC_ANIM_IDLE;
 
             npcs[POPURI_GRAY_BABY].animationIndex1 = 8;
             npcs[POPURI_GRAY_BABY].animationIndex2 = 8;
@@ -6783,7 +6825,7 @@ void setPopuriGrayBabyLocation(void) {
             
             rotateVector3D(vec1, &npcs[POPURI_GRAY_BABY].startingCoordinates, rotationAngles);
 
-            npcs[POPURI_GRAY_BABY].behaviorMode = 1;
+            npcs[POPURI_GRAY_BABY].defaultAnimationMode = NPC_ANIM_WANDER;
 
             npcs[POPURI_GRAY_BABY].animationIndex1 = 0;
             npcs[POPURI_GRAY_BABY].animationIndex2 = 0;
@@ -6800,7 +6842,7 @@ void setPopuriGrayBabyLocation(void) {
         
     }
 
-    npcs[POPURI_GRAY_BABY].movingFlag = npcs[POPURI_GRAY_BABY].behaviorMode;
+    npcs[POPURI_GRAY_BABY].animationMode = npcs[POPURI_GRAY_BABY].defaultAnimationMode;
 
 }
 
@@ -6813,8 +6855,8 @@ void setElliJeffBabyLocation(void) {
     
     u8 temp;
     
-    npcs[ELLI_JEFF_BABY].wanderRadiusX = 0x40;
-    npcs[ELLI_JEFF_BABY].wanderRadiusZ = 0x40;
+    npcs[ELLI_JEFF_BABY].wanderRadiusX = 64;
+    npcs[ELLI_JEFF_BABY].wanderRadiusZ = 64;
     npcs[ELLI_JEFF_BABY].animationIndex1 = 0;
     npcs[ELLI_JEFF_BABY].animationIndex2 = 0;
 
@@ -6828,7 +6870,7 @@ void setElliJeffBabyLocation(void) {
             npcs[ELLI_JEFF_BABY].startingCoordinates.y = 0.0f;
             npcs[ELLI_JEFF_BABY].startingCoordinates.z = 0.0f;
 
-            npcs[ELLI_JEFF_BABY].behaviorMode = 0;
+            npcs[ELLI_JEFF_BABY].defaultAnimationMode = NPC_ANIM_IDLE;
 
             npcs[ELLI_JEFF_BABY].animationIndex1 = 8;
             npcs[ELLI_JEFF_BABY].animationIndex2 = 8;
@@ -6858,7 +6900,7 @@ void setElliJeffBabyLocation(void) {
             
             rotateVector3D(vec1, &npcs[ELLI_JEFF_BABY].startingCoordinates, rotationAngles);
 
-            npcs[ELLI_JEFF_BABY].behaviorMode = 1;
+            npcs[ELLI_JEFF_BABY].defaultAnimationMode = NPC_ANIM_WANDER;
 
             npcs[ELLI_JEFF_BABY].animationIndex1 = 0;
             npcs[ELLI_JEFF_BABY].animationIndex2 = 0;
@@ -6875,7 +6917,7 @@ void setElliJeffBabyLocation(void) {
         
     }
 
-    npcs[ELLI_JEFF_BABY].movingFlag = npcs[ELLI_JEFF_BABY].behaviorMode;
+    npcs[ELLI_JEFF_BABY].animationMode = npcs[ELLI_JEFF_BABY].defaultAnimationMode;
 
 }
 
@@ -6888,8 +6930,8 @@ void setAnnCliffBabyLocation(void) {
     
     u8 temp;
     
-    npcs[ANN_CLIFF_BABY].wanderRadiusX = 0x40;
-    npcs[ANN_CLIFF_BABY].wanderRadiusZ = 0x40;
+    npcs[ANN_CLIFF_BABY].wanderRadiusX = 64;
+    npcs[ANN_CLIFF_BABY].wanderRadiusZ = 64;
     npcs[ANN_CLIFF_BABY].animationIndex1 = 0;
     npcs[ANN_CLIFF_BABY].animationIndex2 = 0;
 
@@ -6903,7 +6945,7 @@ void setAnnCliffBabyLocation(void) {
             npcs[ANN_CLIFF_BABY].startingCoordinates.y = 0.0f;
             npcs[ANN_CLIFF_BABY].startingCoordinates.z = 0.0f;
 
-            npcs[ANN_CLIFF_BABY].behaviorMode = 0;
+            npcs[ANN_CLIFF_BABY].defaultAnimationMode = NPC_ANIM_IDLE;
 
             npcs[ANN_CLIFF_BABY].animationIndex1 = 8;
             npcs[ANN_CLIFF_BABY].animationIndex2 = 8;
@@ -6933,7 +6975,7 @@ void setAnnCliffBabyLocation(void) {
             
             rotateVector3D(vec1, &npcs[ANN_CLIFF_BABY].startingCoordinates, rotationAngles);
 
-            npcs[ANN_CLIFF_BABY].behaviorMode = 1;
+            npcs[ANN_CLIFF_BABY].defaultAnimationMode = NPC_ANIM_WANDER;
 
             npcs[ANN_CLIFF_BABY].animationIndex1 = 0;
             npcs[ANN_CLIFF_BABY].animationIndex2 = 0;
@@ -6950,7 +6992,7 @@ void setAnnCliffBabyLocation(void) {
         
     }
 
-    npcs[ANN_CLIFF_BABY].movingFlag = npcs[ANN_CLIFF_BABY].behaviorMode;
+    npcs[ANN_CLIFF_BABY].animationMode = npcs[ANN_CLIFF_BABY].defaultAnimationMode;
 
 }
 
@@ -6963,8 +7005,8 @@ void setKarenKaiBabyLocation(void) {
     
     u8 temp;
     
-    npcs[KAREN_KAI_BABY].wanderRadiusX = 0x40;
-    npcs[KAREN_KAI_BABY].wanderRadiusZ = 0x40;
+    npcs[KAREN_KAI_BABY].wanderRadiusX = 64;
+    npcs[KAREN_KAI_BABY].wanderRadiusZ = 64;
     npcs[KAREN_KAI_BABY].animationIndex1 = 0;
     npcs[KAREN_KAI_BABY].animationIndex2 = 0;
 
@@ -6978,7 +7020,7 @@ void setKarenKaiBabyLocation(void) {
             npcs[KAREN_KAI_BABY].startingCoordinates.y = 0.0f;
             npcs[KAREN_KAI_BABY].startingCoordinates.z = 0.0f;
 
-            npcs[KAREN_KAI_BABY].behaviorMode = 0;
+            npcs[KAREN_KAI_BABY].defaultAnimationMode = NPC_ANIM_IDLE;
 
             npcs[KAREN_KAI_BABY].animationIndex1 = 8;
             npcs[KAREN_KAI_BABY].animationIndex2 = 8;
@@ -7008,7 +7050,7 @@ void setKarenKaiBabyLocation(void) {
             
             rotateVector3D(vec1, &npcs[KAREN_KAI_BABY].startingCoordinates, rotationAngles);
 
-            npcs[KAREN_KAI_BABY].behaviorMode = 1;
+            npcs[KAREN_KAI_BABY].defaultAnimationMode = NPC_ANIM_WANDER;
 
             npcs[KAREN_KAI_BABY].animationIndex1 = 0;
             npcs[KAREN_KAI_BABY].animationIndex2 = 0;
@@ -7025,7 +7067,7 @@ void setKarenKaiBabyLocation(void) {
         
     }
 
-    npcs[KAREN_KAI_BABY].movingFlag = npcs[KAREN_KAI_BABY].behaviorMode;
+    npcs[KAREN_KAI_BABY].animationMode = npcs[KAREN_KAI_BABY].defaultAnimationMode;
     
 }
 
@@ -7033,8 +7075,8 @@ void setKarenKaiBabyLocation(void) {
 
 void setEntomologistLocation(void) {
     
-    npcs[ENTOMOLOGIST].wanderRadiusX = 0x40;
-    npcs[ENTOMOLOGIST].wanderRadiusZ = 0x40;
+    npcs[ENTOMOLOGIST].wanderRadiusX = 64;
+    npcs[ENTOMOLOGIST].wanderRadiusZ = 64;
     npcs[ENTOMOLOGIST].animationIndex1 = 0;
     npcs[ENTOMOLOGIST].animationIndex2 = 8;
 
@@ -7043,7 +7085,7 @@ void setEntomologistLocation(void) {
         npcs[ENTOMOLOGIST].levelIndex = MOUNTAIN_1;
         npcs[ENTOMOLOGIST].startingCoordinates.y = 0;
         npcs[ENTOMOLOGIST].direction = SOUTH;
-        npcs[ENTOMOLOGIST].behaviorMode = 1;
+        npcs[ENTOMOLOGIST].defaultAnimationMode = NPC_ANIM_WANDER;
 
         npcs[ENTOMOLOGIST].startingCoordinates.x = -32.0f;
         npcs[ENTOMOLOGIST].startingCoordinates.z = -64.0f;
@@ -7052,7 +7094,7 @@ void setEntomologistLocation(void) {
         
     }
 
-    npcs[ENTOMOLOGIST].movingFlag =  npcs[ENTOMOLOGIST].behaviorMode;
+    npcs[ENTOMOLOGIST].animationMode =  npcs[ENTOMOLOGIST].defaultAnimationMode;
     
 }
 
@@ -7061,17 +7103,17 @@ void setEntomologistLocation(void) {
 /* animations */
 
 static inline void updateAnimation(u8 index) {
-    
-    switch (npcs[index].movingFlag) {
 
-        case 0:
+    switch (npcs[index].animationMode) {
+
+        case NPC_ANIM_IDLE:
             stopNPCMovement(index);
             break;
 
-        case 1:
-            updateNPCRandomWalk(index);
+        case NPC_ANIM_WANDER:
+            updateNPCRandomAnimation(index);
             break;
-            
+
     }
 }
 
@@ -7137,28 +7179,28 @@ void handleMariaAnimation(void) {
 
         if (checkEntityAnimationStateChanged(npcs[MARIA].entityIndex) && npcs[MARIA].animationTimer == 0) {
 
-            switch (npcs[MARIA].movingFlag) {
+            switch (npcs[MARIA].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     stopNPCMovement(MARIA);
                     break;
 
-                case 1:
-                    updateNPCRandomWalk(MARIA);
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(MARIA);
                     break;
 
-                case 2:
+                case NPC_ANIM_SPECIAL:
                     updateNPCSpecialAnimation(MARIA);
                     break;
 
-                case 4:
+                case NPC_ANIM_FIXED:
 
                     setEntityAnimation(npcs[MARIA].entityIndex, 0x18);
 
                     entities[npcs[MARIA].entityIndex].coordinates.x = -192.0f;
                     entities[npcs[MARIA].entityIndex].coordinates.y = 0.0f;
                     entities[npcs[MARIA].entityIndex].coordinates.z = -160.0f;
-                
+
             }
             
         }
@@ -7183,56 +7225,56 @@ void handlePopuriAnimation(void) {
 
         if (checkEntityAnimationStateChanged(npcs[POPURI].entityIndex) && npcs[POPURI].animationTimer == 0) {
 
-            switch (npcs[POPURI].movingFlag) {
+            switch (npcs[POPURI].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     stopNPCMovement(POPURI);
                     break;
 
-                case 1:
-                    updateNPCRandomWalk(POPURI);
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(POPURI);
                     break;
 
-                case 2:
+                case NPC_ANIM_SPECIAL:
                     updateNPCSpecialAnimation(POPURI);
                     break;
 
-                case 3:
+                case NPC_ANIM_CUSTOM:
 
                     switch (npcs[POPURI].animationState) {
 
                         case 0:
                             npcs[POPURI].speed = 0;
                             npcs[POPURI].animationTimer = 0;
-    
+
                             setEntityAnimationWithDirectionChange(npcs[POPURI].entityIndex, 0);
-    
+
                             temp = getRandomNumberInRange(0, 60);
-    
+
                             if (temp < 8) {
                                 npcs[POPURI].direction = temp;
                                 npcs[POPURI].animationState = 1;
                             }
-    
+
                             if (7 < temp && temp < 21) {
                                 npcs[POPURI].animationState = 2;
                             }
-    
+
                             npcs[POPURI].flags |= NPC_NEEDS_UPDATE;
                             break;
 
                         case 1:
                             npcs[POPURI].speed = 1;
                             npcs[POPURI].animationTimer = 0;
-    
+
                             setEntityAnimationWithDirectionChange(npcs[POPURI].entityIndex, 8);
-    
+
                             if (getRandomNumberInRange(0, 19) <= 7) {
                                 npcs[POPURI].animationState = 1;
                             } else {
                                 npcs[POPURI].animationState = 0;
                             }
-    
+
                             npcs[POPURI].flags |= NPC_NEEDS_UPDATE;
                             break;
 
@@ -7240,25 +7282,25 @@ void handlePopuriAnimation(void) {
 
                             npcs[POPURI].speed = 0;
                             npcs[POPURI].animationTimer = 60;
-    
+
                             setEntityAnimationWithDirectionChange(npcs[POPURI].entityIndex, 0x72);
                             npcs[POPURI].animationState = 1;
-                            
+
                             npcs[POPURI].flags |= NPC_NEEDS_UPDATE;
                             break;
-                        
+
                     }
-                        
+
                     break;
-                
-                case 4:
+
+                case NPC_ANIM_FIXED:
 
                     setEntityAnimation(npcs[POPURI].entityIndex, 0x18);
 
                     entities[npcs[POPURI].entityIndex].coordinates.x = -192.0f;
                     entities[npcs[POPURI].entityIndex].coordinates.y = 0.0f;
                     entities[npcs[POPURI].entityIndex].coordinates.z = -160.0f;
-                
+
             }
             
         }
@@ -7283,28 +7325,28 @@ void handleElliAnimation(void) {
 
         if (checkEntityAnimationStateChanged(npcs[ELLI].entityIndex) && npcs[ELLI].animationTimer == 0) {
 
-            switch (npcs[ELLI].movingFlag) {
+            switch (npcs[ELLI].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     stopNPCMovement(ELLI);
                     break;
 
-                case 1:
-                    updateNPCRandomWalk(ELLI);
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(ELLI);
                     break;
 
-                case 2:
+                case NPC_ANIM_SPECIAL:
                     updateNPCSpecialAnimation(ELLI);
                     break;
 
-                case 4:
+                case NPC_ANIM_FIXED:
 
                     setEntityAnimation(npcs[ELLI].entityIndex, 0x18);
 
                     entities[npcs[ELLI].entityIndex].coordinates.x = -192.0f;
                     entities[npcs[ELLI].entityIndex].coordinates.y = 0.0f;
                     entities[npcs[ELLI].entityIndex].coordinates.z = -160.0f;
-                
+
             }
             
         }
@@ -7329,28 +7371,28 @@ void handleAnnAnimation(void) {
 
         if (checkEntityAnimationStateChanged(npcs[ANN].entityIndex) && npcs[ANN].animationTimer == 0) {
 
-            switch (npcs[ANN].movingFlag) {
+            switch (npcs[ANN].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     stopNPCMovement(ANN);
                     break;
 
-                case 1:
-                    updateNPCRandomWalk(ANN);
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(ANN);
                     break;
 
-                case 2:
+                case NPC_ANIM_SPECIAL:
                     updateNPCSpecialAnimation(ANN);
                     break;
 
-                case 4:
+                case NPC_ANIM_FIXED:
 
                     setEntityAnimation(npcs[ANN].entityIndex, 0x18);
 
                     entities[npcs[ANN].entityIndex].coordinates.x = -192.0f;
                     entities[npcs[ANN].entityIndex].coordinates.y = 0.0f;
                     entities[npcs[ANN].entityIndex].coordinates.z = -160.0f;
-                
+
             }
             
         }
@@ -7375,21 +7417,21 @@ void handleKarenAnimation(void) {
 
         if (checkEntityAnimationStateChanged(npcs[KAREN].entityIndex) && npcs[KAREN].animationTimer == 0) {
 
-            switch (npcs[KAREN].movingFlag) {
+            switch (npcs[KAREN].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     stopNPCMovement(KAREN);
                     break;
 
-                case 1:
-                    updateNPCRandomWalk(KAREN);
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(KAREN);
                     break;
 
-                case 2:
+                case NPC_ANIM_SPECIAL:
                     updateNPCSpecialAnimation(KAREN);
                     break;
 
-                case 3:
+                case NPC_ANIM_CUSTOM:
 
                     if (npcs[KAREN].animationState == 0) {
 
@@ -7406,7 +7448,7 @@ void handleKarenAnimation(void) {
                         }
 
                         npcs[KAREN].flags |= NPC_NEEDS_UPDATE;
-                        
+
                     } else {
 
                         npcs[KAREN].speed = 1;
@@ -7421,19 +7463,19 @@ void handleKarenAnimation(void) {
                         }
 
                         npcs[KAREN].flags |= NPC_NEEDS_UPDATE;
-                        
+
                     }
-                    
+
                     break;
-                
-                case 4:
+
+                case NPC_ANIM_FIXED:
 
                     setEntityAnimation(npcs[KAREN].entityIndex, 0x18);
 
                     entities[npcs[KAREN].entityIndex].coordinates.x = -192.0f;
                     entities[npcs[KAREN].entityIndex].coordinates.y = 0.0f;
                     entities[npcs[KAREN].entityIndex].coordinates.z = -160.0f;
-                
+
             }
             
         }
@@ -7458,67 +7500,68 @@ void handleBabyAnimation(void) {
             
             if (npcs[BABY].animationTimer == 0) {
     
-                switch (npcs[BABY].movingFlag) {
-    
-                    case 0:
+                switch (npcs[BABY].animationMode) {
+
+                    case NPC_ANIM_IDLE:
                         stopNPCWithAnimation(BABY, 0);
                         break;
-                    
-                    case 1:
-    
+
+                    case NPC_ANIM_WANDER:
+
                         npcs[BABY].speed = 0;
                         npcs[BABY].animationState = 10;
                         npcs[BABY].animationTimer = 0;
-    
+
                         if (npcAffection[BABY] < 50) {
-    
+
                             if (getRandomNumberInRange(0, 100)) {
-                                setEntityAnimation(npcs[BABY].entityIndex, 3);                            
+                                setEntityAnimation(npcs[BABY].entityIndex, 3);
                             } else {
                                 setEntityAnimation(npcs[BABY].entityIndex, 11);
                             }
-                            
+
                         } else if (npcAffection[BABY] >= 200 && !getRandomNumberInRange(0, 100)) {
                             setEntityAnimation(npcs[BABY].entityIndex, 9);
                         } else {
                             setEntityAnimation(npcs[BABY].entityIndex, 3);
                         }
-                        
+
                         npcs[BABY].flags |= NPC_NEEDS_UPDATE;
                         break;
-    
-                    case 2:
+
+                    case NPC_ANIM_SPECIAL:
                         npcs[BABY].speed = 0;
                         npcs[BABY].animationState = 10;
                         npcs[BABY].animationTimer = 0;
                         setEntityAnimation(npcs[BABY].entityIndex, 0xD);
                         npcs[BABY].flags |= NPC_NEEDS_UPDATE;
                         break;
-    
-                    case 3:
-                        switch (getRandomNumberInRange(0, 1)) {            
-                            case 0:                         
-                                updateNPCRandomWalkWithAnims(5, 0x39, 0x41);
+
+                    case NPC_ANIM_CUSTOM:
+                        switch (getRandomNumberInRange(0, 1)) {
+                            case 0:
+                                updateNPCRandomAnimationWithAnims(5, 0x39, 0x41);
                                 break;
-                            case 1:                         
-                                updateNPCRandomWalkWithAnims(5, 0x39, 0x49);
+                            case 1:
+                                updateNPCRandomAnimationWithAnims(5, 0x39, 0x49);
                                 break;
                             }
                         break;
-                    
-                    case 4:
+
+                    case NPC_ANIM_FIXED:
                         updateNPCComplexAnimation(5, 0xE, 0x16, 0x51, 0x59, 0x79, 0x69, 0x71, 0x1E, 0x2E, 0x61, 0x26);
                         break;
 
-                    case 5:
+                    case NPC_ANIM_BABY_CRIB:
                         npcs[BABY].speed = 0;
                         npcs[BABY].animationState = 10;
                         npcs[BABY].animationTimer = 0;
                         setEntityAnimation(npcs[BABY].entityIndex, 0x36);
                         npcs[BABY].flags |= NPC_NEEDS_UPDATE;
                         break;
-                        
+
                 }
+
             }
             
         }
@@ -7543,14 +7586,14 @@ void handleHarrisAnimation(void) {
 
             if (npcs[HARRIS].animationTimer == 0) {
 
-                switch (npcs[HARRIS].movingFlag) {
+                switch (npcs[HARRIS].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(HARRIS);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(HARRIS);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(HARRIS);
                         break;
                 }
             } 
@@ -7577,27 +7620,27 @@ void handleGrayAnimation(void) {
 
             if (npcs[GRAY].animationTimer == 0) {
 
-                switch (npcs[GRAY].movingFlag) {
+                switch (npcs[GRAY].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(GRAY);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(GRAY);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(GRAY);
                         break;
 
-                    case 2:
+                    case NPC_ANIM_SPECIAL:
 
                         npcs[GRAY].speed = 0;
                         npcs[GRAY].animationState = 10;
                         npcs[GRAY].animationTimer = 0;
-                    
+
                         setEntityAnimation(npcs[GRAY].entityIndex, 0x2A);
-                    
+
                         npcs[GRAY].flags |= NPC_NEEDS_UPDATE;
                         break;
-                    
+
                 }
             } 
             
@@ -7623,27 +7666,27 @@ void handleJeffAnimation(void) {
 
             if (npcs[JEFF].animationTimer == 0) {
 
-                switch (npcs[JEFF].movingFlag) {
+                switch (npcs[JEFF].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(JEFF);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(JEFF);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(JEFF);
                         break;
 
-                    case 2:
+                    case NPC_ANIM_SPECIAL:
 
                         npcs[JEFF].speed = 0;
                         npcs[JEFF].animationState = 10;
                         npcs[JEFF].animationTimer = 0;
-                    
+
                         setEntityAnimation(npcs[JEFF].entityIndex, 0x33);
-                    
+
                         npcs[JEFF].flags |= NPC_NEEDS_UPDATE;
                         break;
-                    
+
                 }
             } 
             
@@ -7669,14 +7712,14 @@ void handleCliffAnimation(void) {
 
             if (npcs[CLIFF].animationTimer == 0) {
 
-                switch (npcs[CLIFF].movingFlag) {
+                switch (npcs[CLIFF].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(CLIFF);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(CLIFF);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(CLIFF);
                         break;
                 }
             } 
@@ -7703,16 +7746,18 @@ void handleKaiAnimation(void) {
 
             if (npcs[KAI].animationTimer == 0) {
 
-                switch (npcs[KAI].movingFlag) {
+                switch (npcs[KAI].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(KAI);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(KAI);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(KAI);
                         break;
+
                 }
+
             } 
             
         }
@@ -7737,16 +7782,18 @@ void handleMayorAnimation(void) {
 
             if (npcs[MAYOR].animationTimer == 0) {
 
-                switch (npcs[MAYOR].movingFlag) {
+                switch (npcs[MAYOR].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(MAYOR);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(MAYOR);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(MAYOR);
                         break;
+
                 }
+
             } 
             
         }
@@ -7772,16 +7819,18 @@ void handleMayorWifeAnimation(void) {
 
             if (npcs[MAYOR_WIFE].animationTimer == 0) {
 
-                switch (npcs[MAYOR_WIFE].movingFlag) {
+                switch (npcs[MAYOR_WIFE].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(MAYOR_WIFE);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(MAYOR_WIFE);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(MAYOR_WIFE);
                         break;
+
                 }
+
             } 
             
         }
@@ -7806,16 +7855,17 @@ void handleLilliaAnimation(void) {
 
             if (npcs[LILLIA].animationTimer == 0) {
 
-                switch (npcs[LILLIA].movingFlag) {
+                switch (npcs[LILLIA].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(LILLIA);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(LILLIA);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(LILLIA);
                         break;
                 }
+
             } 
             
         }
@@ -7840,14 +7890,14 @@ void handleBasilAnimation(void) {
 
             if (npcs[BASIL].animationTimer == 0) {
 
-                switch (npcs[BASIL].movingFlag) {
+                switch (npcs[BASIL].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(BASIL);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(BASIL);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(BASIL);
                         break;
                 }
             } 
@@ -7872,7 +7922,7 @@ void handleEllenAnimation(void) {
 
         if (checkEntityAnimationStateChanged(npcs[ELLEN].entityIndex)) {
 
-            if (npcs[ELLEN].animationTimer == 0 && !npcs[ELLEN].movingFlag) {
+            if (npcs[ELLEN].animationTimer == 0 && !npcs[ELLEN].animationMode) {
                 npcs[ELLEN].speed = 0;
                 npcs[ELLEN].animationState = 10;
                 npcs[ELLEN].animationTimer = 0;
@@ -7920,17 +7970,17 @@ void handleGotzAnimation(void) {
         
         if (checkEntityAnimationStateChanged(npcs[GOTZ].entityIndex) && !npcs[GOTZ].animationTimer) {
 
-            switch (npcs[GOTZ].movingFlag) {
+            switch (npcs[GOTZ].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     stopNPCMovement(GOTZ);
                     break;
 
-                case 1:
-                    updateNPCRandomWalk(GOTZ);
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(GOTZ);
                     break;
 
-                case 3:
+                case NPC_ANIM_CUSTOM:
 
                     // FIXME: should be inline function
                     if (npcs[GOTZ].animationState == 0 ) {
@@ -7948,8 +7998,8 @@ void handleGotzAnimation(void) {
                         }
 
                         npcs[GOTZ].flags |= NPC_NEEDS_UPDATE;
-                        
-                    } else {       
+
+                    } else {
 
                         npcs[GOTZ].speed = 1;
                         npcs[GOTZ].animationTimer = 0;
@@ -7962,7 +8012,7 @@ void handleGotzAnimation(void) {
                             npcs[GOTZ].animationState = 0;
                         }
 
-                        npcs[GOTZ].flags |= NPC_NEEDS_UPDATE;                
+                        npcs[GOTZ].flags |= NPC_NEEDS_UPDATE;
                     }
 
                     break;
@@ -7991,17 +8041,17 @@ void handleSashaAnimation(void) {
         
         if (checkEntityAnimationStateChanged(npcs[SASHA].entityIndex) && !npcs[SASHA].animationTimer) {
 
-            switch (npcs[SASHA].movingFlag) {
+            switch (npcs[SASHA].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     stopNPCMovement(SASHA);
                     break;
 
-                case 1:
-                    updateNPCRandomWalk(SASHA);
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(SASHA);
                     break;
 
-                case 3:
+                case NPC_ANIM_CUSTOM:
 
                     // FIXME: should be inline function
                     if (npcs[SASHA].animationState == 0 ) {
@@ -8018,8 +8068,8 @@ void handleSashaAnimation(void) {
                         }
 
                         npcs[SASHA].flags |= NPC_NEEDS_UPDATE;
-                        
-                    } else {       
+
+                    } else {
 
                         npcs[SASHA].speed = 1;
                         npcs[SASHA].animationTimer = 0;
@@ -8033,7 +8083,7 @@ void handleSashaAnimation(void) {
                         }
 
                         npcs[SASHA].flags |= NPC_NEEDS_UPDATE;
-                        
+
                     }
 
                     break;
@@ -8083,21 +8133,21 @@ void handleKentAnimation(void) {
         
         if (checkEntityAnimationStateChanged(npcs[KENT].entityIndex) && !npcs[KENT].animationTimer) {
 
-            switch (npcs[KENT].movingFlag) {
+            switch (npcs[KENT].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     stopNPCMovement(KENT);
                     break;
-                
-                case 1:
-                    updateNPCRandomWalk(KENT);
+
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(KENT);
                     break;
 
-                case 2:
+                case NPC_ANIM_SPECIAL:
 
                     // FIXME: should be inline function
                     if (npcs[KENT].animationState == 0) {
-                        
+
                         npcs[KENT].speed = 0;
                         npcs[KENT].animationTimer = 0;
                         setEntityAnimationWithDirectionChange(npcs[KENT].entityIndex, 0);
@@ -8106,9 +8156,9 @@ void handleKentAnimation(void) {
                         if (tempDirection < NORTHEAST) {
                             npcs[KENT].direction = tempDirection * 2 ;
                             npcs[KENT].animationState = 1;
-                        } 
+                        }
 
-                        npcs[KENT].flags |= NPC_NEEDS_UPDATE;  
+                        npcs[KENT].flags |= NPC_NEEDS_UPDATE;
 
                     } else {
 
@@ -8330,42 +8380,42 @@ void handleCarpenter1Animation(void) {
         
         if (checkEntityAnimationStateChanged(npcs[CARPENTER_1].entityIndex) && npcs[CARPENTER_1].animationTimer == 0) {
 
-            switch (npcs[CARPENTER_1].movingFlag) {
+            switch (npcs[CARPENTER_1].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     stopNPCMovement(CARPENTER_1);
                     break;
-                
-                case 1:
-                    updateNPCRandomWalk(CARPENTER_1);
+
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(CARPENTER_1);
                     break;
 
-                case 2:
+                case NPC_ANIM_SPECIAL:
 
                     switch (npcs[CARPENTER_1].animationState) {
-                        
+
                         case 0:
-                                
+
                             npcs[CARPENTER_1].speed = 0;
                             npcs[CARPENTER_1].animationTimer = 0;
-                            
+
                             setEntityAnimationWithDirectionChange(npcs[CARPENTER_1].entityIndex, 0);
-                            
+
                             temp = getRandomNumberInRange(0, 60);
-                            
+
                             if (temp < 8) {
                                 npcs[CARPENTER_1].direction = temp;
                                 npcs[CARPENTER_1].animationState = 1;
-                            } 
-                            
+                            }
+
                             if (7 < temp && temp < 21) {
                                 npcs[CARPENTER_1].animationState = 2;
                             }
-                        
+
                             npcs[CARPENTER_1].flags |= NPC_NEEDS_UPDATE;
-                            
+
                             break;
-                        
+
                         case 1:
 
                             npcs[CARPENTER_1].speed = 1;
@@ -8373,7 +8423,7 @@ void handleCarpenter1Animation(void) {
                             setEntityAnimationWithDirectionChange(npcs[CARPENTER_1].entityIndex, 8);
 
                             temp = getRandomNumberInRange(0, 19);
-                            
+
                             if (temp < 8) {
                                 npcs[CARPENTER_1].animationState = 1;
                             } else {
@@ -8381,23 +8431,24 @@ void handleCarpenter1Animation(void) {
                             }
 
                             npcs[CARPENTER_1].flags |= NPC_NEEDS_UPDATE;
-                            
+
                             break;
-                        
+
                         case 2:
-                            
+
                             npcs[CARPENTER_1].speed = 0;
                             npcs[CARPENTER_1].animationTimer = 60;
                             setEntityAnimationWithDirectionChange(npcs[CARPENTER_1].entityIndex, 20);
-    
+
                             npcs[CARPENTER_1].animationState = 1;
                             npcs[CARPENTER_1].flags |= NPC_NEEDS_UPDATE;
-                            
+
                             break;
-                        
+
                     }
 
             }
+
         }
 
         if (npcs[CARPENTER_1].animationTimer) {
@@ -8420,42 +8471,42 @@ void handleCarpenter2Animation(void) {
         
         if (checkEntityAnimationStateChanged(npcs[CARPENTER_2].entityIndex) && npcs[CARPENTER_2].animationTimer == 0) {
 
-            switch (npcs[CARPENTER_2].movingFlag) {
+            switch (npcs[CARPENTER_2].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     stopNPCMovement(CARPENTER_2);
                     break;
-                
-                case 1:
-                    updateNPCRandomWalk(CARPENTER_2);
+
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(CARPENTER_2);
                     break;
 
-                case 2:
+                case NPC_ANIM_SPECIAL:
 
                     switch (npcs[CARPENTER_2].animationState) {
-                        
+
                         case 0:
-                                
+
                             npcs[CARPENTER_2].speed = 0;
                             npcs[CARPENTER_2].animationTimer = 0;
-                            
+
                             setEntityAnimationWithDirectionChange(npcs[CARPENTER_2].entityIndex, 0);
-                            
+
                             temp = getRandomNumberInRange(0, 60);
-                            
+
                             if (temp < 8) {
                                 npcs[CARPENTER_2].direction = temp;
                                 npcs[CARPENTER_2].animationState = 1;
-                            } 
-                            
+                            }
+
                             if (7 < temp && temp < 21) {
                                 npcs[CARPENTER_2].animationState = 2;
                             }
-                        
+
                             npcs[CARPENTER_2].flags |= NPC_NEEDS_UPDATE;
-                            
+
                             break;
-                        
+
                         case 1:
 
                             npcs[CARPENTER_2].speed = 1;
@@ -8463,7 +8514,7 @@ void handleCarpenter2Animation(void) {
                             setEntityAnimationWithDirectionChange(npcs[CARPENTER_2].entityIndex, 8);
 
                             temp = getRandomNumberInRange(0, 19);
-                            
+
                             if (temp < 8) {
                                 npcs[CARPENTER_2].animationState = 1;
                             } else {
@@ -8471,23 +8522,24 @@ void handleCarpenter2Animation(void) {
                             }
 
                             npcs[CARPENTER_2].flags |= NPC_NEEDS_UPDATE;
-                            
+
                             break;
-                        
+
                         case 2:
-                            
+
                             npcs[CARPENTER_2].speed = 0;
                             npcs[CARPENTER_2].animationTimer = 60;
                             setEntityAnimationWithDirectionChange(npcs[CARPENTER_2].entityIndex, 28);
-    
+
                             npcs[CARPENTER_2].animationState = 1;
                             npcs[CARPENTER_2].flags |= NPC_NEEDS_UPDATE;
-                            
+
                             break;
-                        
+
                     }
 
             }
+
         }
 
         if (npcs[CARPENTER_2].animationTimer) {
@@ -8510,26 +8562,26 @@ void handleMasterCarpenterAnimation(void) {
 
             if (npcs[MASTER_CARPENTER].animationTimer == 0) {
 
-                switch (npcs[MASTER_CARPENTER].movingFlag) {
+                switch (npcs[MASTER_CARPENTER].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(MASTER_CARPENTER);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(MASTER_CARPENTER);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(MASTER_CARPENTER);
                         break;
 
-                    case 2:
+                    case NPC_ANIM_SPECIAL:
                         npcs[MASTER_CARPENTER].speed = 0;
                         npcs[MASTER_CARPENTER].animationState = 10;
                         npcs[MASTER_CARPENTER].animationTimer = 0;
-                    
+
                         setEntityAnimation(npcs[MASTER_CARPENTER].entityIndex, 0x10);
-                    
+
                         npcs[MASTER_CARPENTER].flags |= NPC_NEEDS_UPDATE;
                         break;
-                    
+
                 }
                 
             }
@@ -8556,16 +8608,16 @@ void handleHarvestSprite1Animation(void) {
 
             if (npcs[HARVEST_SPRITE_1].animationTimer == 0) {
 
-                switch (npcs[HARVEST_SPRITE_1].movingFlag) {
+                switch (npcs[HARVEST_SPRITE_1].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(HARVEST_SPRITE_1);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(HARVEST_SPRITE_1);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(HARVEST_SPRITE_1);
                         break;
-                    
+
                 }
                 
             }
@@ -8592,16 +8644,16 @@ void handleHarvestSprite2Animation(void) {
 
             if (npcs[HARVEST_SPRITE_2].animationTimer == 0) {
 
-                switch (npcs[HARVEST_SPRITE_2].movingFlag) {
+                switch (npcs[HARVEST_SPRITE_2].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(HARVEST_SPRITE_2);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(HARVEST_SPRITE_2);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(HARVEST_SPRITE_2);
                         break;
-                    
+
                 }
                 
             }
@@ -8628,16 +8680,16 @@ void handleHarvestSprite3Animation(void) {
 
             if (npcs[HARVEST_SPRITE_3].animationTimer == 0) {
 
-                switch (npcs[HARVEST_SPRITE_3].movingFlag) {
+                switch (npcs[HARVEST_SPRITE_3].animationMode) {
 
-                    case 0:
+                    case NPC_ANIM_IDLE:
                         stopNPCMovement(HARVEST_SPRITE_3);
                         break;
 
-                    case 1:
-                        updateNPCRandomWalk(HARVEST_SPRITE_3);
+                    case NPC_ANIM_WANDER:
+                        updateNPCRandomAnimation(HARVEST_SPRITE_3);
                         break;
-                    
+
                 }
                 
             }
@@ -8762,28 +8814,28 @@ void handleMariaHarrisBabyAnimation(void) {
         
         if (checkEntityAnimationStateChanged(npcs[MARIA_HARRIS_BABY].entityIndex) && npcs[MARIA_HARRIS_BABY].animationTimer == 0) {
 
-            switch (npcs[MARIA_HARRIS_BABY].movingFlag) {
+            switch (npcs[MARIA_HARRIS_BABY].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     npcs[MARIA_HARRIS_BABY].speed = 0;
                     npcs[MARIA_HARRIS_BABY].animationState = 10;
                     npcs[MARIA_HARRIS_BABY].animationTimer = 0;
-                
+
                     setEntityAnimationWithDirectionChange(npcs[MARIA_HARRIS_BABY].entityIndex, 8);
-                
+
                     npcs[MARIA_HARRIS_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
 
-                case 1:
+                case NPC_ANIM_WANDER:
                     npcs[MARIA_HARRIS_BABY].speed = 0;
                     npcs[MARIA_HARRIS_BABY].animationState = 10;
                     npcs[MARIA_HARRIS_BABY].animationTimer = 0;
-                
+
                     setEntityAnimationWithDirectionChange(npcs[MARIA_HARRIS_BABY].entityIndex, 0);
-                
+
                     npcs[MARIA_HARRIS_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
-                
+
             }
         }
 
@@ -8805,28 +8857,28 @@ void handlePopuriGrayBabyAnimation(void) {
         
         if (checkEntityAnimationStateChanged(npcs[POPURI_GRAY_BABY].entityIndex) && npcs[POPURI_GRAY_BABY].animationTimer == 0) {
 
-            switch (npcs[POPURI_GRAY_BABY].movingFlag) {
+            switch (npcs[POPURI_GRAY_BABY].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     npcs[POPURI_GRAY_BABY].speed = 0;
                     npcs[POPURI_GRAY_BABY].animationState = 10;
                     npcs[POPURI_GRAY_BABY].animationTimer = 0;
-                
+
                     setEntityAnimationWithDirectionChange(npcs[POPURI_GRAY_BABY].entityIndex, 8);
-                
+
                     npcs[POPURI_GRAY_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
 
-                case 1:
+                case NPC_ANIM_WANDER:
                     npcs[POPURI_GRAY_BABY].speed = 0;
                     npcs[POPURI_GRAY_BABY].animationState = 10;
                     npcs[POPURI_GRAY_BABY].animationTimer = 0;
-                
+
                     setEntityAnimationWithDirectionChange(npcs[POPURI_GRAY_BABY].entityIndex, 0);
-                
+
                     npcs[POPURI_GRAY_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
-                
+
             }
         }
 
@@ -8848,28 +8900,28 @@ void handleElliJeffBabyAnimation(void) {
         
         if (checkEntityAnimationStateChanged(npcs[ELLI_JEFF_BABY].entityIndex) && npcs[ELLI_JEFF_BABY].animationTimer == 0) {
 
-            switch (npcs[ELLI_JEFF_BABY].movingFlag) {
+            switch (npcs[ELLI_JEFF_BABY].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     npcs[ELLI_JEFF_BABY].speed = 0;
                     npcs[ELLI_JEFF_BABY].animationState = 10;
                     npcs[ELLI_JEFF_BABY].animationTimer = 0;
-                
+
                     setEntityAnimationWithDirectionChange(npcs[ELLI_JEFF_BABY].entityIndex, 8);
-                
+
                     npcs[ELLI_JEFF_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
 
-                case 1:
+                case NPC_ANIM_WANDER:
                     npcs[ELLI_JEFF_BABY].speed = 0;
                     npcs[ELLI_JEFF_BABY].animationState = 10;
                     npcs[ELLI_JEFF_BABY].animationTimer = 0;
-                
+
                     setEntityAnimationWithDirectionChange(npcs[ELLI_JEFF_BABY].entityIndex, 0);
-                
+
                     npcs[ELLI_JEFF_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
-                
+
             }
         }
 
@@ -8891,28 +8943,28 @@ void handleAnnCliffBabyAnimation(void) {
         
         if (checkEntityAnimationStateChanged(npcs[ANN_CLIFF_BABY].entityIndex) && npcs[ANN_CLIFF_BABY].animationTimer == 0) {
 
-            switch (npcs[ANN_CLIFF_BABY].movingFlag) {
+            switch (npcs[ANN_CLIFF_BABY].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     npcs[ANN_CLIFF_BABY].speed = 0;
                     npcs[ANN_CLIFF_BABY].animationState = 10;
                     npcs[ANN_CLIFF_BABY].animationTimer = 0;
-                
+
                     setEntityAnimationWithDirectionChange(npcs[ANN_CLIFF_BABY].entityIndex, 8);
-                
+
                     npcs[ANN_CLIFF_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
 
-                case 1:
+                case NPC_ANIM_WANDER:
                     npcs[ANN_CLIFF_BABY].speed = 0;
                     npcs[ANN_CLIFF_BABY].animationState = 10;
                     npcs[ANN_CLIFF_BABY].animationTimer = 0;
-                
+
                     setEntityAnimationWithDirectionChange(npcs[ANN_CLIFF_BABY].entityIndex, 0);
-                
+
                     npcs[ANN_CLIFF_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
-                
+
             }
         }   
 
@@ -8934,28 +8986,28 @@ void handleKarenKaiBabyAnimation(void) {
         
         if (checkEntityAnimationStateChanged(npcs[KAREN_KAI_BABY].entityIndex) && npcs[KAREN_KAI_BABY].animationTimer == 0) {
 
-            switch (npcs[KAREN_KAI_BABY].movingFlag) {
+            switch (npcs[KAREN_KAI_BABY].animationMode) {
 
-                case 0:
+                case NPC_ANIM_IDLE:
                     npcs[KAREN_KAI_BABY].speed = 0;
                     npcs[KAREN_KAI_BABY].animationState = 10;
                     npcs[KAREN_KAI_BABY].animationTimer = 0;
-                
+
                     setEntityAnimationWithDirectionChange(npcs[KAREN_KAI_BABY].entityIndex, 8);
-                
+
                     npcs[KAREN_KAI_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
 
-                case 1:
+                case NPC_ANIM_WANDER:
                     npcs[KAREN_KAI_BABY].speed = 0;
                     npcs[KAREN_KAI_BABY].animationState = 10;
                     npcs[KAREN_KAI_BABY].animationTimer = 0;
-                
+
                     setEntityAnimationWithDirectionChange(npcs[KAREN_KAI_BABY].entityIndex, 0);
-                
+
                     npcs[KAREN_KAI_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
-                
+
             }
         }
 
@@ -8977,16 +9029,16 @@ void handleEntomologistAnimation(void) {
     
         if (checkEntityAnimationStateChanged(npcs[ENTOMOLOGIST].entityIndex) && npcs[ENTOMOLOGIST].animationTimer == 0) {
 
-            switch (npcs[ENTOMOLOGIST].movingFlag) {
+            switch (npcs[ENTOMOLOGIST].animationMode) {
 
-                case 0:
-                    stopNPCMovement(0x2E);
+                case NPC_ANIM_IDLE:
+                    stopNPCMovement(ENTOMOLOGIST);
                     break;
-                    
-                case 1:
-                    updateNPCRandomWalk(0x2E);
+
+                case NPC_ANIM_WANDER:
+                    updateNPCRandomAnimation(ENTOMOLOGIST);
                     break;
-                
+
             }
         }
 
@@ -8994,7 +9046,7 @@ void handleEntomologistAnimation(void) {
             npcs[ENTOMOLOGIST].animationTimer--; 
         } 
         
-        updateNPCMovement(0x2E);
+        updateNPCMovement(ENTOMOLOGIST);
     
     }   
     
@@ -9004,7 +9056,7 @@ void handleEntomologistAnimation(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/npc", checkNPCInteraction);
 
-static inline bool checkNotHoldingItem() {
+static inline bool checkHoldingItem() {
     return gPlayer.heldItem != 0;
 }
 
@@ -9065,7 +9117,7 @@ u8 checkNPCInteraction(void) {
                     } 
                                  
                 } else {
-                    temp = checkNotHoldingItem();
+                    temp = checkHoldingItem();
                 }
    
                 if (temp != 0xFFFF) {
@@ -9086,7 +9138,7 @@ u8 checkNPCInteraction(void) {
                     
                     showMessageBox(0, npcToDialogueBytecodeIndex[i], temp, 0, 0);
                     result = 1;
-                    npcs[i].movingFlag = 0x10;
+                    npcs[i].animationMode = NPC_ANIM_TALKING;
                     
                 } 
             }    
@@ -9114,7 +9166,7 @@ bool findNPCToTalkTo(void) {
         if (npcs[i].flags & NPC_ENTITY_LOADED) {
 
             if (entities[npcs[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER) {
-                npcs[i].movingFlag = 0x20;
+                npcs[i].animationMode = NPC_ANIM_FACE_PLAYER;
                 npcTalkingTo = i;
                 found = TRUE;
             }

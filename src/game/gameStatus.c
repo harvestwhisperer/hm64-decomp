@@ -20,11 +20,11 @@
 u32 dailyEventBits[32];
 u32 lifeEventBits[32];
 u32 specialDialogueBits[16];
-u32 readMailBits[];
-u32 mailboxBits[];
+u32 readMailBits[3];
+u32 mailboxBits[3];
 u32 recipesBits[1];
 u32 albumBits;
-u32 powerNutBits;
+u32 acquiredPowerNutBits;
 
 // forward declaration
 void toggleSpecialDialogueBit(u16);
@@ -1004,9 +1004,10 @@ u32 checkSpecialDialogueBit(u16 bitIndex) {
     return specialDialogueBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_8006523C);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", addToReadMail);
 
-void func_8006523C(u16 bitIndex) {
+// unused
+void addToReadMail(u16 bitIndex) {
     u32 temp = bitIndex;
     readMailBits[temp / 32] |= (1 << (temp & 0x1F));
 }
@@ -1032,16 +1033,18 @@ void setMail(u16 bitIndex) {
     mailboxBits[temp / 32] |= (1 << (temp & 0x1F));
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80065308);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", readLetter);
 
-void func_80065308(u16 bitIndex) {
+// unused
+void readLetter(u16 bitIndex) {
     u32 temp = bitIndex;
     mailboxBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80065340);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkLetterInMailBox);
 
-inline u32 func_80065340(u16 bitIndex) {
+// unused
+inline u32 checkLetterInMailBox(u16 bitIndex) {
     u32 temp = bitIndex;
     return mailboxBits[temp / 32] & (1 << (temp & 0x1F));
 }
@@ -1082,68 +1085,70 @@ u8 readMail(void) {
             result = i;
             
         }
+
     }
     
     return result;
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setAlbumPicture);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setAlbumPictureFromLetter);
 
-void setAlbumPicture(u8 pictureBitIndex) {
+void setAlbumPictureFromLetter(u8 letterIndex) {
     
-    switch (pictureBitIndex) {
-        case 0x24:
-        case 0x25:
-        case 0x26:
-        case 0x27:
-        case 0x28:
-            albumBits |= 0x80;
+    switch (letterIndex) {
+        case 36:
+        case 37:
+        case 38:
+        case 39:
+        case 40:
+            albumBits |= PHOTO_WEDDING;
             break;
-        case 0x29:
-        case 0x2A:
-        case 0x2B:
-        case 0x2C:
-        case 0x2D:
-            albumBits |= 0x100;
+        case 41:
+        case 42:
+        case 43:
+        case 44:
+        case 45:
+            albumBits |= PHOTO_BIRTH;
             break;
-        case 0x2E:
-            albumBits |= 2;
+        case 46:
+            albumBits |= PHOTO_SOWING_FESTIVAL;
             break;
-        case 0x2F:
-            albumBits |= 4;
+        case 47:
+            albumBits |= PHOTO_HORSE_RACE;
             break;
-        case 0x30:
-            albumBits |= 0x10;
+        case 48:
+            albumBits |= PHOTO_SEA_FESTIVAL;
             break;
-        case 0x31:
-            albumBits |= 0x40;
+        case 49:
+            albumBits |= PHOTO_DOG_RACE;
             break;
-        case 0x32:
-            albumBits |= 0x20;
+        case 50:
+            albumBits |= PHOTO_HOT_SPRINGS;
             break;
-        case 0x33:
-            albumBits |= 0x4000;
+        case 51:
+            albumBits |= PHOTO_HOME_EXTENSIONS;
             break;
-        case 0x34:
-            albumBits |= 8;
+        case 52:
+            albumBits |= PHOTO_COW_FESTIVAL;
             break;
-        case 0x35:
-            albumBits |= 0x200;
+        case 53:
+            albumBits |= PHOTO_MARIA_FIREFLIES;
             break;
-        case 0x36:
-            albumBits |= 0x400;
+        case 54:
+            albumBits |= PHOTO_POPURI_BLUE_MIST;
             break;
-        case 0x37:
-            albumBits |= 0x800;
+        case 55:
+            albumBits |= PHOTO_ELLI_ESSENCE_OF_MOONDROP;
             break;
-        case 0x38:
-            albumBits |= 0x1000;
+        case 56:
+            albumBits |= PHOTO_ANN_RABBIT;
             break;
-        case 0x39:
-            albumBits |= 0x2000;
+        case 57:
+            albumBits |= PHOTO_KAREN_KEIFU_FAIRIES;
             break;
         }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", getAcquiredRecipesTotal);

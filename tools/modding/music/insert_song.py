@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Enhanced script to insert song data into N64 ROM with sequence selection.
-Usage: python insert_song_updated.py <song.bin>
+Quick script to insert song data into original ROM.
+Usage: python insert_song_updated.py <song.seq>
 """
 
 import sys
@@ -122,16 +122,16 @@ def get_user_choice(sequences):
             print("Invalid input. Please enter a number or 'q' to quit.")
 
 
-def insert_song(bin_file, rom_path, sequence):
+def insert_song(seq_file, rom_path, sequence):
     """Insert song data into ROM at the specified sequence location."""
 
     # Check if bin file exists
-    if not os.path.exists(bin_file):
-        print(f"Error: Song file '{bin_file}' not found!")
+    if not os.path.exists(seq_file):
+        print(f"Error: Song file '{seq_file}' not found!")
         return 1
 
     # Read the song data
-    with open(bin_file, 'rb') as f:
+    with open(seq_file, 'rb') as f:
         song_data = f.read()
 
     song_size = len(song_data)
@@ -176,10 +176,10 @@ def insert_song(bin_file, rom_path, sequence):
 def main():
     """Main function."""
     if len(sys.argv) != 2:
-        print("Usage: python insert_song_updated.py <song.bin>")
+        print("Usage: python insert_song.py <song.seq>")
         sys.exit(1)
 
-    bin_file = sys.argv[1]
+    seq_file = sys.argv[1]
 
     # Find the ROM file
     print(f"Searching for '{ROM_FILENAME}'...")
@@ -208,7 +208,7 @@ def main():
     selected_sequence = SEQUENCES[choice_idx]
 
     # Insert the song
-    result = insert_song(bin_file, rom_path, selected_sequence)
+    result = insert_song(seq_file, rom_path, selected_sequence)
     sys.exit(result)
 
 

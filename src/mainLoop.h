@@ -7,7 +7,7 @@
 #define NO_OP 0
 #define MAIN_GAME 1
 #define MAP_LOAD 2
-// unsure: DREAM_CUTSCENES 3
+#define DREAM_CUTSCENES 3
 #define SET_AUDIO_AND_LIGHTING 4
 #define LEVEL_LOAD 5
 #define EXIT_LEVEL 6
@@ -16,7 +16,7 @@
 #define DIALOGUE 9
 #define MESSAGE_BOX 10
 #define END_CUTSCENE 0xB
-#define PINK_OVERLAY_TEXT 0xC
+#define DIALOGUE_SELECTION 0xC
 #define END_OF_DAY_1 0xD
 #define END_OF_DAY_2 0xE
 #define WAIT_AUDIO_FINISH 0xF
@@ -77,65 +77,5 @@ extern void noOpCallback(void);
 
 extern volatile u16 mainLoopCallbackCurrentIndex;
 extern void (*mainLoopCallbacksTable[MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE])();
-
-/*
-noOpCallback 
-mainGameLoopCallback
-mapLoadCallback 
-cutsceneCompletionCallback 
-setMapAudioAndLighting 
-levelLoadCallback 
-exitLevelCallback 
-func_8005CB50 
-handleRotationCallback 
-handleDialogueCallback 
-messageBoxCallback 
-endCutsceneCallback
-pinkOverlayMenuCallback 
-endOfDayCallback1 
-endOfDayCallback2 
-waitForAudioFinishCallback 
-tvMainLoopCallback 
-endOfFestivalDayCallback2 
-func_800D93CC 
-shopDialogueCallback 
-loadPauseScreenCallback 
-loadToolboxScreenCallback 
-loadFreezerScreenCallback 
-loadCabinetScreenCallback
-loadHouseExtensionsSelectionCallback 
-loadEstimateScreenCallback 
-loadKitchenPictureCallback 
-loadCalendarScreenCallback 
-loadRecipeBookScreenCallback 
-loadAlbumScreenCallback 
-loadPauseScreenMapScreenCallback 
-loadRaceBettingScreenCallback 
-loadRaceResultsScreenCallback 
-loadRaceGiftsScreenCallback 
-loadLotteryScreenCallback 
-pauseScreenCallback
-toolboxScreenCallback 
-freezerScreenCallback 
-cabinetScreenCallback 
-houseExtensionsSelectionScreenCallback 
-estimateScreenCallback 
-kitchenPictureScreenCallback 
-calendarScreenCallback 
-recipeBookScreenCallback 
-albumScreenCallback 
-pauseScreenMapCallback 
-raceBettingScreenCallback 
-raceResultsScreenCallback
-raceGiftsScreenCallback 
-lotteryScreenCallback 
-titleScreenMainLoopCallback
-loadNamingScreenCallback 
-namingScreenCallback
-gameSelectCallback 
-farmRankingScreenCallback 
-func_800657B4 
-func_800657C4
-*/
 
 #endif

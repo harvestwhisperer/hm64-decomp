@@ -480,7 +480,7 @@ bool handlePlayerAnimalInteraction(void) {
                 }
                 
                 deactivateEntity(dogInfo.entityIndex);
-                setPlayerAction(4, 6);
+                setPlayerAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
 
                 dogInfo.flags &= ~(DOG_ENTITY_LOADED | DOG_FOLLOWING);
                 dogInfo.flags |= DOG_HELD;
@@ -515,7 +515,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             
                         } else {
-                            showTextBox(0, 6, 0x5C, 0, 2);
+                            showTextBox(0, SHOP_TEXT_INDEX, 0x5C, 0, 2);
                         }
                         
                         set = TRUE;
@@ -552,7 +552,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             deactivateEntity(gChickens[i].entityIndex);
                             
-                            setPlayerAction(4, 6);
+                            setPlayerAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
                             gPlayer.heldAnimalIndex = i;
                             
                             gChickens[i].flags &= ~CHICKEN_ENTITY_LOADED;
@@ -575,7 +575,7 @@ bool handlePlayerAnimalInteraction(void) {
 
                             if ((gFarmAnimals[i].type == ADULT_COW || gFarmAnimals[i].type == ADULT_SHEEP) && (!(COW_HAPPY < gFarmAnimals[i].condition && gFarmAnimals[i].condition < COW_DEAD))) {
                                 
-                                setGameVariableString(0xD, gFarmAnimals[i].name, 6);
+                                setGameVariableString(13, gFarmAnimals[i].name, 6);
                                 // pink overlay message
                                 showPinkOverlayText(7);
                                 
@@ -590,7 +590,7 @@ bool handlePlayerAnimalInteraction(void) {
                                 setgAnimalSalePrice();
                                 
                             }  else {
-                                showTextBox(0, 6, 0x5C, 0, 2);
+                                showTextBox(0, SHOP_TEXT_INDEX, 92, 0, 2);
                             }
                         
                         } else if (checkDailyEventBit(0x1F)) {
@@ -604,7 +604,7 @@ bool handlePlayerAnimalInteraction(void) {
                                 gSelectedAnimalIndex = i;
                                 
                             }  else {
-                                showTextBox(0, 4, 0x35, 0, 0);
+                                showTextBox(0, FESTIVALS_TEXT_INDEX, 53, 0, 0);
                             }
                             
                         } else {
@@ -655,7 +655,7 @@ bool handlePlayerAnimalInteraction(void) {
     
                             }
     
-                            showTextBox(1, 7, textIndex, 0, 2);
+                            showTextBox(1, ANIMAL_INTERACTIONS_TEXT_INDEX, textIndex, 0, 2);
     
                             gFarmAnimals[i].flags |= (FARM_ANIMAL_APPROACHING  | FARM_ANIMAL_FOLLOWING);
                             
@@ -699,16 +699,13 @@ bool handlePlayerAnimalInteraction(void) {
 
                             if (groundObjectIndex == 0xFF || (getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8)) {
                                 
-                                setPlayerAction(0xD, 0xF);
+                                setPlayerAction(MOUNTING_HORSE, ANIM_MOUNT_HORSE);
 
                                 horseInfo.flags &= ~(HORSE_ENTITY_LOADED | HORSE_FOLLOWING);
 
-                                if (!(horseInfo.flags & HORSE_JUMPED_DAILY)) {
-
+                                if (!(horseInfo.flags & HORSE_RODE_DAILY)) {
                                     adjustHorseAffection(1);
-
-                                    horseInfo.flags |= HORSE_JUMPED_DAILY;
-
+                                    horseInfo.flags |= HORSE_RODE_DAILY;
                                 }
                                 
                                 set = TRUE;
@@ -725,9 +722,9 @@ bool handlePlayerAnimalInteraction(void) {
                         setGameVariableString(3, horseInfo.name, 6);
                         
                         if (horseInfo.age == 0) {
-                            showTextBox(1, 7, 7, 0, 2);
+                            showTextBox(1, ANIMAL_INTERACTIONS_TEXT_INDEX, 7, 0, 2);
                         } else {
-                            showTextBox(1, 7, 8, 0, 2);
+                            showTextBox(1, ANIMAL_INTERACTIONS_TEXT_INDEX, 8, 0, 2);
                         }
 
                         horseInfo.flags |= HORSE_FOLLOWING;
@@ -876,7 +873,7 @@ bool handlePlayerAnimalInteraction(void) {
 
                             deactivateEntity(gMiscAnimals[i].entityIndex);
                             
-                            setPlayerAction(4, 6);
+                            setPlayerAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
                             gPlayer.heldAnimalIndex = i;
 
                             gMiscAnimals[i].flags = 0;
@@ -1162,7 +1159,7 @@ void resetAnimalStatuses(void) {
 
     updateHorseAge();
 
-    horseInfo.flags &= ~(HORSE_BRUSHED_DAILY | HORSE_WHISTLED_DAILY | HORSE_JUMPED_DAILY | HORSE_TALKED_TO_DAILY);
+    horseInfo.flags &= ~(HORSE_BRUSHED_DAILY | HORSE_WHISTLED_DAILY | HORSE_RODE_DAILY | HORSE_TALKED_TO_DAILY);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", initializeNewChicken);

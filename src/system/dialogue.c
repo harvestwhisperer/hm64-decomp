@@ -798,7 +798,7 @@ void handleMenuNavigation(u16 index) {
 
     bool set = FALSE;
 
-    if (!(messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags & (0x40 | 0x80))) { 
+    if (!(messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) { 
 
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
 
@@ -822,6 +822,7 @@ void handleMenuNavigation(u16 index) {
                 set = TRUE;
                 
             }
+
         }
 
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
@@ -849,7 +850,9 @@ void handleMenuNavigation(u16 index) {
                     set = TRUE;
                 
                 }
+
             }
+
         }
 
         if (dialogues[index].sessionManager.totalMenuRows > messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows) { 
@@ -882,7 +885,9 @@ void handleMenuNavigation(u16 index) {
                 }
                 
             }
+
         }
+        
     }
    
 }

@@ -1,5 +1,5 @@
 ; ============================================
-; Bank 8 - Weddings, rival events, new years, starry night festval
+; Bank 8 - Village 1 Cutscenes
 ; ============================================
 
 #include "entities.h"
@@ -85,7 +85,7 @@
     BRANCH_U16_VAR_WITHIN_RANGE 445, 445, gCutsceneIndex, .branch_120868
 
 .sub_119034:
-    SET_U32_VALUE 0, 2150584320
+    SET_U32_VALUE 0, var0
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 

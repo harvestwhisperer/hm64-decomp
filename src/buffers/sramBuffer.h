@@ -25,17 +25,17 @@ typedef struct {
     u16 fodderQuantity;         // 0x2A-0x2B
     u8 seasonTomorrow;          // 0x2C
 
-    u8 unk_2D;                  // D_801FC154
-    u8 unk_2E;                  // D_80204DF4
-    u8 unk_2F;                  // D_80237458
-    u8 unk_30;                  // D_8018A725
-    u8 unk_31;                  // D_802373E8
-    u8 unk_32;                  // D_8013DC2C
-    u8 unk_33;                  // D_801FAD91
-    u8 unk_34;                  // D_801C3E28
-    u8 unk_35;                  // D_801C3F70
-    u8 unk_36;                  // D_80205636
-    u8 unk_37;                  // D_802373A8
+    u8 turnipSeedsQuantity;                 
+    u8 potatoSeedsQuantity;                  
+    u8 eggplantSeedsQuantity;                  
+    u8 cabbageSeedsQuantity;                  
+    u8 strawberrySeedsQuantity;                  
+    u8 tomatoSeedsQuantity;                  
+    u8 cornSeedsQuantity;                  
+    u8 grassSeedsQuantity;                 
+    u8 moondropSeedsQuantity;                  
+    u8 pinkCatMintSeedsQuantity;                  
+    u8 blueMistSeedsQuantity;                  
 
     u8 maximumStamina;          // 0x38
     u8 currentStamina;          // 0x39
@@ -64,20 +64,20 @@ typedef struct {
     u8 babyBirthdaySeason;      // 0x52
     u8 babyBirthdayDate;        // 0x53
 
-    u32 powerNutBits;           // 0x54-0x57
+    u32 acquiredPowerNutBits;           // 0x54-0x57
     u32 unk_58;                 // 0x58-0x5B (D_80205204)
     u8 flowerShopPoints;        // 0x5C
     u8 bakeryCardPoints;        // 0x5D
     u8 elliGrievingCounter;    // 0x5E
     u8 unk_5F;
 
-    u32 unk_60;                 // D_801654F4
-    u32 unk_64;                 // D_80237414
-    u32 unk_68;                 // D_801FB6FC
-    u32 unk_6E;                 // D_801C3F80
-    u32 unk_70;                 // D_801806C0
-    u32 unk_74;                 // D_80188F60
-    u32 unk_78;                 // D_801FB5D0
+    u32 unk_60;                 // totalTurnipsShipped
+    u32 unk_64;                 // totalPotatoesShipped
+    u32 unk_68;                 // totalEggplantsShipped
+    u32 unk_6E;                 // totalCabbageShipped
+    u32 unk_70;                 // totalStrawberriesShipped
+    u32 unk_74;                 // totalTomatoesShipped
+    u32 unk_78;                 // totalCornShipped
 
     u32 totalMilkShipped;       // 0x7C-0x7F
     u32 totalEggsShipped;       // 0x80-0x83

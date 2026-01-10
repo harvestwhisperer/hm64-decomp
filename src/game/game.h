@@ -17,8 +17,10 @@
 #define MAX_FLOWER_SHOP_POINTS 100
 #define MAX_BAKERY_CARD_POINTS 100
 #define MAX_AFFECTION 255
-#define TOTAL_GAME_VARIABLES 80
 #define MAX_ALCOHOL_TOLERANCE 255
+#define MAX_SICK_DAYS 999
+
+#define TOTAL_GAME_VARIABLES 80
 
 #define MARRIAGE_READY_AFFECTION_THRESHOLD 220
 
@@ -26,9 +28,9 @@
 
 typedef struct {
     u16 callbackIndex;
-    u16 unk_2;
-    u16 unk_4;
-    u8 unk_6;
+    u16 frameCount;
+    u16 delayedFramesCount;
+    u8 dialogueMenuIndex;
 } MainLoopCallbackInfo;
 
 extern inline int adjustValue(int initial, int value, int max);
@@ -55,7 +57,7 @@ extern void clearTempSpecialDialogueBits();
 extern void showPinkOverlayText(u8);   
 extern void showTextBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4);
 extern void showMessageBox(u16 arg0, u16 arg1, u16 arg2, u32 arg3, u16 arg4);
-extern void setLevelLighting(s16 arg0, u16 arg1);
+extern void setLevelLighting(s16 rate, u16 callbackIndex);
 extern void handleExitLevel(u16, u16 callbackIndex); 
 extern void loadOverlayScreen(u16, u16);   
 extern void func_8005CDCC(); 
@@ -64,13 +66,13 @@ extern void clearHeldItemsAtEndOfDay(void);
 extern bool checkBacheloretteReadyForMarriage(void);
 extern void func_80061690(u8);
 extern u8 handlePurchaseHouseExtension(u8);  
-extern u16 func_80063A2C(u8);
+extern u16 getTextIndexFromLetterIndex(u8);
 
 // main loop callback functions
 extern void setMapAudioAndLighting();
 extern void levelLoadCallback();
 extern void exitLevelCallback();
-extern void func_8005CB50();
+extern void setOverlayScreenCallbackWithDelay();
 extern void handleRotationCallback();
 extern void handleDialogueCallback();
 extern void messageBoxCallback();
@@ -79,7 +81,7 @@ extern void loadNamingScreenCallback();
 extern void mapLoadCallback();
 extern void pinkOverlayMenuCallback();
 extern void waitForAudioFinishCallback();
-extern void cutsceneCompletionCallback();
+extern void dreamCutscenesCallback();
 extern void endOfFestivalDayCallback1();
 extern void endOfFestivalDayCallback2();
 extern void endOfDayCallback1();

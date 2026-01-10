@@ -284,7 +284,7 @@ u8 playerDefaultStartingDirections[] = {
 };
 
 // FIXME: probably shouldn't be volatile
-volatile u8 D_8011421C[MAX_TOOLS][3] = {
+volatile u8 toolToFatigueScore[MAX_TOOLS][3] = {
     { 0, 0, 0 },
     { 2, 4, 6 },
     { 2, 4, 6 },
@@ -326,106 +326,106 @@ static const s8 directionToTileDeltaZ[12];
 static const u8 toolHeldItemIndices[5][3];
 
 // forward declarations
-void func_80067290(u8 arg0); 
-u8 func_80067A24(u8);                 
-bool func_80067B38(void);
-void handleToolCharging(void);
-void handleToolUseAction(void);
-void handleThrowingAction(void);
-void func_80067F50(void);
-void func_8006807C(void);
-void func_80068120(void);
-void func_80068258(void);
-void func_800682F8(void);
-void func_80068340(void);
-void func_80068410(void);
-void func_80068558(void);
-void func_80068A98(void);
-void func_80068C8C(void);
-void func_80068DFC(void);
-void func_80068FB0(void);
-void func_800692E4(void);
-void func_80069830(void);
-void func_80069C5C(void);
+void handleItemLevelInteraction(u8 arg0); 
+u8 checkAndTriggerStaminaExhaustion(u8);                 
+bool checkTooFatiguedToUseTool(void);
+void handleToolAction(void);
+void handleThrowItemAction(void);
+void handlePutItemInShippingBinAction(void);
+void handlePickUpItemAction(void);
+void handlePlaceItemAction(void);
+void handleEatAction(void);
+void handleGetIntoBedAction(void);
+void handleIdleNapAction(void);
+void handleTurnOnTVAction(void);
+void handleShopItemAction(void);
+void handleJumpAction(void);
+void handleMountHorseAction(void);
+void handleDismountHorseAction(void);
+void handleWalkDownStairsAction(void);
+void handleToiletAction(void);
+void handleBathingAction(void);
+void handleHotSpringAction(void);
 void handleWhistleForDogAction(void);
-void handlehandleWhistleForHorseAction(void);
-void func_80069DA8(void);
-void handlePuttingItemInRucksackAction(void);
-void handleCastingFishingRodActionStub(void);
-void func_80069E5C(void);
-void func_80069E64(void);
-void func_80069E6C(void);
-void func_80069E74(void);
-void func_8006A2E0(void);
-void func_80068738(void);
-void func_80068918(void);
-void func_80068920(void);
-void func_80068990(void);
-void func_80068A00(void);
-void func_80068A08(void);
-void func_8006A714(void);
-void func_8006C384(void);
-void func_8006A7B0(void);
-void func_8006A848(void);
-void func_8006A8C4(void);
-void func_8006A9A8(void);
-void func_8006AA9C(void);
-void func_8006AB90(void);
-void func_8006ADF4(void);
-void func_8006B4D4(void);
-void func_8006B4DC(void);
-void func_8006B584(void);
-void func_8006B61C(void);
-void func_8006B6EC(void);
-void func_8006B77C(void);
-void func_8006AC4C(void);
-void func_8006AEEC(void);
-void func_8006AFE4(void);
-void func_8006B104(void);
-void func_8006B8BC(void);
-void func_8006B910(void);
-void func_8006B964(void);
-void func_8006B96C(void);
-void func_8006B974(void);
-void func_8006B97C(void);
-void func_8006BA14(void);
-void func_8006BAAC(void);
-void func_8006BBC4(void);
-void handleFishingRodUse(void);
-void func_8006C12C(void);
-void func_8006C134(void);
-void func_8006C13C(void);
-void func_8006C1DC(void);
-void func_8006C628(u16, u16);
-void func_8006CD84();                                  
-void func_8006CDF8();                                  
-void func_8006CE6C();                                  
-void func_8006CEE0();                                  
-void func_8006CF54();                                  
-void func_8006D0AC();                                  
-void func_8006D21C();                                  
-void func_8006D304();                                  
-void func_8006D3FC();                                  
-void func_8006D56C();                                  
-void func_8006D690();                                  
-void func_8006D7B4();                                  
-void func_8006D8D8();                                  
-void func_8006D9FC();                                  
-void func_8006DB20();                                  
-void func_8006DC44();                                  
-void func_8006DD68();                                  
-void func_8006DE8C();                                  
-void func_8006DFB0();                                  
-void func_8006E0D4();                                  
-void func_8006E1F8();                                  
-void func_8006E200();                                  
-void func_8006E208();                                  
-void func_8006E210();                                  
-void func_8006E240();                                  
-void func_8006E348();                                  
-void func_8006E450();                                  
-void func_8006E574();                                  
-void func_8006E678();      
+void handleWhistleForHorseAction(void);
+void handleDrinkAction(void);
+void handleUnusedAction21(void);
+void handleFishingAction(void);
+void handleUnusedAction23(void);
+void handleUnusedAction24(void);
+void handleStaminaExhaustionAction(void);
+void handleUnusedAction25(void);
+void handleTreeClimbingAction(void);
+void handleToolAcquisitionAction(void);
+void handleJumpDownAction(void);
+void handleResetHeldItemAction(void);
+void handlePutFoodInDogBowlAction(void);
+void handleDropItemInWaterAction(void);
+void handleUnusedAction33(void);
+void handleAcquireMusicBoxAction(void);
+void handleThrowItemAnimation(void);
+void handleToolAnimation(void);
+void handleShippingAnimation(void);
+void handlePickUpAnimation(void);
+void handlePlaceItemAnimation(void);
+void handleEatAnimation(void);
+void handleStaminaExhaustionAnimation(void);
+void handleFatigueThresholdAnimation(void);
+void handleIdleNapAnimation(void);
+void handleUnusedAnimation29(void);
+void handleDialogueSelectionAnimation(void);
+void handlePutFoodInDogBowlAnimation(void);
+void handleDropItemInWaterAnimation(void);
+void handleDrinkAlcoholAnimation(void);
+void handleAcquireMusicBoxAnimation(void);
+void handleGetIntoBedAnimation(void);
+void handleTurnOnTVAnimation(void);
+void handleShopAnimation(void);
+void handleJumpAnimation(void);
+void handleMountHorseAnimation(void);
+void handleDismountHorseAnimation(void);
+void handleUnusedAnimation17(void);
+void handleUnusedAnimation18(void);
+void handleUnusedAnimation30(void);
+void handleWhistleForDogAnimation(void);
+void handleWhistleForHorseAnimation(void);
+void handleDrinkingAnimation(void);
+void handlePutItemInRucksackAnimation(void);
+void handleFishingRodAnimation(void);
+void handleUnusedAnimation24(void);
+void handleUnusedAnimation25(void);
+void handleClimbTreeAnimation(void);
+void handleToolAcquisitionAnimation(void);
+void handleToolUseAnimation(u16, u16);
+void handleSickleAnimation();                                  
+void handleHoeAnimation();                                  
+void handleAxAnimation();                                  
+void handleHammerAnimation();                                  
+void handleWateringCanAnimation();                                  
+void handleMilkerAnimation();                                  
+void handleBellAnimation();                                  
+void handleBrushAnimation();                                  
+void handleClippersAnimation();                                  
+void handleTurnipSeedsAnimation();                                  
+void handlePotatoSeedsAnimation();                                  
+void handleCabbageSeedsAnimation();                                  
+void handleTomatoSeedsAnimation();                                  
+void handleCornSeedsAnimation();                                  
+void handleEggplantSeedsAnimation();                                  
+void handleStrawberrySeedsAnimation();                                  
+void handleMoonDropSeedsAnimation();                                  
+void handlePinkCatMintSeedsAnimation();                                  
+void handleBlueMistSeedsAnimation();                                  
+void handleChickenFeedAnimation();                                  
+void handleBallAnimation();                                  
+void handleFeedingBottleAnimation();                                  
+void handleUnusedTool23Animation();                                  
+void handleFishingPoleAnimation();                                  
+void handleMiraclePotionAnimation();                                  
+void handleCowMedicineAnimation();                                  
+void handleGrassSeedsAnimation();                                  
+void handleBlueFeatherAnimation();                                  
+void handleEmptyBottleAnimation();      
 void dismountHorse(void);    
 void handlePlayerInput(void);                              
 
@@ -436,11 +436,11 @@ static inline void resetAction() {
     gPlayer.animationHandler = 0;
 }
 
-static inline void startAction(u8 arg0, u8 arg1) {
-    gPlayer.actionHandler = arg0;
+static inline void startAction(u8 action, u8 animationHandler) {
+    gPlayer.actionHandler = action;
     gPlayer.actionPhaseFrameCounter = 0;
     gPlayer.actionPhase = 0;
-    gPlayer.animationHandler = arg1;
+    gPlayer.animationHandler = animationHandler;
 }
 
 static inline void resetMovement() {
@@ -500,10 +500,10 @@ void initializePlayerHeldItem(void) {
             case DOG_HELD_ITEM ... 0x6F:
             case BABY_HELD_ITEM ... 0xC9:
             case PUPPY_1_HELD_ITEM ... 0xB2:
-                gPlayer.itemInfoIndex = initializeHeldItem(0, 2, gPlayer.heldItem, ITEM_CONTEXT_HAS_DIRECTION_FRAME, ITEM_CONTEXT_USE_ATTACHMENT);
+                gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_HELD, gPlayer.heldItem, ITEM_CONTEXT_HAS_DIRECTION_FRAME, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;
             default:
-                gPlayer.itemInfoIndex = initializeHeldItem(0, 2, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
+                gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_HELD, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;
             
         }
@@ -543,7 +543,7 @@ block_8:
 block_9:
             var_a3 = 0;
         }
-        D_8018908D = initializeHeldItem(0, 2, D_8018908C, var_a3, 8);
+        D_8018908D = initializeHeldItem(0, ITEM_STATE_HELD, D_8018908C, var_a3, 8);
 */
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", addItemToRucksack);
@@ -794,7 +794,21 @@ Vec3f* getOffsetTileCoordinates (Vec3f *arg0, f32 arg1, u8 arg2) {
     
     return arg0;
 }
+
 */
+
+//INCLUDE_RODATA("asm/nonmatchings/game/player", directionToTileDeltaX);
+ 
+static const s8 directionToTileDeltaX[12] = { 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, 0, 0 };
+
+//INCLUDE_RODATA("asm/nonmatchings/game/player", directionToTileDeltaZ);
+ 
+static const s8 directionToTileDeltaZ[12] = { 1, 1, 0, -1, -1, -1, 0, 1, 0, 0, 0, 0 };
+
+
+
+/* Action handling */
+
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", setPlayerAction);
 
@@ -812,14 +826,6 @@ void setPlayerAction(u16 action, u16 animationHandler) {
     
 }
 
-//INCLUDE_RODATA("asm/nonmatchings/game/player", directionToTileDeltaX);
- 
-static const s8 directionToTileDeltaX[12] = { 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, 0, 0 };
-
-//INCLUDE_RODATA("asm/nonmatchings/game/player", directionToTileDeltaZ);
- 
-static const s8 directionToTileDeltaZ[12] = { 1, 1, 0, -1, -1, -1, 0, 1, 0, 0, 0, 0 };
-
 //INCLUDE_ASM("asm/nonmatchings/game/player", updatePlayerAction);
 
 void updatePlayerAction(void) {
@@ -829,111 +835,109 @@ void updatePlayerAction(void) {
         handlePlayerInput();
     }
     
-    // TODO: label actions
     switch (gPlayer.actionHandler - 1) {
-        case 0:
-            handleToolCharging();
+        case (TOOL_USE - 1):
+            handleToolAction();
             break;
-        case TOOL_USE:
-            handleToolUseAction();
+        case (DISCARDING_ITEM - 1):
+            handleThrowItemAction();
             break;
-        case THROWING:
-            handleThrowingAction();
+        case (SHIPPING_ITEM - 1):
+            handlePutItemInShippingBinAction();
             break;
-        case 3:
-            func_80067F50();
+        case (PICKING_UP_ITEM - 1):
+            handlePickUpItemAction();
             break;
-        case PICKING_UP:
-            func_8006807C();
+        case (PLACING_ITEM - 1):
+            handlePlaceItemAction();
             break;
-        case PUTTING_DOWN:
-            func_80068120();
+        case (EATING - 1):
+            handleEatAction();
             break;
-        case 7:
-            func_80068258();
+
+        case (GETTING_INTO_BED - 1):
+            handleGetIntoBedAction();
             break;
-        case 8:
-            func_800682F8();
+        case (IDLE_NAP - 1):
+            handleIdleNapAction();
             break;
-        // turn on TV
-        case 9:
-            func_80068340();
+        case (WATCHING_TV - 1):
+            handleTurnOnTVAction();
             break;
-        // shop item interaction
-        case 10:
-            func_80068410();
+        case (SHOPPING - 1):
+            handleShopItemAction();
             break;
-        case 11:
-            func_80068558();
+        case (JUMPING - 1):
+            handleJumpAction();
             break;
-        case ABOUT_TO_DRINK:
-            func_80068A98();
+        case (MOUNTING_HORSE - 1):
+            handleMountHorseAction();
             break;
-        case 13:
-            func_80068C8C();
+        case (DISMOUNTING_HORSE - 1):
+            handleDismountHorseAction();
             break;
-        case 14:
-            func_80068DFC();
+        case (WALKING_DOWN_STAIRS - 1):
+            handleWalkDownStairsAction();
             break;
-        case 15:
-            func_80068FB0();
+        case (USING_TOILET - 1):
+            handleToiletAction();
             break;
-        case 16:
-            func_800692E4();
+        case (BATHING - 1):
+            handleBathingAction();
             break;
-        case 28:
-            func_80069830();
+        case (USING_HOT_SPRINGS - 1):
+            handleHotSpringAction();
             break;
-        case 17:
-            func_80069C5C();
-            break;
-        case WHISTLE_FOR_DOG:
+        case (WHISTLING_FOR_DOG - 1):
             handleWhistleForDogAction();
             break;
-        case WHISTLE_FOR_HORSE:
-            handlehandleWhistleForHorseAction();
+        case (WHISTLING_FOR_HORSE - 1):
+            handleWhistleForHorseAction();
             break;
-        case DRINKING:
-            func_80069DA8();
+        case (DRINKING - 1):
+            handleDrinkAction();
             break;
-        case 21:
-            handlePuttingItemInRucksackAction();
+        case (STORING_ITEM_IN_RUCKSACK - 1):
+            handleUnusedAction21();
             break;
-        case CASTING_FISHING_ROD:
-            handleCastingFishingRodActionStub();
+        case (FISHING - 1):
+            handleFishingAction();
+            break;
+        case 22:
+            handleUnusedAction23();
             break;
         case 23:
-            func_80069E5C();
+            handleUnusedAction24();
             break;
-        case 6:
-            func_80069E64();
+        case (STAMINA_EXHAUSTION - 1):
+            handleStaminaExhaustionAction();
             break;
-        case 24:
-            func_80069E6C();
+        case (FATIGUE_THRESHOLD - 1):
+            handleUnusedAction25();
             break;
-        case 25:
-            func_80069E74();
+        case (CLIMBING_TREE - 1):
+            handleTreeClimbingAction();
             break;
-        case 26:
-            func_8006A2E0();
+        case (ACQUIRING_TOOL - 1):
+            handleToolAcquisitionAction();
             break;
-        case 27:
-            func_80068738();
+        case (JUMPING_DOWN - 1):
+            handleJumpDownAction();
             break;
-        case 29:
-            func_80068918();
+        case (DIALOGUE_SELECTING - 1):
+            handleResetHeldItemAction();
             break;
-        case 30:
-            func_80068920();
+        case (PUTTING_FOOD_IN_DOG_BOWL - 1):
+            handlePutFoodInDogBowlAction();
             break;
-        case 31:
-            func_80068990();
+        case (DROPPING_ITEM_IN_WATER - 1):
+            handleDropItemInWaterAction();
             break;
         case 32:
-            func_80068A00();
+            handleUnusedAction33();
             break;
-        case 33:
-            func_80068A08();
+        case (ACQUIRING_MUSIC_BOX - 1):
+            handleAcquireMusicBoxAction();
             break;
     }
     
@@ -993,12 +997,14 @@ void handlePlayerInput(void) {
         resetAction();
     }
 
+    // baby
     if (!set && npcResult == 2) {
         temp = 0xFF;
         set = TRUE;
+        // FIXME:
         reset();
-        gPlayer.actionHandler = PICKING_UP;
-        gPlayer.animationHandler = PICKING_UP + 2;
+        gPlayer.actionHandler = PICKING_UP_ITEM;
+        gPlayer.animationHandler = ANIM_PICKING_UP_ITEM;
     }
 
     if (!set) {
@@ -1012,9 +1018,10 @@ void handlePlayerInput(void) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && handlePickUpGroundItem()) {
             set = TRUE;
             temp = 0xFF;
+            // FIXME:
             reset();
-            gPlayer.actionHandler = 4;
-            gPlayer.animationHandler = 6;
+            gPlayer.actionHandler = PICKING_UP_ITEM;
+            gPlayer.animationHandler = ANIM_PICKING_UP_ITEM;
         }
     }
 
@@ -1036,7 +1043,7 @@ void handlePlayerInput(void) {
                         setDailyEventBit(6);
                         set = TRUE;
                         temp = 0xFF;
-                        startAction(0xC, 0xE);
+                        startAction(JUMPING, ANIM_JUMPING);
                         
                     }
                     
@@ -1050,7 +1057,7 @@ void handlePlayerInput(void) {
         if (checkButtonPressed(CONTROLLER_1, BUTTON_C_DOWN)) {
             if (gPlayer.heldItem && getItemFlags(gPlayer.heldItem) & ITEM_EATABLE) {
                 set = TRUE;
-                startAction(EATING, EATING + 2);
+                startAction(EATING, ANIM_EATING);
             }
         }
     }
@@ -1067,7 +1074,7 @@ void handlePlayerInput(void) {
                     
                         if (gPlayer.heldItem) {
                             set = TRUE; 
-                            func_80067290(horseResult);
+                            handleItemLevelInteraction(horseResult);
                             temp = 0xFF;
                         }
                         
@@ -1098,11 +1105,11 @@ void handlePlayerInput(void) {
                     gPlayer.toolHeldCounter = 0;
                     gPlayer.currentToolLevel = 0;
 
-                    if (!func_80067A24(1)) {
+                    if (!checkAndTriggerStaminaExhaustion(1)) {
 
-                        if (!func_80067B38()) {
+                        if (!checkTooFatiguedToUseTool()) {
 
-                            startAction(1, 3);
+                            startAction(TOOL_USE, ANIM_TOOL_USE);
                             set = TRUE;
                             temp = 0xFF;
                             
@@ -1138,22 +1145,22 @@ void handlePlayerInput(void) {
 
     if (!set) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
-            // whistle for dog
             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT)) {
                 set = TRUE;
                 temp = 0xFF;
-                startAction(WHISTLE_FOR_DOG, WHISTLE_FOR_DOG + 1);
+                // whistle for dog
+                startAction(WHISTLING_FOR_DOG, ANIM_WHISTLE_FOR_DOG);
             }
         }
     }
 
     if (!set) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
-            // whistle for horse
             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_LEFT)) {
                 set = TRUE;
                 temp = 0xFF;
-                startAction(WHISTLE_FOR_HORSE, WHISTLE_FOR_HORSE + 1);
+                // whistle for horse
+                startAction(WHISTLING_FOR_HORSE, ANIM_WHISTLE_FOR_HORSE);
             }
         }
     }
@@ -1165,7 +1172,7 @@ void handlePlayerInput(void) {
                     if (addItemToRucksack(gPlayer.heldItem) != 0xFF) {
                         set = TRUE;
                         temp = 0xFF;
-                        startAction(PUTTING_ITEM_IN_RUCKSACK, PUTTING_ITEM_IN_RUCKSACK + 1);
+                        startAction(STORING_ITEM_IN_RUCKSACK, ANIM_PUT_ITEM_IN_RUCKSACK);
                     }
                 }
             }
@@ -1176,9 +1183,8 @@ void handlePlayerInput(void) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(0x13)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
                 set = TRUE;
-                // pause everything
                 pauseGameplay();
-                loadOverlayScreen(1, 20);
+                loadOverlayScreen(1, PAUSE_SCREEN_LOAD);
                 playSfx(MENU_OPEN_SFX);
                 temp = 0xFF;
             }
@@ -1229,7 +1235,7 @@ void handlePlayerInput(void) {
 
     if (!set) {
         if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && entities[ENTITY_PLAYER].collision != 0xFFFF) {
-            gPlayer.animationHandler = 0;
+            gPlayer.animationHandler = ANIM_DEFAULT;
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
             set = TRUE;
             temp = 0xFF;
@@ -1255,14 +1261,14 @@ void handlePlayerInput(void) {
             if (tempAnalogStickMagnitude >= 4.0f) {
                 gPlayer.actionPhaseFrameCounter = 0;
                 gPlayer.actionPhase = 0;
-                gPlayer.actionHandler = 0;
-                gPlayer.animationHandler = 2;
+                gPlayer.actionHandler = CONTROLLER_INPUT;
+                gPlayer.animationHandler = ANIM_RUNNING;
             // walking
             } else {
                 gPlayer.actionPhaseFrameCounter = 0;
                 gPlayer.actionPhase = 0;
-                gPlayer.actionHandler = 0;
-                gPlayer.animationHandler = 1;
+                gPlayer.actionHandler = CONTROLLER_INPUT;
+                gPlayer.animationHandler = ANIM_WALKING;
             }
 
             direction = convertSpriteToWorldDirection(temp, MAIN_MAP_INDEX);
@@ -1348,9 +1354,9 @@ void dismountHorse(void) {
         horseInfo.coordinates = vec2;
         horseInfo.direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
         horseInfo.location = gBaseMapIndex;
-        horseInfo.flags &= ~0x8;     
+        horseInfo.flags &= ~HORSE_BEING_RODE;     
 
-        gPlayer.flags &= -2;
+        gPlayer.flags &= ~PLAYER_RIDING_HORSE;
         
         toggleDailyEventBit(0x5C);
         
@@ -1358,7 +1364,7 @@ void dismountHorse(void) {
         
         entities[ENTITY_PLAYER].direction = direction;
 
-        startAction(0xE, 0x10);
+        startAction(DISMOUNTING_HORSE, ANIM_DISMOUNT_HORSE);
 
         gPlayer.actionPhase = 0;
         gPlayer.actionPhaseFrameCounter = 0;
@@ -1367,10 +1373,10 @@ void dismountHorse(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067290);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleItemLevelInteraction);
 
 // item <-> level interaction 
-void func_80067290(u8 arg0) {
+void handleItemLevelInteraction(u8 arg0) {
 
     bool set = FALSE;
     Vec3f vec;
@@ -1380,27 +1386,28 @@ void func_80067290(u8 arg0) {
 
         if ((getItemFlags(gPlayer.heldItem) & ITEM_INCUBATOR_PLACEABLE) && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 17) && gBaseMapIndex == COOP && getIncubatingEggCount() == 0) {
             set = TRUE;
-            startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
+            startAction(PLACING_ITEM, ANIM_PLACING_ITEM);
         }
 
         if ((getItemFlags(gPlayer.heldItem) & ITEM_LUMBER_STORABLE) && !set && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 17) && gBaseMapIndex == FARM) {
             set = TRUE;
-            startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
+            startAction(PLACING_ITEM, ANIM_PLACING_ITEM);
         }
 
         if (checkFarmDogBowlInteraction(gBaseMapIndex) != 0xFF) {
             
             if ((getItemFlags(gPlayer.heldItem) & ITEM_EATABLE) && !set) {    
-                startAction(0x1F, 0x20);
+                startAction(PUTTING_FOOD_IN_DOG_BOWL, ANIM_PUT_FOOD_IN_DOG_BOWL);
             }
             
             set = TRUE;
 
         }
 
+        // drop item in water
         if ((getItemFlags(gPlayer.heldItem) & ITEM_RUCKSACK_STORABLE) && !set && checkWaterSourceInteraction(gBaseMapIndex) != 0xFF) {
             set = TRUE;
-            startAction(0x20, 0x21);
+            startAction(DROPPING_ITEM_IN_WATER, ANIM_DROP_ITEM_IN_WATER);
         }
         
     }
@@ -1408,9 +1415,10 @@ void func_80067290(u8 arg0) {
     if ((getItemFlags(gPlayer.heldItem) & ITEM_SHIPPABLE) && !set) {
 
         if (checkShippingBinInteraction(gBaseMapIndex) != 0xFF || arg0) {
-            startAction(3, 5);
+            // shipping item
+            startAction(SHIPPING_ITEM, ANIM_SHIPPING);
         } else {
-            startAction(THROWING, THROWING + 2);
+            startAction(DISCARDING_ITEM, ANIM_THROWING);
         }
 
         set = TRUE;
@@ -1422,9 +1430,9 @@ void func_80067290(u8 arg0) {
         if ((getItemFlags(gPlayer.heldItem) & ITEM_ANIMAL_FEED) && !set) {
 
             if (checkBarnAnimalFeedInteraction(gBaseMapIndex) != 0xFF) {
-                startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
+                startAction(PLACING_ITEM, ANIM_PLACING_ITEM);
             } else {
-                startAction(THROWING, THROWING + 2);
+                startAction(DISCARDING_ITEM, ANIM_THROWING);
             }
 
             set = TRUE;
@@ -1440,7 +1448,7 @@ void func_80067290(u8 arg0) {
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
     
                 if (groundObjectIndex == 0xFF || getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8) {
-                    startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
+                    startAction(PLACING_ITEM, ANIM_PLACING_ITEM);
                 }
             
             }
@@ -1450,7 +1458,7 @@ void func_80067290(u8 arg0) {
         }
 
         if ((getItemFlags(gPlayer.heldItem) & 0x100) && !set) {
-            startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
+            startAction(PLACING_ITEM, ANIM_PLACING_ITEM);
             set = TRUE;
         }
         
@@ -1460,7 +1468,7 @@ void func_80067290(u8 arg0) {
 
                 // baby
                 if (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0.0f, 32.0f) == 0x16) {
-                    startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
+                    startAction(PLACING_ITEM, ANIM_PLACING_ITEM);
                 }
                 
             } 
@@ -1478,7 +1486,7 @@ void func_80067290(u8 arg0) {
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
     
                 if (groundObjectIndex == 0xFF || getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8) {
-                    startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
+                    startAction(PLACING_ITEM, ANIM_PLACING_ITEM);
                 }
             
             }
@@ -1492,7 +1500,7 @@ void func_80067290(u8 arg0) {
             groundObjectIndex = getGroundObjectIndexFromPlayerPosition(1.0f, 8);
 
             if (groundObjectIndex && groundObjectIndex < 4 && groundObjectIndex != 0xFF) {
-                startAction(PUTTING_DOWN, PUTTING_DOWN + 2);
+                startAction(PLACING_ITEM, ANIM_PLACING_ITEM);
             }  
             
             set = TRUE;
@@ -1500,12 +1508,15 @@ void func_80067290(u8 arg0) {
         }
     
         if (!set) {    
-            startAction(2, 4);
+            startAction(DISCARDING_ITEM, ANIM_THROWING);
         }
         
     }
     
 }
+
+
+/* Stamina/fatigue helpers */
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", checkStaminaExhaustionLevel);
 
@@ -1520,7 +1531,7 @@ inline u8 checkStaminaExhaustionLevel(void) {
     
     temp2 = temp / 4;
 
-    if (D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel] > gPlayer.currentStamina) {
+    if (toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel] > gPlayer.currentStamina) {
         result = 4;
     } else {
         
@@ -1558,9 +1569,9 @@ inline u8 checkFatigueLevel(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067A24);
+//INCLUDE_ASM("asm/nonmatchings/game/player", checkAndTriggerStaminaExhaustion);
 
-bool func_80067A24(u8 arg0) {
+bool checkAndTriggerStaminaExhaustion(u8 arg0) {
 
     bool result = FALSE;
     u8 staminaExhaustionLevel;
@@ -1569,7 +1580,7 @@ bool func_80067A24(u8 arg0) {
 
     if (staminaExhaustionLevel && staminaExhaustionLevel != gPlayer.staminaExhaustionLevel && arg0 == 0 || staminaExhaustionLevel == 4)  {
         result = TRUE;
-        startAction(7, 9);
+        startAction(STAMINA_EXHAUSTION, ANIM_STAMINA_EXHAUSTION);
         gPlayer.staminaExhaustionLevel = staminaExhaustionLevel;
     }
 
@@ -1577,27 +1588,31 @@ bool func_80067A24(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067B38);
+//INCLUDE_ASM("asm/nonmatchings/game/player", checkTooFatiguedToUseTool);
 
-bool func_80067B38(void) {
+bool checkTooFatiguedToUseTool(void) {
 
-    bool set = FALSE;
+    bool tooFatigued = FALSE;
     
     u32 fatigueThreshold = checkFatigueLevel();
 
     if (fatigueThreshold != 0 && fatigueThreshold != gPlayer.fatigueThreshold) {
-        set = TRUE;
-        startAction(0x19, 0x1A);
+        tooFatigued = TRUE;
+        startAction(FATIGUE_THRESHOLD, ANIM_FATIGUE_THRESHOLD);
         gPlayer.fatigueThreshold = fatigueThreshold;
     }
 
-    return set;
+    return tooFatigued;
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolCharging);
 
-void handleToolCharging(void) {
+/* Action handlers */
+
+
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolAction);
+
+void handleToolAction(void) {
 
     s32 temp;
 
@@ -1615,23 +1630,23 @@ void handleToolCharging(void) {
             if (!checkButtonHeld(CONTROLLER_1, BUTTON_B)) {
 
                 gPlayer.actionPhase++;
-                gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, -D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel], gMaximumStamina);
+                gPlayer.currentStamina += adjustValue(gPlayer.currentStamina, -toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel], gMaximumStamina);
 
                 if (((SUNNY < gWeather && gWeather < 4) || !(5 < gHour && gHour < 18)) && gBaseMapIndex != GREENHOUSE) {
 
                     // kappa power nut
                     if (checkLifeEventBit(0x5F)) {
-                        gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel] / 2, MAX_FATIGUE_POINTS);
+                        gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel] / 2, MAX_FATIGUE_POINTS);
                     } else {
                         
-                        // fake match if D_8011421C isn't volatile
-                        // if (D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel] + 1) {
-                        //     temp = D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel];
+                        // fake match if toolToFatigueScore isn't volatile
+                        // if (toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel] + 1) {
+                        //     temp = toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel];
                         // }
                         
-                        // temp = D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel];
+                        // temp = toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel];
                         
-                        gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel], MAX_FATIGUE_POINTS);
+                        gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel], MAX_FATIGUE_POINTS);
                         
                     }
 
@@ -1639,7 +1654,7 @@ void handleToolCharging(void) {
                 
             } else if (gPlayer.toolHeldCounter >= 16 && gPlayer.currentToolLevel < getToolLevel(gPlayer.currentTool)) {
 
-                if (D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel] && !(D_8011421C[gPlayer.currentTool][gPlayer.currentToolLevel+1] > gPlayer.currentStamina)) {
+                if (toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel] && !(toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel+1] > gPlayer.currentStamina)) {
                     gPlayer.toolHeldCounter = 0;
                     gPlayer.currentToolLevel++;
                 }
@@ -1651,7 +1666,7 @@ void handleToolCharging(void) {
 
         } else {
             
-            gPlayer.actionHandler = 0xFE;
+            gPlayer.actionHandler = 254;
             gPlayer.actionPhase++;
             
         }
@@ -1660,28 +1675,28 @@ void handleToolCharging(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolUseAction);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleThrowItemAction);
 
-void handleToolUseAction(void) {
+void handleThrowItemAction(void) {
 
     // FIXME: possibly a union. This matches:
     // if (!(gPlayer.actionUnion.actionPhaseFrameCounter & ~0xFF)) {
     if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
         playSfx(0x26);
         clearHeldItemSlot(gPlayer.itemInfoIndex);
-        func_800D5390(1, 3, gPlayer.heldItem, 0, 8);
+        allocateThrownItemSlot(1, ITEM_STATE_THROW_START, gPlayer.heldItem, 0, 8);
         gPlayer.heldItem = 0;
         gPlayer.actionPhaseFrameCounter = 1;
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleThrowingAction);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePutItemInShippingBinAction);
 
-void handleThrowingAction(void) {
+void handlePutItemInShippingBinAction(void) {
 
     if (gPlayer.actionPhaseFrameCounter == 3) {
-        setItemState(gPlayer.itemInfoIndex, 0xE);
+        setItemState(gPlayer.itemInfoIndex, ITEM_STATE_SHIP);
         gPlayer.heldItem = 0;
         gPlayer.actionPhase++;
     }
@@ -1690,25 +1705,25 @@ void handleThrowingAction(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80067F50);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePickUpItemAction);
 
-void func_80067F50(void) {
+void handlePickUpItemAction(void) {
 
     // FIXME
     if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
         
         playSfx(PICKING_UP_SFX);
-        startAction(PICKING_UP, 6);
+        startAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
 
         switch (gPlayer.heldItem) {
 
             case DOG_HELD_ITEM ... 0x6F:
             case BABY_HELD_ITEM ... 0xC9:
             case PUPPY_1_HELD_ITEM ... 0xB2:
-                gPlayer.itemInfoIndex = initializeHeldItem(0, 6, gPlayer.heldItem, ITEM_CONTEXT_HAS_DIRECTION_FRAME, ITEM_CONTEXT_USE_ATTACHMENT);
+                gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_PICKUP, gPlayer.heldItem, ITEM_CONTEXT_HAS_DIRECTION_FRAME, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;
             default:
-                gPlayer.itemInfoIndex = initializeHeldItem(0, 6, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
+                gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_PICKUP, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;
         
             }
@@ -1716,24 +1731,22 @@ void func_80067F50(void) {
     }
     
     if (gPlayer.actionPhaseFrameCounter == 4) {
-    
-        setItemState(gPlayer.itemInfoIndex, 7);
+        setItemState(gPlayer.itemInfoIndex, ITEM_STATE_PICKUP_DONE);
         gPlayer.actionPhase++;
-    
     }
     
     gPlayer.actionPhaseFrameCounter++;
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006807C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePlaceItemAction);
 
-void func_8006807C(void) {
+void handlePlaceItemAction(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
      
         if (gPlayer.actionPhase == 0) {
-            setItemState(gPlayer.itemInfoIndex, 9);
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_PUT_DOWN);
             gPlayer.heldItem = 0;
             playSfx(PICKING_UP_SFX);
         }
@@ -1747,15 +1760,14 @@ void func_8006807C(void) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068120);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleEatAction);
 
-// putting down action
-void func_80068120(void) {
+void handleEatAction(void) {
 
     if (gPlayer.actionPhase == 2) {
 
         if (gPlayer.actionPhaseFrameCounter == 10) {
-            setItemState(gPlayer.itemInfoIndex, 1);
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
             gPlayer.heldItem = 0;
             gPlayer.actionPhase++;
             playSfx(PUTTING_DOWN_SFX); 
@@ -1782,9 +1794,9 @@ void func_80068120(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068258);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleGetIntoBedAction);
 
-void func_80068258(void) {
+void handleGetIntoBedAction(void) {
 
     if (gPlayer.actionPhase == 0) {
     
@@ -1805,18 +1817,17 @@ void func_80068258(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_800682F8);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleIdleNapAction);
 
-void func_800682F8(void) {
+void handleIdleNapAction(void) {
     if (checkButtonHeld(CONTROLLER_1, 0xFFFFFFFF) && gPlayer.actionPhase < 4) {
         gPlayer.actionPhase = 4;
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068340);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleTurnOnTVAction);
 
-// turn on tv
-void func_80068340(void) {
+void handleTurnOnTVAction(void) {
 
     if (gPlayer.actionPhase == 0) {
 
@@ -1846,14 +1857,14 @@ void func_80068340(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068410);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleShopItemAction);
 
-void func_80068410(void) {
+void handleShopItemAction(void) {
 
     if (gPlayer.actionPhase == 0) {
         if (gPlayer.actionPhaseFrameCounter == 4) {
             if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-                setItemState(gPlayer.itemInfoIndex, 7);
+                setItemState(gPlayer.itemInfoIndex, ITEM_STATE_PICKUP_DONE);
             }
             gPlayer.actionPhase++;
         }
@@ -1862,7 +1873,7 @@ void func_80068410(void) {
     
     if (gPlayer.actionPhase == 2) {
         if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-            setItemState(gPlayer.itemInfoIndex, 1);
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
         }
         loadShopItemSprite(gPlayer.shopItemIndex);
         gPlayer.actionPhase = 5;
@@ -1870,7 +1881,7 @@ void func_80068410(void) {
     
     if (gPlayer.actionPhase == 3) {
         if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-            setItemState(gPlayer.itemInfoIndex, 1);
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
         }
         deactivateShopItemMapObject(gPlayer.shopItemIndex);
         gPlayer.actionPhase = 5;
@@ -1878,9 +1889,9 @@ void func_80068410(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068558);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleJumpAction);
 
-void func_80068558(void) {
+void handleJumpAction(void) {
 
     Vec3f vec;
     Vec3f vec2;
@@ -1897,10 +1908,10 @@ void func_80068558(void) {
 
             playSfx(ITEM_PLUCK_SFX);
             
-            setEntityCollidable(ENTITY_PLAYER, 0);
-            setEntityTracksCollisions(ENTITY_PLAYER, 0);
-            enableEntityMovement(ENTITY_PLAYER, 0);
-            setEntityYMovement(ENTITY_PLAYER, 0);
+            setEntityCollidable(ENTITY_PLAYER, FALSE);
+            setEntityTracksCollisions(ENTITY_PLAYER, FALSE);
+            enableEntityMovement(ENTITY_PLAYER, FALSE);
+            setEntityYMovement(ENTITY_PLAYER, FALSE);
             
             vec2 = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
             
@@ -1915,7 +1926,7 @@ void func_80068558(void) {
             setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 4.0f);
             
             // parabolic equation: y = initial_y - gravity * (time - peak_time)²
-            entities->coordinates.y = 
+            entities[ENTITY_PLAYER].coordinates.y = 
                 ((gPlayer.movementVector.y 
                      + (((gPlayer.actionPhaseFrameCounter - 7) * (gPlayer.actionPhaseFrameCounter - 7)) * -0.4f)) 
                      + 19.6);
@@ -1935,9 +1946,9 @@ void func_80068558(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068738);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleJumpDownAction);
 
-void func_80068738(void) {
+void handleJumpDownAction(void) {
 
     Vec3f vec;
     Vec3f vec2;
@@ -1954,10 +1965,10 @@ void func_80068738(void) {
 
             playSfx(ITEM_PLUCK_SFX);
             
-            setEntityCollidable(ENTITY_PLAYER, 0);
-            setEntityTracksCollisions(ENTITY_PLAYER, 0);
-            enableEntityMovement(ENTITY_PLAYER, 0);
-            setEntityYMovement(ENTITY_PLAYER, 0);
+            setEntityCollidable(ENTITY_PLAYER, FALSE);
+            setEntityTracksCollisions(ENTITY_PLAYER, FALSE);
+            enableEntityMovement(ENTITY_PLAYER, FALSE);
+            setEntityYMovement(ENTITY_PLAYER, FALSE);
             
             vec2 = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
             
@@ -1972,7 +1983,7 @@ void func_80068738(void) {
             setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 4.0f);
             
             // parabolic equation: y = initial_y - gravity * (time - peak_time)²
-            entities->coordinates.y = 
+            entities[ENTITY_PLAYER].coordinates.y = 
                 ((gPlayer.movementVector.y 
                      + (((gPlayer.actionPhaseFrameCounter - 7) * (gPlayer.actionPhaseFrameCounter - 7)) * -0.4f)) 
                      + 19.6);
@@ -1993,14 +2004,15 @@ void func_80068738(void) {
 }
 
 // empty function
-void func_80068918(void) {}
+void handleResetHeldItemAction(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068920);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePutFoodInDogBowlAction);
   
-void func_80068920(void) {
+// put food in dog bowl
+void handlePutFoodInDogBowlAction(void) {
  
     if (gPlayer.actionPhaseFrameCounter == 3) {
-        setItemState(gPlayer.itemInfoIndex, 0x12);
+        setItemState(gPlayer.itemInfoIndex, ITEM_STATE_FEED_DOG);
         gPlayer.heldItem = 0;
         gPlayer.actionPhase++;
     }
@@ -2009,12 +2021,12 @@ void func_80068920(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068990);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleDropItemInWaterAction);
 
-void func_80068990(void) {
+void handleDropItemInWaterAction(void) {
 
     if (gPlayer.actionPhaseFrameCounter == 3) {
-        setItemState(gPlayer.itemInfoIndex, 0x14);
+        setItemState(gPlayer.itemInfoIndex, ITEM_STATE_DROP_IN_WATER);
         gPlayer.heldItem = 0;
         gPlayer.actionPhase++;
     }
@@ -2024,16 +2036,16 @@ void func_80068990(void) {
 }
 
 // empty function
-void func_80068A00(void) {}
+void handleUnusedAction33(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068A08);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleAcquireMusicBoxAction);
 
-void func_80068A08(void) {
+void handleAcquireMusicBoxAction(void) {
 
     if (gPlayer.actionPhase == 0) {
         
         if (gPlayer.actionPhaseFrameCounter == 0) {
-            gPlayer.itemInfoIndex = initializeHeldItem(0, 2, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
+            gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_HELD, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
         }
         
         if (gPlayer.actionPhaseFrameCounter >= 30) {
@@ -2045,9 +2057,9 @@ void func_80068A08(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068A98);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleMountHorseAction);
 
-void func_80068A98(void) {
+void handleMountHorseAction(void) {
 
     Vec3f vec;
 
@@ -2055,7 +2067,7 @@ void func_80068A98(void) {
 
         if (gPlayer.actionPhaseFrameCounter == 0) {
 
-            playSfx(4);
+            playSfx(ITEM_PLUCK_SFX);
             setEntityCollidable(ENTITY_PLAYER, FALSE);
             setEntityYMovement(ENTITY_PLAYER, FALSE);
             vec = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
@@ -2089,9 +2101,9 @@ void func_80068A98(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068C8C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleDismountHorseAction);
 
-void func_80068C8C(void) {
+void handleDismountHorseAction(void) {
 
     Vec3f vec;
 
@@ -2099,7 +2111,7 @@ void func_80068C8C(void) {
 
         if (gPlayer.actionPhaseFrameCounter == 0) {
 
-            playSfx(4);
+            playSfx(ITEM_PLUCK_SFX);
             setEntityCollidable(ENTITY_PLAYER, FALSE);
             setEntityYMovement(ENTITY_PLAYER, FALSE);
             vec = getMovementVectorFromDirection(4.0f, gPlayer.direction, 0.0f);
@@ -2128,9 +2140,9 @@ void func_80068C8C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068DFC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleWalkDownStairsAction);
 
-void func_80068DFC(void) {
+void handleWalkDownStairsAction(void) {
 
     Vec3f vec;
 
@@ -2138,14 +2150,14 @@ void func_80068DFC(void) {
         
         case 0:
 
-            gPlayer.animationHandler = 0;
+            gPlayer.animationHandler = ANIM_DEFAULT;
             gPlayer.actionPhase++;
             
             break;
         
         case 1:
 
-            gPlayer.animationHandler = 1;
+            gPlayer.animationHandler = ANIM_WALKING;
             gPlayer.direction = gPlayer.savedDirection;
 
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
@@ -2179,13 +2191,13 @@ void func_80068DFC(void) {
             break;
     }
 
-    setEntityMovementVector(0, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 1.0f);
+    setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 1.0f);
    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80068FB0);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleToiletAction);
 
-void func_80068FB0(void) {
+void handleToiletAction(void) {
 
     Vec3f vec;
     Vec3f vec2;
@@ -2207,7 +2219,7 @@ void func_80068FB0(void) {
             gPlayer.movementVector = vec;
             
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-            gPlayer.animationHandler = 2;
+            gPlayer.animationHandler = ANIM_RUNNING;
             
             break;
 
@@ -2223,7 +2235,7 @@ void func_80068FB0(void) {
                 activateMapAddition(MAIN_MAP_INDEX, 2, 0);
                              
                 gPlayer.actionPhaseFrameCounter = 0;
-                gPlayer.animationHandler = 0;
+                gPlayer.animationHandler = ANIM_DEFAULT;
                 gPlayer.actionPhase++;
                 
             } else {
@@ -2239,7 +2251,7 @@ void func_80068FB0(void) {
                 
                 activateMapAddition(MAIN_MAP_INDEX, 0, 0);
 
-                playSfx(0x32);
+                playSfx(DOOR_OPEN_SFX);
                 
                 gPlayer.direction = SOUTHWEST;
                 gPlayer.actionTimer = 16;
@@ -2249,14 +2261,15 @@ void func_80068FB0(void) {
                 gPlayer.movementVector = vec2;
                 
                 setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-                gPlayer.animationHandler = 2;
+                gPlayer.animationHandler = ANIM_RUNNING;
                 
             } else {
                 
                 gPlayer.actionPhaseFrameCounter++;
                 
                 if (gPlayer.actionPhaseFrameCounter == 10) {
-                    playSfx(0x56);
+                    // flush
+                    playSfx(86);
                 }
                 
             }
@@ -2281,9 +2294,7 @@ void func_80068FB0(void) {
                 toggleDailyEventBit(6);
     
                 if (!checkDailyEventBit(0x31)) {
-    
                     gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -10, MAX_FATIGUE_POINTS);
-                
                 } 
                 
                 setDailyEventBit(0x31);
@@ -2300,9 +2311,10 @@ void func_80068FB0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_800692E4);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleBathingAction);
 
-void func_800692E4(void) {
+// bathing
+void handleBathingAction(void) {
 
     Vec3f vec;
     Vec3f vec2;
@@ -2326,7 +2338,7 @@ void func_800692E4(void) {
             gPlayer.movementVector = vec;
             
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-            gPlayer.animationHandler = 2;
+            gPlayer.animationHandler = ANIM_RUNNING;
             
             break;
         
@@ -2358,7 +2370,7 @@ void func_800692E4(void) {
                 gPlayer.direction = NORTHWEST;
                 
                 resetMovement();
-                startAction(0xC, 0xE);
+                startAction(JUMPING, ANIM_JUMPING);
                 
                 gPlayer.flags |= PLAYER_BATH_POSE_1;
             
@@ -2373,7 +2385,7 @@ void func_800692E4(void) {
             if (gPlayer.actionPhaseFrameCounter == 60) {
                 
                 gPlayer.direction = SOUTHEAST;
-                startAction(0xC, 0xE);
+                startAction(JUMPING, ANIM_JUMPING);
                 gPlayer.flags |= PLAYER_BATH_POSE_3;
 
             } else {
@@ -2393,7 +2405,7 @@ void func_800692E4(void) {
             gPlayer.movementVector = vec2;
 
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-            gPlayer.animationHandler = 2;
+            gPlayer.animationHandler = ANIM_RUNNING;
             
             break;
 
@@ -2402,7 +2414,7 @@ void func_800692E4(void) {
             if (gPlayer.actionTimer == 0) {
 
                 activateMapAddition(MAIN_MAP_INDEX, 1, 0);
-                playSfx(0x32);
+                playSfx(DOOR_OPEN_SFX);
                 gPlayer.direction = SOUTHEAST;
                 gPlayer.actionTimer = 16;
                 vec3 = getMovementVectorFromDirection(4.0f, 6, 0.0f);
@@ -2461,9 +2473,9 @@ void func_800692E4(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80069830);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleHotSpringAction);
 
-void func_80069830(void) {
+void handleHotSpringAction(void) {
 
     // needing separate vecs implies these case statements are static inlines that have their own vecs
     Vec3f vec;
@@ -2487,7 +2499,7 @@ void func_80069830(void) {
             gPlayer.movementVector = vec;
             
             setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-            gPlayer.animationHandler = 2;
+            gPlayer.animationHandler = ANIM_RUNNING;
             
             break;
 
@@ -2497,7 +2509,7 @@ void func_80069830(void) {
                 activateMapAddition(MAIN_MAP_INDEX, 0, 0);
                 gPlayer.direction = EAST;
                 resetMovement();
-                startAction(0xC, 0xE);
+                startAction(JUMPING, ANIM_JUMPING);
                 gPlayer.flags |= PLAYER_HOT_SPRING_POSE_1;
             } else {
                 gPlayer.actionTimer--;
@@ -2509,7 +2521,7 @@ void func_80069830(void) {
 
             if (gPlayer.actionPhaseFrameCounter == 60) {
                 gPlayer.direction = WEST;
-                startAction(0xC, 0xE);
+                startAction(JUMPING, ANIM_JUMPING);
                 gPlayer.flags |= PLAYER_HOT_SPRING_POSE_3;
             } else {
                 gPlayer.actionPhaseFrameCounter++;
@@ -2523,10 +2535,10 @@ void func_80069830(void) {
                 
                 activateMapAddition(MAIN_MAP_INDEX, 1, 0);
                 
-                playSfx(0x32);
+                playSfx(DOOR_OPEN_SFX);
                 
                 gPlayer.direction = SOUTHWEST;
-                gPlayer.actionTimer = 0x12;
+                gPlayer.actionTimer = 18;
                 
                 vec2 = getMovementVectorFromDirection(4.0f, 0, 0.0f);
                 
@@ -2534,7 +2546,7 @@ void func_80069830(void) {
                 
                 setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
                 
-                gPlayer.animationHandler = 2;
+                gPlayer.animationHandler = ANIM_RUNNING;
                 gPlayer.actionPhase++;
 
             } else {
@@ -2579,9 +2591,9 @@ void func_80069830(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80069C5C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForDogAction);
 
-void func_80069C5C(void) {
+void handleWhistleForDogAction(void) {
     
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
         playSfx(0xA);
@@ -2589,9 +2601,9 @@ void func_80069C5C(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForDogAction);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForHorseAction);
 
-void handleWhistleForDogAction(void) {
+void handleWhistleForHorseAction(void) {
 
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
         playSfx(WHISTLE);
@@ -2599,9 +2611,9 @@ void handleWhistleForDogAction(void) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlehandleWhistleForHorseAction);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleDrinkAction);
 
-void handlehandleWhistleForHorseAction(void) {
+void handleDrinkAction(void) {
 
     if (gPlayer.actionPhase == 0) {
 
@@ -2611,7 +2623,7 @@ void handlehandleWhistleForHorseAction(void) {
         }
         
         if (gPlayer.actionPhaseFrameCounter == 30) {
-            setItemState(gPlayer.itemInfoIndex, 1);
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
             gPlayer.actionPhase++;
         }
         
@@ -2621,17 +2633,18 @@ void handlehandleWhistleForHorseAction(void) {
 }
 
 // empty function
-void func_80069DA8(void) {}
+void handleUnusedAction21(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePuttingItemInRucksackAction);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleFishingAction);
 
-void handlePuttingItemInRucksackAction(void) {
+void handleFishingAction(void) {
 
     if (gPlayer.actionPhase == 2) {
 
         if (!getRandomNumberInRange(0, 400)) {
             gPlayer.actionPhase = 3;
         }
+    
     }
     
     if (gPlayer.actionPhase && checkButtonReleased(CONTROLLER_1, BUTTON_B)) {
@@ -2652,27 +2665,27 @@ void handlePuttingItemInRucksackAction(void) {
 }
 
 // empty function
-void handleCastingFishingRodActionStub(void) {}
+void handleUnusedAction23(void) {}
 
 // empty function
-void func_80069E5C(void) {}
+void handleUnusedAction24(void) {}
 
 // empty function
-void func_80069E64(void) {} 
+void handleStaminaExhaustionAction(void) {} 
 
 // empty function
-void func_80069E6C(void) {}
+void handleUnusedAction25(void) {}
 
 static inline void fakeInline() {
     gPlayer.movementVector.y += 1.0f;
     entities[ENTITY_PLAYER].coordinates.y = gPlayer.movementVector.y;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_80069E74);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleTreeClimbingAction);
 
 // FIXME: have to trick the CSE pass to access actionPhaseFrameCounter via -2 of animationState instead of reloading it from memory every time
-// The CSE pass doesn't do this for smaller functions with the same code (func_80068C8C), so there's something around the basic block size/complexity 
-void func_80069E74(void) {
+// The CSE pass doesn't do this for smaller functions with the same code (handleDismountHorseAction), so there's something around the basic block size/complexity 
+void handleTreeClimbingAction(void) {
 
     Vec3f vec;
 
@@ -2685,7 +2698,7 @@ void func_80069E74(void) {
         
         if (gPlayer.actionPhaseFrameCounter == 0) {
             
-            playSfx(4);
+            playSfx(ITEM_PLUCK_SFX);
 
             setEntityCollidable(ENTITY_PLAYER, FALSE);
             setEntityYMovement(ENTITY_PLAYER, FALSE);
@@ -2796,232 +2809,211 @@ void func_80069E74(void) {
 }
 
 // empty function
-void func_8006A2E0(void) {} 
+void handleToolAcquisitionAction(void) {} 
  
+
+
+/* Animation handlers */
+
+
 //INCLUDE_ASM("asm/nonmatchings/game/player", handlePlayerAnimation);
 
 void handlePlayerAnimation(void) {
 
     switch (gPlayer.animationHandler) {
-        
-        case 0:
-            
+
+        case ANIM_DEFAULT:
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
-                
                 if ((gPlayer.flags & PLAYER_RIDING_HORSE)) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x204);    
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 516);
+                } else if (gPlayer.flags & PLAYER_BATH_POSE_2) {
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 580);
+                } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_2) {
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 580);
                 } else {
-                    if (gPlayer.flags & 4) {
-                         setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x244);
-                    } else {
-                        if (gPlayer.flags & 0x20) {
-                            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x244);
-                        } else {
-                            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
-                        }
-                    }   
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
                 }
-                
             } else {
-                // running
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
             }
-            
             if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
-
                 if (playerIdleCounter == 1200) {
-                    startAction(9, 0xB);
+                    startAction(IDLE_NAP, ANIM_IDLE_NAP);
                 } else {
                     playerIdleCounter++;
                 }
-
             }
-
             break;
-        
+
         default:
             break;
-        
-        case 1:
-            
+
+        case ANIM_WALKING:
             if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
                 if (gPlayer.flags & PLAYER_RIDING_HORSE) {
                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 524);
                 } else {
-                    // walking
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 8);
                 }
             } else {
-                // standing + carrying
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 32);
             }
-            
             playerIdleCounter = 0;
             break;
-        
-        case 2:
-            
-            if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
 
-                if (gPlayer.flags & PLAYER_RIDING_HORSE) { 
+        case ANIM_RUNNING:
+            if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
+                if (gPlayer.flags & PLAYER_RIDING_HORSE) {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         playSfx(9);
                     }
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 532);
-
                 } else {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         playSfx(WALKING_SFX);
                     }
-                    // running
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 16);
                 }
-
             } else {
                 if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                     playSfx(WALKING_SFX);
                 }
-                // running + carrying
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 40);
-
             }
+            playerIdleCounter = 0;
+            break;
 
+        case ANIM_TOOL_USE:
+            handleToolAnimation();
             playerIdleCounter = 0;
             break;
-        
-        case 3:
-            func_8006C384();
+        case ANIM_THROWING:
+            handleThrowItemAnimation();
             playerIdleCounter = 0;
             break;
-        case 4:
-            func_8006A714();
+        case ANIM_SHIPPING:
+            handleShippingAnimation();
             playerIdleCounter = 0;
             break;
-        case 5:
-            func_8006A7B0();
+        case ANIM_PICKING_UP_ITEM:
+            handlePickUpAnimation();
             playerIdleCounter = 0;
             break;
-        case 6:
-            func_8006A848();
+        case ANIM_PLACING_ITEM:
+            handlePlaceItemAnimation();
             playerIdleCounter = 0;
             break;
-        case 7:
-            func_8006A8C4();
+        case ANIM_EATING:
+            handleEatAnimation();
             playerIdleCounter = 0;
             break;
-        case 8:
-            func_8006A9A8();
+        case ANIM_STAMINA_EXHAUSTION:
+            handleStaminaExhaustionAnimation();
             playerIdleCounter = 0;
             break;
-        case 9:
-            func_8006AA9C();
+        case ANIM_GET_INTO_BED:
+            handleGetIntoBedAnimation();
             playerIdleCounter = 0;
             break;
-        case 10:
-            func_8006AC4C();
+        case ANIM_IDLE_NAP:
+            handleIdleNapAnimation();
+            break;
+        case ANIM_WATCHING_TV:
+            handleTurnOnTVAnimation();
             playerIdleCounter = 0;
             break;
-        // idle/napping animation
-        case 11:
-            func_8006ADF4();
-            break;
-        case 12:
-            func_8006AEEC();
+        case ANIM_SHOPPING:
+            handleShopAnimation();
             playerIdleCounter = 0;
             break;
-        case 13:
-            func_8006AFE4();
+        case ANIM_JUMPING:
+            handleJumpAnimation();
             playerIdleCounter = 0;
             break;
-        case 14:
-            func_8006B104();
+        case ANIM_MOUNT_HORSE:
+            handleMountHorseAnimation();
             playerIdleCounter = 0;
             break;
-        case 15:
-            func_8006B8BC();
-            playerIdleCounter = 0;
-            break;
-        case 16:
-            func_8006B910();
+        case ANIM_DISMOUNT_HORSE:
+            handleDismountHorseAnimation();
             playerIdleCounter = 0;
             break;
         case 17:
-            func_8006B964();
+            handleUnusedAnimation17();
             playerIdleCounter = 0;
             break;
         case 18:
-            func_8006B96C();
+            handleUnusedAnimation18();
             playerIdleCounter = 0;
             break;
         case 30:
-            func_8006B974();
+            handleUnusedAnimation30();
             playerIdleCounter = 0;
             break;
-        case 19:
-            func_8006B97C();
+        case ANIM_WHISTLE_FOR_DOG:
+            handleWhistleForDogAnimation();
             playerIdleCounter = 0;
             break;
-        case 20:
-            func_8006BA14();
+        case ANIM_WHISTLE_FOR_HORSE:
+            handleWhistleForHorseAnimation();
             playerIdleCounter = 0;
             break;
-        case 21:
-            func_8006BAAC();
+        case ANIM_DRINKING:
+            handleDrinkingAnimation();
             playerIdleCounter = 0;
             break;
-        case 22:
-            func_8006BBC4();
+        case ANIM_PUT_ITEM_IN_RUCKSACK:
+            handlePutItemInRucksackAnimation();
             playerIdleCounter = 0;
             break;
-        case 23:
-            handleFishingRodUse();
+        case ANIM_FISHING:
+            handleFishingRodAnimation();
             playerIdleCounter = 0;
             break;
         case 24:
-            func_8006C12C();
+            handleUnusedAnimation24();
             playerIdleCounter = 0;
             break;
         case 25:
-            func_8006C134();
+            handleUnusedAnimation25();
             playerIdleCounter = 0;
             break;
-        case 26:
-            func_8006AB90();
+        case ANIM_FATIGUE_THRESHOLD:
+            handleFatigueThresholdAnimation();
             playerIdleCounter = 0;
             break;
-        case 27:
-            func_8006C13C();
+        case ANIM_CLIMBING_TREE:
+            handleClimbTreeAnimation();
             playerIdleCounter = 0;
             break;
-        case 28:
-            func_8006C1DC();
+        case ANIM_TOOL_ACQUISITION:
+            handleToolAcquisitionAnimation();
             playerIdleCounter = 0;
             break;
         case 29:
-            func_8006B4D4();
+            handleUnusedAnimation29();
             playerIdleCounter = 0;
             break;
-        case 31:
-            func_8006B4DC();
+        case ANIM_DIALOGUE_SELECTING:
+            handleDialogueSelectionAnimation();
             playerIdleCounter = 0;
             break;
-        case 32:
-            func_8006B584();
+        case ANIM_PUT_FOOD_IN_DOG_BOWL:
+            handlePutFoodInDogBowlAnimation();
             playerIdleCounter = 0;
             break;
-        case 33:
-            func_8006B61C();
+        case ANIM_DROP_ITEM_IN_WATER:
+            handleDropItemInWaterAnimation();
             playerIdleCounter = 0;
             break;
-        case 34:
-            func_8006B6EC();
+        case ANIM_DRINK_ALCOHOL:
+            handleDrinkAlcoholAnimation();
             playerIdleCounter = 0;
             break;
-        case 35:
-            func_8006B77C();
+        case ANIM_ACQUIRE_MUSIC_BOX:
+            handleAcquireMusicBoxAnimation();
             playerIdleCounter = 0;
             break;
-
     }
     
 }
@@ -3032,15 +3024,15 @@ static inline void handleStopHolding() {
     gItemBeingHeld = 0xFF;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006A714);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleThrowItemAnimation);
 
-void func_8006A714(void) {
+void handleThrowItemAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
         
         if (gPlayer.actionPhase == 0) {
         
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1A5);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 421);
             gPlayer.actionPhase++;
         
         } else {
@@ -3051,33 +3043,29 @@ void func_8006A714(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006A7B0);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleShippingAnimation);
 
-static inline void updateAnimation(u16 animation) {
-    
-     if (gPlayer.actionPhase == 0) {
-        setEntityAnimationWithDirectionChange(ENTITY_PLAYER, animation);
-        setItemState(gPlayer.itemInfoIndex, 0xD);
-    } else {
-        handleStopHolding();
-    }
-}
-
-void func_8006A7B0(void) {
+void handleShippingAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
-       updateAnimation(0x1A5);
+        if (gPlayer.actionPhase == 0) {
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 421);
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_RAISED);
+        } else {
+            handleStopHolding();
+        }
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006A848);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePickUpAnimation);
 
-void func_8006A848(void) {
+void handlePickUpAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
     
         if (gPlayer.actionPhase == 0) {
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 429);
         } else {
             resetAction();
 
@@ -3085,23 +3073,23 @@ void func_8006A848(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006A8C4);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePlaceItemAnimation);
 
-void func_8006A8C4(void) {
+void handlePlaceItemAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
         switch (gPlayer.actionPhase) {     
 
             case 0:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
-                setItemState(gPlayer.itemInfoIndex, 8);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 439);
+                setItemState(gPlayer.itemInfoIndex, ITEM_STATE_PLACE);
                 break;
             case 1:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1BF);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 447);
                 break;
             case 2:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 439);
                 break;
             default:
                 handleStopHolding();
@@ -3110,26 +3098,29 @@ void func_8006A8C4(void) {
             }
 
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006A9A8);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleEatAnimation);
 
-void func_8006A9A8(void) {
+void handleEatAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
         switch (gPlayer.actionPhase) {       
 
             case 0:
+                // holding
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
                 break;
             case 1:
-                setItemState(gPlayer.itemInfoIndex, 10);
+                setItemState(gPlayer.itemInfoIndex, ITEM_STATE_EATING);
                 gPlayer.actionPhaseFrameCounter = 0;
                 gPlayer.actionPhase++;
                 break;
             case 2:
-                setEntityAnimation(ENTITY_PLAYER, 0x1B5);
+                // chewing and swallowing
+                setEntityAnimation(ENTITY_PLAYER, 437);
                 break;
             default:
                 handleStopHolding();
@@ -3140,9 +3131,9 @@ void func_8006A9A8(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006AA9C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleStaminaExhaustionAnimation);
 
-void func_8006AA9C(void) {
+void handleStaminaExhaustionAnimation(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
         
@@ -3150,32 +3141,33 @@ void func_8006AA9C(void) {
             
             switch (gPlayer.staminaExhaustionLevel) {       
                 case 1:
-                    setEntityAnimation(ENTITY_PLAYER, 0x1D0);
+                    setEntityAnimation(ENTITY_PLAYER, 464);
                     break;
                 case 2:
-                    setEntityAnimation(ENTITY_PLAYER, 0x1D1);
+                    setEntityAnimation(ENTITY_PLAYER, 465);
                     break;
                 case 3:
-                    setEntityAnimation(ENTITY_PLAYER, 0x1D2);
+                    setEntityAnimation(ENTITY_PLAYER, 466);
                     break;
                 case 4:
-                    setEntityAnimation(ENTITY_PLAYER, 0x1D3);
+                    setEntityAnimation(ENTITY_PLAYER, 467);
                     break;
             }
     
             gPlayer.actionPhase++;
 
         } else {
-
             resetAction();
-
         }
+
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006AB90);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleFatigueThresholdAnimation);
 
-void func_8006AB90(void) {
+// fatigue levels 1 and 2
+void handleFatigueThresholdAnimation(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
         
@@ -3183,10 +3175,10 @@ void func_8006AB90(void) {
 
             switch (gPlayer.fatigueThreshold) {                   
                 case 1:
-                    setEntityAnimation(ENTITY_PLAYER, 0x299);
+                    setEntityAnimation(ENTITY_PLAYER, 665);
                     break;
                 case 2:
-                    setEntityAnimation(ENTITY_PLAYER, 0x29A);
+                    setEntityAnimation(ENTITY_PLAYER, 666);
                     break;
                 case 3:
                     break;
@@ -3195,16 +3187,16 @@ void func_8006AB90(void) {
             gPlayer.actionPhase++;
         
         } else {
-
             resetAction();
-
         }
+
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006AC4C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleGetIntoBedAnimation);
 
-void func_8006AC4C(void) {
+void handleGetIntoBedAnimation(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
@@ -3212,39 +3204,40 @@ void func_8006AC4C(void) {
 
             case 1:
 
-                setEntityAnimation(ENTITY_PLAYER, 0x1D4);
+                setEntityAnimation(ENTITY_PLAYER, 468);
                 gPlayer.actionPhase++;
 
                 if (checkLifeEventBit(MARRIED) && (19 < gHour && gHour < 22)) {
 
                     switch (gWife) {
                         case MARIA:
-                            npcs[MARIA].movingFlag = 4;
+                            npcs[MARIA].animationMode = NPC_ANIM_FIXED;
                             break;
                         case POPURI:
-                            npcs[POPURI].movingFlag = 4;
+                            npcs[POPURI].animationMode = NPC_ANIM_FIXED;
                             break;
                         case ELLI:
-                            npcs[ELLI].movingFlag = 4;
+                            npcs[ELLI].animationMode = NPC_ANIM_FIXED;
                             break;
                         case ANN:
-                            npcs[ANN].movingFlag = 4;
+                            npcs[ANN].animationMode = NPC_ANIM_FIXED;
                             break;
                         case KAREN:
-                            npcs[KAREN].movingFlag = 4;
+                            npcs[KAREN].animationMode = NPC_ANIM_FIXED;
                             break;
                     }
+
                 }
 
                 break;
 
             case 2:
-                setEntityAnimation(ENTITY_PLAYER, 0x1D5);
+                setEntityAnimation(ENTITY_PLAYER, 469);
                 gPlayer.actionPhase++;
                 break;
 
             case 3:
-                setEntityAnimation(ENTITY_PLAYER, 0x1D6);
+                setEntityAnimation(ENTITY_PLAYER, 470);
                 gPlayer.actionPhase++;
                 break;             
 
@@ -3258,35 +3251,37 @@ void func_8006AC4C(void) {
                 break;
 
          }
+
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006ADF4);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleIdleNapAnimation);
 
 // napping/idle animation
-void func_8006ADF4(void) {
+void handleIdleNapAnimation(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
         switch (gPlayer.actionPhase) { 
 
             case 0:
-                setEntityAnimation(ENTITY_PLAYER, 0x1E0);
+                setEntityAnimation(ENTITY_PLAYER, 480);
                 gPlayer.actionPhase++;
                 break;
             case 1:
-                setEntityAnimation(ENTITY_PLAYER, 0x1E1);
+                setEntityAnimation(ENTITY_PLAYER, 481);
                 gPlayer.actionPhase++;
                 break;
             case 2:
                 playerIdleCounter++;
                 if (playerIdleCounter == 1800) {
-                    setEntityAnimation(ENTITY_PLAYER, 0x1E2);
+                    setEntityAnimation(ENTITY_PLAYER, 482);
                     gPlayer.actionPhase++;
                 }
                 break;
             case 4:
-                setEntityAnimation(ENTITY_PLAYER, 0x1E3);
+                setEntityAnimation(ENTITY_PLAYER, 483);
                 gPlayer.actionPhase++;
                 break;
             default:
@@ -3300,45 +3295,48 @@ void func_8006ADF4(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006AEEC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleTurnOnTVAnimation);
 
-void func_8006AEEC(void) {
+// turn on TV
+void handleTurnOnTVAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
         switch (gPlayer.actionPhase) { 
             case 0:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 439);
                 break;
             case 1:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1BF);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 447);
                 gPlayer.actionPhase++;
                 break;
             case 3:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1BF);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 447);
                 break;            
             case 4:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 439);
                 gPlayer.actionPhase++;
                 break;           
             default:
                 resetAction();
         }
+
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006AFE4);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleShopAnimation);
 
-void func_8006AFE4(void) {
+void handleShopAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
         switch (gPlayer.actionPhase) {  
             case 0:
                 if (!checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
                 } else {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 429);
                 }
                 break;
             case 1:
@@ -3349,12 +3347,12 @@ void func_8006AFE4(void) {
                 break;
             case 2:
                 if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 429);
                 }
                 break;
             case 3:
                 if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1AD);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 429);
                 }
                 break;
             default:
@@ -3363,9 +3361,9 @@ void func_8006AFE4(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B104);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleJumpAnimation);
 
-void func_8006B104(void) {
+void handleJumpAnimation(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.actionPhase == 0)) {
         
@@ -3374,9 +3372,9 @@ void func_8006B104(void) {
             case 0:
                 
                 if (gPlayer.heldItem != 0) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x40);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 64);
                 } else if (gPlayer.flags & PLAYER_RIDING_HORSE) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x224);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 548);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_1) {
                     setEntityAnimation(ENTITY_PLAYER, 0x23C);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
@@ -3386,7 +3384,7 @@ void func_8006B104(void) {
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
                     setEntityAnimation(ENTITY_PLAYER, 0x240);
                 } else {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x30);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 48);
                 }
                 
                 break;
@@ -3394,19 +3392,19 @@ void func_8006B104(void) {
             case 1:
                 
                 if (gPlayer.heldItem != 0) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x48);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 72);
                 } else if (gPlayer.flags & PLAYER_RIDING_HORSE) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x22C);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 556);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_1) {
-                    setEntityAnimation(ENTITY_PLAYER, 0x23E);
+                    setEntityAnimation(ENTITY_PLAYER, 574);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
-                    setEntityAnimation(ENTITY_PLAYER, 0x243);
+                    setEntityAnimation(ENTITY_PLAYER, 579);
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_1) {
-                    setEntityAnimation(ENTITY_PLAYER, 0x23F);
+                    setEntityAnimation(ENTITY_PLAYER, 575);
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
-                    setEntityAnimation(ENTITY_PLAYER, 0x242);
+                    setEntityAnimation(ENTITY_PLAYER, 578);
                 } else {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x38);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 56);
                 }
 
                 break;
@@ -3415,7 +3413,7 @@ void func_8006B104(void) {
                 
                 if (gPlayer.flags & PLAYER_BATH_POSE_1) {
                     
-                    startAction(0x11, 0);
+                    startAction(BATHING, ANIM_DEFAULT);
 
                     gPlayer.direction = SOUTHWEST;
                     
@@ -3428,11 +3426,11 @@ void func_8006B104(void) {
                     gPlayer.actionPhase = 3;
 
                     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-                    playSfx(0x28);
+                    playSfx(40);
                       
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
                     
-                    startAction(0x11, 0);
+                    startAction(BATHING, ANIM_DEFAULT);
                     
                     gPlayer.flags &= ~(PLAYER_BATH_POSE_2 | PLAYER_BATH_POSE_3);
                                         
@@ -3443,7 +3441,7 @@ void func_8006B104(void) {
                     
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_1) {
                     
-                    startAction(0x1D, 0);
+                    startAction(USING_HOT_SPRINGS, ANIM_DEFAULT);
 
                     gPlayer.direction = SOUTHWEST;
                     
@@ -3456,11 +3454,11 @@ void func_8006B104(void) {
                     gPlayer.actionPhase = 2;
                     
                     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
-                    playSfx(0x28);
+                    playSfx(40);
                                         
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
                 
-                    startAction(0x1D, 0);
+                    startAction(USING_HOT_SPRINGS, ANIM_DEFAULT);
                     
                     gPlayer.flags &= ~(PLAYER_HOT_SPRING_POSE_2 | PLAYER_HOT_SPRING_POSE_3); 
     
@@ -3479,88 +3477,91 @@ void func_8006B104(void) {
                 resetAction();
                 
             }
+
         }
+
     }
     
 }
 
 // empty function
-void func_8006B4D4(void) {}
+void handleUnusedAnimation29(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B4DC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleDialogueSelectionAnimation);
 
-void func_8006B4DC(void) {
+// dialogue selecting
+void handleDialogueSelectionAnimation(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
             
-            setEntityAnimation(ENTITY_PLAYER, 0x1DB);
+            setEntityAnimation(ENTITY_PLAYER, 475);
             
             gPlayer.actionPhase = 1;
-            gPlayer.heldItem = 0xCA;
-            gPlayer.itemInfoIndex = initializeHeldItem(0, 0x10, 0xCA, 0, ITEM_CONTEXT_USE_ATTACHMENT);
+            gPlayer.heldItem = 202;
+            gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_DIALOGUE_SELECTION, 202, 0, ITEM_CONTEXT_USE_ATTACHMENT);
             
         } else {
-            
-            setMainLoopCallbackFunctionIndex(PINK_OVERLAY_TEXT);
-        
+            setMainLoopCallbackFunctionIndex(DIALOGUE_SELECTION);
         }
-    }    
+
+    }   
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B584);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePutFoodInDogBowlAnimation);
 
-void func_8006B584(void) {
+void handlePutFoodInDogBowlAnimation(void) {
     
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
             
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1B7);
-            setItemState(gPlayer.itemInfoIndex, 0x11);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 439);
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_DOG_BOWL);
             
         } else {
-            
             resetAction();
             gItemBeingHeld = 0xFF;
-            
         }
+
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B61C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleDropItemInWaterAnimation);
 
-void func_8006B61C(void) {
+void handleDropItemInWaterAnimation(void) {
 
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
-            
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x1A5);
-            setItemState(gPlayer.itemInfoIndex, 0xD);
-            
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 421);
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_RAISED);
         } else {
 
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
             gItemBeingHeld = 0xFF;
 
-            if (!checkDailyEventBit(0x45) && !checkDailyEventBit(0x47) && !checkDailyEventBit(0x48)) {
+            if (!checkDailyEventBit(HARVEST_GODDESS_OFFERING) && !checkDailyEventBit(0x47) && !checkDailyEventBit(0x48)) {
                 resetAction();
             }
 
         }
+
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B6EC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleDrinkAlcoholAnimation);
 
-void func_8006B6EC(void) {
+void handleDrinkAlcoholAnimation(void) {
 
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
         if (gPlayer.actionPhase == 0) {
-            setEntityAnimation(ENTITY_PLAYER, 0x2B3);
+            setEntityAnimation(ENTITY_PLAYER, 691);
             gPlayer.actionPhase++;
         } else {
             resetAction();
@@ -3569,21 +3570,21 @@ void func_8006B6EC(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B77C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleAcquireMusicBoxAnimation);
 
-void func_8006B77C(void) {
+void handleAcquireMusicBoxAnimation(void) {
 
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
         switch (gPlayer.actionPhase) {
 
             case 0:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
                 break;
             
             case 1:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x26A);
-                setItemState(gPlayer.itemInfoIndex, 1);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 618);
+                setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
                 gPlayer.actionPhase++;
                 break;
             
@@ -3594,76 +3595,79 @@ void func_8006B77C(void) {
                 }
     
                 gPlayer.heldItem = 0;
-                
                 resetAction();
-                    
                 gItemBeingHeld = 0xFF;
     
         }
+
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B8BC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleMountHorseAnimation);
 
-void func_8006B8BC(void) {
+void handleMountHorseAnimation(void) {
 
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
-             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x21C);
+             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 540);
         }
+
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B910);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleDismountHorseAnimation);
 
-void func_8006B910(void) {
+void handleDismountHorseAnimation(void) {
 
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
-             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x25C);
+             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 604);
         }
+
     }
     
 }
 
 // empty function
-void func_8006B964(void) {}
+void handleUnusedAnimation17(void) {}
 
 // empty function
-void func_8006B96C(void) {}
+void handleUnusedAnimation18(void) {}
 
 // empty function
-void func_8006B974(void) {}
+void handleUnusedAnimation30(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006B97C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForDogAnimation);
 
-void func_8006B97C(void) {
+void handleWhistleForDogAnimation(void) {
     
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
         if (gPlayer.actionPhase == 0) {
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x19D);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 413);
             gPlayer.actionPhase++;
         } else {
             resetAction();
             handleWhistleForDog();
         }
+
     }
 
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006BA14);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForHorseAnimation);
 
-void func_8006BA14(void) {
+void handleWhistleForHorseAnimation(void) {
     
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
         if (gPlayer.actionPhase == 0) {
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x19D);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 413);
             gPlayer.actionPhase++;
         } else {
             resetAction();
@@ -3673,26 +3677,26 @@ void func_8006BA14(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006BAAC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleDrinkingAnimation);
 
-// handle drinking
-void func_8006BAAC(void) {
+void handleDrinkingAnimation(void) {
 
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
         switch (gPlayer.actionPhase) {
 
             case 0:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18);
+                // carrying
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
                 break;
             
             case 1:
 
                 if (getItemFlags(gPlayer.heldItem) & ITEM_HAS_ALCOHOL) {
-                    setEntityAnimation(ENTITY_PLAYER, 0x2B3);
-                    gAlcoholTolerance += adjustValue(gAlcoholTolerance, 1, 0xFF);
+                    setEntityAnimation(ENTITY_PLAYER, 691);
+                    gAlcoholTolerance += adjustValue(gAlcoholTolerance, 1, MAX_ALCOHOL_TOLERANCE);
                 } else {
-                    setEntityAnimation(ENTITY_PLAYER, 0x1B6);
+                    setEntityAnimation(ENTITY_PLAYER, 438);
                 }
                 
                 gPlayer.heldItem = 0;
@@ -3705,19 +3709,21 @@ void func_8006BAAC(void) {
                 break;
             
         }
+
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006BBC4);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePutItemInRucksackAnimation);
 
-void func_8006BBC4(void) {
+void handlePutItemInRucksackAnimation(void) {
     
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
             
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x26A);
-            setItemState(gPlayer.itemInfoIndex, 1);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 618);
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
             gPlayer.heldItem = 0;
             gPlayer.actionPhase++;
             playSfx(PICKING_UP_SFX);
@@ -3728,12 +3734,12 @@ void func_8006BBC4(void) {
         }
         
     }
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleFishingRodUse);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleFishingRodAnimation);
 
-// fishing handler
-void handleFishingRodUse(void) {
+void handleFishingRodAnimation(void) {
 
     Vec3f vec;
     u16 temp;
@@ -3744,12 +3750,13 @@ void handleFishingRodUse(void) {
         
         switch (gPlayer.actionPhase) {
             
+            // cast
             case 0:
-                
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x182);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 386);
                 gPlayer.actionPhase++;
                 break;
             
+            // fishing
             case 1:
                 
                 if (checkFishingSpotInteraction(gBaseMapIndex)) {
@@ -3772,20 +3779,22 @@ void handleFishingRodUse(void) {
                             break; 
                     } 
 
-                    spawnFishingRodEntity(0, 0x9D, vec.x, vec.y, vec.z);
+                    spawnFishingRodEntity(0, 157, vec.x, vec.y, vec.z);
                     playSfx(FISHING_ROD_CAST);
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x17A);
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 378);
                     gPlayer.actionPhase = 2;
                 
                 } else {
+                    // end
                     gPlayer.actionPhase = 8;
                 }
                 
                 break;
             
+            // fish bite/reel in
             case 3:
-                setItemEntityAnimation(0, 0x9E);
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x18A);
+                setItemEntityAnimation(0, 158);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 394);
                 gPlayer.actionPhase = 4;
                 break;
             
@@ -3793,6 +3802,7 @@ void handleFishingRodUse(void) {
                 gPlayer.actionPhase = 5;
                 break;
             
+            // reset to fishing
             case 5:
                 gPlayer.actionPhase = 1;
                 break;
@@ -3829,13 +3839,14 @@ void handleFishingRodUse(void) {
                 gHappiness += adjustValue(gHappiness, 1, MAX_HAPPINESS);
 
                 // get power nut 
-                if (gPlayer.fishingSpotType == 3 && !(powerNutBits & FISHING_POWER_NUT) && !getRandomNumberInRange(0, 50)) {
+                if (gPlayer.fishingSpotType == 3 && !(acquiredPowerNutBits & FISHING_POWER_NUT) && !getRandomNumberInRange(0, 50)) {
                     
                     gPlayer.heldItem = POWER_NUT;
 
-                    startAction(6, 8);
+                    // eating
+                    startAction(EATING, ANIM_EATING);
                     
-                    powerNutBits |= FISHING_POWER_NUT;
+                    acquiredPowerNutBits |= FISHING_POWER_NUT;
                     
                     gMaximumStamina += adjustValue(gMaximumStamina, 15, MAX_STAMINA);
                     gHappiness += adjustValue(gHappiness, 4, MAX_HAPPINESS);
@@ -3852,7 +3863,8 @@ void handleFishingRodUse(void) {
             case 6:
             case 8:
                 deactivateItemEntity(0);
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x192);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 402);
+                // catch fish if phase 6, otherwise end
                 gPlayer.actionPhase++;
                 break;
               
@@ -3864,40 +3876,38 @@ void handleFishingRodUse(void) {
     }
 
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-        playSfx(0xB);
+        playSfx(11);
     }
     
 }
 
 // empty function
-void func_8006C12C(void) {}
+void handleUnusedAnimation24(void) {}
 
 // empty function
-void func_8006C134(void) {}
+void handleUnusedAnimation25(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C13C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleClimbTreeAnimation);
 
-// climbing trees
-void func_8006C13C(void) {
+void handleClimbTreeAnimation(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0 || gPlayer.actionPhase == 2) {
         switch (gPlayer.actionPhase) {
             case 1:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x29B);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 667);
                 break;
             case 0:
             case 2:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x30);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 48);
                 break;
         }
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C1DC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolAcquisitionAnimation);
 
-// acquire tool upgrade
-void func_8006C1DC(void) {
+void handleToolAcquisitionAnimation(void) {
 
     u8 buffer[5][3];
     u8 temp;
@@ -3913,7 +3923,7 @@ void func_8006C1DC(void) {
                 gPlayer.actionPhase = 1;
                 temp = buffer[upgradedToolIndex][upgradedToolLevelIndex - 3];
                 gPlayer.heldItem = temp;
-                gPlayer.itemInfoIndex = initializeHeldItem(0, 0x15, temp, 0, ITEM_CONTEXT_USE_ATTACHMENT);
+                gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_TOOL_ACQUIRED, temp, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;
             
             case 1:
@@ -3928,7 +3938,7 @@ void func_8006C1DC(void) {
                 break;
 
             default:
-                setItemState(gPlayer.itemInfoIndex, 1);
+                setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
                 gPlayer.heldItem = 0;
                 resetAction();
                 break;
@@ -3950,102 +3960,101 @@ static const u8 toolHeldItemIndices[5][3] = {
     { WATERING_CAN_HELD_ITEM, SILVER_WATERING_CAN_HELD_ITEM, GOLDEN_WATERING_CAN_HELD_ITEM }
 };
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C384);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolAnimation);
 
-// handle initial tool use animation and sound effects
-void func_8006C384(void) {
+void handleToolAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.actionPhase == 0)) {
         
         switch (gPlayer.currentTool) {                          
             case SICKLE:                                     
-                func_8006CD84();
+                handleSickleAnimation();
                 break;
             case HOE:                                     
-                func_8006CDF8();
+                handleHoeAnimation();
                 break;
             case AX:                                     
-                func_8006CE6C();
+                handleAxAnimation();
                 break;
             case HAMMER:                                     
-                func_8006CEE0();
+                handleHammerAnimation();
                 break;
             case WATERING_CAN:                                     
-                func_8006CF54();
+                handleWateringCanAnimation();
                 break;
             case MILKER:                                     
-                func_8006D0AC();
+                handleMilkerAnimation();
                 break;
             case BELL:                                     
-                func_8006D21C();
+                handleBellAnimation();
                 break;
             case BRUSH:                                     
-                func_8006D304();
+                handleBrushAnimation();
                 break;
             case CLIPPERS:                                     
-                func_8006D3FC();
+                handleClippersAnimation();
                 break;
             case TURNIP_SEEDS:                                    
-                func_8006D56C();
+                handleTurnipSeedsAnimation();
                 break;
             case POTATO_SEEDS:                                    
-                func_8006D690();
+                handlePotatoSeedsAnimation();
                 break;
             case CABBAGE_SEEDS:                                    
-                func_8006D7B4();
+                handleCabbageSeedsAnimation();
                 break;
             case TOMATO_SEEDS:                                    
-                func_8006D8D8();
+                handleTomatoSeedsAnimation();
                 break;
             case CORN_SEEDS:                                    
-                func_8006D9FC();
+                handleCornSeedsAnimation();
                 break;
             case EGGPLANT_SEEDS:                                    
-                func_8006DB20();
+                handleEggplantSeedsAnimation();
                 break;
             case STRAWBERRY_SEEDS:                                    
-                func_8006DC44();
+                handleStrawberrySeedsAnimation();
                 break;
             case MOON_DROP_SEEDS:                                    
-                func_8006DD68();
+                handleMoonDropSeedsAnimation();
                 break;
             case PINK_CAT_MINT_SEEDS:                                    
-                func_8006DE8C();
+                handlePinkCatMintSeedsAnimation();
                 break;
             case BLUE_MIST_SEEDS:                                    
-                func_8006DFB0();
+                handleBlueMistSeedsAnimation();
                 break;
             case CHICKEN_FEED:                                    
-                func_8006E0D4();
+                handleChickenFeedAnimation();
                 break;
             case BALL:                                    
-                func_8006E1F8();
+                handleBallAnimation();
                 break;
             case FEEDING_BOTTLE:                                    
-                func_8006E200();
+                handleFeedingBottleAnimation();
                 break;
             case 23:                                    
-                func_8006E208();
+                handleUnusedTool23Animation();
                 break;
             case FISHING_POLE:                                    
-                func_8006E210();
+                handleFishingPoleAnimation();
                 break;
             case MIRACLE_POTION:                                    
-                func_8006E240();
+                handleMiraclePotionAnimation();
                 break;
             case COW_MEDICINE:                                    
-                func_8006E348();
+                handleCowMedicineAnimation();
                 break;
             case GRASS_SEEDS:                                    
-                func_8006E450();
+                handleGrassSeedsAnimation();
                 break;
             case BLUE_FEATHER:                                    
-                func_8006E574();
+                handleBlueFeatherAnimation();
                 break;
             case EMPTY_BOTTLE:                                    
-                func_8006E678();
+                handleEmptyBottleAnimation();
                 break;
-            }
+        }
     }
     
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
@@ -4068,7 +4077,7 @@ void func_8006C384(void) {
                 playSfx(BRUSH_SFX);
                 break;
             case CLIPPERS:                                     
-                playSfx(34);
+                playSfx(CLIPPERS_SFX);
                 break;
             case CHICKEN_FEED:                                    
                 playSfx(SEEDS_SFX);
@@ -4088,19 +4097,20 @@ void func_8006C384(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006C628);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolUseAnimation);
 
-void func_8006C628(u16 arg0, u16 arg1) {
+void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex) {
 
     u8 found;
     u8 found2;
 
     switch (gPlayer.actionPhase) {
 
+        // charge/prepare tool
         case 0:
 
             toggleDailyEventBit(0x29);
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, arg0);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, chargedAnimationIndex);
 
             switch (gPlayer.currentTool) {
                 case SICKLE:
@@ -4116,17 +4126,18 @@ void func_8006C628(u16 arg0, u16 arg1) {
 
             break;
         
+        // use tool
         case 1:                                         
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, arg1);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, useToolAnimationIndex);
             resetToolUseState();
             break;
 
-
+        // post use
         case 2:
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
@@ -4143,7 +4154,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[0] == 200) {
                                     
                                     gPlayer.toolLevels[0] = 1;
-                                    startAction(0x1B, 0x1C);
+                                    // tool acquisition
+                                    startAction(ACQUIRING_TOOL, ANIM_TOOL_ACQUISITION);
                                     upgradedToolIndex = 1;
                                     upgradedToolLevelIndex = 1;
                                     
@@ -4152,7 +4164,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[0] == 400) {
                                     
                                     gPlayer.toolLevels[0] = 2;
-                                    startAction(0x1B, 0x1C);
+                                    // tool acquisition
+                                    startAction(ACQUIRING_TOOL, ANIM_TOOL_ACQUISITION);
                                     upgradedToolIndex = 1;
                                     upgradedToolLevelIndex = 2;
                                     
@@ -4175,7 +4188,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[1] == 250) {
                                     
                                     gPlayer.toolLevels[1] = 1;
-                                    startAction(0x1B, 0x1C);
+                                    // tool acquisition
+                                    startAction(ACQUIRING_TOOL, ANIM_TOOL_ACQUISITION);
                                     upgradedToolIndex = 2;
                                     upgradedToolLevelIndex = 1;
                                     
@@ -4184,7 +4198,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[1] == 500) {
                                     
                                     gPlayer.toolLevels[1] = 2;
-                                    startAction(0x1B, 0x1C);
+                                    // tool acquisition
+                                    startAction(ACQUIRING_TOOL, ANIM_TOOL_ACQUISITION);
                                     upgradedToolIndex = 2;
                                     upgradedToolLevelIndex = 2;
                                     
@@ -4196,17 +4211,17 @@ void func_8006C628(u16 arg0, u16 arg1) {
 
                                 if (checkHaveKeyItem(TREASURE_MAP) && !checkHaveKeyItem(BROKEN_MUSIC_BOX)) {
                                     gPlayer.heldItem = BROKEN_MUSIC_BOX_HELD_ITEM;
-                                    startAction(0x22, 0x23);
+                                    startAction(ACQUIRING_MUSIC_BOX, ANIM_ACQUIRE_MUSIC_BOX);
                                 }
                                 
                                 toolUse.musicBoxTileDigCounter = 0;
 
-                            } else if (checkDailyEventBit(0x29) && !(powerNutBits & 1) && !(getRandomNumberInRange(0, 479))) {
+                            } else if (checkDailyEventBit(0x29) && !(acquiredPowerNutBits & 1) && !(getRandomNumberInRange(0, 479))) {
                             
                                 gPlayer.heldItem = POWER_NUT;
-                                startAction(EATING, EATING + 2);
+                                startAction(EATING, ANIM_EATING);
                                 initializePlayerHeldItem();
-                                powerNutBits |= 1;
+                                acquiredPowerNutBits |= 1;
                                 gMaximumStamina += adjustValue(gMaximumStamina, 15, MAX_STAMINA);
                                 
                             }
@@ -4227,7 +4242,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[2] == 450) {
                                 
                                     gPlayer.toolLevels[2] = 1;
-                                    startAction(0x1B, 0x1C);
+                                    // tool acquisition
+                                    startAction(ACQUIRING_TOOL, ANIM_TOOL_ACQUISITION);
                                     upgradedToolIndex = 3;
                                     upgradedToolLevelIndex = 1;
                                 
@@ -4236,7 +4252,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[2] == 900) {
                                     
                                     gPlayer.toolLevels[2] = 2;
-                                    startAction(0x1B, 0x1C);
+                                    // tool acquisition
+                                    startAction(ACQUIRING_TOOL, ANIM_TOOL_ACQUISITION);
                                     upgradedToolIndex = 3;
                                     upgradedToolLevelIndex = 2;
                                     
@@ -4259,7 +4276,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[3] == 100) {
                                 
                                     gPlayer.toolLevels[3] = 1;
-                                    startAction(0x1B, 0x1C);
+                                    // tool acquisition
+                                    startAction(ACQUIRING_TOOL, ANIM_TOOL_ACQUISITION);
                                     upgradedToolIndex = 4;
                                     upgradedToolLevelIndex = 1;
                                 
@@ -4268,7 +4286,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[3] == 200) {
                                     
                                     gPlayer.toolLevels[3] = 2;
-                                    startAction(0x1B, 0x1C);
+                                    // tool acquisition
+                                    startAction(ACQUIRING_TOOL, ANIM_TOOL_ACQUISITION);
                                     upgradedToolIndex = 4;
                                     upgradedToolLevelIndex = 2;
                                     
@@ -4276,12 +4295,13 @@ void func_8006C628(u16 arg0, u16 arg1) {
                             
                             }
                             
-                            if (checkDailyEventBit(0x29) && !(powerNutBits & 0x10)) {
+                            if (checkDailyEventBit(0x29) && !(acquiredPowerNutBits & 0x10)) {
                                 
                                 gPlayer.heldItem = 0x57;
-                                startAction(6, 8);
+                                // eating
+                                startAction(EATING, ANIM_EATING);
                                 initializePlayerHeldItem();
-                                powerNutBits |= 0x10;
+                                acquiredPowerNutBits |= 0x10;
                                 
                                 gMaximumStamina += adjustValue(gMaximumStamina, 15, 250);
                                 setLifeEventBit(0x45);
@@ -4290,7 +4310,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
                         
                         }
                         
-                        toggleDailyEventBit(0x29U);
+                        toggleDailyEventBit(0x29);
                         break;
                     
                     case WATERING_CAN:
@@ -4304,7 +4324,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[4] == 600) {
                                 
                                     gPlayer.toolLevels[4] = 1;
-                                    startAction(0x1B, 0x1C);
+                                    // tool acquisition
+                                    startAction(ACQUIRING_TOOL, ANIM_TOOL_ACQUISITION);
                                     upgradedToolIndex = 5;
                                     upgradedToolLevelIndex = 1;
                                 
@@ -4313,7 +4334,8 @@ void func_8006C628(u16 arg0, u16 arg1) {
                                 if (gPlayer.toolUseCounters[4] == 1200) {
                                     
                                     gPlayer.toolLevels[4] = 2;
-                                    startAction(0x1B, 0x1C);
+                                    // tool acquisition
+                                    startAction(ACQUIRING_TOOL, ANIM_TOOL_ACQUISITION);
                                     upgradedToolIndex = 5;
                                     upgradedToolLevelIndex = 2;
                                     
@@ -4329,7 +4351,7 @@ void func_8006C628(u16 arg0, u16 arg1) {
                 
             }
             
-            break;
+        break;
         
     }
     
@@ -4338,81 +4360,80 @@ void func_8006C628(u16 arg0, u16 arg1) {
 
 // tool animations
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CD84);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleSickleAnimation);
 
-// sickle
-void func_8006CD84(void) {
+void handleSickleAnimation(void) {
     
     switch(gPlayer.currentToolLevel) {
 
         case 0:
-            func_8006C628(0x50, 104);
+            handleToolUseAnimation(80, 104);
             break;
         case 1:
-            func_8006C628(0x58, 112);
+            handleToolUseAnimation(88, 112);
             break;
         case 2:
-            func_8006C628(0x60, 120);
+            handleToolUseAnimation(96, 120);
             break;
         
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CDF8);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleHoeAnimation);
 
-void func_8006CDF8(void) {
+void handleHoeAnimation(void) {
     
     switch(gPlayer.currentToolLevel) {
 
         case 0:
-            func_8006C628(0x80, 0x98);
+            handleToolUseAnimation(128, 152);
             break;
         case 1:
-            func_8006C628(0x88, 0xA0);
+            handleToolUseAnimation(136, 160);
             break;
         case 2:
-            func_8006C628(0x90, 0xA8);
+            handleToolUseAnimation(144, 168);
             break;
         
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CE6C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleAxAnimation);
 
-void func_8006CE6C(void) {
+void handleAxAnimation(void) {
 
     switch(gPlayer.currentToolLevel) {
 
         case 0:
-            func_8006C628(0xB0, 0xC8);
+            handleToolUseAnimation(176, 200);
             break;
         case 1:
-            func_8006C628(0xB8, 0xD0);
+            handleToolUseAnimation(184, 208);
             break;
         case 2:
-            func_8006C628(0xC0, 0xD8);
+            handleToolUseAnimation(192, 216);
             break;
         
     }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CEE0);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleHammerAnimation);
 
-void func_8006CEE0(void) {
+void handleHammerAnimation(void) {
 
     switch (gPlayer.currentToolLevel) {
         
         case 0:
-            func_8006C628(0xE0, 0xF8);
+            handleToolUseAnimation(224, 248);
             break;      
         case 1:
-            func_8006C628(0xE8, 0x100);
+            handleToolUseAnimation(232, 256);
             break;
         case 2:
-            func_8006C628(0xF0, 0x108);
+            handleToolUseAnimation(240, 264);
             break;        
         default:
             break;
@@ -4420,15 +4441,14 @@ void func_8006CEE0(void) {
     
 }
 
-// watering can
-static inline void unknownInlineFunc() {
+static inline void handleSuccessfulWateringCanAction() {
 
     u8 temp;
     
     switch (gPlayer.actionPhase) {
                     
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x140);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 320);
             break;
         
         case 1:
@@ -4458,7 +4478,7 @@ static inline void unknownInlineFunc() {
                     wateringCanUses = 50;
                 }
 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
                 
@@ -4470,9 +4490,9 @@ static inline void unknownInlineFunc() {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006CF54);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleWateringCanAnimation);
 
-void func_8006CF54(void) {
+void handleWateringCanAnimation(void) {
 
     u8 temp;
     
@@ -4481,22 +4501,20 @@ void func_8006CF54(void) {
         case 0:
 
             if (checkWaterableSoilInteraction(gBaseMapIndex)) {
-
-                unknownInlineFunc();
-                
+                handleSuccessfulWateringCanAction();
             } else {
-                func_8006C628(0x110, 0x128);
+                handleToolUseAnimation(272, 296);
                 break;
             }
             
             break;
         
         case 1:
-            func_8006C628(0x118, 0x130);
+            handleToolUseAnimation(280, 304);
             break;
 
         case 2:
-            func_8006C628(0x120, 0x138);
+            handleToolUseAnimation(288, 312);
             break;
         
         default:
@@ -4506,9 +4524,9 @@ void func_8006CF54(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D0AC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleMilkerAnimation);
 
-void func_8006D0AC(void) {
+void handleMilkerAnimation(void) {
 
     switch (gPlayer.actionPhase) {                              
         
@@ -4518,7 +4536,7 @@ void func_8006D0AC(void) {
             break;
         
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x149);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 329);
             break;
         
         case 2:
@@ -4533,16 +4551,16 @@ void func_8006D0AC(void) {
 
                 if (gPlayer.heldItem == 0) {
 
-                    if (!(func_80067A24(0))) {
+                    if (!(checkAndTriggerStaminaExhaustion(0))) {
                         resetAction();
                     }
                     
                 } else {
 
-                    if (!(func_80067A24(0))) {
-                        startAction(4, 6);
+                    if (!(checkAndTriggerStaminaExhaustion(0))) {
+                        startAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
                     } else {
-                        gPlayer.itemInfoIndex = initializeHeldItem(0, 6, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
+                        gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_PICKUP, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                     }
                     
                 }
@@ -4555,9 +4573,9 @@ void func_8006D0AC(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D21C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleBellAnimation);
 
-void func_8006D21C(void) {
+void handleBellAnimation(void) {
     
     switch (gPlayer.actionPhase) {                              
         
@@ -4566,7 +4584,7 @@ void func_8006D21C(void) {
             break;
         
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x151);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 337);
             break;
         
         case 2:
@@ -4576,7 +4594,7 @@ void func_8006D21C(void) {
         
         case 3:
             
-            if ((toolUse.toolUseState == 0) && !(func_80067A24(0))) {
+            if ((toolUse.toolUseState == 0) && !(checkAndTriggerStaminaExhaustion(0))) {
                 resetAction();
             }
         
@@ -4586,9 +4604,9 @@ void func_8006D21C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D304);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleBrushAnimation);
 
-void func_8006D304(void) {
+void handleBrushAnimation(void) {
 
     switch (gPlayer.actionPhase) {                              
         
@@ -4599,7 +4617,7 @@ void func_8006D304(void) {
             break;
         
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x159);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 345);
             break;
         
         case 2:
@@ -4609,29 +4627,29 @@ void func_8006D304(void) {
         
         case 3:
             
-            if ((toolUse.toolUseState == 0) && !(func_80067A24(0))) {
+            if ((toolUse.toolUseState == 0) && !(checkAndTriggerStaminaExhaustion(0))) {
                 resetAction();
             }
         
             break;
         
-        }
+    }
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D3FC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleClippersAnimation);
 
-void func_8006D3FC(void) {
+void handleClippersAnimation(void) {
 
     switch (gPlayer.actionPhase) {                              
         
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
             handleFarmAnimalPlayerCollision();
             break;
 
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x161);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 353);
             break;
     
         case 2:
@@ -4645,16 +4663,16 @@ void func_8006D3FC(void) {
                 
                 if (gPlayer.heldItem == 0) {
                     
-                    if (!(func_80067A24(0))) {
+                    if (!(checkAndTriggerStaminaExhaustion(0))) {
                         resetAction();
                     }
                     
                 } else {
                     
-                    if (!(func_80067A24(0))) {
-                        startAction(PICKING_UP, PICKING_UP + 2);
+                    if (!(checkAndTriggerStaminaExhaustion(0))) {
+                        startAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
                     } else {
-                        gPlayer.itemInfoIndex = initializeHeldItem(0, 6, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
+                        gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_PICKUP, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                     }
                     
                     
@@ -4668,9 +4686,9 @@ void func_8006D3FC(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D56C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleTurnipSeedsAnimation);
 
-void func_8006D56C(void) {
+void handleTurnipSeedsAnimation(void) {
     
     switch (gPlayer.actionPhase) {
 
@@ -4679,7 +4697,7 @@ void func_8006D56C(void) {
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         
         case 2:
@@ -4691,13 +4709,13 @@ void func_8006D56C(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
-                D_801FC154 += adjustValue(D_801FC154, -1, 20);
+                turnipSeedsQuantity += adjustValue(turnipSeedsQuantity, -1, 20);
 
-                if (!D_801FC154) {
+                if (!turnipSeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
                 
@@ -4709,9 +4727,9 @@ void func_8006D56C(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D690);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePotatoSeedsAnimation);
 
-void func_8006D690(void) {
+void handlePotatoSeedsAnimation(void) {
     
     switch (gPlayer.actionPhase) {
 
@@ -4720,7 +4738,7 @@ void func_8006D690(void) {
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         
         case 2:
@@ -4732,13 +4750,13 @@ void func_8006D690(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
-                D_80204DF4 += adjustValue(D_80204DF4, -1, 20);
+                potatoSeedsQuantity += adjustValue(potatoSeedsQuantity, -1, 20);
 
-                if (!D_80204DF4) {
+                if (!potatoSeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
                 
@@ -4750,9 +4768,9 @@ void func_8006D690(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D7B4);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleCabbageSeedsAnimation);
 
-void func_8006D7B4(void) {
+void handleCabbageSeedsAnimation(void) {
     
     switch (gPlayer.actionPhase) {
 
@@ -4761,7 +4779,7 @@ void func_8006D7B4(void) {
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         
         case 2:
@@ -4773,16 +4791,16 @@ void func_8006D7B4(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
-                D_8018A725 += adjustValue(D_8018A725, -1, 20);
+                cabbageSeedsQuantity += adjustValue(cabbageSeedsQuantity, -1, 20);
 
-                if (!D_8018A725) {
+                if (!cabbageSeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
-                
+
             }
             
             break;
@@ -4791,9 +4809,9 @@ void func_8006D7B4(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D8D8);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleTomatoSeedsAnimation);
 
-void func_8006D8D8(void) {
+void handleTomatoSeedsAnimation(void) {
     
     switch (gPlayer.actionPhase) {
 
@@ -4802,7 +4820,7 @@ void func_8006D8D8(void) {
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         
         case 2:
@@ -4814,16 +4832,15 @@ void func_8006D8D8(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
-                D_8013DC2C += adjustValue(D_8013DC2C, -1, 20);
+                tomatoSeedsQuantity += adjustValue(tomatoSeedsQuantity, -1, 20);
 
-                if (!D_8013DC2C) {
+                if (!tomatoSeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
-                
             }
             
             break;
@@ -4832,9 +4849,9 @@ void func_8006D8D8(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006D9FC);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleCornSeedsAnimation);
 
-void func_8006D9FC(void) {
+void handleCornSeedsAnimation(void) {
     
     switch (gPlayer.actionPhase) {
 
@@ -4843,7 +4860,7 @@ void func_8006D9FC(void) {
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         
         case 2:
@@ -4855,13 +4872,13 @@ void func_8006D9FC(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
-                D_801FAD91 += adjustValue(D_801FAD91, -1, 20);
+                cornSeedsQuantity += adjustValue(cornSeedsQuantity, -1, 20);
 
-                if (!D_801FAD91) {
+                if (!cornSeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
                 
@@ -4873,9 +4890,9 @@ void func_8006D9FC(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DB20);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleEggplantSeedsAnimation);
 
-void func_8006DB20(void) {
+void handleEggplantSeedsAnimation(void) {
     
     switch (gPlayer.actionPhase) {
 
@@ -4884,7 +4901,7 @@ void func_8006DB20(void) {
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         
         case 2:
@@ -4896,13 +4913,13 @@ void func_8006DB20(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
-                D_80237458 += adjustValue(D_80237458, -1, 20);
+                eggplantSeedsQuantity += adjustValue(eggplantSeedsQuantity, -1, 20);
 
-                if (!D_80237458) {
+                if (!eggplantSeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
                 
@@ -4914,9 +4931,9 @@ void func_8006DB20(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DC44);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleStrawberrySeedsAnimation);
 
-void func_8006DC44(void) {
+void handleStrawberrySeedsAnimation(void) {
     
     switch (gPlayer.actionPhase) {
 
@@ -4925,7 +4942,7 @@ void func_8006DC44(void) {
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         
         case 2:
@@ -4937,13 +4954,13 @@ void func_8006DC44(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
-                D_802373E8 += adjustValue(D_802373E8, -1, 20);
+                strawberrySeedsQuantity += adjustValue(strawberrySeedsQuantity, -1, 20);
 
-                if (!D_802373E8) {
+                if (!strawberrySeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
                 
@@ -4955,9 +4972,9 @@ void func_8006DC44(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DD68);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleMoonDropSeedsAnimation);
 
-void func_8006DD68(void) {
+void handleMoonDropSeedsAnimation(void) {
 
     switch (gPlayer.actionPhase) {
 
@@ -4966,7 +4983,7 @@ void func_8006DD68(void) {
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         
         case 2:
@@ -4978,13 +4995,13 @@ void func_8006DD68(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
-                D_801C3F70 += adjustValue(D_801C3F70, -1, 20);
+                moondropSeedsQuantity += adjustValue(moondropSeedsQuantity, -1, 20);
 
-                if (!D_801C3F70) {
+                if (!moondropSeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
                 
@@ -4996,9 +5013,9 @@ void func_8006DD68(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DE8C);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePinkCatMintSeedsAnimation);
 
-void func_8006DE8C(void) {
+void handlePinkCatMintSeedsAnimation(void) {
 
         switch (gPlayer.actionPhase) {
 
@@ -5007,7 +5024,7 @@ void func_8006DE8C(void) {
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         
         case 2:
@@ -5019,13 +5036,13 @@ void func_8006DE8C(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
-                D_80205636 += adjustValue(D_80205636, -1, 20);
+                pinkCatMintSeedsQuantity += adjustValue(pinkCatMintSeedsQuantity, -1, 20);
 
-                if (!D_80205636) {
+                if (!pinkCatMintSeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
                 
@@ -5037,16 +5054,16 @@ void func_8006DE8C(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006DFB0);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleBlueMistSeedsAnimation);
 
-void func_8006DFB0(void) {
+void handleBlueMistSeedsAnimation(void) {
 
     switch (gPlayer.actionPhase) {
         case 0:
             setEntityAnimation(ENTITY_PLAYER, 0);
             break;
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         case 2:
             resetToolUseState();
@@ -5054,13 +5071,13 @@ void func_8006DFB0(void) {
             break;
         case 3:            
             if (toolUse.toolUseState == 0) {
-                if (!func_80067A24(0)) {
+                if (!checkAndTriggerStaminaExhaustion(0)) {
                     resetAction();
                 }
 
-                D_802373A8 += adjustValue(D_802373A8, -1, 1);
+                blueMistSeedsQuantity += adjustValue(blueMistSeedsQuantity, -1, 1);
 
-                if (!D_802373A8) {
+                if (!blueMistSeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
             }
@@ -5070,19 +5087,18 @@ void func_8006DFB0(void) {
     }
 }
 
-// chicken feed
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E0D4);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleChickenFeedAnimation);
 
-void func_8006E0D4(void) {
+void handleChickenFeedAnimation(void) {
 
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
             break;
 
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x169);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 361);
             break;
 
         case 2:
@@ -5094,7 +5110,7 @@ void func_8006E0D4(void) {
 
             if (toolUse.toolUseState == 0) {
 
-                if (!func_80067A24(0)) {
+                if (!checkAndTriggerStaminaExhaustion(0)) {
                     resetAction();
                 }
 
@@ -5114,32 +5130,31 @@ void func_8006E0D4(void) {
 }
 
 // empty function
-void func_8006E1F8(void) {}
+void handleBallAnimation(void) {}
 
 // empty function
-void func_8006E200(void) {}
+void handleFeedingBottleAnimation(void) {}
 
 // empty function
-void func_8006E208(void) {}
+void handleUnusedTool23Animation(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E210);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleFishingPoleAnimation);
 
-void func_8006E210(void) {
-    startAction(0x16, 0x17);
+void handleFishingPoleAnimation(void) {
+    startAction(FISHING, ANIM_FISHING);
 }
 
-// empty bottle
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E240);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleMiraclePotionAnimation);
 
-void func_8006E240(void) {
+void handleMiraclePotionAnimation(void) {
 
     switch (gPlayer.actionPhase) {                           
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
             handleFarmAnimalPlayerCollision();
             break;
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x234);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 564);
             break;
         case 2:
             resetToolUseState();
@@ -5147,7 +5162,7 @@ void func_8006E240(void) {
             break;
         case 3:
             if (toolUse.toolUseState == 0) {
-                if (!func_80067A24(0)) {
+                if (!checkAndTriggerStaminaExhaustion(0)) {
                     resetAction();
                 }
                 if (checkDailyEventBit(0x14)) {
@@ -5161,9 +5176,9 @@ void func_8006E240(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E348);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleCowMedicineAnimation);
 
-void func_8006E348(void) {
+void handleCowMedicineAnimation(void) {
 
     switch (gPlayer.actionPhase) {
 
@@ -5173,7 +5188,7 @@ void func_8006E348(void) {
             break;
         
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x234);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 564);
             break;
         
         case 2:
@@ -5185,7 +5200,7 @@ void func_8006E348(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
@@ -5201,9 +5216,9 @@ void func_8006E348(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E450);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleGrassSeedsAnimation);
 
-void func_8006E450(void) {
+void handleGrassSeedsAnimation(void) {
 
     switch (gPlayer.actionPhase) {
 
@@ -5212,7 +5227,7 @@ void func_8006E450(void) {
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 0x148);
+            setEntityAnimation(ENTITY_PLAYER, 328);
             break;
         
         case 2:
@@ -5224,13 +5239,13 @@ void func_8006E450(void) {
 
             if (toolUse.toolUseState == 0) {
                 
-                if (!(func_80067A24(0))) {
+                if (!(checkAndTriggerStaminaExhaustion(0))) {
                     resetAction();
                 }
 
-                D_801C3E28 += adjustValue(D_801C3E28, -1, 20);
+                grassSeedsQuantity += adjustValue(grassSeedsQuantity, -1, 20);
 
-                if (!D_801C3E28) {
+                if (!grassSeedsQuantity) {
                     gPlayer.currentTool = 0;
                 }
                 
@@ -5242,25 +5257,25 @@ void func_8006E450(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E574);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleBlueFeatherAnimation);
 
-void func_8006E574(void) {
+void handleBlueFeatherAnimation(void) {
 
     switch (gPlayer.actionPhase) {
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
             checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, 0);
             findNPCToTalkTo();
             break;
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x234);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 564);
             break;
         case 2:
             resetToolUseState();
             gPlayer.actionPhase++;
             break;
         case 3:
-            if (toolUse.toolUseState == 0 && !func_80067A24(0)) {
+            if (toolUse.toolUseState == 0 && !checkAndTriggerStaminaExhaustion(0)) {
                 resetAction();
             }
             break;
@@ -5270,27 +5285,29 @@ void func_8006E574(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", func_8006E678);
+//INCLUDE_ASM("asm/nonmatchings/game/player", handleEmptyBottleAnimation);
 
-void func_8006E678(void) {
+void handleEmptyBottleAnimation(void) {
 
     switch (gPlayer.actionPhase) {
 
+        // handle start fill up or drink
         case 0:
 
             if (gPlayer.bottleContents == 0) {
                 
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, STANDING);
+                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
                 handleFarmAnimalPlayerCollision();
                 
             } else {
 
-                startAction(0x14, 0x15);
+                // drink
+                startAction(DRINKING, ANIM_DRINKING);
                 
                 switch (gPlayer.bottleContents) {
                     
                     case 1:
-                        gPlayer.heldItem = 0x71;
+                        gPlayer.heldItem = BOTTLE_WITH_WATER_HELD_ITEM;
                         break;
                     case 2:
                         gPlayer.heldItem = BOTTLE_WITH_WINE_HELD_ITEM;
@@ -5324,8 +5341,9 @@ void func_8006E678(void) {
             
             break;
 
+        // fill up bottle
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0x272);
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 626);
             break;
 
         case 2:
@@ -5334,7 +5352,7 @@ void func_8006E678(void) {
             break;
 
         case 3:
-            if (toolUse.toolUseState == 0 && !func_80067A24(0)) {
+            if (toolUse.toolUseState == 0 && !checkAndTriggerStaminaExhaustion(0)) {
                 resetAction();
             }    
             break;

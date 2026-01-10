@@ -58,6 +58,16 @@
 #define NPC_ENTITY_LOADED 4
 #define NPC_ATTACHED 8
 
+/* NPC animation modes */
+#define NPC_ANIM_IDLE           0   // Stationary with idle animation
+#define NPC_ANIM_WANDER         1   // Random wandering within radius
+#define NPC_ANIM_SPECIAL        2   // Location-specific special animation
+#define NPC_ANIM_CUSTOM         3   // NPC-specific custom behavior
+#define NPC_ANIM_FIXED          4   // Fixed position for cutscene/event
+#define NPC_ANIM_BABY_CRIB      5
+#define NPC_ANIM_TALKING        16  // Facing player, resets after frame (0x10)
+#define NPC_ANIM_FACE_PLAYER    32  // Facing player during interaction (0x20)
+
 // 0x801FB9D0
 typedef struct {
 	Vec3f startingCoordinates;
@@ -66,8 +76,8 @@ typedef struct {
 	u8 wanderRadiusX;
 	u8 wanderRadiusZ;
 	u8 levelIndex;
-	u8 movingFlag;
-	u8 behaviorMode;
+	u8 animationMode;
+	u8 defaultAnimationMode;
 	u8 direction;
 	u8 speed;
 	u8 animationState;

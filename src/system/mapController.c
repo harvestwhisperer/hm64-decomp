@@ -7,6 +7,9 @@
 #include "system/map.h"
 #include "system/sceneGraph.h"
 
+MapController mapControllers[1];
+MapDataAddress mapDataAddresses[96];
+
 // bss
 Vec4f targetMapLightingRGBA;
 Vec4f currentMapLightingRGBA;
@@ -14,8 +17,6 @@ Vec4f currentMapLightingRGBA;
 // RGBA update rate
 s16 D_8017045A;
 
-MapController mapControllers[1];
-MapDataAddress mapDataAddresses[96];
 
 Vec3f previousWorldRotationAngles;
 Vec3f currentWorldRotationAngles;

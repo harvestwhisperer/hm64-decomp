@@ -12,7 +12,7 @@ def main():
         print("    python main.py parse <sequence_file> [log_file] [-v|--verbose]")
         print("  Convert MIDI to N64:")
         print("    python main.py convert <midi_file> [output_file] [--gm] [--loop] [--quantize N]")
-        print("        output_file  : optional, defaults to <midi_file>.bin")
+        print("        output_file  : optional, defaults to <midi_file>.seq")
         print("        --gm         : map General MIDI to in-game instruments")
         print("        --loop       : enable infinite looping")
         print("        --quantize N : quantize to 1/N note grid (4=16th, 8=32nd)")
@@ -72,16 +72,15 @@ def main():
         else:
             # Auto-generate output filename from input
             base_name = os.path.splitext(midi_file)[0]
-            output_file = base_name + '.bin'
+            output_file = base_name + '.seq'
             extra_args = sys.argv[3:]
 
-        # Optional flags
-        use_gm = False
+        use_gm = True
         enable_loop = False
         quantize_grid = None
 
-        if any(arg in ("--gm", "--use-gm-mapping") for arg in extra_args):
-            use_gm = True
+        if any(arg in ("--no-gm", "--use-hm64-order") for arg in extra_args):
+            use_gm = False
         if any(arg in ("--loop", "--enable-loop") for arg in extra_args):
             enable_loop = True
 

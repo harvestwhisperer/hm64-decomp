@@ -15,7 +15,7 @@ extern Vec4f* getDefaultLevelLighting(Vec4f*, u16);
 extern void setChickenFeedSprite(u8); 
 extern void setBarnFodderSprite(u8 itemIndex);
 extern u8 getMapFromExit(u8);
-extern u16 getCantEnterDialogueInfoIndex(u16);    
+extern u16 getCantEnterTextIndex(u16);    
 
 extern void setupLevelMap(u16);        
 extern u8 getLevelFlags(u16);    
