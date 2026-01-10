@@ -1,0 +1,197 @@
+BASENAME := hm64-jp
+TARGET := $(BASENAME).z64
+REGION := jp
+BASEROM := baserom.jp.z64
+
+# Options
+
+VERBOSE := 0
+PERMUTER ?= 0
+
+# Directories
+
+SRC_DIRS := src
+BIN_DIRS := bin
+
+BUILD_DIR := build
+TOOLS_DIR := tools
+
+# Files
+
+LD_SCRIPT := $(BASENAME).ld
+LD_MAP := $(BASENAME).map
+
+# Get object list from splat-generated linker script
+OBJECTS := $(shell grep -E 'build.+\.o' $(LD_SCRIPT) -o 2>/dev/null)
+
+# Tools
+
+KMC_PATH := $(TOOLS_DIR)/gcc-2.7.2/
+
+CROSS := mips-linux-gnu-
+
+CC := $(KMC_PATH)gcc
+AS := $(CROSS)as
+LD := $(CROSS)ld
+OBJCOPY := $(CROSS)objcopy
+
+# Flags
+
+MACROS := -D_LANGUAGE_C -D_MIPS_SZLONG=32 -D_MIPS_SZINT=32 -DSUPPORT_NAUDIO -DNU_SYSTEM -DF3DEX_GBI_2 -DN_MICRO -DLANG_JAPANESE=0 -DUSE_EPI -DNDEBUG -D_AUDIOVISIBLE -DN_AUDIO -D_JP=1
+CFLAGS_COMMON := -G0 -mips3 -mgp32 -mfp32 -Wa,-Iinclude -funsigned-char
+
+CFLAGS := $(CFLAGS_COMMON) $(MACROS)
+HASM_ASFLAGS := -mips3 -nostdinc -fno-PIC -mno-abicalls -G 0 -mgp32 -mfp32 -mabi32
+ASFLAGS := -G 0 -I include -mips3
+CPPFLAGS := -I. -I include -I src -I lib/nusys-1/include -I lib/libultra/include -I lib/libmus/include/PR -I lib/gcc/include
+
+HASM_AS_DEFINES := -D_LANGUAGE_ASSEMBLY -DMIPSEB -D_ULTRA64 -D_MIPS_SIM=1
+
+LIBULTRA_CPP_FLAGS := -I lib/libultra/include -I lib/libultra/include/PR -I lib/gcc/include
+LIBMUS_CPP_FLAGS := -I lib/libmus/include/PR -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libultra/src/libnaudio
+NUSYS_CPP_FLAGS := -I lib/nusys-1/include -I lib/libultra/include
+NUALSTL_CPP_FLAGS := -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libultra/src/libnaudio -I lib/libmus/include/PR
+LIBKMC_CPP_FLAGS := -I include -I lib/libkmc/include -I lib/gcc/include -I lib/nusys-1/include -I lib/libultra/include -I lib/libmus/include/PR
+
+DEBUG_FLAGS := -g2
+OPTFLAGS := -O2
+LIBULTRA_OPTFLAGS := -O3 -g0
+LIBKMC_OPTFLAGS := -O1
+LIBMUS_OPTFLAGS := -O0 -g0
+NU_OPTFLAGS := -O3
+
+ULTRALIBVER := -DBUILD_VERSION=7
+
+LDFLAGS := -T config/jp/undefined_funcs.txt -T config/jp/undefined_syms.txt -T config/jp/undefined_funcs_auto.txt -T config/jp/undefined_syms_auto.txt -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
+
+ifeq ($(VERBOSE),0)
+V := @
+endif
+
+ifeq ($(PERMUTER),1)
+MACROS += -D_PERMUTER=1
+endif
+
+# Create all output directories upfront
+$(shell mkdir -p $(sort $(dir $(OBJECTS))))
+
+# Flag overrides
+
+build/lib/nusys-1/src/nusys/nuboot.c.o: NU_OPTFLAGS := -O0
+build/lib/nusys-1/src/sample/nunospak/nupakmenu.c.o: NU_OPTFLAGS += -g2
+build/lib/nusys-1/src/sample/nunospak/nupakmenuloadfont.c.o: NU_OPTFLAGS += -g2
+build/lib/libultra/src/io/aisetnextbuf.c.o: ULTRALIBVER := -DBUILD_VERSION=6
+
+# Targets
+
+all: check
+
+clean:
+	@rm -rf build
+	@rm -rf asm
+	@rm -rf bin
+	@rm -f $(LD_SCRIPT)
+	@rm -f $(BASENAME).elf
+	@rm -f $(BASENAME).map
+	@rm -f $(TARGET)
+
+split:
+	$(V)python3 -m splat split ./config/jp/splat.jp.yaml
+
+setup: clean split
+
+rerun: clean $(LD_SCRIPT) check
+
+# Main code segment
+
+$(BUILD_DIR)/src/mainproc.c.o: src/mainproc.c
+	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/mainLoop.c.o: src/mainLoop.c
+	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/game/%.c.o: src/game/%.c
+	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/system/%.c.o: src/system/%.c
+	$(CC) -B $(KMC_PATH) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/buffers/%.c.o: src/buffers/%.c
+	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/src/data/%.c.o: src/data/%.c
+	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
+
+# Lib
+
+$(BUILD_DIR)/lib/libmus/src/player.c.o: lib/libmus/src/player.c
+	$(CC) -B $(KMC_PATH) $(LIBMUS_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBMUS_CPP_FLAGS) -c -o $@ $<
+
+# nusys
+
+$(BUILD_DIR)/lib/nusys-1/src/nusys/%.c.o: lib/nusys-1/src/nusys/%.c
+	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUSYS_CPP_FLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/lib/nusys-1/src/nualstl/%.c.o: lib/nusys-1/src/nualstl/%.c
+	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUALSTL_CPP_FLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/lib/nusys-1/src/sample/nunospak/%.c.o: lib/nusys-1/src/sample/nunospak/%.c
+	$(CC) -B $(KMC_PATH) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUSYS_CPP_FLAGS) -c -o $@ $<
+
+# libkmc
+
+$(BUILD_DIR)/lib/libkmc/src/%.c.o: lib/libkmc/src/%.c
+	$(CC) -B $(KMC_PATH) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(LIBKMC_CPP_FLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/lib/libkmc/src/%.s.o: lib/libkmc/src/%.s
+	$(CC) -B $(KMC_PATH) -c $(LIBKMC_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
+
+# libultra
+
+$(BUILD_DIR)/lib/libultra/src/%.c.o: lib/libultra/src/%.c
+	$(CC) -B $(KMC_PATH) $(LIBULTRA_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBULTRA_CPP_FLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/gu/%.s.o: lib/libultra/src/gu/%.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/libc/%.s.o: lib/libultra/src/libc/%.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/%.s.o: lib/libultra/src/os/%.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -o32 -x assembler-with-cpp -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/os/unusedPadding.s.o: lib/libultra/src/os/unusedPadding.s
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+$(BUILD_DIR)/lib/libultra/src/rmon/%.s.o: lib/libultra/src/rmon/%.s
+	$(CC) -B $(KMC_PATH) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
+
+# ucode
+
+$(BUILD_DIR)/lib/ucode/%.s.o: lib/ucode/%.s
+	@mkdir -p $(dir $@)
+	$(CC) -E -I lib/libultra/include/sys $(HASM_AS_DEFINES) $< | $(AS) $(ASFLAGS) -o $@ -
+
+# Generic rules for extracted assets
+
+$(BUILD_DIR)/%.s.o: %.s
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+$(BUILD_DIR)/%.bin.o: %.bin
+	$(V)$(LD) -r -b binary -o $@ $<
+
+# Final binary
+
+$(BASENAME).elf: $(OBJECTS)
+	$(V)$(LD) $(LDFLAGS) -o $@
+
+$(TARGET): $(BASENAME).elf
+	$(V)$(OBJCOPY) -O binary $< $@
+
+check: $(TARGET)
+	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
+
+
+.PHONY: all clean setup split rerun check
+
+MAKEFLAGS += --no-builtin-rules
