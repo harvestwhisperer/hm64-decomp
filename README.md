@@ -110,3 +110,25 @@ Contributions are much welcome. There are a few areas of work still do in the pr
 - JP version matching (only basic project scaffolding is done so far)
 
 For function matching work, Decomp.me has a `Harvest Moon 64` compiler preset that's selectable when creating new scratches.
+
+## Legal Disclaimer
+
+### Intellectual Property Notice
+This project is a non-commercial, fan-made modification (mod) for **Harvest Moon 64**. 
+
+* **Harvest Moon** is a registered trademark of **Natsume Inc.**
+* All original game assets, including but not limited to code, graphics, characters, and music, are the property of **Marvelous Inc.** (formerly Victor Interactive Software).
+* This project is not affiliated with, endorsed by, or sponsored by Natsume Inc., Marvelous Inc., or any of their subsidiaries.
+
+### Non-Commercial Use & Fair Use
+This modification is provided for **educational and portfolio purposes only**. 
+* **No Commercial Gain:** This mod is distributed free of charge. I do not accept donations or payments for this project.
+* **Original Game Required:** This repository does not contain any original game ROMs or copyrighted proprietary binaries. Users must provide their own legally obtained copy of the original game to use this mod.
+* **Fair Use:** I believe this work constitutes a "fair use" of copyrighted material as provided for in section 107 of the US Copyright Law (for purposes such as criticism, comment, and scholarship).
+
+### No Liability
+This software is provided "as is," without warranty of any kind. I am not responsible for any damage to your hardware, software, or data that may result from the use of this mod.
+
+### Removal Request
+If you are a copyright holder and believe this project infringes on your rights, please contact me via [GitHub Issue](https://github.com/elnanni/hm64-decomp-mod/issues) or email (elnanni@gmail.com), and I will address your concerns or remove the content immediately.
+
