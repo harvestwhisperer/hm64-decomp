@@ -8,6 +8,8 @@ The US version is now 100% decompiled! This includes all game functions, data an
 
 The current build system also supports shiftability. To preserve matching, `config/us/common_bss.ld` is used to match up game variables with their original addresses. For modding, this file should be empty or removed to allow the linker to reallocate memory addresses without conflict.
 
+It's also critical (for the time being) to comment out this line `u8 z[0xFAC20];` from `src/game/namingScreen.c` when modding. This is added as a hack to ensure the proper total BSS size for a matching build until a mod-friendly branch is available.
+
 Note that you may run into performance issues when emulating non-matching builds. This is because many emulators hardcode game-specific graphics and overclocking settings that get applied when a game matches a known hash. Check your emulator's settings for vanilla Harvest Moon 64 and make sure those are applied when your mod is loaded.
 
 ### Japan
