@@ -21,7 +21,7 @@
     BRANCH_U16_VAR_WITHIN_RANGE 1454, 1454, gCutsceneIndex, .entry_mayor_village_tour_part_2
     BRANCH_U16_VAR_WITHIN_RANGE 1455, 1455, gCutsceneIndex, .entry_mayor_village_tour_part_3
     ; logos before opening cutscene
-    BRANCH_U16_VAR_WITHIN_RANGE 1456, 1456, gCutsceneIndex, .entry_funeral
+    BRANCH_U16_VAR_WITHIN_RANGE 1456, 1456, gCutsceneIndex, .show_logos
 
 ; 0x149D54
 .end_cutscene:
@@ -487,7 +487,7 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .idle
 
 .executor_6_14A784:
-    SETUP_ENTITY 27, ENTITY_ASSET_HARVEST_SPRITE, 1
+    SETUP_ENTITY 27, ENTITY_ASSET_ASSISTANT_CARPENTER, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ASSET_ROTATION SOUTHEAST
