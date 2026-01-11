@@ -1273,8 +1273,7 @@ void setLevelLighting(s16 rate, u16 callbackFunctionIndex) {
 
     Vec4f vec;
     
-    // 4 = bit 3 = outdoors flag
-    if (getLevelFlags(gBaseMapIndex) & 4) {
+    if (getLevelFlags(gBaseMapIndex) & LEVEL_WEATHER_LIGHTING) {
         
         vec = setWeatherLighting(gWeather);
 
@@ -1549,33 +1548,34 @@ void loadNamingScreenCallback(void) {
 
     openOverlayScreen();
     
-    // naming screen index
     switch (gNamingScreenIndex) {
-        case 0:
+
+        case NAMING_SCREEN_TYPE_PLAYER:
             namePtr = gPlayer.name;
             break;
-        case 1:
-            namePtr = &gFarmName;
+        case NAMING_SCREEN_TYPE_FARM:
+            namePtr = gFarmName;
             break;
-        case 2:
+        case NAMING_SCREEN_TYPE_DOG:
             namePtr = dogInfo.name;
             break;
-        case 3:
-            namePtr = horseInfo.name; 
+        case NAMING_SCREEN_TYPE_HORSE:
+            namePtr = horseInfo.name;
             break;
-        case 4:
+        case NAMING_SCREEN_TYPE_BABY:
             namePtr = &gBabyName;
             break;
-        case 5:
+        case NAMING_SCREEN_TYPE_COW:
             namePtr = gFarmAnimals[gSelectedAnimalIndex].name;
             break;
-        case 6:
+        case NAMING_SCREEN_TYPE_SHEEP:
             namePtr = gFarmAnimals[gSelectedAnimalIndex].name;
             break;
-        case 7:
+        case NAMING_SCREEN_TYPE_CHICKEN:
             namePtr = gChickens[gSelectedAnimalIndex].name;
             break;
-        }
+            
+    }
     
     initializeNamingScreen(namePtr, gNamingScreenIndex);
 
@@ -1604,9 +1604,9 @@ void mapLoadCallback(void) {
     // chicken born
     if (gBaseMapIndex == COOP && checkLifeEventBit(3)) {
         
-        gNamingScreenIndex = 7;
+        gNamingScreenIndex = NAMING_SCREEN_TYPE_CHICKEN;
         gSelectedAnimalIndex = bornChickenIndex;
-        gChickens[bornChickenIndex].flags &= ~0x100;
+        gChickens[bornChickenIndex].flags &= ~CHICKEN_NEWBORN;
         
         setMainLoopCallbackFunctionIndex(NAMING_SCREEN_LOAD);
         toggleLifeEventBit(3);
@@ -1641,9 +1641,9 @@ void mapLoadCallback(void) {
         
         // TODO: this might be an inline function
 
-        gNamingScreenIndex = 5;
+        gNamingScreenIndex = NAMING_SCREEN_TYPE_COW;
         gSelectedAnimalIndex = bornAnimalIndex;
-        gFarmAnimals[bornAnimalIndex].flags &= ~0x800;
+        gFarmAnimals[bornAnimalIndex].flags &= ~FARM_ANIMAL_NEWBORN;
             
         setMainLoopCallbackFunctionIndex(NAMING_SCREEN_LOAD);
         toggleLifeEventBit(4);
@@ -1744,7 +1744,7 @@ static inline void inline3() {
 }
 
 // from transition.c
-static inline void launchIntroCutscene_2(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
+static inline void launchIntroCutscene_2(u16 cutsceneIndex, u16 spawnPoint, u8 arg2) {
     
     deactivateSprites();
     
@@ -1764,14 +1764,14 @@ static inline void launchIntroCutscene_2(u16 cutsceneIndex, u16 entranceIndex, u
     // set ptrs to rom addresses for sprites
     initializeEntityInstances(arg2);
 
-    setEntrance(entranceIndex);
+    setSpawnPoint(spawnPoint);
 
     gCutsceneIndex = cutsceneIndex;
 
     loadCutscene(FALSE);
     
-    loadLevelFromEntrance(gEntranceIndex);
-    setupPlayerEntity(gEntranceIndex, 0);
+    loadMapAtSpawnPoint(gSpawnPointIndex);
+    setupPlayerEntity(gSpawnPointIndex, 0);
 
     handlePlayerAnimation();
 
@@ -1893,7 +1893,7 @@ void pinkOverlayMenuCallback() {
                         dialogues[0].sessionManager.flags &= ~0x40;
                         
                         closeDialogueSession(0);
-                        setEntrance(9);
+                        setSpawnPoint(FARM_SPAWN_POINT_10);
 
                         handleExitLevel(0, MAP_LOAD);
 
@@ -1930,7 +1930,7 @@ void pinkOverlayMenuCallback() {
                         
                         dialogues[0].sessionManager.flags &= ~0x40;
                         closeDialogueSession(0);
-                        setEntrance(9);
+                        setSpawnPoint(FARM_SPAWN_POINT_10);
 
                         handleExitLevel(0, MAP_LOAD);
 
@@ -2795,7 +2795,7 @@ void endOfDayCallback1(void) {
             return;
         }
         
-        setEntrance(MIDDLE_OF_HOUSE);
+        setSpawnPoint(HOUSE_SPAWN_POINT_3);
         loadLevel(2);
         
         // dream cutscenes
@@ -2834,7 +2834,7 @@ void endOfDayCallback1(void) {
         gPlayer.currentStamina = gMaximumStamina;
         
         startNewDay();
-        setEntrance(MIDDLE_OF_HOUSE);
+        setSpawnPoint(HOUSE_SPAWN_POINT_3);
         
         setMainLoopCallbackFunctionIndex(MAP_LOAD);
         
@@ -2876,7 +2876,7 @@ void endOfDayCallback2(void) {
 
         }
 
-        setEntrance(MIDDLE_OF_HOUSE);
+        setSpawnPoint(HOUSE_SPAWN_POINT_3);
         
         // setup/handle loading
         loadLevel(2);
@@ -2894,7 +2894,7 @@ void endOfDayCallback2(void) {
 
         startNewDay();
 
-        setEntrance(MIDDLE_OF_HOUSE);
+        setSpawnPoint(HOUSE_SPAWN_POINT_3);
         
         setMainLoopCallbackFunctionIndex(MAP_LOAD);
 

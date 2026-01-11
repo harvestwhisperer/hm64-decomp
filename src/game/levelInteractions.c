@@ -286,11 +286,11 @@ bool checkFishingSpotInteraction(u16 mapIndex) {
 bool handleLevelInteraction(u16 mapIndex) {
 
     bool canEnter;
-    s32 tempExit;
+    s32 tempSpawnPoint;
     u8 levelInteractionIndex;
     u16 textIndex;
 
-    tempExit = gEntranceIndex;
+    tempSpawnPoint = gSpawnPointIndex;
     
     levelInteractionsInfo.mapAdditionsIndex = 0xFF;
     levelInteractionsInfo.interactionSfxIndex = 0xFF;
@@ -469,13 +469,13 @@ bool handleLevelInteraction(u16 mapIndex) {
         playSfx(levelInteractionsInfo.interactionSfxIndex);
     }
 
-    if (tempExit != gEntranceIndex) {
+    if (tempSpawnPoint != gSpawnPointIndex) {
         
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
             
-            textIndex = getCantEnterTextIndex(gEntranceIndex);
+            textIndex = getCantEnterTextIndex(gSpawnPointIndex);
          
-            if (gEntranceIndex == 0x5F) {
+            if (gSpawnPointIndex == 0x5F) {
 
                 if (!checkLifeEventBit(MARRIED)) {
 
@@ -498,7 +498,7 @@ bool handleLevelInteraction(u16 mapIndex) {
 
             }
 
-            if ((gEntranceIndex == 0x59 || gEntranceIndex == 0x5B) && !checkLifeEventBit(MARRIED) && gSeason == SUMMER && gDayOfMonth == 1 && (18 < gHour && gHour < 21)) {
+            if ((gSpawnPointIndex == 0x59 || gSpawnPointIndex == 0x5B) && !checkLifeEventBit(MARRIED) && gSeason == SUMMER && gDayOfMonth == 1 && (18 < gHour && gHour < 21)) {
                 textIndex = 0xFFFF;
             }
     
@@ -513,7 +513,7 @@ bool handleLevelInteraction(u16 mapIndex) {
                 
             } else {
 
-                switch (getMapFromExit(gEntranceIndex)) {                           
+                switch (getMapForSpawnPoint(gSpawnPointIndex)) {                           
                     case KAREN_ROOM:                                  
                         showTextBox(0, SHOP_TEXT_INDEX, textIndex, 0, 0);
                         setPlayerAction(WALKING_DOWN_STAIRS, ANIM_DEFAULT);
@@ -531,7 +531,7 @@ bool handleLevelInteraction(u16 mapIndex) {
                         break;
                     }
                     
-                gEntranceIndex = tempExit;
+                gSpawnPointIndex = tempSpawnPoint;
 
             }
 
@@ -539,7 +539,7 @@ bool handleLevelInteraction(u16 mapIndex) {
             canEnter = FALSE;
         }
         
-        gEntranceIndex = tempExit;
+        gSpawnPointIndex = tempSpawnPoint;
         
     } 
     
@@ -565,7 +565,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         
         if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x14);
+                setSpawnPoint(ROAD_SPAWN_POINT_1);
             }
             
             return result;
@@ -577,7 +577,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     result = TRUE;
                     levelInteractionsInfo.mapAdditionsIndex = 9;
                     levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
-                    setEntrance(0xA);
+                    setSpawnPoint(HOUSE_SPAWN_POINT_1);
                 }
             }
 
@@ -590,7 +590,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     result = TRUE;
                     levelInteractionsInfo.mapAdditionsIndex = 0xD;
                     levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
-                    setEntrance(0xE);
+                    setSpawnPoint(BATHROOM_SPAWN_POINT_2);
                 }
             }
 
@@ -602,7 +602,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 0xA;
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
-                setEntrance(0x11);
+                setSpawnPoint(BARN_SPAWN_POINT_1);
             }
 
             break;
@@ -613,7 +613,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 0xB;
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
-                setEntrance(0x12);
+                setSpawnPoint(COOP_SPAWN_POINT_1);
             }
 
             break;
@@ -624,7 +624,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 0x14;
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
-                setEntrance(0x13);
+                setSpawnPoint(GREENHOUSE_SPAWN_POINT_1);
             }
 
             break;
@@ -636,7 +636,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     result = TRUE;
                     levelInteractionsInfo.mapAdditionsIndex = 0xC;
                     levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
-                    setEntrance(0xB);
+                    setSpawnPoint(HOUSE_SPAWN_POINT_2);
                 }
             }
 
@@ -646,7 +646,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x70);
+                setSpawnPoint(0x70);
             }
 
             break;
@@ -769,7 +769,7 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gWeather != TYPHOON) {
                     result = TRUE;
-                    setEntrance(0);
+                    setSpawnPoint(FARM_SPAWN_POINT_1);
                 }
             }
             break;     
@@ -780,9 +780,9 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 result = TRUE;
                 if (checkLifeEventBit(HAVE_KITCHEN)) {                   
-                    setEntrance(0xF);
+                    setSpawnPoint(KITCHEN_SPAWN_POINT_1);
                 } else {
-                    setEntrance(8);
+                    setSpawnPoint(FARM_SPAWN_POINT_9);
                 }
             }            
             break;
@@ -791,7 +791,7 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gWeather != TYPHOON) {
                     result = TRUE;
-                    setEntrance(0x6F);
+                    setSpawnPoint(0x6F);
                 }
             }
             break;
@@ -896,7 +896,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(2);
+                setSpawnPoint(FARM_SPAWN_POINT_3);
             }
             
             break;
@@ -1296,7 +1296,7 @@ bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(3);
+                setSpawnPoint(FARM_SPAWN_POINT_4);
             }
             break;
         
@@ -1376,7 +1376,7 @@ bool handleKitchenLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0xB);
+                setSpawnPoint(HOUSE_SPAWN_POINT_2);
             }
             break;
         case 2:
@@ -1384,7 +1384,7 @@ bool handleKitchenLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 result = TRUE;
                 levelInteractionsInfo.mapAdditionsIndex = 2;
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
-                setEntrance(0xD);
+                setSpawnPoint(BATHROOM_SPAWN_POINT_1);
             }        
             break;
         case 16:
@@ -1428,9 +1428,9 @@ bool handleBathroomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             result = TRUE;
             
             if (checkLifeEventBit(HAVE_KITCHEN)) {
-                setEntrance(0x10);
+                setSpawnPoint(KITCHEN_SPAWN_POINT_2);
             } else {            
-                setEntrance(6);
+                setSpawnPoint(FARM_SPAWN_POINT_7);
             }
 
             break;
@@ -1479,7 +1479,7 @@ bool handleGreenhouseLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
     if (levelInteractionIndex == 1) {
         if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
-            setEntrance(7);
+            setSpawnPoint(FARM_SPAWN_POINT_8);
         }
     } 
     
@@ -1498,14 +1498,14 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x17);
+                setSpawnPoint(ROAD_SPAWN_POINT_4);
             }
             break;
         
         case 2:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x3F);
+                setSpawnPoint(0x3F);
             }
             break;
 
@@ -1519,7 +1519,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
                     result = TRUE;
-                    setEntrance(0x56);
+                    setSpawnPoint(0x56);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -1540,7 +1540,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     } else {
                         levelInteractionsInfo.mapAdditionsIndex = 1;
                         result = TRUE;
-                        setEntrance(0x59);
+                        setSpawnPoint(0x59);
                     }
                     
                     levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -1561,7 +1561,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 4;
                     result = TRUE;
-                    setEntrance(0x5D);
+                    setSpawnPoint(0x5D);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -1580,7 +1580,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 3;
                     result = TRUE;
-                    setEntrance(0x5E);
+                    setSpawnPoint(0x5E);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -1598,7 +1598,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     result = TRUE;
                 } else {
                     result = TRUE;
-                    setEntrance(0x5F);
+                    setSpawnPoint(0x5F);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -1616,7 +1616,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     result = TRUE;
                 } else {
                     result = TRUE;
-                    setEntrance(0x60);
+                    setSpawnPoint(0x60);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -1630,7 +1630,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == NORTHWEST) {
                     result = TRUE;
-                    setEntrance(0x61);
+                    setSpawnPoint(0x61);
                 }
             }
             
@@ -1641,7 +1641,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == NORTHWEST) {
                     result = TRUE;
-                    setEntrance(0x63);
+                    setSpawnPoint(0x63);
                 }
             }
             
@@ -1652,7 +1652,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == WEST) {
                     result = TRUE;
-                    setEntrance(0x63);
+                    setSpawnPoint(0x63);
                 }
             }
             
@@ -1663,7 +1663,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == NORTH) {
                     result = TRUE;
-                    setEntrance(0x63);
+                    setSpawnPoint(0x63);
                 }
             }
             
@@ -1674,7 +1674,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == WEST) {
                     result = TRUE;
-                    setEntrance(0x61);
+                    setSpawnPoint(0x61);
                 }
             }
             
@@ -1685,7 +1685,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 if (gPlayer.direction == NORTH) {
                     result = TRUE;
-                    setEntrance(0x61);
+                    setSpawnPoint(0x61);
                 }
             }
             
@@ -1695,7 +1695,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x44);
+                setSpawnPoint(0x44);
             }
             
             break;
@@ -1711,7 +1711,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 2;
                     result = TRUE;
-                    setEntrance(0x5B);
+                    setSpawnPoint(0x5B);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -1738,7 +1738,7 @@ u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x34);
+                setSpawnPoint(0x34);
             }
             break;
         
@@ -1752,7 +1752,7 @@ u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
                     result = 1;
-                    setEntrance(0x58);
+                    setSpawnPoint(0x58);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -2012,7 +2012,7 @@ bool handlePopuriRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     if (levelInteractionIndex == 1) {
         if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
-            setEntrance(FLOWER_SHOP_ENTRANCE);
+            setSpawnPoint(FLOWER_SHOP_SPAWN_POINT_2);
         }
     } 
     
@@ -2032,7 +2032,7 @@ bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x35);
+                setSpawnPoint(0x35);
             }
             
             break;
@@ -2047,7 +2047,7 @@ bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
                     result = TRUE;
-                    setEntrance(0x5C);
+                    setSpawnPoint(0x5C);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -2060,7 +2060,7 @@ bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x3D);
+                setSpawnPoint(0x3D);
             }
             
             break;
@@ -2139,7 +2139,7 @@ bool handleElliRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     if (levelInteractionIndex == 1) {
         if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
-            setEntrance(0x5A);
+            setSpawnPoint(0x5A);
         }
     }
     
@@ -2159,7 +2159,7 @@ bool handleRickStoreLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x36);
+                setSpawnPoint(0x36);
             }
             
             break;
@@ -2299,7 +2299,7 @@ u8 handleSouvenirShopLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(0x2D)) {
                 result = 1;
-                setEntrance(0x37);
+                setSpawnPoint(0x37);
             }
             break;
 
@@ -2358,7 +2358,7 @@ bool handleChurchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x38);
+                setSpawnPoint(0x38);
             }
 
             break;
@@ -2408,7 +2408,7 @@ bool handleTavernLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x39);
+                setSpawnPoint(0x39);
             }
 
             break;
@@ -2479,7 +2479,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x18);
+                setSpawnPoint(ROAD_SPAWN_POINT_5);
             }
             
             break;
@@ -2488,7 +2488,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x33);
+                setSpawnPoint(0x33);
             }
             
             break;
@@ -2503,7 +2503,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 1;
                     result = TRUE;
-                    setEntrance(0x64);
+                    setSpawnPoint(0x64);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -2522,7 +2522,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
                     result = TRUE;
-                    setEntrance(0x65);
+                    setSpawnPoint(0x65);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -2541,7 +2541,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 3;
                     result = TRUE;
-                    setEntrance(0x68);
+                    setSpawnPoint(0x68);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -2560,7 +2560,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 2;
                     result = TRUE;
-                    setEntrance(0x6B);
+                    setSpawnPoint(0x6B);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -2573,7 +2573,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x3C);
+                setSpawnPoint(0x3C);
             }
             
             break;
@@ -2690,7 +2690,7 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x40);
+                setSpawnPoint(0x40);
             }
             
             break;
@@ -2884,7 +2884,7 @@ bool handleMidwifeHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x43);
+                setSpawnPoint(0x43);
             }
 
             break;
@@ -2916,7 +2916,7 @@ bool handleMayorHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x41);
+                setSpawnPoint(0x41);
             }
             
             break;
@@ -2931,7 +2931,7 @@ bool handleMayorHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
                     result = TRUE;
-                    setEntrance(0x67);
+                    setSpawnPoint(0x67);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -2978,7 +2978,7 @@ bool handleMariaRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x66);
+                setSpawnPoint(0x66);
             }
             
             break;
@@ -3001,7 +3001,7 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x42);
+                setSpawnPoint(0x42);
             }
             
             break;
@@ -3016,7 +3016,7 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
                     result = 1;
-                    setEntrance(0x6A);
+                    setSpawnPoint(0x6A);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -3154,7 +3154,7 @@ bool handlePotionShopBedroomLevelInteractions(u16 mapIndex, u8 levelInteractionI
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x69);
+                setSpawnPoint(0x69);
             }
             break;
 
@@ -3198,7 +3198,7 @@ u8 handleSquareLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x3A);
+                setSpawnPoint(0x3A);
             }
             
             break;
@@ -3211,7 +3211,7 @@ u8 handleSquareLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 levelInteractionsInfo.mapAdditionsIndex = 0;
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                 result = 1;
-                setEntrance(0x6C);
+                setSpawnPoint(0x6C);
                 
             }
             
@@ -3221,7 +3221,7 @@ u8 handleSquareLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x3B);
+                setSpawnPoint(0x3B);
             }
             
             break;
@@ -3382,7 +3382,7 @@ bool handleMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x19);                
+                setSpawnPoint(ROAD_SPAWN_POINT_6);                
             }
             break;
 
@@ -3390,7 +3390,7 @@ bool handleMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x1D);                
+                setSpawnPoint(MOUNTAIN_2_SPAWN_POINT_1);                
             }
 
             break;
@@ -3399,7 +3399,7 @@ bool handleMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x23);                
+                setSpawnPoint(TOP_OF_MOUNTAIN_1_SPAWN_POINT_1);                
             }
             break;
 
@@ -3430,7 +3430,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x1B);
+                setSpawnPoint(MOUNTAIN_1_SPAWN_POINT_2);
             }
             
             break;
@@ -3440,7 +3440,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x45);
+                setSpawnPoint(0x45);
             }
             
             break;
@@ -3449,7 +3449,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x48);
+                setSpawnPoint(0x48);
             }
             
             break;
@@ -3478,12 +3478,12 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                                     } else {
                                         levelInteractionsInfo.mapAdditionsIndex = 3;
                                         result = 1;
-                                        setEntrance(0x49);
+                                        setSpawnPoint(0x49);
                                     }
                                 } else {
                                     levelInteractionsInfo.mapAdditionsIndex = 3;
                                     result = 1;
-                                    setEntrance(0x49);
+                                    setSpawnPoint(0x49);
                                 }
 
                             } else {
@@ -3494,7 +3494,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         } else {
                             levelInteractionsInfo.mapAdditionsIndex = 3;
                             result = 1;
-                            setEntrance(0x49);
+                            setSpawnPoint(0x49);
                         }
                     }
                     
@@ -3510,7 +3510,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x25);
+                setSpawnPoint(0x25);
             }
             
             break;
@@ -3520,7 +3520,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x24);
+                setSpawnPoint(TOP_OF_MOUNTAIN_1_SPAWN_POINT_2);
             }
             
             break;
@@ -3585,7 +3585,7 @@ u8 handleTopOfMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x1C);
+                setSpawnPoint(MOUNTAIN_1_SPAWN_POINT_3);
             }
             
             break;
@@ -3594,7 +3594,7 @@ u8 handleTopOfMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(0x22);
+                setSpawnPoint(MOUNTAIN_2_SPAWN_POINT_6);
             }
             
             break;
@@ -3658,7 +3658,7 @@ bool handleMoonMountainLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
         case 1:
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x21);                
+                setSpawnPoint(MOUNTAIN_2_SPAWN_POINT_5);                
             }
             break;
 
@@ -3671,7 +3671,7 @@ bool handleMoonMountainLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
                 } else {
                     result = TRUE;
                     levelInteractionsInfo.mapAdditionsIndex = 0;
-                    setEntrance(0x4A);                
+                    setSpawnPoint(0x4A);                
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -3706,7 +3706,7 @@ bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x1);
+                setSpawnPoint(0x1);
             }
             
             break;
@@ -3716,7 +3716,7 @@ bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x29);
+                setSpawnPoint(0x29);
             }
             
             break;
@@ -3726,7 +3726,7 @@ bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x2E);
+                setSpawnPoint(0x2E);
             }
             
             break;
@@ -3735,7 +3735,7 @@ bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x32);
+                setSpawnPoint(0x32);
             }
             
             break;
@@ -3745,7 +3745,7 @@ bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x3E);
+                setSpawnPoint(0x3E);
             }
             
             break;
@@ -3755,7 +3755,7 @@ bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x1A);
+                setSpawnPoint(MOUNTAIN_1_SPAWN_POINT_1);
             }
             
             break;
@@ -3811,7 +3811,7 @@ bool handleCarpenterHutLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x20);
+                setSpawnPoint(MOUNTAIN_2_SPAWN_POINT_4);
             } 
         
             break;
@@ -3859,7 +3859,7 @@ bool handleDumplingHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(DUMPLING_HOUSE_EXIT);
+                setSpawnPoint(MOON_MOUNTAIN_SPAWN_POINT_2);
             }
 
             break;
@@ -3882,7 +3882,7 @@ bool handleCaveLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x1E);                
+                setSpawnPoint(MOUNTAIN_2_SPAWN_POINT_2);                
             }
 
             break;
@@ -3895,7 +3895,7 @@ bool handleCaveLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     result = TRUE;
                 } else {
                     result = TRUE;
-                    setEntrance(0x6D);
+                    setSpawnPoint(0x6D);
                 }
             }
 
@@ -3928,7 +3928,7 @@ bool handleHarvestSpriteCaveLevelInteractions(u16 mapIndex, u8 levelInteractionI
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x46);                
+                setSpawnPoint(0x46);                
             }
 
             break;
@@ -3993,7 +3993,7 @@ bool handleMineLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(MINE_EXIT);
+                setSpawnPoint(71);
             }
 
             break;
@@ -4016,7 +4016,7 @@ bool handlePondLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x1F);                
+                setSpawnPoint(MOUNTAIN_2_SPAWN_POINT_3);                
             }
             
             break;
@@ -4039,7 +4039,7 @@ bool handleVineyardLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x16);
+                setSpawnPoint(ROAD_SPAWN_POINT_3);
             }
             
             break;
@@ -4054,7 +4054,7 @@ bool handleVineyardLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
                     result = TRUE;
-                    setEntrance(0x51);
+                    setSpawnPoint(0x51);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -4073,7 +4073,7 @@ bool handleVineyardLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 1;
                     result = TRUE;
-                    setEntrance(0x53);
+                    setSpawnPoint(0x53);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -4100,7 +4100,7 @@ bool handleVineyardHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x52);                
+                setSpawnPoint(0x52);                
             }
 
             break;
@@ -4109,7 +4109,7 @@ bool handleVineyardHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x2F);                
+                setSpawnPoint(0x2F);                
             }
 
             break;
@@ -4142,7 +4142,7 @@ bool handleKarenRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.direction == SOUTHEAST) { 
                     result = TRUE;
-                    setEntrance(0x50);
+                    setSpawnPoint(0x50);
                 }
 
             }
@@ -4167,7 +4167,7 @@ bool handleVineyardCellarLevelInteractions(u16 mapIndex, u8 levelInteractionInde
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x30);
+                setSpawnPoint(0x30);
             }
             break;
 
@@ -4176,7 +4176,7 @@ bool handleVineyardCellarLevelInteractions(u16 mapIndex, u8 levelInteractionInde
              if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                  if (EAST < gPlayer.direction && gPlayer.direction < (MAX_DIRECTIONS + 1) || gPlayer.direction == EAST) {
                     result = TRUE;
-                    setEntrance(0x55);
+                    setSpawnPoint(0x55);
                  }
              }
 
@@ -4217,7 +4217,7 @@ bool handleVineyardCellarBasementLevelInteractions(u16 mapIndex, u8 levelInterac
             
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) { 
                 result = TRUE;
-                setEntrance(0x54);
+                setSpawnPoint(0x54);
             }
 
             break;
@@ -4246,7 +4246,7 @@ bool handleRaceTrackLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     switch (levelInteractionIndex) {
         case 1:
             result = TRUE;
-            setEntrance(0x62);
+            setSpawnPoint(0x62);
             break;
         case 16:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
@@ -4280,7 +4280,7 @@ bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x15);
+                setSpawnPoint(ROAD_SPAWN_POINT_2);
             }
 
             break;
@@ -4289,7 +4289,7 @@ bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x28);
+                setSpawnPoint(0x28);
             }
 
             break;
@@ -4303,7 +4303,7 @@ bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                      if (!(gSeason == AUTUMN && gDayOfMonth == 3)) { 
                         levelInteractionsInfo.mapAdditionsIndex = 2;
                         result = TRUE;
-                        setEntrance(0x4B);
+                        setSpawnPoint(0x4B);
                      } else {
                         result = TRUE;
                         goto label;
@@ -4329,7 +4329,7 @@ bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 1;
                     result = TRUE;
-                    setEntrance(0x4E);
+                    setSpawnPoint(0x4E);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -4350,7 +4350,7 @@ label:
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
                     result = TRUE;
-                    setEntrance(0x4F);
+                    setSpawnPoint(0x4F);
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -4377,7 +4377,7 @@ bool handleRanchHouseLevelInteractions(u16 mapIndex, u8 collisionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(RANCH_FROM_RANCH_HOUSE);
+                setSpawnPoint(RANCH_SPAWN_POINT_4);
             }
 
             break;
@@ -4426,7 +4426,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
         
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = 1;
-                setEntrance(RANCH_FROM_RANCH_STORE);
+                setSpawnPoint(RANCH_SPAWN_POINT_3);
             }
             break;
 
@@ -4441,7 +4441,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
                     result = 1;
-                    setEntrance(ANN_ROOM_ENTER);
+                    setSpawnPoint(ANN_ROOM_SPAWN_POINT_1);
                 }
 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -4551,7 +4551,7 @@ bool handleAnnRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x4C);
+                setSpawnPoint(0x4C);
             }
 
             break;
@@ -4580,7 +4580,7 @@ bool handleRanchBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     if (levelInteractionIndex == 1) {
         if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
             result = TRUE;
-            setEntrance(0x2D);
+            setSpawnPoint(0x2D);
         }
     }
     
@@ -4603,7 +4603,7 @@ bool handleBeachLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (!checkDailyEventBit(FESTIVAL_DAY_TYPE_1)) {
                 result = TRUE;
-                setEntrance(0x2A);
+                setSpawnPoint(0x2A);
             }
 
             break;

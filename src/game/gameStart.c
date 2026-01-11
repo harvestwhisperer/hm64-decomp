@@ -51,7 +51,7 @@ void setupGameStart(void) {
 
 void startGame(void) {
 
-    setEntrance(MIDDLE_OF_HOUSE);
+    setSpawnPoint(HOUSE_SPAWN_POINT_3);
 
     // set spawnable/foragable items
     func_800598E0();

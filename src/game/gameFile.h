@@ -15,6 +15,8 @@
 #define RANKING_FLAG_HAVE_BABY 4  
 #define RANKING_FLAG_HAVE_HORSE 8
 
+#define GAME_SLOT_ACTIVE 2
+
 // D_801D6238
 typedef struct {
     u8 gamePakNoteNameA[15]; // "HARVESTMOON" + padding

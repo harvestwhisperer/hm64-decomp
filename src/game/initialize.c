@@ -280,8 +280,8 @@ void initializeGameVariables(void) {
     gAudioSequenceVolume = 128;
     
     previousMapIndex = 0xFF;
-    gEntranceIndex = 0xFF;
-    previousEntranceIndex = 0xFF;
+    gSpawnPointIndex = 0xFF;
+    previousSpawnPoint = 0xFF;
     
     demoCutsceneIndex = 0;
     
@@ -1304,7 +1304,7 @@ void initializeMainMessageBoxes(void) {
     initializeEmptyMessageBox(1, (u8*)MESSAGE_BOX_2_TEXT_BUFFER);
     setMessageBoxViewSpacePosition(1, 64.0f, 32.0f, 352.0f);
     setMessageBoxSpacing(1, 0, 2);
-    setMessageBoxFont(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_2_BUFFER);
+    setMessageBoxFont(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_2_BUFFER);
     setMessageBoxLineAndRowSizes(1, 0xB, 4);
     setMessageBoxInterpolationWithFlags(1, -4, 3);
     setMessageBoxButtonMask(1, (BUTTON_B | BUTTON_A));

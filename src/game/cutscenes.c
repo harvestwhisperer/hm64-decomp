@@ -321,11 +321,11 @@ u16 cutsceneExecutorIndices[] = {
     0
 };
 
-static inline void transitionCutscenes(u16 cutsceneIndex, u16 entranceIndex) {
-    setEntrance(entranceIndex);
+static inline void transitionCutscenes(u16 cutsceneIndex, u16 spawnPoint) {
+    setSpawnPoint(spawnPoint);
     gCutsceneIndex = cutsceneIndex;
     loadCutscene(FALSE);
-    loadLevelFromEntrance(entranceIndex);
+    loadMapAtSpawnPoint(spawnPoint);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/cutscenes", initializeCutscene);
@@ -474,7 +474,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         set = TRUE;
     }
 
-    if (gEntranceIndex != 0x6F) {
+    if (gSpawnPointIndex != 0x6F) {
         
         if (!set) {
             if (!checkDailyEventBit(FARM_MORNING_VISIT) && gYear == 1 && gSeason == AUTUMN && gDayOfMonth == 22 && (5 < gHour && gHour < 18)) {
@@ -1092,7 +1092,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         }
         
         if (!set && morningVisit == FALSE) {
-            if (!checkLifeEventBit(0x8F) && checkLifeEventBit(0x94) && gSeason == WINTER && gDayOfMonth == 1 && (5 < gHour && gHour < 10) && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x8F) && checkLifeEventBit(0x94) && gSeason == WINTER && gDayOfMonth == 1 && (5 < gHour && gHour < 10) && gSpawnPointIndex == FARM_SPAWN_POINT_1) {
                 setLifeEventBit(0x8F);
                 gCutsceneIndex = DOUG_DROPPING_OFF_COWS;
                 loadCutscene(morningVisit);
@@ -1101,7 +1101,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         }
         
         if (!set && morningVisit == FALSE) {
-            if (checkLifeEventBit(0x94) && gSeason == WINTER && gDayOfMonth == 5 && (5 < gHour && gHour < 10) && gEntranceIndex == HOUSE_EXIT) {
+            if (checkLifeEventBit(0x94) && gSeason == WINTER && gDayOfMonth == 5 && (5 < gHour && gHour < 10) && gSpawnPointIndex == FARM_SPAWN_POINT_1) {
                 toggleLifeEventBit(0x94);
                 gCutsceneIndex = MISS_MANA_PICKUP_COWS;
                 loadCutscene(morningVisit);
@@ -1380,7 +1380,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         }    
 
         if (!set && morningVisit == FALSE) {
-            if (!checkLifeEventBit(0x84) && checkLifeEventBit(6) && npcAffection[RICK] >= 120 && gWeather == SUNNY && (gSeason && gSeason < 4) && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x84) && checkLifeEventBit(6) && npcAffection[RICK] >= 120 && gWeather == SUNNY && (gSeason && gSeason < 4) && (5 < gHour && gHour < 18) && gSpawnPointIndex == FARM_SPAWN_POINT_1) {
                 setLifeEventBit(0x84);
                 gCutsceneIndex = 220;
                 loadCutscene(morningVisit);
@@ -1407,7 +1407,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         }
         
         if (!set && morningVisit == FALSE) {
-            if (!checkLifeEventBit(0x87) && (getFarmMoondropFlowerCount() + getFarmPinkCatMintFlowersCount()) >= 24 && gWeather == SUNNY && gSeason == SPRING && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x87) && (getFarmMoondropFlowerCount() + getFarmPinkCatMintFlowersCount()) >= 24 && gWeather == SUNNY && gSeason == SPRING && (5 < gHour && gHour < 18) && gSpawnPointIndex == FARM_SPAWN_POINT_1) {
                 setLifeEventBit(0x87);
                 gCutsceneIndex = 228;
                 loadCutscene(morningVisit);
@@ -1416,7 +1416,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         }
 
         if (!set && morningVisit == FALSE) {
-            if (!checkLifeEventBit(0x88) && getFarmGrassTilesSum() >= 90 && gWeather == SUNNY && gSeason == AUTUMN && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x88) && getFarmGrassTilesSum() >= 90 && gWeather == SUNNY && gSeason == AUTUMN && (5 < gHour && gHour < 18) && gSpawnPointIndex == FARM_SPAWN_POINT_1) {
                 setLifeEventBit(0x88);
                 gCutsceneIndex = 230;
                 loadCutscene(morningVisit);
@@ -1434,7 +1434,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         }
         
         if (!set && morningVisit == FALSE) {
-            if (!checkLifeEventBit(0x8A) && checkLifeEventBit(0x53) && gWeather == SUNNY && gSeason == SPRING && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x8A) && checkLifeEventBit(0x53) && gWeather == SUNNY && gSeason == SPRING && (5 < gHour && gHour < 18) && gSpawnPointIndex == FARM_SPAWN_POINT_1) {
                 setLifeEventBit(0x8A);
                 gCutsceneIndex = 232;
                 loadCutscene(morningVisit);
@@ -1443,7 +1443,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         }
         
         if (!set && morningVisit == FALSE) {
-            if (!checkLifeEventBit(0x8B) && checkLifeEventBit(0x30) && gWeather == SUNNY && getTotalCowsCount() >= 3 && gSeason == WINTER && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x8B) && checkLifeEventBit(0x30) && gWeather == SUNNY && getTotalCowsCount() >= 3 && gSeason == WINTER && (5 < gHour && gHour < 18) && gSpawnPointIndex == FARM_SPAWN_POINT_1) {
                 setLifeEventBit(0x8B);
                 gCutsceneIndex = 233;
                 loadCutscene(morningVisit);
@@ -1453,7 +1453,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         
         if (!set && morningVisit == FALSE) {
             // get cow + grass count
-            if (!checkLifeEventBit(0x8C) && checkLifeEventBit(0x30) && func_8009B828(1) && gWeather == SUNNY && gSeason == AUTUMN && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x8C) && checkLifeEventBit(0x30) && func_8009B828(1) && gWeather == SUNNY && gSeason == AUTUMN && (5 < gHour && gHour < 18) && gSpawnPointIndex == FARM_SPAWN_POINT_1) {
                 setLifeEventBit(0x8C);
                 gCutsceneIndex = 234;
                 loadCutscene(morningVisit);
@@ -1462,7 +1462,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         }
 
         if (!set && morningVisit == FALSE) {
-            if (!checkLifeEventBit(0x8D) && (getFarmMoondropFlowerCount() + getFarmPinkCatMintFlowersCount()) >= 24 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && gEntranceIndex == HOUSE_EXIT) {
+            if (!checkLifeEventBit(0x8D) && (getFarmMoondropFlowerCount() + getFarmPinkCatMintFlowersCount()) >= 24 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && gSpawnPointIndex == FARM_SPAWN_POINT_1) {
                 setLifeEventBit(0x8D);
                 gCutsceneIndex = 236;
                 loadCutscene(morningVisit);
@@ -1940,7 +1940,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xA4) && npcAffection[JEFF] >= 180 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(ELLI_JEFF_MARRIED) && gEntranceIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
+        if (!checkLifeEventBit(0xA4) && npcAffection[JEFF] >= 180 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && !checkLifeEventBit(ELLI_JEFF_MARRIED) && gSpawnPointIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
             setDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY);
             setLifeEventBit(0xA4);
             gCutsceneIndex = 308;
@@ -1951,7 +1951,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xA6) && npcAffection[MARIA] >= 150 && npcAffection[ELLI] >= 150 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && gEntranceIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
+        if (!checkLifeEventBit(0xA6) && npcAffection[MARIA] >= 150 && npcAffection[ELLI] >= 150 && gWeather == SUNNY && gSeason == SUMMER && (5 < gHour && gHour < 18) && gSpawnPointIndex == TOP_OF_MOUNTAIN_1_SUMMER) {
             setDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY);
             setLifeEventBit(0xA6);
             gCutsceneIndex = 310;
@@ -1962,7 +1962,7 @@ u16 setMountain1Cutscenes(void) {
     }
 
     if (!set) {
-        if (!checkLifeEventBit(0xA9) && npcAffection[POPURI] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SPRING && (5 < gHour && gHour < 18) && gEntranceIndex == 0x1A) {
+        if (!checkLifeEventBit(0xA9) && npcAffection[POPURI] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SPRING && (5 < gHour && gHour < 18) && gSpawnPointIndex == 0x1A) {
             setDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY);
             setLifeEventBit(0xA9);
             gCutsceneIndex = 314;
@@ -2011,7 +2011,7 @@ u16 setMountain2Cutscenes(void) {
         set = TRUE;
     }
     
-    if (!set && !checkLifeEventBit(0xA2) && checkLifeEventBit(0x66) && gWeather == SUNNY && gSeason != WINTER && 5 < gHour && gHour < 18 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && gEntranceIndex == 0x1D) { 
+    if (!set && !checkLifeEventBit(0xA2) && checkLifeEventBit(0x66) && gWeather == SUNNY && gSeason != WINTER && 5 < gHour && gHour < 18 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && gSpawnPointIndex == 0x1D) { 
         setLifeEventBit(0xA2);
         gCutsceneIndex = 306;
         gCutsceneFlags |= (2 | 4);
@@ -2027,7 +2027,7 @@ u16 setMountain2Cutscenes(void) {
         set = TRUE;
     }
 
-    if (!set && !checkLifeEventBit(0xA5) && npcAffection[CLIFF] >= 150 && gWeather == SUNNY && gSeason != WINTER && 5 < gHour && gHour < 18 && (!checkLifeEventBit(MARRIED) || gWife != ANN) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && gEntranceIndex == 0x1D) {
+    if (!set && !checkLifeEventBit(0xA5) && npcAffection[CLIFF] >= 150 && gWeather == SUNNY && gSeason != WINTER && 5 < gHour && gHour < 18 && (!checkLifeEventBit(MARRIED) || gWife != ANN) && !checkLifeEventBit(ANN_CLIFF_MARRIED) && gSpawnPointIndex == 0x1D) {
         setLifeEventBit(0xA5);
         gCutsceneIndex = 309;
         gCutsceneFlags |= (2 | 4);
@@ -2035,7 +2035,7 @@ u16 setMountain2Cutscenes(void) {
         set = TRUE;
     }
 
-    if (!set && !checkLifeEventBit(0xA7) && npcAffection[MARIA] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SPRING && 5 < gHour && gHour < 18 && gEntranceIndex == 0x1D) {
+    if (!set && !checkLifeEventBit(0xA7) && npcAffection[MARIA] >= 150 && npcAffection[KAREN] >= 150 && gWeather == SUNNY && gSeason == SPRING && 5 < gHour && gHour < 18 && gSpawnPointIndex == 0x1D) {
         setLifeEventBit(0xA7);
         gCutsceneIndex = 311;
         gCutsceneFlags |= (2 | 4);
@@ -2552,7 +2552,7 @@ u16 setRanchCutscenes(void) {
     
     if (!set && !checkLifeEventBit(0xBE) && npcAffection[GRAY] >= 150 && gWeather == SUNNY && gSeason < AUTUMN && 5 < gHour && gHour < 17 && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && !checkLifeEventBit(0x1B)) {
 
-        if (gEntranceIndex == 0x29) {
+        if (gSpawnPointIndex == 0x29) {
             gCutsceneIndex = 652;
             setLifeEventBit(0xBE);
             gCutsceneFlags |= (2 | 4);
@@ -2560,7 +2560,7 @@ u16 setRanchCutscenes(void) {
             set = TRUE;
         }
         
-        if (gEntranceIndex == 0x2A) {
+        if (gSpawnPointIndex == 0x2A) {
             gCutsceneIndex = 653;
             setLifeEventBit(0xBE);
             gCutsceneFlags |= (2 | 4);
@@ -2572,7 +2572,7 @@ u16 setRanchCutscenes(void) {
 
     if (!set && !checkLifeEventBit(0xBF) && npcAffection[GRAY] >= 180 && gWeather == SUNNY && gSeason < WINTER && 17 < gHour && gHour < 24 && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && !checkLifeEventBit(0x1B)) {
 
-        if (gEntranceIndex == 0x29) {
+        if (gSpawnPointIndex == 0x29) {
             gCutsceneIndex = 654;
             setLifeEventBit(0xBF);
             gCutsceneFlags |= (2 | 4);
@@ -2580,7 +2580,7 @@ u16 setRanchCutscenes(void) {
             set = TRUE;
         }
         
-        if (gEntranceIndex == 0x2A) {
+        if (gSpawnPointIndex == 0x2A) {
             gCutsceneIndex = 655;
             setLifeEventBit(0xBF);
             gCutsceneFlags |= (2 | 4);
@@ -2592,7 +2592,7 @@ u16 setRanchCutscenes(void) {
 
     if (!set && !checkLifeEventBit(0xC0) && npcAffection[POPURI] >= 150 && npcAffection[ANN] >= 150 && gWeather == SUNNY && gSeason == AUTUMN && 5 < gHour && gHour < 18 && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && !checkLifeEventBit(0x1B)) {
 
-        if (gEntranceIndex == 0x29) {
+        if (gSpawnPointIndex == 0x29) {
             gCutsceneIndex = 657;
             setLifeEventBit(0xC0);
             gCutsceneFlags |= (2 | 4);
@@ -2600,7 +2600,7 @@ u16 setRanchCutscenes(void) {
             set = TRUE;
         }
         
-        if (gEntranceIndex == 0x2A) {
+        if (gSpawnPointIndex == 0x2A) {
             gCutsceneIndex = 658;
             setLifeEventBit(0xC0);
             gCutsceneFlags |= (2 | 4);
@@ -2620,7 +2620,7 @@ u16 setRanchCutscenes(void) {
 
     }
 
-    if (!set && !checkLifeEventBit(0x9B) && !checkLifeEventBit(MARRIED) && npcAffection[ANN] >= 250 && gWeather == SUNNY && 14 < gHour && gHour < 24 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(0x1D) && gEntranceIndex == 0x29) {
+    if (!set && !checkLifeEventBit(0x9B) && !checkLifeEventBit(MARRIED) && npcAffection[ANN] >= 250 && gWeather == SUNNY && 14 < gHour && gHour < 24 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(0x1D) && gSpawnPointIndex == 0x29) {
 
         setLifeEventBit(0x9B);
         gCutsceneIndex = 661;
@@ -2814,7 +2814,7 @@ u16 setVillage1Cutscenes(void) {
         
         if (previousMapIndex == VILLAGE_2) {
 
-            if (gEntranceIndex == 0x33) {
+            if (gSpawnPointIndex == 0x33) {
                 gCutsceneIndex = 413;
             } else {
                 gCutsceneIndex = 414;
@@ -2870,7 +2870,7 @@ u16 setVillage2Cutscenes(void) {
 
         if (previousMapIndex == VILLAGE_1) {
 
-            if (gEntranceIndex == 0x3F) {
+            if (gSpawnPointIndex == 0x3F) {
                 gCutsceneIndex = 506;
             } else {
                 gCutsceneIndex = 507;
@@ -2899,7 +2899,7 @@ u16 setVillage2Cutscenes(void) {
 
         if (previousMapIndex == VILLAGE_1) {
 
-            if (gEntranceIndex == 0x3F) {
+            if (gSpawnPointIndex == 0x3F) {
                 gCutsceneIndex = 509;
             } else {
                 gCutsceneIndex = 510;
@@ -2928,7 +2928,7 @@ u16 setVillage2Cutscenes(void) {
 
         if (previousMapIndex == VILLAGE_1) {
 
-            if (gEntranceIndex == 0x3F) {
+            if (gSpawnPointIndex == 0x3F) {
                 gCutsceneIndex = 512;
             } else {
                 gCutsceneIndex = 513;
@@ -2957,7 +2957,7 @@ u16 setVillage2Cutscenes(void) {
 
         if (previousMapIndex == VILLAGE_1) {
 
-            if (gEntranceIndex == 0x3F) {
+            if (gSpawnPointIndex == 0x3F) {
                 gCutsceneIndex = 515;
             } else {
                 gCutsceneIndex = 516;
@@ -2986,7 +2986,7 @@ u16 setVillage2Cutscenes(void) {
 
         if (previousMapIndex == VILLAGE_1) {
 
-            if (gEntranceIndex == 0x3F) {
+            if (gSpawnPointIndex == 0x3F) {
                 gCutsceneIndex = 519;
             } else {
                 gCutsceneIndex = 520;
@@ -3148,7 +3148,7 @@ u16 setBakeryCutscenes(void) {
 
         setLifeEventBit(0xB3);
         
-        if (gEntranceIndex == 0x59) {
+        if (gSpawnPointIndex == 0x59) {
             gCutsceneIndex = 433;
         } else {
             gCutsceneIndex = 434;
@@ -3767,7 +3767,7 @@ u16 handleEndOfDayCutscenes(void) {
             // recipes sum
             D_80188F68 = getAcquiredRecipesTotal();
 
-            setEntrance(0x3E);
+            setSpawnPoint(VILLAGE_2_SPAWN_POINT_1);
             gCutsceneIndex = EVALUATION;
             loadCutscene(FALSE);
             gCutsceneFlags |= (2 | 4);
@@ -3814,7 +3814,7 @@ u16 handleEndOfDayCutscenes(void) {
                     break;
             }
             
-            setEntrance(0x32);
+            setSpawnPoint(VILLAGE_1_SPAWN_POINT_1);
             loadCutscene(FALSE);
             set = TRUE;
             gCutsceneFlags |= (2 | 4);
@@ -3829,7 +3829,7 @@ u16 handleEndOfDayCutscenes(void) {
                 setLifeEventBit(MARIA_HARRIS_MARRIED);
                 setSpecialDialogueBit(0xB);
                 gCutsceneIndex = 203;
-                setEntrance(0);
+                setSpawnPoint(FARM_SPAWN_POINT_1);
                 loadCutscene(FALSE);
                 set = TRUE;
                 gCutsceneFlags |= (2 | 4);
@@ -3841,7 +3841,7 @@ u16 handleEndOfDayCutscenes(void) {
                 setLifeEventBit(POPURI_GRAY_MARRIED);
                 setSpecialDialogueBit(0xC);
                 gCutsceneIndex = 206;
-                setEntrance(0);
+                setSpawnPoint(FARM_SPAWN_POINT_1);
                 loadCutscene(FALSE);
                 set = TRUE;
                 gCutsceneFlags |= (2 | 4);
@@ -3853,7 +3853,7 @@ u16 handleEndOfDayCutscenes(void) {
                 setLifeEventBit(ELLI_JEFF_MARRIED);
                 setSpecialDialogueBit(0xD);
                 gCutsceneIndex = 208;
-                setEntrance(0);
+                setSpawnPoint(FARM_SPAWN_POINT_1);
                 loadCutscene(FALSE);
                 set = TRUE;
                 gCutsceneFlags |= (2 | 4);
@@ -3865,7 +3865,7 @@ u16 handleEndOfDayCutscenes(void) {
                 setLifeEventBit(ANN_CLIFF_MARRIED);
                 setSpecialDialogueBit(0xE);
                 gCutsceneIndex = 214;
-                setEntrance(0);
+                setSpawnPoint(FARM_SPAWN_POINT_1);
                 loadCutscene(FALSE);
                 set = TRUE;
                 gCutsceneFlags |= (2 | 4);
@@ -3877,7 +3877,7 @@ u16 handleEndOfDayCutscenes(void) {
                 setLifeEventBit(KAREN_KAI_MARRIED);
                 setSpecialDialogueBit(0xF);
                 gCutsceneIndex = 217;
-                setEntrance(0);
+                setSpawnPoint(FARM_SPAWN_POINT_1);
                 loadCutscene(FALSE);
                 set = TRUE;
                 gCutsceneFlags |= (2 | 4);
@@ -3891,7 +3891,7 @@ u16 handleEndOfDayCutscenes(void) {
             
             toggleLifeEventBit(ANIMAL_DIED);
             setLifeEventBit(0x50);
-            setEntrance(0x3E);
+            setSpawnPoint(VILLAGE_2_SPAWN_POINT_1);
             gCutsceneIndex = 523;
             loadCutscene(FALSE);
             gCutsceneFlags |= (2 | 4);
@@ -3902,10 +3902,10 @@ u16 handleEndOfDayCutscenes(void) {
 
         // sick day
         if (!set && checkFatigueLevel() == 3) {
-            
+
             gPlayer.fatigueCounter = 0;
-            
-            setEntrance(0xA);
+
+            setSpawnPoint(HOUSE_SPAWN_POINT_1);
 
             temp = getBacholeretteWithHighestAffection(120);
 
@@ -4133,7 +4133,7 @@ u16 setDreamCutscenes(void) {
 void handleCutsceneCompletion(void) {
 
     bool found;
-    u16 tempEntrance;
+    u16 tempSpawnPoint;
     
     if (gCutsceneFlags & CUTSCENE_ACTIVE) {
 
@@ -4151,29 +4151,29 @@ void handleCutsceneCompletion(void) {
                     switch (selectedAnimalType) {               
 
                         case DOG_TYPE:                             
-                            gNamingScreenIndex = 2;
+                            gNamingScreenIndex = NAMING_SCREEN_TYPE_DOG;
                             break;
                         
                         case HORSE_TYPE:                             
                             setLifeEventBit(0x3A);
-                            gNamingScreenIndex = 3;
+                            gNamingScreenIndex = NAMING_SCREEN_TYPE_HORSE;
                             break;
 
                         case COW_TYPE:                             
                             setLifeEventBit(0x36);
-                            gNamingScreenIndex = 5;
+                            gNamingScreenIndex = NAMING_SCREEN_TYPE_COW;
                             gSelectedAnimalIndex = initializeNewFarmAnimal(1, 0);
                             break;
                             
                         case SHEEP_TYPE:                             
                             setLifeEventBit(0x34);
-                            gNamingScreenIndex = 6;
+                            gNamingScreenIndex = NAMING_SCREEN_TYPE_SHEEP;
                             gSelectedAnimalIndex = initializeNewFarmAnimal(4, 0);
                             break;
 
                         case CHICKEN_TYPE:                             
                             setLifeEventBit(0x32);
-                            gNamingScreenIndex = 7;
+                            gNamingScreenIndex = NAMING_SCREEN_TYPE_CHICKEN;
                             gSelectedAnimalIndex = initializeNewChicken(2, 0xFF);
                             break;
 
@@ -4200,7 +4200,7 @@ void handleCutsceneCompletion(void) {
                             break;    
                         
                         case 113:
-                            setEntrance(0);
+                            setSpawnPoint(FARM_SPAWN_POINT_1);
                             setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             break;
                         
@@ -4283,7 +4283,7 @@ void handleCutsceneCompletion(void) {
                         case 25:                          
                         case 32:                          
                             if (gHour >= 6) {
-                                gNamingScreenIndex = 4;
+                                gNamingScreenIndex = NAMING_SCREEN_TYPE_BABY;
                                 handleExitLevel(1, NAMING_SCREEN_LOAD);
                             } else {
                                 setMainLoopCallbackFunctionIndex(END_OF_DAY_1);                             
@@ -4297,7 +4297,7 @@ void handleCutsceneCompletion(void) {
                 case 10:
                     if (gCutsceneIndex == ANN_SPRAINED_ANKLE && (gCutsceneCompletionFlags & 0x40000000)) {
                         gHour += 2;
-                        setEntrance(RANCH_FROM_RANCH_STORE);
+                        setSpawnPoint(RANCH_SPAWN_POINT_3);
                         setMainLoopCallbackFunctionIndex(MAP_LOAD);
                     }
                 
@@ -4308,15 +4308,15 @@ void handleCutsceneCompletion(void) {
                         case 302:
                             if (gCutsceneCompletionFlags & 0x40000000) {
                                 gHour += 2;
-                                setEntrance(0x34);
+                                setSpawnPoint(VILLAGE_1_SPAWN_POINT_3);
                                 setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             }
                             break;
 
-                        case ELLI_SPRAINED_ANKLE:                         
+                        case ELLI_SPRAINED_ANKLE:
                             if (gCutsceneCompletionFlags & 0x40000000) {
                                 gHour += 2;
-                                setEntrance(0x35);
+                                setSpawnPoint(VILLAGE_1_SPAWN_POINT_4);
                                 setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             }
                             break;
@@ -4384,7 +4384,7 @@ void handleCutsceneCompletion(void) {
 
                         case RANCH_GET_HORSE:                         
                         case 665:                         
-                            gNamingScreenIndex = 3;
+                            gNamingScreenIndex = NAMING_SCREEN_TYPE_HORSE;
                             handleExitLevel(1, NAMING_SCREEN_LOAD);
                             setLifeEventBit(HAVE_HORSE);
                             break;
@@ -4393,8 +4393,8 @@ void handleCutsceneCompletion(void) {
                             setMainLoopCallbackFunctionIndex(SET_AUDIO_AND_LIGHTING);
                             initializeHorse();
                             break;
-                        case 663:                         
-                            setEntrance(0x4C);
+                        case 663:
+                            setSpawnPoint(RANCH_STORE_SPAWN_POINT_2);
                             setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             break;
                         case 664:                         
@@ -4410,24 +4410,24 @@ void handleCutsceneCompletion(void) {
                     
                     switch (gCutsceneIndex) {          
 
-                        case 701:                         
+                        case 701:
                             if (gCutsceneCompletionFlags & 0x40000000) {
                                 gHour += 2;
-                                setEntrance(0x2F);
+                                setSpawnPoint(VINEYARD_SPAWN_POINT_2);
                                 setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             }
                             break;
                         
-                        case 704:                         
-                            setEntrance(0x50);
+                        case 704:
+                            setSpawnPoint(VINEYARD_HOUSE_SPAWN_POINT_1);
                             setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             break;
                         
-                        case KAREN_YELLOW_HEART_EVENT_1:                         
+                        case KAREN_YELLOW_HEART_EVENT_1:
                             if (gCutsceneCompletionFlags & 0x40000000) {
                                 toggleDailyEventBit(0x4F);
-                                setEntrance(0x30);
-                                setMainLoopCallbackFunctionIndex(MAP_LOAD);                               
+                                setSpawnPoint(VINEYARD_SPAWN_POINT_3);
+                                setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             }
                             break;
                         
@@ -4459,8 +4459,8 @@ void handleCutsceneCompletion(void) {
                             setMainLoopCallbackFunctionIndex(END_OF_FESTIVAL_DAY_1);
                             break; 
                         
-                        case 411:                        
-                            setEntrance(0x1F);
+                        case 411:
+                            setSpawnPoint(MOUNTAIN_2_SPAWN_POINT_3);
                             setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             blueMistSeedsQuantity += adjustValue(blueMistSeedsQuantity, -1, 1);
                             removeTool(BLUE_MIST_SEEDS);
@@ -4490,15 +4490,14 @@ void handleCutsceneCompletion(void) {
                             }
                             break;
 
-                        case 437:                        
-                            // flower shop entrance
-                            setEntrance(0x57);
-                            setMainLoopCallbackFunctionIndex(MAP_LOAD);               
+                        case 437:
+                            setSpawnPoint(FLOWER_SHOP_SPAWN_POINT_2);
+                            setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             break;
                 
-                        case 438:                        
-                            setEntrance(0x5A);
-                            setMainLoopCallbackFunctionIndex(MAP_LOAD);               
+                        case 438:
+                            setSpawnPoint(BAKERY_SPAWN_POINT_2);
+                            setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             break;
                 
                         case 439:                        
@@ -4525,15 +4524,15 @@ void handleCutsceneCompletion(void) {
                             setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
                             break;
 
-                        case 524:                         
-                            setEntrance(0x66);
+                        case 524:
+                            setSpawnPoint(MAYOR_HOUSE_SPAWN_POINT_2);
                             setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             break;
                             
-                        case 526:                         
+                        case 526:
                             if (gCutsceneCompletionFlags & 0x40000000) {
                                 gHour += 2;
-                                setEntrance(0x41);
+                                setSpawnPoint(VILLAGE_2_SPAWN_POINT_4);
                                 setMainLoopCallbackFunctionIndex(MAP_LOAD);
                             }
                             break;
@@ -4668,7 +4667,7 @@ void handleCutsceneCompletion(void) {
                     
                         // fontPalette1
                         nuPiReadRom((u32)&_fontPalette1SegmentRomStart, FONT_PALETTE_1_BUFFER, ptr2 - ptr1);
-                        setMessageBoxFont(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+                        setMessageBoxFont(0, 14, 14, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
                         setMessageBoxInterpolationWithFlags(0, -4, 0);
                         setMessageBoxSfx(0, 0x57, 8, 1);
  
@@ -4717,7 +4716,7 @@ void handleCutsceneCompletion(void) {
                 switch (gCutsceneIndex) {
 
                     case 1:
-                        transitionCutscenes(2, 0x3E);
+                        transitionCutscenes(2, VILLAGE_2_SPAWN_POINT_1);
                         break;
 
                     case 38:         
@@ -4734,7 +4733,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(250, SPRING_ENTER);
+                        transitionCutscenes(250, 72);
                         break;
 
                     case 150:          
@@ -4749,7 +4748,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(251, 0x1A);
+                        transitionCutscenes(251, MOUNTAIN_1_SPAWN_POINT_1);
                         break; 
                     
                     case 151:          
@@ -4764,7 +4763,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(252, 0x25);
+                        transitionCutscenes(252, MOON_MOUNTAIN_SPAWN_POINT_1);
                         break;
                 
                     case 158:          
@@ -4775,7 +4774,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(253, SPRING_ENTER);
+                        transitionCutscenes(253, 72);
                         break;
 
                     case 169:          
@@ -4786,7 +4785,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(254, SPRING_ENTER);
+                        transitionCutscenes(254, 72);
                         break;
                     
                     case 181:          
@@ -4797,7 +4796,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(255, 0x48);
+                        transitionCutscenes(255, POND_SPAWN_POINT_1);
                         break;
                     
                     case 193:          
@@ -4808,7 +4807,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(256, 0x2E);
+                        transitionCutscenes(256, VINEYARD_SPAWN_POINT_1);
                         break;
                     
                     case 203:          
@@ -4819,7 +4818,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(405, 0x32);
+                        transitionCutscenes(405, VILLAGE_1_SPAWN_POINT_1);
                         break;
 
                     case 206:
@@ -4830,7 +4829,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(406, 0x32); 
+                        transitionCutscenes(406, VILLAGE_1_SPAWN_POINT_1); 
                         break;
                     
                     case 208:      
@@ -4841,7 +4840,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(407, 0x32);
+                        transitionCutscenes(407, VILLAGE_1_SPAWN_POINT_1);
                         break;
 
                     case 214:      
@@ -4852,7 +4851,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(408, 0x32);
+                        transitionCutscenes(408, VILLAGE_1_SPAWN_POINT_1);
                         break;
                     
                     case 217:      
@@ -4863,7 +4862,7 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(409, 0x32);
+                        transitionCutscenes(409, VILLAGE_1_SPAWN_POINT_1);
                         break;
 
                     case 244:
@@ -4876,35 +4875,35 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(1);
-                        transitionCutscenes(STARRY_NIGHT_FESTIVAL, 0x5F);
+                        transitionCutscenes(STARRY_NIGHT_FESTIVAL, CHURCH_SPAWN_POINT_1);
                         break;
                     
                     case 245:      
-                        transitionCutscenes(305, 0x25);
+                        transitionCutscenes(305, MOON_MOUNTAIN_SPAWN_POINT_1);
                         break;
                     
                     case 248:      
-                        transitionCutscenes(756, 0x27);
+                        transitionCutscenes(756, BEACH_SPAWN_POINT_1);
                         break;
                     
                     case 324:
-                        transitionCutscenes(326, 0x23);
+                        transitionCutscenes(326, TOP_OF_MOUNTAIN_1_SPAWN_POINT_1);
                         break;
 
                     case 326:     
-                        transitionCutscenes(327, 0x1A);
+                        transitionCutscenes(327, MOUNTAIN_1_SPAWN_POINT_1);
                         break;
                     
                     case 328:     
-                        transitionCutscenes(329, 0x23);
+                        transitionCutscenes(329, TOP_OF_MOUNTAIN_1_SPAWN_POINT_1);
                         break;
                     
                     case 329:     
-                        transitionCutscenes(330, 0x1A);
+                        transitionCutscenes(330, MOUNTAIN_1_SPAWN_POINT_1);
                         break;
                     
                     case 344:     
-                        transitionCutscenes(345, 0x2E);
+                        transitionCutscenes(345, VINEYARD_SPAWN_POINT_1);
                         break;
 
                     case 346:     
@@ -4912,7 +4911,7 @@ void handleCutsceneCompletion(void) {
                         D_801886D2 = getRandomNumberInRange(0, 9);
                         D_80180710 = getRandomNumberInRange(0, 9);
                         clearForagableObjects(MINE_2);
-                        transitionCutscenes(347, 0x71);
+                        transitionCutscenes(347, MINE_2_SPAWN_POINT_1);
                         break;
 
                     case 347:
@@ -4920,7 +4919,7 @@ void handleCutsceneCompletion(void) {
                         
                         if (gHour >= 17 || gPlayer.currentStamina < 2) {
                             gCutsceneIndex = 349;
-                            tempEntrance = 0x47;
+                            tempSpawnPoint = CAVE_SPAWN_POINT_3;
                         } else {
     
                             if (D_80189824 < 0xA) {
@@ -4933,29 +4932,29 @@ void handleCutsceneCompletion(void) {
                             }
 
                             gCutsceneIndex = 348;
-                            tempEntrance = 0x71;
+                            tempSpawnPoint = MINE_2_SPAWN_POINT_1;
                             
                             clearForagableObjects(MINE_2);
                  
                         }
                         
-                        setEntrance(tempEntrance);
+                        setSpawnPoint(tempSpawnPoint);
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(tempEntrance);
+                        loadMapAtSpawnPoint(tempSpawnPoint);
 
                         break;
 
                     case 410:     
-                        transitionCutscenes(411, SPRING_ENTER);
+                        transitionCutscenes(411, 72);
                         break;
                     
                     case 426:     
-                        transitionCutscenes(443, 0x32);
+                        transitionCutscenes(443, VILLAGE_1_SPAWN_POINT_1);
                         break;
 
                     case STARRY_NIGHT_FESTIVAL:
 
-                        setEntrance(0x61);
+                        setSpawnPoint(SQUARE_SPAWN_POINT_1);
     
                         if (!(gCutsceneCompletionFlags & 8)) {
 
@@ -4975,111 +4974,111 @@ void handleCutsceneCompletion(void) {
                         }
                         
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(0x61);
+                        loadMapAtSpawnPoint(SQUARE_SPAWN_POINT_1);
                         break;
-                    
-                    case 441:     
+
+                    case 441:
                     case 444:
-                        setEntrance(0x58);
+                        setSpawnPoint(POPURI_ROOM_SPAWN_POINT_1);
                         if (gCutsceneIndex == 441) {
                             gCutsceneIndex = 437;
                         } else {
                             gCutsceneIndex = 439;
                         }
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(0x58);
+                        loadMapAtSpawnPoint(POPURI_ROOM_SPAWN_POINT_1);
                         break;
                     
-                    case 442:     
-                    case 445:     
-                        setEntrance(0x5C);
+                    case 442:
+                    case 445:
+                        setSpawnPoint(ELLI_ROOM_SPAWN_POINT_1);
                         if (gCutsceneIndex == 442) {
                             gCutsceneIndex = 438;
-                        } else {    
+                        } else {
                             gCutsceneIndex = 440;
                         }
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(0x5C);
+                        loadMapAtSpawnPoint(ELLI_ROOM_SPAWN_POINT_1);
                         break;
 
                     case 525:
-                        setEntrance(0x3E);
+                        setSpawnPoint(VILLAGE_2_SPAWN_POINT_1);
                         gCutsceneIndex = 526;
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(0x3E);
+                        loadMapAtSpawnPoint(VILLAGE_2_SPAWN_POINT_1);
                         break;
                     
-                    case 526:     
-                        setEntrance(0x41);
-                        loadLevelFromEntrance(0x41);
+                    case 526:
+                        setSpawnPoint(VILLAGE_2_SPAWN_POINT_4);
+                        loadMapAtSpawnPoint(VILLAGE_2_SPAWN_POINT_4);
                         break;
                     
                     case 527:
-                        transitionCutscenes(528, 0x3E);
+                        transitionCutscenes(528, VILLAGE_2_SPAWN_POINT_1);
                         break;   
 
                     case 530:
                     case 531:
-                        setEntrance(0x67);
+                        setSpawnPoint(MARIA_ROOM_SPAWN_POINT_1);
                         if (gCutsceneIndex == 530) {
                             gCutsceneIndex = 524;
                         } else {
                             gCutsceneIndex = 529;
                         }
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(0x67);
+                        loadMapAtSpawnPoint(MARIA_ROOM_SPAWN_POINT_1);
                         break;
 
                     case ANN_SICK_VISIT_CUTSCENE:
                     case 667:
-                        setEntrance(0x4D);
+                        setSpawnPoint(ANN_ROOM_SPAWN_POINT_1);
                         if (gCutsceneIndex == ANN_SICK_VISIT_CUTSCENE) {
                             gCutsceneIndex = 663;
                         } else {
                             gCutsceneIndex = 664;
                         }
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(0x4D);
+                        loadMapAtSpawnPoint(ANN_ROOM_SPAWN_POINT_1);
                         break;
                     
                     case KAREN_YELLOW_HEART_EVENT_1:
                         gCutsceneIndex = 706;
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(0x55);
+                        loadMapAtSpawnPoint(VINEYARD_CELLAR_BASEMENT_SPAWN_POINT_1);
                         break;
 
                     case 706:
-                        transitionCutscenes(707, 0x53);
+                        transitionCutscenes(707, VINEYARD_CELLAR_SPAWN_POINT_1);
                         break;
 
                     case 707:
                     case 708:
                         toggleDailyEventBit(0x4F);
-                        transitionCutscenes(709, 0x2E);
+                        transitionCutscenes(709, VINEYARD_SPAWN_POINT_1);
                         break;
                     
                     case 711:
                     case 712:
-                        setEntrance(0x52);
+                        setSpawnPoint(KAREN_ROOM_SPAWN_POINT_1);
                         if (gCutsceneIndex == 711) {
                             gCutsceneIndex = 704;
                         } else {
                             gCutsceneIndex = 710;
                         }
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(0x52);
+                        loadMapAtSpawnPoint(KAREN_ROOM_SPAWN_POINT_1);
                         break;
                     
                     case ANN_SPRAINED_ANKLE:
-                        setEntrance(0x2B);
-                        loadLevelFromEntrance(0x2B);
+                        setSpawnPoint(RANCH_SPAWN_POINT_3);
+                        loadMapAtSpawnPoint(RANCH_SPAWN_POINT_3);
                         break;
                     
                     case 900:
                     case HORSE_RACE_STARTING_ANNOUNCEMENT:
                          
                         if (gHour >= 17) {
-                            transitionCutscenes(904, 0x61);
+                            transitionCutscenes(904, SQUARE_SPAWN_POINT_1);
                         } else {
 
                             if (gRacingContext.playerRaceNumber == gRacingContext.currentRaceIndex) {
@@ -5110,13 +5109,13 @@ void handleCutsceneCompletion(void) {
                         deactivateAnimalEntities();
                         clearAllItemContextSlots();
                         initializeEntityInstances(2);
-                        transitionCutscenes(VEGETABLE_FESTIVAL_SQUARE, 0x61);
+                        transitionCutscenes(VEGETABLE_FESTIVAL_SQUARE, SQUARE_SPAWN_POINT_1);
                         break;
 
                     case 1300:
                     case 1301:
                         if (gHour >= 17) {
-                            transitionCutscenes(1303, 0x61);
+                            transitionCutscenes(1303, SQUARE_SPAWN_POINT_1);
                         } else {
                             if (gRacingContext.playerRaceNumber == gRacingContext.currentRaceIndex) {
                                 D_801C3F78 |= 0x20;
@@ -5137,13 +5136,13 @@ void handleCutsceneCompletion(void) {
                         break;
 
                     case 1302:
-                        setupPlayerEntity(0x6C, 1);
+                        setupPlayerEntity(RACE_TRACK_SPAWN_POINT_1, 1);
                         handlePlayerAnimation();
                         setEntitiesRGBA(0, 0, 0, 0);
-                        setEntrance(0x6C);
+                        setSpawnPoint(RACE_TRACK_SPAWN_POINT_1);
                         gCutsceneIndex = 1301;
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(0x6C);
+                        loadMapAtSpawnPoint(RACE_TRACK_SPAWN_POINT_1);
                         break;
 
                     case FUNERAL:             
@@ -5151,11 +5150,11 @@ void handleCutsceneCompletion(void) {
                         break;
 
                     case 1451:             
-                        transitionCutscenes(1452, 0x14);
+                        transitionCutscenes(1452, ROAD_SPAWN_POINT_1);
                         break;
 
                     case MAYOR_VILLAGE_TOUR:
-                        transitionCutscenes(1454, 0x3E);
+                        transitionCutscenes(1454, VILLAGE_2_SPAWN_POINT_1);
                         break;
                     
                     case 1454:            
@@ -5168,11 +5167,11 @@ void handleCutsceneCompletion(void) {
                         break;
 
                     case EVALUATION:             
-                        transitionCutscenes(1551, 0x1A);
+                        transitionCutscenes(1551, MOUNTAIN_1_SPAWN_POINT_1);
                         break;
 
                     case 1551:             
-                        transitionCutscenes(1552, 0xA);
+                        transitionCutscenes(1552, HOUSE_SPAWN_POINT_1);
                         break;
 
                     case 1552:             
@@ -5194,7 +5193,7 @@ void handleCutsceneCompletion(void) {
                             gSeason = SUMMER;
                             
                             memcpy(farmFieldTiles, D_80115030, FIELD_HEIGHT * FIELD_WIDTH); 
-                            tempEntrance = 0;
+                            tempSpawnPoint = FARM_SPAWN_POINT_1;
                             gCutsceneIndex = 1601;
                             
                             
@@ -5202,7 +5201,7 @@ void handleCutsceneCompletion(void) {
 
                             gSeason = SPRING;
 
-                            tempEntrance = 0;
+                            tempSpawnPoint = FARM_SPAWN_POINT_1;
                             
                             switch (D_801886D2) {
 
@@ -5236,7 +5235,7 @@ void handleCutsceneCompletion(void) {
                         } else {
 
                             gSeason = SUMMER;
-                            tempEntrance = 0;
+                            tempSpawnPoint = 0;
                             
                             switch (D_801886D2) {
 
@@ -5252,7 +5251,7 @@ void handleCutsceneCompletion(void) {
 
                                 case 2:
                                     memcpy(farmFieldTiles, D_80115F30, FIELD_HEIGHT * FIELD_WIDTH); 
-                                    tempEntrance = 0x11;
+                                    tempSpawnPoint = BARN_SPAWN_POINT_1;
                                     gCutsceneIndex = 1609;
                                     break;
 
@@ -5270,9 +5269,9 @@ void handleCutsceneCompletion(void) {
                             
                         }
 
-                        setEntrance(tempEntrance);
+                        setSpawnPoint(tempSpawnPoint);
                         loadCutscene(FALSE);
-                        loadLevelFromEntrance(tempEntrance);
+                        loadMapAtSpawnPoint(tempSpawnPoint);
 
                         break;
 
@@ -5335,7 +5334,7 @@ void handleCutsceneCompletion(void) {
             
             // fontPalette3
             nuPiReadRom(ptr1, FONT_PALETTE_1_BUFFER, ptr2 - ptr1);
-            setMessageBoxFont(0, 0xE, 0xE, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+            setMessageBoxFont(0, 14, 14, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
             setMessageBoxInterpolationWithFlags(0, 1, 1);
             setMessageBoxSfx(0, 0xFF, 0xFF, 0xFF);
             gCutsceneCompletionFlags &= ~0x100;
@@ -5344,9 +5343,9 @@ void handleCutsceneCompletion(void) {
         // map flags
 
         if (gCutsceneCompletionFlags & 0x20000) {
-            setEntrance(HOUSE_EXIT);
+            setSpawnPoint(FARM_SPAWN_POINT_1);
             // prep map
-            loadLevelFromEntrance(0);
+            loadMapAtSpawnPoint(0);
             setMapControllerRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
             gCutsceneCompletionFlags &= ~0x20000;
         }
@@ -5366,16 +5365,16 @@ void handleCutsceneCompletion(void) {
         }
 
         if (gCutsceneCompletionFlags & 0x200000) {
-            setEntrance(0x12);
-            loadLevelFromEntrance(0x12);
+            setSpawnPoint(COOP_SPAWN_POINT_1);
+            loadMapAtSpawnPoint(COOP_SPAWN_POINT_1);
             setMapControllerRGBA(0, 0, 0, 0, 0);
             gCutsceneCompletionFlags &= ~0x200000;
         }
 
         if (gCutsceneCompletionFlags & 0x400000) {
-            setEntrance(0x11);
+            setSpawnPoint(BARN_SPAWN_POINT_1);
             // prep map
-            loadLevelFromEntrance(0x11);
+            loadMapAtSpawnPoint(BARN_SPAWN_POINT_1);
             setMapControllerRGBA(0, 0, 0, 0, 0);
             gCutsceneCompletionFlags &= ~0x400000;
         }
