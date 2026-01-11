@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a development branch set up to support modding out-of-the-box. Simply run `./tools/setup.sh`, `make extract`, and `make -j4` to get started.
+This is a development branch set up to support modding out-of-the-box. On Linux/WSL/Posix, simply run `./tools/setup.sh`, `make extract`, and `make -j4` to get started.
 
 Currently supported modding workflows:
 - All code changes
