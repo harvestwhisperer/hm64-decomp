@@ -6,7 +6,7 @@ This is a development branch set up to support modding out-of-the-box. Simply ru
 
 Currently supported modding workflows:
 - All code changes
-- Text editing and new texts
+- Text editing and new texts (simply edit an existing text and rebuild the game)
 - Cutscene editing and new cutscenes
 - Dialogue logic editing and additional dialogues
 - Audio sequence replacement
@@ -17,3 +17,5 @@ Basic changes to the development branch:
 - Removing unued assets (sprites, maps, texts) and unused files
 - Commenting out unused functions
 - Fixing of fake matches to enchance readability
+
+Note that you may run into performance issues when emulating non-matching builds. This is because many emulators hardcode game-specific graphics and overclocking settings that get applied when a game matches a known hash. Check your emulator's settings for vanilla Harvest Moon 64 and make sure those are applied when your mod is loaded.
