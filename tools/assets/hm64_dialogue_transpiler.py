@@ -32,7 +32,7 @@ class DialogueOpcode(IntEnum):
     RANDOM_BRANCH = 7
     JUMP_TO_DIALOGUE = 8
     UNUSED = 9
-    SHOW_SUBDIALOGUE = 10
+    SHOW_SELECTION_MENU = 10
     HANDLE_MENU_SELECTION_BRANCH = 11
     END_DIALOGUE = 12
 
@@ -163,12 +163,12 @@ COMMAND_SPECS: Dict[str, Tuple[int, int, List[Tuple[str, str]]]] = {
     ),
     
     # -------------------------------------------------------------------------
-    # SHOW_SUBDIALOGUE (4 bytes)
+    # SHOW_SELECTION_MENU (4 bytes)
     # Format: opcode(1) + text_offset(2) + unused_field(1)
-    # Show a sub-dialogue overlay box
+    # Show a selection menu box
     # -------------------------------------------------------------------------
-    'SHOW_SUBDIALOGUE': (
-        DialogueOpcode.SHOW_SUBDIALOGUE, 4,
+    'SHOW_SELECTION_MENU': (
+        DialogueOpcode.SHOW_SELECTION_MENU, 4,
         [('text_offset', 'u16'), ('unused_field', 'u8')]
     ),
     
@@ -898,7 +898,7 @@ def json_to_dsl(json_data: dict) -> str:
                 args_str = f"{args[0]}, {args[1]}, {true_seg}, {false_seg}"
             elif opcode_name == 'JUMP_TO_DIALOGUE':
                 args_str = f".segment_{args[0]}" if args else ''
-            elif opcode_name == 'SHOW_SUBDIALOGUE':
+            elif opcode_name == 'SHOW_SELECTION_MENU':
                 args_str = f"{args[0]}, {args[1]}" if len(args) >= 2 else str(args[0]) if args else ''
             elif opcode_name == 'HANDLE_MENU_SELECTION_BRANCH':
                 target_seg = f".segment_{args[1]}" if args[1] != 65535 else "NO_BRANCH"

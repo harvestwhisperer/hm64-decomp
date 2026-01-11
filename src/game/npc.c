@@ -9068,7 +9068,7 @@ u8 checkNPCInteraction(void) {
     u8 i = 0;
     
     s32 i2;
-    u16 temp;
+    u16 dialogueEntryIndex;
 
     // ??
     u8 *ptr2 = &gPlayer.heldItem;
@@ -9110,17 +9110,17 @@ u8 checkNPCInteraction(void) {
                            
                         } 
                         
-                        temp = 0xFFFF;
+                        dialogueEntryIndex = 0xFFFF;
                         
                     } else {
-                        temp = 1;
+                        dialogueEntryIndex = 1;
                     } 
                                  
                 } else {
-                    temp = checkHoldingItem();
+                    dialogueEntryIndex = checkHoldingItem();
                 }
    
-                if (temp != 0xFFFF) {
+                if (dialogueEntryIndex != 0xFFFF) {
 
                     // ?? switch statement?
                     i2 = i;
@@ -9136,7 +9136,7 @@ u8 checkNPCInteraction(void) {
                         
                     }
                     
-                    showMessageBox(0, npcToDialogueBytecodeIndex[i], temp, 0, 0);
+                    showMessageBox(0, npcToDialogueBytecodeIndex[i], dialogueEntryIndex, 0, 0);
                     result = 1;
                     npcs[i].animationMode = NPC_ANIM_TALKING;
                     

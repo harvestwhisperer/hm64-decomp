@@ -33,7 +33,7 @@ class DialogueOpcode(IntEnum):
     RANDOM_BRANCH = 7
     JUMP_TO_DIALOGUE = 8
     UNUSED = 9
-    SHOW_SUBDIALOGUE = 10
+    SHOW_SELECTION_MENU = 10
     HANDLE_MENU_SELECTION_BRANCH = 11
     END_DIALOGUE = 12
 
@@ -321,7 +321,7 @@ def parse_bytecode_stream(data: BinaryIO) -> List[DialogueInstruction]:
             raw_bytes += branching_data
             offset += 2
             
-        elif opcode_enum == DialogueOpcode.SHOW_SUBDIALOGUE:
+        elif opcode_enum == DialogueOpcode.SHOW_SELECTION_MENU:
 
             text_data = data.read(3)
             
@@ -411,7 +411,7 @@ def generate_description(opcode: DialogueOpcode, args: List[int]) -> str:
     
     elif opcode == DialogueOpcode.JUMP_TO_DIALOGUE:
         return f"Branch to dialogue {args[0]}"
-    elif opcode == DialogueOpcode.SHOW_SUBDIALOGUE:
+    elif opcode == DialogueOpcode.SHOW_SELECTION_MENU:
         return f"Show sub-dialogue box with text {args[0]}"
     elif opcode == DialogueOpcode.HANDLE_MENU_SELECTION_BRANCH:
         return f"Set unk_18={args[0]}, branching_dialogue={args[1]}"
@@ -541,7 +541,7 @@ def json_to_dsl(json_data: dict) -> str:
                 elif opcode_name == 'JUMP_TO_DIALOGUE':
                     args_str = f".segment_{args[0]}" if args else ''
                     
-                elif opcode_name == 'SHOW_SUBDIALOGUE':
+                elif opcode_name == 'SHOW_SELECTION_MENU':
                     args_str = f"{args[0]}, {args[1]}" if len(args) >= 2 else str(args[0]) if args else ''
                     
                 elif opcode_name == 'HANDLE_MENU_SELECTION_BRANCH':

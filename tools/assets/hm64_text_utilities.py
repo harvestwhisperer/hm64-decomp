@@ -10,8 +10,45 @@ from pathlib import Path
 
 ROM_PATH = Path(__file__).parent / "../../baserom.us.z64"
 CSV_PATH = Path(__file__).parent / "text_addresses.csv"
+SELECTION_SEGMENTS_CSV_PATH = Path(__file__).parent / "text_selection_segments.csv"
 
 VERBOSE = "--verbose" in sys.argv
+
+# Cache for selection segments
+_selection_segments_cache = None
+
+def load_selection_segments() -> set:
+    """Load selection segment indices from CSV file."""
+    global _selection_segments_cache
+
+    if _selection_segments_cache is not None:
+        return _selection_segments_cache
+
+    _selection_segments_cache = set()
+
+    if not SELECTION_SEGMENTS_CSV_PATH.exists():
+        if VERBOSE:
+            print(f"Selection segments CSV not found: {SELECTION_SEGMENTS_CSV_PATH}")
+        return _selection_segments_cache
+
+    with open(SELECTION_SEGMENTS_CSV_PATH, 'r', newline='', encoding='utf-8') as csvfile:
+        # Filter out comment lines before passing to DictReader
+        lines = [line for line in csvfile if not line.startswith('#')]
+        reader = csv.DictReader(lines)
+        for row in reader:
+            try:
+                bank_name = row['bank_name'].strip()
+                segment_index = int(row['segment_index'])
+                _selection_segments_cache.add((bank_name, segment_index))
+            except (ValueError, KeyError) as e:
+                if VERBOSE:
+                    print(f"Error parsing selection segment row {row}: {e}")
+                continue
+
+    if VERBOSE:
+        print(f"Loaded {len(_selection_segments_cache)} selection segments from CSV")
+
+    return _selection_segments_cache
 
 rom = None
 
@@ -380,6 +417,78 @@ GAMEVAR_MACROS = {
 
 GAMEVAR_MACRO_TO_INDEX = {v: k for k, v in GAMEVAR_MACROS.items()}
 
+CHARACTER_AVATAR_MACROS = {
+    0: 'MARIA_1', 1: 'MARIA_2', 2: 'MARIA_3', 3: 'MARIA_4', 4: 'MARIA_5',
+    5: 'POPURI_1', 6: 'POPURI_2', 7: 'POPURI_3', 8: 'POPURI_4', 9: 'POPURI_5',
+    10: 'ELLI_1', 11: 'ELLI_2', 12: 'ELLI_3', 13: 'ELLI_4', 14: 'ELLI_5',
+    15: 'ANN_1', 16: 'ANN_2', 17: 'ANN_3', 18: 'ANN_4', 19: 'ANN_5',
+    20: 'KAREN_1', 21: 'KAREN_2', 22: 'KAREN_3', 23: 'KAREN_4', 24: 'KAREN_5',
+    25: 'GRAY_1', 26: 'GRAY_2',
+    27: 'CLIFF_1', 28: 'CLIFF_2', 29: 'CLIFF_3',
+    30: 'JEFF_1', 31: 'JEFF_2', 32: 'JEFF_3',
+    33: 'KAI_1', 34: 'KAI_2', 35: 'KAI_3',
+    36: 'HARRIS_1', 37: 'HARRIS_2', 38: 'HARRIS_3',
+    39: 'PASTOR_1', 40: 'PASTOR_2', 41: 'PASTOR_3',
+    42: 'KENT_1', 43: 'KENT_2', 44: 'KENT_3',
+    45: 'STU_1', 46: 'STU_2', 47: 'STU_3',
+    48: 'MAY_1', 49: 'MAY_2', 50: 'MAY_3',
+    51: 'MAYOR_1', 52: 'MAYOR_2',
+    53: 'RICK_1', 54: 'RICK_2', 55: 'RICK_3',
+    56: 'POTION_SHOP_DEALER_1', 57: 'POTION_SHOP_DEALER_2', 58: 'POTION_SHOP_DEALER_3',
+    59: 'ELLEN_1', 60: 'ELLEN_2',
+    61: 'MIDWIFE_1', 62: 'MIDWIFE_2',
+    63: 'HARVEST_GODDESS_1', 64: 'HARVEST_GODDESS_2',
+    65: 'GREG_1', 66: 'GREG_2', 67: 'GREG_3',
+    68: 'DUKE_1', 69: 'DUKE_2',
+    70: 'DOUG_1', 71: 'DOUG_2',
+    72: 'SHIPPER_1', 73: 'SHIPPER_2',
+    74: 'KAREN_6', 75: 'KAREN_7',
+    76: 'ASSISTANT_CARPENTER_1', 77: 'ASSISTANT_CARPENTER_2',
+    78: 'MASTER_CARPENTER_1', 79: 'MASTER_CARPENTER_2',
+    80: 'HARVEST_SPRITE_1', 81: 'HARVEST_SPRITE_2',
+    82: 'SAIBARA_1', 83: 'SAIBARA_2',
+    84: 'BASIL_1', 85: 'BASIL_2',
+    86: 'SASHA_1', 87: 'SASHA_2',
+    88: 'LILLIA_1', 89: 'LILLIA_2',
+    90: 'MAYOR_WIFE_1', 91: 'MAYOR_WIFE_2',
+    92: 'MRS_MANA_1', 93: 'MRS_MANA_2',
+    94: 'GOTZ_1', 95: 'GOTZ_2',
+    96: 'ENTOMOLOGIST_1', 97: 'ENTOMOLOGIST_2',
+    98: 'KAPPA_1',
+    99: 'PLAYER_ENGRAVING_LOGO_1',
+    100: 'BABY_1', 101: 'BABY_2', 102: 'BABY_3', 103: 'BABY_4', 104: 'BABY_5',
+    105: 'OLD_MAN_1',
+    106: 'OLD_WOMAN_1',
+    107: 'DAD_1', 108: 'DAD_2',
+    109: 'FESTIVAL_GIRL_1',
+    110: 'FESTIVAL_GIRL_2',
+    111: 'FESTIVAL_GIRL_3',
+    112: 'JOHN_1', 113: 'JOHN_2', 114: 'JOHN_3',
+    115: 'BARLEY_1',
+    116: 'SHADY_SALESMAN_1', 117: 'SHADY_SALESMAN_2',
+    118: 'PLAYER_ENGRAVING_LOGO_2', 119: 'PLAYER_ENGRAVING_LOGO_3', 120: 'PLAYER_ENGRAVING_LOGO_4',
+    121: 'TOURIST_COUPLE_MAN_1',
+    122: 'TOURIST_COUPLE_WOMAN_1',
+    123: 'PHOTOGRAPHER_1',
+    124: 'GOURMET_JUDGE_1',
+    125: 'SYDNEY_1',
+    126: 'MARIA_6', 127: 'MARIA_7', 128: 'MARIA_8', 129: 'MARIA_9',
+    130: 'ELLI_6',
+    131: 'ANN_6',
+    132: 'KAREN_8', 133: 'KAREN_9',
+    134: 'ELLI_7',
+    135: 'ELLI_8',
+    136: 'MARIA_10',
+    137: 'POPURI_6',
+    138: 'KAREN_10',
+    139: 'ANN_7',
+    140: 'GRAY_3',
+    141: 'JEFF_4',
+    142: 'CLIFF_4',
+}
+
+CHARACTER_AVATAR_MACRO_TO_INDEX = {v: k for k, v in CHARACTER_AVATAR_MACROS.items()}
+
 BIT_MASKS = [0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01]
 
 def get_offset_array(index_start, index_end):
@@ -653,6 +762,9 @@ class TextDecoder:
                             # Use macro names for INSERT_GAMEVAR if available
                             if item['name'] == 'INSERT_GAMEVAR' and item['parameter'] in GAMEVAR_MACROS:
                                 result.append(f"[{GAMEVAR_MACROS[item['parameter']]}]")
+                            # Use macro names for CHARACTER_AVATAR if available
+                            elif item['name'] == 'CHARACTER_AVATAR' and item['parameter'] in CHARACTER_AVATAR_MACROS:
+                                result.append(f"[CHARACTER_AVATAR:{CHARACTER_AVATAR_MACROS[item['parameter']]}]")
                             elif item['name'] in ('WAIT', 'CHARACTER_AVATAR', 'LOAD_TEXT'):
                                 result.append(f"[{item['name']}:{item['parameter']}]")
                             else:
@@ -715,6 +827,7 @@ MESSAGE_BOX_TYPES = {
     'DEFAULT': 16,      # Main dialogue box
     'MENU': 10,         # Overlay menus, lists
     'NAMING_SCREEN': 6, # Naming screen input
+    'SELECTION': 16,    # Pink dialogue selection boxes
 }
 
 LINE_WIDTH_TO_TYPE = {v: k for k, v in MESSAGE_BOX_TYPES.items()}
@@ -750,7 +863,6 @@ def infer_message_box_type(decoded_text: str) -> str:
 
     Returns the type name (DEFAULT, MENU, NAMING_SCREEN) or DEFAULT if unknown.
     """
-    
     line_width = infer_line_width(decoded_text)
 
     # Try exact match first
@@ -935,6 +1047,10 @@ def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, 
 
     decoded_texts = decode_text_bank(index_start, index_end, text_start)
 
+    # Load selection segments to check if any segments are selection menus
+    selection_segments = load_selection_segments()
+    bank_name = output_dir  # The output_dir is the bank name
+
     files_written = 0
     for text_info in decoded_texts:
 
@@ -956,8 +1072,12 @@ def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, 
         with open(file_path, 'w', encoding='utf-8') as f:
             decoded_text = text_info.get('decoded_text', '')
 
-            # Infer MESSAGE_BOX_TYPE from line widths
-            box_type = infer_message_box_type(decoded_text)
+            # Check if this segment is a selection menu (from CSV)
+            if (bank_name, text_info['index']) in selection_segments:
+                box_type = 'SELECTION'
+            else:
+                # Infer MESSAGE_BOX_TYPE from line widths
+                box_type = infer_message_box_type(decoded_text)
             f.write(f"# MESSAGE_BOX_TYPE: {box_type}\n")
 
             # Segment metadata (for reference, not used by transpiler)

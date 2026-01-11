@@ -453,6 +453,8 @@ clean-assets:
 # clean up empty directories
 	@find assets -type d -empty -delete 2>/dev/null || true
 
+clean-all: clean clean-assets
+
 split:
 # only extract what's needed and don't generate linker script
 	$(V)python3 -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts seq hm64map

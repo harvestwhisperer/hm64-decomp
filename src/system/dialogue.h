@@ -35,7 +35,7 @@
 #define DIALOGUE_OPCODE_RANDOM_BRANCH 7
 #define DIALOGUE_OPCODE_BRANCH 8
 #define DIALOGUE_OPCODE_UNUSED 9
-#define DIALOGUE_OPCODE_SHOW_SUBMESSAGE_BOX 10
+#define DIALOGUE_OPCODE_SHOW_SELECTION_MENU 10
 #define DIALOGUE_OPCODE_HANDLE_MENU_SELECTION_BRANCH 11
 #define DIALOGUE_OPCODE_END_DIALOGUE 12
 
@@ -48,7 +48,7 @@ typedef struct {
     u32* romStart;
     u32* vaddr;
     u16 textAddressesIndex;
-    u16 subdialogueTextAddressesIndex;
+    u16 selectionMenuTextAddressesIndex;
 } DialogueBytecodeAddressInfo;
 
 // D_801C3E40
@@ -67,7 +67,7 @@ typedef struct {
 	u8 randomMinimumValue;
     u8 randomMaximumValue;
 	u8 unusedField;
-	u8 unusedField2;
+	u8 selectionMenuRowsCount;
 	u8 targetMenuRow;
 } DialogueBytecodeExecutor;
 

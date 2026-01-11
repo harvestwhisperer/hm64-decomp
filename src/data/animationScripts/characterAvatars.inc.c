@@ -137,5 +137,4 @@ u8 characterAvatarCodesToAnimations[] = {
 	141, 
 	//cliff
 	142, 
-	0, 0, 0, 0, 0, 0, 0, 0, 0
 };

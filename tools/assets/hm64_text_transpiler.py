@@ -18,13 +18,13 @@ import re
 from pathlib import Path
 from typing import List, Tuple, Optional
 
-from hm64_text_utilities import CHAR_MAP, CONTROL_CODES, GAMEVAR_MACRO_TO_INDEX
+from hm64_text_utilities import CHAR_MAP, CONTROL_CODES, GAMEVAR_MACRO_TO_INDEX, CHARACTER_AVATAR_MACRO_TO_INDEX
 
 # Create reverse mappings for encoding
 REVERSE_CHAR_MAP = {v: k for k, v in CHAR_MAP.items()}
 REVERSE_CONTROL_CODES = {v: k for k, v in CONTROL_CODES.items()}
 
-CONTROL_CODE_PATTERN = re.compile(r'\[([A-Z_0-9]+)(?::([0-9A-Fa-f]+))?\]')
+CONTROL_CODE_PATTERN = re.compile(r'\[([A-Z_0-9]+)(?::([A-Za-z_0-9]+))?\]')
 
 RAW_CHAR_PATTERN = re.compile(r'\[CHAR:0x([0-9A-Fa-f]{2})(?:→0x[0-9A-Fa-f]{2})?\]')
 RAW_WORD_PATTERN = re.compile(r'\[WORD:0x([0-9A-Fa-f]{4})\]')
@@ -37,7 +37,11 @@ MESSAGE_BOX_TYPES = {
     'DEFAULT': 16,      # Main dialogue box
     'MENU': 10,         # Overlay menus, lists
     'NAMING_SCREEN': 6, # Naming screen input
+    'SELECTION': 16,    # Pink dialogue selection boxes - preserves line layout
 }
+
+# Box types that should preserve line layout (auto_linebreak=False)
+PRESERVE_LAYOUT_TYPES = {'SELECTION'}
 
 class TextEncoder:
     """Encodes text strings into the game's compressed binary format"""
@@ -67,10 +71,14 @@ class TextEncoder:
                 box_type = metadata['MESSAGE_BOX_TYPE'].upper().strip()
                 if box_type in MESSAGE_BOX_TYPES:
                     self.line_width = MESSAGE_BOX_TYPES[box_type]
+                    # Disable auto_linebreak for box types that need to preserve layout
+                    if box_type in PRESERVE_LAYOUT_TYPES:
+                        self.auto_linebreak = False
                 else:
                     raise ValueError(f"Unknown MESSAGE_BOX_TYPE: {box_type}. Valid types: {', '.join(MESSAGE_BOX_TYPES.keys())}")
             elif 'LINE_WIDTH' in metadata:
                 self.line_width = int(metadata['LINE_WIDTH'])
+            # Explicit AUTO_LINEBREAK setting overrides box type default
             if 'AUTO_LINEBREAK' in metadata:
                 self.auto_linebreak = metadata['AUTO_LINEBREAK'].lower() in ['true', 'yes', '1']
             if 'AUTO_TEXTEND' in metadata:
@@ -157,6 +165,28 @@ class TextEncoder:
 
         while i < len(text):
 
+            # Check for raw 1-byte codes first: [CHAR:0xXX] or [CHAR:0xXX→0xYY]
+            # The first hex value (XX) is the original ROM byte to preserve
+            char_match = RAW_CHAR_PATTERN.match(text, i)
+            if char_match:
+                raw_byte = int(char_match.group(1), 16)
+                codes.append(raw_byte)  # Add as 1-byte code
+                if self.verbose:
+                    print(f"Found raw CHAR: 0x{raw_byte:02X}")
+                i = char_match.end()
+                continue
+
+            # Check for raw 2-byte codes: [WORD:0xXXXX]
+            # Preserves 2-byte value (encoder will set control bit for 2-byte)
+            word_match = RAW_WORD_PATTERN.match(text, i)
+            if word_match:
+                raw_word = int(word_match.group(1), 16)
+                codes.append(raw_word)  # Add as 2-byte code (>= 0x100)
+                if self.verbose:
+                    print(f"Found raw WORD: 0x{raw_word:04X}")
+                i = word_match.end()
+                continue
+
             # Check for control codes
             match = CONTROL_CODE_PATTERN.match(text, i)
 
@@ -183,8 +213,14 @@ class TextEncoder:
                     # Add parameter if present
                     if param_str is not None:
 
-                        # WAIT, CHARACTER_AVATAR, LOAD_TEXT use decimal for readability
-                        if control_code in (3, 5, 9):  # WAIT, LOAD_TEXT, CHARACTER_AVATAR
+                        # CHARACTER_AVATAR supports macro names (e.g., MARIA_1) or decimal indices
+                        if control_code == 9:  # CHARACTER_AVATAR
+                            if param_str in CHARACTER_AVATAR_MACRO_TO_INDEX:
+                                param = CHARACTER_AVATAR_MACRO_TO_INDEX[param_str]
+                            else:
+                                param = int(param_str, 10)
+                        # WAIT, LOAD_TEXT use decimal for readability
+                        elif control_code in (3, 5):  # WAIT, LOAD_TEXT
                             param = int(param_str, 10)
                         else:
                             param = int(param_str, 16)
@@ -203,28 +239,6 @@ class TextEncoder:
 
                 else:
                     raise ValueError(f"Unknown control code: {control_name}")
-
-            # Check for raw 1-byte codes: [CHAR:0xXX] or [CHAR:0xXX→0xYY]
-            # The first hex value (XX) is the original ROM byte to preserve
-            char_match = RAW_CHAR_PATTERN.match(text, i)
-            if char_match:
-                raw_byte = int(char_match.group(1), 16)
-                codes.append(raw_byte)  # Add as 1-byte code
-                if self.verbose:
-                    print(f"Found raw CHAR: 0x{raw_byte:02X}")
-                i = char_match.end()
-                continue
-
-            # Check for raw 2-byte codes: [WORD:0xXXXX]
-            # Preserves 2-byte value (encoder will set control bit for 2-byte)
-            word_match = RAW_WORD_PATTERN.match(text, i)
-            if word_match:
-                raw_word = int(word_match.group(1), 16)
-                codes.append(raw_word)  # Add as 2-byte code (>= 0x100)
-                if self.verbose:
-                    print(f"Found raw WORD: 0x{raw_word:04X}")
-                i = word_match.end()
-                continue
 
             # Regular character
             char = text[i]
@@ -533,6 +547,7 @@ class TextTranspiler:
         self.verbose = False
         self.errors: List[str] = []
         self.warnings: List[str] = []
+        self.modding_mode = False  # When True, ignore metadata and add end-of-data index entry
 
     def transpile_directory(self, input_dir: Path,
                            auto_textend: bool = True) -> Tuple[str, str]:
@@ -551,12 +566,13 @@ class TextTranspiler:
             return "", ""
 
         # Read metadata file (contains terminator and padding info for index building)
+        # In modding mode, we skip metadata entirely and build index from text files only
         terminator_indices = []
         padding_segments = {}  # idx -> size
         total_segments = 0
 
         metadata_path = input_dir / "_metadata.txt"
-        if metadata_path.exists():
+        if not self.modding_mode and metadata_path.exists():
             with open(metadata_path, 'r', encoding='utf-8') as f:
                 for line in f:
                     line = line.strip()
@@ -584,6 +600,8 @@ class TextTranspiler:
                 print(f"  Found terminator segments: {terminator_indices}")
             if self.verbose and padding_segments:
                 print(f"  Found padding segments: {padding_segments}")
+        elif self.modding_mode and self.verbose:
+            print(f"  Modding mode: ignoring metadata, building index from text files only")
 
         txt_files = sorted(input_dir.glob("text*.txt"))
 
@@ -733,6 +751,8 @@ class TextTranspiler:
 
         # Header
         self._emit_index(f"# Auto-generated text index: {self.index_name}")
+        if self.modding_mode:
+            self._emit_index("# MODDING MODE: Index built from text files only (no metadata)")
         self._emit_index("# Offsets are pre-computed at transpile time (big-endian)")
         self._emit_index()
         self._emit_index(".section .data")
@@ -751,10 +771,19 @@ class TextTranspiler:
         # Create a lookup dict for offsets
         offset_map = {idx: offset for idx, offset in self.segment_offsets}
 
-        # Add terminator entries - they point to the end of all text data
-        # (which is self.current_offset after all text is compiled)
-        for term_idx in terminator_indices:
-            offset_map[term_idx] = self.current_offset
+        if self.modding_mode:
+            # In modding mode, add a final entry pointing to end of text data
+            # This serves as the terminator and allows the game to know where text data ends
+            max_text_idx = max(offset_map.keys()) if offset_map else 0
+            end_of_data_idx = max_text_idx + 1
+            offset_map[end_of_data_idx] = self.current_offset
+            if self.verbose:
+                print(f"  Modding mode: Added end-of-data index entry {end_of_data_idx} -> 0x{self.current_offset:04X}")
+        else:
+            # Add terminator entries - they point to the end of all text data
+            # (which is self.current_offset after all text is compiled)
+            for term_idx in terminator_indices:
+                offset_map[term_idx] = self.current_offset
 
         # Find max segment index to know table size
         max_idx = max(offset_map.keys()) if offset_map else 0
@@ -765,7 +794,9 @@ class TextTranspiler:
             if i in offset_map:
                 offset = offset_map[i]
                 note = ""
-                if i in terminator_indices:
+                if self.modding_mode and i == max_idx:
+                    note = " (end of text data)"
+                elif i in terminator_indices:
                     note = " (terminator)"
                 elif i in padding_indices:
                     note = " (padding)"
@@ -780,7 +811,8 @@ class TextTranspiler:
 
 def transpile_text_bank(input_dir: Path, output_dir: Path = None,
                         bank_name: str = None, verbose: bool = False,
-                        auto_textend: bool = True) -> Tuple[Optional[Path], Optional[Path]]:
+                        auto_textend: bool = True,
+                        modding: bool = False) -> Tuple[Optional[Path], Optional[Path]]:
     """
     Transpile a text bank directory to assembly files.
 
@@ -790,6 +822,7 @@ def transpile_text_bank(input_dir: Path, output_dir: Path = None,
         bank_name: Name for the bank symbols (default: derived from directory)
         verbose: Enable verbose output
         auto_textend: Automatically add [TEXTEND] if missing
+        modding: Enable modding mode (ignore metadata, add end-of-data index entry)
 
     Returns:
         Tuple of (data_path, index_path) for generated files
@@ -807,6 +840,7 @@ def transpile_text_bank(input_dir: Path, output_dir: Path = None,
 
     transpiler = TextTranspiler(bank_name=bank_name)
     transpiler.verbose = verbose
+    transpiler.modding_mode = modding
 
     data_asm, index_asm = transpiler.transpile_directory(
         input_dir,
@@ -950,7 +984,7 @@ Examples:
 
     subparsers = parser.add_subparsers(dest='command', help='Command to execute')
 
-    transpile_parser = subparsers.add_parser('transpile', 
+    transpile_parser = subparsers.add_parser('transpile',
                                               help='Compile text to assembly')
     transpile_parser.add_argument('input', type=Path,
                                    help='Input directory containing text files')
@@ -962,6 +996,8 @@ Examples:
                                    help='Enable verbose output')
     transpile_parser.add_argument('--no-auto-textend', action='store_true',
                                    help='Disable automatic [TEXTEND] insertion')
+    transpile_parser.add_argument('--modding', action='store_true',
+                                   help='Enable modding mode: ignore _metadata.txt, build index from text files only, add end-of-data entry')
 
     verify_parser = subparsers.add_parser('verify',
                                            help='Verify compiled output matches ROM')
@@ -988,7 +1024,8 @@ Examples:
             output_dir=args.output,
             bank_name=args.name,
             verbose=args.verbose,
-            auto_textend=auto_textend
+            auto_textend=auto_textend,
+            modding=args.modding
         )
         sys.exit(0 if data_path else 1)
 
