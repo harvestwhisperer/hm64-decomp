@@ -1607,8 +1607,8 @@ bool checkTooFatiguedToUseTool(void) {
 }
 
 
-/* Action handlers */
 
+/* Action handlers */
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", handleToolAction);
 
@@ -1679,9 +1679,7 @@ void handleToolAction(void) {
 
 void handleThrowItemAction(void) {
 
-    // FIXME: possibly a union. This matches:
-    // if (!(gPlayer.actionUnion.actionPhaseFrameCounter & ~0xFF)) {
-    if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
+    if (gPlayer.actionPhaseFrameCounter == 0 && gPlayer.actionPhase == 0) {
         playSfx(0x26);
         clearHeldItemSlot(gPlayer.itemInfoIndex);
         allocateThrownItemSlot(1, ITEM_STATE_THROW_START, gPlayer.heldItem, 0, 8);
@@ -1690,6 +1688,18 @@ void handleThrowItemAction(void) {
     }
 
 }
+
+// Alternate:
+// This is to force the compiler optimization of reading two fields by loading 32 bits at once
+/*
+    if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
+        playSfx(0x26);
+        clearHeldItemSlot(gPlayer.itemInfoIndex);
+        allocateThrownItemSlot(1, ITEM_STATE_THROW_START, gPlayer.heldItem, 0, 8);
+        gPlayer.heldItem = 0;
+        gPlayer.actionPhaseFrameCounter = 1;
+    }
+*/
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", handlePutItemInShippingBinAction);
 
@@ -1709,8 +1719,7 @@ void handlePutItemInShippingBinAction(void) {
 
 void handlePickUpItemAction(void) {
 
-    // FIXME
-    if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
+    if (gPlayer.actionPhaseFrameCounter == 0 && gPlayer.actionPhase == 0) {
         
         playSfx(PICKING_UP_SFX);
         startAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);

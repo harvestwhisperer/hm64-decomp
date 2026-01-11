@@ -446,7 +446,6 @@ static inline bool handleFrameIncrement() {
 
 //INCLUDE_ASM("asm/nonmatchings/game/title", titleScreenMainLoopCallback);
 
-// main loop callback
 void titleScreenMainLoopCallback(void) {
 
     bool set = FALSE;
@@ -751,17 +750,15 @@ void handleDogAnimation(void) {
     }
 }
 */
+
 //INCLUDE_ASM("asm/nonmatchings/game/title", updateGrassAnimation);
 
-// update grass
 void updateGrassAnimation(void) {
 
-    // check flag 0x40
     if (checkSpriteAnimationStateChanged(FAR_GRASS_3_1)) {
         
         if (getRandomNumberInRange(0, 1)) {
             
-            // toggle bit 2
             resetAnimationState(FAR_GRASS_3_1);
             resetAnimationState(FRONT_GRASS_2_1);
             resetAnimationState(BACK_GRASS_3_2);

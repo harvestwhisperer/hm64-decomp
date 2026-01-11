@@ -5996,6 +5996,7 @@ segments:
 
   - name: padding
     type: bin
+    extract: false
     start: 0xFFF700
     
   - [0x1000000]

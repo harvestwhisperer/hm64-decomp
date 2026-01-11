@@ -81,14 +81,14 @@ bool initializeDialogueSessionManager(u16 index, u16 mainMessageBoxIndex, u16 ov
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueBytecodeAddressInfo);
 
-bool setDialogueBytecodeAddressInfo(u16 index, u16 textAddressesIndex, u16 subdialogueTextAddressesIndex, u32 romIndexStart, u32 romIndexEnd, u32* vaddrIndex, u32 romStart, void* vaddr) {
+bool setDialogueBytecodeAddressInfo(u16 index, u16 textAddressesIndex, u16 selectionMenuTextAddressesIndex, u32 romIndexStart, u32 romIndexEnd, u32* vaddrIndex, u32 romStart, void* vaddr) {
 
     bool result = FALSE;
     
     if (index < MAX_BYTECODE_ADDRESSES) {
 
         dialogueBytecodeAddresses[index].textAddressesIndex = textAddressesIndex;
-        dialogueBytecodeAddresses[index].subdialogueTextAddressesIndex = subdialogueTextAddressesIndex;
+        dialogueBytecodeAddresses[index].selectionMenuTextAddressesIndex = selectionMenuTextAddressesIndex;
         dialogueBytecodeAddresses[index].romIndexStart = romIndexStart;
         dialogueBytecodeAddresses[index].romIndexEnd = romIndexEnd;
         dialogueBytecodeAddresses[index].vaddrIndex = vaddrIndex;
@@ -399,7 +399,7 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
         dialogues[index].bytecodeExecutor.randomMinimumValue = 0;
         dialogues[index].bytecodeExecutor.randomMaximumValue = 0;
         dialogues[index].bytecodeExecutor.unusedField = 0;
-        dialogues[index].bytecodeExecutor.unusedField2 = 0;
+        dialogues[index].bytecodeExecutor.selectionMenuRowsCount = 0;
         dialogues[index].bytecodeExecutor.targetMenuRow = 0;
         
         dialogues[index].sessionManager.flags &= ~4;
@@ -699,14 +699,15 @@ void parseDialogueBytecode(u16 index) {
             
             break;
         
-        case DIALOGUE_OPCODE_SHOW_SUBMESSAGE_BOX:
+        case DIALOGUE_OPCODE_SHOW_SELECTION_MENU:
             
             byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
             byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
             
             dialogues[index].bytecodeExecutor.textOffset = byteswap.halfword;
             
-            dialogues[index].bytecodeExecutor.unusedField2 = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            // unused
+            dialogues[index].bytecodeExecutor.selectionMenuRowsCount = *(u8*)dialogues[index].dialogueBytecodePointer++;
             
             break;
     
@@ -1131,7 +1132,7 @@ void updateCurrentDialogue(u16 index) {
                 initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, dialogues[index].bytecodeExecutor.branchingDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
                 break;
 
-            case DIALOGUE_OPCODE_SHOW_SUBMESSAGE_BOX:
+            case DIALOGUE_OPCODE_SHOW_SELECTION_MENU:
                 
                 dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 dialogues[index].sessionManager.selectedMenuRow = 0;
@@ -1140,7 +1141,7 @@ void updateCurrentDialogue(u16 index) {
                 dialogues[index].sessionManager.overlayTextOffset = dialogues[index].bytecodeExecutor.textOffset;
                 dialogues[index].sessionManager.flags |= DIALOGUE_PAUSE_FOR_USER_INPUT;
                 
-                initializeMessageBox(dialogues[index].sessionManager.overlayMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].subdialogueTextAddressesIndex, dialogues[index].sessionManager.overlayTextOffset, 0);
+                initializeMessageBox(dialogues[index].sessionManager.overlayMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].selectionMenuTextAddressesIndex, dialogues[index].sessionManager.overlayTextOffset, 0);
                 
                 // probably line height or selection count
                 temp2 = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].totalLines;
