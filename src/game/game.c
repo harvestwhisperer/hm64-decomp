@@ -1051,27 +1051,9 @@ inline int adjustValue(int initial, int value, int max) {
 }
 
 
-// from transition.c
-
-static inline void pauseGameplay_2(void) {
-    pauseEntities();
-    pauseAllCutsceneExecutors();
-    setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
-}
-
-static inline void openOverlayScreen_2(void) {
-    pauseAllEntityLoads();
-    pauseAllCutsceneExecutors();
-    setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
-    unloadMapAssets(MAIN_MAP_INDEX);
-}
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", showTextBox);
-
 inline void showTextBox(u16 messageBoxType, u16 textBankIndex, u16 textIndex, u32 flag, u16 flags) {
   
-    pauseGameplay_2();
+    pauseGameplay();
     
     switch (messageBoxType) {
         
@@ -1105,7 +1087,7 @@ inline void showTextBox(u16 messageBoxType, u16 textBankIndex, u16 textIndex, u3
 
 inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dialogueIndex, u32 flag, u16 messageBoxFlags) {
     
-    pauseGameplay_2();
+    pauseGameplay();
     
     switch (arg0) {
         case 0:
@@ -1271,17 +1253,14 @@ void showPinkOverlayText(u8 dialogueMenuIndex) {
 
 void setMapAudioAndLighting(void) {
     
-    // ?
     if (gCutsceneCompletionFlags < 0) {
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
     } else {
         
         if (!checkDailyEventBit(0x4B)) {
             setLevelAudio(gBaseMapIndex, gSeason, gHour);
-            //setLevelAudio(currentMapContext.currentMapIndex, gSeason, gHour);
         }
          
-        // set lighting for level based on weather
         setLevelLighting(8, 1);
     
     }
@@ -1376,7 +1355,7 @@ inline void handleExitLevel(u16 arg0, u16 callbackIndex) {
     
     if (gameLoopContext.callbackIndex) {
         setMainLoopCallbackFunctionIndex(EXIT_LEVEL);
-        pauseGameplay_2();
+        pauseGameplay();
     }
 
 }
@@ -1568,7 +1547,7 @@ void loadNamingScreenCallback(void) {
     
     u8* namePtr;
 
-    openOverlayScreen_2();
+    openOverlayScreen();
     
     // naming screen index
     switch (gNamingScreenIndex) {
@@ -1704,8 +1683,6 @@ void mapLoadCallback(void) {
     }
 
 }
-
-// FIXME: clean up/rename inlines
 
 static inline void pickUpShopItem(u8 arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
 

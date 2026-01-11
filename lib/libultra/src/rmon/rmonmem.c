@@ -281,7 +281,4 @@ int __rmonGetRegions(KKHeader* req) {
     return TV_ERROR_NO_ERROR;
 }
 
-// FIXME
-static const u32 padding[] = { 0, 0 };
-
 #endif

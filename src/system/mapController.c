@@ -345,11 +345,7 @@ bool setInitialMapRotation(u16 mapIndex, u8 rotationIndex) {
     
     bool result;
 
-    f32 buffer[8];
-    f32 *ptr;
     f32 tempf;
-    
-    memcpy(buffer, yRotationAngles, 32);
 
     result = FALSE;
 
@@ -358,7 +354,7 @@ bool setInitialMapRotation(u16 mapIndex, u8 rotationIndex) {
         if (!(mapControllers[mapIndex].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE))) {
         
             mapControllers[mapIndex].rotation = rotationIndex;
-            tempf = buffer[rotationIndex];
+            tempf = yRotationAngles[rotationIndex];
         
             setMapRotation(mapControllers[mapIndex].mainMapIndex, 45.0f, tempf, 0);
             setInitialWorldRotationAngles(45.0f, tempf, 0);
@@ -376,9 +372,6 @@ bool setInitialMapRotation(u16 mapIndex, u8 rotationIndex) {
 
 u8 getCurrentMapRotation(u16 mapIndex) {
 
-    // FIXME: shouldn't be necessary
-    u32 padding[3];
-    
     u8 rotation = 0;
 
     if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) {
@@ -444,67 +437,67 @@ bool setMapBoundaries(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 
 //INCLUDE_ASM("asm/nonmatchings/system/mapContext", getClampedMapX);
 
 // unused or inline
-f32 getClampedMapX(u16 mapIndex, f32 x) {
+// f32 getClampedMapX(u16 mapIndex, f32 x) {
 
-    f32 result = 0.0f;
+//     f32 result = 0.0f;
 
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) { 
+//     if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) { 
 
-        if (mapControllers[mapIndex].viewBoundsCorner0.x < x && mapControllers[mapIndex].viewBoundsCorner3.x < x) {
+//         if (mapControllers[mapIndex].viewBoundsCorner0.x < x && mapControllers[mapIndex].viewBoundsCorner3.x < x) {
             
-            if (!(x < mapControllers[mapIndex].viewBoundsCorner1.x) || !(x < mapControllers[mapIndex].viewBoundsCorner2.x)) {
-                result = mapControllers[mapIndex].viewBoundsCorner1.x;
-            } 
+//             if (!(x < mapControllers[mapIndex].viewBoundsCorner1.x) || !(x < mapControllers[mapIndex].viewBoundsCorner2.x)) {
+//                 result = mapControllers[mapIndex].viewBoundsCorner1.x;
+//             } 
             
-        } else {
-            result = mapControllers[mapIndex].viewBoundsCorner0.x;
-        }
-    }
+//         } else {
+//             result = mapControllers[mapIndex].viewBoundsCorner0.x;
+//         }
+//     }
     
-    return result;
+//     return result;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/mapContext", getClampedMapZ);
 
 // unused or inline
-f32 getClampedMapZ(u16 mapIndex, f32 z) {
+// f32 getClampedMapZ(u16 mapIndex, f32 z) {
 
-    f32 result = 0.0f;
+//     f32 result = 0.0f;
     
-    if (mapIndex == MAIN_MAP_INDEX && mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) {
+//     if (mapIndex == MAIN_MAP_INDEX && mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) {
 
-        if (z < mapControllers[mapIndex].viewBoundsCorner0.z && z < mapControllers[mapIndex].viewBoundsCorner1.z) {
+//         if (z < mapControllers[mapIndex].viewBoundsCorner0.z && z < mapControllers[mapIndex].viewBoundsCorner1.z) {
 
-            if (!(z > mapControllers[mapIndex].viewBoundsCorner2.z) || !(z > mapControllers[mapIndex].viewBoundsCorner3.z)) {
-                result = mapControllers[mapIndex].viewBoundsCorner2.z;
-            }
+//             if (!(z > mapControllers[mapIndex].viewBoundsCorner2.z) || !(z > mapControllers[mapIndex].viewBoundsCorner3.z)) {
+//                 result = mapControllers[mapIndex].viewBoundsCorner2.z;
+//             }
             
-        } else {
-            result = mapControllers[mapIndex].viewBoundsCorner0.z;
-        }
-    } 
+//         } else {
+//             result = mapControllers[mapIndex].viewBoundsCorner0.z;
+//         }
+//     } 
 
-    return result;
+//     return result;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/mapContext", shutdownMapController);
 
 // unused or inlne
-bool shutdownMapController(u16 mapIndex) {
+// bool shutdownMapController(u16 mapIndex) {
 
-    bool result = FALSE;
+//     bool result = FALSE;
 
-    if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) {
-        deactivateMapSprites(mapControllers[mapIndex].mainMapIndex);
-        mapControllers[mapIndex].flags = 0;
-        result = TRUE;
-    }
+//     if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED)) {
+//         deactivateMapSprites(mapControllers[mapIndex].mainMapIndex);
+//         mapControllers[mapIndex].flags = 0;
+//         result = TRUE;
+//     }
 
-    return result;
+//     return result;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/mapContext", unloadMapAssets);
 
@@ -540,12 +533,8 @@ void deactivateAllMapControllers(void) {
 bool startMapRotation(u16 mapIndex, u8 arg1, u8 targetRotation) {
 
     bool result = FALSE;
-    u16 indexTemp;
 
     if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ACTIVE)) { 
-
-        // FIXME: this fixes regswap issue
-        indexTemp = mapIndex;
 
         if (!(mapControllers[mapIndex].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE)) && targetRotation != mapControllers[mapIndex].rotation) {
             
@@ -556,7 +545,7 @@ bool startMapRotation(u16 mapIndex, u8 arg1, u8 targetRotation) {
                     if ((mapControllers[mapIndex].rotation + 4) >= targetRotation && targetRotation >= mapControllers[mapIndex].rotation) {
                         mapControllers[mapIndex].flags |= MAP_CONTROLLER_ROTATING_CLOCKWISE;
                     } else {
-                        mapControllers[indexTemp].flags |= MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE;
+                        mapControllers[mapIndex].flags |= MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE;
                     }
                     
                 } else {
@@ -585,8 +574,8 @@ bool startMapRotation(u16 mapIndex, u8 arg1, u8 targetRotation) {
 
             result = TRUE;
             
-            mapControllers[indexTemp].targetRotation = targetRotation;
-            mapControllers[indexTemp].rotationFrameCounter = 0;
+            mapControllers[mapIndex].targetRotation = targetRotation;
+            mapControllers[mapIndex].rotationFrameCounter = 0;
             
         }
 

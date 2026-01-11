@@ -37,18 +37,6 @@ beginseg
 endseg
 
 beginseg
-    name "emptyOverlayScreen2Texture"
-    flags RAW
-    include "build/bin/sprites/overlay-screens/emptyOverlayScreen2Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyOverlayScreen3Texture"
-    flags RAW
-    include "build/bin/sprites/overlay-screens/emptyOverlayScreen3Texture.bin.o"
-endseg
-
-beginseg
     name "namingScreenBackgroundTexture"
     flags RAW
     include "build/bin/sprites/overlay-screens/namingScreenBackgroundTexture.bin.o"
@@ -274,12 +262,6 @@ beginseg
     name "raceBettingUiAssetsIndex"
     flags RAW
     include "build/bin/sprites/overlay-screens/races/raceBettingUiAssetsIndex.bin.o"
-endseg
-
-beginseg
-    name "emptyOverlayScreen4Texture"
-    flags RAW
-    include "build/bin/sprites/overlay-screens/emptyOverlayScreen4Texture.bin.o"
 endseg
 
 beginseg

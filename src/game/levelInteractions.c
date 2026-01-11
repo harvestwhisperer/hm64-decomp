@@ -796,6 +796,7 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             }
             break;
 
+        // diary
         case 0x10:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(0x15)) {
                 showPinkOverlayText(0);
@@ -915,9 +916,9 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
         case 18:
             
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                // unused code    
-            }
+            // if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
+            //     // unused code    
+            // }
             break;
 
         case 19:
@@ -967,13 +968,11 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 
                 if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[1].flags & 1) {
 
-                    temp = gFarmAnimals[1].type;
-                
-                    // FIXME: actually a switch
-                    if (temp >= 0) {
+                    switch (gFarmAnimals[1].type) {
 
-                        if (temp < 4) {
-                            
+                        case BABY_COW:
+                        case CALF:
+                        case ADULT_COW:
                             setGlobalSeasonName(gFarmAnimals[1].birthdaySeason);
                         
                             gCurrentSeasonName[0] = gGlobalSeasonName[0];
@@ -988,16 +987,21 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             setGameVariableString(0x26, gFarmAnimals[1].motherName, 6);
                             func_80061690(gFarmAnimals[1].milkType);
                             showTextBox(1, SHOP_TEXT_INDEX, 0xE6, 0, 2);
-                    
-                        } else if (temp < 7) {
-                            showTextBox(1, SHOP_TEXT_INDEX, 0xEE, 0, 2);
-                        }
-                        
-                    } 
+                            break;
 
+                        case PREGNANT_COW:
+                        case BABY_SHEEP:
+                        case ADULT_SHEEP:
+                        case SHEARED_SHEEP:
+                            showTextBox(1, SHOP_TEXT_INDEX, 0xEE, 0, 2);
+                            break;
+
+                    }
+                
                     result = 1;
                 
                 }
+            
             }
             
             break;
@@ -4609,7 +4613,3 @@ bool handleBeachLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
 
 }
-
-// FIXME:
-// hack to get this rodata to align along 10 bytes
-static const u32 padding[2] = { 0, 0 };

@@ -1166,8 +1166,6 @@ void resetAnimalStatuses(void) {
 
 u8 initializeNewChicken(u8 animalType, u8 arg1) {
 
-    u32 padding[4];
-    
     u8 found;
     u8 i;
     u8 temp;
@@ -1249,9 +1247,6 @@ void initializeChicken(u8 chickenIndex) {
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008820C);
 
 u8 initializeNewFarmAnimal(u8 animalType, u8 arg1) {
-
-    // FIXME: shouldn't be necessary
-    u32 padding[4];
 
     u8 index = 0xFF;
     u8 i = 0;
@@ -1820,8 +1815,6 @@ void spawnWildAnimals(void) {
 
 u8 spawnMiscAnimal(u8 animalType, u8 direction, f32 x, f32 y, f32 z) {
 
-    u32 padding[4];
-
     u8 i = 0;
     u8 found = (animalType != MISC_ANIMAL_PLAYER_DOG) ? 0xFF : 6;
     u8 temp;
@@ -2050,7 +2043,7 @@ void updateFarmAnimalStartOfDay(u8 index) {
                             if (!(getRandomNumberInRange(0, 1))) {
                                 setAnimalState(2, index, 0xFF, COW_SICK, 0);
                                 adjustFarmAnimalAffection(index, -30);
-                                gHappiness += adjustValue(gHappiness, -10, 0xFF);
+                                gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
                             }
         
                         } else if (gFarmAnimals[index].location == FARM) {
@@ -2058,7 +2051,7 @@ void updateFarmAnimalStartOfDay(u8 index) {
                             if (!(getRandomNumberInRange(0, 3))) {
                                 setAnimalState(2, index, 0xFF, COW_HAPPY, 0);
                                 adjustFarmAnimalAffection(index, 30);
-                                gHappiness += adjustValue(gHappiness, 5, 0xFF);
+                                gHappiness += adjustValue(gHappiness, 5, MAX_HAPPINESS);
                             }
                             
                         }
@@ -2177,7 +2170,7 @@ void updateFarmAnimalStartOfDay(u8 index) {
                                 setAnimalState(2, index, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(index, -30);
                                 
-                                gHappiness += adjustValue(gHappiness, -10, 0xFF);
+                                gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
                                 
                             }
                             
@@ -2225,7 +2218,7 @@ void updateFarmAnimalStartOfDay(u8 index) {
                                 
                                 setAnimalState(2, index, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(index, -30);
-                                gHappiness += adjustValue(gHappiness, -10, 0xFF);
+                                gHappiness += adjustValue(gHappiness, -10, MAX_HAPPINESS);
                                 
                             }
                         }
@@ -10290,9 +10283,9 @@ bool handleHitFarmAnimalWithTool(void) {
                     if (gFarmAnimals[i].type == ADULT_COW) {
                         
                         if (!(getRandomNumberInRange(0, 7))) {
-                            setAnimalState(2, i, 0xFF, 2, 0xFFU);
+                            setAnimalState(2, i, 0xFF, 2, 0xFF);
                             adjustFarmAnimalAffection(i, -20);
-                            gHappiness += adjustValue(gHappiness, -5, 0xFF);
+                            gHappiness += adjustValue(gHappiness, -5, MAX_HAPPINESS);
                         }
                         
                     }
@@ -10547,8 +10540,7 @@ u8 getTotalCowsCount(void) {
         
         if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) {
             
-            // FIXME: should be range
-            if ((u8)(gFarmAnimals[i].type - 1) < 2U || (gFarmAnimals[i].type == BABY_COW || gFarmAnimals[i].type == PREGNANT_COW)) {
+            if ((0 < gFarmAnimals[i].type && gFarmAnimals[i].type < 3) || (gFarmAnimals[i].type == BABY_COW || gFarmAnimals[i].type == PREGNANT_COW)) {
                 count++;
             }
     
@@ -10616,8 +10608,7 @@ u8 getTotalChickenCount(void) {
 
         if (gChickens[i].flags & CHICKEN_ACTIVE) {
             
-            // FIXME: should be range
-            if ((gChickens[i].type - 1) < 2U) {
+            if (0 < gChickens[i].type && gChickens[i].type < 3) {
                 count++;
             }
 
@@ -10746,12 +10737,7 @@ u8 func_8009B828(u8 arg0) {
                 || (gFarmAnimals[i].type == BABY_COW || gFarmAnimals[i].type == PREGNANT_COW))
             && gFarmAnimals[i].location == FARM && (arg0 == 0 || (gFarmAnimals[i].milkType == 0)))) {
 
-            // FIXME: fake match to do a regswap
-            if (count) {
-                count++;
-            } else {
-                count++;
-            }
+            count++;
         
         }
         
@@ -10893,14 +10879,14 @@ void generateMilkTypeString(u8 index) {
 
 // same as func_80061690
 // unused
-void func_8009BB70(void) {
-    D_801886D4[0] = 0xF6;
-    D_801886D4[1] = 0xF6;
-    D_801886D4[2] = 0xF6;
-    D_801886D4[3] = 0xF6;
-    D_801886D4[4] = 0xF6;
-    D_801886D4[5] = 0xF6;
-}
+// void func_8009BB70(void) {
+//     D_801886D4[0] = 0xF6;
+//     D_801886D4[1] = 0xF6;
+//     D_801886D4[2] = 0xF6;
+//     D_801886D4[3] = 0xF6;
+//     D_801886D4[4] = 0xF6;
+//     D_801886D4[5] = 0xF6;
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", getBestCowMilkType);
 

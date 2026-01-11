@@ -91,18 +91,6 @@ beginseg
 endseg
 
 beginseg
-    name "emptyMountainSprite1Texture"
-    flags RAW
-    include "build/bin/maps/mountain/sprites/emptyMountainSprite1Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMountainSprite2Texture"
-    flags RAW
-    include "build/bin/maps/mountain/sprites/emptyMountainSprite2Texture.bin.o"
-endseg
-
-beginseg
     name "mountainPathTilesTexture"
     flags RAW
     include "build/bin/maps/mountain/sprites/mountainPathTilesTexture.bin.o"
@@ -211,42 +199,6 @@ beginseg
 endseg
 
 beginseg
-    name "emptyMapSprite1Texture"
-    flags RAW
-    include "build/bin/maps/unknown/sprites/emptyMapSprite1Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMapSprite2Texture"
-    flags RAW
-    include "build/bin/maps/unknown/sprites/emptyMapSprite2Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMapSprite3Texture"
-    flags RAW
-    include "build/bin/maps/unknown/sprites/emptyMapSprite3Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMapSprite4Texture"
-    flags RAW
-    include "build/bin/maps/unknown/sprites/emptyMapSprite4Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMapSprite5Texture"
-    flags RAW
-    include "build/bin/maps/unknown/sprites/emptyMapSprite5Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMapSprite6Texture"
-    flags RAW
-    include "build/bin/maps/unknown/sprites/emptyMapSprite6Texture.bin.o"
-endseg
-
-beginseg
     name "stoneTexture"
     flags RAW
     include "build/bin/maps/bathroom/sprites/stoneTexture.bin.o"
@@ -280,18 +232,6 @@ beginseg
     name "vineyardTreeSpritesheetIndex"
     flags RAW
     include "build/bin/maps/vineyard/sprites/vineyardTreeSpritesheetIndex.bin.o"
-endseg
-
-beginseg
-    name "emptyMap1Texture"
-    flags RAW
-    include "build/bin/maps/unknown/sprites/emptyMap1Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMap2Texture"
-    flags RAW
-    include "build/bin/maps/unknown/sprites/emptyMap2Texture.bin.o"
 endseg
 
 beginseg

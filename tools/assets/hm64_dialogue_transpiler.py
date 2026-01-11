@@ -165,7 +165,7 @@ COMMAND_SPECS: Dict[str, Tuple[int, int, List[Tuple[str, str]]]] = {
     # -------------------------------------------------------------------------
     # SHOW_SELECTION_MENU (4 bytes)
     # Format: opcode(1) + text_offset(2) + unused_field(1)
-    # Show a selection menu box
+    # Show selection menu
     # -------------------------------------------------------------------------
     'SHOW_SELECTION_MENU': (
         DialogueOpcode.SHOW_SELECTION_MENU, 4,

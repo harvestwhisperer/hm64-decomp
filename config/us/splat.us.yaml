@@ -188,7 +188,7 @@ segments:
       - [ 0xD8D00, c, ../lib/nusys-1/src/nusys/nusicallbackremove]
       - [ 0xD8D80, c, ../lib/nusys-1/src/nusys/nucontpakjiston64]
       # libultra
-      - [ 0xD9040, hasm, ../lib/libultra/src/gu/sqrtf]
+      - [ 0xD9040, hasm, ../lib/libultra/src/gu/sqrtf, extract: false]
       - [ 0xD9050, c, ../lib/libultra/src/gu/cosf]
       - [ 0xD91A0, c, ../lib/libultra/src/gu/lookat]
       - [ 0xD98B0, c, ../lib/libultra/src/gu/mtxutil]

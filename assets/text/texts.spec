@@ -37,18 +37,6 @@ beginseg
 endseg
 
 beginseg
-    name "recipesJapaneseText"
-    flags RAW
-    include "build/bin/text/recipesJapaneseText.bin.o"
-endseg
-
-beginseg
-    name "recipesJapaneseTextIndex"
-    flags RAW
-    include "build/bin/text/recipesJapaneseTextIndex.bin.o"
-endseg
-
-beginseg
     name "festivalOverlaySelectionsText"
     flags RAW
     include "build/bin/text/festivalOverlaySelectionsText.bin.o"
@@ -106,18 +94,6 @@ beginseg
     name "tvTextIndex"
     flags RAW
     include "build/bin/text/tvTextIndex.bin.o"
-endseg
-
-beginseg
-    name "text10Text"
-    flags RAW
-    include "build/bin/text/text10Text.bin.o"
-endseg
-
-beginseg
-    name "text10TextIndex"
-    flags RAW
-    include "build/bin/text/text10TextIndex.bin.o"
 endseg
 
 beginseg

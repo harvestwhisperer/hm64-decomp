@@ -18,9 +18,6 @@ extern u8 gAverageFarmAnimalAffection;
 
 void func_800598E0(void) {
 
-    // FIXME: shouldn't be necessary
-    u32 tempSeason;
-
     resetDailyBits();
     
     setDailyEventBit(0xE);
@@ -127,11 +124,8 @@ void func_800598E0(void) {
         toggleLifeEventBit(0x92);
     }
 
-    // FIXME: possible fake match
-    tempSeason = gSeason;
-    
     if (gYear == 1) {
-        if (tempSeason == AUTUMN && gDayOfMonth == 23) {
+        if (gSeason == AUTUMN && gDayOfMonth == 23) {
             mountainConstructionWorkDays = 1;
         }
     }

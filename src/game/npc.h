@@ -89,12 +89,12 @@ typedef struct {
 } npcInfo;
 
 extern void deactivateNPCEntities();
-extern u8 setupNPCEntity(u8 npcIndex, int arg1);
+extern u8 setupNPCEntity(u8 npcIndex, u8 entityOffset);
 extern void randomizeNPCLocations();
 extern void setupActiveNPCs();
 extern void updateNPCCoordinates();
 extern u8 checkNPCInteraction();
-extern bool getBlueFeatherResponse(int index, u16 arg1);
+extern bool getBlueFeatherResponse(u8 index, u16 arg1);
 extern void setNPCAnimations();
 extern void setNPCSpawningLocations();        
 extern bool findNPCToTalkTo(void);                      

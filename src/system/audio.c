@@ -235,60 +235,36 @@ bool setAudioSequenceVolumes(u16 index, s32 targetVolume, s16 fadeInRate) {
 //INCLUDE_ASM("asm/nonmatchings/system/audio", func_8003D4E4);
 
 // unused
-bool func_8003D4E4(u16 sequenceIndex, s32 arg1) {
+// bool func_8003D4E4(u16 sequenceIndex, s32 arg1) {
     
-    bool result = FALSE;
+//     bool result = FALSE;
 
-    if (sequenceIndex < MAX_ACTIVE_SEQUENCES) {
+//     if (sequenceIndex < MAX_ACTIVE_SEQUENCES) {
         
-        if (gAudioSequences[sequenceIndex].flags & AUDIO_ACTIVE) {
+//         if (gAudioSequences[sequenceIndex].flags & AUDIO_ACTIVE) {
         
-            gAudioSequences[sequenceIndex].unused1 = arg1;
+//             gAudioSequences[sequenceIndex].unused1 = arg1;
         
-            if (arg1 < 0) {
-                 gAudioSequences[sequenceIndex].unused1 = 0;
-            }
+//             if (arg1 < 0) {
+//                  gAudioSequences[sequenceIndex].unused1 = 0;
+//             }
         
-            result = TRUE;
+//             result = TRUE;
         
-            if (gAudioSequences[sequenceIndex].unused1 >= 257) {
-                 gAudioSequences[sequenceIndex].unused1 = 256;
-            }
-        }
-    }
+//             if (gAudioSequences[sequenceIndex].unused1 >= 257) {
+//                  gAudioSequences[sequenceIndex].unused1 = 256;
+//             }
+//         }
+//     }
 
-    return result;
+//     return result;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/audio", func_8003D570);
 
 // unused
-bool func_8003D570(u16 sequenceIndex, s32 arg1) {
-    
-    bool result = FALSE;
-
-    if (sequenceIndex < MAX_ACTIVE_SEQUENCES) {
-        
-        if (gAudioSequences[sequenceIndex].flags & AUDIO_ACTIVE) {
-            
-            gAudioSequences[sequenceIndex].unused2 = arg1;
-            
-            if (arg1 < 0) {
-                 gAudioSequences[sequenceIndex].unused2 = 0;
-            }
-            
-            if (gAudioSequences[sequenceIndex].unused2 >= 257) {
-                 gAudioSequences[sequenceIndex].unused2 = 256;
-            }
-
-            result = TRUE;
-        }
-    }
-
-    return result;
-
-}
+// s
 
 //INCLUDE_ASM("asm/nonmatchings/system/audio", stopMusic);
 
@@ -335,28 +311,28 @@ bool setSfx(u32 sfxIndex) {
 //INCLUDE_ASM("asm/nonmatchings/system/audio", findAndStopSfx);
 
 // unused
-bool findAndStopSfx(u32 sfxIndex) {
+// bool findAndStopSfx(u32 sfxIndex) {
     
-    u16 i = 0;
-    bool result = FALSE;
+//     u16 i = 0;
+//     bool result = FALSE;
     
-    for (i = 0; i < MAX_ACTIVE_SFX; i++) {
+//     for (i = 0; i < MAX_ACTIVE_SFX; i++) {
 
-        if (gSfx[i].flags & AUDIO_ACTIVE) {
+//         if (gSfx[i].flags & AUDIO_ACTIVE) {
 
-            if (gSfx[i].sfxIndex == sfxIndex) {
+//             if (gSfx[i].sfxIndex == sfxIndex) {
 
-                gSfx[i].flags |= AUDIO_STOP;
+//                 gSfx[i].flags |= AUDIO_STOP;
 
-                result = TRUE;
+//                 result = TRUE;
 
-            }
-        }
-    }
+//             }
+//         }
+//     }
     
-    return result;
+//     return result;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/audio", setSfxVolume);
 

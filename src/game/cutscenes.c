@@ -5288,11 +5288,10 @@ void handleCutsceneCompletion(void) {
                 }
 
                 if (gCutsceneIndex != 0xFFFF) {
-                    f32 temp = 0.0f;
-                    previousLightingRGBA.a = temp;
-                    previousLightingRGBA.b = temp;
-                    previousLightingRGBA.g = temp;
-                    previousLightingRGBA.r = temp;
+                    previousLightingRGBA.a = 0.0f;
+                    previousLightingRGBA.b = 0.0f;
+                    previousLightingRGBA.g = 0.0f;
+                    previousLightingRGBA.r = 0.0f;
                     setMainLoopCallbackFunctionIndex(SET_AUDIO_AND_LIGHTING);
                 }
                 

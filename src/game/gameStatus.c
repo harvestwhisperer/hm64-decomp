@@ -238,55 +238,6 @@ void handleWifeFeedsChickens(void) {
     
 }
 
-// FIXME: something wrong here
-static inline int adjustValue3(int initial, int value, int max) {
-
-    int temp;
-    int temp2;
-    int adjusted;
-
-    adjusted = value;
-    temp = (initial + adjusted);
-    temp -= 5;
-    
-    if (max < temp) {
-        adjusted -= temp - max;
-        temp = max;
-    }
-    
-    if (temp < 0) {
-        adjusted -= temp;
-    } 
-      
-    return adjusted;
-    
-}
-
-static inline int adjustValue4(int initial, int value, int max) {
-
-    int temp;
-    int temp2;
-    int adjusted;
-
-    adjusted = value;
-    temp = (initial + adjusted);
-    temp -= 10;
-    
-    if (max < temp) {
-        adjusted -= temp - max;
-        temp = max;
-    }
-    
-    if (temp < 0) {
-        adjusted -= temp;
-    } 
-      
-    return adjusted;
-    
-}
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", updateFarmStatusRain);
-
 void updateFarmStatusRain(void) {
 
     u8 i;
@@ -322,8 +273,7 @@ void updateFarmStatusRain(void) {
                                 setAnimalState(2, i, 0xFF, COW_MAD, 0);
                                 adjustFarmAnimalAffection(i, -20);
 
-                                // FIXME: should just be += adjustValue(gHappiness, -5, MAX_HAPPINESS)
-                                gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 5, -5, MAX_HAPPINESS);
                                 
                             }
                             
@@ -332,7 +282,7 @@ void updateFarmStatusRain(void) {
                                 setAnimalState(2, i, 0xFF, COW_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                         
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             } 
                             
@@ -368,7 +318,7 @@ void updateFarmStatusRain(void) {
                                 setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             }
                             
@@ -393,7 +343,7 @@ void updateFarmStatusRain(void) {
                                 setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             } 
                             
@@ -475,7 +425,7 @@ void updateFarmStatusSnow(void) {
                                 setAnimalState(2, i, 0xFF, COW_MAD, 0);
                                 adjustFarmAnimalAffection(i, -20);
 
-                                gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 5, -5, MAX_HAPPINESS);
                                 
                             }
                             
@@ -484,7 +434,7 @@ void updateFarmStatusSnow(void) {
                                 setAnimalState(2, i, 0xFF, COW_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                         
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             } 
                             
@@ -520,7 +470,7 @@ void updateFarmStatusSnow(void) {
                                 setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             }
                             
@@ -545,7 +495,7 @@ void updateFarmStatusSnow(void) {
                                 setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             } 
                             
@@ -640,7 +590,7 @@ void updateFarmStatusTyphoon(void) {
                                 setAnimalState(2, i, 0xFF, COW_MAD, 0);
                                 adjustFarmAnimalAffection(i, -20);
 
-                                gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 5, -5, MAX_HAPPINESS);
                                 
                             }
                             
@@ -649,7 +599,7 @@ void updateFarmStatusTyphoon(void) {
                                 setAnimalState(2, i, 0xFF, COW_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                         
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             } 
                             
@@ -685,7 +635,7 @@ void updateFarmStatusTyphoon(void) {
                                 setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             }
                             
@@ -710,7 +660,7 @@ void updateFarmStatusTyphoon(void) {
                                 setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             } 
                             
@@ -826,7 +776,7 @@ void func_80064CF0(void) {
                                 setAnimalState(2, i, 0xFF, COW_MAD, 0);
                                 adjustFarmAnimalAffection(i, -20);
 
-                                gHappiness += adjustValue3(gHappiness + 5, -5, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 5, -5, MAX_HAPPINESS);
                                 
                             }
                             
@@ -835,7 +785,7 @@ void func_80064CF0(void) {
                                 setAnimalState(2, i, 0xFF, COW_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                         
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             } 
                             
@@ -871,7 +821,7 @@ void func_80064CF0(void) {
                                 setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             }
                             
@@ -896,7 +846,7 @@ void func_80064CF0(void) {
                                 setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
-                                gHappiness += adjustValue4(gHappiness + 10, -10, MAX_HAPPINESS);
+                                gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
                                 
                             } 
                             
@@ -1007,10 +957,10 @@ u32 checkSpecialDialogueBit(u16 bitIndex) {
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", addToReadMail);
 
 // unused
-void addToReadMail(u16 bitIndex) {
-    u32 temp = bitIndex;
-    readMailBits[temp / 32] |= (1 << (temp & 0x1F));
-}
+// void addToReadMail(u16 bitIndex) {
+//     u32 temp = bitIndex;
+//     readMailBits[temp / 32] |= (1 << (temp & 0x1F));
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", toggleReadLetterBit);
 
@@ -1036,18 +986,18 @@ void setMail(u16 bitIndex) {
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", readLetter);
 
 // unused
-void readLetter(u16 bitIndex) {
-    u32 temp = bitIndex;
-    mailboxBits[temp / 32] &= ~(1 << (temp & 0x1F));
-}
+// void readLetter(u16 bitIndex) {
+//     u32 temp = bitIndex;
+//     mailboxBits[temp / 32] &= ~(1 << (temp & 0x1F));
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkLetterInMailBox);
 
 // unused
-inline u32 checkLetterInMailBox(u16 bitIndex) {
-    u32 temp = bitIndex;
-    return mailboxBits[temp / 32] & (1 << (temp & 0x1F));
-}
+// inline u32 checkLetterInMailBox(u16 bitIndex) {
+//     u32 temp = bitIndex;
+//     return mailboxBits[temp / 32] & (1 << (temp & 0x1F));
+// }
 
 static inline void toggleLetterBit(u32 i, u32 mailBox) {
     mailboxBits[i / 32] &= ~mailBox;

@@ -283,8 +283,7 @@ u8 playerDefaultStartingDirections[] = {
     SOUTHWEST
 };
 
-// FIXME: probably shouldn't be volatile
-volatile u8 toolToFatigueScore[MAX_TOOLS][3] = {
+u8 toolToFatigueScore[MAX_TOOLS][3] = {
     { 0, 0, 0 },
     { 2, 4, 6 },
     { 2, 4, 6 },
@@ -517,37 +516,6 @@ void initializePlayerHeldItem(void) {
     
 }
 
-// m2c decomp of ranged switch for reference:
-/*
-        if ((s32) D_8018908C < 0xB3) {
-            if ((s32) D_8018908C < 0x7B) {
-                var_v0 = (s32) D_8018908C < 0x58;
-                if ((s32) D_8018908C < 0x70) {
-                    goto block_6;
-                }
-                goto block_8;
-            }
-            goto block_7;
-        }   
-        var_v0 = (s32) D_8018908C < 0xBA;
-        if ((s32) D_8018908C < 0xCA) {
-block_6:
-            if (var_v0 == 0) {
-block_7:
-                var_a3 = 4;
-            } else {
-                goto block_9;
-            }
-        } else {
-block_8:
-block_9:
-            var_a3 = 0;
-        }
-        D_8018908D = initializeHeldItem(0, ITEM_STATE_HELD, D_8018908C, var_a3, 8);
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", addItemToRucksack);
-
 inline u8 addItemToRucksack(u8 item) {
 
     u8 i;
@@ -727,29 +695,25 @@ void syncPlayerCoordinatesFromEntity(void) {
     gPlayer.coordinates.z = entities[ENTITY_PLAYER].coordinates.z;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", getOffsetTileCoordinates );
+ 
+static const s8 directionToTileDeltaX[12] = { 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, 0, 0 };
+static const s8 directionToTileDeltaZ[12] = { 1, 1, 0, -1, -1, -1, 0, 1, 0, 0, 0, 0 };
 
 Vec3f getOffsetTileCoordinates (f32 range, u8 directionalOffset) {
     
     Vec3f tileCoordinates;
 
-    s8 buffer[10];
-    s8 buffer2[10];
-
-    memcpy(buffer, directionToTileDeltaX, 9);
-    memcpy(buffer2, directionToTileDeltaZ, 9);
-    
     tileCoordinates = getEntityTileCoordinates(ENTITY_PLAYER);
 
     if (tileCoordinates.y != 65535.0f) {
 
-        tileCoordinates.x += buffer[convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)] * range;
-        tileCoordinates.z += buffer2[convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)] * range;
+        tileCoordinates.x += directionToTileDeltaX[convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)] * range;
+        tileCoordinates.z += directionToTileDeltaZ[convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)] * range;
 
         if (directionalOffset != 8) {
             
-            tileCoordinates.x += buffer[((entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + directionalOffset) % 8)];
-            tileCoordinates.z += buffer2[((entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + directionalOffset) % 8)];
+            tileCoordinates.x += directionToTileDeltaX[((entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + directionalOffset) % 8)];
+            tileCoordinates.z += directionToTileDeltaZ[((entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + directionalOffset) % 8)];
             
         }
     }
@@ -758,59 +722,11 @@ Vec3f getOffsetTileCoordinates (f32 range, u8 directionalOffset) {
     
 }
 
-// alternate without memcpy
-/*
-Vec3f* getOffsetTileCoordinates (Vec3f *arg0, f32 arg1, u8 arg2) {
-     
-    Vec3f vec;
-    CoordinateOffsetData struct1;
-    CoordinateOffsetData struct2;
-
-    s8 *ptr;
-    s8 *ptr2;
-
-    struct1 = *(CoordinateOffsetData*)directionToTileDeltaX;
-    struct2 = *(CoordinateOffsetData*)directionToTileDeltaZ;
-    
-    ptr = (s8*)&struct1;
-    ptr2 = (s8*)&struct2;
-
-    getEntityTileCoordinates(&vec, 0);
-
-    if (vec.y != 65535.0f) {directionToTileDeltaX
-
-        vec.x += ptr[(entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
-        vec.z += ptr2[(entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex)) % 8] * arg1;
-
-        if (arg2 != 8) {
-            
-            vec.x += ptr[((entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
-            vec.z += ptr2[((entities[ENTITY_PLAYER].direction + getCurrentMapRotation(gMainMapIndex) + arg2) % 8)];
-            
-        }
-    }
-
-    *arg0 = vec;
-    
-    return arg0;
-}
-
-*/
-
-//INCLUDE_RODATA("asm/nonmatchings/game/player", directionToTileDeltaX);
- 
-static const s8 directionToTileDeltaX[12] = { 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, 0, 0 };
-
-//INCLUDE_RODATA("asm/nonmatchings/game/player", directionToTileDeltaZ);
- 
-static const s8 directionToTileDeltaZ[12] = { 1, 1, 0, -1, -1, -1, 0, 1, 0, 0, 0, 0 };
 
 
 
 /* Action handling */
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", setPlayerAction);
 
 void setPlayerAction(u16 action, u16 animationHandler) {
 
@@ -951,12 +867,10 @@ void updatePlayerAction(void) {
 void handlePlayerInput(void) {
 
     Vec3f vec;
-    u32 padding[3];
     Vec3f vec3;
     
     u8 temp;
     f32 tempAnalogStickMagnitude;
-    f32 temp2;
     
     u8 horseResult;
     u8 npcResult;
@@ -976,9 +890,6 @@ void handlePlayerInput(void) {
         controllers[CONTROLLER_1].buttonPressed &= BUTTON_A;
     }
     
-    // FIXME: fake
-    do {} while (0);
-
     if (handleLevelInteraction(gBaseMapIndex)) {
         set = TRUE;
         temp = 0xFF;
@@ -1001,10 +912,7 @@ void handlePlayerInput(void) {
     if (!set && npcResult == 2) {
         temp = 0xFF;
         set = TRUE;
-        // FIXME:
-        reset();
-        gPlayer.actionHandler = PICKING_UP_ITEM;
-        gPlayer.animationHandler = ANIM_PICKING_UP_ITEM;
+        setPlayerAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
     }
 
     if (!set) {
@@ -1018,11 +926,9 @@ void handlePlayerInput(void) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && handlePickUpGroundItem()) {
             set = TRUE;
             temp = 0xFF;
-            // FIXME:
-            reset();
-            gPlayer.actionHandler = PICKING_UP_ITEM;
-            gPlayer.animationHandler = ANIM_PICKING_UP_ITEM;
+            setPlayerAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
         }
+        
     }
 
     if (!set) {
@@ -1274,9 +1180,6 @@ void handlePlayerInput(void) {
             direction = convertSpriteToWorldDirection(temp, MAIN_MAP_INDEX);
             setEntityDirection(ENTITY_PLAYER, direction);
 
-            // FIXME: likely fake
-            temp2 = 0;
-            
         } else {
             
             tempAnalogStickMagnitude = 0.0f;
@@ -1286,7 +1189,7 @@ void handlePlayerInput(void) {
         
         tempAnalogStickMagnitude = (s8)tempAnalogStickMagnitude;
 
-        vec = getMovementVectorFromDirection(tempAnalogStickMagnitude, temp, temp2);
+        vec = getMovementVectorFromDirection(tempAnalogStickMagnitude, temp, 0);
         
         setEntityMovementVector(ENTITY_PLAYER, vec.x, vec.y, vec.z, tempAnalogStickMagnitude);
         
@@ -1638,16 +1541,7 @@ void handleToolAction(void) {
                     if (checkLifeEventBit(0x5F)) {
                         gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel] / 2, MAX_FATIGUE_POINTS);
                     } else {
-                        
-                        // fake match if toolToFatigueScore isn't volatile
-                        // if (toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel] + 1) {
-                        //     temp = toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel];
-                        // }
-                        
-                        // temp = toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel];
-                        
                         gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel], MAX_FATIGUE_POINTS);
-                        
                     }
 
                 }
@@ -1688,20 +1582,6 @@ void handleThrowItemAction(void) {
     }
 
 }
-
-// Alternate:
-// This is to force the compiler optimization of reading two fields by loading 32 bits at once
-/*
-    if (!(*(s32*)&gPlayer.actionPhaseFrameCounter & ~0xFF)) {
-        playSfx(0x26);
-        clearHeldItemSlot(gPlayer.itemInfoIndex);
-        allocateThrownItemSlot(1, ITEM_STATE_THROW_START, gPlayer.heldItem, 0, 8);
-        gPlayer.heldItem = 0;
-        gPlayer.actionPhaseFrameCounter = 1;
-    }
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePutItemInShippingBinAction);
 
 void handlePutItemInShippingBinAction(void) {
 
@@ -2685,25 +2565,11 @@ void handleStaminaExhaustionAction(void) {}
 // empty function
 void handleUnusedAction25(void) {}
 
-static inline void fakeInline() {
-    gPlayer.movementVector.y += 1.0f;
-    entities[ENTITY_PLAYER].coordinates.y = gPlayer.movementVector.y;
-}
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleTreeClimbingAction);
-
-// FIXME: have to trick the CSE pass to access actionPhaseFrameCounter via -2 of animationState instead of reloading it from memory every time
-// The CSE pass doesn't do this for smaller functions with the same code (handleDismountHorseAction), so there's something around the basic block size/complexity 
 void handleTreeClimbingAction(void) {
 
     Vec3f vec;
 
-    u16 *temp;
-
     if (gPlayer.actionPhase == 0) {
-
-        // FIXME: fake
-        temp = &gPlayer.actionPhaseFrameCounter;
         
         if (gPlayer.actionPhaseFrameCounter == 0) {
             
@@ -2747,15 +2613,10 @@ void handleTreeClimbingAction(void) {
     
     if (gPlayer.actionPhase == 1) {
         
-        // FIXME: fake
-        // tricks CSE2 pass
-        do {} while (0);
-        temp = &gPlayer.actionPhaseFrameCounter;
-
         if (gPlayer.actionPhaseFrameCounter < 0x80) {
             
-            // need this to force memory lookup and NOT have pointer access for the other gPlayer members
-            fakeInline();
+            gPlayer.movementVector.y += 1.0f;
+            entities[ENTITY_PLAYER].coordinates.y = gPlayer.movementVector.y;
             
         } else {
             
@@ -2778,9 +2639,6 @@ void handleTreeClimbingAction(void) {
     }
 
     if (gPlayer.actionPhase == 2) {
-        
-        // FIXME: fake
-        temp = &gPlayer.actionPhaseFrameCounter;
         
         if (gPlayer.actionPhaseFrameCounter < 15) {
             
@@ -3349,7 +3207,6 @@ void handleShopAnimation(void) {
                 }
                 break;
             case 1:
-                // shop.c
                 intializeShopDialogue(gPlayer.shopItemIndex);
                 gPlayer.actionPhaseFrameCounter = 0;
                 pauseGameplay();
@@ -3819,15 +3676,13 @@ void handleFishingRodAnimation(void) {
             // catch fish
             case 7:
 
-                // FIXME: likely a switch
-                // ?
-                temp2 = gPlayer.fishingSpotType;
-                max = 4;
-
-                if (gPlayer.fishingSpotType == 0) {
-                    temp = 1;
-                } else if (0 <= temp2 && gPlayer.fishingSpotType < max) {
-                    temp = 2;
+                switch (gPlayer.fishingSpotType) {
+                    case 0:
+                        temp = 1;
+                        break;
+                    case 1 ... 4:
+                        temp = 2;
+                        break;
                 }
                 
                 // randomize fish type
@@ -3918,10 +3773,7 @@ void handleClimbTreeAnimation(void) {
 
 void handleToolAcquisitionAnimation(void) {
 
-    u8 buffer[5][3];
     u8 temp;
-
-    memcpy(buffer, toolHeldItemIndices, 15);
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
 
@@ -3930,7 +3782,7 @@ void handleToolAcquisitionAnimation(void) {
             case 0:
                 setEntityAnimation(ENTITY_PLAYER, 0x171);
                 gPlayer.actionPhase = 1;
-                temp = buffer[upgradedToolIndex][upgradedToolLevelIndex - 3];
+                temp = toolHeldItemIndices[upgradedToolIndex][upgradedToolLevelIndex - 3];
                 gPlayer.heldItem = temp;
                 gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_TOOL_ACQUIRED, temp, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                 break;

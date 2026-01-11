@@ -66,7 +66,7 @@
 
 extern void mainLoop();
 
-extern u32 setMainLoopCallbackFunctionIndex(u16 callbackIndex); 
+extern bool setMainLoopCallbackFunctionIndex(u16 callbackIndex); 
 extern bool registerMainLoopCallback(u16 index, void *(func)());
 
 extern u8 gfxRetraceCallback(int);

@@ -295,7 +295,7 @@ f32 calendarStickersYCoordinates[] = {
     -66.0f,
 };
 
-volatile u16 toolAnimationIndices[] = {
+u16 toolAnimationIndices[] = {
      0xFFFF,
      0x0000,
      0x0003,
@@ -328,7 +328,7 @@ volatile u16 toolAnimationIndices[] = {
      0x0026,
 };
 
-volatile u16 keyItemAnimationIndices[] = {
+u16 keyItemAnimationIndices[] = {
      0xFFFF,
      0x0035,
      0x0072,
@@ -734,7 +734,7 @@ void showDialogueDownArrow(f32 x, f32 y);
 void showDialogueUpArrow(f32 x, f32 y);
 void hideDialogueDownArrow(void);
 void hideDialogueUpArrow(void);
-void setItemDescriptionVariable(u8 arg0, u32 arg1);
+void setItemDescriptionVariable(u8 arg0, u8 arg1);
 void initializeRaceBettingMessageBoxes(void);
 void fadeInRaceBettingSprites(void);
 void loadRaceResultsScreenSprites(void);
@@ -926,26 +926,26 @@ static inline void fadeOutClock() {
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadMoneySprites);
 
 // unused or inline
-void loadMoneySprites(f32 x, f32 y, f32 z, u16 renderingLayer, u32 arg4) {
+// void loadMoneySprites(f32 x, f32 y, f32 z, u16 renderingLayer, u32 arg4) {
 
-    // background and "g"
-    dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)GOLD_UI_TEXTURE_BUFFER, NULL, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setSpriteViewSpacePosition(0x8E, x, y, z);
-    setBilinearFiltering(0x8E, 1);
-    setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x8E, renderingLayer);
-    startSpriteAnimation(0x8E, 0, 0);
+//     // background and "g"
+//     dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)GOLD_UI_TEXTURE_BUFFER, NULL, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+//     setSpriteViewSpacePosition(0x8E, x, y, z);
+//     setBilinearFiltering(0x8E, 1);
+//     setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
+//     setSpriteBlendMode(0x8E, renderingLayer);
+//     startSpriteAnimation(0x8E, 0, 0);
 
-    setNumberSprites(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 
-        (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 
-        0, 1, 0, 
-        x, y, z + 64.0f, 
-        10);
+//     setNumberSprites(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 
+//         (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 
+//         0, 1, 0, 
+//         x, y, z + 64.0f, 
+//         10);
 
-    dmaNumberSprites(1, arg4, 5, 3);
-    setNumberSpritesRGBA(1, 255, 255, 255, 255);
+//     dmaNumberSprites(1, arg4, 5, 3);
+//     setNumberSpritesRGBA(1, 255, 255, 255, 255);
 
-}
+// }
 
 
 /* TV functions */
@@ -2364,16 +2364,13 @@ void loadPauseScreenItemSprites(void) {
 
     for (i = 0; i < 8; i++) {
     
-        f32* toolXCoords = pauseScreenToolXPositions;
-        f32* toolYCoords = pauseScreenToolYPositions;
         j = i;
 
         if (gPlayer.toolSlots[i]) {
              
             dmaSprite(TOOL_SPRITES_BASE + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_PALETTE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_ANIM_METADATA, (u8*)OVERLAY_SCREEN_TOOL_SPRITES_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             
-            // FIXME: should be / 4 instead of & 0xFC
-            setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, toolXCoords[j % 4], *(f32*)((u8*)toolYCoords + (j & 0xFC)), 256.0f);
+            setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, pauseScreenToolXPositions[j % 4], pauseScreenToolYPositions[j / 4], 256.0f);
 
             setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(TOOL_SPRITES_BASE + i, 2);
@@ -2402,16 +2399,13 @@ void loadPauseScreenItemSprites(void) {
 
     for (i = 0; i < 8; i++) {
 
-        f32* belongingXCoords = pauseScreenBelongingsXPosition;
-        f32* belongingYCoords = pauseScreenBelongingsYPosition;
         j = i;
 
         if (gPlayer.belongingsSlots[i]) {
             
             dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             
-            // FIXME: should be / 4 instead of & 0xFC
-            setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j % 4], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
+            setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, pauseScreenBelongingsXPosition[j % 4], pauseScreenBelongingsYPosition[j / 4], 256.0f);
 
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
@@ -2455,26 +2449,15 @@ void loadPauseScreenItemSprites(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updatePauseScreenSelectionHighlight);
-
-// FIXME: fake matches
 void updatePauseScreenSelectionHighlight(void) {
     
-    u32 temp;
-    u32 temp2;
-    u8 *ptr = &overlayScreenTable.unk_5;
-
-    temp2 = *ptr;
-
-    if (*ptr == 7) {
-
-        temp = overlayScreenTable.unk_3;
+    if (overlayScreenTable.unk_5 == 7) {
 
         if (overlayScreenTable.unk_3 != 0xFF) {
             
             if (overlayScreenTable.unk_4 == overlayScreenTable.pageNumber) {
                 // show item/tool selected
-                setSpriteViewSpacePosition(0x82, getPauseScreenItemXCoordinate(temp2, temp), getPauseScreenItemYCoordinate(*ptr, overlayScreenTable.unk_3), 16.0f);
+                setSpriteViewSpacePosition(0x82, getPauseScreenItemXCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3), getPauseScreenItemYCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3), 16.0f);
                 startSpriteAnimation(0x82, 6, 0xFE);
                 return;
             } else {
@@ -2487,11 +2470,9 @@ void updatePauseScreenSelectionHighlight(void) {
         
     }
 
-    temp = overlayScreenTable.unk_3;
-    
     if (overlayScreenTable.unk_3 != 0xFF) {
         // end animation by playing it one last time
-        setSpriteViewSpacePosition(0x82, getPauseScreenItemXCoordinate(temp2, temp), getPauseScreenItemYCoordinate(*ptr, overlayScreenTable.unk_3), 16.0f);
+        setSpriteViewSpacePosition(0x82, getPauseScreenItemXCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3), getPauseScreenItemYCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3), 16.0f);
         startSpriteAnimation(0x82, 6, 0xFE);
     } else {
 reset:
@@ -3378,10 +3359,7 @@ void loadToolboxToolSprites(void) {
         if (gToolboxSlots[(overlayScreenTable.pageNumber * 8) + i]) {
              
             dmaSprite(TOOL_SPRITES_BASE + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (u8*)((i * (OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_1_BASE), (u8*)((i * (OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_2_BASE), (u16*)OVERLAY_SCREEN_TOOL_SPRITES_PALETTE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_ANIM_METADATA, (u8*)OVERLAY_SCREEN_TOOL_SPRITES_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
-            
-            // FIXME: should be / 4 instead of & 0xFC
-            setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, toolboxToolSlotsXPosition[j % 4], *(f32*)((u8*)toolboxToolSlotsYPosition + (j & 0xFC)), 256.0f);
-
+            setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, toolboxToolSlotsXPosition[j % 4], toolboxToolSlotsYPosition[j / 4], 256.0f);
             setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(TOOL_SPRITES_BASE + i, 2);
             setBilinearFiltering(TOOL_SPRITES_BASE + i, 1);
@@ -3398,16 +3376,13 @@ void loadToolboxToolSprites(void) {
 
     for (i = 0; i < 8; i++) {
     
-        f32* toolXCoords = toolboxPlayerToolSlotsXPosition;
-        f32* toolYCoords = toolboxPlayerToolSlotsYPosition;
         j = i;
 
         if (gPlayer.toolSlots[i]) {
              
             dmaSprite(0xAC + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             
-            // FIXME: should be / 4 instead of & 0xFC
-            setSpriteViewSpacePosition(0xAC + i, toolXCoords[j % 4], *(f32*)((u8*)toolYCoords + (j & 0xFC)), 256.0f);
+            setSpriteViewSpacePosition(0xAC + i, toolboxPlayerToolSlotsXPosition[j % 4], toolboxPlayerToolSlotsYPosition[j / 4], 256.0f);
 
             setSpriteColor(0xAC + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(0xAC + i, 2);
@@ -4110,8 +4085,6 @@ void loadFreezerScreenSprites(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadFreezerItemSprites);
-
 void loadFreezerItemSprites(void) {
 
     u8 i;
@@ -4127,13 +4100,9 @@ void loadFreezerItemSprites(void) {
         
         if (D_80237420[(overlayScreenTable.pageNumber * 8) + i]) {
             
-            f32* xCoords = freezerSlotsXCoordinates;
-            f32* yCoords = freezerSlotsYCoordinates;
-             
             dmaSprite(0xA3 + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (((i * 2) + i) << 9) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_1_BASE, (((i * 2) + i) << 9) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_PALETTE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_ANIM_METADATA, (u8*)OVERLAY_SCREEN_TOOL_SPRITES_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             
-            // FIXME: should be / 4 instead of & 0xFC
-            setSpriteViewSpacePosition(0xA3 + i, xCoords[j % 4], *(f32*)((u8*)yCoords + (j & 0xFC)), 256.0f);
+            setSpriteViewSpacePosition(0xA3 + i,freezerSlotsXCoordinates[j % 4], freezerSlotsYCoordinates[j / 4], 256.0f);
 
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(0xA3 + i, 2);
@@ -4177,8 +4146,6 @@ void loadFreezerItemSprites(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateFreezerSelectionHighlight);
 
 void updateFreezerSelectionHighlight(void) {
 
@@ -4249,8 +4216,6 @@ void fadeInFreezerSprites(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutFreezerElements);
-
 void fadeOutFreezerSprites(void) {
 
     u8 i;
@@ -4280,9 +4245,6 @@ void fadeOutFreezerSprites(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", freezerScreenCallback);
-
-// freezer callback function
 void freezerScreenCallback(void) {
 
     bool set = FALSE;
@@ -4706,8 +4668,6 @@ inline f32 getFreezerItemYCoordinate(u8 arg0, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", resetFreezerSpriteColors);
-
 void resetFreezerSpriteColors(void) {
 
     u8 i;
@@ -4765,8 +4725,6 @@ bool isFreezerItemSwappable(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", swapFreezerItems);
-
 void swapFreezerItems(void) {
 
     u8 temp;
@@ -4810,9 +4768,6 @@ void swapFreezerItems(void) {
 
 /* cabinet functions */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCabinetScreenCallback);
-
-// cabinet load callback
 void loadCabinetScreenCallback(void) {
     
     openOverlayScreen();
@@ -4834,8 +4789,6 @@ void loadCabinetScreenCallback(void) {
     setMainLoopCallbackFunctionIndex(CABINET);
     
 }
-
-// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCabinetScreenSprites);
 
 void loadCabinetScreenSprites(void) {
 
@@ -4908,13 +4861,9 @@ void loadCabinetItemSprites(void) {
         
         if (D_801890E8[(overlayScreenTable.pageNumber * 8) + i]) {
             
-            f32* xCoords = cabinetSlotsXCoordinates;
-            f32* yCoords = cabinetSlotsYCoordinates;
-             
             dmaSprite(0xA3 + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (((i * 2) + i) << 9) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_1_BASE, (((i * 2) + i) << 9) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_PALETTE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_ANIM_METADATA, (u8*)OVERLAY_SCREEN_TOOL_SPRITES_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             
-            // FIXME: should be / 4 instead of & 0xFC
-            setSpriteViewSpacePosition(0xA3 + i, xCoords[j % 4], *(f32*)((u8*)yCoords + (j & 0xFC)), 256.0f);
+            setSpriteViewSpacePosition(0xA3 + i, cabinetSlotsXCoordinates[j % 4], cabinetSlotsYCoordinates[j / 4], 256.0f);
 
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(0xA3 + i, 2);
@@ -4939,8 +4888,7 @@ void loadCabinetItemSprites(void) {
             
             dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             
-            // FIXME: should be / 4 instead of & 0xFC
-            setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j % 4], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
+            setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, cabinetBelongingsSlotsXCoordinates[j % 4], cabinetBelongingsSlotsYCoordinates[j / 4], 256.0f);
 
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
@@ -4966,20 +4914,12 @@ void loadCabinetItemSprites(void) {
 
 void updateCabinetSelectionHighlight(void) {
 
-    u32 temp;
-    u32 temp2;
-    u8 *ptr = &overlayScreenTable.unk_5;
-
-    temp2 = *ptr;
-
-    if (*ptr == 5) {
-
-        temp = overlayScreenTable.unk_3;
+    if (overlayScreenTable.unk_5 == 5) {
 
         if (overlayScreenTable.unk_3 != 0xFF) {
             
             if (overlayScreenTable.unk_4 == overlayScreenTable.pageNumber) {
-                setSpriteViewSpacePosition(0x82, getCabinetItemXCoordinate(temp2, temp), getCabinetItemYCoordinate(*ptr, overlayScreenTable.unk_3), 16.0f);
+                setSpriteViewSpacePosition(0x82, getCabinetItemXCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3), getCabinetItemYCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3), 16.0f);
                 startSpriteAnimation(0x82, 6, 0xFE);
                 return;
             } else {
@@ -4992,11 +4932,9 @@ void updateCabinetSelectionHighlight(void) {
         
     }
 
-    temp = overlayScreenTable.unk_3;
-    
     if (overlayScreenTable.unk_3 != 0xFF) {
 startAnim:
-        setSpriteViewSpacePosition(0x82, getCabinetItemXCoordinate(temp2, temp), getCabinetItemYCoordinate(*ptr, overlayScreenTable.unk_3), 16.0f);
+        setSpriteViewSpacePosition(0x82, getCabinetItemXCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3), getCabinetItemYCoordinate(overlayScreenTable.unk_5, overlayScreenTable.unk_3), 16.0f);
         startSpriteAnimation(0x82, 6, 0xFE);
     } else {
 reset:
@@ -5453,10 +5391,7 @@ f32 getCabinetItemXCoordinate(u8 arg0, u8 arg1) {
     switch (arg0) {
 
         case 5:
-
-            arg1 &= 0xFF;
             res = cabinetSlotsXCoordinates[arg1 % 4];
-            
             break;
         
         case 101:
@@ -5488,7 +5423,6 @@ f32 getCabinetItemYCoordinate(u8 arg0, u8 arg1) {
             break;
         
         case 101:
-
             if (arg1 < 8) {
                 res = cabinetBelongingsSlotsYCoordinates[arg1 / 4];
             } else {
@@ -5742,8 +5676,6 @@ void fadeInHouseExtensionsSelectionSprites(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutHouseExtensionsSprites);
-
 void fadeOutHouseExtensionsSprites(void) {
 
     fadeOutClock();
@@ -5764,21 +5696,12 @@ void fadeOutHouseExtensionsSprites(void) {
 
 }
 
-//INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_80121D74);
-
 static const u16 D_80121D74[6] = { 0x10, 0x11, 0x12, 0x13, 0x14, 0x15};
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", houseExtensionsSelectionScreenCallback);
 
 void houseExtensionsSelectionScreenCallback(void) {
 
-    u16 buff[6];
-    u16* ptr = D_80121D74;
-
     bool set;
     u8 temp;
-
-    memcpy(buff, ptr, 12);
 
     set = FALSE;
     
@@ -5818,10 +5741,10 @@ void houseExtensionsSelectionScreenCallback(void) {
                 
                 switch (overlayScreenTable.pageNumber) {                      
                     case 0:                                 
-                        initializeMessageBox(0, SHOP_TEXT_INDEX, 131, 0);
+                        initializeMessageBox(0, 6, 0x83, 0);
                         break;
                     case 1:                                 
-                        initializeMessageBox(0, SHOP_TEXT_INDEX, 132, 0);
+                        initializeMessageBox(0, 6, 0x84, 0);
                     }
                 
                 overlayScreenTable.screenState = 5;
@@ -5912,8 +5835,8 @@ void houseExtensionsSelectionScreenCallback(void) {
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
                 setMessageBoxInterpolationWithFlags(0, -4, 0);
                 
-                if (checkLifeEventBit(buff[overlayScreenTable.cellIndex])) {
-                    initializeMessageBox(0, SHOP_TEXT_INDEX, 109, 0);
+                if (checkLifeEventBit(D_80121D74[overlayScreenTable.cellIndex])) {
+                    initializeMessageBox(0, 6, 0x6D, 0);
                     overlayScreenTable.screenState = 6;
                 } else {
                     initializeDialogueSession(0, DIALOGUE_SHOP, 33, 0x40);
@@ -7715,10 +7638,6 @@ void albumScreenCallback(void) {
     bool set;
     u8 *ptr = D_80121E34;
     
-    u8 buff[16];
-
-    memcpy(buff, ptr, 16);
-    
     set = FALSE;
     
     switch (overlayScreenTable.screenState) {
@@ -7849,7 +7768,7 @@ void albumScreenCallback(void) {
                         setMessageBoxInterpolationWithFlags(0, -4, 2);
     
                         // TODO: probably can refactor this
-                        initializeMessageBox(0, DIARY_TEXT_INDEX, buff[overlayScreenTable.pageNumber * 4 + ((overlayScreenTable.unk_8 * 2) + overlayScreenTable.unk_9)], 0);
+                        initializeMessageBox(0, DIARY_TEXT_INDEX, D_80121E34[overlayScreenTable.pageNumber * 4 + ((overlayScreenTable.unk_8 * 2) + overlayScreenTable.unk_9)], 0);
                         
                         controllers[CONTROLLER_1].buttonPressed = 0;
                         overlayScreenTable.screenState = 4;
@@ -8082,7 +8001,7 @@ void hideDialogueUpArrow(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setItemDescriptionVariable);
 
-void setItemDescriptionVariable(u8 type, u32 itemOrToolIndex) {
+void setItemDescriptionVariable(u8 type, u8 itemOrToolIndex) {
 
     u16 textIndex;
     u32 idx;
@@ -8091,18 +8010,12 @@ void setItemDescriptionVariable(u8 type, u32 itemOrToolIndex) {
     switch (type) {
         // tool type
         case 0:
-            idx = itemOrToolIndex;
-            idx &= 0xFF;
             ptr = D_80116F4C;
             break;
         case 1:
-            idx = itemOrToolIndex;
-            idx &= 0xFF;
             ptr = D_80116F88;
             break;
         case 2:
-            idx = itemOrToolIndex;
-            idx &= 0xFF;
             ptr = D_80117148;
             break;
         // FIXME: seems fake
@@ -8110,7 +8023,7 @@ void setItemDescriptionVariable(u8 type, u32 itemOrToolIndex) {
             goto skip;
     }
 
-    textIndex = ptr[idx];
+    textIndex = ptr[itemOrToolIndex];
 
 skip:
     switch (textIndex) {
@@ -8952,10 +8865,7 @@ void raceBettingScreenCallback(void) {
 
 void updateHorseRaceContext(void) {
 
-    u8 buffer[20][6];
     u8 temp;
-
-    memcpy(buffer, D_801220CC, 114);
 
     if (gHour < 24) {
         gRacingContext.currentRaceIndex = 3;
@@ -8970,47 +8880,47 @@ void updateHorseRaceContext(void) {
         gRacingContext.currentRaceIndex = 0;
     }
 
-    gRacingContext.racerNames[0][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][0];
-    gRacingContext.racerNames[0][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][1];
-    gRacingContext.racerNames[0][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][2];
-    gRacingContext.racerNames[0][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][3];
-    gRacingContext.racerNames[0][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][4];
-    gRacingContext.racerNames[0][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][5];
+    gRacingContext.racerNames[0][0] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][0];
+    gRacingContext.racerNames[0][1] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][1];
+    gRacingContext.racerNames[0][2] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][2];
+    gRacingContext.racerNames[0][3] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][3];
+    gRacingContext.racerNames[0][4] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][4];
+    gRacingContext.racerNames[0][5] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][5];
 
-    gRacingContext.racerNames[1][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][0];
-    gRacingContext.racerNames[1][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][1];
-    gRacingContext.racerNames[1][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][2];
-    gRacingContext.racerNames[1][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][3];
-    gRacingContext.racerNames[1][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][4];
-    gRacingContext.racerNames[1][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][5];
+    gRacingContext.racerNames[1][0] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][0];
+    gRacingContext.racerNames[1][1] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][1];
+    gRacingContext.racerNames[1][2] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][2];
+    gRacingContext.racerNames[1][3] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][3];
+    gRacingContext.racerNames[1][4] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][4];
+    gRacingContext.racerNames[1][5] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][5];
 
-    gRacingContext.racerNames[2][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][0];
-    gRacingContext.racerNames[2][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][1];
-    gRacingContext.racerNames[2][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][2];
-    gRacingContext.racerNames[2][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][3];
-    gRacingContext.racerNames[2][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][4];
-    gRacingContext.racerNames[2][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][5];
+    gRacingContext.racerNames[2][0] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][0];
+    gRacingContext.racerNames[2][1] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][1];
+    gRacingContext.racerNames[2][2] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][2];
+    gRacingContext.racerNames[2][3] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][3];
+    gRacingContext.racerNames[2][4] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][4];
+    gRacingContext.racerNames[2][5] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][5];
 
-    gRacingContext.racerNames[3][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][0];
-    gRacingContext.racerNames[3][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][1];
-    gRacingContext.racerNames[3][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][2];
-    gRacingContext.racerNames[3][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][3];
-    gRacingContext.racerNames[3][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][4];
-    gRacingContext.racerNames[3][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][5];
+    gRacingContext.racerNames[3][0] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][0];
+    gRacingContext.racerNames[3][1] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][1];
+    gRacingContext.racerNames[3][2] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][2];
+    gRacingContext.racerNames[3][3] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][3];
+    gRacingContext.racerNames[3][4] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][4];
+    gRacingContext.racerNames[3][5] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][5];
 
-    gRacingContext.racerNames[4][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][0];
-    gRacingContext.racerNames[4][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][1];
-    gRacingContext.racerNames[4][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][2];
-    gRacingContext.racerNames[4][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][3];
-    gRacingContext.racerNames[4][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][4];
-    gRacingContext.racerNames[4][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][5];
+    gRacingContext.racerNames[4][0] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][0];
+    gRacingContext.racerNames[4][1] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][1];
+    gRacingContext.racerNames[4][2] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][2];
+    gRacingContext.racerNames[4][3] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][3];
+    gRacingContext.racerNames[4][4] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][4];
+    gRacingContext.racerNames[4][5] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][5];
 
-    gRacingContext.racerNames[5][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][0];
-    gRacingContext.racerNames[5][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][1];
-    gRacingContext.racerNames[5][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][2];
-    gRacingContext.racerNames[5][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][3];
-    gRacingContext.racerNames[5][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][4];
-    gRacingContext.racerNames[5][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][5];
+    gRacingContext.racerNames[5][0] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][0];
+    gRacingContext.racerNames[5][1] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][1];
+    gRacingContext.racerNames[5][2] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][2];
+    gRacingContext.racerNames[5][3] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][3];
+    gRacingContext.racerNames[5][4] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][4];
+    gRacingContext.racerNames[5][5] = D_801220CC[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][5];
 
     gRacingContext.displayOddsTop[0] = gRacingContext.racerOdds[gRacingContext.currentRaceIndex][0];
     gRacingContext.displayOddsTop[1] = gRacingContext.racerOdds[gRacingContext.currentRaceIndex][1];
@@ -9046,10 +8956,7 @@ void updateHorseRaceContext(void) {
 
 void updateDogRaceContext(void) {
 
-    u8 buffer[20][6];
     u8 temp;
-
-    memcpy(buffer, D_80122140, 114);
 
     if (gHour < 24) {
         gRacingContext.currentRaceIndex = 3;
@@ -9064,47 +8971,47 @@ void updateDogRaceContext(void) {
         gRacingContext.currentRaceIndex = 0;
     }
 
-    gRacingContext.racerNames[0][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][0];
-    gRacingContext.racerNames[0][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][1];
-    gRacingContext.racerNames[0][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][2];
-    gRacingContext.racerNames[0][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][3];
-    gRacingContext.racerNames[0][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][4];
-    gRacingContext.racerNames[0][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][5];
+    gRacingContext.racerNames[0][0] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][0];
+    gRacingContext.racerNames[0][1] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][1];
+    gRacingContext.racerNames[0][2] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][2];
+    gRacingContext.racerNames[0][3] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][3];
+    gRacingContext.racerNames[0][4] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][4];
+    gRacingContext.racerNames[0][5] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][0]][5];
 
-    gRacingContext.racerNames[1][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][0];
-    gRacingContext.racerNames[1][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][1];
-    gRacingContext.racerNames[1][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][2];
-    gRacingContext.racerNames[1][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][3];
-    gRacingContext.racerNames[1][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][4];
-    gRacingContext.racerNames[1][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][5];
+    gRacingContext.racerNames[1][0] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][0];
+    gRacingContext.racerNames[1][1] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][1];
+    gRacingContext.racerNames[1][2] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][2];
+    gRacingContext.racerNames[1][3] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][3];
+    gRacingContext.racerNames[1][4] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][4];
+    gRacingContext.racerNames[1][5] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][1]][5];
 
-    gRacingContext.racerNames[2][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][0];
-    gRacingContext.racerNames[2][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][1];
-    gRacingContext.racerNames[2][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][2];
-    gRacingContext.racerNames[2][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][3];
-    gRacingContext.racerNames[2][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][4];
-    gRacingContext.racerNames[2][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][5];
+    gRacingContext.racerNames[2][0] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][0];
+    gRacingContext.racerNames[2][1] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][1];
+    gRacingContext.racerNames[2][2] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][2];
+    gRacingContext.racerNames[2][3] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][3];
+    gRacingContext.racerNames[2][4] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][4];
+    gRacingContext.racerNames[2][5] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][2]][5];
 
-    gRacingContext.racerNames[3][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][0];
-    gRacingContext.racerNames[3][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][1];
-    gRacingContext.racerNames[3][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][2];
-    gRacingContext.racerNames[3][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][3];
-    gRacingContext.racerNames[3][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][4];
-    gRacingContext.racerNames[3][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][5];
+    gRacingContext.racerNames[3][0] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][0];
+    gRacingContext.racerNames[3][1] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][1];
+    gRacingContext.racerNames[3][2] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][2];
+    gRacingContext.racerNames[3][3] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][3];
+    gRacingContext.racerNames[3][4] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][4];
+    gRacingContext.racerNames[3][5] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][3]][5];
 
-    gRacingContext.racerNames[4][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][0];
-    gRacingContext.racerNames[4][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][1];
-    gRacingContext.racerNames[4][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][2];
-    gRacingContext.racerNames[4][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][3];
-    gRacingContext.racerNames[4][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][4];
-    gRacingContext.racerNames[4][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][5];
+    gRacingContext.racerNames[4][0] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][0];
+    gRacingContext.racerNames[4][1] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][1];
+    gRacingContext.racerNames[4][2] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][2];
+    gRacingContext.racerNames[4][3] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][3];
+    gRacingContext.racerNames[4][4] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][4];
+    gRacingContext.racerNames[4][5] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][4]][5];
 
-    gRacingContext.racerNames[5][0] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][0];
-    gRacingContext.racerNames[5][1] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][1];
-    gRacingContext.racerNames[5][2] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][2];
-    gRacingContext.racerNames[5][3] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][3];
-    gRacingContext.racerNames[5][4] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][4];
-    gRacingContext.racerNames[5][5] = buffer[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][5];
+    gRacingContext.racerNames[5][0] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][0];
+    gRacingContext.racerNames[5][1] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][1];
+    gRacingContext.racerNames[5][2] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][2];
+    gRacingContext.racerNames[5][3] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][3];
+    gRacingContext.racerNames[5][4] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][4];
+    gRacingContext.racerNames[5][5] = D_80122140[gRacingContext.racerNameIndices[gRacingContext.currentRaceIndex * 2][5]][5];
 
     gRacingContext.displayOddsTop[0] = gRacingContext.racerOdds[gRacingContext.currentRaceIndex][0];
     gRacingContext.displayOddsTop[1] = gRacingContext.racerOdds[gRacingContext.currentRaceIndex][1];
@@ -9139,22 +9046,22 @@ void updateDogRaceContext(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CC11C);
 
 // unused or inline
-bool func_800CC11C(u8 arg0, u8 arg1, u8 arg2) {
+// bool func_800CC11C(u8 arg0, u8 arg1, u8 arg2) {
 
-    bool result = FALSE;
-    u8 i;
+//     bool result = FALSE;
+//     u8 i;
     
-    for (i = 0; i < arg1; i++) {
+//     for (i = 0; i < arg1; i++) {
 
-        if (gRacingContext.racerOdds[arg0][i] == arg2) {
-            result = TRUE;
-        }
+//         if (gRacingContext.racerOdds[arg0][i] == arg2) {
+//             result = TRUE;
+//         }
         
-    }
+//     }
     
-    return result;
+//     return result;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", initializeRaceContext);
 
@@ -9754,17 +9661,7 @@ static const u16 D_801221CC[6] = { 3000, 1000, 500, 0, 0, 0 };
 
 void raceGiftsScreenCallback(void) {
 
-    u16 buff[4];
-    u16 buff2[4];
-
-    u16* ptr = D_801221CC;
-
-    bool set;
-
-    memcpy(buff, ptr, 6);
-    memcpy(buff2, ptr, 6);
-
-    set = FALSE;
+    bool set = FALSE;
     
     switch (overlayScreenTable.screenState) {
 
@@ -9796,7 +9693,7 @@ void raceGiftsScreenCallback(void) {
                     overlayScreenTable.screenState = 9;
                     
                 } else {
-                    initializeMessageBox(0, FESTIVALS_TEXT_INDEX, 15, 0);
+                    initializeMessageBox(0, 4, 15, 0);
                     overlayScreenTable.screenState = 3;
                 }
                 
@@ -9863,25 +9760,25 @@ void raceGiftsScreenCallback(void) {
             
             if (checkDailyEventBit(HORSE_RACE)) {
                 
-                if (adjustValue(D_80205204, -buff[overlayScreenTable.cellIndex], 9999) == -buff[overlayScreenTable.cellIndex]) {
-                    D_80205204 += adjustValue(D_80205204, -buff[overlayScreenTable.cellIndex], 9999);
-                    initializeMessageBox(0, FESTIVALS_TEXT_INDEX, 13, 0);
+                if (adjustValue(D_80205204, -D_801221CC[overlayScreenTable.cellIndex], 9999) == -D_801221CC[overlayScreenTable.cellIndex]) {
+                    D_80205204 += adjustValue(D_80205204, -D_801221CC[overlayScreenTable.cellIndex], 9999);
+                    initializeMessageBox(0, 4, 13, 0);
                     overlayScreenTable.screenState = 3;
                     handleGetHorseRacePrize(overlayScreenTable.cellIndex);
                 } else {
-                    initializeMessageBox(0, FESTIVALS_TEXT_INDEX, 14, 0);
+                    initializeMessageBox(0, 4, 14, 0);
                     overlayScreenTable.screenState = 3;
                 }
                 
             } else {
 
-                if (adjustValue(D_80205204, -buff2[overlayScreenTable.cellIndex ], 9999) == -buff2[overlayScreenTable.cellIndex]) {
-                    D_80205204 += adjustValue(D_80205204, -buff2[overlayScreenTable.cellIndex], 9999);
-                    initializeMessageBox(0, FESTIVALS_TEXT_INDEX, 13, 0);
+                if (adjustValue(D_80205204, -D_801221CC[overlayScreenTable.cellIndex ], 9999) == -D_801221CC[overlayScreenTable.cellIndex]) {
+                    D_80205204 += adjustValue(D_80205204, -D_801221CC[overlayScreenTable.cellIndex], 9999);
+                    initializeMessageBox(0, 4, 13, 0);
                     overlayScreenTable.screenState = 3;
                     handleGetDogRacePrize(overlayScreenTable.cellIndex);
                 } else {
-                    initializeMessageBox(0, FESTIVALS_TEXT_INDEX, 14, 0);
+                    initializeMessageBox(0, 4, 14, 0);
                     overlayScreenTable.screenState = 3;
                 }
             
@@ -9941,7 +9838,7 @@ label3:
                         
                     } else {
 label2:
-                        initializeMessageBox(0, FESTIVALS_TEXT_INDEX, 36, 0);
+                        initializeMessageBox(0, 4, 0x24, 0);
                         overlayScreenTable.screenState = 4;
                         set = TRUE;
                     }

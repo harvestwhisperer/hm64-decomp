@@ -31,62 +31,6 @@ static inline u16 swap16(Swap16 halfword) {
 
 }
 
-// alternate swaps
-/*
-static inline u16 swap16(u16 halfword) {
-    
-    Swap16 swap;
-    
-    swap.byte[1] = halfword >> 8;
-    swap.byte[0] = halfword;
-    
-    return swap.halfword;
-
-}
-
-static inline u16 swap16(u16 halfword) {
-
-    u32 padding[4];
-    
-    Swap16 swap;
-    
-    u32 upper;
-    u32 lower;
-    
-    lower = halfword;
-    
-    upper = (halfword & 0xFF) << 8;
-    lower = halfword >> 8;
-    
-    swap.halfword = lower | upper;
-    
-    return swap.halfword;
-    
-}
-
-typedef union {
-    u16 halfword[2];
-    u32 word;
-} Swap32;
-
-// compared to swap16, this one doesn't produce register pressure artifacts in the assembly (from GCC 2.7.2's buggy handling of union types)
-// also used in graphic.c
-static inline u32 swap16Alt(u16 halfword) {
-    
-    Swap32 swap;
-    u16 lower;
-    u16 upper;
-
-    upper = (halfword & 0xFF) << 8;
-    lower = halfword >> 8;
-    
-    swap.word = lower | upper;
-    
-    return swap.halfword[0] | swap.halfword[1];
-    
-}
-*/
-
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", initializeGlobalSprites);
 
 void initializeGlobalSprites(void) {
@@ -310,37 +254,31 @@ void deactivateGlobalSprites(void) {
 
     for (i = 0; i < MAX_SPRITES; i++) {
 
-            if ((globalSprites[i].stateFlags & SPRITE_ACTIVE) && (globalSprites[i].stateFlags & SPRITE_ANIMATION_HEADER_PROCESSED)) {
+        if ((globalSprites[i].stateFlags & SPRITE_ACTIVE) && (globalSprites[i].stateFlags & SPRITE_ANIMATION_HEADER_PROCESSED)) {
+            globalSprites[i].stateFlags &= ~(SPRITE_ACTIVE | 2);
+        }
 
-                // FIXME: probably inline
-                if (i < MAX_SPRITES) {
-                    
-                    globalSprites[i].stateFlags &= ~(SPRITE_ACTIVE | 2);
-
-                }
-
-            }
-
-            globalSprites[i].stateFlags = 0;
+        globalSprites[i].stateFlags = 0;
         
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002B7A0);
 
 // unused or inline
-bool func_8002B7A0(u16 spriteIndex, u8 animationModeOrFrameIndex) {
+// bool func_8002B7A0(u16 spriteIndex, u8 animationModeOrFrameIndex) {
 
-    bool result;
+//     bool result;
 
-    result = setupSpriteAnimation(spriteIndex, animationModeOrFrameIndex, globalSprites[spriteIndex].animationIndexPtr);
+//     result = setupSpriteAnimation(spriteIndex, animationModeOrFrameIndex, globalSprites[spriteIndex].animationIndexPtr);
 
-    globalSprites[spriteIndex].animationCounter[0] = 0xFF;
-    globalSprites[spriteIndex].animationCounter[1] = 0xFF;
+//     globalSprites[spriteIndex].animationCounter[0] = 0xFF;
+//     globalSprites[spriteIndex].animationCounter[1] = 0xFF;
 
-    return result;
+//     return result;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", startSpriteAnimation);
 
@@ -620,75 +558,75 @@ bool adjustSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteScale);
 
 // unused
-bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
+// bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
-    bool result = FALSE;
+//     bool result = FALSE;
     
-    if (index < MAX_SPRITES) {
+//     if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
+//         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
-            globalSprites[index].scale.x += x;
-            globalSprites[index].scale.y += y;
-            globalSprites[index].scale.z += z;
+//             globalSprites[index].scale.x += x;
+//             globalSprites[index].scale.y += y;
+//             globalSprites[index].scale.z += z;
             
-            result = TRUE;
+//             result = TRUE;
 
-        }
-    }
+//         }
+//     }
 
-    return result;
+//     return result;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteRotation);
 
 // unused or inline
-bool adjustSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
+// bool adjustSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
 
-    bool result = FALSE;
+//     bool result = FALSE;
     
-    if (index < MAX_SPRITES) {
+//     if (index < MAX_SPRITES) {
         
-        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
+//         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
-            globalSprites[index].rotation.x += x;
-            globalSprites[index].rotation.y += y;
-            globalSprites[index].rotation.z += z;
+//             globalSprites[index].rotation.x += x;
+//             globalSprites[index].rotation.y += y;
+//             globalSprites[index].rotation.z += z;
                 
-            result = TRUE;
+//             result = TRUE;
             
-        }   
-    }
+//         }   
+//     }
     
-    return result;
+//     return result;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteRGBA);
 
 // unused or inline
-bool adjustSpriteRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
+// bool adjustSpriteRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
-    bool result = FALSE;
+//     bool result = FALSE;
     
-    if (index < MAX_SPRITES) {
+//     if (index < MAX_SPRITES) {
 
-        if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
+//         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
 
-            globalSprites[index].currentRGBA.r += r;
-            globalSprites[index].currentRGBA.g += g;
-            globalSprites[index].currentRGBA.b += b;
-            globalSprites[index].currentRGBA.a += a;
+//             globalSprites[index].currentRGBA.r += r;
+//             globalSprites[index].currentRGBA.g += g;
+//             globalSprites[index].currentRGBA.b += b;
+//             globalSprites[index].currentRGBA.a += a;
             
-            result = TRUE;
+//             result = TRUE;
             
-        }   
-    }
+//         }   
+//     }
     
-    return result;
+//     return result;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", updateSpriteRGBA);
 
@@ -1182,10 +1120,9 @@ inline AnimationFrameMetadata* getAnimationFrameMetadataPtrFromFrame(u16 current
 
 inline u16* advanceBitmapMetadataPtr(u16 numFrames, u16* bitmapMetadataPtr) {
     
-    u32 i;
+    u16 i;
     
-    // FIXME: weird typecast
-    for (i = 0; (u16)i < numFrames; i++) {
+    for (i = 0; i < numFrames; i++) {
         bitmapMetadataPtr += 4;
     }
 
@@ -1193,35 +1130,11 @@ inline u16* advanceBitmapMetadataPtr(u16 numFrames, u16* bitmapMetadataPtr) {
     
 }
 
-// alternate
-/*
-u16* advanceBitmapMetadataPtr(u16 numFrames, u16* bitmapMetadataPtr) {
-    
-    u16* result;
-    u32 padding[2];
-    
-    u16 i = 0;
-    
-    if (numFrames) {
-        do {
-            result += 4;
-            i++;
-        } while (i < numFrames);
-    }
-    
-    return result;
-    
-}
-*/
-
 //INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setBitmapFromSpriteObject);
 
 void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animationFrameMetadataPtr, u8 animationType) {
     
     BitmapMetadata bitmapMetadata; 
-    u32 padding[2];
-    
-    AnimationFrameMetadata* ptrCopy;
     
     u32 length;
     u16 bitmapIndex;
@@ -1234,12 +1147,9 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
     f32 viewSpacePositionZ;
     
     u16 objectCount;
-    u32 type;
-    u16 temp;
     
     u16 i = 0;
     
-    ptrCopy = animationFrameMetadataPtr;
     objectCount = animationFrameMetadataPtr->objectCount;
     
     length = 0;
@@ -1249,17 +1159,15 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
 
     if (objectCount) {
         
-        type = animationType;
-            
         do {
             
-            if (type) {
+            if (animationType) {
 
                 setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr((objectCount - i) - 1, globalSprites[spriteIndex].bitmapMetadataPtr));
                 
                 texturePtr += length;
             
-                if (type == 2) {
+                if (animationType == 2) {
                     setSpriteDMAInfo(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
                 }
             
@@ -1268,15 +1176,7 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
                 
             } else {
                 
-                // FIXME: something wrong; maybe dead debug code path?
-                temp = ((ptrCopy->objectCount - i) - 1);
-
-                if (type < temp) {
-                    
-                }
-        
-                setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr(temp, globalSprites[spriteIndex].bitmapMetadataPtr));
-
+                setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr(((animationFrameMetadataPtr->objectCount - i) - 1), globalSprites[spriteIndex].bitmapMetadataPtr));
                 texturePtr = getTexturePtr(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
                 
             }
@@ -1315,7 +1215,7 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
                 bitmaps[bitmapIndex].flags &= ~BITMAP_USE_BILINEAR_FILTERING;
             }
 
-            objectCount = ptrCopy->objectCount;
+            objectCount = animationFrameMetadataPtr->objectCount;
             i++;
             
         } while (i < objectCount);

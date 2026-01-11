@@ -181,27 +181,27 @@ bool initializeAnimalEntity(u16 index, u16* arg1, AnimationFrameMetadata* arg2, 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", forceDeactivateEntity);
 
 // unused; deactivate sprite without checking flags
-bool forceDeactivateEntity(u16 index) {
+// bool forceDeactivateEntity(u16 index) {
 
-    bool result = FALSE;
+//     bool result = FALSE;
     
-    if (index < MAX_ENTITIES) {
+//     if (index < MAX_ENTITIES) {
         
-        entities[index].flags = 0;
+//         entities[index].flags = 0;
 
-        deactivateSprite(entities[index].globalSpriteIndex);
+//         deactivateSprite(entities[index].globalSpriteIndex);
         
-        if (entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex != 0xFF) {
-            deactivateSprite(entities[index].shadowSpriteIndex);
-        }
+//         if (entityAssetDescriptors[entities[index].entityAssetIndex].shadowSpriteIndex != 0xFF) {
+//             deactivateSprite(entities[index].shadowSpriteIndex);
+//         }
         
-        result = TRUE;
+//         result = TRUE;
     
-    }
+//     }
 
-    return result;
+//     return result;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", deactivateSprite);
  
@@ -806,15 +806,15 @@ bool deactivateEntity(u16 index) {
 //INCLUDE_ASM("asm/nonmatchings/system/entity", deactivateEntities);
 
 // unused
-void deactivateEntities(void) {
+// void deactivateEntities(void) {
 
-    u16 i;
+//     u16 i;
 
-    for (i = 0; i < MAX_ENTITIES; i++) {
-        deactivateEntity(i);
-    }
+//     for (i = 0; i < MAX_ENTITIES; i++) {
+//         deactivateEntity(i);
+//     }
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", pauseAllEntityLoads);
 
@@ -1196,8 +1196,6 @@ bool checkEntityPaused(u16 index) {
 
 u16 checkEntityToEntityCollision(u16 entityIndex, f32 x, f32 z, u16 buttonPressed, u16 entityCount) {
 
-    u32 padding[4];
-    
     u16 i;
     u16 count = 0;
     
@@ -1447,54 +1445,50 @@ inline u16 getEntityAnimationHorizontalFlip(u16 entityIndex, u16 offset) {
 //INCLUDE_ASM("asm/nonmatchings/system/entity", getGroundObjectAtEntityPosition);
 
 // unused or inline
-u16 getGroundObjectAtEntityPosition(u16 entityIndex, f32 x, f32 z) {
+// u16 getGroundObjectAtEntityPosition(u16 entityIndex, f32 x, f32 z) {
 
-    Vec3f padding[4];
-    
-    Vec3f vec;
+//     Vec3f vec;
 
-    u16 index = 0xFFFF;
+//     u16 index = 0xFFFF;
 
-    if (entityIndex < MAX_ENTITIES) {
+//     if (entityIndex < MAX_ENTITIES) {
         
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
+//         if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
             
-            vec = getEntityRelativeGroundObjectCoords(entityIndex, x, z);
+//             vec = getEntityRelativeGroundObjectCoords(entityIndex, x, z);
 
-            if (vec.y != 65535.0f) {
-                index = getMapGroundObjectSpriteIndex(mapControllers[gMainMapIndex].mainMapIndex, vec.x, vec.z);
-            }
+//             if (vec.y != 65535.0f) {
+//                 index = getMapGroundObjectSpriteIndex(mapControllers[gMainMapIndex].mainMapIndex, vec.x, vec.z);
+//             }
             
-        }
-    }
+//         }
+//     }
     
-    return index;
+//     return index;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", setGroundObjectAtEntityPosition);
 
 // unused or inline
 // map ground objects
-bool setGroundObjectAtEntityPosition(u16 entityIndex, f32 arg1, f32 arg2, u16 spriteIndex) {
+// bool setGroundObjectAtEntityPosition(u16 entityIndex, f32 arg1, f32 arg2, u16 spriteIndex) {
 
-    // FIXME: shouldn't be necessary
-    Vec3f padding[4];
-    Vec3f vec;
+//     Vec3f vec;
     
-    if ((entityIndex < MAX_ENTITIES) && (entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
+//     if ((entityIndex < MAX_ENTITIES) && (entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
             
-        vec = getEntityRelativeGroundObjectCoords(entityIndex, arg1, arg2);
+//         vec = getEntityRelativeGroundObjectCoords(entityIndex, arg1, arg2);
         
-        if (vec.y != 65535.0f) {
-            setMapGroundObjectSpriteIndexFromFloat(mapControllers[gMainMapIndex].mainMapIndex, spriteIndex, vec.x, vec.z);
-        }
+//         if (vec.y != 65535.0f) {
+//             setMapGroundObjectSpriteIndexFromFloat(mapControllers[gMainMapIndex].mainMapIndex, spriteIndex, vec.x, vec.z);
+//         }
         
-    }
+//     }
     
-    return 0;
+//     return 0;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityRelativeGroundObjectCoords);
 
@@ -1537,63 +1531,58 @@ Vec3f getEntityRelativeGroundObjectCoords(u16 entityIndex, f32 arg2, f32 arg3) {
 //INCLUDE_ASM("asm/nonmatchings/system/entity", getTerrainAtEntityPosition);
 
 // unused
-u16 getTerrainAtEntityPosition(u16 entityIndex, f32 x, f32 z) {
+// u16 getTerrainAtEntityPosition(u16 entityIndex, f32 x, f32 z) {
 
-    u32 padding[11];
-
-    Vec3f tileCoordinates;
+//     Vec3f tileCoordinates;
     
-    u16 terrainIndex = 0xFFFF;
+//     u16 terrainIndex = 0xFFFF;
 
-    if (entityIndex < MAX_ENTITIES) {
+//     if (entityIndex < MAX_ENTITIES) {
 
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
+//         if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
 
-            tileCoordinates = getEntityRelativeTilePosition(entityIndex, x, z);
+//             tileCoordinates = getEntityRelativeTilePosition(entityIndex, x, z);
 
-            if (tileCoordinates.y != 65535.0f) {   
-                terrainIndex = getTileIndexFromGrid(mapControllers[gMainMapIndex].mainMapIndex, tileCoordinates.x, tileCoordinates.z);
-            }
-        }
+//             if (tileCoordinates.y != 65535.0f) {   
+//                 terrainIndex = getTileIndexFromGrid(mapControllers[gMainMapIndex].mainMapIndex, tileCoordinates.x, tileCoordinates.z);
+//             }
+//         }
     
-    }
+//     }
 
-    return terrainIndex;
+//     return terrainIndex;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", setMapAdditionAtEntityPosition);
 
 // unused or inline
-bool setMapAdditionAtEntityPosition(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3) {
+// bool setMapAdditionAtEntityPosition(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3) {
 
-    // FIXME: shouldn't be necessary
-    Vec3f padding[4];
+//     Vec3f tileCoordinates;
     
-    Vec3f tileCoordinates;
-    
-    bool set = FALSE;
+//     bool set = FALSE;
 
-     if (entityIndex < MAX_ENTITIES) {
+//      if (entityIndex < MAX_ENTITIES) {
         
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
+//         if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
 
-            tileCoordinates = getEntityRelativeTilePosition(entityIndex, arg1, arg2);
+//             tileCoordinates = getEntityRelativeTilePosition(entityIndex, arg1, arg2);
 
-            if (tileCoordinates.y != 65535.0f) {
+//             if (tileCoordinates.y != 65535.0f) {
 
-                // set map additions
-                initializeMapAdditionAtPosition(mapControllers[gMainMapIndex].mainMapIndex, arg3, tileCoordinates.x, tileCoordinates.z);
-                set = TRUE;
+//                 // set map additions
+//                 initializeMapAdditionAtPosition(mapControllers[gMainMapIndex].mainMapIndex, arg3, tileCoordinates.x, tileCoordinates.z);
+//                 set = TRUE;
 
-            }
+//             }
             
-        }
-     }
+//         }
+//      }
     
-    return set;
+//     return set;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityShouldPlaySoundEffect);
 
@@ -1654,9 +1643,6 @@ Vec3f getEntityRelativeTilePosition(u16 entityIndex, f32 x, f32 z) {
 
 Vec3f getEntityTileCoordinates(u16 entityIndex) {
 
-    // FIXME: shouldn't be necessary
-    u32 padding[11];
-    
     Vec3f tileCoordinates;
 
     tileCoordinates.x = 0;
@@ -1673,65 +1659,44 @@ Vec3f getEntityTileCoordinates(u16 entityIndex) {
 
 }
 
-// alternate
-// Vec3f getEntityTileCoordinates(u16 index) {
-    
-//     int padding[11];
-
-//     Vec3f vec;
-
-//     vec.x = 0;
-//     vec.z = 0;
-//     vec.y = 65535.0f;
-    
-//     if (index < MAX_ENTITIES) {
-//         if ((entities[index].flags & ENTITY_ACTIVE) && !(entities[index].flags & ENTITY_PAUSED) && !(entities[index].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
-//             convertWorldToTileCoordinates(&vec, mapControllers[gMainMapIndex].mainMapIndex, entities[index].coordinates.x, entities[index].coordinates.z);
-//         } 
-//     }
- 
-//     return vec;
-// }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityRelativeTileCoords);
 
 // unused
-Vec3f getEntityRelativeTileCoords(u16 entityIndex, f32 x, f32 z) {
+// Vec3f getEntityRelativeTileCoords(u16 entityIndex, f32 x, f32 z) {
 
-    Vec3f position;
-    Vec3f rotatedCoordinates;
-    Vec3f rotation;
-    Vec3f tileCoordinates;
+//     Vec3f position;
+//     Vec3f rotatedCoordinates;
+//     Vec3f rotation;
+//     Vec3f tileCoordinates;
 
-    tileCoordinates.x = 0.0f;
-    tileCoordinates.y = 65535.0f;
-    tileCoordinates.z = 0.0f;
+//     tileCoordinates.x = 0.0f;
+//     tileCoordinates.y = 65535.0f;
+//     tileCoordinates.z = 0.0f;
 
-    if (entityIndex < MAX_ENTITIES) {
+//     if (entityIndex < MAX_ENTITIES) {
 
-        if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
+//         if ((entities[entityIndex].flags & ENTITY_ACTIVE) && !(entities[entityIndex].flags & ENTITY_PAUSED) && !(entities[entityIndex].flags & ENTITY_MAP_SPACE_INDEPENDENT)) {
 
-            position.x = x;
-            position.y = 0;
-            position.z = z;
+//             position.x = x;
+//             position.y = 0;
+//             position.z = z;
 
-            rotation.x = 0;
-            rotation.y = getSpriteYValueFromDirection(convertWorldToSpriteDirection(entities[entityIndex].direction, gMainMapIndex));
-            rotation.z = 0;
+//             rotation.x = 0;
+//             rotation.y = getSpriteYValueFromDirection(convertWorldToSpriteDirection(entities[entityIndex].direction, gMainMapIndex));
+//             rotation.z = 0;
 
-            rotateVector3D(position, &rotatedCoordinates, rotation);
-            tileCoordinates = convertWorldToTileCoordinates(mapControllers[gMainMapIndex].mainMapIndex, entities[entityIndex].coordinates.x, entities[entityIndex].coordinates.z);
+//             rotateVector3D(position, &rotatedCoordinates, rotation);
+//             tileCoordinates = convertWorldToTileCoordinates(mapControllers[gMainMapIndex].mainMapIndex, entities[entityIndex].coordinates.x, entities[entityIndex].coordinates.z);
             
-            tileCoordinates.x += rotatedCoordinates.x;
-            tileCoordinates.z += rotatedCoordinates.z;
+//             tileCoordinates.x += rotatedCoordinates.x;
+//             tileCoordinates.z += rotatedCoordinates.z;
 
-        }
+//         }
         
-    }
+//     }
 
-    return tileCoordinates;
+//     return tileCoordinates;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", checkTerrainCollisionInDirection);
 
@@ -1930,8 +1895,6 @@ u16 checkTerrainMovementCollision(Entity* entity, f32 deltaX, f32 deltaZ, u8 dir
 
 u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, u16 entityWidth, u16 entityHeight) {
 
-    u32 padding[12];
- 
     f32 dimensionX;           
     f32 dimensionZ;           
 
@@ -2037,28 +2000,28 @@ u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", attemptEntityMovement);
 
 // unused or inline
-u16 attemptEntityMovement(u16 index) {
+// u16 attemptEntityMovement(u16 index) {
 
-    Vec3f projectedPosition;
+//     Vec3f projectedPosition;
 
-    u16 collisionFlags = checkTerrainMovementCollision(&entities[index], entities[index].movementVector.x, entities[index].movementVector.z, convertWorldToSpriteDirection(entities[index].direction, gMainMapIndex));
+//     u16 collisionFlags = checkTerrainMovementCollision(&entities[index], entities[index].movementVector.x, entities[index].movementVector.z, convertWorldToSpriteDirection(entities[index].direction, gMainMapIndex));
 
-    if (collisionFlags) {
+//     if (collisionFlags) {
 
-        projectedPosition = getMovementVectorFromDirection(entities[index].speed, convertWorldToSpriteDirection(entities[index].direction, gMainMapIndex), 0.0f);
+//         projectedPosition = getMovementVectorFromDirection(entities[index].speed, convertWorldToSpriteDirection(entities[index].direction, gMainMapIndex), 0.0f);
 
-        collisionFlags = checkTerrainMovementCollision(&entities[index], projectedPosition.x, projectedPosition.z, convertWorldToSpriteDirection(entities[index].direction, gMainMapIndex));
+//         collisionFlags = checkTerrainMovementCollision(&entities[index], projectedPosition.x, projectedPosition.z, convertWorldToSpriteDirection(entities[index].direction, gMainMapIndex));
         
-        if (!collisionFlags) {
-            entities[index].movementVector.x = projectedPosition.x;
-            entities[index].movementVector.z = projectedPosition.z;
-        }
+//         if (!collisionFlags) {
+//             entities[index].movementVector.x = projectedPosition.x;
+//             entities[index].movementVector.z = projectedPosition.z;
+//         }
         
-    }
+//     }
 
-    return collisionFlags;
+//     return collisionFlags;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", doEntityPathfinding);
 

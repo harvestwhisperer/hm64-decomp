@@ -37,8 +37,6 @@ void resetWrappingSpritePositions();
 void loadDogTitleSprite(void);
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/title", initializeTitleScreen);
-
 void initializeTitleScreen(u8 arg0) {
     
     titleScreenContext.rowHighlighted = 0;
@@ -55,15 +53,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteColor(HARVEST_MOON_64_LOGO, 0xFF, 0xFF, 0xFF, 0xFF);
     setBilinearFiltering(HARVEST_MOON_64_LOGO, TRUE);
     startSpriteAnimation(HARVEST_MOON_64_LOGO, 0, 0xFE);
-     
-    dmaSprite(MARVCOME_VICTOR_COPYRIGHT_INFO, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setSpriteViewSpacePosition(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, -96.0f, 64.0f);
-    setSpriteScale(MARVCOME_VICTOR_COPYRIGHT_INFO, 1.0f, 1.0f, 1.0f);
-    setSpriteRotation(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, 0.0f, 0.0f);
-    setSpriteBlendMode(MARVCOME_VICTOR_COPYRIGHT_INFO, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(MARVCOME_VICTOR_COPYRIGHT_INFO, 0xFF, 0xFF, 0xFF, 0xFF);
-    startSpriteAnimation(MARVCOME_VICTOR_COPYRIGHT_INFO, 1, 0xFE);
-    
+
     dmaSprite(PUSH_THE_START_SIGN_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(PUSH_THE_START_SIGN_1, titleScreenContext.centerCoordinate + 160.0f, -16.0f, 48.0f);
     setSpriteScale(PUSH_THE_START_SIGN_1, 1.0f, 1.0f, 1.0f);
@@ -326,27 +316,9 @@ void loadDogTitleSprite(void) {
     setSpriteColor(DOG_TITLE_SPRITE, 0xFF, 0xFF, 0xFF, 0xFF);
     startSpriteAnimation(DOG_TITLE_SPRITE, 0x1D, 0xFE);
 }
-
-// FIXME: fake
-static inline u32 increment(u32 x) {
-    return x+1;
-}
-
-// FIXME: fake
-static inline u32 incrementUnk4() {
-    titleScreenContext.unk_4 = increment(titleScreenContext.unk_4);
-}
-
-// FIXME: likely fake
-static inline void setNewMode(u8 mode) {
-    titleScreenContext.mode = mode;
-    titleScreenContext.unk_4 = 0;
-}
-
 static inline void deactivateTitleScreenSprites() {
 
     deactivateSprite(HARVEST_MOON_64_LOGO);
-    deactivateSprite(MARVCOME_VICTOR_COPYRIGHT_INFO);
     deactivateSprite(DOG_TITLE_SPRITE);
     deactivateSprite(PUSH_THE_START_SIGN_2);
     deactivateSprite(PUSH_THE_START_SIGN_1);
@@ -374,32 +346,6 @@ static inline void deactivateTitleScreenSprites() {
 
 }
 
-// FIXME: probably fake
-static inline bool inline1() {
-
-    if (titleScreenContext.rowHighlighted != 1) {
-        setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -56.0f, -52.0f, 56.0f);
-        titleScreenContext.rowHighlighted = 1;
-        playSfx(MOVE_CURSOR);
-    }
-
-   return 1;
-
-}
-
-// FIXME: probably fake
-static inline bool inline2() {
-
-    if (titleScreenContext.rowHighlighted != 0) {
-        setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -56.0f, -20.0f, 56.0f);
-        titleScreenContext.rowHighlighted = 0;
-        playSfx(MOVE_CURSOR);
-    }
-
-    return 1;
-
-}
-
 static inline bool handleFrameIncrement() {
 
     titleScreenContext.frameCounter++;
@@ -408,7 +354,6 @@ static inline bool handleFrameIncrement() {
     if (titleScreenContext.frameCounter == 500) {
 
         updateSpriteRGBA(HARVEST_MOON_64_LOGO, 0, 0, 0, 0, 8);
-        updateSpriteRGBA(MARVCOME_VICTOR_COPYRIGHT_INFO, 0, 0, 0, 0, 8);
         updateSpriteRGBA(DOG_TITLE_SPRITE, 0, 0, 0, 0, 8);
         updateSpriteRGBA(PUSH_THE_START_SIGN_2, 0, 0, 0, 0, 8);
         updateSpriteRGBA(PUSH_THE_START_SIGN_1, 0, 0, 0, 0, 8);
@@ -443,8 +388,6 @@ static inline bool handleFrameIncrement() {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/title", titleScreenMainLoopCallback);
 
 void titleScreenMainLoopCallback(void) {
 
@@ -504,12 +447,11 @@ void titleScreenMainLoopCallback(void) {
                 adjustSpriteViewSpacePosition(CLOUD_2_2, 1.0f, 0, 0);
 
             } else {
-                // FIXME
-                setNewMode(2);
+                titleScreenContext.mode = 2;
+                titleScreenContext.unk_4 = 0;
             }
 
-            // FIXME: shouldn't be right
-            incrementUnk4();
+            titleScreenContext.unk_4++;
             
             break;
         
@@ -530,8 +472,15 @@ void titleScreenMainLoopCallback(void) {
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {        
 
                 if (!set) {
-                    // FIXME
-                    set = inline1();
+
+                    if (titleScreenContext.rowHighlighted != 1) {
+                        setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -56.0f, -52.0f, 56.0f);
+                        titleScreenContext.rowHighlighted = 1;
+                        playSfx(MOVE_CURSOR);
+                    }
+
+                    set = TRUE;
+    
                 }
                 
             }
@@ -539,8 +488,15 @@ void titleScreenMainLoopCallback(void) {
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
 
                 if (!set) {
-                    // FIXME
-                    set = inline2();
+                    
+                    if (titleScreenContext.rowHighlighted != 0) {
+                        setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -56.0f, -20.0f, 56.0f);
+                        titleScreenContext.rowHighlighted = 0;
+                        playSfx(MOVE_CURSOR);
+                    }
+                    
+                    set = TRUE;
+
                 }
 
             }
@@ -558,7 +514,6 @@ void titleScreenMainLoopCallback(void) {
                     }
                       
                     updateSpriteRGBA(HARVEST_MOON_64_LOGO, 0, 0, 0, 0, 8);
-                    updateSpriteRGBA(MARVCOME_VICTOR_COPYRIGHT_INFO, 0, 0, 0, 0, 8);
                     updateSpriteRGBA(DOG_TITLE_SPRITE, 0, 0, 0, 0, 8);
                     updateSpriteRGBA(PUSH_THE_START_SIGN_2, 0, 0, 0, 0, 8);
                     updateSpriteRGBA(PUSH_THE_START_SIGN_1, 0, 0, 0, 0, 8);
@@ -700,59 +655,6 @@ void handleDogAnimation(void) {
     
 }
 
-// alternate
-/*
-void handleDogAnimation(void) {
-
-    if (checkSpriteAnimationStateChanged(0x44)) {
-        
-        resetAnimationState(0x44);
-
-        switch (D_80126572) {
-            case 0:
-                startSpriteAnimation(0x44, 0xB, 0xFF);
-                D_80126572 = 0xFF;
-                break;
-            case 1:
-                startSpriteAnimation(0x44, 0x13, 0xFF);
-                D_80126572 = 0xFF;
-                break;
-            case 2:
-                startSpriteAnimation(0x44, 0x2D, 0xFF);
-                D_80126572 = 0xFF;
-                break;
-            case 3:
-                startSpriteAnimation(0x44, 0x32, 0xFF);
-                D_80126572 = 0xFF;
-                break;            
-            case 4:
-                startSpriteAnimation(0x44, 0x48, 0xFF);
-                D_80126572 = 0xFF;
-                break;         
-            case 5:
-                startSpriteAnimation(0x44, 0x63, 0xFF);
-                D_80126572 = 0xFF;
-                break;            
-            case 6:
-                startSpriteAnimation(0x44, 0x69, 0xFF);
-                D_80126572 = 0xFF;
-                break;            
-            default:
-               startSpriteAnimation(0x44, 0x1D, 0xFE);
-                if (D_80126576 >= 0x1F) {
-                    D_80126572 = getRandomNumberInRange(0, 10);
-                    D_80126576 = 0;
-                }
-                break;
-        }
-
-        D_80126576++;
-    }
-}
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/game/title", updateGrassAnimation);
-
 void updateGrassAnimation(void) {
 
     if (checkSpriteAnimationStateChanged(FAR_GRASS_3_1)) {
@@ -785,8 +687,6 @@ void updateGrassAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/title", resetWrappingSpritePositions);
 
 void resetWrappingSpritePositions(void) {
     

@@ -24,7 +24,6 @@ void setCameraPerspectiveValues(Camera*, f32, f32, f32, f32);
 
 volatile u8 renderScene();
 
-
 // bss
 static LookAt gSPLookAtBufferA;
 static LookAt gSPLookAtBufferB;
@@ -34,10 +33,6 @@ Gfx initGfxList[2][0x20];
 Gfx sceneGraphDisplayList[2][0x500];
 Gfx D_80205000[2][0x20];
                         
-// rodata
-static const char gfxExceptionStr1[] = "EX";
-static const char gfxExceptionStr2[] = "s:/system/graphic.c";
-
 
 //INCLUDE_RODATA("asm/nonmatchings/systemgraphic", D_8011EC40);
 
@@ -97,10 +92,11 @@ volatile u8 startGfxTask(void) {
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
 
+#ifdef DEBUG
     if (dl - initGfxList[gGraphicsBufferIndex] > GFX_GLIST_LEN) {
-        // FIXME: get string literals working
-        __assert(&gfxExceptionStr1, &gfxExceptionStr2, 288);
+        __assert("EX", "s:/system/graphic.c", 288);
     }
+#endif
     
     nuGfxTaskStart(initGfxList[gGraphicsBufferIndex], (s32)(dl - initGfxList[gGraphicsBufferIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX, NU_SC_NOSWAPBUFFER);
     
@@ -119,10 +115,11 @@ volatile u8 doViewportGfxTask(void) {
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
 
+#ifdef DEBUG
     if (dl - D_80205000[gGraphicsBufferIndex] >= 32) {
-        // FIXME: get string literals working
-        __assert(&gfxExceptionStr1, &gfxExceptionStr2, 319);
+        __assert("EX", "s:/system/graphic.c", 319);
     }
+#endif
 
     nuGfxTaskStart(D_80205000[gGraphicsBufferIndex], (s32)(dl - D_80205000[gGraphicsBufferIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX, NU_SC_SWAPBUFFER);
     
@@ -146,10 +143,11 @@ volatile u8 renderScene() {
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
     
+#ifdef DEBUG
     if (dl - sceneGraphDisplayList[gGraphicsBufferIndex] >= 0x500) {
-        // FIXME: get string literals working
-        __assert(&gfxExceptionStr1, &gfxExceptionStr2, 0x166);
+        __assert("EX", "s:/system/graphic.c", 358);
     }
+#endif
 
     nuGfxTaskStart(sceneGraphDisplayList[gGraphicsBufferIndex], (s32)(dl - sceneGraphDisplayList[gGraphicsBufferIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX, NU_SC_NOSWAPBUFFER);
     
@@ -163,8 +161,6 @@ volatile u8 renderScene() {
 
 // FIXME: something wrong, but matches
 static inline u16 swap16(u16 halfword) {
-
-    u32 padding[9];
 
     u16 swapped;
     
@@ -208,57 +204,8 @@ void setBitmapFormat(BitmapObject *sprite, Texture *timg, u16 *palette) {
 
 }
 
-/*
-static inline u16 getWidth(u16* timg) {
-    
-    return swap(timg[2]);
-
-}
-
-static inline u16 getHeight(u16* timg) {
-
-    return swap(timg[3]);
-    
-}
-*/
-
-// alternate with timg as array
-/*
-void setBitmapFormat(Bitmap *sprite, u16 *timg, u16 *palette) {
-    
-    u32 padding[10];
-
-    setBitmapFormatAndSize(sprite, palette);
-    
-    // skip header and size bytes
-    sprite->timg = timg + 4;
-    
-    // bytes 4-8 = width and height (16 bit) (byte swapped)
-    sprite->width = getWidth(timg);  
-    sprite->height = getHeight(timg);
-    
-    // get pixel size from bit 5 in header (bit one when swapped)
-    switch (*(timg + 1) >> 4) & (1 | 2 | 4 | 8)) {
-        case 0:
-          sprite->fmt = G_IM_FMT_CI;
-          sprite->pixelSize = G_IM_SIZ_8b;
-          break;
-        
-        case 1:
-          sprite->fmt = G_IM_FMT_CI;
-          sprite->pixelSize = G_IM_SIZ_4b; 
-          break;
-    }
-}
-
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", setBitmapFormatAndSize);
-
 void setBitmapFormatAndSize(BitmapObject* sprite, u16* palette) {
 
-    u32 padding[5];
-    
     // skip header
     sprite->pal = palette + 2;
 
@@ -521,26 +468,26 @@ void rotateVector3D(Vec3f inputVec, Vec3f* outputVec, Vec3f rotationAngles) {
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80027B74);
 
 // unused or inline
-void func_80027B74(Vec3f arg0, Vec3f* arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
+// void func_80027B74(Vec3f arg0, Vec3f* arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
     
-    f32 temp;
+//     f32 temp;
     
-    f32 tempX;
-    f32 tempY;
-    f32 tempZ;
+//     f32 tempX;
+//     f32 tempY;
+//     f32 tempZ;
     
-    tempX = (arg0.z * arg3) + (arg0.x * arg6);
+//     tempX = (arg0.z * arg3) + (arg0.x * arg6);
     
-    temp = (arg0.z * arg6) - (arg0.x * arg3);
+//     temp = (arg0.z * arg6) - (arg0.x * arg3);
     
-    tempY = (-temp * arg2) + (arg0.y * arg5);
-    tempZ = (temp * arg5) + (arg0.y * arg2);
+//     tempY = (-temp * arg2) + (arg0.y * arg5);
+//     tempZ = (temp * arg5) + (arg0.y * arg2);
     
-    arg1->x = tempX;
-    arg1->y = tempY;
-    arg1->z = tempZ;
+//     arg1->x = tempX;
+//     arg1->y = tempY;
+//     arg1->z = tempZ;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", calculatePlaneEquation);
 
@@ -681,8 +628,6 @@ static const f32 directionsToYValues[8] = {
 
 Vec3f getMovementVectorFromDirection(f32 zDisplacement, u8 direction, f32 yOffset) {
 
-    f32 buffer[8];
-
     f32 sinX;
     f32 cosX;
     f32 sinY;
@@ -704,8 +649,6 @@ Vec3f getMovementVectorFromDirection(f32 zDisplacement, u8 direction, f32 yOffse
     f32 y;
     f32 z;
 
-    memcpy(buffer, directionsToYValues, 32);
-    
     if (direction != 0xFF) {
 
         vec1.x = 0.0f;
@@ -713,7 +656,7 @@ Vec3f getMovementVectorFromDirection(f32 zDisplacement, u8 direction, f32 yOffse
         vec1.z = zDisplacement;
 
         vec3.x = 0.0f;
-        vec3.y = buffer[direction];
+        vec3.y = directionsToYValues[direction];
         vec3.z = 0.0f;
 
         vec4 = vec1;
@@ -774,26 +717,13 @@ Vec3f getMovementVectorFromDirection(f32 zDisplacement, u8 direction, f32 yOffse
 
     return vec2;
 
-    // alternate return type
-    /*
-    *outputVec = vec2;
-    
-    return outputVec;
-    */
-
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", getSpriteYValueFromDirection);
 
 // get y value for sprite based on direction
 f32 getSpriteYValueFromDirection(u8 direction) {
-
-    f32 buffer[8];
-
-    memcpy(buffer, directionsToYValues, 32);
-    
-    return buffer[direction];
-
+    return directionsToYValues[direction];
 }
  
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", getTexturePtr);
@@ -903,31 +833,31 @@ Gfx* setupCameraMatrices(Gfx* dl, Camera* camera, SceneMatrices* matrices) {
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028C00);
 
 // unused
-Gfx* func_80028C00(Gfx* dl, Camera* camera) {
+// Gfx* func_80028C00(Gfx* dl, Camera* camera) {
  
-    u16 perspNorm;
+//     u16 perspNorm;
     
-    switch (camera->perspectiveMode) {
-        case 0:
-            guOrtho(&camera->projection, camera->l, camera->r, camera->t, camera->b, camera->n, camera->f, 1.0f);
-            break;
-        case 1:
-            guPerspective(&camera->projection, &perspNorm, camera->fov, camera->aspect, camera->near, camera->far, 1.0f);
-            gSPPerspNormalize(dl++, perspNorm);
-            break;
-        default:
-            break;
-    }
+//     switch (camera->perspectiveMode) {
+//         case 0:
+//             guOrtho(&camera->projection, camera->l, camera->r, camera->t, camera->b, camera->n, camera->f, 1.0f);
+//             break;
+//         case 1:
+//             guPerspective(&camera->projection, &perspNorm, camera->fov, camera->aspect, camera->near, camera->far, 1.0f);
+//             gSPPerspNormalize(dl++, perspNorm);
+//             break;
+//         default:
+//             break;
+//     }
 
-    guLookAt(&camera->viewing, camera->eye.x, camera->eye.y, camera->eye.z, camera->at.x, camera->at.y, camera->at.z, camera->up.x, camera->up.y, camera->up.z);
-    gSPLookAt(dl++, &gSPLookAtBufferB);
+//     guLookAt(&camera->viewing, camera->eye.x, camera->eye.y, camera->eye.z, camera->at.x, camera->at.y, camera->at.z, camera->up.x, camera->up.y, camera->up.z);
+//     gSPLookAt(dl++, &gSPLookAtBufferB);
 
-    gSPMatrix(dl++, &camera->projection, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
-    gSPMatrix(dl++, &camera->viewing, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
+//     gSPMatrix(dl++, &camera->projection, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
+//     gSPMatrix(dl++, &camera->viewing, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
 
-    return dl++;
+//     return dl++;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", setCameraOrthographicValues);
 
@@ -975,34 +905,34 @@ void setCameraLookAt(Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32 
 
 // unused
 // used by map as a static inline
-inline Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
+// inline Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
-    gSPLightColor(dl++, LIGHT_2, (r << 0x18) + (g << 0x10) + (b << 8));
+//     gSPLightColor(dl++, LIGHT_2, (r << 0x18) + (g << 0x10) + (b << 8));
 
-    return dl++;
+//     return dl++;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028E60);
 
 // unused
 // used by map as a static inline
-inline Gfx *func_80028E60(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
+// inline Gfx *func_80028E60(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
 
-    gSPLightColor(dl++, LIGHT_1, (r << 0x18) + (g << 0x10) + (b << 8));
+//     gSPLightColor(dl++, LIGHT_1, (r << 0x18) + (g << 0x10) + (b << 8));
 
-    return dl++;
+//     return dl++;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028EA8);
 
 // unused
-void func_80028EA8(UnknownGraphicsStruct* arg0, u8 arg1, u8 arg2, u8 arg3) {
-    arg0->unk_10 = arg1;
-    arg0->unk_11 = arg2;
-    arg0->unk_12 = arg3;
-}
+// void func_80028EA8(UnknownGraphicsStruct* arg0, u8 arg1, u8 arg2, u8 arg3) {
+//     arg0->unk_10 = arg1;
+//     arg0->unk_11 = arg2;
+//     arg0->unk_12 = arg3;
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", setInitialWorldRotationAngles);
 

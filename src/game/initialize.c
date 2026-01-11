@@ -934,14 +934,6 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_KAPPA, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_KAPPA, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_PRINCESS, &_princessTextureSegmentRomStart, &_princessTextureSegmentRomEnd, &_princessAssetsIndexSegmentRomStart, &_princessAssetsIndexSegmentRomEnd, &_princessSpritesheetIndexSegmentRomStart, &_princessSpritesheetIndexSegmentRomEnd, 1, 0, &princessAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_PRINCESS, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_PRINCESS, 12, 12);
-    
-    initializeEntityAsset(ENTITY_ASSET_EMPTY_NPC_SPRITE, &_emptyNPCTextureSegmentRomStart, &_emptyNPCTextureSegmentRomEnd, &_emptyNPCAssetsIndexSegmentRomStart, &_emptyNPCAssetsIndexSegmentRomEnd, &_emptyNPCSpritesheetIndexSegmentRomStart, &_emptyNPCSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_EMPTY_NPC_SPRITE, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_EMPTY_NPC_SPRITE, 12, 12);
-    
     initializeEntityAsset(ENTITY_ASSET_BUNNY, &_bunnyTextureSegmentRomStart, &_bunnyTextureSegmentRomEnd, &_bunnyAssetsIndexSegmentRomStart, &_bunnyAssetsIndexSegmentRomEnd, &_bunnySpritesheetIndexSegmentRomStart, &_bunnySpritesheetIndexSegmentRomEnd, 1, 0, &bunnyAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_BUNNY, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_BUNNY, 12, 12);
@@ -1086,10 +1078,6 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_HORSE_RACER, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_HORSE_RACER, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_EMPTY_ENTITY, &_emptyEntityTextureSegmentRomStart, &_emptyEntityTextureSegmentRomEnd, &_emptyEntityAssetsIndexSegmentRomStart, &_emptyEntityAssetsIndexSegmentRomEnd, &_emptyEntitySpritesheetIndexSegmentRomStart, &_emptyEntitySpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_EMPTY_ENTITY, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_EMPTY_ENTITY, 12, 12);
-    
     initializeEntityAsset(ENTITY_ASSET_HOLDABLE_ITEMS_1, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &holdableItems1AnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_HOLDABLE_ITEMS_1, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_HOLDABLE_ITEMS_1, 12, 12);
@@ -1151,8 +1139,6 @@ void loadMapAddresses(void) {
     setMapDataAddresses(RANCH_STORE, &_ranchStoreMapSegmentRomStart, &_ranchStoreMapSegmentRomEnd);
     setMapDataAddresses(RANCH_HOUSE, &_ranchHouseMapSegmentRomStart, &_ranchHouseMapSegmentRomEnd);
 
-    setMapDataAddresses(EMPTY_MAP_1, &_emptyMap1SegmentRomStart, &_emptyMap1SegmentRomEnd);
-    
     setMapDataAddresses(BEACH_SPRING, &_beachSpringMapSegmentRomStart, &_beachSpringMapSegmentRomEnd);
     setMapDataAddresses(BEACH_SUMMER, &_beachSummerMapSegmentRomStart, &_beachSummerMapSegmentRomEnd);
     setMapDataAddresses(BEACH_AUTUMN, &_beachFallMapSegmentRomStart, &_beachFallMapSegmentRomEnd);
@@ -1235,9 +1221,6 @@ void loadMapAddresses(void) {
     setMapDataAddresses(POTION_SHOP_BEDROOM, &_potionShopBackroomMapSegmentRomStart, &_potionShopBackroomMapSegmentRomEnd);
     setMapDataAddresses(POTION_SHOP, &_potionShopMapSegmentRomStart, &_potionShopMapSegmentRomEnd);
 
-    // empty, referenced in getCantEnterTextIndex 
-    setMapDataAddresses(EMPTY_MAP_2, &_emptyMap2SegmentRomStart, &_emptyMap2SegmentRomEnd);
-    
     setMapDataAddresses(HARVEST_SPRITE_CAVE, &_spriteCaveMapSegmentRomStart, &_spriteCaveMapSegmentRomEnd);
     setMapDataAddresses(CAVE, &_caveMapSegmentRomStart, &_caveMapSegmentRomEnd);    
     setMapDataAddresses(MINE, &_emptyMineMapSegmentRomStart, &_emptyMineMapSegmentRomEnd);
@@ -1338,13 +1321,11 @@ void initializeTextAddresses(void) {
     setTextAddresses(TEXT_1_TEXT_INDEX, &_text1TextIndexSegmentRomStart, &_text1TextIndexSegmentRomEnd, &_text1TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(LIBRARY_TEXT_INDEX, &_libraryTextIndexSegmentRomStart, &_libraryTextIndexSegmentRomEnd, &_libraryTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(DIARY_TEXT_INDEX, &_diaryTextIndexSegmentRomStart, &_diaryTextIndexSegmentRomEnd, &_diaryTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
-    setTextAddresses(RECIPES_JAPANESE_TEXT_INDEX, &_recipesJapaneseTextIndexSegmentRomStart, &_recipesJapaneseTextIndexSegmentRomEnd, &_recipesJapaneseTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(FESTIVALS_TEXT_INDEX, &_festivalOverlaySelectionsTextIndexSegmentRomStart, &_festivalOverlaySelectionsTextIndexSegmentRomEnd, &_festivalOverlaySelectionsTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(LETTERS_TEXT_INDEX, &_lettersTextIndexSegmentRomStart, &_lettersTextIndexSegmentRomEnd, &_lettersTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(SHOP_TEXT_INDEX, &_shopTextIndexSegmentRomStart, &_shopTextIndexSegmentRomEnd, &_shopTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(ANIMAL_INTERACTIONS_TEXT_INDEX, &_animalInteractionsTextIndexSegmentRomStart, &_animalInteractionsTextIndexSegmentRomEnd, &_animalInteractionsTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(TV_TEXT_INDEX, &_tvTextIndexSegmentRomStart, &_tvTextIndexSegmentRomEnd, &_tvTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
-    setTextAddresses(TEXT_10_TEXT_INDEX, &_text10TextIndexSegmentRomStart, &_text10TextIndexSegmentRomEnd, &_text10TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(NAMING_SCREEN_TEXT_INDEX, &_namingScreenTextIndexSegmentRomStart, &_namingScreenTextIndexSegmentRomEnd, &_namingScreenTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
 
     setTextAddresses(MARIA_TEXT_INDEX, &_mariaTextIndexSegmentRomStart, &_mariaTextIndexSegmentRomEnd, &_mariaTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);

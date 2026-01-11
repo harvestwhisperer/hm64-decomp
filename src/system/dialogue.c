@@ -705,7 +705,7 @@ void parseDialogueBytecode(u16 index) {
             byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
             
             dialogues[index].bytecodeExecutor.textOffset = byteswap.halfword;
-            
+
             // unused
             dialogues[index].bytecodeExecutor.selectionMenuRowsCount = *(u8*)dialogues[index].dialogueBytecodePointer++;
             

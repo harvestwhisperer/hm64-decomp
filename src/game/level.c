@@ -283,8 +283,7 @@ u8 levelToMusicMappings[TOTAL_MAPS][8] = {
     { 0, 0, 0, 0, 0, 0, 0, 0 },
 };
 
-// FIXME: probably shouldn't be volatile but need it for matching
-volatile u8 exitsToMapIndices[] = {
+u8 exitsToMapIndices[] = {
     FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, 
     HOUSE, HOUSE, HOUSE, 
     BATHROOM, BATHROOM, KITCHEN, KITCHEN, 
@@ -1756,11 +1755,7 @@ u16 getCantEnterTextIndex(u16 exitIndex) {
 
     u16 index = 0xFFFF;
 
-    // FIXME: no idea
-    u32 temp = exitsToMapIndices[exitIndex];
-    u8 temp2 = temp;
-
-    switch (temp2) {
+    switch (exitsToMapIndices[exitIndex]) {
 
         case ANN_ROOM:
 
@@ -2048,7 +2043,6 @@ u16 getCantEnterTextIndex(u16 exitIndex) {
         case SQUARE:
         case POTION_SHOP_BEDROOM:
         // unused/cut map
-        case 0x41:
         case CAVE:
         case MINE_2:
         case VINEYARD:

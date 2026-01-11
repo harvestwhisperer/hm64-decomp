@@ -1,36 +1,27 @@
 BASENAME := hm64
 TARGET := $(BASENAME).z64
 
-# default to US
-REGION ?= us
-BASEROM := baserom.$(REGION).z64
+BASEROM := baserom.us.z64
 
 # Options
-
 VERBOSE := 0
-PERMUTER ?= 0
-
 MODERN_GCC ?= 0
 
 # Directories
-
 SRC_DIRS := src
 BIN_DIRS := bin
-
 BUILD_DIR := build
 TOOLS_DIR := tools
+ASSETS_DIR := assets
 
 # Files
-
 C_FILES = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.c))
 BIN_FILES=$(foreach dir, $(BIN_DIRS), $(wildcard $(dir)/*.bin))
 
 LD_MAP := $(BASENAME).map
 
 # Tools
-
 KMC_PATH := $(TOOLS_DIR)/gcc-2.7.2/
-
 CROSS := mips-linux-gnu-
 
 AS := $(CROSS)as
@@ -53,27 +44,21 @@ MKDIR = @mkdir -p $(dir $@)
 SPEC := spec
 SPEC_PROCESSED := $(BUILD_DIR)/spec
 LD_SCRIPT := $(BUILD_DIR)/$(BASENAME).ld
-BSS_LD_SCRIPT := config/$(REGION)/common_bss.ld
 
 # Export BUILD_DIR for mkldscript's $(BUILD_DIR) expansion
 export BUILD_DIR
 
-# Extract object files from the spec file
-# Preprocesses spec, replaces $(BUILD_DIR), extracts .o paths
 BUILD_DIR_REPLACE := sed -e 's|$$(BUILD_DIR)|$(BUILD_DIR)|g'
 SPEC_CPP_FLAGS := -I. -I include -I lib/nusys-1/include -I lib/libultra/include
 SPEC_O_FILES := $(shell $(CPP) $(SPEC_CPP_FLAGS) $(SPEC) | $(BUILD_DIR_REPLACE) | sed -n -E 's/^[[:space:]]*include[[:space:]]+"([^"]+\.o)"/\1/p')
 OBJECTS := $(SPEC_O_FILES)
 
 # Flags
-
 MACROS := -D_LANGUAGE_C -D_MIPS_SZLONG=32 -D_MIPS_SZINT=32 -DSUPPORT_NAUDIO -DNU_SYSTEM -DF3DEX_GBI_2 -DN_MICRO -DLANG_JAPANESE=0 -DUSE_EPI -DNDEBUG -D_AUDIOVISIBLE -DN_AUDIO
 
-# Common flags for both compilers
 CFLAGS_COMMON := -G0 -mgp32 -mfp32 -funsigned-char
 
 ifeq ($(MODERN_GCC),1)
-  # Modern GCC flags for N64/VR4300
   CFLAGS_COMMON += -march=vr4300 -mtune=vr4300 -mfix4300
   CFLAGS_COMMON += -mabi=32 -mno-abicalls -fno-PIC -mno-shared
   CFLAGS_COMMON += -ffreestanding -fno-builtin
@@ -81,21 +66,17 @@ ifeq ($(MODERN_GCC),1)
   CFLAGS_COMMON += -Wall -Wno-unused-variable -Wno-unused-parameter -Wno-pointer-sign -Wno-incompatible-pointer-types -Wno-int-conversion
   MACROS += -DMODERN_GCC
 else
-  # Original KMC GCC 2.7.2 flags
   CFLAGS_COMMON += -mips3
   CFLAGS_COMMON += -Wa,-Iinclude
 endif
 
 CFLAGS := $(CFLAGS_COMMON) $(MACROS)
 
-# Assembly flags - note -mabi32 (old) vs -mabi=32 (modern)
 ifeq ($(MODERN_GCC),1)
   HASM_ASFLAGS := -march=vr4300 -mabi=32 -mno-abicalls -fno-PIC -G 0 -mgp32 -mfp32 -nostdinc
-  # Modern GCC doesn't need -o32 (covered by -mabi=32)
   OS_ASM_FLAG :=
 else
   HASM_ASFLAGS := -mips3 -nostdinc -fno-PIC -mno-abicalls -G 0 -mgp32 -mfp32 -mabi32
-  # Old GCC needs -o32 for OS assembly
   OS_ASM_FLAG := -o32
 endif
 
@@ -123,12 +104,14 @@ NU_OPTFLAGS := -O3
 
 ULTRALIBVER := -DBUILD_VERSION=7
 
-LDFLAGS := -G 0  -T config/$(REGION)/undefined_syms.txt -T $(BSS_LD_SCRIPT) -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
+LDFLAGS := -G 0 -T config/us/undefined_syms.txt -T config/us/undefined_funcs.txt -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
 
-# Binary asset matching (cutscenes, dialogues, texts)
+ifeq ($(VERBOSE),0)
+V := @
+endif
 
-# Cutscenes
-# DSL source in src/bytecode/cutscenes/, ASM output to assets/cutscenes/
+# Create all output directories upfront
+$(shell mkdir -p $(sort $(dir $(OBJECTS))))
 
 CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
 CUTSCENE_ASSETS_DIR := assets/cutscenes
@@ -316,18 +299,20 @@ DIALOGUE_OBJECTS := \
 	$(DIALOGUE_BUILD_DIR)/additionalNpcs2Dialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/additionalNpcs2DialogueIndex.bin.o
 
-ifeq ($(REGION),us)
+TEXT_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_text_transpiler.py
+TEXT_EXTRACTOR := python3 $(TOOLS_DIR)/assets/hm64_text_utilities.py
 
-DECOMPILED_TEXTS := text1 \
+TEXT_ASSETS_DIR := assets/text
+TEXT_BUILD_DIR := $(BUILD_DIR)/bin/text
+
+TEXT_BANKS := text1 \
 	library \
 	diary \
-	recipesJapanese \
 	festivalOverlaySelections \
 	letters \
 	shop \
 	animalInteractions \
 	tv \
-	text10 \
 	namingScreen \
 	elli \
 	kai \
@@ -391,113 +376,112 @@ DECOMPILED_TEXTS := text1 \
 	additionalNpcs \
 	howToPlay
 
-else
-DECOMPILED_TEXTS :=
-endif
+# ==============================================================================
+# ASSET PATHS
+# ==============================================================================
 
-TEXT_ASSETS_DIR := assets/text
-TEXT_BUILD_DIR := $(BUILD_DIR)/bin/text
+BOOT_BIN := bin/makerom/ipl3.bin
 
-TEXT_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_text_transpiler.py
+MAPS_DIR := bin/maps
+SEQ_DIR := bin/audio
 
-ifeq ($(VERBOSE),0)
-V := @
-endif
+SPRITES_DIR := assets/sprites
+TEXTS_DIR := assets/text
 
-ifeq ($(PERMUTER),1)
-MACROS += -D_PERMUTER=1
-endif
+# ==============================================================================
+# TARGETS
+# ==============================================================================
 
-ifeq ($(REGION),jp)
-MACROS += -D_JP=1
-endif
+.PHONY: all extract extract-boot extract-maps extract-sequences extract-sprites extract-texts
+.PHONY: clean clean-build clean-all check
 
-# Create all output directories upfront
-$(shell mkdir -p $(sort $(dir $(OBJECTS))))
+all: $(TARGET)
 
-# Flag overrides
+# ==============================================================================
+# ASSET EXTRACTION
+# ==============================================================================
+
+# Extract all assets
+extract: extract-texts
+	$(V)python3 -m splat split ./config/us/splat.us.yaml --modes code animationScripts bin hm64map seq
+
+extract-texts:
+	$(TEXT_EXTRACTOR) extract_all
+
+# ==============================================================================
+# TEXTS
+# ==============================================================================
+
+# Pattern rule: Text .txt files -> .s assembly files
+# Rebuilds whenever any .txt file in the bank directory changes
+define TEXT_BANK_RULE
+$(TEXT_ASSETS_DIR)/$(1)Text.s: $$(wildcard $(TEXT_ASSETS_DIR)/$(1)/*.txt)
+	@echo "Transpiling text bank: $(1)"
+	$(V)$(TEXT_TRANSPILER) $(TEXT_ASSETS_DIR)/$(1) -n $(1)Text -o $(TEXT_ASSETS_DIR)/
+
+# Mark the index as depending on the main file
+$(TEXT_ASSETS_DIR)/$(1)TextIndex.s: $(TEXT_ASSETS_DIR)/$(1)Text.s
+	@:
+endef
+
+# Generate rules for all text banks
+$(foreach bank,$(TEXT_BANKS),$(eval $(call TEXT_BANK_RULE,$(bank))))
+
+$(TEXT_BUILD_DIR)/%Text.bin.o: $(TEXT_ASSETS_DIR)/%Text.s
+	$(MKDIR)
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+$(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
+	$(MKDIR)
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+# ==============================================================================
+# CUTSCENES
+# ==============================================================================
+
+CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
+CUTSCENE_ASSETS_DIR := assets/cutscenes
+CUTSCENE_BUILD_DIR := $(BUILD_DIR)/bin/cutscenes
+
+CUTSCENE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_cutscene_transpiler.py
+
+$(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
+	@mkdir -p $(CUTSCENE_ASSETS_DIR)
+	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
+
+$(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
+	$(MKDIR)
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+# ==============================================================================
+# DIALOGUES
+# ==============================================================================
+
+DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
+DIALOGUE_ASSETS_DIR := assets/dialogues
+DIALOGUE_BUILD_DIR := $(BUILD_DIR)/bin/dialogues/bytecode
+
+DIALOGUE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_dialogue_transpiler.py
+
+$(DIALOGUE_ASSETS_DIR)/%.s: $(DIALOGUE_SRC_DIR)/%.dialogue
+	@mkdir -p $(DIALOGUE_ASSETS_DIR)
+	$(V)$(DIALOGUE_TRANSPILER) transpile $< -n $* -o $(DIALOGUE_ASSETS_DIR)/
+
+$(DIALOGUE_ASSETS_DIR)/%Index.s: $(DIALOGUE_ASSETS_DIR)/%.s
+	@:
+
+$(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_ASSETS_DIR)/%.s
+	$(MKDIR)
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+# ==============================================================================
+# CODE
+# ==============================================================================
 
 build/lib/nusys-1/src/nusys/nuboot.o: NU_OPTFLAGS := -O0
 build/lib/nusys-1/src/sample/nunospak/nupakmenu.o: NU_OPTFLAGS += -g2
 build/lib/nusys-1/src/sample/nunospak/nupakmenuloadfont.o: NU_OPTFLAGS += -g2
 build/lib/libultra/src/io/aisetnextbuf.o: ULTRALIBVER := -DBUILD_VERSION=6
-
-# Targets
-
-ifeq ($(MODERN_GCC),1)
-  $(info Building with modern GCC (non-matching))
-  $(info Compiler: $(CC))
-endif
-
-all: check
-
-jp-%:
-	$(MAKE) -f Makefile.jp $*
-
-jp:
-	$(MAKE) -f Makefile.jp
-
-clean:
-	@rm -rf asm
-	@rm -rf bin
-	@rm -rf build
-# remove transpiled bytecode .s files
-	@find assets -type f -name "*.s" -delete 2>/dev/null || true
-	@rm -f $(LD_SCRIPT)
-	@rm -f $(BASENAME).elf
-	@rm -f $(BASENAME).map
-	@rm -f $(TARGET)
-
-clean-assets:
-	@find assets -type f ! -name "*.spec" -delete 2>/dev/null || true
-# clean up empty directories
-	@find assets -type d -empty -delete 2>/dev/null || true
-
-clean-all: clean clean-assets
-
-split:
-# only extract what's needed and don't generate linker script
-	$(V)python3 -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts seq hm64map
-
-setup: clean split
-
-rerun: clean $(LD_SCRIPT) check
-
-# Asset extraction
-
-extract-sprites:
-# don't delete spec files
-	@find assets/sprites -type f ! -name "*.spec" -delete 2>/dev/null || true
-# clean up empty directories
-	@find assets/sprites -type d -empty -delete 2>/dev/null || true
-	@cd tools/assets && python3 ./hm64_sprite_utilities.py write_all_textures    
-
-extract-animation-metadata:
-	@cd tools/assets && python3 ./hm64_animation_utilities.py extract_animation_metadata
-
-extract-animation-scripts:
-	@cd tools/assets && python3 ./extract_animation_scripts.py
-
-extract-animation-sprites:
-	@cd tools/assets && python3 ./hm64_animation_utilities.py fetch_sprites_for_animations
-	
-extract-animations:
-	@cd tools/assets && python3 ./hm64_animation_utilities.py extract_all
-
-extract-gifs:
-	@cd tools/assets && python3 ./hm64_animation_utilities.py make_gifs_from_animations
-
-extract-texts:
-	@cd tools/assets && python3 ./hm64_text_utilities.py process_all write_files
-
-extract-map-sprites:
-	@cd tools/assets && python3 ./hm64_map_utilities.py write_all_textures
-
-extract-fonts:
-	@cd tools/assets && python3 ./hm64_font_utilities.py extract_all
-	@cd tools/assets && python3 ./hm64_font_utilities.py extract_all_palettes
-
-# Main code segment
 
 $(BUILD_DIR)/src/mainproc.o: src/mainproc.c
 	$(MKDIR)
@@ -571,10 +555,6 @@ $(BUILD_DIR)/lib/libultra/src/os/%.o: lib/libultra/src/os/%.s
 	$(MKDIR)
 	$(CC) $(CC_FLAG) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) $(OS_ASM_FLAG) -x assembler-with-cpp -o $@ $<
 
-$(BUILD_DIR)/lib/libultra/src/os/unusedPadding.o: lib/libultra/src/os/unusedPadding.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
 $(BUILD_DIR)/lib/libultra/src/rmon/%.o: lib/libultra/src/rmon/%.s
 	$(MKDIR)
 	$(CC) $(CC_FLAG) -c -I lib/libultra/include $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
@@ -584,11 +564,10 @@ $(BUILD_DIR)/lib/libultra/src/rmon/%.o: lib/libultra/src/rmon/%.s
 $(BUILD_DIR)/lib/ucode/%.o: lib/ucode/%.s
 	$(MKDIR)
 	gcc -E -x assembler-with-cpp -I include $(HASM_AS_DEFINES) $< | $(AS) $(ASFLAGS) -I lib/ucode -o $@ -
-# 	$(CC) -B $(KMC_PATH) -E -I include $(HASM_AS_DEFINES) $< | $(AS) $(ASFLAGS) -o $@ -
 
 # ROM header
 
-$(BUILD_DIR)/config/$(REGION)/header.o: config/$(REGION)/header.s
+$(BUILD_DIR)/config/us/header.o: config/us/header.s
 	$(MKDIR)
 	$(CC) $(CC_FLAG) -c $(NUSYS_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
 
@@ -626,24 +605,6 @@ $(DIALOGUE_ASSETS_DIR)/%Index.s: $(DIALOGUE_ASSETS_DIR)/%.s
 $(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_ASSETS_DIR)/%.s
 	$(MKDIR)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-# Extract texts to assets directory and transpile to assembly (generates two files: bytecode and index)
-$(TEXT_ASSETS_DIR)/%Text.s:
-	$(V)cd $(TOOLS_DIR)/assets && python3 hm64_text_utilities.py extract_bank $*
-	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/
-
-# Mark dependency
-$(TEXT_ASSETS_DIR)/%TextIndex.s: $(TEXT_ASSETS_DIR)/%Text.s
-	@:
-
-$(TEXT_BUILD_DIR)/%Text.bin.o: $(TEXT_ASSETS_DIR)/%Text.s
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-$(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-# Rest of code and extracted binary files
-
 $(BUILD_DIR)/%.s.o: %.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
@@ -655,6 +616,12 @@ $(BUILD_DIR)/%.seq.o: %.seq
 
 $(BUILD_DIR)/%.bin.o: %.bin
 	$(V)$(LD) -r -b binary -o $@ $<
+
+
+# ==============================================================================
+# CODE SEGMENT
+# ==============================================================================
+
 
 NUBOOT_OBJECTS := \
 	$(BUILD_DIR)/lib/nusys-1/src/nusys/nuboot.o
@@ -670,10 +637,7 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/system/sprite.o \
 	$(BUILD_DIR)/src/system/globalSprites.o \
 	$(BUILD_DIR)/src/system/entity.o \
-	$(BUILD_DIR)/src/system/unknownData.o \
-	$(BUILD_DIR)/src/system/unknownData2.o \
 	$(BUILD_DIR)/src/system/staticGfx.o \
-	$(BUILD_DIR)/src/system/paddingData.o \
 	$(BUILD_DIR)/src/system/map.o \
 	$(BUILD_DIR)/src/system/mapController.o \
 	$(BUILD_DIR)/src/system/audio.o \
@@ -808,7 +772,6 @@ LIBULTRA_OBJECTS := \
 	$(BUILD_DIR)/lib/libultra/src/gu/sinf.o \
 	$(BUILD_DIR)/lib/libultra/src/gu/translate.o \
 	$(BUILD_DIR)/lib/libultra/src/os/invaldcache.o \
-	$(BUILD_DIR)/lib/libultra/src/os/unusedPadding.o \
 	$(BUILD_DIR)/lib/libultra/src/os/setintmask.o \
 	$(BUILD_DIR)/lib/libultra/src/os/writebackdcache.o \
 	$(BUILD_DIR)/lib/libultra/src/os/writebackdcacheall.o \
@@ -970,21 +933,24 @@ ALL_CODE_OBJECTS := \
 	$(LIBULTRA_OBJECTS) \
 	$(LIBKMC_OBJECTS)
 
-# Single combined codesegment.o - equivalent to static linking
 $(BUILD_DIR)/codesegment.o: $(ALL_CODE_OBJECTS)
 	$(MKDIR)
 	$(V)$(LD) -r -G 0 -o $@ $^
 
-# Linker script generation from spec file
+# ==============================================================================
+# LINKER SCRIPT
+# ==============================================================================
 
 $(SPEC_PROCESSED): $(SPEC)
 	$(MKDIR)
 	$(V)$(CPP) $(SPEC_CPP_FLAGS) $< > $@
 
-$(LD_SCRIPT): $(SPEC_PROCESSED) $(MKLDSCRIPT)
+$(LD_SCRIPT) $(ENTRY_ASM): $(SPEC_PROCESSED) $(MKLDSCRIPT)
 	$(V)$(MKLDSCRIPT) $< $@
 
-# Final binary
+# ==============================================================================
+# TARGET
+# ==============================================================================
 
 $(BASENAME).elf: $(OBJECTS) $(LD_SCRIPT)
 	$(V)$(LD) $(LDFLAGS) -o $@
@@ -993,14 +959,33 @@ $(TARGET): $(BASENAME).elf
 	$(V)$(OBJCOPY) -O binary --gap-fill=0xFF $< $@
 	$(V)python3 $(TOOLS_DIR)/build/makemask.py $@ --pad
 
-check: $(TARGET)
-	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
+# ==============================================================================
+# CLEAN
+# ==============================================================================
 
+# Clean build artifacts only
+clean:
+	@rm -rf $(BUILD_DIR)
+	@rm -f $(LD_SCRIPT)
+	@rm -f $(BASENAME).elf
+	@rm -f $(BASENAME).map
+	@rm -f $(TARGET)
+	@rm -rf asm
+	@find assets -type f -name "*.s" -delete 2>/dev/null || true
 
-.PHONY: all modern clean clean-assets setup split rerun check codesegment
-.PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
-.PHONY: extract-animation-sprites extract-animations extract-gifs
-.PHONY: extract-texts extract-dialogues extract-map-sprites extract-cutscenes
+# Clean only extracted bin files (not extracted texts)
+clean-extracted:
+	@rm -rf bin
+	@rm lib/ucode/*.bin
+
+# Clean everything including texts
+clean-all-dangerous: clean
+	@rm -rf bin
+	@rm lib/ucode/*.bin
+# Remove everything in assets except .spec files
+	@find assets -type f ! -name "*.spec" -delete 2>/dev/null || true
+	@find assets -type d -empty -delete 2>/dev/null || true
+
 
 CUTSCENE_ASM := $(patsubst $(CUTSCENE_BUILD_DIR)/%.bin.o,$(CUTSCENE_ASSETS_DIR)/%.s,$(CUTSCENE_OBJECTS))
 DIALOGUE_ASM := $(patsubst $(DIALOGUE_BUILD_DIR)/%.bin.o,$(DIALOGUE_ASSETS_DIR)/%.s,$(DIALOGUE_OBJECTS))

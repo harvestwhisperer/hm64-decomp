@@ -798,16 +798,13 @@ void shopDialogueCallback(void) {
                 
                 // successful purchase
                 case 1:
-                    // FIXME: fake
-                    temp2 = &shopContext.storeItemIndex;
-                    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, shopItemTextAddressesIndex[temp2[0]], postPurchaseTextIndices[shopContext.storeItemIndex], 0);
+                    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, shopItemTextAddressesIndex[shopContext.storeItemIndex], postPurchaseTextIndices[shopContext.storeItemIndex], 0);
                     break;
-                
+
                 // no space in rucksack
                 case 2:                
-                    temp2 = &shopContext.storeItemIndex;
-                    if (sendToFarmTextIndices[temp2[0]]) {
-                        initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, shopItemTextAddressesIndex[temp2[0]], sendToFarmTextIndices[shopContext.storeItemIndex], 0);
+                    if (sendToFarmTextIndices[shopContext.storeItemIndex]) {
+                        initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, shopItemTextAddressesIndex[shopContext.storeItemIndex], sendToFarmTextIndices[shopContext.storeItemIndex], 0);
                     } 
                     
                     break;
@@ -819,15 +816,14 @@ void shopDialogueCallback(void) {
                     return;
                 
                 case 4:
-                    temp2 = &shopContext.storeItemIndex;
-                    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, shopItemTextAddressesIndex[temp2[0]], shopGiftTextIndex, 0);
+                    initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, shopItemTextAddressesIndex[shopContext.storeItemIndex], shopGiftTextIndex, 0);
                     break;
                 
                 default:
                     return;
             }
 
-            if (D_801194D8[temp2[0]]) {
+            if (D_801194D8[shopContext.storeItemIndex]) {
                 shopContext.mode = 6;
             } else {
                 shopContext.mode = 5;
@@ -1421,7 +1417,6 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
             
             case 0x36:
             case 0x37:
-                
                 result =  storeTool(EMPTY_BOTTLE);           
                 break;
 
@@ -1430,12 +1425,7 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
        
         }
 
-        // FIXME: shouldn't be necessary
-        temp = result - 1;
-
-        // should be:        
-        // if (0 < result && result < 3 || result == 4) {
-        if (temp < 2 || result == 4) {
+        if (0 < result && result < 3 || result == 4) {
             gGold += adjustValue(gGold, (-quantity * prices[storeItemIndex]), MAX_GOLD);
         }
 
@@ -1493,8 +1483,7 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
         case 3:
 
-            // FIXME: should be a range
-            if ((u32)(gSeason - 1) < SUMMER) {
+            if (0 < gSeason && gSeason < AUTUMN) {
                 result = 1;
             }
 
@@ -1560,22 +1549,18 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
                 
                 if (gYear >= 2) {
 
-                    // FIXME: probably should be a switch
-                    if (gSeason != SUMMER) {
-                        
-                        if (gSeason == SPRING) {
-                        
+                    switch (gSeason) {
+                        case SPRING:
                             if (gDayOfMonth >= 24) {
                                 result = 1;
-                                break;
                             }
-                        } 
-                        
-                        break;
-
-                    } 
-                    
-                    result = 1;
+                            break;
+                        case SUMMER:
+                            result = 1;
+                            break;
+                        default:
+                            break;
+                    }
                     
                 }
             }

@@ -36,8 +36,6 @@ u8 gYear;
 u8 gCurrentSeasonName[6];
 u8 gGlobalSeasonName[6];
 
-//INCLUDE_ASM("asm/nonmatchings/game/time", handleTimeUpdates);
-
 void handleTimeUpdates(void) {
     
     if ((getLevelFlags(gBaseMapIndex) & 1) && !checkDailyEventBit(6)) {
@@ -53,7 +51,6 @@ void handleTimeUpdates(void) {
         if (!checkDailyEventBit(0xE)) {
 
             setPlayerAction(254, ANIM_DEFAULT);
-            // stop audio and set callback for loading
             handleExitLevel(1, END_OF_DAY_2);
             
         }
@@ -95,8 +92,6 @@ void handleTimeUpdates(void) {
     handleTimedDailyCutscenes(gBaseMapIndex);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/time", updateClock);
 
 void updateClock(u8 incrementSeconds) {
 
@@ -153,8 +148,6 @@ void updateClock(u8 incrementSeconds) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/time", setupNewYear);
-
 void setupNewYear(void) {
 
     gHarvestKing = gHarvestCoinFinder;  
@@ -205,14 +198,10 @@ void setupNewYear(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/time", toggleMonthlyLetterBits);
-
 void toggleMonthlyLetterBits(void) {
     toggleReadLetterBit(0x3C);
     toggleReadLetterBit(0x40);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/time", setClockNewDay);
 
 void setClockNewDay(void) {
     
@@ -227,42 +216,38 @@ void setClockNewDay(void) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/time", checkFestivalDay);
-
 // unused
-bool checkFestivalDay(void) {
+// bool checkFestivalDay(void) {
 
-    bool result = FALSE;
+//     bool result = FALSE;
     
-    // not sure why && is used... should be ||?
-    switch (gSeason) {                             
-        case SPRING:
-            if (gDayOfMonth == 1 && gDayOfMonth == 8 && gDayOfMonth == 17 && gDayOfMonth == 23) {
-                result = TRUE;
-            }
-            break;
-        case SUMMER:
-            if (gDayOfMonth == 1 && gDayOfMonth == 9 && gDayOfMonth == 17 && gDayOfMonth == 24) {
-                result = TRUE;
-            }
-            break;
-        case AUTUMN:
-            if (gDayOfMonth == 4 && gDayOfMonth == 12 && gDayOfMonth == 20 && gDayOfMonth == 28) {
-                result = TRUE;
-            }
-            break;
-        case WINTER:
-            if (gDayOfMonth == 6 && gDayOfMonth == 19 && gDayOfMonth == 24) {
-                result = TRUE;
-            }
-            break;
-        }
+//     // not sure why && is used... should be ||?
+//     switch (gSeason) {                             
+//         case SPRING:
+//             if (gDayOfMonth == 1 && gDayOfMonth == 8 && gDayOfMonth == 17 && gDayOfMonth == 23) {
+//                 result = TRUE;
+//             }
+//             break;
+//         case SUMMER:
+//             if (gDayOfMonth == 1 && gDayOfMonth == 9 && gDayOfMonth == 17 && gDayOfMonth == 24) {
+//                 result = TRUE;
+//             }
+//             break;
+//         case AUTUMN:
+//             if (gDayOfMonth == 4 && gDayOfMonth == 12 && gDayOfMonth == 20 && gDayOfMonth == 28) {
+//                 result = TRUE;
+//             }
+//             break;
+//         case WINTER:
+//             if (gDayOfMonth == 6 && gDayOfMonth == 19 && gDayOfMonth == 24) {
+//                 result = TRUE;
+//             }
+//             break;
+//         }
 
-    return result;
+//     return result;
 
-}
-
-//INCLUDE_ASM("asm/nonmatchings/game/time", setSeasonName);
+// }
 
 void setSeasonName(void) {
 
@@ -278,8 +263,6 @@ void setSeasonName(void) {
     convertNumberToGameVariableString(21, gDayOfMonth, 1);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/time", setGlobalSeasonName);
 
 void setGlobalSeasonName(u8 season) {
 

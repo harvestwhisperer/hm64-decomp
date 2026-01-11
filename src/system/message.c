@@ -438,41 +438,41 @@ bool setMessageBoxRGBAWithTransition(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate
 //INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxAlphaWithTransition);
 
 // unused
-bool setMessageBoxAlphaWithTransition(u16 index, u8 arg1, s16 arg2) {
+// bool setMessageBoxAlphaWithTransition(u16 index, u8 arg1, s16 arg2) {
 
-    bool result;
-    s16 temp;
-    f32 tempF;
+//     bool result;
+//     s16 temp;
+//     f32 tempF;
 
-    temp = getAbsoluteValue(arg2);
+//     temp = getAbsoluteValue(arg2);
 
-    result = FALSE;
+//     result = FALSE;
     
-    if (index < MAX_MESSAGE_BOXES) {
+//     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+//         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].currentRGBA.a = (messageBoxes[index].baseRGBA.a * arg1) / 255.0f;
+//             messageBoxes[index].currentRGBA.a = (messageBoxes[index].baseRGBA.a * arg1) / 255.0f;
 
-            messageBoxes[index].flags &= ~(MESSAGE_BOX_RGBA_COMPLETE);
+//             messageBoxes[index].flags &= ~(MESSAGE_BOX_RGBA_COMPLETE);
 
-            if (messageBoxes[index].currentRGBA.a < messageBoxes[index].targetRGBA.a) {
-                tempF = messageBoxes[index].targetRGBA.a - messageBoxes[index].currentRGBA.a;
-            } else {
-                tempF = messageBoxes[index].currentRGBA.a - messageBoxes[index].targetRGBA.a;
-            }
+//             if (messageBoxes[index].currentRGBA.a < messageBoxes[index].targetRGBA.a) {
+//                 tempF = messageBoxes[index].targetRGBA.a - messageBoxes[index].currentRGBA.a;
+//             } else {
+//                 tempF = messageBoxes[index].currentRGBA.a - messageBoxes[index].targetRGBA.a;
+//             }
 
-            messageBoxes[index].deltaRGBA.a = (tempF * temp) / messageBoxes[index].baseRGBA.a;
+//             messageBoxes[index].deltaRGBA.a = (tempF * temp) / messageBoxes[index].baseRGBA.a;
 
-            result = TRUE;
+//             result = TRUE;
             
-        }
+//         }
         
-    }
+//     }
 
-    return result;
+//     return result;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", checkMessageBoxRGBAComplete);
 
@@ -573,23 +573,23 @@ bool resetMessageBoxAnimation(u16 index) {
 //INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxInterpolationRate);
 
 // unused
-bool setMessageBoxInterpolationRate(u16 index, s16 rate) {
+// bool setMessageBoxInterpolationRate(u16 index, s16 rate) {
 
-    bool result = FALSE;
+//     bool result = FALSE;
     
-    if (index < MAX_MESSAGE_BOXES && (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE)) {
+//     if (index < MAX_MESSAGE_BOXES && (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE)) {
 
-        messageBoxes[index].unk_7C = rate;
+//         messageBoxes[index].unk_7C = rate;
         
-        initializeInterpolator((Interpolator*)&messageBoxes[index].unk_64, rate, 0);
+//         initializeInterpolator((Interpolator*)&messageBoxes[index].unk_64, rate, 0);
         
-        result = TRUE;
+//         result = TRUE;
             
-    }
+//     }
 
-    return result;
+//     return result;
     
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", setTextAddresses);
 
@@ -998,11 +998,7 @@ bool setGameVariableString(u16 index, u8* ptr, s8 length) {
 //INCLUDE_ASM("asm/nonmatchings/system/message", convertNumberToGameVariableString);
 
 // set number string for game variables based on their current quantity
-// FIXME: fake matches, but need do {} while (0) to get registers right
 bool convertNumberToGameVariableString(u16 index, u32 number, u8 terminatorType) {
-    
-    u32 digitDivisorsBuffer[8];
-    u8 digitCharacterCodesBuffer[16];
     
     u8 digitPosition;
     u8 position;
@@ -1012,9 +1008,6 @@ bool convertNumberToGameVariableString(u16 index, u32 number, u8 terminatorType)
     u32 extractedDigit;
     u32 unprocessedDigits;
     
-    memcpy(digitDivisorsBuffer, powersOfTen, 32);
-    memcpy(digitCharacterCodesBuffer, digitCharacterCodes, 10);
-    
     unprocessedDigits = number;
     position = 0;
     startedOutputting = 0;
@@ -1023,7 +1016,7 @@ bool convertNumberToGameVariableString(u16 index, u32 number, u8 terminatorType)
     
     do {
 
-        divisor = digitDivisorsBuffer[digitPosition];
+        divisor = powersOfTen[digitPosition];
         extractedDigit = unprocessedDigits / divisor;
         unprocessedDigits %= divisor;
         
@@ -1035,19 +1028,10 @@ bool convertNumberToGameVariableString(u16 index, u32 number, u8 terminatorType)
         
         if (startedOutputting) goto writeDigitChar;
         
-        do {
-            
-            if (digitPosition) goto writePaddingChar;
-            
-        } while (0);
+        if (digitPosition) goto writePaddingChar;
         
-        do {
-            
-            do {
 writeDigitChar:
-                gameVariableStrings[index].ptr[position] = digitCharacterCodesBuffer[extractedDigit];
-                
-            } while (0);
+            gameVariableStrings[index].ptr[position] = digitCharacterCodes[extractedDigit];
             
             goto advancePosition;
             
@@ -1062,8 +1046,6 @@ writePaddingChar:
 advancePosition:
             position++;
 
-        } while (0);
-        
     } while (digitPosition--);
     
     return 0;
@@ -1364,7 +1346,6 @@ u8 countTextLines(u16 index, u16 textIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/message", advanceToLine);
 
-// FIXME: do {} while (0) switch statement
 void advanceToLine(u16 index, u8 linesToSkip) {
     
     u8 i;
@@ -1409,31 +1390,26 @@ void advanceToLine(u16 index, u8 linesToSkip) {
             
             // handle control character
             switch (character) {
-                
-                do {
 
-                    case CHARACTER_CONTROL_TEXT_END:
-                        i = linesToSkip;
-                        break;
-                    case CHARACTER_CONTROL_LINEBREAK:
-                    case CHARACTER_CONTROL_SOFTBREAK:
-                        i++;
-                        break;
-                    case CHARACTER_CONTROL_INSERT_GAME_VARIABLE:
-                        position = 0;
-                        done = TRUE;
-                        messageBoxes[index].currentCharPtr++;
-                        break;
-                    case CHARACTER_CONTROL_WAIT:
-                    case CHARACTER_CONTROL_CHARACTER_AVATAR:
-                        messageBoxes[index].currentCharPtr++;
-                        do {} while (0);
-                        break;
-
-                } while (0);
-            
+                case CHARACTER_CONTROL_TEXT_END:
+                    i = linesToSkip;
+                    break;
+                case CHARACTER_CONTROL_LINEBREAK:
+                case CHARACTER_CONTROL_SOFTBREAK:
+                    i++;
+                    break;
+                case CHARACTER_CONTROL_INSERT_GAME_VARIABLE:
+                    position = 0;
+                    done = TRUE;
+                    messageBoxes[index].currentCharPtr++;
+                    break;
+                case CHARACTER_CONTROL_WAIT:
+                case CHARACTER_CONTROL_CHARACTER_AVATAR:
+                    messageBoxes[index].currentCharPtr++;
+                    break;
                 default:
                     break;
+
             }
 
         } while (i < linesToSkip);
@@ -1737,9 +1713,6 @@ void updateMessageBoxText(u16 index) {
                     
                     if ((messageBoxes[index].flags & MESSAGE_BOX_BUTTON_PRESSED) || (messageBoxes[index].flags & MESSAGE_BOX_SILENT)) {
                         
-                        // FIXME: dead code
-                        __asm__ __volatile__("" : : : "memory");
-                        
                         messageBoxes[index].flags &= ~0x4000;
                         messageBoxes[index].flags |= MESSAGE_BOX_TEXT_COMPLETE;
                         
@@ -1919,16 +1892,11 @@ void updateMessageBoxText(u16 index) {
 
 u16 readCompressedCharacter(u16 index) {
     
-    u8 buffer[2];
-    u32 padding[4];
-
     u16 character;
     
     u8 lower;
     u32 higher;
     
-    memcpy(buffer, controlByteBitMasks, 8);
-
     // every 8 characters, store control byte (which determines how to read 8 character stream)
     if ((messageBoxes[index].compressionBitIndex % 8) == 0) {
         messageBoxes[index].currentCompressionControlByte = *messageBoxes[index].currentCharPtr;        
@@ -1936,7 +1904,7 @@ u16 readCompressedCharacter(u16 index) {
     }
     
     // get two-byte value if needed
-    if (messageBoxes[index].currentCompressionControlByte & buffer[messageBoxes[index].compressionBitIndex % 8]) {
+    if (messageBoxes[index].currentCompressionControlByte & controlByteBitMasks[messageBoxes[index].compressionBitIndex % 8]) {
         
         lower = *messageBoxes[index].currentCharPtr;
         messageBoxes[index].currentCharPtr++;
@@ -2085,8 +2053,6 @@ Gfx* setupMessageBoxScissor(Gfx* dl, MessageBox* messageBox) {
     u16 ulx, uly, lrx, lry;
     u16 temp;
     
-    Gfx tempDl;
-
     *dl++ = D_8011EE98;
     *dl++ = D_8011EEA0;
 
@@ -2104,10 +2070,8 @@ Gfx* setupMessageBoxScissor(Gfx* dl, MessageBox* messageBox) {
     lry = uly + (messageBox->textBoxVisibleRows * messageBox->fontContext.characterCellHeight) 
         + (messageBox->textBoxVisibleRows * messageBox->lineSpacing);
 
-    gDPSetScissor(&tempDl, G_SC_NON_INTERLACE, ulx, uly, lrx, lry);
+    gDPSetScissor(dl++, G_SC_NON_INTERLACE, ulx, uly, lrx, lry);
     
-    *dl++ = tempDl;
-
     *dl++ = D_8011EEA8;
 
     return dl++;
@@ -2120,8 +2084,6 @@ Gfx* renderMessageBoxLine(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 ar
 
     FontBitmap sprite;
     
-    Gfx tempDl[2];
-    
     u16 charOffset;
 
     u32 flags;
@@ -2129,13 +2091,9 @@ Gfx* renderMessageBoxLine(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 ar
     u16 characterCount = 0;
     u8 i = 0;
     
-    u32 i2;
-    
     while (i < messageBox->textBoxLineCharWidth) {
 
-        // FIXME: seems fake
-        i2 = i; 
-        charOffset = i2 + (lineNumber * messageBox->textBoxLineCharWidth);
+        charOffset = i + (lineNumber * messageBox->textBoxLineCharWidth);
         
         unpackFontCI2Data(
             textBuffer[messageBox->totalCharactersProcessed + charOffset], 
@@ -2175,12 +2133,8 @@ Gfx* renderMessageBoxLine(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 ar
 
             dl = loadBitmapTexture(dl, (BitmapObject*)&sprite, 0, sprite.height);
             
-            // FIXME: likely wrapper around gSPVertex
-            gSPVertex(&tempDl[1], &fontVertices[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset][0], 4, 0);
+            gSPVertex(dl++, &fontVertices[gGraphicsBufferIndex][messageBox->totalCharactersProcessed + charOffset][0], 4, 0);
 
-            *tempDl = *(tempDl+1);
-            *dl++ = *tempDl;
-            
             // set triangle
             *dl++ = D_8011EEB0;
             // pipe sync
@@ -2493,8 +2447,10 @@ void updateMessageBox(void) {
         
     }
 
+#ifdef DEBUG
     if (dl - messageBoxDisplayList[gGraphicsBufferIndex] >= 3072) {
         __assert("EX", "s:/system/message.c", 2524);
     }
+#endif
     
 }

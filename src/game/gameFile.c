@@ -1017,11 +1017,9 @@ void gameSelectCallback(void) {
                 
                 // start existing game
                 if (loadGameScreenContext.flags[gCurrentGameIndex] & 2) {
-                    // set game state from sram
                     loadGameFromSram(gCurrentGameIndex, 0);
                     startGame();
                 } else {
-                    // start new game
                     initializeNewGameState();
                     initializeGameVariables();
                     initializeNamingScreen(gPlayer.name, 0);

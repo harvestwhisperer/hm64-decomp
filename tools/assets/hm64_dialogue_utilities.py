@@ -412,7 +412,7 @@ def generate_description(opcode: DialogueOpcode, args: List[int]) -> str:
     elif opcode == DialogueOpcode.JUMP_TO_DIALOGUE:
         return f"Branch to dialogue {args[0]}"
     elif opcode == DialogueOpcode.SHOW_SELECTION_MENU:
-        return f"Show sub-dialogue box with text {args[0]}"
+        return f"Show selection menu with text {args[0]}"
     elif opcode == DialogueOpcode.HANDLE_MENU_SELECTION_BRANCH:
         return f"Set unk_18={args[0]}, branching_dialogue={args[1]}"
     elif opcode == DialogueOpcode.END_DIALOGUE:

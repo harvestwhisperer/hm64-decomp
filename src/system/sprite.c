@@ -72,29 +72,29 @@ void resetBitmaps(void) {
 //INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapWithSize);
 
 // unused
-u16 setBitmapWithSize(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u32 arg6, u32 arg7, u16 flags) {
+// u16 setBitmapWithSize(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u32 arg6, u32 arg7, u16 flags) {
     
-    u16 result;
+//     u16 result;
     
-    result = bitmapCounter;  
+//     result = bitmapCounter;  
      
-    if (bitmapCounter < MAX_BITMAPS) {
-        bitmaps[bitmapCounter].timg = timg;
-        bitmaps[bitmapCounter].pal = pal;
-        bitmaps[bitmapCounter].width = width;
-        bitmaps[bitmapCounter].height = height;
-        bitmaps[bitmapCounter].fmt = fmt;
-        bitmaps[bitmapCounter].pixelSize = size; 
-        bitmaps[bitmapCounter].flags = flags | 1;
-        bitmaps[bitmapCounter].renderingFlags = 0;
-        bitmapCounter++;
-    } else { 
-        result = 0xFFFF;
-    }
+//     if (bitmapCounter < MAX_BITMAPS) {
+//         bitmaps[bitmapCounter].timg = timg;
+//         bitmaps[bitmapCounter].pal = pal;
+//         bitmaps[bitmapCounter].width = width;
+//         bitmaps[bitmapCounter].height = height;
+//         bitmaps[bitmapCounter].fmt = fmt;
+//         bitmaps[bitmapCounter].pixelSize = size; 
+//         bitmaps[bitmapCounter].flags = flags | 1;
+//         bitmaps[bitmapCounter].renderingFlags = 0;
+//         bitmapCounter++;
+//     } else { 
+//         result = 0xFFFF;
+//     }
     
-    return result;
+//     return result;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmap);
 

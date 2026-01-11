@@ -1,16 +1,23 @@
-import argparse
 import csv
-import json
-import numpy as np
-import os
 import re
 import sys
-
+import numpy as np
 from pathlib import Path
+
+# =============================================================================
+# Configuration
+# =============================================================================
 
 ROM_PATH = Path(__file__).parent / "../../baserom.us.z64"
 CSV_PATH = Path(__file__).parent / "text_addresses.csv"
 SELECTION_SEGMENTS_CSV_PATH = Path(__file__).parent / "text_selection_segments.csv"
+
+# Banks where the LAST segment contains junk data (not real text)
+# These are artifacts from original ROM and should not be extracted
+JUNK_DATA_BANKS = {
+    'ann', 'elli', 'farmVisits', 'jeff', 'maria',
+    'popuri', 'shop', 'text54', 'text65', 'tv'
+}
 
 VERBOSE = "--verbose" in sys.argv
 
@@ -52,9 +59,13 @@ def load_selection_segments() -> set:
 
 rom = None
 
-def set_rom():
+def init_rom():
     global rom
     rom = memoryview(ROM_PATH.read_bytes())
+
+# =============================================================================
+# Character Map
+# =============================================================================
 
 CHAR_MAP = {
 
@@ -335,22 +346,25 @@ CHAR_MAP = {
     0x2A0: '↗', 0x2A1: '↙',
 }
 
+
+# =============================================================================
+# Control Codes
+# =============================================================================
+
 CONTROL_CODES = {
     0: 'LINEBREAK',
     1: 'SOFTBREAK',
     2: 'TEXTEND',
-    3: 'WAIT',  # Followed by 1-byte duration parameter
+    3: 'WAIT',              # 1-byte duration parameter
     4: 'WAIT_WITH_ICON',
-    5: 'LOAD_TEXT',  # Followed by 2-byte text index
+    5: 'LOAD_TEXT',         # 2-byte text index
     6: 'RESERVED',
-    7: 'INSERT_GAMEVAR', # Followed by 1-byte string index
+    7: 'INSERT_GAMEVAR',    # 1-byte string index
     8: 'WAIT_VARIANT',
-    9: 'CHARACTER_AVATAR', # Followed by 1-byte animation index
+    9: 'CHARACTER_AVATAR',  # 1-byte animation index
 }
 
-# Game Variable String macros - maps index to semantic name
-# Based on setGameVariableString() calls in initialize.c and other files
-# These are the primary/default meanings; some screens repurpose indices
+# Game variable macro names
 GAMEVAR_MACROS = {
     0x00: 'PLAYER_NAME',
     0x01: 'FARM_NAME',
@@ -365,16 +379,15 @@ GAMEVAR_MACROS = {
     0x0A: 'FARM_ANIMAL_6_NAME',
     0x0B: 'FARM_ANIMAL_7_NAME',
     0x0C: 'FARM_ANIMAL_8_NAME',
-    0x0D: 'CURRENT_ANIMAL_NAME',      # Set dynamically by animals.c (chicken or farm animal)
-    0x0E: 'BEST_COW_NAME',            # Cow with highest affection (cutscenes.c)
+    0x0D: 'CURRENT_ANIMAL_NAME',
+    0x0E: 'BEST_COW_NAME',
     0x0F: 'WIFE_NAME',
-    0x10: 'UNUSED_10',
-    0x11: 'TOOL_USE_COUNTER',         # Watering can/seed use counter
+    0x11: 'TOOL_USE_COUNTER',
     0x12: 'PRICE',
     0x13: 'DEAD_ANIMAL_NAME',
     0x14: 'CURRENT_SEASON_NAME',
-    0x15: 'DATE_NUMBER',              # Anniversary/birth countdown/death date
-    0x16: 'WIFE_NAME_2',              # Duplicate wife name slot
+    0x15: 'DATE_NUMBER',
+    0x16: 'WIFE_NAME_2',
     0x17: 'FODDER_AMOUNT',
     0x18: 'LUMBER_AMOUNT',
     0x19: 'CHICKEN_1_NAME',
@@ -385,16 +398,16 @@ GAMEVAR_MACROS = {
     0x1E: 'CHICKEN_6_NAME',
     0x1F: 'HORSE_RACE_MEDALS',
     0x20: 'HARVEST_KING_NAME',
-    0x21: 'NUMBER_21',                # Some 2-digit number
+    0x21: 'NUMBER_21',
     0x22: 'UNUSED_22',
     0x23: 'UNUSED_23',
     0x24: 'UNUSED_24',
-    0x25: 'MILK_TYPE',                # S/M/L/G milk type letter
-    0x26: 'ANIMAL_MOTHER_NAME',       # Set by levelInteractions.c for births
+    0x25: 'MILK_TYPE',
+    0x26: 'ANIMAL_MOTHER_NAME',
     0x27: 'UNUSED_27',
-    0x28: 'RACE_WINNER_1',            # Set by cutscenes.c for race results
+    0x28: 'RACE_WINNER_1',
     0x29: 'RACE_WINNER_2',
-    0x2A: 'RACER_1_NAME',             # Set by overlayScreens.c for race display
+    0x2A: 'RACER_1_NAME',
     0x2B: 'RACER_2_NAME',
     0x2C: 'RACER_3_NAME',
     0x2D: 'RACER_4_NAME',
@@ -402,7 +415,7 @@ GAMEVAR_MACROS = {
     0x2F: 'RACER_6_NAME',
     0x30: 'FLOWER_CARD_POINTS',
     0x31: 'BAKERY_CARD_POINTS',
-    0x32: 'AFFECTION_DISPLAY_1',      # Girls'/rivals' affection for photo album
+    0x32: 'AFFECTION_DISPLAY_1',
     0x33: 'AFFECTION_DISPLAY_2',
     0x34: 'AFFECTION_DISPLAY_3',
     0x35: 'AFFECTION_DISPLAY_4',
@@ -491,164 +504,73 @@ CHARACTER_AVATAR_MACRO_TO_INDEX = {v: k for k, v in CHARACTER_AVATAR_MACROS.item
 
 BIT_MASKS = [0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01]
 
-def get_offset_array(index_start, index_end):
+# Message box type to line width mapping
+MESSAGE_BOX_TYPES = {
+    'DEFAULT': 16,      # Main dialogue box
+    'MENU': 10,         # Overlay menus, lists
+    'NAMING_SCREEN': 6, # Naming screen input
+    'SELECTION': 16,    # Pink dialogue selection boxes
+}
 
-    if rom is None:
-        set_rom()
+# For inferring type from width - SELECTION uses same width as DEFAULT so not included
+LINE_WIDTH_TO_TYPE = {
+    16: 'DEFAULT',
+    10: 'MENU',
+    6: 'NAMING_SCREEN',
+}
 
-    num_entries = int((index_end - index_start) // 4)
-
-    offsets = np.frombuffer(rom, dtype=np.dtype(">u4"), count=num_entries, offset=index_start)
-
-    # handle offset arrays that have 0 padding at the end
-
-    # get indices of all non-zero elements 
-    nonzeros = np.nonzero(offsets)[0]
-    # get last non-zero index
-    last = nonzeros[-1] if len(nonzeros) > 0 else 0
-    
-    # trim original array
-    return offsets[:last+1]
-
-def set_text_segments(index_start: int, index_end: int, text_start: int) -> dict:
-
-    # Text data ends at the start of its own index table
-    text_end = index_start
-
-    # Maximum valid offset - offsets at or past this point to the index table
-    max_valid_offset = index_start - text_start
-
-    if VERBOSE == True:
-        print(f"Text bank layout:")
-        print(f"  Index: 0x{index_start:08X} - 0x{index_end:08X}")
-        print(f"  Text:  0x{text_start:08X} - 0x{text_end:08X}")
-        print(f"  Max valid offset: 0x{max_valid_offset:04X}")
-
-    index_size = index_end - index_start
-    index_count = index_size // 4
-
-    if VERBOSE == True:
-        print(f"  Index size: {index_size} bytes, {index_count} entries")
-
-    offsets = get_offset_array(index_start, index_end)
-
-    # Calculate start addresses and sizes for each valid text segment
-    segments = []
-
-    for idx, offset in enumerate(offsets):
-
-        start_address = text_start + offset
-
-        # Calculate size by getting difference between segments or between text_end and last segment
-        if idx + 1 < len(offsets):
-            next_offset = offsets[idx + 1]
-            # Cap next_offset at max_valid_offset to avoid reading into index table
-            if next_offset > max_valid_offset:
-                next_offset = max_valid_offset
-            next_start = text_start + next_offset
-            size = next_start - start_address
-        else:
-            # Last segment goes to the start of the index table
-            size = text_end - start_address
-
-        # Mark segments that point at or past the text data end as terminators
-        # These are kept for index table generation but have no extractable text
-        is_terminator = offset >= max_valid_offset
-
-        if size < 0:
-            if VERBOSE == True:
-                print(f"  WARNING: Segment {idx} has invalid size {size} bytes")
-            size = 0
-
-        if VERBOSE == True:
-            term_str = " (terminator)" if is_terminator else ""
-            print(f"  Segment {idx} (index {idx}): 0x{start_address:08X}, size {size} bytes{term_str}")
-
-        segments.append({
-            'index': idx,
-            'start_address': start_address,
-            'size': size,
-            'offset': offset,
-            'is_terminator': is_terminator
-        })
-    
-    return {
-        'index_count': index_count,
-        'segments': segments,
-        'index_start': index_start,
-        'index_end': index_end,
-        'text_start': text_start,
-        'text_end': text_end
-    }
+# =============================================================================
+# Text Decoder
+# =============================================================================
 
 class TextDecoder:
+    """Decodes compressed text data from ROM."""
 
     def __init__(self):
         self.position = 0
         self.char_counter = 0
         self.control_byte = 0
-        
+
     def decode_stream(self, byte_data):
-        """
-        Decode a byte stream into a list of decoded items.
-
-        Args:
-            byte_data: Bytes, hex string, or list of bytes
-
-        Always parses the entire segment including content after TEXTEND
-        (needed for detecting junk data that requires RAWBYTES).
-        """
-
+        """Decode a byte stream into a list of decoded items."""
         if isinstance(byte_data, str):
-            # Convert hex string to bytes
             byte_data = bytes.fromhex(byte_data.replace(' ', ''))
-
         elif isinstance(byte_data, list):
             byte_data = bytes(byte_data)
 
         self.position = 0
         self.char_counter = 0
         self.control_byte = 0
-        self._current_data = byte_data  # Store reference for parameter extraction
+        self._current_data = byte_data
         result = []
 
         while self.position < len(byte_data):
-
             decoded_value = self._decode_next_character(byte_data)
-
             if decoded_value is not None:
                 result.append(decoded_value)
-                
-        return result
-    
-    def _decode_next_character(self, data):
 
+        return result
+
+    def _decode_next_character(self, data):
         if self.position >= len(data):
             return None
-            
+
         # Read new control byte every 8 characters
         if self.char_counter % 8 == 0:
-
             if self.position >= len(data):
                 return None
-
             self.control_byte = data[self.position]
             self.position += 1
-            
+
         if self.position >= len(data):
             return None
-            
+
         # Check if this character position needs 2-byte encoding
         bit_index = self.char_counter % 8
         needs_two_bytes = (self.control_byte & BIT_MASKS[bit_index]) != 0
-        
-        if needs_two_bytes:
-            
-            # Read 2 bytes for control command
-            if self.position + 1 >= len(data):
 
-                # Not enough data for 2-byte read - this is an edge case at segment end
-                # Output remaining byte; round-trip check will catch if this causes issues
+        if needs_two_bytes:
+            if self.position + 1 >= len(data):
                 if self.position < len(data):
                     remaining_byte = data[self.position]
                     self.position += 1
@@ -658,218 +580,202 @@ class TextDecoder:
 
             byte1 = data[self.position]
             byte2 = data[self.position + 1]
-
             self.position += 2
+            result = byte1 | (byte2 << 8)
 
-            # byteswap 16-bit values
-            result = byte1 | (byte2 << 8) 
-            
             if result in CHAR_MAP:
                 decoded = CHAR_MAP[result]
-
             elif result == 0:
                 return None
-
             else:
-                # Invalid 2-byte code - preserve as [WORD:0xXXXX] for round-trip
-                # The transpiler will encode this as a 2-byte value (control bit set)
                 decoded = f'[WORD:0x{result:04X}]'
-                
         else:
-            # Read 1 byte
             byte_val = data[self.position]
             self.position += 1
-    
             result = byte_val
             decoded = self._decode_character(result)
-            
+
         self.char_counter += 1
-            
         return decoded
-    
+
     def _extract_parameter(self, control_code):
-        """Extract parameter bytes that follow certain control codes"""
-        
-        if control_code == 5:  # LOAD_TEXT - 2-byte little-endian parameter
-        
+        """Extract parameter bytes that follow certain control codes."""
+        if control_code == 5:  # LOAD_TEXT - 2-byte little-endian
             if hasattr(self, '_current_data') and self.position + 1 < len(self._current_data):
-                
                 byte1 = self._current_data[self.position]
                 byte2 = self._current_data[self.position + 1]
-                
                 self.position += 2
-
-                # DON'T increment char_counter here - it messes up control byte timing
-                param = byte1 | (byte2 << 8)  # Little endian
-    
-                return param    
-        
-        elif control_code in [3, 7, 9]:  # WAIT, INSERT_GAMEVAR, CHAR_ANIMATION - 1-byte parameter
-
+                return byte1 | (byte2 << 8)
+        elif control_code in [3, 7, 9]:  # WAIT, INSERT_GAMEVAR, CHARACTER_AVATAR
             if hasattr(self, '_current_data') and self.position < len(self._current_data):
-
                 param = self._current_data[self.position]
                 self.position += 1
-
-                # don't increment char_counter here
-
                 return param
-
         return None
-    
+
     def _decode_character(self, value):
-
         if value in CONTROL_CODES:
-
             control_name = CONTROL_CODES[value]
-
-            # Extract parameter if this control code needs one
             param = self._extract_parameter(value)
-
             if param is not None:
                 return {'type': 'control', 'code': value, 'name': control_name, 'parameter': param}
             else:
                 return {'type': 'control', 'code': value, 'name': control_name}
-            
         elif value in CHAR_MAP:
             return {'type': 'character', 'value': CHAR_MAP[value]}
         else:
-            # Show both the raw value and after -0xB
             font_index = value - 0xB if value >= 0xB else value
             return {'type': 'unknown', 'raw': value, 'font_index': font_index}
-    
-    def decode_and_format(self, byte_data):
-        """
-        Decode and format as readable text.
-        """
 
+    def decode_and_format_mod(self, byte_data):
+        """
+        Decode and format for modding (no BLOCK_END, stops at TEXTEND).
+        """
         decoded = self.decode_stream(byte_data)
         result = []
-        seen_textend = False
-        post_textend_bytes = []
 
         for item in decoded:
-
             if isinstance(item, dict):
-
                 if item['type'] == 'control':
-
                     if 'parameter' in item:
-                        if seen_textend:
-                            # Control codes after TEXTEND - store the raw code for byte-matching
-                            post_textend_bytes.append(item['code'])
+                        if item['name'] == 'INSERT_GAMEVAR' and item['parameter'] in GAMEVAR_MACROS:
+                            result.append(f"[{GAMEVAR_MACROS[item['parameter']]}]")
+                        elif item['name'] == 'CHARACTER_AVATAR' and item['parameter'] in CHARACTER_AVATAR_MACROS:
+                            result.append(f"[CHARACTER_AVATAR:{CHARACTER_AVATAR_MACROS[item['parameter']]}]")
+                        elif item['name'] in ('WAIT', 'CHARACTER_AVATAR', 'LOAD_TEXT'):
+                            result.append(f"[{item['name']}:{item['parameter']}]")
                         else:
-                            # Use macro names for INSERT_GAMEVAR if available
-                            if item['name'] == 'INSERT_GAMEVAR' and item['parameter'] in GAMEVAR_MACROS:
-                                result.append(f"[{GAMEVAR_MACROS[item['parameter']]}]")
-                            # Use macro names for CHARACTER_AVATAR if available
-                            elif item['name'] == 'CHARACTER_AVATAR' and item['parameter'] in CHARACTER_AVATAR_MACROS:
-                                result.append(f"[CHARACTER_AVATAR:{CHARACTER_AVATAR_MACROS[item['parameter']]}]")
-                            elif item['name'] in ('WAIT', 'CHARACTER_AVATAR', 'LOAD_TEXT'):
-                                result.append(f"[{item['name']}:{item['parameter']}]")
-                            else:
-                                result.append(f"[{item['name']}:{item['parameter']:02X}]")
+                            result.append(f"[{item['name']}:{item['parameter']:02X}]")
                     else:
-
                         if item['name'] == 'LINEBREAK':
-                            if seen_textend:
-                                # After TEXTEND, capture zero bytes for byte-matching
-                                post_textend_bytes.append(0)
-                                continue
-                            result.append('\n')  # Newline for readability; transpiler converts back
-
+                            result.append('\n')
                         elif item['name'] == 'TEXTEND':
-                            # Mark that we've seen TEXTEND - anything after is post-text data
-                            seen_textend = True
-                            # Don't output TEXTEND - transpiler auto-adds it
-
+                            # Stop at TEXTEND - ignore everything after
+                            break
                         else:
-                            if seen_textend:
-                                # Other control codes after TEXTEND
-                                post_textend_bytes.append(item['code'])
-                            else:
-                                # Keep other control codes explicit (SOFTBREAK, WAIT, etc.)
-                                result.append(f"[{item['name']}]")
-
+                            result.append(f"[{item['name']}]")
                 elif item['type'] == 'character':
-
-                    if seen_textend:
-                        # Characters after TEXTEND need to be preserved for byte-matching
-                        # Find the byte value for this character
-                        char = item['value']
-                        if char in REVERSE_CHAR_MAP:
-                            post_textend_bytes.append(REVERSE_CHAR_MAP[char])
-                    else:
-                        result.append(item['value'])
-
+                    result.append(item['value'])
                 elif item['type'] == 'unknown':
-                    if seen_textend:
-                        post_textend_bytes.append(item['raw'])
-                    else:
-                        result.append(f"[CHAR:0x{item['raw']:02X}→0x{item['font_index']:02X}]")
-
+                    if VERBOSE:
+                        print(f"  Skipping unknown char: 0x{item['raw']:02X}")
             else:
                 result.append(str(item))
 
-        # If there was content after TEXTEND, preserve it for byte-matching
-        # This includes trailing zeros which are part of the control block padding
-        if post_textend_bytes:
-            hex_str = ''.join(f'{b:02X}' for b in post_textend_bytes)
-            result.append(f'[BLOCK_END:{hex_str}]')
-
         return ''.join(result)
 
+# =============================================================================
+# ROM Reading Functions
+# =============================================================================
 
-REVERSE_CHAR_MAP = {v: k for k, v in CHAR_MAP.items()}
+def get_offset_array(index_start, index_end):
+    """Read offset array from ROM index table."""
+    if rom is None:
+        init_rom()
 
-# Message box type to line width mapping
-MESSAGE_BOX_TYPES = {
-    'DEFAULT': 16,      # Main dialogue box
-    'MENU': 10,         # Overlay menus, lists
-    'NAMING_SCREEN': 6, # Naming screen input
-    'SELECTION': 16,    # Pink dialogue selection boxes
-}
+    num_entries = int((index_end - index_start) // 4)
+    offsets = np.frombuffer(rom, dtype=np.dtype(">u4"), count=num_entries, offset=index_start)
 
-LINE_WIDTH_TO_TYPE = {v: k for k, v in MESSAGE_BOX_TYPES.items()}
+    # Handle offset arrays with 0 padding at the end
+    nonzeros = np.nonzero(offsets)[0]
+    last = nonzeros[-1] if len(nonzeros) > 0 else 0
+    return offsets[:last+1]
+
+
+def set_text_segments(index_start: int, index_end: int, text_start: int) -> dict:
+    """Calculate text segment info from index table."""
+    text_end = index_start
+    max_valid_offset = index_start - text_start
+
+    if VERBOSE:
+        print(f"Text bank layout:")
+        print(f"  Index: 0x{index_start:08X} - 0x{index_end:08X}")
+        print(f"  Text:  0x{text_start:08X} - 0x{text_end:08X}")
+
+    offsets = get_offset_array(index_start, index_end)
+    segments = []
+
+    for idx, offset in enumerate(offsets):
+        start_address = text_start + offset
+
+        if idx + 1 < len(offsets):
+            next_offset = offsets[idx + 1]
+            if next_offset > max_valid_offset:
+                next_offset = max_valid_offset
+            next_start = text_start + next_offset
+            size = next_start - start_address
+        else:
+            size = text_end - start_address
+
+        is_terminator = offset >= max_valid_offset
+
+        if size < 0:
+            size = 0
+
+        segments.append({
+            'index': idx,
+            'start_address': start_address,
+            'size': size,
+            'offset': offset,
+            'is_terminator': is_terminator
+        })
+
+    return {
+        'segments': segments,
+        'text_start': text_start,
+        'text_end': text_end
+    }
+
+
+def load_text_addresses() -> list:
+    """Load text bank addresses from CSV file."""
+    if not CSV_PATH.exists():
+        print(f"CSV file not found: {CSV_PATH}")
+        return []
+
+    text_banks = []
+    with open(CSV_PATH, 'r', newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            try:
+                text_banks.append({
+                    'name': row['name'].strip(),
+                    'index_start': int(row['index_start'], 16),
+                    'index_end': int(row['index_end'], 16),
+                    'text_start': int(row['text_start'], 16),
+                })
+            except (ValueError, KeyError) as e:
+                print(f"Error parsing CSV row {row}: {e}")
+                continue
+
+    return text_banks
+
+# =============================================================================
+# Line Width Inference
+# =============================================================================
 
 def infer_line_width(decoded_text: str) -> int:
-    """
-    Infer the line width from decoded text by finding the maximum
-    number of printable characters between linebreaks.
-    """
-
-    # SOFTBREAK is output as [SOFTBREAK], treat as line break for width calculation
+    """Infer line width from decoded text."""
     text = decoded_text.replace('[SOFTBREAK]', '\n')
-
-    # Remove control codes for character counting (they don't take display space)
-    # Pattern matches [NAME] or [NAME:123] style codes (including macros with digits like FARM_ANIMAL_1_NAME)
     control_pattern = re.compile(r'\[[A-Z_0-9]+(?::[0-9]+)?\]')
 
     max_width = 0
     for line in text.split('\n'):
-        # Remove control codes from line for accurate character count
         clean_line = control_pattern.sub('', line)
-        # Count visible characters
         char_count = len(clean_line)
         if char_count > max_width:
             max_width = char_count
 
-    # Return inferred width, or default to 16 if empty/no linebreaks
     return max_width if max_width > 0 else 16
 
-def infer_message_box_type(decoded_text: str) -> str:
-    """
-    Infer the MESSAGE_BOX_TYPE from decoded text based on line widths.
 
-    Returns the type name (DEFAULT, MENU, NAMING_SCREEN) or DEFAULT if unknown.
-    """
+def infer_message_box_type(decoded_text: str) -> str:
+    """Infer MESSAGE_BOX_TYPE from line widths."""
     line_width = infer_line_width(decoded_text)
 
-    # Try exact match first
     if line_width in LINE_WIDTH_TO_TYPE:
         return LINE_WIDTH_TO_TYPE[line_width]
 
-    # For non-standard widths, pick closest known type
     if line_width <= 6:
         return 'NAMING_SCREEN'
     elif line_width <= 10:
@@ -877,193 +783,102 @@ def infer_message_box_type(decoded_text: str) -> str:
     else:
         return 'DEFAULT'
 
-def decode_text_bank(index_start: int, index_end: int, text_start: int) -> list:
-    """
-    Decode a text bank from ROM.
+# =============================================================================
+# Extraction Functions
+# =============================================================================
 
-    Args:
-        index_start: ROM address of index table start
-        index_end: ROM address of index table end
-        text_start: ROM address of text data start
-
-    Returns list of decoded text segments with friendly formatting.
-    """
+def decode_text_bank_mod(index_start: int, index_end: int, text_start: int) -> list:
     
+    global rom
+
     if rom is None:
-        set_rom()
-    
+        init_rom()
+
     bank_info = set_text_segments(index_start, index_end, text_start)
     decoder = TextDecoder()
     decoded_texts = []
-    
+
     for segment in bank_info['segments']:
-
-        # Skip terminator segments - they mark the end of text data for index calculation
-        # but have no actual text content to decode
         if segment.get('is_terminator', False):
-            if VERBOSE == True:
-                print(f"Skipping terminator segment {segment['index']}: offset 0x{segment['offset']:04X}")
-            decoded_texts.append({
-                'index': segment['index'],
-                'start_address': f"0x{segment['start_address']:08X}",
-                'size': 0,
-                'actual_size': 0,
-                'offset': segment['offset'],
-                'is_terminator': True,
-                'decoded_text': '',
-                'raw_data': ''
-            })
+            if VERBOSE:
+                print(f"Skipping terminator segment {segment['index']}")
             continue
-
-        if VERBOSE == True:
-            print(f"Processing segment {segment['index']}: 0x{segment['start_address']:08X}, calculated size: {segment['size']}")
 
         segment_data = rom[segment['start_address']:segment['start_address'] + segment['size']]
         actual_size = len(segment_data)
 
-        if VERBOSE == True:
-            print(f"  Actual segment_data size: {actual_size} bytes")
-            if actual_size >= 16:
-                print(f"  Last 16 bytes: {segment_data[-16:].hex()}")
-                print(f"  First 16 bytes: {segment_data[:16].hex()}")
-
-        # Check if segment is all zeros (padding, not actual text content)
-        # These segments exist in the index but contain only padding bytes
+        # Check for all-zero padding segments - still include them as placeholders
         if actual_size > 0 and all(b == 0 for b in segment_data):
             if VERBOSE:
-                print(f"  Segment {segment['index']} is padding ({actual_size} bytes of zeros)")
+                print(f"Placeholder segment {segment['index']} ({actual_size} bytes of zeros)")
             decoded_texts.append({
                 'index': segment['index'],
                 'start_address': f"0x{segment['start_address']:08X}",
                 'size': segment['size'],
-                'actual_size': actual_size,
-                'offset': segment['offset'],
-                'is_padding': True,
-                'decoded_text': '',
-                'raw_data': segment_data[:50].hex()
+                'is_placeholder': True,
+                'decoded_text': ''
             })
             continue
 
         try:
+            decoded = decoder.decode_and_format_mod(segment_data)
 
-            if VERBOSE == True:
-                print(f"  Starting decode for segment {segment['index']}...")
-
-            decoded = decoder.decode_and_format(segment_data)
-
-            # There are some junk data segments at the end of a few text banks
-            # Check if undecodable data or junk/padding with malformed control bytes
-            needs_rawbytes = False
-
-            # Check contains unknown/invalid character codes
-            if re.search(r'\[CHAR:0x[0-9A-Fa-f]{2}\]', decoded) or re.search(r'\[WORD:0x[0-9A-Fa-f]{4}\]', decoded):
-                needs_rawbytes = True
-                if VERBOSE:
-                    print(f"  Segment {segment['index']} contains unknown character codes, using RAWBYTES")
-
-            # Ugly hack to get last shop junk text to generate raw bytes
-            # Check small segments and verify round-trip to catch malformed control bytes
-            # Only do small size to not trigger on normal texts
-            if not needs_rawbytes and len(segment_data) <= 16:
-                try:
-                    from hm64_text_transpiler import TextEncoder
-                    test_encoder = TextEncoder()
-                    # auto_textend=True because decode_and_format() omits TEXTEND
-                    # and we need to re-add it for proper round-trip comparison
-                    test_encoder.auto_textend = True
-                    # Strip trailing padding from comparison
-                    reencoded = test_encoder.encode_text(decoded)
-                    original_trimmed = bytes(segment_data).rstrip(b'\x00')
-                    reencoded_trimmed = reencoded.rstrip(b'\x00')
-                    if original_trimmed != reencoded_trimmed:
-                        needs_rawbytes = True
-                        if VERBOSE:
-                            print(f"  Segment {segment['index']} round-trip mismatch (junk data): {original_trimmed.hex()} vs {reencoded_trimmed.hex()}")
-                except Exception as e:
-                    if VERBOSE:
-                        print(f"  Could not verify round-trip for segment {segment['index']}: {e}")
-
-            if needs_rawbytes:
-                # Use RAWBYTES directive with the decoded text as interpretation
-                # This shows what the decoder was able to extract, even if imperfect
-                decoded = f'[RAWBYTES:{segment_data.hex()}]\n# Decoded interpretation: {decoded}'
-                if VERBOSE == True:
-                    print(f"  Segment {segment['index']} converted to RAWBYTES (contains unknown codes)")
-
-            if VERBOSE == True:
-                print(f"  Successfully decoded segment {segment['index']}")
+            # Even if decoded text is empty, keep the segment as a placeholder
+            # to maintain index alignment for dialogue bytecode references
+            is_placeholder = not decoded.strip()
+            if is_placeholder and VERBOSE:
+                print(f"Placeholder segment {segment['index']} (empty content)")
 
             decoded_texts.append({
                 'index': segment['index'],
                 'start_address': f"0x{segment['start_address']:08X}",
                 'size': segment['size'],
-                'actual_size': actual_size,
-                'offset': segment['offset'],
-                'decoded_text': decoded,
-                'raw_data': segment_data[:50].hex() + ('...' if segment['size'] > 50 else '')
+                'is_placeholder': is_placeholder,
+                'decoded_text': decoded
             })
 
         except Exception as e:
-            print(f"  Error decoding segment {segment['index']}: {e}")
+            print(f"Error decoding segment {segment['index']}: {e}")
             decoded_texts.append({
                 'index': segment['index'],
                 'start_address': f"0x{segment['start_address']:08X}",
                 'size': segment['size'],
-                'actual_size': actual_size,
-                'offset': segment['offset'],
                 'error': str(e),
-                'raw_data': segment_data[:50].hex() + ('...' if segment['size'] > 50 else '')
+                'decoded_text': ''
             })
-    
+
     return decoded_texts
 
-def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, output_dir: str = None) -> str:
-    """
-    Extract a text bank from ROM and write to individual text files.
 
-    Args:
-        index_start: ROM address of index table start
-        index_end: ROM address of index table end
-        text_start: ROM address of text data start
-        output_dir: Output directory name (optional)
+def write_text_bank_to_files_mod(index_start: int, index_end: int, text_start: int, output_dir: str = None) -> str:
+    """Extract a text bank to modder-friendly text files."""
+    global rom
 
-    Output format per file:
-        # MESSAGE_BOX_TYPE: DEFAULT
-        # Text Segment N
-        # Address: 0xXXXXXXXX
-        # Size: N bytes
-        <decoded text with newlines>
-    """
     if rom is None:
-        set_rom()
+        init_rom()
 
     if output_dir is None:
         output_dir = f"text-block-0x{text_start:08X}"
 
     assets_path = Path(__file__).parent.parent.parent / "assets" / "text"
     output_path = assets_path / output_dir
-
     output_path.mkdir(parents=True, exist_ok=True)
 
-    decoded_texts = decode_text_bank(index_start, index_end, text_start)
+    decoded_texts = decode_text_bank_mod(index_start, index_end, text_start)
 
     # Load selection segments to check if any segments are selection menus
     selection_segments = load_selection_segments()
     bank_name = output_dir  # The output_dir is the bank name
 
+    # Find the max segment index to identify the last segment
+    max_segment_index = max(t['index'] for t in decoded_texts) if decoded_texts else -1
+
     files_written = 0
     for text_info in decoded_texts:
-
-        # Skip terminator segments - they have no text content to write
-        if text_info.get('is_terminator', False):
+        # Skip junk data: last segment in specific banks
+        if bank_name in JUNK_DATA_BANKS and text_info['index'] == max_segment_index:
             if VERBOSE:
-                print(f"Skipping terminator segment {text_info['index']} (no file created)")
-            continue
-
-        # Skip padding segments - all zeros, no text content
-        if text_info.get('is_padding', False):
-            if VERBOSE:
-                print(f"Skipping padding segment {text_info['index']} ({text_info['size']} bytes of zeros)")
+                print(f"Skipping junk data segment {text_info['index']} in {bank_name}")
             continue
 
         filename = f"text{text_info['index']:03d}.txt"
@@ -1071,19 +886,19 @@ def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, 
 
         with open(file_path, 'w', encoding='utf-8') as f:
             decoded_text = text_info.get('decoded_text', '')
+            is_placeholder = text_info.get('is_placeholder', False)
 
             # Check if this segment is a selection menu (from CSV)
             if (bank_name, text_info['index']) in selection_segments:
                 box_type = 'SELECTION'
             else:
-                # Infer MESSAGE_BOX_TYPE from line widths
                 box_type = infer_message_box_type(decoded_text)
+
             f.write(f"# MESSAGE_BOX_TYPE: {box_type}\n")
 
-            # Segment metadata (for reference, not used by transpiler)
-            f.write(f"# Text Segment {text_info['index']}\n")
-            f.write(f"# Address: {text_info['start_address']}\n")
-            f.write(f"# Size: {text_info['size']} bytes\n")
+            # Mark placeholder segments (empty/padding) for index alignment
+            if is_placeholder:
+                f.write("# PLACEHOLDER: Empty segment for index alignment\n")
 
             if 'error' in text_info:
                 f.write(f"# ERROR: {text_info['error']}\n")
@@ -1092,272 +907,106 @@ def write_text_bank_to_files(index_start: int, index_end: int, text_start: int, 
 
         files_written += 1
 
-    # Write bank metadata file with terminator/padding info for the transpiler
-    metadata_path = output_path / "_metadata.txt"
-    with open(metadata_path, 'w', encoding='utf-8') as f:
-        f.write("# Text Bank Metadata\n")
-        f.write(f"# INDEX_START: 0x{index_start:08X}\n")
-        f.write(f"# INDEX_END: 0x{index_end:08X}\n")
-        f.write(f"# TEXT_START: 0x{text_start:08X}\n")
-        f.write(f"# TOTAL_SEGMENTS: {len(decoded_texts)}\n")
-        f.write("\n")
+    print(f"Wrote {files_written} text files to: {output_path}")
+    return str(output_path)
 
-        # List terminator segments (segments with no text content that mark end of data)
-        terminators = [t for t in decoded_texts if t.get('is_terminator', False)]
-        if terminators:
-            f.write("# Terminator segments (index table entries with no text data):\n")
-            for term in terminators:
-                f.write(f"TERMINATOR: {term['index']}\n")
-            f.write("\n")
 
-        # List padding segments (all-zero segments, transpiler emits .space N)
-        padding_segments = [t for t in decoded_texts if t.get('is_padding', False)]
-        if padding_segments:
-            f.write("# Padding segments (all zeros, no text file generated):\n")
-            for pad in padding_segments:
-                f.write(f"PADDING: {pad['index']} SIZE: {pad['size']}\n")
-
-    print(f"Wrote {files_written} text files to directory: {output_path.absolute()}")
-
-    return str(output_path.absolute())
-
-def load_text_addresses() -> list:
-
-    if not CSV_PATH.exists():
-        print(f"CSV file not found: {CSV_PATH}")
-        return []
-    
-    text_banks = []
-
-    with open(CSV_PATH, 'r', newline='', encoding='utf-8') as csvfile:
-
-        reader = csv.DictReader(csvfile)
-        
-        for row in reader:
-
-            try:
-                index_start = int(row['index_start'], 16)
-                index_end = int(row['index_end'], 16)
-                text_start = int(row['text_start'], 16)
-                game_index = int(row['game_index']) if 'game_index' in row else 0
-                
-                text_banks.append({
-                    'name': row['name'].strip(),
-                    'index_start': index_start,
-                    'index_end': index_end,
-                    'text_start': text_start,
-                    'game_index': game_index
-                })
-                
-            except (ValueError, KeyError) as e:
-                print(f"Error parsing CSV row {row}: {e}")
-                continue
-    
-    return text_banks
-
-def process_all_text_banks(command: str = 'write_files'):
-
+def process_all_text_banks_mod():
+    """Extract all text banks for modding."""
     text_banks = load_text_addresses()
 
     if not text_banks:
         print("No text banks found in CSV file.")
         return
-    
-    if VERBOSE == True:
-        print(f"Found {len(text_banks)} text banks in {CSV_PATH}")
-    
+
+    print(f"Extracting {len(text_banks)} text banks for modding...")
+
     for bank in text_banks:
-
-        if VERBOSE == True:
+        if VERBOSE:
             print(f"\n--- Processing '{bank['name']}' ---")
-            print(f"Index: 0x{bank['index_start']:08X} - 0x{bank['index_end']:08X}")
-            print(f"Text:  0x{bank['text_start']:08X} - 0x{bank['index_start']:08X}")
-        
+
         try:
-
-            if command == 'write_files':
-                output_path = write_text_bank_to_files(bank['index_start'], bank['index_end'], bank['text_start'], bank['name'])
-                print(f"Files written to: {output_path}")
-
-            elif command == 'decode_bank':
-                decoded_texts = decode_text_bank(bank['index_start'], bank['index_end'], bank['text_start'])
-                
-            elif command == 'analyze_bank':
-                set_rom()
-                bank_info = set_text_segments(bank['index_start'], bank['index_end'], bank['text_start'])
-                
-                if VERBOSE == True:
-                    print(f"  Total segments: {bank_info['index_count']}")
-                
+            write_text_bank_to_files_mod(
+                bank['index_start'],
+                bank['index_end'],
+                bank['text_start'],
+                bank['name']
+            )
         except Exception as e:
             print(f"Error processing '{bank['name']}': {e}")
 
-def main():
+# =============================================================================
+# Main
+# =============================================================================
 
+def main():
     if len(sys.argv) < 2:
+        print("HM64 Text Utilities (Modding Version) - Standalone")
+        print("")
         print("Usage:")
-        print("  python hm64_text_utilities.py extract_bank <bank_name>")
-        print("  python hm64_text_utilities.py decode_bank <index_start> <index_end> <text_start>")
-        print("  python hm64_text_utilities.py analyze_bank <index_start> <index_end> <text_start>")
-        print("  python hm64_text_utilities.py write_files <index_start> <index_end> <text_start> [output_dir]")
-        print("  python hm64_text_utilities.py process_all [write_files|decode_bank|analyze_bank]")
-        print("  python hm64_text_utilities.py list_banks")
+        print("  python hm64_text_utilities_mod.py extract_bank <bank_name>")
+        print("  python hm64_text_utilities_mod.py extract_all")
+        print("  python hm64_text_utilities_mod.py list_banks")
         print("")
         print("Options:")
         print("  --verbose   Enable verbose output")
+        print("")
+        print("This produces modder-friendly text files without BLOCK_END commands")
+        print("or metadata files. Use with hm64_text_transpiler_mod.py for building.")
         sys.exit(1)
 
     cmd = sys.argv[1]
 
     if cmd == "extract_bank":
-
-        # Extract a single bank by name (looks up addresses in CSV)
         if len(sys.argv) >= 3:
-            
             bank_name = sys.argv[2]
-            
             text_banks = load_text_addresses()
-            
+
             if not text_banks:
                 print("ERROR: Could not load text bank addresses from CSV")
                 sys.exit(1)
-            
-            # Find the requested bank
+
             bank_info = None
             for bank in text_banks:
                 if bank['name'] == bank_name:
                     bank_info = bank
                     break
-            
+
             if bank_info is None:
-                print(f"ERROR: Text bank '{bank_name}' not found in CSV")
+                print(f"ERROR: Text bank '{bank_name}' not found")
                 print("Available banks:")
                 for bank in text_banks:
                     print(f"  - {bank['name']}")
                 sys.exit(1)
-            
-            if VERBOSE:
-                print(f"Extracting text bank '{bank_name}':")
-                print(f"  Index: 0x{bank_info['index_start']:08X} - 0x{bank_info['index_end']:08X}")
-                print(f"  Text:  0x{bank_info['text_start']:08X}")
-            
-            output_path = write_text_bank_to_files(
+
+            output_path = write_text_bank_to_files_mod(
                 bank_info['index_start'],
                 bank_info['index_end'],
                 bank_info['text_start'],
                 bank_name
             )
-
             print(f"Extracted to: {output_path}")
-            
         else:
             print("Please provide a bank name")
-            print("Use 'list_banks' to see available banks")
             sys.exit(1)
 
-    elif cmd == "decode_bank":
+    elif cmd == "extract_all":
+        process_all_text_banks_mod()
 
-        if len(sys.argv) >= 5:
-
-            index_start = int(sys.argv[2], 16)
-            index_end = int(sys.argv[3], 16)
-            text_start = int(sys.argv[4], 16)
-            
-            print(f"Decoding text bank:")
-            print(f"Index: 0x{index_start:08X} - 0x{index_end:08X}")
-            print(f"Text:  0x{text_start:08X}")
-            
-            decoded_texts = decode_text_bank(index_start, index_end, text_start)
-            
-            for text_info in decoded_texts:
-                
-                print(f"\n--- Text {text_info['index']} ---")
-                print(f"Address: {text_info['start_address']}")
-                print(f"Size: {text_info['size']} bytes")
-                
-                if 'error' in text_info:
-                    print(f"Error: {text_info['error']}")
-                else:
-                    print(f"Text: {text_info['decoded_text']}")
-
-                print(f"Raw data: {text_info['raw_data']}")
-                
-        else:
-            print("Please provide index_start, index_end, and text_start addresses in hex")
-            sys.exit(1)
-            
-    elif cmd == "analyze_bank":
-
-        if len(sys.argv) >= 5:
-
-            index_start = int(sys.argv[2], 16)
-            index_end = int(sys.argv[3], 16)
-            text_start = int(sys.argv[4], 16)
-            
-            set_rom()
-            bank_info = set_text_segments(index_start, index_end, text_start)
-            
-            print(f"Text Bank Analysis:")
-            print(f"Index: 0x{index_start:08X} - 0x{index_end:08X}")
-            print(f"Text:  0x{text_start:08X}")
-            print(f"Total segments: {bank_info['index_count']}")
-            print(f"\nSegment breakdown:")
-            
-            for segment in bank_info['segments']:
-                print(f"  {segment['index']:3d}: 0x{segment['start_address']:08X} (offset +0x{segment['offset']:04X}) - {segment['size']:4d} bytes")
-                
-        else:
-            print("Please provide index_start, index_end, and text_start addresses in hex")
-            sys.exit(1)
-            
-    elif cmd == "write_files":
-
-        if len(sys.argv) >= 5:
-        
-            index_start = int(sys.argv[2], 16)
-            index_end = int(sys.argv[3], 16)
-            text_start = int(sys.argv[4], 16)
-            
-            # Optional custom directory name
-            output_dir = sys.argv[5] if len(sys.argv) >= 6 else None
-            
-            print(f"Writing text bank files:")
-            print(f"Index: 0x{index_start:08X} - 0x{index_end:08X}")
-            print(f"Text:  0x{text_start:08X}")
-            
-            output_path = write_text_bank_to_files(index_start, index_end, text_start, output_dir)
-            print(f"Files written to: {output_path}")
-            
-        else:
-            print("Please provide index_start, index_end, and text_start addresses in hex")
-            sys.exit(1)
-            
-    elif cmd == "process_all":
-
-        command = sys.argv[2] if len(sys.argv) >= 3 else 'write_files'
-        
-        if command not in ['write_files', 'decode_bank', 'analyze_bank']:
-            print(f"Unknown command for process_all: {command}")
-            print("Available commands: write_files, decode_bank, analyze_bank")
-            sys.exit(1)
-
-        process_all_text_banks(command)
-        
     elif cmd == "list_banks":
-
         text_banks = load_text_addresses()
-
         if not text_banks:
             print("No text banks found in CSV file.")
         else:
-            print(f"Text banks found in {CSV_PATH}:")
+            print(f"Text banks in {CSV_PATH}:")
             for i, bank in enumerate(text_banks):
-                game_idx = f"(game:{bank['game_index']:02X})" if 'game_index' in bank else ""
-                print(f"  {i+1:2d}. {bank['name']:15s} {game_idx:10s} Index: 0x{bank['index_start']:08X}-0x{bank['index_end']:08X} Text: 0x{bank['text_start']:08X}-0x{bank['index_start']:08X}")
-    
+                print(f"  {i+1:2d}. {bank['name']}")
+
     else:
         print(f"Unknown command: {cmd}")
-        print("Available commands: extract_bank, decode_bank, analyze_bank, write_files, process_all, list_banks")
+        print("Available commands: extract_bank, extract_all, list_banks")
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

@@ -11,6 +11,7 @@
 #include "system/globalSprites.h"
 
 #include "game/animals.h"
+#include "game/cutscenes.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStart.h"
@@ -29,18 +30,8 @@
 #include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
 
-
-// FIXME:
-// instead of including the header, defining here because loadCutscene(u32) doesn't match in namingScreenCallback
-extern void loadCutscene(void);
-extern u16 gCutsceneIndex;
-
 // bss
 NamingScreenContext namingScreenContext;
-
-// this is a hack to get the original total bss size for the main code segment
-// bss addresses are assigned partially via their alphabetical order (z = to ensure last in this case)
-u8 z[0xFAC20];
 
 // data
 // japanese strings
@@ -300,7 +291,7 @@ void namingScreenCallback(void) {
                      
                     gCutsceneIndex = 0x28B;
                      
-                    loadCutscene();
+                    loadCutscene(FALSE);
                      
                     exitOverlayScreen();
                     setLevelLighting(8, MAIN_GAME);
@@ -334,7 +325,7 @@ void namingScreenCallback(void) {
                             break;
                         }
                      
-                        loadCutscene();
+                        loadCutscene(FALSE);
 
                         exitOverlayScreen();
                         setLevelLighting(8, MAIN_GAME);
@@ -839,11 +830,8 @@ void moveCursorRight(void) {
         }
 
     } else {
-        // FIXME: probably different control flow
-        do {} while (0);
         namingScreenContext.cursor.x = -126.0f;
         namingScreenContext.shadow.x = -116.0f;
-
     }
 
     updateBottomRowUI();
@@ -935,100 +923,92 @@ void moveCursorDown(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", checkNameProhibited);
-
-// unused or inline
-bool checkNameProhibited(void) {
+// bool checkNameProhibited(void) {
     
-    bool processingChar;
-    bool doneProcessingWord;
-    int processedWordCount;
+//     bool processingChar;
+//     bool doneProcessingWord;
+//     int processedWordCount;
     
-    int spaceChar;
-    int endChar;
-    int endWord;
+//     int spaceChar;
+//     int endChar;
+//     int endWord;
     
-    u8 *currentNamePtr;
-    u8 *D_8011C680_ptr;
-    u8 *D_8011C680_stringPtr;
-    u8 *namingScreenContextNamePtr;
+//     u8 *currentNamePtr;
+//     u8 *D_8011C680_ptr;
+//     u8 *D_8011C680_stringPtr;
+//     u8 *namingScreenContextNamePtr;
     
-    processedWordCount = 0;
-    namingScreenContextNamePtr = namingScreenContext.name;
+//     processedWordCount = 0;
+//     namingScreenContextNamePtr = namingScreenContext.name;
     
-    spaceChar = 0xEE;
-    endChar = 0xFF;
+//     spaceChar = 0xEE;
+//     endChar = 0xFF;
     
-    D_8011C680_ptr = D_8011C680;
+//     D_8011C680_ptr = D_8011C680;
     
-    while (processedWordCount < 13) {
+//     while (processedWordCount < 13) {
         
-        // FIXME: fake
-        do { 
-            processingChar = 0; 
-            doneProcessingWord = 0; 
-            D_8011C680_stringPtr = D_8011C680_ptr; 
-        } while (0);
+//         processingChar = 0; 
+//         doneProcessingWord = 0; 
+//         D_8011C680_stringPtr = D_8011C680_ptr; 
         
-        currentNamePtr = namingScreenContextNamePtr;
-        endWord = D_8011C680_stringPtr + 6;
+//         currentNamePtr = namingScreenContextNamePtr;
+//         endWord = D_8011C680_stringPtr + 6;
         
-        do {
+//         do {
         
-            if (processingChar || (*currentNamePtr == 0xEE || *currentNamePtr == 0xFF) == 0) {
+//             if (processingChar || (*currentNamePtr == 0xEE || *currentNamePtr == 0xFF) == 0) {
                 
-                processingChar = TRUE;
+//                 processingChar = TRUE;
                 
-                if (*currentNamePtr != *D_8011C680_stringPtr) {
+//                 if (*currentNamePtr != *D_8011C680_stringPtr) {
                     
-                    if (*currentNamePtr != spaceChar) {
-                        doneProcessingWord = TRUE;
-                        break;
-                    } else if (*D_8011C680_stringPtr != endChar) {
-                        doneProcessingWord = TRUE;
-                        break;
-                    }
+//                     if (*currentNamePtr != spaceChar) {
+//                         doneProcessingWord = TRUE;
+//                         break;
+//                     } else if (*D_8011C680_stringPtr != endChar) {
+//                         doneProcessingWord = TRUE;
+//                         break;
+//                     }
                     
-                } else {
+//                 } else {
                 
-                    D_8011C680_stringPtr++;
-                    currentNamePtr++;
-                    continue;
+//                     D_8011C680_stringPtr++;
+//                     currentNamePtr++;
+//                     continue;
                 
-                }
+//                 }
                 
-            }
+//             }
                     
-            D_8011C680_stringPtr++;
+//             D_8011C680_stringPtr++;
         
-            // FIXME
-            if (*D_8011C680_ptr) {
-                currentNamePtr++;
-            } else {
-                currentNamePtr++;
-            }
+//             // FIXME
+//             if (*D_8011C680_ptr) {
+//                 currentNamePtr++;
+//             } else {
+//                 currentNamePtr++;
+//             }
         
-        } while ((s32)D_8011C680_stringPtr < (s32)endWord);
+//         } while ((s32)D_8011C680_stringPtr < (s32)endWord);
             
-        if (doneProcessingWord) {
+//         if (doneProcessingWord) {
             
-            processedWordCount++;
-            // skip to next word
-            D_8011C680_ptr += 6;
+//             processedWordCount++;
+//             // skip to next word
+//             D_8011C680_ptr += 6;
         
-            if (processedWordCount >= 13) {
-                return TRUE;
-            }
+//             if (processedWordCount >= 13) {
+//                 return TRUE;
+//             }
         
-        } else {
-            return FALSE;
-        }
+//         } else {
+//             return FALSE;
+//         }
         
-    }
+//     }
     
-}
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", deactivateNamingScreenSprites);
+// }
 
 void deactivateNamingScreenSprites(void) {
 
@@ -1041,20 +1021,6 @@ void deactivateNamingScreenSprites(void) {
     
 }
 
-// alternate
-/*
-void deactivateNamingScreenSprites(void) {
-
-    s32 i;
-
-    for (i = 0x80; i < 0x92; i++) {
-        deactivateSprite(i);
-    } 
-    
-}
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", updateBottomRowUI);
 
 void updateBottomRowUI(void) {
 
