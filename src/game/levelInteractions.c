@@ -798,7 +798,9 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
         // diary
         case 0x10:
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(0x15)) {
+            // add this back in if not skipping mayor tour:
+            // && checkLifeEventBit(MAYOR_TOUR)
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && !checkDailyEventBit(0x15)) {
                 showPinkOverlayText(0);
                 result = TRUE; 
             }

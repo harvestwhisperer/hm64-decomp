@@ -96,7 +96,7 @@ void handleTimeUpdates(void) {
 void updateClock(u8 incrementSeconds) {
 
     if (incrementSeconds == TRUE) {
-        gSeconds += 10;
+        gSeconds += 2;
     }
     
     if (gSeconds >= 60) {

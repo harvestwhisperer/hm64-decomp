@@ -465,14 +465,16 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
     bool set = FALSE;
     u16 result = 0xFFFF;
     u8 tempGirl;
-    
-    if (!checkLifeEventBit(MAYOR_TOUR)) {
-        setLifeEventBit(MAYOR_TOUR);
-        gCutsceneIndex = MAYOR_VILLAGE_TOUR;
-        gCutsceneFlags |= 2;
-        loadCutscene(morningVisit);
-        set = TRUE;
-    }
+
+    // skip day 1 mayor tour
+
+    // if (!checkLifeEventBit(MAYOR_TOUR)) {
+    //     setLifeEventBit(MAYOR_TOUR);
+    //     gCutsceneIndex = MAYOR_VILLAGE_TOUR;
+    //     gCutsceneFlags |= 2;
+    //     loadCutscene(morningVisit);
+    //     set = TRUE;
+    // }
 
     if (gSpawnPointIndex != 0x6F) {
         

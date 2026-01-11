@@ -560,6 +560,34 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
 
 }
 
+u8 getMusicIndexForMap(u8 mapIndex, u8 season, u8 hour) {
+
+    u32 nightOffset;
+
+    if (gWeather == RAIN) {
+        return RAIN_SFX;
+    }
+
+    if (gWeather == TYPHOON) {
+        return TYPHOON_SFX;
+    }
+
+    if (hour >= 6 || mapIndex == BEACH) {
+
+        nightOffset = 0;
+
+        if (17 < hour && hour < 24) {
+            nightOffset = 4;
+        }
+
+        return levelToMusicMappings[mapIndex][nightOffset + (season - 1)];
+        
+    }
+
+    return 0xFF;
+
+}
+
 //INCLUDE_ASM("asm/nonmatchings/game/level", getDefaultLevelLighting);
 
 Vec4f* getDefaultLevelLighting(Vec4f* rgba, u16 mapIndex) {
