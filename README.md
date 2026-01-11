@@ -13,7 +13,7 @@ Currently supported modding workflows:
 
 Replacing other assets (maps, sprites, animations, fonts) is supported in theory, but tooling to create/modify these assets is still in progress.
 
-For this branch, `make extract` should only be run once. If needed, `make clean-all-dangerous` can be run, which will remove all texts (losing any edits). Note that the original dialogue bytecode relies on hardocded text indexes, so removing or changing existing texts may result in breaking the game. 
+For this branch, `make extract` should only be run once. If needed, `make clean-all-dangerous` can be run, which will remove all texts (losing any edits). Note that the original dialogue bytecode relies on hardocded text indexes, so removing or changing existing texts may result in breaking the game. This also applies to hardcoded references to texts in the game code itself as well as the cutscene DSL.
 
 Basic changes to the development branch:
 - Removing unued assets (sprites, maps, texts) and unused files
