@@ -21,3 +21,7 @@ Basic changes to the development branch:
 - Fixing of fake matches to enchance readability
 
 Note that you may run into performance issues when emulating non-matching builds. This is because many emulators hardcode game-specific graphics and overclocking settings that get applied when a game matches a known hash. Check your emulator's settings for vanilla Harvest Moon 64 and make sure those are applied when your mod is loaded.
+
+### Music
+
+See the README at `tools/modding/music` for more details for converting and inserting MIDI into existing song slots.
