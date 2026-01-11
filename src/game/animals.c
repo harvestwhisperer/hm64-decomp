@@ -501,7 +501,7 @@ bool handlePlayerAnimalInteraction(void) {
 
                 if ((gChickens[i].flags & CHICKEN_ENTITY_LOADED) && entities[gChickens[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[gChickens[i].entityIndex].buttonPressed == BUTTON_A) {
 
-                    if (checkDailyEventBit(2) && getLevelFlags(gChickens[i].location) & 0x20) {
+                    if (checkDailyEventBit(2) && getLevelFlags(gChickens[i].location) & LEVEL_FARM) {
 
                         if (gChickens[i].type == ADULT_CHICKEN) {
 
@@ -571,7 +571,7 @@ bool handlePlayerAnimalInteraction(void) {
 
                     if (entities[gFarmAnimals[i].entityIndex].buttonPressed == BUTTON_A) {
                         
-                        if (checkDailyEventBit(2) && getLevelFlags(gFarmAnimals[i].location) & 0x20) {
+                        if (checkDailyEventBit(2) && getLevelFlags(gFarmAnimals[i].location) & LEVEL_FARM) {
 
                             if ((gFarmAnimals[i].type == ADULT_COW || gFarmAnimals[i].type == ADULT_SHEEP) && (!(COW_HAPPY < gFarmAnimals[i].condition && gFarmAnimals[i].condition < COW_DEAD))) {
                                 
@@ -1149,12 +1149,12 @@ void resetAnimalStatuses(void) {
 
     for (i = 0; i < MAX_CHICKENS; i++) {
         updateChickenStartOfDay(i);
-        gChickens[i].flags &= ~(CHICKEN_FED| CHICKEN_LAID_EGG);
+        gChickens[i].flags &= ~(CHICKEN_FED| 0x80);
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) { 
         updateFarmAnimalStartOfDay(i);
-        gFarmAnimals[i].flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS | FARM_ANIMAL_BRUSHED | FARM_ANIMAL_MILKED | FARM_ANIMAL_PREGNANT | FARM_ANIMAL_SHEARED | FARM_ANIMAL_TALKED_TO | FARM_ANIMAL_INDOORS);
+        gFarmAnimals[i].flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS | FARM_ANIMAL_BRUSHED | FARM_ANIMAL_MILKED | FARM_ANIMAL_PREGNANT | FARM_ANIMAL_SHEARED | FARM_ANIMAL_TALKED_TO | 0x4000);
     }
 
     updateHorseAge();
@@ -1875,7 +1875,7 @@ void updateChickenStartOfDay(u8 index) {
     
     if ((gChickens[index].flags & CHICKEN_ACTIVE) && !(gChickens[index].flags & CHICKEN_NEWBORN)) {
         
-        if (gChickens[index].flags & CHICKEN_LAID_EGG) {
+        if (gChickens[index].flags & 0x80) {
             
             gChickens[index].flags &= ~CHICKEN_FED;
 
@@ -1993,10 +1993,10 @@ void updateFarmAnimalStartOfDay(u8 index) {
     
     if ((gFarmAnimals[index].flags & FARM_ANIMAL_ACTIVE) && !(gFarmAnimals[index].flags & FARM_ANIMAL_NEWBORN)) {
         
-        if (gFarmAnimals[index].flags & FARM_ANIMAL_INDOORS) {
+        if (gFarmAnimals[index].flags & 0x4000) {
             
             gFarmAnimals[index].flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
-            
+
         } else if (gFarmAnimals[index].location == FARM) {
             
             gFarmAnimals[index].flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
@@ -2407,7 +2407,7 @@ void initializeFarmAnimalEntity(u8 index) {
         gFarmAnimals[index].flags |= FARM_ANIMAL_ENTITY_LOADED;
         gFarmAnimals[index].flags &= ~(FARM_ANIMAL_APPROACHING | FARM_ANIMAL_LINGERING);
         
-        if ((gWeather == SUNNY) || !(getLevelFlags(gFarmAnimals[index].location) & OUTDOORS)) {
+        if ((gWeather == SUNNY) || !(getLevelFlags(gFarmAnimals[index].location) & LEVEL_OUTDOORS)) {
             gFarmAnimals[index].actionState = 0;
         } else {
             gFarmAnimals[index].actionState = 19;

@@ -38,10 +38,6 @@ extern u16 gCutsceneIndex;
 // bss
 NamingScreenContext namingScreenContext;
 
-// this is a hack to get the original total bss size for the main code segment
-// bss addresses are assigned partially via their alphabetical order (z = to ensure last in this case)
-u8 z[0xFAC20];
-
 // data
 // japanese strings
 u8 D_8011C680[13][6] = { 
@@ -165,11 +161,11 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     setMessageBoxSpriteIndices(0, 1, 0, 0);
     
     namingScreenContext.dialogueIndex = arg1;
-    
+
     stopCurrentAudioSequence(NAMING_SCREEN_THEME);
     setCurrentAudioSequence(NAMING_SCREEN_THEME);
     setAudioSequenceVolume(NAMING_SCREEN_THEME, SEQUENCE_VOLUME);
-    
+
     setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
     
 }
@@ -182,7 +178,7 @@ void namingScreenCallback(void) {
     s32 temp = (namingScreenContext.flags & NAMING_SCREEN_SCREEN_STATE_MASK) >> NAMING_SCREEN_SCREEN_STATE_SHIFT;
     s32 temp2;
 
-    if (globalSprites[0x90].stateFlags & 0x400) {
+    if (globalSprites[144].stateFlags & SPRITE_RGBA_IN_PROGRESS) {
         
         if (namingScreenContext.flags & NAMING_SCREEN_GOTO_SEASON_SELECT) {
 
@@ -232,7 +228,7 @@ void namingScreenCallback(void) {
             setMessageBoxViewSpacePosition(3, 4.0f, 56.0f, 30.0f);
             setMessageBoxLineAndRowSizes(3, 6, 1);
             setMessageBoxSpacing(3, 0, 2);
-            setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+            setMessageBoxFont(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
             setMessageBoxInterpolationWithFlags(3, 1, 1);
             setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
             initializeMessageBox(3, NAMING_SCREEN_TEXT_INDEX, 13, MESSAGE_BOX_MODE_NO_INPUT);
@@ -243,7 +239,7 @@ void namingScreenCallback(void) {
             setMessageBoxViewSpacePosition(4, 4.0f, -10.0f, 30.0f);
             setMessageBoxLineAndRowSizes(4, 6, 1);
             setMessageBoxSpacing(4, 0, 2);
-            setMessageBoxFont(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+            setMessageBoxFont(4, 14, 14, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
             setMessageBoxInterpolationWithFlags(4, 1, 1);
             setMessageBoxSpriteIndices(4, 0xFF, 0xFF, 0xFF);
             initializeMessageBox(4, NAMING_SCREEN_TEXT_INDEX, temp2 + 14, MESSAGE_BOX_MODE_NO_INPUT);
@@ -281,74 +277,70 @@ void namingScreenCallback(void) {
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
 
              switch (namingScreenContext.screenType) {
-                 
-                 case 0:
-                    initializeNamingScreen(gFarmName, 1);
+
+                 case NAMING_SCREEN_TYPE_PLAYER:
+                    initializeNamingScreen(gFarmName, NAMING_SCREEN_TYPE_FARM);
                     return;
-                 
-                 case 1:
-                    initializeNamingScreen(dogInfo.name, 2);
+
+                 case NAMING_SCREEN_TYPE_FARM:
+                    initializeNamingScreen(dogInfo.name, NAMING_SCREEN_TYPE_DOG);
                     return;
-                 
-                 case 2:
+
+                 case NAMING_SCREEN_TYPE_DOG:
                     startGame();
                     return;
-                 
-                 case 3:
 
+                 case NAMING_SCREEN_TYPE_HORSE:
                     setLevelAudio(gBaseMapIndex, gSeason, gHour);
-                     
-                    gCutsceneIndex = 0x28B;
-                     
+                    gCutsceneIndex = 651;
                     loadCutscene();
-                     
                     exitOverlayScreen();
                     setLevelLighting(8, MAIN_GAME);
-                     
+
                     return;
-                 
-                 case 4:
+
+                 case NAMING_SCREEN_TYPE_BABY:
 
                     setLevelAudio(gBaseMapIndex, gSeason, gHour);
-                     
-                    switch (gWife) {                   
-                        case MARIA:                            
+
+                    switch (gWife) {
+                        case MARIA:
                             gCutsceneIndex = 5;
                             toggleSpecialDialogueBit(0x37);
                             break;
                         case POPURI:                            
-                            gCutsceneIndex = 0xC;
+                            gCutsceneIndex = 12;
                             toggleSpecialDialogueBit(0x38);
                             break;
                         case ELLI:                            
-                            gCutsceneIndex = 0x13;
+                            gCutsceneIndex = 19;
                             toggleSpecialDialogueBit(0x39);
                             break;
                         case ANN:                            
-                            gCutsceneIndex = 0x1A;
+                            gCutsceneIndex = 26;
                             toggleSpecialDialogueBit(0x3A);
                             break;
                         case KAREN:                            
-                            gCutsceneIndex = 0x21;
+                            gCutsceneIndex = 33;
                             toggleSpecialDialogueBit(0x3B);
                             break;
                         }
-                     
+
                         loadCutscene();
 
                         exitOverlayScreen();
                         setLevelLighting(8, MAIN_GAME);
-                     
+
                     return;
-                 
-                 case 5:
-                 case 6:
-                 case 7:
+
+                 case NAMING_SCREEN_TYPE_COW:
+                 case NAMING_SCREEN_TYPE_SHEEP:
+                 case NAMING_SCREEN_TYPE_CHICKEN:
                     setLevelAudio(gBaseMapIndex, gSeason, gHour);
                     exitOverlayScreen();
                     setLevelLighting(8, MAIN_GAME);
                     return;
-                 
+
              }
 
         } else {
@@ -367,16 +359,16 @@ void namingScreenCallback(void) {
                  
             if (dialogues[0].sessionManager.flags & 4) {
                 
-                    switch (temp) {   
-    
-                        case 0:
+                    switch (temp) {
+
+                        case NAMING_SCREEN_STATE_NAMING_GRID:
                             handleNamingGridInput();
                             return;
 
-                        case 1:
+                        case NAMING_SCREEN_STATE_SEASON_SELECT:
                             handleSeasonSelectionInput();
                             return;
-    
+
                         case NAMING_SCREEN_STATE_SEASON_CONFIRM:
 
                             if (dialogues[0].sessionManager.selectedMenuRow == 0) {
@@ -432,7 +424,7 @@ void namingScreenCallback(void) {
                                 updateSpriteRGBA(0x8E, 0, 0, 0, 0, 8);
                                 updateSpriteRGBA(0x91, 0, 0, 0, 0, 8);
     
-                                if (namingScreenContext.screenType != 1) {
+                                if (namingScreenContext.screenType != NAMING_SCREEN_TYPE_FARM) {
 
                                     stopAudioSequenceWithDefaultFadeOut(NAMING_SCREEN_THEME);
 
@@ -606,7 +598,7 @@ void loadNameSelectionSprites(void) {
     
     setMessageBoxLineAndRowSizes(3, 6, 1);
     setMessageBoxSpacing(3, 2, 2);
-    setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(3, 1, 1);
     setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
     initializeMessageBox(3, NAMING_SCREEN_TEXT_INDEX, 13, MESSAGE_BOX_MODE_NO_INPUT);
@@ -642,18 +634,18 @@ bool selectCharacterOrConfirm(void) {
             
             resetAnimationState(0x81);
             
-            switch (charsetFlags) {                      
-                case 0:                                 
-                    temp = 2;
-                    tempFlags = 2;
+            switch (charsetFlags) {
+                case NAMING_SCREEN_CHARSET_HIRAGANA:
+                    temp = NAMING_SCREEN_CHARSET_ENGLISH;
+                    tempFlags = NAMING_SCREEN_CHARSET_ENGLISH;
                     break;
-                case 1:             
-                    temp = 0;
-                    tempFlags = 0;
+                case NAMING_SCREEN_CHARSET_KATAKANA:
+                    temp = NAMING_SCREEN_CHARSET_HIRAGANA;
+                    tempFlags = NAMING_SCREEN_CHARSET_HIRAGANA;
                     break;
-                case 2:                                 
-                    temp = 1;
-                    tempFlags = 1;
+                case NAMING_SCREEN_CHARSET_ENGLISH:
+                    temp = NAMING_SCREEN_CHARSET_KATAKANA;
+                    tempFlags = NAMING_SCREEN_CHARSET_KATAKANA;
                     break;
             }    
 
@@ -665,18 +657,18 @@ bool selectCharacterOrConfirm(void) {
             
             resetAnimationState(0x81);
                 
-            switch (charsetFlags) {                      
-                case 0:                                 
-                    temp2 = 1;
-                    tempFlags2 = 1;
+            switch (charsetFlags) {
+                case NAMING_SCREEN_CHARSET_HIRAGANA:
+                    temp2 = NAMING_SCREEN_CHARSET_KATAKANA;
+                    tempFlags2 = NAMING_SCREEN_CHARSET_KATAKANA;
                     break;
-                case 1:                                 
-                    temp2 = 2;
-                    tempFlags2 = 2;
+                case NAMING_SCREEN_CHARSET_KATAKANA:
+                    temp2 = NAMING_SCREEN_CHARSET_ENGLISH;
+                    tempFlags2 = NAMING_SCREEN_CHARSET_ENGLISH;
                     break;
-                case 2:                                 
-                    temp2 = 0;
-                    tempFlags2 = 0;
+                case NAMING_SCREEN_CHARSET_ENGLISH:
+                    temp2 = NAMING_SCREEN_CHARSET_HIRAGANA;
+                    tempFlags2 = NAMING_SCREEN_CHARSET_HIRAGANA;
                     break;
             }    
 
@@ -698,7 +690,7 @@ bool selectCharacterOrConfirm(void) {
                 initializeDialogueSession(0, DIALOGUE_NAMING_SCREEN, 8, 0);
                 namingScreenContext.flags |= NAMING_SCREEN_EMPTY_NAME_ERROR;
             
-            } else if (namingScreenContext.screenType == 0) {
+            } else if (namingScreenContext.screenType == NAMING_SCREEN_TYPE_PLAYER) {
             
                 setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 8);
                 updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
@@ -744,21 +736,18 @@ bool selectCharacterOrConfirm(void) {
         
         switch (namingScreenContext.flags & NAMING_SCREEN_CHARSET_MASK) {
 
-            // japanese 1
-            case 0:
+            case NAMING_SCREEN_CHARSET_HIRAGANA:
                 character = gridToCharacterMapJP1[namingScreenContext.gridX][namingScreenContext.gridY];
                 break;
 
-            // japanese 2
-            case 1:
+            case NAMING_SCREEN_CHARSET_KATAKANA:
                 character = gridToCharacterMapJP2[namingScreenContext.gridX][namingScreenContext.gridY];
                 break;
 
-            // english
-            case 2:
+            case NAMING_SCREEN_CHARSET_ENGLISH:
                 character = gridToCharacterMapEN[namingScreenContext.gridX][namingScreenContext.gridY];
                 break;
-            
+
         }
 
         if (characterPosition == 6) {

@@ -295,7 +295,7 @@ void updateFarmStatusRain(void) {
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
-        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & 2) {
+        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) && (getLevelFlags(gFarmAnimals[i].location) & LEVEL_OUTDOORS)) {
 
             gFarmAnimals[i].flags |= 0x4000;
             
@@ -416,7 +416,7 @@ void updateFarmStatusRain(void) {
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & 2) {
+        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & LEVEL_OUTDOORS) {
 
             gChickens[i].flags |= 0x80;
 
@@ -450,7 +450,7 @@ void updateFarmStatusSnow(void) {
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
-        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & 2) {
+        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & LEVEL_OUTDOORS) {
 
             switch (gFarmAnimals[i].type) {
 
@@ -568,7 +568,7 @@ void updateFarmStatusSnow(void) {
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & 2) {
+        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & LEVEL_OUTDOORS) {
 
             switch (gChickens[i].type) {
 
@@ -615,7 +615,7 @@ void updateFarmStatusTyphoon(void) {
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
-        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & 2) {
+        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & LEVEL_OUTDOORS) {
 
             switch (gFarmAnimals[i].type) {
 
@@ -733,7 +733,7 @@ void updateFarmStatusTyphoon(void) {
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & 2) {
+        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & LEVEL_OUTDOORS) {
 
             switch (gChickens[i].type) {
 
@@ -801,7 +801,7 @@ void func_80064CF0(void) {
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
-        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & 2) {
+        if ((gFarmAnimals[i].flags & 1) && getLevelFlags(gFarmAnimals[i].location) & LEVEL_OUTDOORS) {
 
             switch (gFarmAnimals[i].type) {
 
@@ -919,7 +919,7 @@ void func_80064CF0(void) {
 
     for (i = 0; i < MAX_CHICKENS; i++) {
 
-        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & 2) {
+        if ((gChickens[i].flags & 1) && getLevelFlags(gChickens[i].location) & LEVEL_OUTDOORS) {
 
             switch (gChickens[i].type) {
 

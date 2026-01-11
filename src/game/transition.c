@@ -76,7 +76,7 @@ void mainGameLoopCallback(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/transition", launchIntroCutscene);
 
 // used by game.c
-inline void launchIntroCutscene(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
+inline void launchIntroCutscene(u16 cutsceneIndex, u16 spawnPoint, u8 arg2) {
     
     deactivateSprites();
     deactivateGlobalSprites();
@@ -93,15 +93,15 @@ inline void launchIntroCutscene(u16 cutsceneIndex, u16 entranceIndex, u8 arg2) {
     
     initializeEntityInstances(arg2);
 
-    setEntrance(entranceIndex);
+    setSpawnPoint(spawnPoint);
 
     gCutsceneIndex = cutsceneIndex;
 
     loadCutscene(FALSE);
     
-    loadLevelFromEntrance(gEntranceIndex);
+    loadMapAtSpawnPoint(gSpawnPointIndex);
  
-    setupPlayerEntity(gEntranceIndex, FALSE);
+    setupPlayerEntity(gSpawnPointIndex, FALSE);
     handlePlayerAnimation();
 
     setMainLoopCallbackFunctionIndex(SET_AUDIO_AND_LIGHTING);
@@ -142,8 +142,8 @@ void loadLevel(u8 arg0) {
 
     setDailyEventBit(0x2F);
     
-    mapIndex = getMapFromExit(gEntranceIndex);
-    loadLevelFromEntrance(gEntranceIndex);
+    mapIndex = getMapForSpawnPoint(gSpawnPointIndex);
+    loadMapAtSpawnPoint(gSpawnPointIndex);
 
     if ((mapIndex == FARM || mapIndex == BARN) == 0 && mapIndex != COOP) {
 
@@ -207,7 +207,7 @@ void loadLevel(u8 arg0) {
     toggleDailyEventBit(0x53);
     toggleDailyEventBit(0x54);
     
-    setupPlayerEntity(gEntranceIndex, arg0);
+    setupPlayerEntity(gSpawnPointIndex, arg0);
     
     initializePlayerHeldItem();
     loadActiveItemEntities();

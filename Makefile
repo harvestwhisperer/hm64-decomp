@@ -316,8 +316,6 @@ DIALOGUE_OBJECTS := \
 	$(DIALOGUE_BUILD_DIR)/additionalNpcs2Dialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/additionalNpcs2DialogueIndex.bin.o
 
-ifeq ($(REGION),us)
-
 DECOMPILED_TEXTS := text1 \
 	library \
 	diary \
@@ -391,10 +389,6 @@ DECOMPILED_TEXTS := text1 \
 	additionalNpcs \
 	howToPlay
 
-else
-DECOMPILED_TEXTS :=
-endif
-
 TEXT_ASSETS_DIR := assets/text
 TEXT_BUILD_DIR := $(BUILD_DIR)/bin/text
 
@@ -406,10 +400,6 @@ endif
 
 ifeq ($(PERMUTER),1)
 MACROS += -D_PERMUTER=1
-endif
-
-ifeq ($(REGION),jp)
-MACROS += -D_JP=1
 endif
 
 # Create all output directories upfront
@@ -711,7 +701,8 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/game/gameFile.o \
 	$(BUILD_DIR)/src/data/animationScripts/animationScripts.o \
 	$(BUILD_DIR)/src/data/audio/sfx.o \
-	$(BUILD_DIR)/src/game/namingScreen.o
+	$(BUILD_DIR)/src/game/namingScreen.o \
+	$(BUILD_DIR)/src/game/bssPadding.o
 
 NUSYS_SAMPLE_OBJECTS := \
 	$(BUILD_DIR)/lib/nusys-1/src/sample/nunospak/nupakmenu.o \
