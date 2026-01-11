@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a development branch set up to support modding out-of-the-box. Simply run `./tools/setup.sh`, `make extract`, and `make -j4` to get started.
+This is a development branch set up to support modding out-of-the-box with some additional QOL changes already implemented. On Linux/WSL/Posix, simply run `./tools/setup.sh`, `make extract`, and `make -j4` to get started.
 
 Currently supported modding workflows:
 - All code changes
@@ -10,6 +10,13 @@ Currently supported modding workflows:
 - Cutscene editing and new cutscenes
 - Dialogue logic editing and additional dialogues
 - Audio sequence replacement
+
+QOL implementations:
+- Time slowed to 1/5th of the original game speed
+- Mayor tour skipped
+- Opening logos skipped
+- Music continues playing unless the entered map contains a different theme
+- Naming screen music doesn't restart during new game naming 
 
 Replacing other assets (maps, sprites, animations, fonts) is supported in theory, but tooling to create/modify these assets is still in progress.
 
