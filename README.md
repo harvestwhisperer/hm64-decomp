@@ -6,9 +6,9 @@
 
 The US version is now 100% decompiled! This includes all game functions, data and rodata within the game's main code section, and all library functions, as well as DSL for the cutscenes and dialogue that compiles to the game's custom bytecode systems. All text segments are also automatically extracted and transpiled back to the custom text format during the build process.
 
-The current build system also supports shiftability. For modding, it's highly recommended to use the `dev` branch in this repo as your starting point. The bare minumum to get shiftability working on the `master` branch requires:
+The current build system also supports shiftability. For modding, it's highly recommended to use the `dev` or `dev-qol` branch in this repo as your starting point. The bare minumum to get shiftability working on the `master` branch requires:
 - Removal of `common_bss.ld`. To preserve matching, `config/us/common_bss.ld` is used to match up game variables with their original addresses. For modding, this file should be empty or removed to allow the linker to reallocate memory addresses without conflict.
-- Commenting out `u8 z[0xFAC20];` from `src/game/namingScreen.c` when modding. This is added as a hack to ensure the proper total BSS size for a matching build.
+- Remove `bssPadding.o` from the `CODE_OBJECTS` list in the Makefile. This file contains an empty array as a hack to match the original BSS size when using hardcoded memory addresses for BSS symbols  
 
 ### Japan
 
