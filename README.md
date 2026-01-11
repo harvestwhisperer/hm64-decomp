@@ -11,6 +11,8 @@ Currently supported modding workflows:
 - Dialogue logic editing and additional dialogues
 - Audio sequence replacement
 
+Replacing other assets (maps, sprites, animations, fonts) is supported in theory, but tooling to create/modify these assets is still in progress.
+
 For this branch, `make extract` should only be run once. If needed, `make clean-all-dangerous` can be run, which will remove all texts (losing any edits). Note that the original dialogue bytecode relies on hardocded text indexes, so removing or changing existing texts may result in breaking the game. 
 
 Basic changes to the development branch:
