@@ -40,7 +40,7 @@ u8 gGlobalSeasonName[6];
 
 void handleTimeUpdates(void) {
     
-    if ((getLevelFlags(gBaseMapIndex) & 1) && !checkDailyEventBit(6)) {
+    if ((getLevelFlags(gBaseMapIndex) & LEVEL_TIME_FLOWS) && !checkDailyEventBit(6)) {
         updateClock(TRUE);
     }
     

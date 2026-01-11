@@ -1015,13 +1015,10 @@ void gameSelectCallback(void) {
                 
                 initializeMainMessageBoxes();
                 
-                // start existing game
-                if (loadGameScreenContext.flags[gCurrentGameIndex] & 2) {
-                    // set game state from sram
+                if (loadGameScreenContext.flags[gCurrentGameIndex] & GAME_SLOT_ACTIVE) {
                     loadGameFromSram(gCurrentGameIndex, 0);
                     startGame();
                 } else {
-                    // start new game
                     initializeNewGameState();
                     initializeGameVariables();
                     initializeNamingScreen(gPlayer.name, 0);
@@ -2888,7 +2885,7 @@ void setupRankingDetailMessageBoxes(u8 slot) {
     setMessageBoxViewSpacePosition(0, -28.0f, 72.0f, 0.0f);
     setMessageBoxLineAndRowSizes(0, 0xA, 2);
     setMessageBoxSpacing(0, 0, 2);
-    setMessageBoxFont(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(0, -4, 2);
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
     setMessageBoxButtonMask(0, BUTTON_A);
@@ -2900,7 +2897,7 @@ void setupRankingDetailMessageBoxes(u8 slot) {
     setMessageBoxViewSpacePosition(1, -40.0f, 40.0f, 0.0f);
     setMessageBoxLineAndRowSizes(1, 0xA, 2);
     setMessageBoxSpacing(1, 0, 2);
-    setMessageBoxFont(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
     setMessageBoxButtonMask(1, BUTTON_A);
@@ -2915,7 +2912,7 @@ void setupRankingDetailMessageBoxes(u8 slot) {
         setMessageBoxViewSpacePosition(2, -40.0f, 24.0f, 0.0f);
         setMessageBoxLineAndRowSizes(2, 0xA, 2);
         setMessageBoxSpacing(2, 0, 2);
-        setMessageBoxFont(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+        setMessageBoxFont(2, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
         setMessageBoxInterpolationWithFlags(2, -4, 2);
         setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
         setMessageBoxButtonMask(2, 0x8000);
@@ -2930,7 +2927,7 @@ void setupRankingDetailMessageBoxes(u8 slot) {
         setMessageBoxViewSpacePosition(3, -40.0f, 8.0f, 0.0f);
         setMessageBoxLineAndRowSizes(3, 0xA, 2);
         setMessageBoxSpacing(3, 0, 2);
-        setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+        setMessageBoxFont(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
         setMessageBoxInterpolationWithFlags(3, -4, 2);
         setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
         setMessageBoxButtonMask(3, 0x8000);
@@ -2943,7 +2940,7 @@ void setupRankingDetailMessageBoxes(u8 slot) {
     setMessageBoxViewSpacePosition(4, -40.0f, -8.0f, 0.0f);
     setMessageBoxLineAndRowSizes(4, 0xA, 2);
     setMessageBoxSpacing(4, 0, 2);
-    setMessageBoxFont(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(4, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, 0x8000);

@@ -45,8 +45,8 @@ u8 gToolboxSlots[8 * 4];
 
 
 // data
-// indexed by gEntranceIndex
-Vec3f playerDefaultStartingCoordinates[] = {
+// indexed by gSpawnPointIndex
+Vec3f spawnPointToPlayerCoordinates[] = {
     { -352.0f, 0.0f, -16.0f },
     { -544.0f, 0.0f, 144.0f },
     { -128.0f, 0.0f, -336.0f },
@@ -163,7 +163,7 @@ Vec3f playerDefaultStartingCoordinates[] = {
     { 0.0f, 0.0f, 0.0f },
 };
 
-// indexed by gEntranceIndex
+// indexed by gSpawnPointIndex
 u8 playerDefaultStartingDirections[] = {
     SOUTHWEST, 
     SOUTHEAST, 
@@ -458,7 +458,7 @@ static inline void reset() {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", setupPlayerEntity);
 
-void setupPlayerEntity(u16 entranceIndex, u8 resetPlayer) {
+void setupPlayerEntity(u16 spawnPoint, u8 resetPlayer) {
  
     loadEntity(ENTITY_PLAYER, 0, TRUE);
 
@@ -471,10 +471,10 @@ void setupPlayerEntity(u16 entranceIndex, u8 resetPlayer) {
     setEntityShadow(ENTITY_PLAYER, 0);
 
     if (resetPlayer) {
-        gPlayer.coordinates.x = playerDefaultStartingCoordinates[entranceIndex].x;
-        gPlayer.coordinates.y = playerDefaultStartingCoordinates[entranceIndex].y;
-        gPlayer.coordinates.z = playerDefaultStartingCoordinates[entranceIndex].z;
-        gPlayer.direction = playerDefaultStartingDirections[entranceIndex];
+        gPlayer.coordinates.x = spawnPointToPlayerCoordinates[spawnPoint].x;
+        gPlayer.coordinates.y = spawnPointToPlayerCoordinates[spawnPoint].y;
+        gPlayer.coordinates.z = spawnPointToPlayerCoordinates[spawnPoint].z;
+        gPlayer.direction = playerDefaultStartingDirections[spawnPoint];
     }
 
     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
