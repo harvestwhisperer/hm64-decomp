@@ -89,7 +89,7 @@
 #include "hornedBeetle.inc.c"
 #include "stagBeetle.inc.c"
 #include "dragonfly.inc.c"
-#include "bellRingCricket.inc.c"
+#include "cricket.inc.c"
 #include "homeItems.inc.c"
 #include "holdableItems1.inc.c"
 #include "shopItems.inc.c"

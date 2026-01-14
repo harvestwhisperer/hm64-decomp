@@ -65,7 +65,7 @@ typedef struct {
     u8 babyBirthdayDate;        // 0x53
 
     u32 acquiredPowerNutBits;           // 0x54-0x57
-    u32 unk_58;                 // 0x58-0x5B (D_80205204)
+    u32 raceMedalsCount;                 // 0x58-0x5B
     u8 flowerShopPoints;        // 0x5C
     u8 bakeryCardPoints;        // 0x5D
     u8 elliGrievingCounter;    // 0x5E

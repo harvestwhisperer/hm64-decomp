@@ -3516,7 +3516,7 @@
     EXECUTE_SUBROUTINE .executor_41_140BE4
 
 .executor_33_144DC0:
-    DMA_SPRITE 127, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80284C00, 0, 0x80284610, 0x80284810, 0x80286400, 0x80286600
+    DMA_SPRITE 127, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80284C00, 0, 0x80284610, 0x80284810, 0x80286400, 0x80286600
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_144E2C
     SET_COORDINATES 0, 0, 254
     SET_SPRITE_SCALE 20, 20, 0

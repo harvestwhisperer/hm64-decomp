@@ -916,7 +916,7 @@
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -448, 0, 0
     SET_ASSET_ROTATION 6
-    ENTITY_MOVE_AND_ANIMATE 48, 6, 2
+    ENTITY_WALK 48, 6, 2
     SET_ENTITY_ANIMATION 19
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 30
@@ -946,7 +946,7 @@
     EXECUTE_SUBROUTINE .sub_138654
 
 .executor_33_1397C0:
-    DMA_SPRITE 128, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x8028B930, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 128, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x8028B930, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_13982C
     SET_COORDINATES 0, 0, 330
     SET_SPRITE_SCALE 20, 20, 0

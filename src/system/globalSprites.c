@@ -174,7 +174,7 @@ bool setSpriteType2(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr,
             setSpriteViewSpacePosition(index, 0.0f, 0.0f, 0.0f);
             setSpriteScale(index, 1.0f, 1.0f, 1.0f);
             setSpriteRotation(index, 0.0f, 0.0f, 0.0f);
-            setSpriteBaseRGBA(index, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteBaseRGBA(index, 255, 255, 255, 255);
             setSpriteAnchorAlignment(index, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
             setSpriteAxisMapping(index, SPRITE_BILLBOARD_XY);
             setSpriteBlendMode(index, SPRITE_BLEND_ALPHA_DECAL);
@@ -215,7 +215,7 @@ bool setSpriteType1(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetInd
             setSpriteViewSpacePosition(spriteIndex, 0, 0, 0);
             setSpriteScale(spriteIndex, 1.0f, 1.0f, 1.0f);
             setSpriteRotation(spriteIndex, 0, 0, 0);
-            setSpriteBaseRGBA(spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteBaseRGBA(spriteIndex, 255, 255, 255, 255);
             setSpriteAnchorAlignment(spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
             setSpriteAxisMapping(spriteIndex, SPRITE_BILLBOARD_XY);
             setSpriteBlendMode(spriteIndex, SPRITE_BLEND_ALPHA_DECAL);

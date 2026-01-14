@@ -14,9 +14,9 @@
 
 #define CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY 1
 #define CUTSCENE_ASSET_BEHAVIOR_WANDER 2
-#define CUTSCENE_ASSET_BEHAVIOR_DIRECTION_MOVEMENT 4
-#define CUTSCENE_ASSET_BEHAVIOR_DIRECT_MOVEMENT 8
-#define CUTSCENE_ASSET_BEHAVIOR_ALTERNATE_ANIMATIONS 0x10
+#define CUTSCENE_ASSET_BEHAVIOR_WALKING 4
+#define CUTSCENE_ASSET_BEHAVIOR_RUNNING 8
+#define CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS 0x10
 
 /* general */
 
@@ -67,8 +67,8 @@ typedef struct {
 
 typedef struct {
     u16 functionIndex;
-    u16 useAltAnimations;
-} CutsceneSetAltAnimationFlagCmd;
+    u16 useCarryingAnimations;
+} CutsceneSetHoldingAnimationFlagCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -317,12 +317,12 @@ typedef struct {
 typedef struct {
     u16 functionIndex;
     u16 entityIndex;
-    u16 animationIndex1;
-    u16 animationIndex2;
-    u16 animationIndex3;
-    u16 animationIndex4;
-    u16 animationIndex5;
-    u16 animationIndex6;
+    u16 idleAnimation;
+    u16 walkingAnimation;
+    u16 runningAnimation;
+    u16 idleHoldingAnimation;
+    u16 walkingHoldingAnimation;
+    u16 runningHoldingAnimation;
 } CutsceneEntitySetAnimationsCmd;
 
 typedef struct {
@@ -583,12 +583,12 @@ typedef struct {
     u32 callbackBytecodePtr; // when branching based on button interaction with entity
     u16 entityCollidedWithIndex;
     u16 targetButtonMask;
-    u16 animationIndex1;
-    u16 animationIndex2; // movement animation
-    u16 animationIndex3;
-    u16 animationIndex4;
-    u16 animationIndex5; // movement animation
-    u16 animationIndex6;
+    u16 idleAnimation;
+    u16 walkingAnimation; // movement animation
+    u16 runningAnimation;
+    u16 idleHoldingAnimation;
+    u16 walkingHoldingAnimation; // movement animation
+    u16 runningHoldingAnimation;
     u16 collisionWidth;
     u16 collisionHeight;
     u16 behaviorFlags;

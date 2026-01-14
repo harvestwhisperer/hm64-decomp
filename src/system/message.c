@@ -166,7 +166,7 @@ bool initializeEmptyMessageBox(u16 messageBoxIndex, u8* textBufferAddr) {
             messageBoxes[messageBoxIndex].flags = MESSAGE_BOX_ACTIVE;
 
             initializeInterpolator((Interpolator*)&messageBoxes[messageBoxIndex].scrollInterpolator, 0, 0);
-            setMessageBoxBaseRGBA(messageBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxBaseRGBA(messageBoxIndex, 255, 255, 255, 255);
             
             set = TRUE;        
 
@@ -270,7 +270,7 @@ bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textI
             if (messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_HAS_OVERLAY_ICON) {
                 dmaSprite(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romTextureStart, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romTextureEnd, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romIndexStart, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romIndexEnd, NULL, NULL, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrTexture, NULL, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrPalette, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrAnimationFrameMetadata, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrTextureToPaletteLookup, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].unk_20, 0, 0);
                 setBilinearFiltering(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, TRUE);
-                setSpriteColor(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, 255, 255, 255, 255);
                 setSpriteAnchorAlignment(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
                 setSpriteBlendMode(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
             }
@@ -278,7 +278,7 @@ bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textI
             if (messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
                 dmaSprite(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romTextureStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romTextureEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romAssetsIndexStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romAssetsIndexEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romSpritesheetIndexStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romSpritesheetIndexEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrTexture1, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrTexture2, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrPalette, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrAnimation, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrSpriteToPalette, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrSpritesheetIndex, 1, 0);
                 setBilinearFiltering(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, TRUE);
-                setSpriteColor(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, 255, 255, 255, 255);
                 setSpriteAnchorAlignment(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
                 setSpriteBlendMode(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
             }
@@ -286,14 +286,14 @@ bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textI
             if (messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) {
                 dmaSprite(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romTextureStart, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romTextureEnd, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romIndexStart, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romIndexEnd, NULL, NULL, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrTexture, NULL, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrPalette, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrAnimationFrameMetadata, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrTextureToPaletteLookup, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].unk_20, 0, 0);
                 setBilinearFiltering(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
-                setSpriteColor(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, 255, 255, 255, 255);
                 setSpriteAnchorAlignment(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
                 setSpriteBlendMode(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
                 startSpriteAnimation(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteOffset, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].flag);
                 setSpriteViewSpacePosition(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, messageBoxes[messageBoxIndex].viewSpacePosition.x + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.x, messageBoxes[messageBoxIndex].viewSpacePosition.y + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.y, (messageBoxes[messageBoxIndex].viewSpacePosition.z + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.z) - 2.0f);
             }
 
-            setMessageBoxRGBA(messageBoxIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxRGBA(messageBoxIndex, 255, 255, 255, 255);
 
             result = TRUE;
             
