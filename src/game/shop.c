@@ -356,16 +356,16 @@ u8 shopItemSpriteIndexOffsets[TOTAL_SHOP_ITEMS] = {
     0x00, 0x01, 0x02, 0x03,
     0x04, 0x05, 0x06, 0x07,
     0x07, 0xFF, 0x08, 0xFF,
-    0xFF, 0xFF, 0xFF, 0xFF,
+    255, 255, 255, 255,
     0xFF, 0xFF, 0xFF, 0x00,
     0x01, 0x02, 0x03, 0x05,
     0x04, 0x04, 0x00, 0x01,
     0x02, 0x03, 0xFF, 0xFF,
-    0xFF, 0xFF, 0xFF, 0xFF,
+    255, 255, 255, 255,
     0xFF, 0x00, 0x01, 0x01,
-    0xFF, 0xFF, 0xFF, 0xFF,
-    0xFF, 0xFF, 0xFF, 0xFF,
-    0xFF, 0xFF, 0xFF, 0xFF,
+    255, 255, 255, 255,
+    255, 255, 255, 255,
+    255, 255, 255, 255,
     0xFF, 0x01, 0x02, 0x02
 };
 
@@ -483,9 +483,9 @@ u8 playerShopEndActionPhase[TOTAL_SHOP_ITEMS] = {
     0x02, 0x02, 0x00, 0x00,
     0x00, 0x02, 0x02, 0x02,
     0x02, 0x02, 0x02, 0x02,
-    0xFF, 0xFF, 0xFF, 0xFF,
-    0xFF, 0xFF, 0xFF, 0xFF,
-    0xFF, 0xFF, 0xFF, 0xFF,
+    255, 255, 255, 255,
+    255, 255, 255, 255,
+    255, 255, 255, 255,
     0xFF, 0x02, 0x02, 0x02
 };
 
@@ -546,8 +546,8 @@ void loadShopItemSprite(u8 index) {
 
     setSpriteScale(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 1.0f, 1.0f, 1.0f);
     setSpriteBlendMode(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], (1 | 2));
-    setSpriteBaseRGBA(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteBaseRGBA(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 255, 255, 255, 255);
+    setSpriteColor(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 255, 255, 255, 255);
 
     setMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[index], SHOP_ITEMS + shopItemSpriteIndexOffsets[index], getAnimationOffsetFromScript(&shopItemsAnimationScripts, getItemAnimationIndex(shopItemAnimationIndices[index])), shopItemMapCoordinates[index].x, shopItemMapCoordinates[index].y, shopItemMapCoordinates[index].z, 0xFF, 0xFF, 0, 0);
 

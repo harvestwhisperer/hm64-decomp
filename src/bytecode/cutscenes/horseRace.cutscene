@@ -4361,7 +4361,7 @@
     DEACTIVATE_SELF
 
 .executor_33_12FB60:
-    DMA_SPRITE 127, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80284C00, 0, 0x80287C00, 0x80288A00, 0x80288C00, 0x80288D00
+    DMA_SPRITE 127, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80284C00, 0, 0x80287C00, 0x80288A00, 0x80288C00, 0x80288D00
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_12FC2C
     SET_COORDINATES 0, 0, 254
     SET_SPRITE_SCALE 20, 20, 0

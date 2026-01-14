@@ -1,5 +1,3 @@
-// Maps
-
 beginseg
     name "ranchSpringMap"
     flags RAW

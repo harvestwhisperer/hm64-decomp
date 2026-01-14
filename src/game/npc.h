@@ -59,14 +59,15 @@
 #define NPC_ATTACHED 8
 
 /* NPC animation modes */
-#define NPC_ANIM_IDLE           0   // Stationary with idle animation
-#define NPC_ANIM_WANDER         1   // Random wandering within radius
-#define NPC_ANIM_SPECIAL        2   // Location-specific special animation
-#define NPC_ANIM_CUSTOM         3   // NPC-specific custom behavior
-#define NPC_ANIM_FIXED          4   // Fixed position for cutscene/event
-#define NPC_ANIM_BABY_CRIB      5
-#define NPC_ANIM_TALKING        16  // Facing player, resets after frame (0x10)
-#define NPC_ANIM_FACE_PLAYER    32  // Facing player during interaction (0x20)
+#define NPC_ANIMATION_IDLE              0   
+#define NPC_ANIMATION_WANDER            1  
+#define NPC_ANIMATION_LOCATION_SPECIAL  2  
+#define NPC_ANIMATION_CUSTOM            3   
+#define NPC_ANIMATION_SLEEPING          4
+#define NPC_ANIMATION_BABY_HOUSE        4
+#define NPC_ANIMATION_BABY_CRIB         5
+#define NPC_ANIMATION_TALKING           16 
+#define NPC_ANIMATION_FACE_PLAYER       32 
 
 // 0x801FB9D0
 typedef struct {
@@ -83,8 +84,8 @@ typedef struct {
 	u8 animationState;
 	u8 animationTimer;
 	u8 location;
-	u8 animationIndex1;
-	u8 animationIndex2;
+	u8 idleAnimation;
+	u8 movingAnimation;
 	u16 flags;
 } npcInfo;
 

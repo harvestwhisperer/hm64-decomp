@@ -29,6 +29,8 @@ LD_MAP := $(BASENAME).map
 
 # Tools
 
+PYTHON ?= python3
+
 KMC_PATH := $(TOOLS_DIR)/gcc-2.7.2/
 
 CROSS := mips-linux-gnu-
@@ -132,9 +134,9 @@ LDFLAGS := -G 0  -T config/$(REGION)/undefined_syms.txt -T $(BSS_LD_SCRIPT) -T $
 
 CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
 CUTSCENE_ASSETS_DIR := assets/cutscenes
-CUTSCENE_BUILD_DIR := $(BUILD_DIR)/bin/cutscenes
+CUTSCENE_BUILD_DIR := $(BUILD_DIR)/assets/cutscenes
 
-CUTSCENE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_cutscene_transpiler.py
+CUTSCENE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.transpiler
 
 CUTSCENE_OBJECTS := \
 	$(CUTSCENE_BUILD_DIR)/farmBusiness.bin.o \
@@ -170,9 +172,9 @@ CUTSCENE_OBJECTS := \
 
 DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
 DIALOGUE_ASSETS_DIR := assets/dialogues
-DIALOGUE_BUILD_DIR := $(BUILD_DIR)/bin/dialogues/bytecode
+DIALOGUE_BUILD_DIR := $(BUILD_DIR)/assets/dialogues/bytecode
 
-DIALOGUE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_dialogue_transpiler.py
+DIALOGUE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.dialogues.transpiler
 
 DIALOGUE_OBJECTS := \
 	$(DIALOGUE_BUILD_DIR)/text1Dialogue.bin.o \
@@ -390,9 +392,21 @@ DECOMPILED_TEXTS := text1 \
 	howToPlay
 
 TEXT_ASSETS_DIR := assets/text
-TEXT_BUILD_DIR := $(BUILD_DIR)/bin/text
+TEXT_BUILD_DIR := $(BUILD_DIR)/assets/text
 
-TEXT_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_text_transpiler.py
+TEXT_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.text.transpiler
+TEXT_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.text.extractor
+
+SPRITE_ASSETS_DIR := assets/sprites
+SPRITE_BUILD_DIR := $(BUILD_DIR)/assets/sprites
+SPRITE_ASSEMBLER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.sprites.assembler
+SPRITE_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.sprites.extractor
+
+FONT_ASSETS_DIR := assets/font
+FONT_BUILD_DIR := $(BUILD_DIR)/assets/font
+FONT_ASSEMBLER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.assembler
+FONT_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.extractor
+FONT_PNG_EXPORTER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.png_exporter
 
 ifeq ($(VERBOSE),0)
 V := @
@@ -447,45 +461,48 @@ clean-all: clean clean-assets
 
 split:
 # only extract what's needed and don't generate linker script
-	$(V)python3 -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts seq hm64map
+	$(V)$(PYTHON) -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts seq hm64map
 
-setup: clean split
+setup: clean split extract-sprites extract-fonts
 
 rerun: clean $(LD_SCRIPT) check
 
 # Asset extraction
+
+# For build
 
 extract-sprites:
 # don't delete spec files
 	@find assets/sprites -type f ! -name "*.spec" -delete 2>/dev/null || true
 # clean up empty directories
 	@find assets/sprites -type d -empty -delete 2>/dev/null || true
-	@cd tools/assets && python3 ./hm64_sprite_utilities.py write_all_textures    
-
-extract-animation-metadata:
-	@cd tools/assets && python3 ./hm64_animation_utilities.py extract_animation_metadata
-
-extract-animation-scripts:
-	@cd tools/assets && python3 ./extract_animation_scripts.py
-
-extract-animation-sprites:
-	@cd tools/assets && python3 ./hm64_animation_utilities.py fetch_sprites_for_animations
-	
-extract-animations:
-	@cd tools/assets && python3 ./hm64_animation_utilities.py extract_all
-
-extract-gifs:
-	@cd tools/assets && python3 ./hm64_animation_utilities.py make_gifs_from_animations
-
-extract-texts:
-	@cd tools/assets && python3 ./hm64_text_utilities.py process_all write_files
-
-extract-map-sprites:
-	@cd tools/assets && python3 ./hm64_map_utilities.py write_all_textures
+	$(V)$(SPRITE_EXTRACTOR) extract_all    
 
 extract-fonts:
-	@cd tools/assets && python3 ./hm64_font_utilities.py extract_all
-	@cd tools/assets && python3 ./hm64_font_utilities.py extract_all_palettes
+	@rm -f $(FONT_ASSETS_DIR)/*.ci2 $(FONT_ASSETS_DIR)/*.pal 2>/dev/null || true
+	$(V)$(FONT_EXTRACTOR)
+
+assemble-fonts:
+	$(V)$(FONT_ASSEMBLER)
+
+# Extra
+
+
+extract-gifs:
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.animations.gif_builder
+
+extract-texts:
+	$(V)$(TEXT_EXTRACTOR) extract_all
+
+extract-map-sprites:
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.maps.png_exporter all
+
+extract-cutscenes:
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.extractor --all
+
+extract-font:
+	$(V)$(FONT_PNG_EXPORTER) extract_all
+	$(V)$(FONT_PNG_EXPORTER) extract_all_palettes
 
 # Main code segment
 
@@ -619,7 +636,7 @@ $(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_ASSETS_DIR)/%.s
 
 # Extract texts to assets directory and transpile to assembly (generates two files: bytecode and index)
 $(TEXT_ASSETS_DIR)/%Text.s:
-	$(V)cd $(TOOLS_DIR)/assets && python3 hm64_text_utilities.py extract_bank $*
+	$(V)$(TEXT_EXTRACTOR) extract $*
 	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/
 
 # Mark dependency
@@ -631,6 +648,44 @@ $(TEXT_BUILD_DIR)/%Text.bin.o: $(TEXT_ASSETS_DIR)/%Text.s
 
 $(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+# Sprites: assemble from assets and compile to .bin.o
+# Each sprite directory produces 3 bin files: <label>Texture.bin, <label>AssetsIndex.bin, <label>SpritesheetIndex.bin
+
+# Secondary files are created by the Texture.bin rule
+$(SPRITE_BUILD_DIR)/%AssetsIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
+	@:
+
+$(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
+	@:
+
+# Compile sprite .bin to .bin.o
+$(SPRITE_BUILD_DIR)/%.bin.o: $(SPRITE_BUILD_DIR)/%.bin
+	$(V)$(LD) -r -b binary -o $@ $<
+
+# Only the Texture.bin rule needs SECONDEXPANSION for $(dir $*) in prerequisite
+.SECONDEXPANSION:
+
+$(SPRITE_BUILD_DIR)/%Texture.bin: $(SPRITE_ASSETS_DIR)/$$(dir $$*)manifest.json
+	@mkdir -p $(dir $@)
+	$(V)$(SPRITE_ASSEMBLER) assemble $(SPRITE_ASSETS_DIR)/$(dir $*) $(dir $@)
+
+# Font assets: assemble from assets/font/ to build/assets/font/
+$(FONT_BUILD_DIR)/fontTexture.bin: $(FONT_ASSETS_DIR)/fontTexture.ci2 $(FONT_ASSETS_DIR)/fontPalette1.pal $(FONT_ASSETS_DIR)/fontPalette2.pal $(FONT_ASSETS_DIR)/fontPalette3.pal
+	@mkdir -p $(dir $@)
+	$(V)$(FONT_ASSEMBLER) --assets-dir $(FONT_ASSETS_DIR) --output-dir $(FONT_BUILD_DIR)
+
+$(FONT_BUILD_DIR)/fontPalette1.bin: $(FONT_BUILD_DIR)/fontTexture.bin
+	@:
+
+$(FONT_BUILD_DIR)/fontPalette2.bin: $(FONT_BUILD_DIR)/fontTexture.bin
+	@:
+
+$(FONT_BUILD_DIR)/fontPalette3.bin: $(FONT_BUILD_DIR)/fontTexture.bin
+	@:
+
+$(FONT_BUILD_DIR)/%.bin.o: $(FONT_BUILD_DIR)/%.bin
+	$(V)$(LD) -r -b binary -o $@ $<
 
 # Rest of code and extracted binary files
 
@@ -982,7 +1037,7 @@ $(BASENAME).elf: $(OBJECTS) $(LD_SCRIPT)
 
 $(TARGET): $(BASENAME).elf
 	$(V)$(OBJCOPY) -O binary --gap-fill=0xFF $< $@
-	$(V)python3 $(TOOLS_DIR)/build/makemask.py $@ --pad
+	$(V)$(PYTHON) $(TOOLS_DIR)/build/makemask.py $@ --pad
 
 check: $(TARGET)
 	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
@@ -991,13 +1046,16 @@ check: $(TARGET)
 .PHONY: all modern clean clean-assets setup split rerun check codesegment
 .PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
 .PHONY: extract-animation-sprites extract-animations extract-gifs
-.PHONY: extract-texts extract-dialogues extract-map-sprites extract-cutscenes
+.PHONY: extract-texts extract-map-sprites extract-cutscenes
+.PHONY: extract-fonts assemble-fonts extract-font
 
 CUTSCENE_ASM := $(patsubst $(CUTSCENE_BUILD_DIR)/%.bin.o,$(CUTSCENE_ASSETS_DIR)/%.s,$(CUTSCENE_OBJECTS))
 DIALOGUE_ASM := $(patsubst $(DIALOGUE_BUILD_DIR)/%.bin.o,$(DIALOGUE_ASSETS_DIR)/%.s,$(DIALOGUE_OBJECTS))
 TEXT_ASM := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
+TEXTURE_BIN := $(patsubst $(SPRITE_BUILD_DIR)/%Texture.bin.o,$(SPRITE_BUILD_DIR)/%AssetsIndex.bin.o, $(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin.o)
 
 # Prevent Make from deleting intermediate .s files
-.SECONDARY: $(CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
+.SECONDARY:
+.PRECIOUS: %.bin
 
 MAKEFLAGS += --no-builtin-rules
