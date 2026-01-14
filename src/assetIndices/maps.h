@@ -111,6 +111,158 @@
 #define KITCHEN 90
 #define BATHROOM 91
 
+// =============================================================================
+// Map Dimensions (width x height in tiles, all use 32x32 tile size)
+// =============================================================================
+
+#define MAP_TILE_SIZE 32
+
+// Outdoor seasonal maps
+#define MAP_FARM_WIDTH          38
+#define MAP_FARM_HEIGHT         38
+#define MAP_RANCH_WIDTH         34
+#define MAP_RANCH_HEIGHT        34
+#define MAP_BEACH_WIDTH         48
+#define MAP_BEACH_HEIGHT        32
+#define MAP_RACE_TRACK_WIDTH    20
+#define MAP_RACE_TRACK_HEIGHT   27
+#define MAP_MOUNTAIN_1_WIDTH    25
+#define MAP_MOUNTAIN_1_HEIGHT   29
+#define MAP_MOUNTAIN_2_WIDTH    25
+#define MAP_MOUNTAIN_2_HEIGHT   35
+#define MAP_TOP_OF_MOUNTAIN_1_WIDTH  28
+#define MAP_TOP_OF_MOUNTAIN_1_HEIGHT 16
+#define MAP_MOON_MOUNTAIN_WIDTH      28
+#define MAP_MOON_MOUNTAIN_HEIGHT     35
+#define MAP_POND_WIDTH          26
+#define MAP_POND_HEIGHT         18
+#define MAP_VILLAGE_1_WIDTH     35
+#define MAP_VILLAGE_1_HEIGHT    30
+#define MAP_VILLAGE_2_WIDTH     34
+#define MAP_VILLAGE_2_HEIGHT    20
+#define MAP_SQUARE_WIDTH        20
+#define MAP_SQUARE_HEIGHT       32
+#define MAP_VINEYARD_WIDTH      36
+#define MAP_VINEYARD_HEIGHT     32
+#define MAP_ROAD_WIDTH          18
+#define MAP_ROAD_HEIGHT         24
+
+// Indoor maps
+#define MAP_BARN_WIDTH          20
+#define MAP_BARN_HEIGHT         20
+#define MAP_COOP_WIDTH          10
+#define MAP_COOP_HEIGHT         11
+#define MAP_HOUSE_WIDTH         14
+#define MAP_HOUSE_HEIGHT        13
+#define MAP_KITCHEN_WIDTH       14
+#define MAP_KITCHEN_HEIGHT      12
+#define MAP_BATHROOM_WIDTH      10
+#define MAP_BATHROOM_HEIGHT     10
+#define MAP_GREENHOUSE_WIDTH    21
+#define MAP_GREENHOUSE_HEIGHT   18
+#define MAP_RANCH_BARN_WIDTH    16
+#define MAP_RANCH_BARN_HEIGHT   21
+#define MAP_RANCH_STORE_WIDTH   10
+#define MAP_RANCH_STORE_HEIGHT  12
+#define MAP_RANCH_HOUSE_WIDTH   16
+#define MAP_RANCH_HOUSE_HEIGHT  12
+#define MAP_ANN_ROOM_WIDTH      11
+#define MAP_ANN_ROOM_HEIGHT     10
+#define MAP_BAKERY_WIDTH        12
+#define MAP_BAKERY_HEIGHT       10
+#define MAP_ELLI_ROOM_WIDTH     10
+#define MAP_ELLI_ROOM_HEIGHT    10
+#define MAP_FLOWER_SHOP_WIDTH   10
+#define MAP_FLOWER_SHOP_HEIGHT  12
+#define MAP_POPURI_ROOM_WIDTH   10
+#define MAP_POPURI_ROOM_HEIGHT  10
+#define MAP_CHURCH_WIDTH        10
+#define MAP_CHURCH_HEIGHT       14
+#define MAP_SOUVENIR_SHOP_WIDTH  8
+#define MAP_SOUVENIR_SHOP_HEIGHT 10
+#define MAP_RICK_STORE_WIDTH    10
+#define MAP_RICK_STORE_HEIGHT   12
+#define MAP_MIDWIFE_HOUSE_WIDTH  8
+#define MAP_MIDWIFE_HOUSE_HEIGHT 10
+#define MAP_TAVERN_WIDTH        12
+#define MAP_TAVERN_HEIGHT       14
+#define MAP_LIBRARY_WIDTH       10
+#define MAP_LIBRARY_HEIGHT      10
+#define MAP_MAYOR_HOUSE_WIDTH   12
+#define MAP_MAYOR_HOUSE_HEIGHT  12
+#define MAP_MARIA_ROOM_WIDTH    12
+#define MAP_MARIA_ROOM_HEIGHT   10
+#define MAP_POTION_SHOP_WIDTH   10
+#define MAP_POTION_SHOP_HEIGHT   8
+#define MAP_POTION_SHOP_BEDROOM_WIDTH  10
+#define MAP_POTION_SHOP_BEDROOM_HEIGHT  8
+#define MAP_VINEYARD_HOUSE_WIDTH   14
+#define MAP_VINEYARD_HOUSE_HEIGHT  14
+#define MAP_VINEYARD_CELLAR_WIDTH  12
+#define MAP_VINEYARD_CELLAR_HEIGHT 12
+#define MAP_VINEYARD_CELLAR_BASEMENT_WIDTH  12
+#define MAP_VINEYARD_CELLAR_BASEMENT_HEIGHT 12
+#define MAP_KAREN_ROOM_WIDTH    16
+#define MAP_KAREN_ROOM_HEIGHT    9
+#define MAP_CARPENTER_HUT_WIDTH 11
+#define MAP_CARPENTER_HUT_HEIGHT 11
+#define MAP_DUMPLING_HOUSE_WIDTH 12
+#define MAP_DUMPLING_HOUSE_HEIGHT 15
+#define MAP_CAVE_WIDTH          22
+#define MAP_CAVE_HEIGHT         18
+#define MAP_HARVEST_SPRITE_CAVE_WIDTH  11
+#define MAP_HARVEST_SPRITE_CAVE_HEIGHT 11
+#define MAP_MINE_WIDTH          14
+#define MAP_MINE_HEIGHT         14
+
+// =============================================================================
+// Tile-to-World Coordinate Conversion Macros
+// =============================================================================
+// Convert tile grid coordinates to world coordinates (floats centered on map)
+// Formula: world = TILE_SIZE * (tile - mapDimension / 2)
+// Center tile of any map = world coordinate 0
+
+#define TILE_TO_WORLD_X(map_width, tile_x) \
+    (MAP_TILE_SIZE * ((tile_x) - (map_width) / 2))
+
+#define TILE_TO_WORLD_Z(map_height, tile_z) \
+    (MAP_TILE_SIZE * ((tile_z) - (map_height) / 2))
+
+#define FARM_TILE_X(tile_x)     TILE_TO_WORLD_X(MAP_FARM_WIDTH, tile_x)
+#define FARM_TILE_Z(tile_z)     TILE_TO_WORLD_Z(MAP_FARM_HEIGHT, tile_z)
+#define RANCH_TILE_X(tile_x)    TILE_TO_WORLD_X(MAP_RANCH_WIDTH, tile_x)
+#define RANCH_TILE_Z(tile_z)    TILE_TO_WORLD_Z(MAP_RANCH_HEIGHT, tile_z)
+#define VILLAGE_1_TILE_X(tile_x) TILE_TO_WORLD_X(MAP_VILLAGE_1_WIDTH, tile_x)
+#define VILLAGE_1_TILE_Z(tile_z) TILE_TO_WORLD_Z(MAP_VILLAGE_1_HEIGHT, tile_z)
+#define VILLAGE_2_TILE_X(tile_x) TILE_TO_WORLD_X(MAP_VILLAGE_2_WIDTH, tile_x)
+#define VILLAGE_2_TILE_Z(tile_z) TILE_TO_WORLD_Z(MAP_VILLAGE_2_HEIGHT, tile_z)
+#define SQUARE_TILE_X(tile_x)   TILE_TO_WORLD_X(MAP_SQUARE_WIDTH, tile_x)
+#define SQUARE_TILE_Z(tile_z)   TILE_TO_WORLD_Z(MAP_SQUARE_HEIGHT, tile_z)
+#define BEACH_TILE_X(tile_x)    TILE_TO_WORLD_X(MAP_BEACH_WIDTH, tile_x)
+#define BEACH_TILE_Z(tile_z)    TILE_TO_WORLD_Z(MAP_BEACH_HEIGHT, tile_z)
+#define BARN_TILE_X(tile_x)     TILE_TO_WORLD_X(MAP_BARN_WIDTH, tile_x)
+#define BARN_TILE_Z(tile_z)     TILE_TO_WORLD_Z(MAP_BARN_HEIGHT, tile_z)
+#define HOUSE_TILE_X(tile_x)    TILE_TO_WORLD_X(MAP_HOUSE_WIDTH, tile_x)
+#define HOUSE_TILE_Z(tile_z)    TILE_TO_WORLD_Z(MAP_HOUSE_HEIGHT, tile_z)
+#define KITCHEN_TILE_X(tile_x)  TILE_TO_WORLD_X(MAP_KITCHEN_WIDTH, tile_x)
+#define KITCHEN_TILE_Z(tile_z)  TILE_TO_WORLD_Z(MAP_KITCHEN_HEIGHT, tile_z)
+#define CHURCH_TILE_X(tile_x)   TILE_TO_WORLD_X(MAP_CHURCH_WIDTH, tile_x)
+#define CHURCH_TILE_Z(tile_z)   TILE_TO_WORLD_Z(MAP_CHURCH_HEIGHT, tile_z)
+#define LIBRARY_TILE_X(tile_x)  TILE_TO_WORLD_X(MAP_LIBRARY_WIDTH, tile_x)
+#define LIBRARY_TILE_Z(tile_z)  TILE_TO_WORLD_Z(MAP_LIBRARY_HEIGHT, tile_z)
+#define MAYOR_HOUSE_TILE_X(tile_x)  TILE_TO_WORLD_X(MAP_MAYOR_HOUSE_WIDTH, tile_x)
+#define MAYOR_HOUSE_TILE_Z(tile_z)  TILE_TO_WORLD_Z(MAP_MAYOR_HOUSE_HEIGHT, tile_z)
+#define MOUNTAIN_1_TILE_X(tile_x)   TILE_TO_WORLD_X(MAP_MOUNTAIN_1_WIDTH, tile_x)
+#define MOUNTAIN_1_TILE_Z(tile_z)   TILE_TO_WORLD_Z(MAP_MOUNTAIN_1_HEIGHT, tile_z)
+#define MOUNTAIN_2_TILE_X(tile_x)   TILE_TO_WORLD_X(MAP_MOUNTAIN_2_WIDTH, tile_x)
+#define MOUNTAIN_2_TILE_Z(tile_z)   TILE_TO_WORLD_Z(MAP_MOUNTAIN_2_HEIGHT, tile_z)
+#define POND_TILE_X(tile_x)     TILE_TO_WORLD_X(MAP_POND_WIDTH, tile_x)
+#define POND_TILE_Z(tile_z)     TILE_TO_WORLD_Z(MAP_POND_HEIGHT, tile_z)
+
+// =============================================================================
+// Spawn Points
+// =============================================================================
+
 // house exit
 #define FARM_SPAWN_POINT_1  0
 #define FARM_SPAWN_POINT_2  1

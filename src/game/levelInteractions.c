@@ -1444,7 +1444,7 @@ bool handleBathroomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0 && entities[ENTITY_PLAYER].coordinates.z >= -44.0f && entities[ENTITY_PLAYER].coordinates.z < -36.0f) {
-                    setDailyEventBit(6);
+                    setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
                     setPlayerAction(BATHING, ANIM_DEFAULT);
                     levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                     result = 2;
@@ -1457,7 +1457,7 @@ bool handleBathroomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gPlayer.heldItem == 0 && entities[ENTITY_PLAYER].coordinates.x >= 42.0f && entities[ENTITY_PLAYER].coordinates.x < 50.0f) {
-                    setDailyEventBit(6);
+                    setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
                     setPlayerAction(USING_TOILET, ANIM_DEFAULT);
                     gHappiness += adjustValue(gHappiness, 2, 0xFF);
                     result = 2;
@@ -3535,7 +3535,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 if (gPlayer.heldItem == 0) {
 
                     if (getLevelInteractionIndexFromEntityPosition(PLAYER, 0.0f, 16.0f) == 17) {
-                        setDailyEventBit(6);
+                        setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
                         setPlayerAction(CLIMBING_TREE, ANIM_CLIMBING_TREE);
                         result = 2;
                     }
@@ -3551,7 +3551,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (gPlayer.direction == SOUTHWEST) {
-                    setDailyEventBit(6);
+                    setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
                     setPlayerAction(JUMPING_DOWN, ANIM_JUMPING);
                     result = 2;
                 }
@@ -3621,7 +3621,7 @@ u8 handleTopOfMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
 
                     if (gPlayer.heldItem == 0) {
                         if (-48.0f <= entities[ENTITY_PLAYER].coordinates.x && entities[ENTITY_PLAYER].coordinates.x < -40.0f) {
-                            setDailyEventBit(6);
+                            setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
                             setPlayerAction(USING_HOT_SPRINGS, ANIM_DEFAULT);
                             levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
                             result = 2;

@@ -38,7 +38,7 @@ u8 gGlobalSeasonName[6];
 
 void handleTimeUpdates(void) {
     
-    if ((getLevelFlags(gBaseMapIndex) & LEVEL_TIME_FLOWS) && !checkDailyEventBit(6)) {
+    if ((getLevelFlags(gBaseMapIndex) & LEVEL_TIME_FLOWS) && !checkDailyEventBit(SUSPEND_TIME_DURING_ANIMATION)) {
         updateClock(TRUE);
     }
     
@@ -88,7 +88,6 @@ void handleTimeUpdates(void) {
         setDailyEventBit(0x11);
     }
     
-    // check/load cutscenes
     handleTimedDailyCutscenes(gBaseMapIndex);
     
 }

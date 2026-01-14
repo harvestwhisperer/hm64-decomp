@@ -188,7 +188,7 @@ segments:
       - [ 0xD8D00, c, ../lib/nusys-1/src/nusys/nusicallbackremove]
       - [ 0xD8D80, c, ../lib/nusys-1/src/nusys/nucontpakjiston64]
       # libultra
-      - [ 0xD9040, hasm, ../lib/libultra/src/gu/sqrtf, extract: false]
+      - [ 0xD9040, hasm, ../lib/libultra/src/gu/sqrtf]
       - [ 0xD9050, c, ../lib/libultra/src/gu/cosf]
       - [ 0xD91A0, c, ../lib/libultra/src/gu/lookat]
       - [ 0xD98B0, c, ../lib/libultra/src/gu/mtxutil]
@@ -464,7 +464,7 @@ segments:
           - { start: 0xF6DC4, type: animationScriptData, name: data/animationScripts/hornedBeetle }
           - { start: 0xF6DD4, type: animationScriptData, name: data/animationScripts/stagBeetle }
           - { start: 0xF6DE4, type: animationScriptData, name: data/animationScripts/dragonfly }
-          - { start: 0xF6DEC, type: animationScriptData, name: data/animationScripts/bellRingCricket }
+          - { start: 0xF6DEC, type: animationScriptData, name: data/animationScripts/cricket }
           - { start: 0xF6DF4, type: animationScriptData, name: data/animationScripts/homeItems }
           - { start: 0xF6DFC, type: animationScriptData, name: data/animationScripts/holdableItems1 }
           - { start: 0xF6E10, type: animationScriptData, name: data/animationScripts/shopItems }
@@ -1022,1468 +1022,1760 @@ segments:
   # character sprites
   - name: playerTexture
     type: bin
-    dir: sprites/entity-sprites/player
+    dir: assets/sprites/entitySprites/player
+    extract: false
     start: 0x159330
     vram: 0x80240B00
 
   - name: playerAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/player
+    dir: assets/sprites/entitySprites/player
+    extract: false
     start: 0x2D0660
     
   - name: playerSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/player
+    dir: assets/sprites/entitySprites/player
+    extract: false
     start: 0x2D0680
 
   - name: mariaTexture
     type: bin
-    dir: sprites/entity-sprites/npc/maria
+    dir: assets/sprites/entitySprites/npc/maria
+    extract: false
     start: 0x2D15E0
 
   - name: mariaAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/maria
+    dir: assets/sprites/entitySprites/npc/maria
+    extract: false
     start: 0x3016C0
     
   - name: mariaSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/maria
+    dir: assets/sprites/entitySprites/npc/maria
+    extract: false
     start: 0x3016E0
 
   - name: popuriTexture
     type: bin
-    dir: sprites/entity-sprites/npc/popuri
+    dir: assets/sprites/entitySprites/npc/popuri
+    extract: false
     start: 0x301930
 
   - name: popuriAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/popuri
+    dir: assets/sprites/entitySprites/npc/popuri
+    extract: false
     start: 0x339490
     
   - name: popuriSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/popuri
+    dir: assets/sprites/entitySprites/npc/popuri
+    extract: false
     start: 0x3394B0
 
   - name: elliTexture
     type: bin
-    dir: sprites/entity-sprites/npc/elli
+    dir: assets/sprites/entitySprites/npc/elli
+    extract: false
     start: 0x3396E0
 
   - name: elliAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/elli
+    dir: assets/sprites/entitySprites/npc/elli
+    extract: false
     start: 0x366970
     
   - name: elliSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/elli
+    dir: assets/sprites/entitySprites/npc/elli
+    extract: false
     start: 0x366990
 
   - name: annTexture
     type: bin
-    dir: sprites/entity-sprites/npc/ann
+    dir: assets/sprites/entitySprites/npc/ann
+    extract: false
     start: 0x366BB0
 
   - name: annAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/ann
+    dir: assets/sprites/entitySprites/npc/ann
+    extract: false
     start: 0x39BC60
     
   - name: annSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/ann
+    dir: assets/sprites/entitySprites/npc/ann
+    extract: false
     start: 0x39BC80
 
   - name: karenTexture
     type: bin
-    dir: sprites/entity-sprites/npc/karen
+    dir: assets/sprites/entitySprites/npc/karen
+    extract: false
     start: 0x39BEC0
 
   - name: karenAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/karen
+    dir: assets/sprites/entitySprites/npc/karen
+    extract: false
     start: 0x3D1860
     
   - name: karenSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/karen
+    dir: assets/sprites/entitySprites/npc/karen
+    extract: false
     start: 0x3D1880
 
   - name: babyTexture
     type: bin
-    dir: sprites/entity-sprites/npc/baby
+    dir: assets/sprites/entitySprites/npc/baby
+    extract: false
     start: 0x3D1AE0
 
   - name: babyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/baby
+    dir: assets/sprites/entitySprites/npc/baby
+    extract: false
     start: 0x3EE430
     
   - name: babySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/baby
+    dir: assets/sprites/entitySprites/npc/baby
+    extract: false
     start: 0x3EE450
 
   - name: harrisTexture
     type: bin
-    dir: sprites/entity-sprites/npc/harris
+    dir: assets/sprites/entitySprites/npc/harris
+    extract: false
     start: 0x3EE670
 
   - name: harrisAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/harris
+    dir: assets/sprites/entitySprites/npc/harris
+    extract: false
     start: 0x40D3F0
     
   - name: harrisSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/harris
+    dir: assets/sprites/entitySprites/npc/harris
+    extract: false
     start: 0x40D410
   
   - name: grayTexture
     type: bin
-    dir: sprites/entity-sprites/npc/gray
+    dir: assets/sprites/entitySprites/npc/gray
+    extract: false
     start: 0x40D550
 
   - name: grayAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/gray
+    dir: assets/sprites/entitySprites/npc/gray
+    extract: false
     start: 0x42A8D0
     
   - name: graySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/gray
+    dir: assets/sprites/entitySprites/npc/gray
+    extract: false
     start: 0x42A8F0
 
   - name: jeffTexture
     type: bin
-    dir: sprites/entity-sprites/npc/jeff
+    dir: assets/sprites/entitySprites/npc/jeff
+    extract: false
     start: 0x42AA40
 
   - name: jeffAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/jeff
+    dir: assets/sprites/entitySprites/npc/jeff
+    extract: false
     start: 0x443840
     
   - name: jeffSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/jeff
+    dir: assets/sprites/entitySprites/npc/jeff
+    extract: false
     start: 0x443860
 
   - name: cliffTexture
     type: bin
-    dir: sprites/entity-sprites/npc/cliff
+    dir: assets/sprites/entitySprites/npc/cliff
+    extract: false
     start: 0x443990
 
   - name: cliffAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/cliff
+    dir: assets/sprites/entitySprites/npc/cliff
+    extract: false
     start: 0x45D230
     
   - name: cliffSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/cliff
+    dir: assets/sprites/entitySprites/npc/cliff
+    extract: false
     start: 0x45D250
 
   - name: kaiTexture
     type: bin
-    dir: sprites/entity-sprites/npc/kai
+    dir: assets/sprites/entitySprites/npc/kai
+    extract: false
     start: 0x45D380
 
   - name: kaiAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/kai
+    dir: assets/sprites/entitySprites/npc/kai
+    extract: false
     start: 0x4772B0
     
   - name: kaiSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/kai
+    dir: assets/sprites/entitySprites/npc/kai
+    extract: false
     start: 0x4772D0
 
   - name: mayorTexture
     type: bin
-    dir: sprites/entity-sprites/npc/mayor
+    dir: assets/sprites/entitySprites/npc/mayor
+    extract: false
     start: 0x477410
 
   - name: mayorAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/mayor
+    dir: assets/sprites/entitySprites/npc/mayor
+    extract: false
     start: 0x483D20
     
   - name: mayorSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/mayor
+    dir: assets/sprites/entitySprites/npc/mayor
+    extract: false
     start: 0x483D40
 
   - name: mayorWifeTexture
     type: bin
-    dir: sprites/entity-sprites/npc/mayorWife
+    dir: assets/sprites/entitySprites/npc/mayorWife
+    extract: false
     start: 0x483E80
 
   - name: mayorWifeAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/mayorWife
+    dir: assets/sprites/entitySprites/npc/mayorWife
+    extract: false
     start: 0x48B570
     
   - name: mayorWifeSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/mayorWife
+    dir: assets/sprites/entitySprites/npc/mayorWife
+    extract: false
     start: 0x48B590
 
   - name: lilliaTexture
     type: bin
-    dir: sprites/entity-sprites/npc/lillia
+    dir: assets/sprites/entitySprites/npc/lillia
+    extract: false
     start: 0x48B620
 
   - name: lilliaAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/lillia
+    dir: assets/sprites/entitySprites/npc/lillia
+    extract: false
     start: 0x4919B0
     
   - name: lilliaSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/lillia
+    dir: assets/sprites/entitySprites/npc/lillia
+    extract: false
     start: 0x4919D0
 
   - name: basilTexture
     type: bin
-    dir: sprites/entity-sprites/npc/basil
+    dir: assets/sprites/entitySprites/npc/basil
+    extract: false
     start: 0x491A40
 
   - name: basilAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/basil
+    dir: assets/sprites/entitySprites/npc/basil
+    extract: false
     start: 0x49EDA0
     
   - name: basilSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/basil
+    dir: assets/sprites/entitySprites/npc/basil
+    extract: false
     start: 0x49EDC0
 
   - name: ellenTexture
     type: bin
-    dir: sprites/entity-sprites/npc/ellen
+    dir: assets/sprites/entitySprites/npc/ellen
+    extract: false
     start: 0x49EEF0
 
   - name: ellenAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/ellen
+    dir: assets/sprites/entitySprites/npc/ellen
+    extract: false
     start: 0x4A5D20
     
   - name: ellenSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/ellen
+    dir: assets/sprites/entitySprites/npc/ellen
+    extract: false
     start: 0x4A5D40
 
   - name: dougTexture
     type: bin
-    dir: sprites/entity-sprites/npc/doug
+    dir: assets/sprites/entitySprites/npc/doug
+    extract: false
     start: 0x4A5D70
 
   - name: dougAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/doug
+    dir: assets/sprites/entitySprites/npc/doug
+    extract: false
     start: 0x4B1260
     
   - name: dougSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/doug
+    dir: assets/sprites/entitySprites/npc/doug
+    extract: false
     start: 0x4B1280
 
   - name: gotzTexture
     type: bin
-    dir: sprites/entity-sprites/npc/gotz
+    dir: assets/sprites/entitySprites/npc/gotz
+    extract: false
     start: 0x4B13C0
 
   - name: gotzAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/gotz
+    dir: assets/sprites/entitySprites/npc/gotz
+    extract: false
     start: 0x4BC390
     
   - name: gotzSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/gotz
+    dir: assets/sprites/entitySprites/npc/gotz
+    extract: false
     start: 0x4BC3B0
 
   - name: sashaTexture
     type: bin
-    dir: sprites/entity-sprites/npc/sasha
+    dir: assets/sprites/entitySprites/npc/sasha
+    extract: false
     start: 0x4BC4A0
 
   - name: sashaAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/sasha
+    dir: assets/sprites/entitySprites/npc/sasha
+    extract: false
     start: 0x4C3220
     
   - name: sashaSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/sasha
+    dir: assets/sprites/entitySprites/npc/sasha
+    extract: false
     start: 0x4C3240
 
   - name: potionShopDealerTexture
     type: bin
-    dir: sprites/entity-sprites/npc/potionShopDealer
+    dir: assets/sprites/entitySprites/npc/potionShopDealer
+    extract: false
     start: 0x4C32C0
 
   - name: potionShopDealerAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/potionShopDealer
+    dir: assets/sprites/entitySprites/npc/potionShopDealer
+    extract: false
     start: 0x4CD740
     
   - name: potionShopDealerSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/potionShopDealer
+    dir: assets/sprites/entitySprites/npc/potionShopDealer
+    extract: false
     start: 0x4CD760
 
   - name: kentTexture
     type: bin
-    dir: sprites/entity-sprites/npc/kent
+    dir: assets/sprites/entitySprites/npc/kent
+    extract: false
     start: 0x4CD890
 
   - name: kentAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/kent
+    dir: assets/sprites/entitySprites/npc/kent
+    extract: false
     start: 0x4DEF80
     
   - name: kentSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/kent
+    dir: assets/sprites/entitySprites/npc/kent
+    extract: false
     start: 0x4DEFA0
 
   - name: stuTexture
     type: bin
-    dir: sprites/entity-sprites/npc/stu
+    dir: assets/sprites/entitySprites/npc/stu
+    extract: false
     start: 0x4DF110
 
   - name: stuAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/stu
+    dir: assets/sprites/entitySprites/npc/stu
+    extract: false
     start: 0x4E85D0
     
   - name: stuSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/stu
+    dir: assets/sprites/entitySprites/npc/stu
+    extract: false
     start: 0x4E85F0
 
   - name: midwifeTexture
     type: bin
-    dir: sprites/entity-sprites/npc/midwife
+    dir: assets/sprites/entitySprites/npc/midwife
+    extract: false
     start: 0x4E86B0
 
   - name: midwifeAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/midwife
+    dir: assets/sprites/entitySprites/npc/midwife
+    extract: false
     start: 0x4EFE00
     
   - name: midwifeSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/midwife
+    dir: assets/sprites/entitySprites/npc/midwife
+    extract: false
     start: 0x4EFE20
 
   - name: mayTexture
     type: bin
-    dir: sprites/entity-sprites/npc/may
+    dir: assets/sprites/entitySprites/npc/may
+    extract: false
     start: 0x4EFEB0
 
   - name: mayAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/may
+    dir: assets/sprites/entitySprites/npc/may
+    extract: false
     start: 0x4F47F0
     
   - name: maySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/may
+    dir: assets/sprites/entitySprites/npc/may
+    extract: false
     start: 0x4F4810
 
   - name: rickTexture
     type: bin
-    dir: sprites/entity-sprites/npc/rick
+    dir: assets/sprites/entitySprites/npc/rick
+    extract: false
     start: 0x4F4890
 
   - name: rickAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/rick
+    dir: assets/sprites/entitySprites/npc/rick
+    extract: false
     start: 0x4FBFF0
     
   - name: rickSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/rick
+    dir: assets/sprites/entitySprites/npc/rick
+    extract: false
     start: 0x4FC010
 
   - name: pastorTexture
     type: bin
-    dir: sprites/entity-sprites/npc/pastor
+    dir: assets/sprites/entitySprites/npc/pastor
+    extract: false
     start: 0x4FC140
 
   - name: pastorAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/pastor
+    dir: assets/sprites/entitySprites/npc/pastor
+    extract: false
     start: 0x503AB0
     
   - name: pastorSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/pastor
+    dir: assets/sprites/entitySprites/npc/pastor
+    extract: false
     start: 0x503AD0
 
   - name: shipperTexture
     type: bin
-    dir: sprites/entity-sprites/npc/shipper
+    dir: assets/sprites/entitySprites/npc/shipper
+    extract: false
     start: 0x503BC0
 
   - name: shipperAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/shipper
+    dir: assets/sprites/entitySprites/npc/shipper
+    extract: false
     start: 0x518B00
     
   - name: shipperSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/shipper
+    dir: assets/sprites/entitySprites/npc/shipper
+    extract: false
     start: 0x518B20
 
   - name: saibaraTexture
     type: bin
-    dir: sprites/entity-sprites/npc/saibara
+    dir: assets/sprites/entitySprites/npc/saibara
+    extract: false
     start: 0x518BB0
 
   - name: saibaraAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/saibara
+    dir: assets/sprites/entitySprites/npc/saibara
+    extract: false
     start: 0x520D00
     
   - name: saibaraSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/saibara
+    dir: assets/sprites/entitySprites/npc/saibara
+    extract: false
     start: 0x520D20
 
   - name: dukeTexture
     type: bin
-    dir: sprites/entity-sprites/npc/duke
+    dir: assets/sprites/entitySprites/npc/duke
+    extract: false
     start: 0x520DB0
 
   - name: dukeAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/duke
+    dir: assets/sprites/entitySprites/npc/duke
+    extract: false
     start: 0x5249E0
     
   - name: dukeSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/duke
+    dir: assets/sprites/entitySprites/npc/duke
+    extract: false
     start: 0x524A00
 
   - name: gregTexture
     type: bin
-    dir: sprites/entity-sprites/npc/greg
+    dir: assets/sprites/entitySprites/npc/greg
+    extract: false
     start: 0x524AE0
 
   - name: gregAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/greg
+    dir: assets/sprites/entitySprites/npc/greg
+    extract: false
     start: 0x52F260
     
   - name: gregSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/greg
+    dir: assets/sprites/entitySprites/npc/greg
+    extract: false
     start: 0x52F280
 
   - name: assistantCarpenterTexture
     type: bin
-    dir: sprites/entity-sprites/npc/assistantCarpenter
+    dir: assets/sprites/entitySprites/npc/assistantCarpenter
+    extract: false
     start: 0x52F370
 
   - name: assistantCarpenterAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/assistantCarpenter
+    dir: assets/sprites/entitySprites/npc/assistantCarpenter
+    extract: false
     start: 0x5488A0
     
   - name: assistantCarpenterSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/assistantCarpenter
+    dir: assets/sprites/entitySprites/npc/assistantCarpenter
+    extract: false
     start: 0x5488C0
 
   - name: masterCarpenterTexture
     type: bin
-    dir: sprites/entity-sprites/npc/masterCarpenter
+    dir: assets/sprites/entitySprites/npc/masterCarpenter
+    extract: false
     start: 0x5489C0
 
   - name: masterCarpenterAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/masterCarpenter
+    dir: assets/sprites/entitySprites/npc/masterCarpenter
+    extract: false
     start: 0x555460
     
   - name: masterCarpenterSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/masterCarpenter
+    dir: assets/sprites/entitySprites/npc/masterCarpenter
+    extract: false
     start: 0x555480
 
   - name: harvestSpriteTexture
     type: bin
-    dir: sprites/entity-sprites/npc/harvestSprite
+    dir: assets/sprites/entitySprites/npc/harvestSprite
+    extract: false
     start: 0x555570
 
   - name: harvestSpriteAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/harvestSprite
+    dir: assets/sprites/entitySprites/npc/harvestSprite
+    extract: false
     start: 0x55A640
     
   - name: harvestSpriteSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/harvestSprite
+    dir: assets/sprites/entitySprites/npc/harvestSprite
+    extract: false
     start: 0x55A660
 
   - name: barleyTexture
     type: bin
-    dir: sprites/entity-sprites/npc/barley
+    dir: assets/sprites/entitySprites/npc/barley
+    extract: false
     start: 0x55A730
 
   - name: barleyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/barley
+    dir: assets/sprites/entitySprites/npc/barley
+    extract: false
     start: 0x560330
     
   - name: barleySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/barley
+    dir: assets/sprites/entitySprites/npc/barley
+    extract: false
     start: 0x560350
 
   - name: sydneyTexture
     type: bin
-    dir: sprites/entity-sprites/npc/sydney
+    dir: assets/sprites/entitySprites/npc/sydney
+    extract: false
     start: 0x5603D0
 
   - name: sydneyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/sydney
+    dir: assets/sprites/entitySprites/npc/sydney
+    extract: false
     start: 0x5665C0
     
   - name: sydneySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/sydney
+    dir: assets/sprites/entitySprites/npc/sydney
+    extract: false
     start: 0x5665E0
 
   - name: entomologistTexture
     type: bin
-    dir: sprites/entity-sprites/npc/entomologist
+    dir: assets/sprites/entitySprites/npc/entomologist
+    extract: false
     start: 0x566630
 
   - name: entomologistAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/entomologist
+    dir: assets/sprites/entitySprites/npc/entomologist
+    extract: false
     start: 0x56ED20
     
   - name: entomologistSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/entomologist
+    dir: assets/sprites/entitySprites/npc/entomologist
+    extract: false
     start: 0x56ED40
 
   - name: gourmetJudgeTexture
     type: bin
-    dir: sprites/entity-sprites/npc/gourmetJudge
+    dir: assets/sprites/entitySprites/npc/gourmetJudge
+    extract: false
     start: 0x56EE30
 
   - name: gourmetJudgeAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/gourmetJudge
+    dir: assets/sprites/entitySprites/npc/gourmetJudge
+    extract: false
     start: 0x578CD0
     
   - name: gourmetJudgeSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/gourmetJudge
+    dir: assets/sprites/entitySprites/npc/gourmetJudge
+    extract: false
     start: 0x578CF0
 
   - name: photographerTexture
     type: bin
-    dir: sprites/entity-sprites/npc/photographer
+    dir: assets/sprites/entitySprites/npc/photographer
+    extract: false
     start: 0x578D60
 
   - name: photographerAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/photographer
+    dir: assets/sprites/entitySprites/npc/photographer
+    extract: false
     start: 0x583C30
 
   - name: photographerSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/photographer
+    dir: assets/sprites/entitySprites/npc/photographer
+    extract: false
     start: 0x583C50
 
   - name: shadySalesmanTexture
     type: bin
-    dir: sprites/entity-sprites/npc/shadySalesman
+    dir: assets/sprites/entitySprites/npc/shadySalesman
+    extract: false
     start: 0x583D40
 
   - name: shadySalesmanAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/shadySalesman
+    dir: assets/sprites/entitySprites/npc/shadySalesman
+    extract: false
     start: 0x593730
     
   - name: shadySalesmanSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/shadySalesman
+    dir: assets/sprites/entitySprites/npc/shadySalesman
+    extract: false
     start: 0x593750
 
   - name: mrsManaSonTexture
     type: bin
-    dir: sprites/entity-sprites/npc/mrsManaSon
+    dir: assets/sprites/entitySprites/npc/mrsManaSon
+    extract: false
     start: 0x593840
 
   - name: mrsManaSonAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/mrsManaSon
+    dir: assets/sprites/entitySprites/npc/mrsManaSon
+    extract: false
     start: 0x597040
     
   - name: mrsManaSonSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/mrsManaSon
+    dir: assets/sprites/entitySprites/npc/mrsManaSon
+    extract: false
     start: 0x597060
 
   - name: mrsManaTexture
     type: bin
-    dir: sprites/entity-sprites/npc/mrsMana
+    dir: assets/sprites/entitySprites/npc/mrsMana
+    extract: false
     start: 0x5970C0
 
   - name: mrsManaAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/mrsMana
+    dir: assets/sprites/entitySprites/npc/mrsMana
+    extract: false
     start: 0x59CD00
     
   - name: mrsManaSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/mrsMana
+    dir: assets/sprites/entitySprites/npc/mrsMana
+    extract: false
     start: 0x59CD20
 
   - name: oldManTexture
     type: bin
-    dir: sprites/entity-sprites/npc/oldMan
+    dir: assets/sprites/entitySprites/npc/oldMan
+    extract: false
     start: 0x59CD90
 
   - name: oldManAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/oldMan
+    dir: assets/sprites/entitySprites/npc/oldMan
+    extract: false
     start: 0x5A2580
     
   - name: oldManSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/oldMan
+    dir: assets/sprites/entitySprites/npc/oldMan
+    extract: false
     start: 0x5A25A0
 
   - name: oldWomanTexture
     type: bin
-    dir: sprites/entity-sprites/npc/oldWoman
+    dir: assets/sprites/entitySprites/npc/oldWoman
+    extract: false
     start: 0x5A26A0
 
   - name: oldWomanAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/oldWoman
+    dir: assets/sprites/entitySprites/npc/oldWoman
+    extract: false
     start: 0x5A7910
     
   - name: oldWomanSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/oldWoman
+    dir: assets/sprites/entitySprites/npc/oldWoman
+    extract: false
     start: 0x5A7930
 
   - name: touristCoupleManTexture
     type: bin
-    dir: sprites/entity-sprites/npc/touristCoupleMan
+    dir: assets/sprites/entitySprites/npc/touristCoupleMan
+    extract: false
     start: 0x5A7A10
 
   - name: touristCoupleManAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/touristCoupleMan
+    dir: assets/sprites/entitySprites/npc/touristCoupleMan
+    extract: false
     start: 0x5AE6A0
     
   - name: touristCoupleManSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/touristCoupleMan
+    dir: assets/sprites/entitySprites/npc/touristCoupleMan
+    extract: false
     start: 0x5AE6C0
 
   - name: touristCoupleWomanTexture
     type: bin
-    dir: sprites/entity-sprites/npc/touristCoupleWoman
+    dir: assets/sprites/entitySprites/npc/touristCoupleWoman
+    extract: false
     start: 0x5AE7B0
 
   - name: touristCoupleWomanAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/touristCoupleWoman
+    dir: assets/sprites/entitySprites/npc/touristCoupleWoman
+    extract: false
     start: 0x5B3AA0
     
   - name: touristCoupleWomanSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/touristCoupleWoman
+    dir: assets/sprites/entitySprites/npc/touristCoupleWoman
+    extract: false
     start: 0x5B3AC0
 
   - name: festivalGirl1Texture
     type: bin
-    dir: sprites/entity-sprites/npc/festivalGirl1
+    dir: assets/sprites/entitySprites/npc/festivalGirl1
+    extract: false
     start: 0x5B3BC0
 
   - name: festivalGirl1AssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/festivalGirl1
+    dir: assets/sprites/entitySprites/npc/festivalGirl1
+    extract: false
     start: 0x5BA0C0
     
   - name: festivalGirl1SpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/festivalGirl1
+    dir: assets/sprites/entitySprites/npc/festivalGirl1
+    extract: false
     start: 0x5BA0E0
 
   - name: festivalGirl2Texture
     type: bin
-    dir: sprites/entity-sprites/npc/festivalGirl2
+    dir: assets/sprites/entitySprites/npc/festivalGirl2
+    extract: false
     start: 0x5BA1D0
 
   - name: festivalGirl2AssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/festivalGirl2
+    dir: assets/sprites/entitySprites/npc/festivalGirl2
+    extract: false
     start: 0x5C04E0
     
   - name: festivalGirl2SpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/festivalGirl2
+    dir: assets/sprites/entitySprites/npc/festivalGirl2
+    extract: false
     start: 0x5C0500
 
   - name: festivalGirl3Texture
     type: bin
-    dir: sprites/entity-sprites/npc/festivalGirl3
+    dir: assets/sprites/entitySprites/npc/festivalGirl3
+    extract: false
     start: 0x5C0630
 
   - name: festivalGirl3AssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/festivalGirl3
+    dir: assets/sprites/entitySprites/npc/festivalGirl3
+    extract: false
     start: 0x5C7F70
     
   - name: festivalGirl3SpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/festivalGirl3
+    dir: assets/sprites/entitySprites/npc/festivalGirl3
+    extract: false
     start: 0x5C7F90
 
   - name: harvestGoddessTexture
     type: bin
-    dir: sprites/entity-sprites/npc/harvestGoddess
+    dir: assets/sprites/entitySprites/npc/harvestGoddess
+    extract: false
     start: 0x5C8110
 
   - name: harvestGoddessAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/harvestGoddess
+    dir: assets/sprites/entitySprites/npc/harvestGoddess
+    extract: false
     start: 0x5CB4D0
     
   - name: harvestGoddessSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/harvestGoddess
+    dir: assets/sprites/entitySprites/npc/harvestGoddess
+    extract: false
     start: 0x5CB4F0
 
   - name: spiritFestivalOcarinaPerformerTexture
     type: bin
-    dir: sprites/entity-sprites/npc/spiritFestivalOcarinaPerformer
+    dir: assets/sprites/entitySprites/npc/spiritFestivalOcarinaPerformer
+    extract: false
     start: 0x5CB520
 
   - name: spiritFestivalOcarinaPerformerAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/spiritFestivalOcarinaPerformer
+    dir: assets/sprites/entitySprites/npc/spiritFestivalOcarinaPerformer
+    extract: false
     start: 0x5CE500
 
   - name: spiritFestivalOcarinaPerformerSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/spiritFestivalOcarinaPerformer
+    dir: assets/sprites/entitySprites/npc/spiritFestivalOcarinaPerformer
+    extract: false
     start: 0x5CE520
 
   - name: kappaTexture
     type: bin
-    dir: sprites/entity-sprites/npc/kappa
+    dir: assets/sprites/entitySprites/npc/kappa
+    extract: false
     start: 0x5CE540
 
   - name: kappaAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/kappa
+    dir: assets/sprites/entitySprites/npc/kappa
+    extract: false
     start: 0x5CF260
 
   - name: kappaSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/kappa
+    dir: assets/sprites/entitySprites/npc/kappa
+    extract: false
     start: 0x5CF280
 
   - name: princessTexture
     type: bin
-    dir: sprites/entity-sprites/npc/princess
+    dir: assets/sprites/entitySprites/npc/princess
+    extract: false
     start: 0x5CF2A0
 
   - name: princessAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/princess
+    dir: assets/sprites/entitySprites/npc/princess
+    extract: false
     start: 0x5D1130
 
   - name: princessSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/princess
+    dir: assets/sprites/entitySprites/npc/princess
+    extract: false
     start: 0x5D1150
 
   - name: emptyNPCTexture
     type: bin
-    dir: sprites/entity-sprites/npc
+    dir: assets/sprites/entitySprites/npc/empty
+    extract: false
     start: 0x5D11A0
 
   - name: emptyNPCAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc
+    dir: assets/sprites/entitySprites/npc/empty
+    extract: false
     start: 0x5D11B0
-
   - name: emptyNPCSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc
+    dir: assets/sprites/entitySprites/npc/empty
+    extract: false
     start: 0x5D11C0
 
   - name: bunnyTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/bunny
+    extract: false
     start: 0x5D11D0
 
   - name: bunnyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/bunny
+    extract: false
     start: 0x5D5AF0
 
   - name: bunnySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/bunny
+    extract: false
     start: 0x5D5B10
 
   - name: mouseTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/mouse
+    extract: false
     start: 0x5D5BA0
 
   - name: mouseAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/mouse
+    extract: false
     start: 0x5D8F80
 
   - name: mouseSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/mouse
+    extract: false
     start: 0x5D8FA0
 
   - name: foxTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/fox
+    extract: false
     start: 0x5D9090
 
   - name: foxAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/fox
+    extract: false
     start: 0x5DF4B0
 
   - name: foxSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/fox
+    extract: false
     start: 0x5DF4D0
 
   - name: monkeyTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/monkey
+    extract: false
     start: 0x5DF590
 
   - name: monkeyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/monkey
+    extract: false
     start: 0x5E5EA0
 
   - name: monkeySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/monkey
+    extract: false
     start: 0x5E5EC0
 
   - name: hawkTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/hawk
+    extract: false
     start: 0x5E5FF0
 
   - name: hawkAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/hawk
+    extract: false
     start: 0x5EBE60
 
   - name: hawkSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/hawk
+    extract: false
     start: 0x5EBE80
 
   - name: moleTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/mole
+    extract: false
     start: 0x5EBFC0
 
   - name: moleAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/mole
+    extract: false
     start: 0x5ECDD0
 
   - name: moleSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/mole
+    extract: false
     start: 0x5ECDF0
 
   - name: squirrelTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/squirrel
+    extract: false
     start: 0x5ECE40
 
   - name: squirrelAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/squirrel
+    extract: false
     start: 0x5F1160
 
   - name: squirrelSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/squirrel
+    extract: false
     start: 0x5F1180
 
   - name: birdTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/bird
+    extract: false
     start: 0x5F1270
 
   - name: birdAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/bird
+    extract: false
     start: 0x5F5530
 
   - name: birdSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/bird
+    extract: false
     start: 0x5F5550
 
   - name: catTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cat
+    extract: false
     start: 0x5F55D0
 
   - name: catAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cat
+    extract: false
     start: 0x5FD520
 
   - name: catSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cat
+    extract: false
     start: 0x5FD540
 
   - name: dogVillageTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/dogVillage
+    extract: false
     start: 0x5FD670
 
   - name: dogVillageAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/dogVillage
+    extract: false
     start: 0x60E7F0
 
   - name: dogVillageSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/dogVillage
+    extract: false
     start: 0x60E810
 
   - name: dogTexture
     type: bin
-    dir: sprites/entity-sprites/title
+    dir: assets/sprites/entitySprites/animals/dog
+    extract: false
     start: 0x60EC20
 
   - name: dogAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/title
+    dir: assets/sprites/entitySprites/animals/dog
+    extract: false
     start: 0x630EC0
 
   - name: dogSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/title
+    dir: assets/sprites/entitySprites/animals/dog
+    extract: false
     start: 0x630EE0
 
   - name: horsePonyTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/horsePony
+    extract: false
     start: 0x631400
 
   - name: horsePonyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/horsePony
+    extract: false
     start: 0x64FAC0
 
   - name: horsePonySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/horsePony
+    extract: false
     start: 0x64FAE0
 
   - name: horseGrownTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/horseGrown
+    extract: false
     start: 0x64FCE0
 
   - name: horseGrownAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/horseGrown
+    extract: false
     start: 0x6AF5F0
 
   - name: horseGrownSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/horseGrown
+    extract: false
     start: 0x6AF610
 
   - name: chickTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/chick
+    extract: false
     start: 0x6AF8A0
 
   - name: chickAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/chick
+    extract: false
     start: 0x6B3DE0
 
   - name: chickSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/chick
+    extract: false
     start: 0x6B3E00
 
   - name: chickenTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/chicken
+    extract: false
     start: 0x6B3F30
 
   - name: chickenAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/chicken
+    extract: false
     start: 0x6BB590
 
   - name: chickenSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/chicken
+    extract: false
     start: 0x6BB5B0
 
   - name: calfTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/calf
+    extract: false
     start: 0x6BB880
 
   - name: calfAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/calf
+    extract: false
     start: 0x6D3600
 
   - name: calfSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/calf
+    extract: false
     start: 0x6D3620
 
   - name: youngCowTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/youngCow
+    extract: false
     start: 0x6D3820
 
   - name: youngCowAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/youngCow
+    extract: false
     start: 0x6F5E10
 
   - name: youngCowSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/youngCow
+    extract: false
     start: 0x6F5E30
 
   - name: cowTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cow
+    extract: false
     start: 0x6F6130
 
   - name: cowAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cow
+    extract: false
     start: 0x76BCB0
 
   - name: cowSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cow
+    extract: false
     start: 0x76BCD0
 
   - name: lambTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/lamb
+    extract: false
     start: 0x76C1B0
 
   - name: lambAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/lamb
+    extract: false
     start: 0x775740
 
   - name: lambSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/lamb
+    extract: false
     start: 0x775760
 
   - name: sheepTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/sheep
+    extract: false
     start: 0x7759C0
 
   - name: sheepAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/sheep
+    extract: false
     start: 0x794C50
 
   - name: sheepSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/sheep
+    extract: false
     start: 0x794C70
 
   - name: frogTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/frog
+    extract: false
     start: 0x794F10
 
   - name: frogAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/frog
+    extract: false
     start: 0x797A60
 
   - name: frogSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/frog
+    extract: false
     start: 0x797A80
 
   - name: crabTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/crab
+    extract: false
     start: 0x797B70
 
   - name: crabAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/crab
+    extract: false
     start: 0x79A6C0
 
   - name: crabSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/crab
+    extract: false
     start: 0x79A6E0
 
   - name: hornedBeetleTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/hornedBeetle
+    extract: false
     start: 0x79A7D0
 
   - name: hornedBeetleAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/hornedBeetle
+    extract: false
     start: 0x79AC70
 
   - name: hornedBeetleSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/hornedBeetle
+    extract: false
     start: 0x79AC90
 
   - name: stagBeetleTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/stagBeetle
+    extract: false
     start: 0x79AD70
 
   - name: stagBeetleAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/stagBeetle
+    extract: false
     start: 0x79B210
 
   - name: stagBeetleSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/stagBeetle
+    extract: false
     start: 0x79B230
 
   - name: cricketTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cricket
+    extract: false
     start: 0x79B310
 
   - name: cricketAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cricket
+    extract: false
     start: 0x79B680
 
   - name: cricketSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cricket
+    extract: false
     start: 0x79B6A0
 
   - name: cicadaTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cicada
+    extract: false
     start: 0x79B780
 
   - name: cicadaAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cicada
+    extract: false
     start: 0x79BB80
 
   - name: cicadaSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cicada
+    extract: false
     start: 0x79BBA0
 
   - name: whiteButterflyTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/whiteButterfly
+    extract: false
     start: 0x79BEB0
 
   - name: whiteButterflyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/whiteButterfly
+    extract: false
     start: 0x79C1D0
 
   - name: whiteButterflySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/whiteButterfly
+    extract: false
     start: 0x79C1F0
 
   - name: ladybugTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/ladybug
+    extract: false
     start: 0x79C2D0
 
   - name: ladybugAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/ladybug
+    extract: false
     start: 0x79C750
 
   - name: ladybugSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/ladybug
+    extract: false
     start: 0x79C770
 
   - name: dragonflyTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/dragonfly
+    extract: false
     start: 0x79CA80
 
   - name: dragonflyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/dragonfly
+    extract: false
     start: 0x79CCD0
 
   - name: dragonflySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/dragonfly
+    extract: false
     start: 0x79CCF0
 
   - name: grasshopperTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/grasshopper
+    extract: false
     start: 0x79CDD0
 
   - name: grasshopperAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/grasshopper
+    extract: false
     start: 0x79D140
 
   - name: grasshopperSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/grasshopper
+    extract: false
     start: 0x79D160
 
   - name: snakeTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/snake
+    extract: false
     start: 0x79D240
 
   - name: snakeAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/snake
+    extract: false
     start: 0x7A0050
 
   - name: snakeSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/snake
+    extract: false
     start: 0x7A0070
 
   - name: purpleButterflyTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/purpleButterfly
+    extract: false
     start: 0x7A0130
 
   - name: purpleButterflyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/purpleButterfly
+    extract: false
     start: 0x7A0B90
 
   - name: purpleButterflySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/purpleButterfly
+    extract: false
     start: 0x7A0BB0
 
   - name: dadTexture
     type: bin
-    dir: sprites/entity-sprites/npc
+    dir: assets/sprites/entitySprites/npc/dad
+    extract: false
     start: 0x7A0C90
 
   - name: dadAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc
+    dir: assets/sprites/entitySprites/npc/dad
+    extract: false
     start: 0x7A5F30
-    
+
   - name: dadSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc
+    dir: assets/sprites/entitySprites/npc/dad
+    extract: false
     start: 0x7A5F50
-    
+
   - name: cowIndoorsTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cowIndoors
+    extract: false
     start: 0x7A6040
 
   - name: cowIndoorsAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cowIndoors
+    extract: false
     start: 0x7DDCC0
 
   - name: cowIndoorsSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/cowIndoors
+    extract: false
     start: 0x7DDCE0
 
   - name: horseUnbridledTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/horseUnbridled
+    extract: false
     start: 0x7DDEE0
 
   - name: horseUnbridledAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/horseUnbridled
+    extract: false
     start: 0x7E9FE0
 
   - name: horseUnbridledSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/animals/horseUnbridled
+    extract: false
     start: 0x7EA000
 
   - name: horseRacerTexture
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/horseRace/horseRacer
+    extract: false
     start: 0x7EA0F0
 
   - name: horseRacerAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/horseRace/horseRacer
+    extract: false
     start: 0x7F4A90
 
   - name: horseRacerSpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/animals
+    dir: assets/sprites/entitySprites/horseRace/horseRacer
+    extract: false
     start: 0x7F4AB0
 
   - name: emptyEntityTexture
     type: bin
-    dir: sprites/entity-sprites
+    dir: assets/sprites/entitySprites/empty
+    extract: false
     start: 0x7F4CE0
 
   - name: emptyEntityAssetsIndex
     type: bin
-    dir: sprites/entity-sprites
+    dir: assets/sprites/entitySprites/empty
+    extract: false
     start: 0x7F4CF0
 
   - name: emptyEntitySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites
+    dir: assets/sprites/entitySprites/empty
+    extract: false
     start: 0x7F4D00
 
   - name: mariaHarrisBabyTexture
     type: bin
-    dir: sprites/entity-sprites/npc/mariaHarrisBaby
+    dir: assets/sprites/entitySprites/npc/mariaHarrisBaby
+    extract: false
     start: 0x7F4D10
 
   - name: mariaHarrisBabyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/mariaHarrisBaby
+    dir: assets/sprites/entitySprites/npc/mariaHarrisBaby
+    extract: false
     start: 0x7F65D0
 
   - name: mariaHarrisBabySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/mariaHarrisBaby
+    dir: assets/sprites/entitySprites/npc/mariaHarrisBaby
+    extract: false
     start: 0x7F65F0
 
   - name: popuriGrayBabyTexture
     type: bin
-    dir: sprites/entity-sprites/npc/popuriGrayBaby
+    dir: assets/sprites/entitySprites/npc/popuriGrayBaby
+    extract: false
     start: 0x7F6610
 
   - name: popuriGrayBabyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/popuriGrayBaby
+    dir: assets/sprites/entitySprites/npc/popuriGrayBaby
+    extract: false
     start: 0x7F8120
 
   - name: popuriGrayBabySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/popuriGrayBaby
+    dir: assets/sprites/entitySprites/npc/popuriGrayBaby
+    extract: false
     start: 0x7F8140
 
   - name: elliJeffBabyTexture
     type: bin
-    dir: sprites/entity-sprites/npc/elliJeffBaby
+    dir: assets/sprites/entitySprites/npc/elliJeffBaby
+    extract: false
     start: 0x7F8160
 
   - name: elliJeffBabyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/elliJeffBaby
+    dir: assets/sprites/entitySprites/npc/elliJeffBaby
+    extract: false
     start: 0x7F99F0
 
   - name: elliJeffBabySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/elliJeffBaby
+    dir: assets/sprites/entitySprites/npc/elliJeffBaby
+    extract: false
     start: 0x7F9A10
 
   - name: annCliffBabyTexture
     type: bin
-    dir: sprites/entity-sprites/npc/annCliffBaby
+    dir: assets/sprites/entitySprites/npc/annCliffBaby
+    extract: false
     start: 0x7F9A30
 
   - name: annCliffBabyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/annCliffBaby
+    dir: assets/sprites/entitySprites/npc/annCliffBaby
+    extract: false
     start: 0x7FB2C0
 
   - name: annCliffBabySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/annCliffBaby
+    dir: assets/sprites/entitySprites/npc/annCliffBaby
+    extract: false
     start: 0x7FB2E0
 
   - name: karenKaiBabyTexture
     type: bin
-    dir: sprites/entity-sprites/npc/karenKaiBaby
+    dir: assets/sprites/entitySprites/npc/karenKaiBaby
+    extract: false
     start: 0x7FB300
 
   - name: karenKaiBabyAssetsIndex
     type: bin
-    dir: sprites/entity-sprites/npc/karenKaiBaby
+    dir: assets/sprites/entitySprites/npc/karenKaiBaby
+    extract: false
     start: 0x7FCCD0
 
   - name: karenKaiBabySpritesheetIndex
     type: bin
-    dir: sprites/entity-sprites/npc/karenKaiBaby
+    dir: assets/sprites/entitySprites/npc/karenKaiBaby
+    extract: false
     start: 0x7FCCF0
 
   - name: shadowsTexture
     type: bin
-    dir: sprites/shadows
+    dir: assets/sprites/entitySprites/shadows
+    extract: false
     start: 0x7FCD10
 
-  - name: shadowsIndex
+  - name: shadowsAssetsIndex
     type: bin
-    dir: sprites/shadows
+    dir: assets/sprites/entitySprites/shadows
+    extract: false
     start: 0x7FD1E0
 
   - name: expressionBubblesTexture
     type: bin
-    dir: sprites/expression-bubbles
+    dir: assets/sprites/entitySprites/expressionBubbles
+    extract: false
     start: 0x7FD200
 
   - name: expressionBubblesAssetsIndex
     type: bin
-    dir: sprites/expression-bubbles
+    dir: assets/sprites/entitySprites/expressionBubbles
+    extract: false
     start: 0x800430
 
   - name: expressionBubblesSpritesheetIndex
     type: bin
-    dir: sprites/expression-bubbles
+    dir: assets/sprites/entitySprites/expressionBubbles
+    extract: false
     start: 0x800450
 
   # maps
@@ -2633,6 +2925,7 @@ segments:
   - name: emptyMap1
     type: hm64map
     dir: maps/unknown
+    extract: false
     start: 0x856B80
 
   - name: beachSpringMap
@@ -2664,6 +2957,7 @@ segments:
   - name: raceTrackSummerMap
     type: hm64map
     dir: maps/raceTrack
+    extract: false
     start: 0x87F510
 
   - name: raceTrackFallMap
@@ -2920,6 +3214,7 @@ segments:
   - name: emptyMap2
     type: hm64map
     dir: maps/unknown
+    extract: false
     start: 0xB64E30
 
   - name: spriteCaveMap
@@ -3052,269 +3347,322 @@ segments:
     dir: maps/house
     start: 0xC8D5C0
 
-  # map sprites
+  # map objects sprites
 
   - name: wavesTexture
     type: bin
-    dir: maps/beach/sprites
+    dir: assets/sprites/mapObjects/beach/waves
+    extract: false
     start: 0xC951A0
-  
+
   - name: wavesAssetsIndex
     type: bin
-    dir: maps/beach/sprites
+    dir: assets/sprites/mapObjects/beach/waves
+    extract: false
     start: 0xC9D640
 
   - name: wavesSpritesheetIndex
     type: bin
-    dir: maps/beach/sprites
+    dir: assets/sprites/mapObjects/beach/waves
+    extract: false
     start: 0xC9D660
 
-  - name: waterTilesTexture
+  - name: mountainWaterTexture
     type: bin
-    dir: maps/beach/sprites
+    dir: assets/sprites/mapObjects/mountain/mountainWater
+    extract: false
     start: 0xC9D680
 
-  - name: waterTilesAssetsIndex
+  - name: mountainWaterAssetsIndex
     type: bin
-    dir: maps/beach/sprites
+    dir: assets/sprites/mapObjects/mountain/mountainWater
+    extract: false
     start: 0xCA0DB0
 
-  - name: waterTilesSpritesheetIndex
+  - name: mountainWaterSpritesheetIndex
     type: bin
-    dir: maps/beach/sprites
+    dir: assets/sprites/mapObjects/mountain/mountainWater
+    extract: false
     start: 0xCA0DD0
 
   - name: boulderTexture
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/boulder
+    extract: false
     start: 0xCA0DF0
 
   - name: boulderAssetsIndex
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/boulder
+    extract: false
     start: 0xCA3F60
 
   - name: boulderSpritesheetIndex
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/boulder
+    extract: false
     start: 0xCA3F80
 
   - name: bridgeTexture
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/bridge
+    extract: false
     start: 0xCA3FA0
 
   - name: bridgeAssetsIndex
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/bridge
+    extract: false
     start: 0xCA4AF0
 
   - name: bridgeSpritesheetIndex
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/bridge
+    extract: false
     start: 0xCA4B10
 
   - name: stonePillarTexture
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/stonePillar
+    extract: false
     start: 0xCA4B30
 
   - name: stonePillarAssetsIndex
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/stonePillar
+    extract: false
     start: 0xCA4FE0
 
   - name: stonePillarSpritesheetIndex
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/stonePillar
+    extract: false
     start: 0xCA5000
 
   - name: emptyMountainSprite1Texture
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/empty
+    extract: false
     start: 0xCA5010
 
   - name: emptyMountainSprite2Texture
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/empty
+    extract: false
     start: 0xCA5030
 
   - name: mountainPathTilesTexture
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/mountainPathTiles
+    extract: false
     start: 0xCA5040
 
   - name: mountainPathTilesAssetsIndex
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/mountainPathTiles
+    extract: false
     start: 0xCA5430
 
   - name: mountainPathTilesSpritesheetIndex
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/mountainPathTiles
+    extract: false
     start: 0xCA5450
 
   - name: steamTexture
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/steam
+    extract: false
     start: 0xCA5460
 
   - name: steamAssetsIndex
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/steam
+    extract: false
     start: 0xCA7500
 
   - name: steamSpritesheetIndex
     type: bin
-    dir: maps/mountain/sprites
+    dir: assets/sprites/mapObjects/mountain/steam
+    extract: false
     start: 0xCA7520
 
   - name: pondWaterTexture
     type: bin
-    dir: maps/pond/sprites
+    dir: assets/sprites/mapObjects/pond/pondWater
+    extract: false
     start: 0xCA7540
 
   - name: pondWaterAssetsIndex
     type: bin
-    dir: maps/pond/sprites
+    dir: assets/sprites/mapObjects/pond/pondWater
+    extract: false
     start: 0xCA87D0
 
   - name: pondWaterSpritesheetIndex
     type: bin
-    dir: maps/pond/sprites
+    dir: assets/sprites/mapObjects/pond/pondWater
+    extract: false
     start: 0xCA87F0
 
   - name: festivalFlowersTexture
     type: bin
-    dir: maps/square/sprites
+    dir: assets/sprites/mapObjects/square/festivalFlowers
+    extract: false
     start: 0xCA8800
 
   - name: festivalFlowersAssetsIndex
     type: bin
-    dir: maps/square/sprites
+    dir: assets/sprites/mapObjects/square/festivalFlowers
+    extract: false
     start: 0xCA90A0
 
   - name: festivalFlowersSpritesheetIndex
     type: bin
-    dir: maps/square/sprites
+    dir: assets/sprites/mapObjects/square/festivalFlowers
+    extract: false
     start: 0xCA90C0
 
   - name: squareFountainTexture
     type: bin
-    dir: maps/square/sprites
+    dir: assets/sprites/mapObjects/square/squareFountain
+    extract: false
     start: 0xCA90D0
 
   - name: squareFountainAssetsIndex
     type: bin
-    dir: maps/square/sprites
+    dir: assets/sprites/mapObjects/square/squareFountain
+    extract: false
     start: 0xCAA040
 
   - name: squareFountainSpritesheetIndex
     type: bin
-    dir: maps/square/sprites
+    dir: assets/sprites/mapObjects/square/squareFountain
+    extract: false
     start: 0xCAA060
 
   - name: village2WaterTexture
     type: bin
-    dir: maps/square/sprites
+    dir: assets/sprites/mapObjects/village2/village2Water
+    extract: false
     start: 0xCAA080
 
   - name: village2WaterAssetsIndex
     type: bin
-    dir: maps/square/sprites
+    dir: assets/sprites/mapObjects/village2/village2Water
+    extract: false
     start: 0xCAB010
 
   - name: village2WaterSpritesheetIndex
     type: bin
-    dir: maps/square/sprites
+    dir: assets/sprites/mapObjects/village2/village2Water
+    extract: false
     start: 0xCAB030
 
   - name: emptyMapSprite1Texture
     type: bin
-    dir: maps/unknown/sprites
+    dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB040
 
   - name: emptyMapSprite2Texture
     type: bin
-    dir: maps/unknown/sprites
+    dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB060
 
   - name: emptyMapSprite3Texture
     type: bin
-    dir: maps/unknown/sprites
+    dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB070
+
 
   - name: emptyMapSprite4Texture
     type: bin
-    dir: maps/unknown/sprites
+    dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB090
 
   - name: emptyMapSprite5Texture
     type: bin
-    dir: maps/unknown/sprites
+    dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB0A0
 
   - name: emptyMapSprite6Texture
     type: bin
-    dir: maps/unknown/sprites
+    dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB0C0
 
   - name: stoneTexture
     type: bin
-    dir: maps/bathroom/sprites
+    dir: assets/sprites/mapObjects/bathroom/stone
+    extract: false
     start: 0xCAB0D0
 
   - name: stoneAssetsIndex
     type: bin
-    dir: maps/bathroom/sprites
+    dir: assets/sprites/mapObjects/bathroom/stone
+    extract: false
     start: 0xCAB310
 
   - name: stoneSpritesheetIndex
     type: bin
-    dir: maps/bathroom/sprites
+    dir: assets/sprites/mapObjects/bathroom/stone
+    extract: false
     start: 0xCAB330
 
   - name: vineyardTreeTexture
     type: bin
-    dir: maps/vineyard/sprites
+    dir: assets/sprites/mapObjects/vineyard/vineyardTree
+    extract: false
     start: 0xCAB340
 
   - name: vineyardTreeAssetsIndex
     type: bin
-    dir: maps/vineyard/sprites
+    dir: assets/sprites/mapObjects/vineyard/vineyardTree
+    extract: false
     start: 0xCAD490
 
   - name: vineyardTreeSpritesheetIndex
     type: bin
-    dir: maps/vineyard/sprites
+    dir: assets/sprites/mapObjects/vineyard/vineyardTree
+    extract: false
     start: 0xCAD4B0
 
   - name: emptyMap1Texture
     type: bin
-    dir: maps/unknown/sprites
+    dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAD4D0
 
   - name: emptyMap2Texture
     type: bin
-    dir: maps/unknown/sprites
+    dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAD4F0
 
   - name: farmPondTexture
     type: bin
-    dir: maps/farm/sprites
+    dir: assets/sprites/mapObjects/farm/farmPond
+    extract: false
     start: 0xCAD500
 
   - name: farmPondAssetsIndex
     type: bin
-    dir: maps/farm/sprites
+    dir: assets/sprites/mapObjects/farm/farmPond
+    extract: false
     start: 0xCAD5E0
 
   - name: farmPondSpritesheetIndex
     type: bin
-    dir: maps/farm/sprites
+    dir: assets/sprites/mapObjects/farm/farmPond
+    extract: false
     start: 0xCAD600
 
-  # misc. sprites (fx, ui, overlay screens, map addons etc.)
+  # misc. sprites (fx, ui, overlay screens, map add-ons etc.)
 
   # ci4 format
   #   spritesheet
@@ -3331,499 +3679,598 @@ segments:
   #     animation data
   #   sprite to palette map
 
-  - name: funeralSpritesTexture
+  - name: funeralIntroTexture
     type: bin
-    dir: sprites/cutscenes/funeral
+    dir: assets/sprites/effects/funeralIntro
+    extract: false
     start: 0xCAD610
 
-  - name: funeralSpritesIndex
+  - name: funeralIntroAssetsIndex
     type: bin
-    dir: sprites/cutscenes/funeral
+    dir: assets/sprites/effects/funeralIntro
+    extract: false
     start: 0xCB4D10
 
   - name: moonMountainBackgroundTexture
     type: bin
-    dir: sprites/cutscenes
+    dir: assets/sprites/effects/moonMountainBackground
+    extract: false
     start: 0xCB4D30
 
   - name: moonMountainBackgroundAssetsIndex
     type: bin
-    dir: sprites/cutscenes
+    dir: assets/sprites/effects/moonMountainBackground
+    extract: false
     start: 0xCB9920
 
   - name: horseRaceTexture
     type: bin
-    dir: sprites/horse-race
+    dir: assets/sprites/effects/horseRace
+    extract: false
     start: 0xCB9940
 
   - name: horseRaceAssetsIndex
     type: bin
-    dir: sprites/horse-race
+    dir: assets/sprites/effects/horseRace
+    extract: false
     start: 0xCBE580
 
   - name: emptyOverlayScreen1Texture
     type: bin
-    dir: sprites/unknown
+    dir: assets/sprites/misc/empty
+    extract: false
     start: 0xCBE5A0
 
   - name: splashTexture
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/splash
+    extract: false
     start: 0xCBE5C0
 
   - name: splashAssetsIndex
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/splash
+    extract: false
     start: 0xCBFDF0
 
   - name: sparklersTexture
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/sparklers
+    extract: false
     start: 0xCBFE10
 
   - name: sparklersAssetsIndex
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/sparklers
+    extract: false
     start: 0xCC0220
 
   - name: chimneySmokeTexture
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/chimneySmoke
+    extract: false
     start: 0xCC0240
 
   - name: chimneySmokeAssetsIndex
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/chimneySmoke
+    extract: false
     start: 0xCC1BB0
 
   - name: balloonsTexture
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/balloons
+    extract: false
     start: 0xCC1BD0
 
   - name: balloonsAssetsIndex
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/balloons
+    extract: false
     start: 0xCC2670
 
   - name: smallCloudTexture
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/smallCloud
+    extract: false
     start: 0xCC2690
 
   - name: smallCloudAssetsIndex
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/smallCloud
+    extract: false
     start: 0xCC3A50
 
   - name: fairiesTexture
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/fairies
+    extract: false
     start: 0xCC3A70
 
-  - name: fairiesTextureAssetsIndex
+  - name: fairiesAssetsIndex
     type: bin
-    dir: sprites/effects
+    dir: assets/sprites/effects/fairies
+    extract: false
     start: 0xCC4600
 
   - name: firefliesTexture
     type: bin
-    dir: sprites/items
+    dir: assets/sprites/effects/fireflies
+    extract: false
     start: 0xCC4620
 
   - name: firefliesAssetsIndex
     type: bin
-    dir: sprites/items
+    dir: assets/sprites/misc/fireflies
+    extract: false
     start: 0xCC5C90
 
   - name: bulletBlinkingTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/bulletBlinking
+    extract: false
     start: 0xCC5CB0
 
   - name: bulletBlinkingAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/bulletBlinking
+    extract: false
     start: 0xCC65E0
 
   - name: bulletNumeralTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/bulletNumeral
+    extract: false
     start: 0xCC6600
 
   - name: bulletNumeralAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/bulletNumeral
+    extract: false
     start: 0xCC6D20
 
   - name: checkerboardBackgroundTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/checkerboardBackground
+    extract: false
     start: 0xCC6D40
 
   - name: checkerboardBackgroundAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/checkerboardBackground
+    extract: false
     start: 0xCC9330
 
   - name: emptyOverlayScreen2Texture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens
+    extract: false
     start: 0xCC9350
 
   - name: emptyOverlayScreen3Texture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens
+    extract: false
     start: 0xCC9370
 
   - name: namingScreenBackgroundTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/namingScreenBackground
+    extract: false
     start: 0xCC9390
 
   - name: namingScreenBackgroundAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/namingScreenBackground
+    extract: false
     start: 0xCCB980
 
   - name: bookTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/book
+    extract: false
     start: 0xCCB9A0
 
   - name: bookAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/book
+    extract: false
     start: 0xCD1100
 
   - name: photoSmallTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/photoSmall
+    extract: false
     start: 0xCD1120
 
   - name: photoSmallAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/photoSmall
+    extract: false
     start: 0xCD58D0
 
-  - name: snapshotLargeTexture
+  - name: photoLargeTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/photoLarge
+    extract: false
     start: 0xCD58F0
 
-  - name: snapshotLargeAssetsIndex
+  - name: photoLargeAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/photoLarge
+    extract: false
     start: 0xCDAE90
 
   - name: namingScreen1Texture
     type: bin
-    dir: sprites/naming-screen
+    dir: assets/sprites/overlayScreens/namingScreen1
+    extract: false
     start: 0xCDAEB0
 
   - name: namingScreen1AssetsIndex
     type: bin
-    dir: sprites/naming-screen
+    dir: assets/sprites/overlayScreens/namingScreen1
+    extract: false
     start: 0xCDE2C0
 
   - name: calendarTexture
     type: bin
-    dir: sprites/overlay-screens/calendar
+    dir: assets/sprites/overlayScreens/calendar
+    extract: false
     start: 0xCDE2E0
 
   - name: calendarAssetsIndex
     type: bin
-    dir: sprites/overlay-screens/calendar
+    dir: assets/sprites/overlayScreens/calendar
+    extract: false
     start: 0xCED610
 
   - name: calenderJapanTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/calenderJapan
+    extract: false
     start: 0xCED630
 
   - name: calenderJapanAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/calenderJapan
+    extract: false
     start: 0xCF1020
 
   - name: bookScreenLabelsTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/bookScreenLabels
+    extract: false
     start: 0xCF1040
 
   - name: bookScreenLabelsAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/bookScreenLabels
+    extract: false
     start: 0xCF2840
 
   - name: japaneseCharacterSelectTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/japaneseCharacterSelect
+    extract: false
     start: 0xCF2860
 
   - name: japaneseCharacterSelectAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/japaneseCharacterSelect
+    extract: false
     start: 0xCF4530
 
   - name: overlayScreenNamesTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/overlayScreenNames
+    extract: false
     start: 0xCF4550
 
   - name: overlayScreenNamesAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/overlayScreenNames
+    extract: false
     start: 0xCFE5F0
 
   - name: moneyTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/money
+    extract: false
     start: 0xCFE610
 
   - name: moneyAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/money
+    extract: false
     start: 0xCFF6F0
 
   - name: powerNutTreeDrawingTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/powerNutTreeDrawing
+    extract: false
     start: 0xCFF710
 
   - name: powerNutTreeDrawingAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/powerNutTreeDrawing
+    extract: false
     start: 0xD057F0
 
   - name: inventoryScreenTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/inventoryScreen
+    extract: false
     start: 0xD05810
 
   - name: inventoryScreenAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/inventoryScreen
+    extract: false
     start: 0xD0C8A0
 
   - name: prizeScreenTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/prizeScreen
+    extract: false
     start: 0xD0C8C0
 
   - name: prizeScreenAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/prizeScreen
+    extract: false
     start: 0xD13AC0
 
   - name: loadGameScreenTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/loadGameScreen
+    extract: false
     start: 0xD13AE0
 
   - name: loadGameScreenAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/loadGameScreen
+    extract: false
     start: 0xD1B4E0
 
   - name: messageBoxTexture
     type: bin
-    dir: sprites/dialogue-box
+    dir: assets/sprites/overlayScreens/messageBox
+    extract: false
     start: 0xD1B500
 
   - name: messageBoxAssetsIndex
     type: bin
-    dir: sprites/dialogue-box
+    dir: assets/sprites/overlayScreens/messageBox
+    extract: false
     start: 0xD1DDE0
 
   - name: namingScreen2Texture
     type: bin
-    dir: sprites/naming-screen
+    dir: assets/sprites/overlayScreens/namingScreen2
+    extract: false
     start: 0xD1DE00
 
   - name: namingScreen2AssetsIndex
     type: bin
-    dir: sprites/naming-screen
+    dir: assets/sprites/overlayScreens/namingScreen2
+    extract: false
     start: 0xD2D600
 
   - name: estimateScreenTexture
     type: bin
-    dir: sprites/overlay-screens/estimateScreen
+    dir: assets/sprites/overlayScreens/estimateScreen
+    extract: false
     start: 0xD2D620
 
   - name: estimateScreenAssetsIndex
     type: bin
-    dir: sprites/overlay-screens/estimateScreen
+    dir: assets/sprites/overlayScreens/estimateScreen
+    extract: false
     start: 0xD2EBA0
 
-  - name: raceBettingUiTexture
+  - name: raceBettingUITexture
     type: bin
-    dir: sprites/overlay-screens/races
+    dir: assets/sprites/overlayScreens/raceBettingUI
+    extract: false
     start: 0xD2EBC0
 
-  - name: raceBettingUiAssetsIndex
+  - name: raceBettingUIAssetsIndex
     type: bin
-    dir: sprites/overlay-screens/races
+    dir: assets/sprites/overlayScreens/raceBettingUI
+    extract: false
     start: 0xD35A50
 
   - name: emptyOverlayScreen4Texture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens
+    extract: false
     start: 0xD35A70
 
-  - name: timeUiTexture
+  - name: timeUITexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/timeUI
+    extract: false
     start: 0xD35A90
 
-  - name: timeUiAssetsIndex
+  - name: timeUIAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/timeUI
+    extract: false
     start: 0xD38A20
 
   - name: houseExtensionSelectionTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/houseExtensionSelection
+    extract: false
     start: 0xD38A40
 
   - name: houseExtensionSelectionAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/houseExtensionSelection
+    extract: false
     start: 0xD3BFC0
 
   - name: shopIconsTexture
     type: bin
-    dir: sprites/overlay-screens/shop
+    dir: assets/sprites/overlayScreens/shopIcons
+    extract: false
     start: 0xD3BFE0
 
   - name: shopIconsAssetsIndex
     type: bin
-    dir: sprites/overlay-screens/shop
+    dir: assets/sprites/overlayScreens/shopIcons
+    extract: false
     start: 0xD3DCC0
 
   - name: rankingsTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/rankings
+    extract: false
     start: 0xD3DCE0
 
   - name: rankingsAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/rankings
+    extract: false
     start: 0xD451D0
 
   - name: guidebookTexture
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/guidebook
+    extract: false
     start: 0xD451F0
 
   - name: guidebookAssetsIndex
     type: bin
-    dir: sprites/overlay-screens
+    dir: assets/sprites/overlayScreens/guidebook
+    extract: false
     start: 0xD47EE0
 
-  - name: dialogueIconsTexture
+  - name: dialogueButtonIconsTexture
     type: bin
-    dir: sprites/dialogue-icons
+    dir: assets/sprites/overlayScreens/dialogueButtonIcons
+    extract: false
     start: 0xD47F00
 
-  - name: dialogueIconsAssetsIndex
+  - name: dialogueButtonIconsAssetsIndex
     type: bin
-    dir: sprites/dialogue-icons
+    dir: assets/sprites/overlayScreens/dialogueButtonIcons
+    extract: false
     start: 0xD49B80
 
   - name: tvContentTexture
     type: bin
-    dir: sprites/tv
+    dir: assets/sprites/overlayScreens/tvContent
+    extract: false
     start: 0xD49BA0
 
   - name: tvContentAssetsIndex
     type: bin
-    dir: sprites/tv
+    dir: assets/sprites/overlayScreens/tvContent
+    extract: false
     start: 0xD4D9F0
 
   - name: tvContentSpritesheetIndex
     type: bin
-    dir: sprites/tv
+    dir: assets/sprites/overlayScreens/tvContent
+    extract: false
     start: 0xD4DA10
 
   - name: toolsTexture
     type: bin
-    dir: sprites/tools
+    dir: assets/sprites/overlayScreens/tools
+    extract: false
     start: 0xD4DAB0
 
   - name: toolsAssetsIndex
     type: bin
-    dir: sprites/tools
+    dir: assets/sprites/overlayScreens/tools
+    extract: false
     start: 0xD52590
 
   - name: toolsSpritesheetIndex
     type: bin
-    dir: sprites/tools
+    dir: assets/sprites/overlayScreens/tools
+    extract: false
     start: 0xD525B0
 
   - name: holdableItemsTexture
     type: bin
-    dir: sprites/objects
+    dir: assets/sprites/overlayScreens/holdableItems
+    extract: false
     start: 0xD52670
 
   - name: holdableItemsAssetsIndex
     type: bin
-    dir: sprites/objects
+    dir: assets/sprites/overlayScreens/holdableItems
+    extract: false
     start: 0xD82FD0
 
   - name: holdableItemsSpritesheetIndex
     type: bin
-    dir: sprites/objects
+    dir: assets/sprites/overlayScreens/holdableItems
+    extract: false
     start: 0xD82FF0
 
   - name: extraFestivalTexture
     type: bin
-    dir: sprites/festivals
+    dir: assets/sprites/overlayScreens/extraFestival
+    extract: false
     start: 0xD835A0
-    
+
   - name: extraFestivalAssetsIndex
     type: bin
-    dir: sprites/festivals
+    dir: assets/sprites/overlayScreens/extraFestival
+    extract: false
     start: 0xD86D40
 
   - name: extraFestivalSpritesheetIndex
     type: bin
-    dir: sprites/festivals
+    dir: assets/sprites/overlayScreens/extraFestival
+    extract: false
     start: 0xD86D60
 
   - name: homeItemsTexture
     type: bin
-    dir: sprites/objects
+    dir: assets/sprites/overlayScreens/homeItems
+    extract: false
     start: 0xD86D90
 
   - name: homeItemsAssetsIndex
     type: bin
-    dir: sprites/objects
+    dir: assets/sprites/overlayScreens/homeItems
+    extract: false
     start: 0xD8B140
 
   - name: homeItemsSpritesheetIndex
     type: bin
-    dir: sprites/objects
+    dir: assets/sprites/overlayScreens/homeItems
+    extract: false
     start: 0xD8B160
 
   - name: groundObjectsTexture
     type: bin
-    dir: sprites/objects
+    dir: assets/sprites/overlayScreens/groundObjects
+    extract: false
     start: 0xD8B1D0
 
-  - name: groundObjectsIndex
+  - name: groundObjectsAssetsIndex
     type: bin
-    dir: sprites/objects
+    dir: assets/sprites/overlayScreens/groundObjects
+    extract: false
     start: 0xD92950
 
   - name: rainTexture
     type: bin
-    dir: sprites/weather
+    dir: assets/sprites/overlayScreens/rain
+    extract: false
     start: 0xD92970
 
   - name: rainAssetsIndex
     type: bin
-    dir: sprites/weather
+    dir: assets/sprites/overlayScreens/rain
+    extract: false
     start: 0xD92D50
 
   # ci4 (same as ci8 layout)
@@ -3831,108 +4278,125 @@ segments:
   #     header
   #     dimensions, 48 x 46
   #     texture
-  - name: characterDialogueIconsTexture
+  - name: characterAvatarsTexture
     type: bin
-    dir: sprites/dialogue-icons
+    dir: assets/sprites/overlayScreens/characterAvatars
+    extract: false
     start: 0xD92D70
 
-  - name: characterDialogueIconsAssetsIndex
+  - name: characterAvatarsAssetsIndex
     type: bin
-    dir: sprites/dialogue-icons
+    dir: assets/sprites/overlayScreens/characterAvatars
+    extract: false
     start: 0xDB9EA0
 
-  - name: characterDialogueIconsSpritesheetIndex
+  - name: characterAvatarsSpritesheetIndex
     type: bin
-    dir: sprites/dialogue-icons
+    dir: assets/sprites/overlayScreens/characterAvatars
+    extract: false
     start: 0xDB9EC0
 
   - name: titleSpritesTexture
     type: bin
-    dir: sprites/title
+    dir: assets/sprites/overlayScreens/titleSprites
+    extract: false
     start: 0xDBA100
 
   - name: titleSpritesAssetsIndex
     type: bin
-    dir: sprites/title
+    dir: assets/sprites/overlayScreens/titleSprites
+    extract: false
     start: 0xDD38F0
 
   - name: controllerIconsTexture
     type: bin
-    dir: sprites/overlay-screens/controller
+    dir: assets/sprites/overlayScreens/controllerIcons
+    extract: false
     start: 0xDD3910
 
   - name: controllerIconsAssetsIndex
     type: bin
-    dir: sprites/overlay-screens/controller
+    dir: assets/sprites/overlayScreens/controllerIcons
+    extract: false
     start: 0xDD47E0
 
-  - name: logoTextures
+  - name: logosTexture
     type: bin
-    dir: sprites/logo
+    dir: assets/sprites/overlayScreens/logos
+    extract: false
     start: 0xDD4800
 
-  - name: logoAssetsIndex
+  - name: logosAssetsIndex
     type: bin
-    dir: sprites/logo
+    dir: assets/sprites/overlayScreens/logos
+    extract: false
     start: 0xDD7750
 
   - name: creditsTexture
     type: bin
-    dir: sprites/credits
+    dir: assets/sprites/overlayScreens/credits
+    extract: false
     start: 0xDD7770
 
   - name: creditsAssetsIndex
     type: bin
-    dir: sprites/credits
+    dir: assets/sprites/overlayScreens/credits
+    extract: false
     start: 0xDE3370
 
   - name: albumPhotosTexture
     type: bin
-    dir: sprites/album-photos
+    dir: assets/sprites/overlayScreens/albumPhotos
+    extract: false
     start: 0xDE3390
 
   - name: albumPhotosAssetsIndex
     type: bin
-    dir: sprites/album-photos
+    dir: assets/sprites/overlayScreens/albumPhotos
+    extract: false
     start: 0xE087B0
 
   - name: albumPhotosSpritesheetIndex
     type: bin
-    dir: sprites/album-photos
+    dir: assets/sprites/overlayScreens/albumPhotos
+    extract: false
     start: 0xE087D0
 
   # cut from NA release
   - name: villageMapScreenTexture
     type: bin
-    dir: sprites/misc
+    dir: assets/sprites/overlayScreens/map
     start: 0xE08850
 
   - name: villageMapScreenAssetsIndex
     type: bin
-    dir: sprites/misc
+    dir: assets/sprites/overlayScreens/map
     start: 0xE08860
 
   # font
 
-  # 16x11200, i2
   - name: fontTexture
     type: bin
-    dir: sprites/font
+    dir: assets/font
+    extract: false
     start: 0xE08870
 
   - name: fontPalette1
     type: bin
-    dir: sprites/font
+    dir: assets/font
+    extract: false
     start: 0xE13770
 
   - name: fontPalette2
     type: bin
-    dir: sprites/font
+    dir: assets/font
+    extract: false
     start: 0xE137A0
 
   - name: fontPalette3
     type: bin
-    dir: sprites/font
+    dir: assets/font
+    extract: false
     start: 0xE137D0
 
   # texts

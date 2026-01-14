@@ -169,6 +169,8 @@ extern Vec4f previousLightingRGBA;
 extern u8 gSumGirlsWithHighAffection;
 extern u8 gAverageFarmAnimalAffection;
 
+extern u32 raceMedalsCount;
+
 extern u8 D_8017044B;
 extern u8 D_80180712;
 extern u8 D_801890D8;

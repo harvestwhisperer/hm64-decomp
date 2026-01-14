@@ -7,6 +7,89 @@
 #define BELONGINGS 6
 #define KEY_ITEMS 7
 
+// =============================================================================
+// UI Coordinate System
+// =============================================================================
+// Screen resolution: 320x240
+// Coordinate origin: center of screen (0, 0)
+// X range: -160 (left) to +160 (right)
+// Y range: -120 (bottom) to +120 (top)
+#define SCREEN_CENTER_X     0.0f
+#define SCREEN_CENTER_Y     0.0f
+#define SCREEN_LEFT        -160.0f
+#define SCREEN_RIGHT        160.0f
+#define SCREEN_TOP          120.0f
+#define SCREEN_BOTTOM      -120.0f
+
+// =============================================================================
+// Inventory Grid System (35px spacing)
+// =============================================================================
+// Used for tools, belongings, and storage screens
+#define UI_GRID_SPACING     35.0f
+// Pause screen inventory grid (left-aligned)
+#define PAUSE_GRID_BASE_X  -74.0f
+#define PAUSE_GRID_X(col)  (PAUSE_GRID_BASE_X + (col) * UI_GRID_SPACING)
+// Toolbox/Freezer/Cabinet grid (center-aligned)
+#define STORAGE_GRID_BASE_X -32.0f
+#define STORAGE_GRID_X(col) (STORAGE_GRID_BASE_X + (col) * UI_GRID_SPACING)
+// Y positions for inventory rows
+#define UI_ROW_TOP          33.0f
+#define UI_ROW_UPPER        -2.0f
+#define UI_ROW_LOWER       -47.0f
+#define UI_ROW_BOTTOM      -82.0f
+// Current/held item positions
+#define UI_HELD_ITEM_Y      80.0f
+#define UI_CURRENT_TOOL_X  -28.0f
+#define UI_HELD_ITEM_X      20.0f
+#define UI_STORAGE_HELD_X   0.0f
+
+// =============================================================================
+// Key Items Grid (38px X spacing, 37px Y spacing)
+// =============================================================================
+#define KEY_ITEMS_BASE_X    77.0f
+#define KEY_ITEMS_SPACING_X 38.0f
+#define KEY_ITEMS_X(col)   (KEY_ITEMS_BASE_X + (col) * KEY_ITEMS_SPACING_X)
+#define KEY_ITEMS_BASE_Y    31.0f
+#define KEY_ITEMS_SPACING_Y 37.0f
+#define KEY_ITEMS_Y(row)   (KEY_ITEMS_BASE_Y - (row) * KEY_ITEMS_SPACING_Y)
+
+// =============================================================================
+// Menu Cursor Positions
+// =============================================================================
+// Load game screen
+#define LOAD_GAME_CURSOR_X_SELECT   -128.0f
+#define LOAD_GAME_CURSOR_X_ACTION    96.0f
+#define LOAD_GAME_SPACING_Y          44.0f
+#define LOAD_GAME_BASE_Y             42.0f
+#define LOAD_GAME_Y(row)            (LOAD_GAME_BASE_Y - (row) * LOAD_GAME_SPACING_Y)
+// Farm rankings cursor
+#define FARM_RANK_CURSOR_X          -128.0f
+#define FARM_RANK_SPACING_Y          32.0f
+#define FARM_RANK_BASE_Y             32.0f
+#define FARM_RANK_Y(row)            (FARM_RANK_BASE_Y - (row) * FARM_RANK_SPACING_Y)
+// House extension cursor
+#define HOUSE_EXT_CURSOR_X          -112.0f
+#define HOUSE_EXT_SPACING_Y          16.0f
+#define HOUSE_EXT_BASE_Y             32.0f
+#define HOUSE_EXT_Y(row)            (HOUSE_EXT_BASE_Y - (row) * HOUSE_EXT_SPACING_Y)
+
+// =============================================================================
+// Power Nuts Display (16px spacing)
+// =============================================================================
+#define POWER_NUT_SPACING           16.0f
+#define POWER_NUT_BASE_X           -72.0f
+#define POWER_NUT_X(col)           (POWER_NUT_BASE_X + (col) * POWER_NUT_SPACING)
+
+// =============================================================================
+// Calendar Stickers
+// =============================================================================
+
+#define CALENDAR_STICKER_X_LEFT     108.0f
+#define CALENDAR_STICKER_X_RIGHT    126.0f
+#define CALENDAR_STICKER_SPACING_Y   24.0f
+#define CALENDAR_STICKER_BASE_Y      30.0f
+#define CALENDAR_STICKER_Y(row)     (CALENDAR_STICKER_BASE_Y - (row) * CALENDAR_STICKER_SPACING_Y)
+      
 // 0x801FB6F0
 typedef struct {
     u8 cellIndex;
@@ -93,8 +176,6 @@ extern u8 D_80189108[5][7];
 // TODO: label
 // FIXME: should be 2D array with [4][8]
 extern u8 D_80237420[31];
-
-extern u32 D_80205204;
 
 extern OverlayScreenTable overlayScreenTable;
 

@@ -87,7 +87,7 @@ extern u16 sheepAnimationScripts[];
 extern u16 crabAnimationScripts[];
 extern u16 hornedBeetleAnimationScripts[];
 extern u16 stagBeetleAnimationScripts[];
-extern u16 bellRingCricketAnimationScripts[];
+extern u16 cricketAnimationScripts[];
 extern u16 cicadaAnimationScripts[];
 extern u16 whiteButterflyAnimationScripts[];
 extern u16 ladybugAnimationScripts[];
