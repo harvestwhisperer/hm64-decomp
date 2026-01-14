@@ -1058,26 +1058,19 @@ void handlePlayerInput(void) {
     }
 
     if (!set) {
-      
         // show text for item being held
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
-          
             if (checkButtonReleased(CONTROLLER_1, BUTTON_Z) && !heldItemChange) {
-
                 if (gPlayer.heldItem != 0) {
                     set = TRUE;
                     showHeldItemText(gPlayer.heldItem);
                     temp = 0xFF;
                 }
-              
             }
-          
             if(checkButtonReleased(CONTROLLER_1, BUTTON_Z) && heldItemChange) {
                 heldItemChange = FALSE;
             }
-          
         }
-      
     }
 
     if (!set) {
