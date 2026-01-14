@@ -70,7 +70,7 @@ void startGame(void) {
 // unused function: probably for sandboxing during development or demos
 // not in JP version
 // void func_8004DFF8(void) {
-
+    
 //     setLifeEventBit(HAVE_HORSE);
 //     setLifeEventBit(HAVE_KITCHEN);
 //     setLifeEventBit(HAVE_BATHROOM);
@@ -93,36 +93,33 @@ void startGame(void) {
 //     setLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE);
 //     setLifeEventBit(0x5C);
 //     setLifeEventBit(0x5D);
-
+    
 //     setSpecialDialogueBit(0x25);
-
+    
 //     gPlayer.belongingsSlots[0] = TOMATO;
-
+    
 //     initializeHorse();
-
+    
 //     horseInfo.grown = TRUE;
 
 //     setLifeEventBit(MARRIED);
 //     setLifeEventBit(WIFE_PREGNANT);
-
+    
 //     gWife = POPURI;
-
+    
 //     npcAffection[POPURI] = MAX_AFFECTION;
-
+    
 //     gSeason = WINTER;
 //     gDayOfMonth = 18;
-
+    
 //     dogInfo.affection = MAX_AFFECTION;
-
+    
 //     gHour = 8;
-
+    
 //     // max recipes
 //     recipesBits[0] = -1;
-
+    
 //     // unused game variable
 //     D_8016FB00 = 7;
-
+    
 // }
-
-// empty function
-void func_8004E154(void) {}
