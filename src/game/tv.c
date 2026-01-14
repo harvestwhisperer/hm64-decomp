@@ -76,7 +76,7 @@ void initializeTVAssets(void) {
     setSpriteScale(TV_CONTENT, 2.0f, 2.0f, 1.0f);
     setSpriteRotation(TV_CONTENT, 45.0f, -45.0f, 0.0f);
     setSpriteBlendMode(TV_CONTENT, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(TV_CONTENT, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(TV_CONTENT, 255, 255, 255, 255);
     
     setMapObject(MAIN_MAP_INDEX, 9, TV_CONTENT, tvContext.pictureIndex, -12.0f, 36.0f, -154.0f, 0xFF, 0xFE, 0, 0);
 

@@ -59,98 +59,98 @@ u8 defaultMapRotations[] = {
 };
 
 Vec4c defaultLevelLightingRGBA[] = {
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
-    { 0xFF, 0xFF, 0xFF, 0xFF },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
+    { 255, 255, 255, 255 },
     { 0, 0, 0, 0 },
     { 0, 0, 0, 0 },
     { 0, 0, 0, 0 },
@@ -620,53 +620,53 @@ void loadLevelGroundObjects(u16 mapIndex) {
         case FARM:
             groundObjectsGridX = 0xE;
             groundObjectsGridZ = 0xB;
-            loadGroundObjects(MAIN_MAP_INDEX, 0xE, 0xB, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0x60); 
+            loadGroundObjects(MAIN_MAP_INDEX, 0xE, 0xB, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 0x60); 
             break;
         case GREENHOUSE:
             groundObjectsGridX = 1;
             groundObjectsGridZ = 1;
-            loadGroundObjects(MAIN_MAP_INDEX, 1, 1, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 2); 
+            loadGroundObjects(MAIN_MAP_INDEX, 1, 1, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 2); 
             break;            
         case MOUNTAIN_1:
             groundObjectsGridX = 5;
             groundObjectsGridZ = 0;
-            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 0); 
             break;    
         case MOUNTAIN_2:
             groundObjectsGridX = 3;
             groundObjectsGridZ = 5;
-            loadGroundObjects(MAIN_MAP_INDEX, 3, 5, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 3, 5, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 0); 
             break;  
         case TOP_OF_MOUNTAIN_1:
             groundObjectsGridX = 5;
             groundObjectsGridZ = 0;
-            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 0); 
             break;  
         case MOON_MOUNTAIN:
             groundObjectsGridX = 5;
             groundObjectsGridZ = 0;
-            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 0); 
             break;                            
         case POND:
             groundObjectsGridX = 5;
             groundObjectsGridZ = 0;
-            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 5, 0, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 0); 
             break;          
         case CAVE:
             groundObjectsGridX = 0;
             groundObjectsGridZ = 0;
-            loadGroundObjects(MAIN_MAP_INDEX, 0, 0, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 0, 0, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 0); 
             break;    
         case MINE:                                      
         case MINE_2:        
             groundObjectsGridX = 2;
             groundObjectsGridZ = 2;
-            loadGroundObjects(MAIN_MAP_INDEX, 2, 2, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 2, 2, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 0); 
             break;    
         case RANCH:
             groundObjectsGridX = 0x10;
             groundObjectsGridZ = 0xA;
-            loadGroundObjects(MAIN_MAP_INDEX, 0x10, 0xA, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsIndexSegmentRomStart, &_groundObjectsIndexSegmentRomEnd, 0); 
+            loadGroundObjects(MAIN_MAP_INDEX, 0x10, 0xA, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 0); 
             break;   
             
     }
@@ -782,8 +782,8 @@ void loadLevelMapObjects(u16 levelIndex) {
             dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
             setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
-            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
-            setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 255, 255, 255, 255);
+            setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
 
             if (checkDailyEventBit(FED_DOG)) {
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0x13, -464.0f, 96.0f, 112.0f, 0xFF, 0xFF, 0, 0);
@@ -797,7 +797,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteTriangleWinding(MAP_OBJECT_2, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_2, 255, 255, 255, 255);
             
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, 304.f, 64.0f, -384.0f, 0, 0xFE, 0, 0);
 
@@ -808,8 +808,8 @@ void loadLevelMapObjects(u16 levelIndex) {
             dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 2.0f, 2.0f, 1.0f);
             setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
-            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
-            setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 255, 255, 255, 255);
+            setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 6, -160.0f, 32.0f, -112.0f, 0xFF, 0xFF, 0, 0);
 
             if (checkLifeEventBit(0x46)) {
@@ -817,8 +817,8 @@ void loadLevelMapObjects(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_2, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_2, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0x10, 8.0f, 72.0f, -168.0f, 0xFF, 0xFF, 0, 0);
                 
             }
@@ -828,8 +828,8 @@ void loadLevelMapObjects(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_3, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_3_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_3_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_3, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_3, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_3, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 9, 104.0f, 0, 24.0f, 0xFF, 0xFF, 0, 0);
                 
             }
@@ -840,8 +840,8 @@ void loadLevelMapObjects(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_4, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_4_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_4_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_4, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_4, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_4, 255, 255, 255, 255);
 
                 // cabinet
                 if (checkLifeEventBit(HAVE_CABINET)) {
@@ -857,8 +857,8 @@ void loadLevelMapObjects(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_5, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_5_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_5_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_5, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_5, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_5, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0x11, -176.0f, 24.0f, -160.0f, 0xFF, 0xFF, 0, 0);
                 
             }
@@ -869,8 +869,8 @@ void loadLevelMapObjects(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_6, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_6_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_6_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_6, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_6, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_6, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 5, MAP_OBJECT_6, 4, -40.0f, 8.0f, 8.0f, 0xFF, 0xFF, 0, 0);
             
             }
@@ -885,8 +885,8 @@ void loadLevelMapObjects(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_1, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 10, -48.f, 16.0f, -80.0f, 0xFF, 0xFF, 0, 0);
         		
             }
@@ -895,31 +895,31 @@ void loadLevelMapObjects(u16 levelIndex) {
         
          case MOUNTAIN_1:
 
-            dmaSprite(MAP_OBJECT_1, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_mountainWaterTextureSegmentRomStart, &_mountainWaterTextureSegmentRomEnd, &_mountainWaterAssetsIndexSegmentRomStart, &_mountainWaterAssetsIndexSegmentRomEnd, &_mountainWaterSpritesheetIndexSegmentRomStart, &_mountainWaterSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 3.8f, 1.0f, 6.0f);
             setSpriteAxisMapping(MAP_OBJECT_1, SPRITE_BILLBOARD_XZ);
             setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -288.0f, 0.0f, -140.0f, 0x5A, 0xFE, 0, 0);
 
-            dmaSprite(MAP_OBJECT_2, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
+            dmaSprite(MAP_OBJECT_2, &_mountainWaterTextureSegmentRomStart, &_mountainWaterTextureSegmentRomEnd, &_mountainWaterAssetsIndexSegmentRomStart, &_mountainWaterAssetsIndexSegmentRomEnd, &_mountainWaterSpritesheetIndexSegmentRomStart, &_mountainWaterSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_2, 6.0f, 1.0f, 6.0f);
             setSpriteAxisMapping(MAP_OBJECT_2, SPRITE_BILLBOARD_XZ);
             setSpriteTriangleWinding(MAP_OBJECT_2, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_2, 255, 255, 255, 255);
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, -224.0f, 0.0f, 320.0f, 0, 0xFE, 0, 0);
 
-            dmaSprite(MAP_OBJECT_3, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_B_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_B_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_B_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_B_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
+            dmaSprite(MAP_OBJECT_3, &_mountainWaterTextureSegmentRomStart, &_mountainWaterTextureSegmentRomEnd, &_mountainWaterAssetsIndexSegmentRomStart, &_mountainWaterAssetsIndexSegmentRomEnd, &_mountainWaterSpritesheetIndexSegmentRomStart, &_mountainWaterSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_3_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_B_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_B_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_B_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_B_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_3, 6.0f, 1.0f, 6.0f);
             setSpriteAxisMapping(MAP_OBJECT_3, SPRITE_BILLBOARD_XZ);
             setSpriteTriangleWinding(MAP_OBJECT_3, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_3, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_3, 255, 255, 255, 255);
             setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 1, 160.0f, 32.0f, -160.0f, 0, 0xFE, 0, 0);
 
             if (!checkLifeEventBit(0x45)) {
@@ -927,8 +927,8 @@ void loadLevelMapObjects(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_4, &_boulderTextureSegmentRomStart, &_boulderTextureSegmentRomEnd, &_boulderAssetsIndexSegmentRomStart, &_boulderAssetsIndexSegmentRomEnd, &_boulderSpritesheetIndexSegmentRomStart, &_boulderSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_4_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_4_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_C_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_C_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_C_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_C_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_4, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_4, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_4, 255, 255, 255, 255);
 
                 if (gSeason == WINTER) {
                     setMapObject(MAIN_MAP_INDEX, 3, MAP_OBJECT_4, 0, 192.0f, 88.0f, -208.0f, 0xFF, 0, 0, 0);
@@ -941,23 +941,23 @@ void loadLevelMapObjects(u16 levelIndex) {
 
         case MOUNTAIN_2:
 
-            dmaSprite(MAP_OBJECT_1, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
+            dmaSprite(MAP_OBJECT_1, &_mountainWaterTextureSegmentRomStart, &_mountainWaterTextureSegmentRomEnd, &_mountainWaterAssetsIndexSegmentRomStart, &_mountainWaterAssetsIndexSegmentRomEnd, &_mountainWaterSpritesheetIndexSegmentRomStart, &_mountainWaterSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
             setSpriteAxisMapping(MAP_OBJECT_1, SPRITE_BILLBOARD_XZ);
             setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
 
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 224.0f, 0, -254.0f, 0x5A, 0xFE, 0, 0);
 
-            dmaSprite(MAP_OBJECT_2, &_waterTilesTextureSegmentRomStart, &_waterTilesTextureSegmentRomEnd, &_waterTilesAssetsIndexSegmentRomStart, &_waterTilesAssetsIndexSegmentRomEnd, &_waterTilesSpritesheetIndexSegmentRomStart, &_waterTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
+            dmaSprite(MAP_OBJECT_2, &_mountainWaterTextureSegmentRomStart, &_mountainWaterTextureSegmentRomEnd, &_mountainWaterAssetsIndexSegmentRomStart, &_mountainWaterAssetsIndexSegmentRomEnd, &_mountainWaterSpritesheetIndexSegmentRomStart, &_mountainWaterSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_2, 6.0f, 1.0f, 6.0f);
             setSpriteAxisMapping(MAP_OBJECT_2, SPRITE_BILLBOARD_XZ);
             setSpriteTriangleWinding(MAP_OBJECT_2, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_2, 255, 255, 255, 255);
             
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, 192.0f, 0, 416.0f, 0, 0xFE, 0, 0);
         
@@ -971,8 +971,8 @@ void loadLevelMapObjects(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_3, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_3, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_3, 255, 255, 255, 255);
 
                 setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 0, 96.0f, 224.0f, -448.0f, 0xFF, 0, 0, 0);
 
@@ -984,8 +984,8 @@ void loadLevelMapObjects(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_4, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_4, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_4, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 3, MAP_OBJECT_4, 0, 96.0f, 224.0f, -376, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
@@ -996,8 +996,8 @@ void loadLevelMapObjects(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_5, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_5, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_5, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0, 304.0f, 224.0f, -432.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
@@ -1008,8 +1008,8 @@ void loadLevelMapObjects(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_6, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_6, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_6, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 5, MAP_OBJECT_6, 0, 304.0f, 224.0f, -368.0f, 0xFF, 0, 0, 0);
                 
             }
@@ -1026,7 +1026,7 @@ void loadLevelMapObjects(u16 levelIndex) {
                 setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
                 setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
                 setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
-                setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 0, 216.0f, -128.0f, 0, 0xFE, 0, 0);
 
                 if (gSeason != WINTER) {
@@ -1037,8 +1037,8 @@ void loadLevelMapObjects(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_3, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_3, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_3, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_3, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 0, -192.0f, 228.0f, 4.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
@@ -1049,8 +1049,8 @@ void loadLevelMapObjects(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_4, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_4, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_4, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_4, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 3, MAP_OBJECT_4, 0, -192.0f, 224.0f, 64.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
@@ -1061,8 +1061,8 @@ void loadLevelMapObjects(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_5, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_5, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_5, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_5, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 4, MAP_OBJECT_5, 0, -408.0f, 224.0f, -16.0f, 0xFF, 0, 0, 0);
 
                 if (gSeason != WINTER) {
@@ -1073,8 +1073,8 @@ void loadLevelMapObjects(u16 levelIndex) {
 
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_6, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_6, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_6, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_6, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 5, MAP_OBJECT_6, 0, -408.0f, 224.0f, 48.0f, 0xFF, 0, 0, 0);
 
             } else {
@@ -1082,8 +1082,8 @@ void loadLevelMapObjects(u16 levelIndex) {
                 dmaSprite(MAP_OBJECT_1, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
-                setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
-                setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteBaseRGBA(MAP_OBJECT_1, 255, 255, 255, 255);
+                setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 3, -160.0f, 224.0f, 8.0f, 0xFF, 0, 0, 0);
                 
             }
@@ -1094,7 +1094,7 @@ void loadLevelMapObjects(u16 levelIndex) {
                 setSpriteScale(MAP_OBJECT_2, 2.0f, 2.0f, 1.0f);
                 setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_MODULATED);
                 setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x60);
-                setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(MAP_OBJECT_2, 255, 255, 255, 255);
                 setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, 0.0f, 256.0f, -136.0f, 0xFF, 0xFE, 0, 0);
 
             }
@@ -1109,7 +1109,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 0.0f, 64.0f, -96.0f, 0x5A, 0xFE, 0, 0);
 
             break;
@@ -1122,7 +1122,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, 304.f, 112.0f, -10.0f, 0, 0xFE, 0, 1);
             
             break;
@@ -1135,7 +1135,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -40.0f, 64.0f, -208.0f, 0, 0xFE, 0, 0);    
 
             break;
@@ -1148,7 +1148,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -256.0f, 104.f, -24.0f, 0, 0xFE, 0, 0);
             
             if (gSeason == SPRING) {
@@ -1157,8 +1157,8 @@ void loadLevelMapObjects(u16 levelIndex) {
                     dmaSprite(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                     setSpriteScale(MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
                     setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_DECAL);
-                    setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
-                    setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+                    setSpriteBaseRGBA(MAP_OBJECT_2, 255, 255, 255, 255);
+                    setSpriteColor(MAP_OBJECT_2, 255, 255, 255, 255);
                     setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0xD, 80.0f, 128.0f, 208.0f, 0xFF, 0xFF, 0, 0);
                 }
 
@@ -1167,11 +1167,12 @@ void loadLevelMapObjects(u16 levelIndex) {
                     
                    for (j = 4; j < 12; j++) {
                     
-                        dmaSprite(j + MAP_OBJECT_2, &_festivalFlowersTextureSegmentRomStart, &_festivalFlowersTextureSegmentRomEnd, &_festivalFlowersAssetsIndexSegmentRomStart, &_festivalFlowersAssetsIndexSegmentRomEnd, &_festivalFlowersSpritesheetIndexSegmentRomStart, &_festivalFlowersSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, NULL, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, 0, 0, 1);
+                        // has three assets, but is flagged as a type 2 sprite with spritesheet index at start of the asset 
+                        dmaSprite(j + MAP_OBJECT_2, &_festivalFlowersTextureSegmentRomStart, &_festivalFlowersTextureSegmentRomEnd, &_festivalFlowersAssetsIndexSegmentRomStart, &_festivalFlowersAssetsIndexSegmentRomEnd, &_festivalFlowersSpritesheetIndexSegmentRomStart, &_festivalFlowersSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, NULL, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, 0, 0, TRUE);
                         setSpriteScale(j + MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
                         setSpriteBlendMode(j + MAP_OBJECT_2, SPRITE_BLEND_ALPHA_DECAL);
-                        setSpriteBaseRGBA(j + MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
-                        setSpriteColor(j + MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+                        setSpriteBaseRGBA(j + MAP_OBJECT_2, 255, 255, 255, 255);
+                        setSpriteColor(j + MAP_OBJECT_2, 255, 255, 255, 255);
                         
                     } 
 
@@ -1208,7 +1209,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteTriangleWinding(MAP_OBJECT_1, SPRITE_RENDERING_REVERSE_WINDING);
             setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0x80);
-            setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
 
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -128.0f, 8.0f, -128.0f, 0, 0xFE, 0, 0);
 
@@ -1216,7 +1217,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteScale(MAP_OBJECT_2, 1.6f, 1.6f, 1.0f);
             setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_MODULATED);
             setSpriteBaseRGBA(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0x60);
-            setSpriteColor(MAP_OBJECT_2, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(MAP_OBJECT_2, 255, 255, 255, 255);
 
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, -64.0f, 64.0f, -80.0f, 0xFF, 0xFE, 0, 0);
            
@@ -1318,7 +1319,7 @@ void loadLevelMapObjects(u16 levelIndex) {
         case COOP:
 
             for (i = 0; i < 6; i++) {
-                if (gChickens[i].flags & 0x10) {
+                if (gChickens[i].flags & CHICKEN_FED) {
                     setChickenFeedSprite(i);
                 }
             }
@@ -1329,10 +1330,10 @@ void loadLevelMapObjects(u16 levelIndex) {
 
             for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
-                if (gFarmAnimals[i].flags & 8) {
+                if (gFarmAnimals[i].flags & FARM_ANIMAL_FED) {
                     setBarnFodderSprite(i);
                 }
-                if (gFarmAnimals[i].flags & 0x10) {
+                if (gFarmAnimals[i].flags & FARM_ANIMAL_ATE_GRASS) {
                     setBarnFodderSprite(8);
                 }
 
@@ -1345,10 +1346,10 @@ void loadLevelMapObjects(u16 levelIndex) {
             dmaSprite(MAP_OBJECT_1, &_vineyardTreeTextureSegmentRomStart, &_vineyardTreeTextureSegmentRomEnd, &_vineyardTreeAssetsIndexSegmentRomStart, &_vineyardTreeAssetsIndexSegmentRomEnd, &_vineyardTreeSpritesheetIndexSegmentRomStart, &_vineyardTreeSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
             setSpriteScale(MAP_OBJECT_1, 2.0f, 2.0f, 1.0f);
             setSpriteBlendMode(MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
-            setSpriteBaseRGBA(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
-            setSpriteColor(MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteBaseRGBA(MAP_OBJECT_1, 255, 255, 255, 255);
+            setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
             
-            if (checkSpecialDialogueBit(0x14B)) {
+            if (checkSpecialDialogueBit(331)) {
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 1, -416.0f, 144.0f, -352.0f, 0xFF, 0, 0, 0);
             } else {
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -416.0f, 144.0f, -352.0f, 0xFF, 0, 0, 0);
@@ -1371,8 +1372,8 @@ void setChickenFeedSprite(u8 itemIndex) {
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
     setSpriteBlendMode(itemIndex + MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 255, 255, 255, 255);
+    setSpriteColor(itemIndex + MAP_OBJECT_1, 255, 255, 255, 255);
 
     setMapObject(MAIN_MAP_INDEX, itemIndex, MAP_OBJECT_1 + itemIndex, 12, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
     
@@ -1389,8 +1390,8 @@ void setBarnFodderSprite(u8 itemIndex) {
     dmaSprite(itemIndex + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
     setSpriteScale(itemIndex + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
     setSpriteBlendMode(itemIndex + MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(itemIndex + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteBaseRGBA(itemIndex + MAP_OBJECT_1, 255, 255, 255, 255);
+    setSpriteColor(itemIndex + MAP_OBJECT_1, 255, 255, 255, 255);
 
     setMapObject(MAIN_MAP_INDEX, itemIndex, MAP_OBJECT_1 + itemIndex, 0xB, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
 
@@ -1417,8 +1418,8 @@ void setBarnFodderSprite(u8 arg0) {
     dmaSprite(arg0 + MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_1_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, (void* )1, (u8) (void* )1);
     setSpriteScale(arg0 + MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
     setSpriteBlendMode(arg0 + MAP_OBJECT_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteBaseRGBA(arg0 + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
-    setSpriteColor(arg0 + MAP_OBJECT_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteBaseRGBA(arg0 + MAP_OBJECT_1, 255, 255, 255, 255);
+    setSpriteColor(arg0 + MAP_OBJECT_1, 255, 255, 255, 255);
 
     setMapObject(MAIN_MAP_INDEX, arg0, arg0 + MAP_OBJECT_1, 0xB, arr[arg0].x, arr[arg0].y, arr[arg0].z, 0xFF, 0xFF, 0, 0);
     

@@ -319,7 +319,7 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
         setSpriteScale(dialogues[index].dialogueButtonIcon1.spriteIndex, 1.0f, 1.0f, 1.0f);
         setSpriteRotation(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon1.spriteIndex, TRUE);
-        setSpriteColor(dialogues[index].dialogueButtonIcon1.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(dialogues[index].dialogueButtonIcon1.spriteIndex, 255, 255, 255, 255);
         setSpriteAnchorAlignment(dialogues[index].dialogueButtonIcon1.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
         setSpriteBlendMode(dialogues[index].dialogueButtonIcon1.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
 
@@ -343,7 +343,7 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
         setSpriteScale(dialogues[index].dialogueButtonIcon2.spriteIndex, 1.0f, 1.0f, 1.0f);
         setSpriteRotation(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon2.spriteIndex, TRUE);
-        setSpriteColor(dialogues[index].dialogueButtonIcon2.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(dialogues[index].dialogueButtonIcon2.spriteIndex, 255, 255, 255, 255);
         setSpriteAnchorAlignment(dialogues[index].dialogueButtonIcon2.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
         setSpriteBlendMode(dialogues[index].dialogueButtonIcon2.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
 
@@ -367,7 +367,7 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
         setSpriteScale(dialogues[index].dialogueButtonIcon3.spriteIndex, 1.0f, 1.0f, 1.0f);
         setSpriteRotation(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
         setBilinearFiltering(dialogues[index].dialogueButtonIcon3.spriteIndex, TRUE);
-        setSpriteColor(dialogues[index].dialogueButtonIcon3.spriteIndex, 0xFF, 0xFF, 0xFF, 0xFF);
+        setSpriteColor(dialogues[index].dialogueButtonIcon3.spriteIndex, 255, 255, 255, 255);
         setSpriteAnchorAlignment(dialogues[index].dialogueButtonIcon3.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
         setSpriteBlendMode(dialogues[index].dialogueButtonIcon3.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
         

@@ -214,10 +214,10 @@ void showDiarySelectScreen(bool fadeIn, u8 diaryIndex) {
             setMessageBoxRGBA(1, 0, 0, 0, 0);
             setMessageBoxRGBA(2, 0, 0, 0, 0);
             setMessageBoxRGBA(3, 0, 0, 0, 0);
-            setMessageBoxRGBAWithTransition(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-            setMessageBoxRGBAWithTransition(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-            setMessageBoxRGBAWithTransition(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-            setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            setMessageBoxRGBAWithTransition(0, 255, 255, 255, 255, 24);
+            setMessageBoxRGBAWithTransition(1, 255, 255, 255, 255, 24);
+            setMessageBoxRGBAWithTransition(2, 255, 255, 255, 255, 24);
+            setMessageBoxRGBAWithTransition(3, 255, 255, 255, 255, 24);
 
         } else {
 
@@ -225,10 +225,10 @@ void showDiarySelectScreen(bool fadeIn, u8 diaryIndex) {
             setMessageBoxRGBA(1, 0, 0, 0, 0);
             setMessageBoxRGBA(2, 0, 0, 0, 0);
             setMessageBoxRGBA(3, 0, 0, 0, 0);
-            setMessageBoxRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
-            setMessageBoxRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
-            setMessageBoxRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
-            setMessageBoxRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxRGBA(0, 255, 255, 255, 255);
+            setMessageBoxRGBA(1, 255, 255, 255, 255);
+            setMessageBoxRGBA(2, 255, 255, 255, 255);
+            setMessageBoxRGBA(3, 255, 255, 255, 255);
 
         }
 
@@ -238,15 +238,15 @@ void showDiarySelectScreen(bool fadeIn, u8 diaryIndex) {
     
             setMessageBoxRGBA(0, 0, 0, 0, 0);
             setMessageBoxRGBA(1, 0, 0, 0, 0);
-            setMessageBoxRGBAWithTransition(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-            setMessageBoxRGBAWithTransition(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+            setMessageBoxRGBAWithTransition(0, 255, 255, 255, 255, 24);
+            setMessageBoxRGBAWithTransition(1, 255, 255, 255, 255, 24);
     
         } else {
     
             setMessageBoxRGBA(0, 0, 0, 0, 0);
             setMessageBoxRGBA(1, 0, 0, 0, 0);
-            setMessageBoxRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
-            setMessageBoxRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMessageBoxRGBA(0, 255, 255, 255, 255);
+            setMessageBoxRGBA(1, 255, 255, 255, 255);
     
         }
 
@@ -576,7 +576,7 @@ void gameSelectCallback(void) {
                 }
             }
             
-            if (checkButtonRepeat(CONTROLLER_1, 0x40000)) {
+            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
                 if (!set) {
                     if (loadGameScreenContext.action != 1) {
                         loadGameScreenContext.action = 1;
@@ -2828,41 +2828,41 @@ void setupRankingListMessageBoxes(bool noFadeIn) {
     
     if (noFadeIn == FALSE) {
         
-        setMessageBoxRGBAWithTransition(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        setMessageBoxRGBAWithTransition(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        setMessageBoxRGBAWithTransition(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        setMessageBoxRGBAWithTransition(4, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        setMessageBoxRGBAWithTransition(0, 255, 255, 255, 255, 24);
+        setMessageBoxRGBAWithTransition(1, 255, 255, 255, 255, 24);
+        setMessageBoxRGBAWithTransition(2, 255, 255, 255, 255, 24);
+        setMessageBoxRGBAWithTransition(3, 255, 255, 255, 255, 24);
+        setMessageBoxRGBAWithTransition(4, 255, 255, 255, 255, 24);
         
-        updateOverlayScreenSpriteRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        updateOverlayScreenSpriteRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        updateOverlayScreenSpriteRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        updateOverlayScreenSpriteRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        updateOverlayScreenSpriteRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        updateOverlayScreenSpriteRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        updateOverlayScreenSpriteRGBA(6, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        updateOverlayScreenSpriteRGBA(7, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        updateOverlayScreenSpriteRGBA(8, 0xFF, 0xFF, 0xFF, 0xFF, 24);
-        updateOverlayScreenSpriteRGBA(9, 0xFF, 0xFF, 0xFF, 0xFF, 24);
+        updateOverlayScreenSpriteRGBA(0, 255, 255, 255, 255, 24);
+        updateOverlayScreenSpriteRGBA(1, 255, 255, 255, 255, 24);
+        updateOverlayScreenSpriteRGBA(2, 255, 255, 255, 255, 24);
+        updateOverlayScreenSpriteRGBA(3, 255, 255, 255, 255, 24);
+        updateOverlayScreenSpriteRGBA(4, 255, 255, 255, 255, 24);
+        updateOverlayScreenSpriteRGBA(5, 255, 255, 255, 255, 24);
+        updateOverlayScreenSpriteRGBA(6, 255, 255, 255, 255, 24);
+        updateOverlayScreenSpriteRGBA(7, 255, 255, 255, 255, 24);
+        updateOverlayScreenSpriteRGBA(8, 255, 255, 255, 255, 24);
+        updateOverlayScreenSpriteRGBA(9, 255, 255, 255, 255, 24);
         
     } else {
         
-        setMessageBoxRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
-        setMessageBoxRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
-        setMessageBoxRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
-        setMessageBoxRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
-        setMessageBoxRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
+        setMessageBoxRGBA(0, 255, 255, 255, 255);
+        setMessageBoxRGBA(1, 255, 255, 255, 255);
+        setMessageBoxRGBA(2, 255, 255, 255, 255);
+        setMessageBoxRGBA(3, 255, 255, 255, 255);
+        setMessageBoxRGBA(4, 255, 255, 255, 255);
 
-        setNumberSpritesRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
-        setNumberSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
-        setNumberSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
-        setNumberSpritesRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
-        setNumberSpritesRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
-        setNumberSpritesRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF);
-        setNumberSpritesRGBA(6, 0xFF, 0xFF, 0xFF, 0xFF);
-        setNumberSpritesRGBA(7, 0xFF, 0xFF, 0xFF, 0xFF);
-        setNumberSpritesRGBA(8, 0xFF, 0xFF, 0xFF, 0xFF);
-        setNumberSpritesRGBA(9, 0xFF, 0xFF, 0xFF, 0xFF);
+        setNumberSpritesRGBA(0, 255, 255, 255, 255);
+        setNumberSpritesRGBA(1, 255, 255, 255, 255);
+        setNumberSpritesRGBA(2, 255, 255, 255, 255);
+        setNumberSpritesRGBA(3, 255, 255, 255, 255);
+        setNumberSpritesRGBA(4, 255, 255, 255, 255);
+        setNumberSpritesRGBA(5, 255, 255, 255, 255);
+        setNumberSpritesRGBA(6, 255, 255, 255, 255);
+        setNumberSpritesRGBA(7, 255, 255, 255, 255);
+        setNumberSpritesRGBA(8, 255, 255, 255, 255);
+        setNumberSpritesRGBA(9, 255, 255, 255, 255);
         
     }
     
@@ -2994,24 +2994,24 @@ void setupRankingDetailMessageBoxes(u8 slot) {
     setNumberSprites(0xA, 0x9E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, -78.0f, 16.0f, 0xA);
     dmaNumberSprites(0xA, gFarmRankingData.gold[slot], 5, 3);
 
-    setMessageBoxRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
-    setMessageBoxRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
-    setMessageBoxRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
-    setMessageBoxRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
-    setMessageBoxRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
-    setMessageBoxRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF);
+    setMessageBoxRGBA(0, 255, 255, 255, 255);
+    setMessageBoxRGBA(1, 255, 255, 255, 255);
+    setMessageBoxRGBA(2, 255, 255, 255, 255);
+    setMessageBoxRGBA(3, 255, 255, 255, 255);
+    setMessageBoxRGBA(4, 255, 255, 255, 255);
+    setMessageBoxRGBA(5, 255, 255, 255, 255);
     
-    setNumberSpritesRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
-    setNumberSpritesRGBA(1, 0xFF, 0xFF, 0xFF, 0xFF);
-    setNumberSpritesRGBA(2, 0xFF, 0xFF, 0xFF, 0xFF);
-    setNumberSpritesRGBA(3, 0xFF, 0xFF, 0xFF, 0xFF);
-    setNumberSpritesRGBA(4, 0xFF, 0xFF, 0xFF, 0xFF);
-    setNumberSpritesRGBA(5, 0xFF, 0xFF, 0xFF, 0xFF);
-    setNumberSpritesRGBA(6, 0xFF, 0xFF, 0xFF, 0xFF);
-    setNumberSpritesRGBA(7, 0xFF, 0xFF, 0xFF, 0xFF);
-    setNumberSpritesRGBA(8, 0xFF, 0xFF, 0xFF, 0xFF);
-    setNumberSpritesRGBA(9, 0xFF, 0xFF, 0xFF, 0xFF);
-    setNumberSpritesRGBA(10, 0xFF, 0xFF, 0xFF, 0xFF);
+    setNumberSpritesRGBA(0, 255, 255, 255, 255);
+    setNumberSpritesRGBA(1, 255, 255, 255, 255);
+    setNumberSpritesRGBA(2, 255, 255, 255, 255);
+    setNumberSpritesRGBA(3, 255, 255, 255, 255);
+    setNumberSpritesRGBA(4, 255, 255, 255, 255);
+    setNumberSpritesRGBA(5, 255, 255, 255, 255);
+    setNumberSpritesRGBA(6, 255, 255, 255, 255);
+    setNumberSpritesRGBA(7, 255, 255, 255, 255);
+    setNumberSpritesRGBA(8, 255, 255, 255, 255);
+    setNumberSpritesRGBA(9, 255, 255, 255, 255);
+    setNumberSpritesRGBA(10, 255, 255, 255, 255);
     
 }
 

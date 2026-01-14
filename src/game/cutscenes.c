@@ -5320,11 +5320,11 @@ void handleCutsceneCompletion(void) {
 
         // sprite color flags
         if (gCutsceneCompletionFlags & 0x40) {
-            setSpritePaletteIndex(0x62, 0);
+            setSpritePaletteIndex(98, 0);
             gCutsceneCompletionFlags &= ~0x40;
         }
         if (gCutsceneCompletionFlags & 0x80) {
-            setSpritePaletteIndex(0x62, 1);
+            setSpritePaletteIndex(98, 1);
             gCutsceneCompletionFlags &= ~0x80;
         }
 
@@ -5347,7 +5347,7 @@ void handleCutsceneCompletion(void) {
             setSpawnPoint(FARM_SPAWN_POINT_1);
             // prep map
             loadMapAtSpawnPoint(0);
-            setMapControllerRGBA(0, 0xFF, 0xFF, 0xFF, 0xFF);
+            setMapControllerRGBA(0, 255, 255, 255, 255);
             gCutsceneCompletionFlags &= ~0x20000;
         }
 
@@ -5571,9 +5571,9 @@ void handleCutsceneCompletion(void) {
         gCutsceneCompletionFlags &= ~0x8000000;
 
         if (gCutsceneCompletionFlags & 0x1000) {
-            setDailyEventBit(6);
+            setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
         } else {
-            toggleDailyEventBit(6);
+            toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
         }
 
         if (gCutsceneCompletionFlags & 0x2000) {
@@ -5583,9 +5583,9 @@ void handleCutsceneCompletion(void) {
         }
 
         if (gCutsceneCompletionFlags & 0x4000) {
-            setDailyEventBit(0x12);
+            setDailyEventBit(18);
         } else {
-            toggleDailyEventBit(0x12);
+            toggleDailyEventBit(18);
         }
 
         if (gCutsceneCompletionFlags & 0x400) {
@@ -5620,8 +5620,7 @@ void handleCutsceneCompletion(void) {
         }
 
         if (gCutsceneFlags & 0x10) {
-            // deactivate animal entities
-            func_8008779C();
+            deactivateAnimalsAfterCutscene();
             gCutsceneFlags &= ~0x10;
         }
 
@@ -5631,12 +5630,11 @@ void handleCutsceneCompletion(void) {
         }
 
         if (gCutsceneCompletionFlags & 0x20000000) {
-            // deactivate animal entities
-            func_8008779C();
+            deactivateAnimalsAfterCutscene();
             gCutsceneCompletionFlags &= ~0x20000000;
         }
 
-        // handle life event bit updates
+        // prizes
 
         if (checkLifeEventBit(0x4B)) {
             toggleLifeEventBit(0x4B);
@@ -5647,7 +5645,7 @@ void handleCutsceneCompletion(void) {
         if (checkLifeEventBit(0x82)) {
             toggleLifeEventBit(0x82);
             removeKeyItem(MARBLES);
-            setSpecialDialogueBit(0x1F);
+            setSpecialDialogueBit(31);
         }
         
         if (checkLifeEventBit(0x49)) {
@@ -5664,27 +5662,27 @@ void handleCutsceneCompletion(void) {
             switch (getRandomNumberInRange(0, 5)) {                    
                 
                 case 0:                                 
-                    storeTool(0xA);
+                    storeTool(TURNIP_SEEDS);
                     turnipSeedsQuantity += adjustValue(turnipSeedsQuantity, 1, 20);
                     return;
                 case 1:                                 
-                    storeTool(0xB);
+                    storeTool(POTATO_SEEDS);
                     potatoSeedsQuantity += adjustValue(potatoSeedsQuantity, 1, 20);
                     return;
                 case 2:                                 
-                    storeTool(0xC);
+                    storeTool(CABBAGE_SEEDS);
                     cabbageSeedsQuantity += adjustValue(cabbageSeedsQuantity, 1, 20);
                     return;
                 case 3:                                 
-                    storeTool(0xD);
+                    storeTool(TOMATO_SEEDS);
                     tomatoSeedsQuantity += adjustValue(tomatoSeedsQuantity, 1, 20);
                     return;
                 case 4:                                 
-                    storeTool(0xE);
+                    storeTool(CORN_SEEDS);
                     cornSeedsQuantity += adjustValue(cornSeedsQuantity, 1, 20);
                     return;
                 case 5:                                 
-                    storeTool(0xF);
+                    storeTool(EGGPLANT_SEEDS);
                     eggplantSeedsQuantity += adjustValue(eggplantSeedsQuantity, 1, 20);
                     break;
                 

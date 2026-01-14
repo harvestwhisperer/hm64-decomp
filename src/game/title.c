@@ -52,7 +52,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(HARVEST_MOON_64_LOGO, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(HARVEST_MOON_64_LOGO, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(HARVEST_MOON_64_LOGO, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(HARVEST_MOON_64_LOGO, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(HARVEST_MOON_64_LOGO, 255, 255, 255, 255);
     setBilinearFiltering(HARVEST_MOON_64_LOGO, TRUE);
     startSpriteAnimation(HARVEST_MOON_64_LOGO, 0, 0xFE);
      
@@ -61,7 +61,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(MARVCOME_VICTOR_COPYRIGHT_INFO, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(MARVCOME_VICTOR_COPYRIGHT_INFO, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(MARVCOME_VICTOR_COPYRIGHT_INFO, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(MARVCOME_VICTOR_COPYRIGHT_INFO, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(MARVCOME_VICTOR_COPYRIGHT_INFO, 255, 255, 255, 255);
     startSpriteAnimation(MARVCOME_VICTOR_COPYRIGHT_INFO, 1, 0xFE);
     
     dmaSprite(PUSH_THE_START_SIGN_1, &_titleSpritesTextureSegmentRomStart, &_titleSpritesTextureSegmentRomEnd, &_titleSpritesAssetsIndexSegmentRomStart, &_titleSpritesAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)TITLE_SCREEN_SPRITES_TEXTURE_BUFFER, NULL, (u16*)TITLE_SCREEN_SPRITES_PALETTE_BUFFER, (AnimationFrameMetadata*)TITLE_SCREEN_SPRITE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)TITLE_SCREEN_SPRITES_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
@@ -69,7 +69,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(PUSH_THE_START_SIGN_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(PUSH_THE_START_SIGN_1, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(PUSH_THE_START_SIGN_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(PUSH_THE_START_SIGN_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(PUSH_THE_START_SIGN_1, 255, 255, 255, 255);
     setBilinearFiltering(PUSH_THE_START_SIGN_1, TRUE);
     startSpriteAnimation(PUSH_THE_START_SIGN_1, 3, 0xFE);
     
@@ -78,7 +78,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(HOW_TO_PLAY_SIGN, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(HOW_TO_PLAY_SIGN, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(HOW_TO_PLAY_SIGN, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(HOW_TO_PLAY_SIGN, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(HOW_TO_PLAY_SIGN, 255, 255, 255, 255);
     setBilinearFiltering(HOW_TO_PLAY_SIGN, TRUE);
     startSpriteAnimation(HOW_TO_PLAY_SIGN, 5, 0xFE);
 
@@ -87,7 +87,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(DIRT_ROAD, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DIRT_ROAD, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(DIRT_ROAD, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(DIRT_ROAD, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(DIRT_ROAD, 255, 255, 255, 255);
     setBilinearFiltering(DIRT_ROAD, TRUE);
     startSpriteAnimation(DIRT_ROAD, 7, 0xFE);
 
@@ -96,7 +96,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(SIGN_POST_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_1, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(SIGN_POST_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(SIGN_POST_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(SIGN_POST_1, 255, 255, 255, 255);
     setBilinearFiltering(SIGN_POST_1, TRUE);
     startSpriteAnimation(SIGN_POST_1, 2, 0xFE);
 
@@ -105,7 +105,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(SIGN_POST_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_2, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(SIGN_POST_2, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(SIGN_POST_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(SIGN_POST_2, 255, 255, 255, 255);
     setBilinearFiltering(SIGN_POST_2, TRUE);
     startSpriteAnimation(SIGN_POST_2, 2, 0xFE);
 
@@ -114,7 +114,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(SIGN_POST_3, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(SIGN_POST_3, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(SIGN_POST_3, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(SIGN_POST_3, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(SIGN_POST_3, 255, 255, 255, 255);
     setBilinearFiltering(SIGN_POST_3, TRUE);
     startSpriteAnimation(SIGN_POST_3, 2, 0xFE);
 
@@ -123,7 +123,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(CLOUD_1_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_1_1, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(CLOUD_1_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(CLOUD_1_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CLOUD_1_1, 255, 255, 255, 255);
     setBilinearFiltering(CLOUD_1_1, TRUE);
     startSpriteAnimation(CLOUD_1_1, 9, 0xFE);
 
@@ -132,7 +132,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(CLOUD_1_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_1_2, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(CLOUD_1_2, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(CLOUD_1_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CLOUD_1_2, 255, 255, 255, 255);
     setBilinearFiltering(CLOUD_1_2, TRUE);
     startSpriteAnimation(CLOUD_1_2, 9, 0xFE);
     
@@ -141,7 +141,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(CLOUD_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_2_1, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(CLOUD_2_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(CLOUD_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CLOUD_2_1, 255, 255, 255, 255);
     setBilinearFiltering(CLOUD_2_1, TRUE);
     startSpriteAnimation(CLOUD_2_1, 0x10, 0xFE);
     
@@ -150,7 +150,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(CLOUD_3_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_3_1, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(CLOUD_3_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(CLOUD_3_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CLOUD_3_1, 255, 255, 255, 255);
     setBilinearFiltering(CLOUD_3_1, TRUE);
     startSpriteAnimation(CLOUD_3_1, 0x11, 0xFE);
     
@@ -159,7 +159,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(LICENSED_BY_NINTENDO_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(LICENSED_BY_NINTENDO_1, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(LICENSED_BY_NINTENDO_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(LICENSED_BY_NINTENDO_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(LICENSED_BY_NINTENDO_1, 255, 255, 255, 255);
     setBilinearFiltering(LICENSED_BY_NINTENDO_1, TRUE);
     startSpriteAnimation(LICENSED_BY_NINTENDO_1, 0x12, 0xFE);
     
@@ -168,7 +168,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(LICENSED_BY_NINTENDO_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(LICENSED_BY_NINTENDO_2, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(LICENSED_BY_NINTENDO_2, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(LICENSED_BY_NINTENDO_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(LICENSED_BY_NINTENDO_2, 255, 255, 255, 255);
     setBilinearFiltering(LICENSED_BY_NINTENDO_2, TRUE);
     startSpriteAnimation(LICENSED_BY_NINTENDO_2, 0x12, 0xFE);
 
@@ -177,7 +177,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(CLOUD_3_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_3_2, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(CLOUD_3_2, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(CLOUD_3_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CLOUD_3_2, 255, 255, 255, 255);
     setBilinearFiltering(CLOUD_3_2, TRUE);
     startSpriteAnimation(CLOUD_3_2, 0x11, 0xFE);
 
@@ -186,7 +186,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(CLOUD_2_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(CLOUD_2_2, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(CLOUD_2_2, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(CLOUD_2_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(CLOUD_2_2, 255, 255, 255, 255);
     setBilinearFiltering(CLOUD_2_2, TRUE);
     startSpriteAnimation(CLOUD_2_2, 0x10, 0xFE);
     
@@ -195,7 +195,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(FAR_GRASS_1_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_1_1, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(FAR_GRASS_1_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(FAR_GRASS_1_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(FAR_GRASS_1_1, 255, 255, 255, 255);
     setBilinearFiltering(FAR_GRASS_1_1, TRUE);
     startSpriteAnimation(FAR_GRASS_1_1, 0xA, 0xFE);
 
@@ -204,7 +204,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(FAR_GRASS_1_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_1_2, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(FAR_GRASS_1_2, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(FAR_GRASS_1_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(FAR_GRASS_1_2, 255, 255, 255, 255);
     setBilinearFiltering(FAR_GRASS_1_2, TRUE);
     startSpriteAnimation(FAR_GRASS_1_2, 0xA, 0xFE);
     
@@ -213,7 +213,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(FAR_GRASS_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_2_1, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(FAR_GRASS_2_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(FAR_GRASS_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(FAR_GRASS_2_1, 255, 255, 255, 255);
     setBilinearFiltering(FAR_GRASS_2_1, TRUE);
     startSpriteAnimation(FAR_GRASS_2_1, 0xB, 0xFE);
 
@@ -222,7 +222,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(FAR_GRASS_3_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FAR_GRASS_3_1, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(FAR_GRASS_3_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(FAR_GRASS_3_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(FAR_GRASS_3_1, 255, 255, 255, 255);
     setBilinearFiltering(FAR_GRASS_3_1, TRUE);
     startSpriteAnimation(FAR_GRASS_3_1, 0xC, 0xFE);
 
@@ -231,7 +231,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(FRONT_GRASS_2_1, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FRONT_GRASS_2_1, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(FRONT_GRASS_2_1, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(FRONT_GRASS_2_1, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(FRONT_GRASS_2_1, 255, 255, 255, 255);
     setBilinearFiltering(FRONT_GRASS_2_1, TRUE);
     startSpriteAnimation(FRONT_GRASS_2_1, 0xE, 0xFE);
     
@@ -240,7 +240,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(BACK_GRASS_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(BACK_GRASS_2, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(BACK_GRASS_2, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(BACK_GRASS_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(BACK_GRASS_2, 255, 255, 255, 255);
     setBilinearFiltering(BACK_GRASS_2, TRUE);
     startSpriteAnimation(BACK_GRASS_2, 0xB, 0xFE);
     
@@ -249,7 +249,7 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(BACK_GRASS_3_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(BACK_GRASS_3_2, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(BACK_GRASS_3_2, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(BACK_GRASS_3_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(BACK_GRASS_3_2, 255, 255, 255, 255);
     setBilinearFiltering(BACK_GRASS_3_2, TRUE);
     startSpriteAnimation(BACK_GRASS_3_2, 0xC, 0xFE);
     
@@ -258,16 +258,16 @@ void initializeTitleScreen(u8 arg0) {
     setSpriteScale(FRONT_GRASS_2_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(FRONT_GRASS_2_2, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(FRONT_GRASS_2_2, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(FRONT_GRASS_2_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(FRONT_GRASS_2_2, 255, 255, 255, 255);
     setBilinearFiltering(FRONT_GRASS_2_2, TRUE);
     startSpriteAnimation(FRONT_GRASS_2_2, 0xE, 0xFE);
     
-    dmaSprite(PUSH_THE_START_SIGN_2, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u8*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(PUSH_THE_START_SIGN_2, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u8*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(PUSH_THE_START_SIGN_2, -54.0f, -24.0f, 56.0f);
     setSpriteScale(PUSH_THE_START_SIGN_2, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(PUSH_THE_START_SIGN_2, 0.0f, 0.0f, 0.0f);
     setSpriteBlendMode(PUSH_THE_START_SIGN_2, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(PUSH_THE_START_SIGN_2, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(PUSH_THE_START_SIGN_2, 255, 255, 255, 255);
     setBilinearFiltering(PUSH_THE_START_SIGN_2, TRUE);
     startSpriteAnimation(PUSH_THE_START_SIGN_2, 3, 0xFE);
     
@@ -323,7 +323,7 @@ void loadDogTitleSprite(void) {
     setSpriteScale(DOG_TITLE_SPRITE, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DOG_TITLE_SPRITE, 0, 0, 0);
     setSpriteBlendMode(DOG_TITLE_SPRITE, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(DOG_TITLE_SPRITE, 0xFF, 0xFF, 0xFF, 0xFF);
+    setSpriteColor(DOG_TITLE_SPRITE, 255, 255, 255, 255);
     startSpriteAnimation(DOG_TITLE_SPRITE, 0x1D, 0xFE);
 }
 
