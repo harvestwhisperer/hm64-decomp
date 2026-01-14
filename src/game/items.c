@@ -3020,9 +3020,9 @@ bool handlePutDownHeldItem(u8 itemIndex) {
             npcs[BABY].levelIndex = HOUSE;
             npcs[BABY].startingCoordinates.y = 0;
             npcs[BABY].direction = SOUTHWEST;
-            npcs[BABY].defaultAnimationMode = NPC_ANIM_WANDER;
-            npcs[BABY].animationIndex1 = 0;
-            npcs[BABY].animationMode = NPC_ANIM_WANDER;
+            npcs[BABY].defaultAnimationMode = NPC_ANIMATION_WANDER;
+            npcs[BABY].idleAnimation = 0;
+            npcs[BABY].animationMode = NPC_ANIMATION_WANDER;
 
             npcs[BABY].startingCoordinates.x = -192.0f;
             npcs[BABY].startingCoordinates.z = -64.0f;
@@ -3051,9 +3051,9 @@ bool handlePutDownHeldItem(u8 itemIndex) {
             npcs[BABY].flags |= 1;
 
             npcs[BABY].direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
-            npcs[BABY].defaultAnimationMode = NPC_ANIM_CUSTOM;
-            npcs[BABY].animationIndex1 = 57;
-            npcs[BABY].animationMode = NPC_ANIM_CUSTOM;
+            npcs[BABY].defaultAnimationMode = NPC_ANIMATION_CUSTOM;
+            npcs[BABY].idleAnimation = 57;
+            npcs[BABY].animationMode = NPC_ANIMATION_CUSTOM;
             
             setDailyEventBit(PICKED_UP_BABY);
             setupNPCEntity(BABY, 0);

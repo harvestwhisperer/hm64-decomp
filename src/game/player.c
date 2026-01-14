@@ -970,7 +970,7 @@ void handlePlayerInput(void) {
 
                     if (groundObjectIndex == 0xFF || getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8) {
                         
-                        setDailyEventBit(6);
+                        setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
                         set = TRUE;
                         temp = 0xFF;
                         startAction(JUMPING, ANIM_JUMPING);
@@ -1024,7 +1024,7 @@ void handlePlayerInput(void) {
 
     if (!set) {
 
-        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(0x12)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
         
             if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
                 
@@ -1061,19 +1061,26 @@ void handlePlayerInput(void) {
     }
 
     if (!set) {
+      
         // show text for item being held
-        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(0x12)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
+          
             if (checkButtonReleased(CONTROLLER_1, BUTTON_Z) && !heldItemChange) {
+
                 if (gPlayer.heldItem != 0) {
                     set = TRUE;
                     showHeldItemText(gPlayer.heldItem);
                     temp = 0xFF;
                 }
+              
             }
+          
             if(checkButtonReleased(CONTROLLER_1, BUTTON_Z) && heldItemChange) {
                 heldItemChange = FALSE;
             }
+          
         }
+      
     }
 
     if (!set) {
@@ -1866,7 +1873,7 @@ void handleJumpAction(void) {
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
             gPlayer.actionPhase++;
             gPlayer.actionPhaseFrameCounter = 0;
-            toggleDailyEventBit(6);
+            toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
             
         }
 
@@ -1923,7 +1930,7 @@ void handleJumpDownAction(void) {
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
             gPlayer.actionPhase++;
             gPlayer.actionPhaseFrameCounter = 0;
-            toggleDailyEventBit(6);
+            toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
             
         }
 
@@ -2221,7 +2228,7 @@ void handleToiletAction(void) {
     
                 resetAction();
     
-                toggleDailyEventBit(6);
+                toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
     
                 if (!checkDailyEventBit(0x31)) {
                     gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -10, MAX_FATIGUE_POINTS);
@@ -2377,7 +2384,7 @@ void handleBathingAction(void) {
     
                 resetAction();
     
-                toggleDailyEventBit(6);
+                toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
     
                 if (!checkDailyEventBit(0x32)) {
     
@@ -2501,7 +2508,7 @@ void handleHotSpringAction(void) {
 
                 resetAction();
 
-                toggleDailyEventBit(6);
+                toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
 
                 if (!checkDailyEventBit(0x33)) {
                     gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -10, MAX_FATIGUE_POINTS);
@@ -2710,7 +2717,7 @@ void handleTreeClimbingAction(void) {
         setEntityTracksCollisions(ENTITY_PLAYER, TRUE);
         enableEntityMovement(ENTITY_PLAYER, TRUE);
         setEntityShadow(ENTITY_PLAYER, 0);
-        toggleDailyEventBit(6);
+        toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
         
     }
     
@@ -3119,19 +3126,19 @@ void handleGetIntoBedAnimation(void) {
 
                     switch (gWife) {
                         case MARIA:
-                            npcs[MARIA].animationMode = NPC_ANIM_FIXED;
+                            npcs[MARIA].animationMode = NPC_ANIMATION_SLEEPING;
                             break;
                         case POPURI:
-                            npcs[POPURI].animationMode = NPC_ANIM_FIXED;
+                            npcs[POPURI].animationMode = NPC_ANIMATION_SLEEPING;
                             break;
                         case ELLI:
-                            npcs[ELLI].animationMode = NPC_ANIM_FIXED;
+                            npcs[ELLI].animationMode = NPC_ANIMATION_SLEEPING;
                             break;
                         case ANN:
-                            npcs[ANN].animationMode = NPC_ANIM_FIXED;
+                            npcs[ANN].animationMode = NPC_ANIMATION_SLEEPING;
                             break;
                         case KAREN:
-                            npcs[KAREN].animationMode = NPC_ANIM_FIXED;
+                            npcs[KAREN].animationMode = NPC_ANIMATION_SLEEPING;
                             break;
                     }
 

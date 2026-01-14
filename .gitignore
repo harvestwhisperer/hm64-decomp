@@ -13,6 +13,7 @@
 *.a
 *.png
 *.ci
+*.ci2
 *.pal
 *.gif
 *.json
@@ -23,12 +24,6 @@ asm/
 !makerom/entry.s
 *.seq
 *.hm64map
-assets/**/*.png
-assets/**/*.ci
-assets/**/*.pal
-assets/**/*.txt
-assets/**/*.json
-assets/**/*.gif
 !config/us/symbol_addrs.txt
 !config/us/undefined_funcs.txt
 !config/us/undefined_syms.txt

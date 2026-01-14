@@ -231,7 +231,7 @@ extern void setAnimalState(u8 animalType, u8 index, u8 type, u8 condition, u8 ar
 extern bool handlePlayerAnimalInteraction();
 extern void initializeAnimalEntities();
 extern void initializeChicken(u8 chickenIndex);
-extern void func_8008779C(void);
+extern void deactivateAnimalsAfterCutscene(void);
 extern void updateAnimalCoordinates();
 extern void updateAnimals();
 extern void feedAllAnimals();

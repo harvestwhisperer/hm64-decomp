@@ -999,10 +999,9 @@ void initializeAnimalEntities(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008779C);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", deactivateAnimalsAfterCutscene);
 
-// alternate deactivate animal entities at end of certain cutscenes
-void func_8008779C(void) {
+void deactivateAnimalsAfterCutscene(void) {
 
     u8 i;
 
@@ -1520,6 +1519,7 @@ void resetChickenLocation(u8 mapIndex, u8 chickenIndex) {
         gChickens[chickenIndex].flags &= ~CHICKEN_HELD;
         
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", spawnWildAnimals);
