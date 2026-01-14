@@ -32,7 +32,7 @@ void setupGameStart(void) {
     initializeAll(); 
     
     if (contPattern & 1) {
-        launchIntroCutscene(INTRO, 0x61, 1);
+        launchIntroCutscene(OPENING_LOGOS, 0x61, 1);
     } else {
 
         setMainLoopCallbackFunctionIndex(NO_OP);
@@ -41,16 +41,17 @@ void setupGameStart(void) {
         setMessageBoxInterpolationWithFlags(0, -4, 2);
 
         // load "no controller" dialogue
-        initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 0, 0x19, MESSAGE_BOX_MODE_NO_INPUT);
+        initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, TEXT_1_TEXT_INDEX, 25, MESSAGE_BOX_MODE_NO_INPUT);
 
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStart", startGame);
 
 void startGame(void) {
 
-    setEntrance(MIDDLE_OF_HOUSE);
+    setSpawnPoint(HOUSE_SPAWN_POINT_3);
 
     // set spawnable/foragable items
     func_800598E0();
