@@ -932,31 +932,32 @@ void handlePlayerInput(void) {
     }
 
     if (!set) {
-        
-        // jump over logs
-        if (gBaseMapIndex == FARM && gPlayer.groundObjectIndex == LOG) {
+        bool jumpableObject = (gPlayer.groundObjectIndex == LOG || gPlayer.groundObjectIndex == SMALL_ROCK || gPlayer.groundObjectIndex == WEED);
+        bool jumpableMap = (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE);
 
-            if ((getAnalogStickMagnitude(CONTROLLER_1) / 1.2f) > 4.6) {
-                
-                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
+        if (jumpableMap && jumpableObject) {
+            u8 dir = entities[ENTITY_PLAYER].direction;
+            u8 rotation = mapControllers[MAIN_MAP_INDEX].rotation;
+            bool isRotating = mapControllers[MAIN_MAP_INDEX].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE);
+            bool isViewIsometric = !isRotating && (rotation % 2 != 0);
+            bool isDirCardinal = (dir % 2 != 0);
+            bool validDirection = (isViewIsometric == isDirCardinal);
 
-                    vec3 = projectEntityPosition(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
-
+            if ((getAnalogStickMagnitude(CONTROLLER_1) > 5.52f) && validDirection) {
+                u8 spriteDir = convertWorldToSpriteDirection(dir, MAIN_MAP_INDEX);
+                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, spriteDir)) {
+                    vec3 = projectEntityPosition(ENTITY_PLAYER, 0x34, spriteDir);
                     groundObjectIndex = getGroundObjectIndexFromCoordinates(vec3.x, vec3.z);
 
-                    if (groundObjectIndex == 0xFF || getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8) {
-                        
+                    if (groundObjectIndex == 0xFF || (getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8)) {
                         setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
                         set = TRUE;
                         temp = 0xFF;
                         startAction(JUMPING, ANIM_JUMPING);
-                        
                     }
-                    
-                } 
+                }
             }
         }
-        
     }
 
     if (!set) {
