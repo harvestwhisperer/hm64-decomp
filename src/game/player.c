@@ -43,6 +43,8 @@ u8 gMaximumStamina;
 u8 gPlayerBirthdaySeason;
 u8 gToolboxSlots[8 * 4];
 
+bool heldItemChange = FALSE;
+
 
 // data
 // indexed by gSpawnPointIndex
@@ -531,6 +533,28 @@ inline u8 addItemToRucksack(u8 item) {
     return found;    
     
 }
+
+inline u8 takeItemFromRucksack() {
+    u8 i;
+    u8 j;
+    u8 tmpItem;
+    u8 found = 0xFF;
+
+    for (i = 0; i < MAX_RUCKSACK_SLOTS && found == 0xFF; i++) {
+        if (gPlayer.belongingsSlots[i] != 0) {
+            tmpItem = gPlayer.belongingsSlots[i];
+            found = 1;
+            for (j = i; j < MAX_RUCKSACK_SLOTS - 1; j++) {
+                gPlayer.belongingsSlots[j] = gPlayer.belongingsSlots[j + 1];
+            }
+            gPlayer.belongingsSlots[MAX_RUCKSACK_SLOTS - 1] = 0;
+            gPlayer.heldItem = tmpItem;
+        }
+    }
+    
+    return found;    
+}
+
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", storeTool);
 
@@ -1039,12 +1063,15 @@ void handlePlayerInput(void) {
     if (!set) {
         // show text for item being held
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(0x12)) {
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
+            if (checkButtonReleased(CONTROLLER_1, BUTTON_Z) && !heldItemChange) {
                 if (gPlayer.heldItem != 0) {
                     set = TRUE;
                     showHeldItemText(gPlayer.heldItem);
                     temp = 0xFF;
                 }
+            }
+            if(checkButtonReleased(CONTROLLER_1, BUTTON_Z) && heldItemChange) {
+                heldItemChange = FALSE;
             }
         }
     }
@@ -1067,6 +1094,20 @@ void handlePlayerInput(void) {
                 temp = 0xFF;
                 // whistle for horse
                 startAction(WHISTLING_FOR_HORSE, ANIM_WHISTLE_FOR_HORSE);
+            }
+        }
+    }
+
+    if(!set) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
+            if (checkButtonHeld(CONTROLLER_1, BUTTON_Z) && checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
+                if (takeItemFromRucksack() != 0xFF) {
+                    set = TRUE;
+                    temp = 0xFF;
+                    heldItemChange = TRUE;
+                    initializePlayerHeldItem();
+                    // TODO: add animation
+                }
             }
         }
     }
