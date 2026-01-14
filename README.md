@@ -13,6 +13,7 @@ Currently supported modding workflows:
 
 QOL implementations:
 - Time slowed to 1/5th of the original game speed
+- Farm ranking screen accessible in game select menu
 - Mayor tour skipped
 - Opening logos skipped
 - Music continues playing unless the entered map contains a different theme
