@@ -537,24 +537,21 @@ inline u8 addItemToRucksack(u8 item) {
 inline u8 takeItemFromRucksack() {
     u8 i;
     u8 j;
-    u8 tmpItem;
+    u8 nextItem;
     u8 found = 0xFF;
 
     for (i = 0; i < MAX_RUCKSACK_SLOTS && found == 0xFF; i++) {
         if (gPlayer.belongingsSlots[i] != 0) {
-            tmpItem = gPlayer.belongingsSlots[i];
+            nextItem = gPlayer.belongingsSlots[i];
             found = 1;
             for (j = i; j < MAX_RUCKSACK_SLOTS - 1; j++) {
                 gPlayer.belongingsSlots[j] = gPlayer.belongingsSlots[j + 1];
             }
-            gPlayer.belongingsSlots[MAX_RUCKSACK_SLOTS - 1] = 0;
-            gPlayer.heldItem = tmpItem;
+            gPlayer.heldItem = nextItem;
         }
     }
-    
-    return found;    
+    return found;
 }
-
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", storeTool);
 
