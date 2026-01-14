@@ -932,41 +932,32 @@ void handlePlayerInput(void) {
     }
 
     if (!set) {
-        
-        // jump over objects in farm and greenhouse
-        bool jumpableOjects = (gPlayer.groundObjectIndex == LOG || gPlayer.groundObjectIndex == SMALL_ROCK || gPlayer.groundObjectIndex == WEED);
-        bool jumpableMaps = (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE);
-        if (jumpableMaps && jumpableOjects) {
+        bool jumpableObject = (gPlayer.groundObjectIndex == LOG || gPlayer.groundObjectIndex == SMALL_ROCK || gPlayer.groundObjectIndex == WEED);
+        bool jumpableMap = (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE);
 
-            u8 playerDirection = entities[ENTITY_PLAYER].direction;
-            u8 viewType = getCurrentMapRotation(MAIN_MAP_INDEX);
+        if (jumpableMap && jumpableObject) {
+            u8 dir = entities[ENTITY_PLAYER].direction;
+            u8 rotation = mapControllers[MAIN_MAP_INDEX].rotation;
             bool isRotating = mapControllers[MAIN_MAP_INDEX].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE);
-            bool isometricView = !isRotating && (mapControllers[MAIN_MAP_INDEX].rotation % 2 != 0);
-            bool isometricValidJumpingDirections = (playerDirection == NORTH || playerDirection == EAST || playerDirection == SOUTH || playerDirection == WEST) ;
-            bool nonIsometricValidJumpingDirections = (playerDirection == NORTHWEST || playerDirection == NORTHEAST || playerDirection == SOUTHWEST || playerDirection == SOUTHEAST);
-            bool isometricViewJump = (isometricView && isometricValidJumpingDirections);
-            bool nonIsometricViewJump = (!isometricView && nonIsometricValidJumpingDirections);
-            if ((getAnalogStickMagnitude(CONTROLLER_1) / 1.2f) > 4.6 && (nonIsometricViewJump || isometricViewJump)) {
-                
-                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(playerDirection, MAIN_MAP_INDEX))) {
+            bool isViewIsometric = !isRotating && (rotation % 2 != 0);
+            bool isDirCardinal = (dir % 2 != 0);
+            bool validDirection = (isViewIsometric == isDirCardinal);
 
-                    vec3 = projectEntityPosition(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(playerDirection, MAIN_MAP_INDEX));
-
+            if ((getAnalogStickMagnitude(CONTROLLER_1) > 5.52f) && validDirection) {
+                u8 spriteDir = convertWorldToSpriteDirection(dir, MAIN_MAP_INDEX);
+                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, spriteDir)) {
+                    vec3 = projectEntityPosition(ENTITY_PLAYER, 0x34, spriteDir);
                     groundObjectIndex = getGroundObjectIndexFromCoordinates(vec3.x, vec3.z);
 
-                    if (groundObjectIndex == 0xFF || getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8) {
-                      
+                    if (groundObjectIndex == 0xFF || (getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8)) {
                         setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
                         set = TRUE;
                         temp = 0xFF;
                         startAction(JUMPING, ANIM_JUMPING);
-                        
                     }
-                    
-                } 
+                }
             }
         }
-        
     }
 
     if (!set) {
