@@ -79,12 +79,6 @@ beginseg
 endseg
 
 beginseg
-    name "raceTrackSummerMap"
-    flags RAW
-    include "build/assets/maps/raceTrack/raceTrackSummerMap.hm64map.o"
-endseg
-
-beginseg
     name "raceTrackFallMap"
     flags RAW
     include "build/assets/maps/raceTrack/raceTrackFallMap.hm64map.o"

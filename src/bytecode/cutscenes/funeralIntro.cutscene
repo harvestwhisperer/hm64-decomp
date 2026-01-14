@@ -101,7 +101,7 @@
 
 ; 0x149E34
 .executor_logos:
-    DMA_SPRITE 160, 0, _logoTexturesSegmentRomStart, _logoTexturesSegmentRomEnd, _logoAssetsIndexSegmentRomStart, _logoAssetsIndexSegmentRomEnd, 0, 0, 0x802D46C0, 0, 0x802D2AC0, 0x802D3540, 0x802D4340, 0x802D4440
+    DMA_SPRITE 160, 0, _logosTextureSegmentRomStart, _logosTextureSegmentRomEnd, _logosAssetsIndexSegmentRomStart, _logosAssetsIndexSegmentRomEnd, 0, 0, 0x802D46C0, 0, 0x802D2AC0, 0x802D3540, 0x802D4340, 0x802D4440
     SET_ANIM_DATA_PTR_WITH_FLAG .logo_1_frame
     SET_COORDINATES 0, 0, 280
     SET_SPRITE_BILINEAR 0
@@ -129,7 +129,7 @@
 
 ; 0x149EDC
 executor_white_background_1:
-    DMA_SPRITE 161, 0, _logoTexturesSegmentRomStart, _logoTexturesSegmentRomEnd, _logoAssetsIndexSegmentRomStart, _logoAssetsIndexSegmentRomEnd, 0, 0, 0x802D46C0, 0, 0x802D2AC0, 0x802D3540, 0x802D4340, 0x802D4440
+    DMA_SPRITE 161, 0, _logosTextureSegmentRomStart, _logosTextureSegmentRomEnd, _logosAssetsIndexSegmentRomStart, _logosAssetsIndexSegmentRomEnd, 0, 0, 0x802D46C0, 0, 0x802D2AC0, 0x802D3540, 0x802D4340, 0x802D4440
     SET_ANIM_DATA_PTR_WITH_FLAG .white_background_frame
     SET_COORDINATES 0, 0, 270
     SET_SPRITE_SCALE 20, 20, 0
@@ -228,7 +228,7 @@ executor_white_background_1:
 
 ; 0x14A0F4
 .executor_white_background_2:
-    DMA_SPRITE 128, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 128, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_14AF48
     SET_COORDINATES 0, 0, 254
     SET_SPRITE_SCALE 20, 20, 0
@@ -243,7 +243,7 @@ executor_white_background_1:
     DEACTIVATE_SELF
 
 .executor_13_14A170:
-    DMA_SPRITE 129, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 129, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_14AF54
     SET_COORDINATES 160, 120, 255
     SET_RGBA 0, 0, 0, 0
@@ -256,7 +256,7 @@ executor_white_background_1:
     DEACTIVATE_SELF
 
 .executor_14_14A1E8:
-    DMA_SPRITE 130, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 130, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_14AF60
     SET_COORDINATES -32, 64, 255
     SET_RGBA 0, 0, 0, 0
@@ -270,7 +270,7 @@ executor_white_background_1:
     DEACTIVATE_SELF
 
 .executor_15_14A26C:
-    DMA_SPRITE 131, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 131, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_14AF60
     SET_COORDINATES 160, 0, 255
     SET_RGBA 0, 0, 0, 0
@@ -283,7 +283,7 @@ executor_white_background_1:
     DEACTIVATE_SELF
 
 .executor_16_14A2E4:
-    DMA_SPRITE 132, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 132, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_14AF54
     SET_COORDINATES 64, 120, 255
     SET_RGBA 0, 0, 0, 0
@@ -305,7 +305,7 @@ executor_white_background_1:
     DEACTIVATE_SELF
 
 .executor_17_14A3A8:
-    DMA_SPRITE 133, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 133, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_14AF60
     SET_COORDINATES 32, -64, 255
     SET_RGBA 0, 0, 0, 0
@@ -319,7 +319,7 @@ executor_white_background_1:
     DEACTIVATE_SELF
 
 .executor_18_14A42C:
-    DMA_SPRITE 134, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 134, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_14AF54
     SET_COORDINATES -80, 100, 255
     SET_RGBA 0, 0, 0, 0
@@ -351,15 +351,15 @@ executor_white_background_1:
     INIT_MESSAGE_BOX_TYPE2 0, 46, 0
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_MOVE_AND_ANIMATE 88, 0, 2
+    ENTITY_WALK 88, 0, 2
     SET_ASSET_ROTATION SOUTHEAST
     SET_OTHER_EXECUTOR_PTR 6, .executor_6_14A7B0
     SET_OTHER_EXECUTOR_PTR 8, .executor_8_14A818
     INIT_MESSAGE_BOX_TYPE2 0, 46, 1
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_MOVE_AND_ANIMATE 16, 0, 2
-    ENTITY_MOVE_AND_ANIMATE 32, 2, 2
+    ENTITY_WALK 16, 0, 2
+    ENTITY_WALK 32, 2, 2
     SET_ASSET_ROTATION NORTHEAST
     SET_OTHER_EXECUTOR_PTR 2, .executor_2_14A69C
     INIT_MESSAGE_BOX_TYPE2 0, 46, 2
@@ -367,7 +367,7 @@ executor_white_background_1:
     INIT_MESSAGE_BOX_TYPE2 0, 46, 3
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_MOVE_AND_ANIMATE 48, 2, 2
+    ENTITY_WALK 48, 2, 2
     SET_WAIT_FRAMES 15
     SET_ENTITY_ANIMATION 472
     WAIT_ENTITY_ANIMATION
@@ -387,13 +387,13 @@ executor_white_background_1:
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 15
-    ENTITY_MOVE_AND_ANIMATE 32, 4, 2
+    ENTITY_WALK 32, 4, 2
     INIT_MESSAGE_BOX_TYPE2 0, 46, 4
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_MOVE_AND_ANIMATE 32, 4, 2
+    ENTITY_WALK 32, 4, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
-    ENTITY_MOVE_AND_ANIMATE 32, 4, 2
+    ENTITY_WALK 32, 4, 2
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
@@ -578,7 +578,7 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .end_cutscene
 
 .executor_5_14A950:
-    DMA_SPRITE 128, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 128, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_14AF6C
     SET_COORDINATES 0, 0, 254
     SET_SPRITE_SCALE 2, 2, 0
@@ -589,7 +589,7 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .idle
 
 .executor_6_14A9B8:
-    DMA_SPRITE 129, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 129, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_14AF78
     SET_COORDINATES 0, -40, 255
     SET_SPRITE_SCALE 2, 2, 0
@@ -600,7 +600,7 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .idle
 
 .executor_7_14AA20:
-    DMA_SPRITE 130, 0, _funeralSpritesTextureSegmentRomStart, _funeralSpritesTextureSegmentRomEnd, _funeralSpritesIndexSegmentRomStart, _funeralSpritesIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
+    DMA_SPRITE 130, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x80294250, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_14AF84
     SET_COORDINATES 0, 0, 256
     SET_SPRITE_SCALE 1, 2, 0
@@ -700,7 +700,7 @@ executor_white_background_1:
     SET_RGBA 255, 255, 255, 255
     SET_ASSET_ROTATION SOUTHEAST
     SET_COORDINATES -590, 0, 152
-    ENTITY_MOVE_AND_ANIMATE 108, 6, 2
+    ENTITY_WALK 108, 6, 2
     SET_WAIT_FRAMES 15
     SET_OTHER_EXECUTOR_PTR 1, .executor_9_149DCC
     SET_WAIT_FRAMES 15
@@ -725,7 +725,7 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .idle
 
 .executor_3_14ACA4:
-    ENTITY_MOVE_AND_ANIMATE 124, 2, 2
+    ENTITY_WALK 124, 2, 2
     SPAWN_EXECUTOR 4, .executor_4_14ACD8
     DEACTIVATE_SELF
 
@@ -745,7 +745,7 @@ executor_white_background_1:
     SET_WAIT_FRAMES 10
     SET_SFX 59, 128
     SET_WAIT_FRAMES 10
-    ENTITY_MOVE_AND_ANIMATE_2 50, 4, 4
+    ENTITY_RUN 50, 4, 4
     SET_OTHER_EXECUTOR_PTR 1, .executor_1_14ABBC
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 40
     EXECUTE_SUBROUTINE .idle
@@ -867,7 +867,7 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .idle
 
 .executor_3_14AF1C:
-    ENTITY_MOVE_AND_ANIMATE 24, 0, 2
+    ENTITY_WALK 24, 0, 2
     SET_WAIT_FRAMES 15
     SET_ASSET_ROTATION NORTHEAST
     INIT_MESSAGE_BOX_TYPE2 0, 46, 9
@@ -916,7 +916,7 @@ executor_white_background_1:
     SET_COORDINATES -352, 0, -16
     SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 40
-    ENTITY_MOVE_AND_ANIMATE 56, 0, 2
+    ENTITY_WALK 56, 0, 2
     ; TEXT_63
     INIT_DIALOGUE_SESSION 0, 53, 38
     WAIT_FOR_DIALOGUE_INPUT 0
@@ -926,10 +926,10 @@ executor_white_background_1:
 .branch_14AFDC:
     SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B068
     SET_WAIT_FRAMES 10
-    ENTITY_MOVE_AND_ANIMATE 32, 1, 2
-    ENTITY_MOVE_AND_ANIMATE 16, 2, 2
+    ENTITY_WALK 32, 1, 2
+    ENTITY_WALK 16, 2, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
-    ENTITY_MOVE_AND_ANIMATE 32, 2, 2
+    ENTITY_WALK 32, 2, 2
     SPAWN_EXECUTOR 41, .executor_41_14B098
     SET_SPECIAL_BIT 4, gCutsceneFlags
     EXECUTE_SUBROUTINE .idle
@@ -957,14 +957,14 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .idle
 
 .executor_1_14B068:
-    ENTITY_MOVE_AND_ANIMATE 90, 2, 2
+    ENTITY_WALK 90, 2, 2
     EXECUTE_SUBROUTINE .idle
 
 .executor_1_14B074:
     INIT_MESSAGE_BOX_TYPE1 0, FARM_VISITS_TEXT_INDEX, 621
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_MOVE_AND_ANIMATE 104, 2, 2
+    ENTITY_WALK 104, 2, 2
     SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B028
     EXECUTE_SUBROUTINE .end_cutscene
 
@@ -1006,15 +1006,15 @@ executor_white_background_1:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B15C
-    ENTITY_MOVE_AND_ANIMATE 44, 2, 2
-    ENTITY_MOVE_AND_ANIMATE 33, 3, 2
+    ENTITY_WALK 44, 2, 2
+    ENTITY_WALK 33, 3, 2
     EXECUTE_SUBROUTINE .idle
 
 .executor_0_14B15C:
-    ENTITY_MOVE_AND_ANIMATE 44, 2, 2
+    ENTITY_WALK 44, 2, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
-    ENTITY_MOVE_AND_ANIMATE 20, 2, 2
-    ENTITY_MOVE_AND_ANIMATE 12, 3, 2
+    ENTITY_WALK 20, 2, 2
+    ENTITY_WALK 12, 3, 2
     SET_OTHER_EXECUTOR_PTR 41, .executor_41_14B188
     EXECUTE_SUBROUTINE .idle
 
@@ -1093,12 +1093,12 @@ executor_white_background_1:
 .executor_0_14B2E8:
     SET_COORDINATES 416, 0, -96
     UPDATE_GLOBAL_RGBA 192, 192, 192, 192, 8
-    ENTITY_MOVE_AND_ANIMATE 56, 2, 2
+    ENTITY_WALK 56, 2, 2
     EXECUTE_SUBROUTINE .idle
 
 .executor_1_14B304:
     SET_COORDINATES 376, 0, -96
-    ENTITY_MOVE_AND_ANIMATE 56, 2, 2
+    ENTITY_WALK 56, 2, 2
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 10
     SET_OTHER_EXECUTOR_PTR 0, .executor_6_149DC4
@@ -1112,7 +1112,7 @@ executor_white_background_1:
 
 .executor_1_14B348:
     SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B4BC
-    ENTITY_MOVE_AND_ANIMATE 176, 2, 2
+    ENTITY_WALK 176, 2, 2
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 10
     SET_OTHER_EXECUTOR_PTR 0, .executor_6_149DC4
@@ -1125,7 +1125,7 @@ executor_white_background_1:
     SPAWN_EXECUTOR 4, .executor_4_14B258
     SPAWN_EXECUTOR 5, .executor_5_14B284
     SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B4C8
-    ENTITY_MOVE_AND_ANIMATE 160, 2, 2
+    ENTITY_WALK 160, 2, 2
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 10
     SET_OTHER_EXECUTOR_PTR 0, .executor_6_149DC4
@@ -1141,10 +1141,10 @@ executor_white_background_1:
     INIT_MESSAGE_BOX_TYPE1 0, FARM_VISITS_TEXT_INDEX, 38
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_MOVE_AND_ANIMATE 32, 0, 2
+    ENTITY_WALK 32, 0, 2
     SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B4D4
-    ENTITY_MOVE_AND_ANIMATE 160, 0, 2
-    ENTITY_MOVE_AND_ANIMATE 96, 6, 2
+    ENTITY_WALK 160, 0, 2
+    ENTITY_WALK 96, 6, 2
     SET_ASSET_ROTATION NORTHEAST
     SET_OTHER_EXECUTOR_PTR 4, .executor_7_149DEC
     SET_WAIT_FRAMES 10
@@ -1160,7 +1160,7 @@ executor_white_background_1:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B4E8
-    ENTITY_MOVE_AND_ANIMATE 208, 6, 2
+    ENTITY_WALK 208, 6, 2
     SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 10
     SET_OTHER_EXECUTOR_PTR 0, .executor_6_149DC4
@@ -1173,32 +1173,32 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .idle
 
 .executor_1_14B4A0:
-    ENTITY_MOVE_AND_ANIMATE 16, 0, 2
+    ENTITY_WALK 16, 0, 2
     SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B4FC
-    ENTITY_MOVE_AND_ANIMATE 32, 0, 2
+    ENTITY_WALK 32, 0, 2
     EXECUTE_SUBROUTINE .idle
 
 .executor_0_14B4BC:
-    ENTITY_MOVE_AND_ANIMATE 176, 2, 2
+    ENTITY_WALK 176, 2, 2
     EXECUTE_SUBROUTINE .idle
 
 .executor_0_14B4C8:
-    ENTITY_MOVE_AND_ANIMATE 160, 2, 2
+    ENTITY_WALK 160, 2, 2
     EXECUTE_SUBROUTINE .idle
 
 .executor_0_14B4D4:
-    ENTITY_MOVE_AND_ANIMATE 176, 0, 2
-    ENTITY_MOVE_AND_ANIMATE 64, 6, 2
+    ENTITY_WALK 176, 0, 2
+    ENTITY_WALK 64, 6, 2
     EXECUTE_SUBROUTINE .idle
 
 .executor_0_14B4E8:
-    ENTITY_MOVE_AND_ANIMATE 32, 7, 2
-    ENTITY_MOVE_AND_ANIMATE 176, 6, 2
+    ENTITY_WALK 32, 7, 2
+    ENTITY_WALK 176, 6, 2
     EXECUTE_SUBROUTINE .idle
 
 .executor_0_14B4FC:
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
-    ENTITY_MOVE_AND_ANIMATE 32, 0, 2
+    ENTITY_WALK 32, 0, 2
     SET_U8_VALUE 7, gHour
     DEACTIVATE_EXECUTOR 1
     DEACTIVATE_EXECUTOR 4
@@ -1219,7 +1219,7 @@ executor_white_background_1:
     SET_COORDINATES 176, 0, -192
     SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 1
-    ENTITY_MOVE_AND_ANIMATE 96, 0, 2
+    ENTITY_WALK 96, 0, 2
     EXECUTE_SUBROUTINE .idle
 
 ; 0x14B580
@@ -1284,7 +1284,7 @@ executor_white_background_1:
 .executor_1_14B688:
     EXECUTE_SUBROUTINE .setup_mayor
     SET_COORDINATES 176, 0, -152
-    ENTITY_MOVE_AND_ANIMATE 96, 0, 2
+    ENTITY_WALK 96, 0, 2
     SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 10
     SET_OTHER_EXECUTOR_PTR 0, .executor_6_149DFC
@@ -1292,16 +1292,16 @@ executor_white_background_1:
     INIT_MESSAGE_BOX_TYPE1 0, FARM_VISITS_TEXT_INDEX, 42
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_MOVE_AND_ANIMATE 16, 2, 2
+    ENTITY_WALK 16, 2, 2
     SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B6E4
-    ENTITY_MOVE_AND_ANIMATE 156, 2, 2
-    ENTITY_MOVE_AND_ANIMATE 48, 3, 2
+    ENTITY_WALK 156, 2, 2
+    ENTITY_WALK 48, 3, 2
     EXECUTE_SUBROUTINE .idle
 
 .executor_0_14B6E4:
-    ENTITY_MOVE_AND_ANIMATE 24, 1, 2
-    ENTITY_MOVE_AND_ANIMATE 128, 2, 2
-    ENTITY_MOVE_AND_ANIMATE 80, 3, 2
+    ENTITY_WALK 24, 1, 2
+    ENTITY_WALK 128, 2, 2
+    ENTITY_WALK 80, 3, 2
     SET_WAIT_FRAMES 10
     SET_OTHER_EXECUTOR_PTR 1, .executor_6_149DC4
     SET_WAIT_FRAMES 10
@@ -1347,7 +1347,7 @@ executor_white_background_1:
     SPAWN_EXECUTOR 1, .executor_shipper
     EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -544, 0, 144
-    ENTITY_MOVE_AND_ANIMATE 64, 6, 2
+    ENTITY_WALK 64, 6, 2
     INIT_MESSAGE_BOX_TYPE1 0, FARM_VISITS_TEXT_INDEX, 44
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
@@ -1358,8 +1358,8 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .idle
 
 .executor_0_14B808:
-    ENTITY_MOVE_AND_ANIMATE 32, 7, 2
-    ENTITY_MOVE_AND_ANIMATE 16, 6, 2
+    ENTITY_WALK 32, 7, 2
+    ENTITY_WALK 16, 6, 2
     SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 10
     SET_OTHER_EXECUTOR_PTR 1, .executor_9_149DD4
@@ -1400,6 +1400,6 @@ executor_white_background_1:
     EXECUTE_SUBROUTINE .idle
 
 .executor_1_14B8D0:
-    ENTITY_MOVE_AND_ANIMATE 112, 2, 2
+    ENTITY_WALK 112, 2, 2
     SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B028
     EXECUTE_SUBROUTINE .end_cutscene

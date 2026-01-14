@@ -211,9 +211,9 @@ void namingScreenCallback(void) {
             setSpriteColor(0x84, 0, 0, 0, 0);
             setSpriteColor(LANDSCAPE_BACKGROUND, 0, 0, 0, 0);
 
-            updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-            updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-            updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+            updateSpriteRGBA(0x80, 255, 255, 255, 255, 8);
+            updateSpriteRGBA(0x84, 255, 255, 255, 255, 8);
+            updateSpriteRGBA(LANDSCAPE_BACKGROUND, 255, 255, 255, 255, 8);
 
             namingScreenContext.dialogueIndex = 10;
             namingScreenContext.flags &= ~NAMING_SCREEN_SCREEN_STATE_MASK;
@@ -228,7 +228,7 @@ void namingScreenCallback(void) {
             setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
             initializeMessageBox(3, NAMING_SCREEN_TEXT_INDEX, 13, MESSAGE_BOX_MODE_NO_INPUT);
             setMessageBoxRGBA(3, 0, 0, 0, 0);
-            setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+            setMessageBoxRGBAWithTransition(3, 255, 255, 255, 255, 8);
             
             initializeEmptyMessageBox(4, (u8*)MESSAGE_BOX_4_TEXT_BUFFER);
             setMessageBoxViewSpacePosition(4, 4.0f, -10.0f, 30.0f);
@@ -239,7 +239,7 @@ void namingScreenCallback(void) {
             setMessageBoxSpriteIndices(4, 0xFF, 0xFF, 0xFF);
             initializeMessageBox(4, NAMING_SCREEN_TEXT_INDEX, temp2 + 14, MESSAGE_BOX_MODE_NO_INPUT);
             setMessageBoxRGBA(4, 0, 0, 0, 0);
-            setMessageBoxRGBAWithTransition(4, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+            setMessageBoxRGBAWithTransition(4, 255, 255, 255, 255, 8);
             
             namingScreenContext.flags &= ~NAMING_SCREEN_GOTO_SEASON_CONFIRM;
 
@@ -456,7 +456,7 @@ void loadNameSelectionSprites(void) {
 
     s32 i = 0;
 
-    dmaSprite(0x80, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u8*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x80, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u8*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     
     dmaSprite(0x81, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     dmaSprite(0x82, &_namingScreen2TextureSegmentRomStart, &_namingScreen2TextureSegmentRomEnd, &_namingScreen2AssetsIndexSegmentRomStart, &_namingScreen2AssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
@@ -475,7 +475,7 @@ void loadNameSelectionSprites(void) {
     
     dmaSprite(LANDSCAPE_BACKGROUND, &_namingScreenBackgroundTextureSegmentRomStart, &_namingScreenBackgroundTextureSegmentRomEnd, &_namingScreenBackgroundAssetsIndexSegmentRomStart, &_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     
-    dmaSprite(0x91, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u8*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x91, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u8*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     
     setBilinearFiltering(0x8F, TRUE);
     setBilinearFiltering(LANDSCAPE_BACKGROUND, TRUE);
@@ -537,24 +537,24 @@ void loadNameSelectionSprites(void) {
     setSpriteColor(0x8E, 0, 0, 0, 0);
     setSpriteColor(0x91, 0, 0, 0, 0);
     
-    updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x81, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x82, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x8F, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x87, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x88, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x89, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x8A, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x8B, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x8C, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x8D, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x8E, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x91, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x80, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x81, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x82, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x8F, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(LANDSCAPE_BACKGROUND, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x83, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x84, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x85, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x86, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x87, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x88, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x89, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x8A, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x8B, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x8C, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x8D, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x8E, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x91, 255, 255, 255, 255, 8);
 
     namingScreenContext.gridY = 0;
     namingScreenContext.gridX = 0;
@@ -570,12 +570,12 @@ void loadNameSelectionSprites(void) {
         
         if (namingScreenContext.name[i] != 0xFF) {
             
-            setSpriteColor(NAMING_SCREEN_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0xFF);
+            setSpriteColor(NAMING_SCREEN_SPRITES_BASE + i, 255, 255, 255, 255);
             resetAnimationState(NAMING_SCREEN_SPRITES_BASE + i);
 
             if (i != 5) {
                
-                setSpriteColor(0x8A + i, 0xFF, 0xFF, 0xFF, 0xFF);
+                setSpriteColor(0x8A + i, 255, 255, 255, 255);
                 resetAnimationState(0x8A + i);
                 
             } 
@@ -600,7 +600,7 @@ void loadNameSelectionSprites(void) {
     setMessageBoxSpriteIndices(3, 0xFF, 0xFF, 0xFF);
     initializeMessageBox(3, NAMING_SCREEN_TEXT_INDEX, 13, MESSAGE_BOX_MODE_NO_INPUT);
     setMessageBoxRGBA(3, 0, 0, 0, 0);
-    setMessageBoxRGBAWithTransition(3, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    setMessageBoxRGBAWithTransition(3, 255, 255, 255, 255, 8);
     
 }
 
@@ -1245,7 +1245,7 @@ void handleNamingGridInput(void) {
 
 void loadSeasonSelectionSprites(void) {
     
-    dmaSprite(0x80, &_dialogueIconsTextureSegmentRomStart, &_dialogueIconsTextureSegmentRomEnd, &_dialogueIconsAssetsIndexSegmentRomStart, &_dialogueIconsAssetsIndexSegmentRomEnd, NULL, NULL, DIALOGUE_ICON_TEXTURE_BUFFER, 0, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    dmaSprite(0x80, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, DIALOGUE_ICON_TEXTURE_BUFFER, 0, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     
     // season names
     dmaSprite(0x83, &_calendarTextureSegmentRomStart, &_calendarTextureSegmentRomEnd, &_calendarAssetsIndexSegmentRomStart, &_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)NAMING_SCREEN_SEASONS_TEXTURE_BUFFER, NULL, (u16*)NAMING_SCREEN_SEASONS_PALETTE_BUFFER, (AnimationFrameMetadata*)NAMING_SCREEN_SEASONS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)NAMING_SCREEN_SEASONS_TEXTURE_TO_PALETTE_BUFFER, NULL, 0, FALSE);
@@ -1301,16 +1301,16 @@ void loadSeasonSelectionSprites(void) {
     setSpriteColor(0x8C, 0, 0, 0, 0);
     setSpriteColor(LANDSCAPE_BACKGROUND, 0, 0, 0, 0);
     
-    updateSpriteRGBA(0x80, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x83, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x84, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x85, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x86, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x89, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x8A, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x8B, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(0x8C, 0xFF, 0xFF, 0xFF, 0xFF, 8);
-    updateSpriteRGBA(LANDSCAPE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0xFF, 8);
+    updateSpriteRGBA(0x80, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x83, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x84, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x85, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x86, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x89, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x8A, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x8B, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(0x8C, 255, 255, 255, 255, 8);
+    updateSpriteRGBA(LANDSCAPE_BACKGROUND, 255, 255, 255, 255, 8);
     
     namingScreenContext.selectedSeason = 0;
     namingScreenContext.dialogueIndex = 9;

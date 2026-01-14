@@ -21,6 +21,9 @@ BIN_FILES=$(foreach dir, $(BIN_DIRS), $(wildcard $(dir)/*.bin))
 LD_MAP := $(BASENAME).map
 
 # Tools
+
+PYTHON ?= python3
+
 KMC_PATH := $(TOOLS_DIR)/gcc-2.7.2/
 CROSS := mips-linux-gnu-
 
@@ -113,11 +116,14 @@ endif
 # Create all output directories upfront
 $(shell mkdir -p $(sort $(dir $(OBJECTS))))
 
+# Cutscenes
+# DSL source in src/bytecode/cutscenes/, ASM output to assets/cutscenes/
+
 CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
 CUTSCENE_ASSETS_DIR := assets/cutscenes
-CUTSCENE_BUILD_DIR := $(BUILD_DIR)/bin/cutscenes
+CUTSCENE_BUILD_DIR := $(BUILD_DIR)/assets/cutscenes
 
-CUTSCENE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_cutscene_transpiler.py
+CUTSCENE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.transpiler
 
 CUTSCENE_OBJECTS := \
 	$(CUTSCENE_BUILD_DIR)/farmBusiness.bin.o \
@@ -148,14 +154,11 @@ CUTSCENE_OBJECTS := \
 	$(CUTSCENE_BUILD_DIR)/demos.bin.o \
 	$(CUTSCENE_BUILD_DIR)/howToPlay.bin.o
 
-# Dialogues
-# DSL source in src/bytecode/dialogues/, ASM output to assets/dialogues/
-
 DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
 DIALOGUE_ASSETS_DIR := assets/dialogues
-DIALOGUE_BUILD_DIR := $(BUILD_DIR)/bin/dialogues/bytecode
+DIALOGUE_BUILD_DIR := $(BUILD_DIR)/assets/dialogues/bytecode
 
-DIALOGUE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_dialogue_transpiler.py
+DIALOGUE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.dialogues.transpiler
 
 DIALOGUE_OBJECTS := \
 	$(DIALOGUE_BUILD_DIR)/text1Dialogue.bin.o \
@@ -299,11 +302,11 @@ DIALOGUE_OBJECTS := \
 	$(DIALOGUE_BUILD_DIR)/additionalNpcs2Dialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/additionalNpcs2DialogueIndex.bin.o
 
-TEXT_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_text_transpiler.py
-TEXT_EXTRACTOR := python3 $(TOOLS_DIR)/assets/hm64_text_utilities.py
+TEXT_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.text.transpiler
+TEXT_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.text.extractor
 
 TEXT_ASSETS_DIR := assets/text
-TEXT_BUILD_DIR := $(BUILD_DIR)/bin/text
+TEXT_BUILD_DIR := $(BUILD_DIR)/assets/text
 
 TEXT_BANKS := text1 \
 	library \
@@ -402,11 +405,48 @@ all: $(TARGET)
 # ==============================================================================
 
 # Extract all assets
-extract: extract-texts
-	$(V)python3 -m splat split ./config/us/splat.us.yaml --modes code animationScripts bin hm64map seq
+extract: extract-texts extract-sprites extract-fonts
+	$(V)$(PYTHON) -m splat split ./config/us/splat.us.yaml --modes code animationScripts bin hm64map seq
 
 extract-texts:
-	$(TEXT_EXTRACTOR) extract_all
+	$(TEXT_EXTRACTOR) extract_all --modding
+
+# ==============================================================================
+# SPRITES
+# ==============================================================================
+
+SPRITE_ASSETS_DIR := assets/sprites
+SPRITE_BUILD_DIR := $(BUILD_DIR)/assets/sprites
+SPRITE_ASSEMBLER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.sprites.assembler
+SPRITE_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.sprites.extractor
+
+extract-sprites:
+# don't delete spec files
+	@find assets/sprites -type f ! -name "*.spec" -delete 2>/dev/null || true
+# clean up empty directories
+	@find assets/sprites -type d -empty -delete 2>/dev/null || true
+	$(V)$(SPRITE_EXTRACTOR) extract_all    
+
+# ==============================================================================
+# FONTS
+# ==============================================================================
+
+FONT_ASSETS_DIR := assets/font
+FONT_BUILD_DIR := $(BUILD_DIR)/assets/font
+FONT_ASSEMBLER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.assembler
+FONT_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.extractor
+FONT_PNG_EXPORTER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.png_exporter
+
+extract-fonts:
+	@rm -f $(FONT_ASSETS_DIR)/*.ci2 $(FONT_ASSETS_DIR)/*.pal 2>/dev/null || true
+	$(V)$(FONT_EXTRACTOR)
+
+assemble-fonts:
+	$(V)$(FONT_ASSEMBLER)
+
+extract-font:
+	$(V)$(FONT_PNG_EXPORTER) extract_all
+	$(V)$(FONT_PNG_EXPORTER) extract_all_palettes
 
 # ==============================================================================
 # TEXTS
@@ -417,7 +457,7 @@ extract-texts:
 define TEXT_BANK_RULE
 $(TEXT_ASSETS_DIR)/$(1)Text.s: $$(wildcard $(TEXT_ASSETS_DIR)/$(1)/*.txt)
 	@echo "Transpiling text bank: $(1)"
-	$(V)$(TEXT_TRANSPILER) $(TEXT_ASSETS_DIR)/$(1) -n $(1)Text -o $(TEXT_ASSETS_DIR)/
+	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$(1) -n $(1)Text -o $(TEXT_ASSETS_DIR)/ --modding
 
 # Mark the index as depending on the main file
 $(TEXT_ASSETS_DIR)/$(1)TextIndex.s: $(TEXT_ASSETS_DIR)/$(1)Text.s
@@ -439,15 +479,10 @@ $(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
 # CUTSCENES
 # ==============================================================================
 
-CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
-CUTSCENE_ASSETS_DIR := assets/cutscenes
-CUTSCENE_BUILD_DIR := $(BUILD_DIR)/bin/cutscenes
-
-CUTSCENE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_cutscene_transpiler.py
-
 $(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
 	@mkdir -p $(CUTSCENE_ASSETS_DIR)
 	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
+
 
 $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
 	$(MKDIR)
@@ -456,12 +491,6 @@ $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
 # ==============================================================================
 # DIALOGUES
 # ==============================================================================
-
-DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
-DIALOGUE_ASSETS_DIR := assets/dialogues
-DIALOGUE_BUILD_DIR := $(BUILD_DIR)/bin/dialogues/bytecode
-
-DIALOGUE_TRANSPILER := python3 $(TOOLS_DIR)/assets/hm64_dialogue_transpiler.py
 
 $(DIALOGUE_ASSETS_DIR)/%.s: $(DIALOGUE_SRC_DIR)/%.dialogue
 	@mkdir -p $(DIALOGUE_ASSETS_DIR)
@@ -581,30 +610,49 @@ $(BUILD_DIR)/makerom/entry.o: makerom/entry.s
 	$(MKDIR)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
-# Asset building
 
-# Transpile cutscene DSL to assembly
-$(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
-	@mkdir -p $(CUTSCENE_ASSETS_DIR)
-	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
 
-# Cutscenes: assemble from assets/cutscenes/
-$(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
-# Transpile dialogue DSL to assembly
-$(DIALOGUE_ASSETS_DIR)/%.s: $(DIALOGUE_SRC_DIR)/%.dialogue
-	@mkdir -p $(DIALOGUE_ASSETS_DIR)
-	$(V)$(DIALOGUE_TRANSPILER) transpile $< -n $* -o $(DIALOGUE_ASSETS_DIR)/
+# Sprites: assemble from assets and compile to .bin.o
+# Each sprite directory produces 3 bin files: <label>Texture.bin, <label>AssetsIndex.bin, <label>SpritesheetIndex.bin
 
-# Mark dependency
-$(DIALOGUE_ASSETS_DIR)/%Index.s: $(DIALOGUE_ASSETS_DIR)/%.s
+# Secondary files are created by the Texture.bin rule
+$(SPRITE_BUILD_DIR)/%AssetsIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
 	@:
 
-$(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_ASSETS_DIR)/%.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
+$(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
+	@:
+
+# Compile sprite .bin to .bin.o
+$(SPRITE_BUILD_DIR)/%.bin.o: $(SPRITE_BUILD_DIR)/%.bin
+	$(V)$(LD) -r -b binary -o $@ $<
+
+# Only the Texture.bin rule needs SECONDEXPANSION for $(dir $*) in prerequisite
+.SECONDEXPANSION:
+
+$(SPRITE_BUILD_DIR)/%Texture.bin: $(SPRITE_ASSETS_DIR)/$$(dir $$*)manifest.json
+	@mkdir -p $(dir $@)
+	$(V)$(SPRITE_ASSEMBLER) assemble $(SPRITE_ASSETS_DIR)/$(dir $*) $(dir $@)
+
+# Font assets: assemble from assets/font/ to build/assets/font/
+$(FONT_BUILD_DIR)/fontTexture.bin: $(FONT_ASSETS_DIR)/fontTexture.ci2 $(FONT_ASSETS_DIR)/fontPalette1.pal $(FONT_ASSETS_DIR)/fontPalette2.pal $(FONT_ASSETS_DIR)/fontPalette3.pal
+	@mkdir -p $(dir $@)
+	$(V)$(FONT_ASSEMBLER) --assets-dir $(FONT_ASSETS_DIR) --output-dir $(FONT_BUILD_DIR)
+
+$(FONT_BUILD_DIR)/fontPalette1.bin: $(FONT_BUILD_DIR)/fontTexture.bin
+	@:
+
+$(FONT_BUILD_DIR)/fontPalette2.bin: $(FONT_BUILD_DIR)/fontTexture.bin
+	@:
+
+$(FONT_BUILD_DIR)/fontPalette3.bin: $(FONT_BUILD_DIR)/fontTexture.bin
+	@:
+
+$(FONT_BUILD_DIR)/%.bin.o: $(FONT_BUILD_DIR)/%.bin
+	$(V)$(LD) -r -b binary -o $@ $<
+
+# Rest of code and extracted binary files
+
 $(BUILD_DIR)/%.s.o: %.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
@@ -957,7 +1005,7 @@ $(BASENAME).elf: $(OBJECTS) $(LD_SCRIPT)
 
 $(TARGET): $(BASENAME).elf
 	$(V)$(OBJCOPY) -O binary --gap-fill=0xFF $< $@
-	$(V)python3 $(TOOLS_DIR)/build/makemask.py $@ --pad
+	$(V)$(PYTHON) $(TOOLS_DIR)/build/makemask.py $@ --pad
 
 # ==============================================================================
 # CLEAN
@@ -992,6 +1040,7 @@ DIALOGUE_ASM := $(patsubst $(DIALOGUE_BUILD_DIR)/%.bin.o,$(DIALOGUE_ASSETS_DIR)/
 TEXT_ASM := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
 
 # Prevent Make from deleting intermediate .s files
-.SECONDARY: $(CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
+.SECONDARY:
+.PRECIOUS: %.bin
 
 MAKEFLAGS += --no-builtin-rules
