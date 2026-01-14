@@ -54,7 +54,7 @@ void startGame(void) {
     setSpawnPoint(HOUSE_SPAWN_POINT_3);
 
     // set spawnable/foragable items
-    func_8004DFF8();
+    // func_8004DFF8();
     func_800598E0();
 
     setDailyEventBit(0x53);
@@ -70,68 +70,68 @@ void startGame(void) {
 
 // unused function: probably for sandboxing during development or demos
 // not in JP version
- void func_8004DFF8(void) {
+//  void func_8004DFF8(void) {
     
-     setLifeEventBit(HAVE_HORSE);
-     setLifeEventBit(HAVE_KITCHEN);
-     setLifeEventBit(HAVE_BATHROOM);
-     setLifeEventBit(HAVE_STAIRS);
-     setLifeEventBit(HAVE_GREENHOUSE);
-     setLifeEventBit(HAVE_LOG_TERRACE);
-     setLifeEventBit(HAVE_BABY_BED);
-     setLifeEventBit(HAVE_CABINET);
-     setLifeEventBit(HAVE_TABLECLOTH);
-     setLifeEventBit(MAYOR_TOUR);
-     setLifeEventBit(PAINTING_FROM_MARIA);
-     setLifeEventBit(BASIL_IN_TOWN);
-     setLifeEventBit(CLIFF_ARRIVED);
-     setLifeEventBit(BRIDGE_COMPLETED);
-     setLifeEventBit(0x46);
-     setLifeEventBit(0x47);
-     setLifeEventBit(0x58);
-     setLifeEventBit(0x59);
-     setLifeEventBit(0x5A);
-     setLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE);
-     setLifeEventBit(0x5C);
-     setLifeEventBit(0x5D);
+//      setLifeEventBit(HAVE_HORSE);
+//      setLifeEventBit(HAVE_KITCHEN);
+//      setLifeEventBit(HAVE_BATHROOM);
+//      setLifeEventBit(HAVE_STAIRS);
+//      setLifeEventBit(HAVE_GREENHOUSE);
+//      setLifeEventBit(HAVE_LOG_TERRACE);
+//      setLifeEventBit(HAVE_BABY_BED);
+//      setLifeEventBit(HAVE_CABINET);
+//      setLifeEventBit(HAVE_TABLECLOTH);
+//      setLifeEventBit(MAYOR_TOUR);
+//      setLifeEventBit(PAINTING_FROM_MARIA);
+//      setLifeEventBit(BASIL_IN_TOWN);
+//      setLifeEventBit(CLIFF_ARRIVED);
+//      setLifeEventBit(BRIDGE_COMPLETED);
+//      setLifeEventBit(0x46);
+//      setLifeEventBit(0x47);
+//      setLifeEventBit(0x58);
+//      setLifeEventBit(0x59);
+//      setLifeEventBit(0x5A);
+//      setLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE);
+//      setLifeEventBit(0x5C);
+//      setLifeEventBit(0x5D);
     
-     setSpecialDialogueBit(0x25);
+//      setSpecialDialogueBit(0x25);
     
-     gPlayer.belongingsSlots[0] = TOMATO;
-     gPlayer.belongingsSlots[1] = CORN;
-     gPlayer.belongingsSlots[2] = STRAWBERRY;
-     gPlayer.belongingsSlots[3] = POTATO;
-     gPlayer.belongingsSlots[4] = CABBAGE;
-     gPlayer.belongingsSlots[5] = GOLDEN_MILK;
-     gPlayer.belongingsSlots[6] = WOOL;
-     gPlayer.belongingsSlots[7] = HIGH_QUALITY_WOOL;
+//      gPlayer.belongingsSlots[0] = TOMATO;
+//      gPlayer.belongingsSlots[1] = CORN;
+//      gPlayer.belongingsSlots[2] = STRAWBERRY;
+//      gPlayer.belongingsSlots[3] = POTATO;
+//      gPlayer.belongingsSlots[4] = CABBAGE;
+//      gPlayer.belongingsSlots[5] = GOLDEN_MILK;
+//      gPlayer.belongingsSlots[6] = WOOL;
+//      gPlayer.belongingsSlots[7] = HIGH_QUALITY_WOOL;
 
-     gPlayer.heldItem = BLUE_FEATHER;
-     initializePlayerHeldItem();
-     loadActiveItemEntities();
+//      gPlayer.heldItem = BLUE_FEATHER;
+//      initializePlayerHeldItem();
+//      loadActiveItemEntities();
     
-     initializeHorse();
+//      initializeHorse();
     
-     horseInfo.grown = TRUE;
+//      horseInfo.grown = TRUE;
 
-     setLifeEventBit(MARRIED);
-     setLifeEventBit(WIFE_PREGNANT);
+//      setLifeEventBit(MARRIED);
+//      setLifeEventBit(WIFE_PREGNANT);
     
-     gWife = POPURI;
+//      gWife = POPURI;
     
-     npcAffection[POPURI] = MAX_AFFECTION;
+//      npcAffection[POPURI] = MAX_AFFECTION;
     
-     gSeason = SPRING;
-     gDayOfMonth = 1;
+//      gSeason = SPRING;
+//      gDayOfMonth = 1;
     
-     dogInfo.affection = MAX_AFFECTION;
+//      dogInfo.affection = MAX_AFFECTION;
     
-     gHour = 8;
+//      gHour = 8;
     
-     // max recipes
-     recipesBits[0] = -1;
+//      // max recipes
+//      recipesBits[0] = -1;
     
-     // unused game variable
-     D_8016FB00 = 7;
+//      // unused game variable
+//      D_8016FB00 = 7;
     
- }
+//  }
