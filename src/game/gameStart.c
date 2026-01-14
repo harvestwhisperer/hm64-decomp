@@ -54,7 +54,6 @@ void startGame(void) {
     setSpawnPoint(HOUSE_SPAWN_POINT_3);
 
     // set spawnable/foragable items
-//    func_8004DFF8();
     func_800598E0();
 
     setDailyEventBit(0x53);
@@ -110,17 +109,17 @@ void startGame(void) {
     
 //     npcAffection[POPURI] = MAX_AFFECTION;
     
-//     gSeason = SPRING;
-//     gDayOfMonth = 1;
+//     gSeason = WINTER;
+//     gDayOfMonth = 18;
     
 //     dogInfo.affection = MAX_AFFECTION;
     
 //     gHour = 8;
     
-     // max recipes
+//     // max recipes
 //     recipesBits[0] = -1;
     
-     // unused game variable
+//     // unused game variable
 //     D_8016FB00 = 7;
     
- //}
+// }
