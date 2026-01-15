@@ -42,6 +42,7 @@ u8 gAlcoholTolerance;
 u8 gMaximumStamina;
 u8 gPlayerBirthdaySeason;
 u8 gToolboxSlots[8 * 4];
+bool heldToolChange = FALSE;
 
 
 // data
@@ -576,6 +577,35 @@ u8 storeTool(u8 tool) {
 
 }
 
+inline u8 takeToolFromToolsack(void) {
+    u8 i;
+    u8 writeIdx = 0;
+    u8 nextTool = 0xFF;
+    u8 toolToStore = gPlayer.currentTool;
+    u8 found = 0xFF;
+
+    for (i = 0; i < MAX_TOOL_SLOTS_RUCKSACK && found == 0xFF; i++) {
+        if (gPlayer.toolSlots[i] != 0) {
+            nextTool = gPlayer.toolSlots[i];
+            gPlayer.toolSlots[i] = 0;
+            found = 1;
+        }
+    }
+    if(found == 1){
+        for (i = 0; i < MAX_TOOL_SLOTS_RUCKSACK; i++) {
+            if (gPlayer.toolSlots[i] != 0) {
+                gPlayer.toolSlots[writeIdx] = gPlayer.toolSlots[i];
+                if (writeIdx != i) gPlayer.toolSlots[i] = 0;
+                writeIdx++;
+            }
+        }
+        gPlayer.currentTool = nextTool;
+    }
+    return found;
+}
+
+
+
 //INCLUDE_ASM("asm/nonmatchings/game/player", removeTool);
 
 u8 removeTool(u8 tool) {
@@ -999,10 +1029,41 @@ void handlePlayerInput(void) {
     }
 
     if (!set) {
+        // show text for item being held
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
+                if (gPlayer.heldItem != 0) {
+                    set = TRUE;
+                    showHeldItemText(gPlayer.heldItem);
+                    temp = 0xFF;
+                }
+            }
+            if(checkButtonReleased(CONTROLLER_1, BUTTON_Z) && heldToolChange) {
+                heldToolChange = FALSE;
+            }
+        }
+    }
+
+    if (!set) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
+            if (checkButtonHeld(CONTROLLER_1, BUTTON_Z) && checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+                if (takeToolFromToolsack() != 0xFF) {
+                    set = TRUE;
+                    temp = 0xFF;
+                    heldToolChange = TRUE;
+                    processToolUseState();
+                    // TODO: Add animation
+                    playSfx(2);
+                }
+            }
+        }
+    }
+
+    if (!set) {
 
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
         
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_B) && !heldToolChange) {
                 
                 if (gPlayer.heldItem == 0 && gPlayer.currentTool) {
                         
@@ -1034,19 +1095,6 @@ void handlePlayerInput(void) {
         
         }
 
-    }
-
-    if (!set) {
-        // show text for item being held
-        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
-                if (gPlayer.heldItem != 0) {
-                    set = TRUE;
-                    showHeldItemText(gPlayer.heldItem);
-                    temp = 0xFF;
-                }
-            }
-        }
     }
 
     if (!set) {
