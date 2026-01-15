@@ -45,7 +45,6 @@ u8 gToolboxSlots[8 * 4];
 
 bool heldItemChange = FALSE;
 
-
 // data
 // indexed by gSpawnPointIndex
 Vec3f playerDefaultStartingCoordinates[] = {
@@ -534,21 +533,32 @@ inline u8 addItemToRucksack(u8 item) {
     
 }
 
-inline u8 takeItemFromRucksack() {
+inline u8 takeItemFromRucksack(void) {
     u8 i;
-    u8 j;
-    u8 nextItem;
+    u8 writeIdx = 0;
+    u8 nextItem = 0xFF;
+    u8 itemToStore = gPlayer.heldItem;
     u8 found = 0xFF;
 
     for (i = 0; i < MAX_RUCKSACK_SLOTS && found == 0xFF; i++) {
         if (gPlayer.belongingsSlots[i] != 0) {
             nextItem = gPlayer.belongingsSlots[i];
+            gPlayer.belongingsSlots[i] = 0;
             found = 1;
-            for (j = i; j < MAX_RUCKSACK_SLOTS - 1; j++) {
-                gPlayer.belongingsSlots[j] = gPlayer.belongingsSlots[j + 1];
-            }
-            gPlayer.heldItem = nextItem;
         }
+    }
+    if (found == 1) {
+        for (i = 0; i < MAX_RUCKSACK_SLOTS; i++) {
+            if (gPlayer.belongingsSlots[i] != 0) {
+                gPlayer.belongingsSlots[writeIdx] = gPlayer.belongingsSlots[i];
+                if (writeIdx != i) {
+                    gPlayer.belongingsSlots[i] = 0;
+                }
+                writeIdx++;
+            }
+        }
+        gPlayer.belongingsSlots[writeIdx] = itemToStore;
+        gPlayer.heldItem = nextItem;
     }
     return found;
 }
