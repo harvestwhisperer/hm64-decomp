@@ -1097,7 +1097,7 @@ void handlePlayerInput(void) {
 
     if(!set) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
-            if (checkButtonHeld(CONTROLLER_1, BUTTON_Z) && checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
+            if (checkButtonHeld(CONTROLLER_1, BUTTON_Z) && checkButtonPressed(CONTROLLER_1, BUTTON_C_UP) && !checkDailyEventBit(18)) {
                 if (takeItemFromRucksack() != 0xFF) {
                     set = TRUE;
                     temp = 0xFF;
