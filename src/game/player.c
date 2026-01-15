@@ -557,7 +557,6 @@ inline u8 takeItemFromRucksack(void) {
                 writeIdx++;
             }
         }
-        gPlayer.belongingsSlots[writeIdx] = itemToStore;
         gPlayer.heldItem = nextItem;
     }
     return found;
