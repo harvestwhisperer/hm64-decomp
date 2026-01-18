@@ -43,6 +43,10 @@ u8 gMaximumStamina;
 u8 gPlayerBirthdaySeason;
 u8 gToolboxSlots[8 * 4];
 
+// wheel status for tools and items
+u8 heldToolChange;
+u8 heldItemChange;
+
 
 // data
 // indexed by gSpawnPointIndex
@@ -389,6 +393,7 @@ void handleUnusedAnimation30(void);
 void handleWhistleForDogAnimation(void);
 void handleWhistleForHorseAnimation(void);
 void handleDrinkingAnimation(void);
+void handleTakeItemFromRucksackAnimation(void);
 void handlePutItemInRucksackAnimation(void);
 void handleFishingRodAnimation(void);
 void handleUnusedAnimation24(void);
@@ -532,6 +537,35 @@ inline u8 addItemToRucksack(u8 item) {
     
 }
 
+inline u8 takeItemFromRucksack(void) {
+    u8 i;
+    u8 writeIdx = 0;
+    u8 nextItem = 0xFF;
+    u8 itemToStore = gPlayer.heldItem;
+    u8 found = 0xFF;
+
+    for (i = 0; i < MAX_RUCKSACK_SLOTS && found == 0xFF; i++) {
+        if (gPlayer.belongingsSlots[i] != 0) {
+            nextItem = gPlayer.belongingsSlots[i];
+            gPlayer.belongingsSlots[i] = 0;
+            found = 1;
+        }
+    }
+    if (found == 1) {
+        for (i = 0; i < MAX_RUCKSACK_SLOTS; i++) {
+            if (gPlayer.belongingsSlots[i] != 0) {
+                gPlayer.belongingsSlots[writeIdx] = gPlayer.belongingsSlots[i];
+                if (writeIdx != i) {
+                    gPlayer.belongingsSlots[i] = 0;
+                }
+                writeIdx++;
+            }
+        }
+        gPlayer.heldItem = nextItem;
+    }
+    return found;
+}
+
 //INCLUDE_ASM("asm/nonmatchings/game/player", storeTool);
 
 // store tool
@@ -601,6 +635,33 @@ u8 removeTool(u8 tool) {
 
     return found;
 
+}
+
+inline u8 takeToolFromToolsack(void) {
+    u8 i;
+    u8 writeIdx = 0;
+    u8 nextTool = 0xFF;
+    u8 toolToStore = gPlayer.currentTool;
+    u8 found = 0xFF;
+
+    for (i = 0; i < MAX_TOOL_SLOTS_RUCKSACK && found == 0xFF; i++) {
+        if (gPlayer.toolSlots[i] != 0) {
+            nextTool = gPlayer.toolSlots[i];
+            gPlayer.toolSlots[i] = 0;
+            found = 1;
+        }
+    }
+    if(found == 1){
+        for (i = 0; i < MAX_TOOL_SLOTS_RUCKSACK; i++) {
+            if (gPlayer.toolSlots[i] != 0) {
+                gPlayer.toolSlots[writeIdx] = gPlayer.toolSlots[i];
+                if (writeIdx != i) gPlayer.toolSlots[i] = 0;
+                writeIdx++;
+            }
+        }
+        gPlayer.currentTool = nextTool;
+    }
+    return found;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", acquireKeyItem);
@@ -933,18 +994,24 @@ void handlePlayerInput(void) {
 
     if (!set) {
         
-        // jump over logs
-        if (gBaseMapIndex == FARM && gPlayer.groundObjectIndex == LOG) {
+        // jump over logs, rocks and weeds in farm and greenhouse
+        bool jumpableObject = (gPlayer.groundObjectIndex == LOG || gPlayer.groundObjectIndex == SMALL_ROCK || gPlayer.groundObjectIndex == WEED);
+        bool jumpableMap = (gBaseMapIndex == FARM || gBaseMapIndex == GREENHOUSE);
 
-            if ((getAnalogStickMagnitude(CONTROLLER_1) / 1.2f) > 4.6) {
-                
-                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
+        if (jumpableMap && jumpableObject) {
+            u8 dir = entities[ENTITY_PLAYER].direction;
+            u8 rotation = mapControllers[MAIN_MAP_INDEX].rotation;
+            bool isRotating = mapControllers[MAIN_MAP_INDEX].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE);
+            bool isViewIsometric = !isRotating && (rotation % 2 != 0);
+            bool isDirCardinal = (dir % 2 != 0);
+            bool validDirection = (isViewIsometric == isDirCardinal);
 
-                    vec3 = projectEntityPosition(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
-
+            if ((getAnalogStickMagnitude(CONTROLLER_1) > 5.52f) && validDirection) {
+                u8 spriteDir = convertWorldToSpriteDirection(dir, MAIN_MAP_INDEX);
+                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, spriteDir)) {
+                    vec3 = projectEntityPosition(ENTITY_PLAYER, 0x34, spriteDir);
                     groundObjectIndex = getGroundObjectIndexFromCoordinates(vec3.x, vec3.z);
-
-                    if (groundObjectIndex == 0xFF || getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8) {
+                    if (groundObjectIndex == 0xFF || (getGroundObjectPlayerInteractionsFlags(groundObjectIndex) & 8)) {
                         
                         setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
                         set = TRUE;
@@ -952,11 +1019,28 @@ void handlePlayerInput(void) {
                         startAction(JUMPING, ANIM_JUMPING);
                         
                     }
-                    
                 } 
             }
         }
-        
+    }
+
+    if (!set) {
+        // show text for item being held
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
+            if (checkButtonReleased(CONTROLLER_1, BUTTON_Z) && !heldItemChange) {
+                if (gPlayer.heldItem != 0) {
+                    set = TRUE;
+                    showHeldItemText(gPlayer.heldItem);
+                    temp = 0xFF;
+                }
+            }
+            if(checkButtonReleased(CONTROLLER_1, BUTTON_Z) && heldToolChange) {
+                heldToolChange = FALSE;
+            }
+            if(checkButtonReleased(CONTROLLER_1, BUTTON_Z) && heldItemChange) {
+                heldItemChange = FALSE;
+            }
+        }
     }
 
     if (!set) {
@@ -999,10 +1083,25 @@ void handlePlayerInput(void) {
     }
 
     if (!set) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
+            if (checkButtonHeld(CONTROLLER_1, BUTTON_Z) && checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+                if (takeToolFromToolsack() != 0xFF) {
+                    set = TRUE;
+                    temp = 0xFF;
+                    heldToolChange = TRUE;
+                    gPlayer.animationHandler = ANIM_TOOL_USE;
+                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+                    playSfx(2);
+                }
+            }
+        }
+    }
+
+    if (!set) {
 
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
         
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_B) && !heldToolChange) {
                 
                 if (gPlayer.heldItem == 0 && gPlayer.currentTool) {
                         
@@ -1037,19 +1136,6 @@ void handlePlayerInput(void) {
     }
 
     if (!set) {
-        // show text for item being held
-        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
-                if (gPlayer.heldItem != 0) {
-                    set = TRUE;
-                    showHeldItemText(gPlayer.heldItem);
-                    temp = 0xFF;
-                }
-            }
-        }
-    }
-
-    if (!set) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT)) {
                 set = TRUE;
@@ -1071,6 +1157,19 @@ void handlePlayerInput(void) {
         }
     }
 
+    if(!set) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
+            if (checkButtonHeld(CONTROLLER_1, BUTTON_Z) && checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
+                if (((gPlayer.heldItem == 0) || (getItemFlags(gPlayer.heldItem) & ITEM_RUCKSACK_STORABLE)) && takeItemFromRucksack() != 0xFF) {
+                    set = TRUE;
+                    temp = 0xFF;
+                    heldItemChange = TRUE;
+                    startAction(STORING_ITEM_IN_RUCKSACK, ANIM_HANDLE_ITEM_RUCKSACK);
+                }
+            }
+        }
+    }
+
     if (!set) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
@@ -1078,7 +1177,7 @@ void handlePlayerInput(void) {
                     if (addItemToRucksack(gPlayer.heldItem) != 0xFF) {
                         set = TRUE;
                         temp = 0xFF;
-                        startAction(STORING_ITEM_IN_RUCKSACK, ANIM_PUT_ITEM_IN_RUCKSACK);
+                        startAction(STORING_ITEM_IN_RUCKSACK, ANIM_HANDLE_ITEM_RUCKSACK);
                     }
                 }
             }
@@ -2829,16 +2928,12 @@ void handlePlayerAnimation(void) {
             handleDrinkingAnimation();
             playerIdleCounter = 0;
             break;
-        case ANIM_PUT_ITEM_IN_RUCKSACK:
-            handlePutItemInRucksackAnimation();
+        case ANIM_HANDLE_ITEM_RUCKSACK:
+            handleRucksackItemAnimation();
             playerIdleCounter = 0;
             break;
         case ANIM_FISHING:
             handleFishingRodAnimation();
-            playerIdleCounter = 0;
-            break;
-        case 24:
-            handleUnusedAnimation24();
             playerIdleCounter = 0;
             break;
         case 25:
@@ -3580,27 +3675,27 @@ void handleDrinkingAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePutItemInRucksackAnimation);
-
-void handlePutItemInRucksackAnimation(void) {
-    
-    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
-        
+void handleRucksackItemAnimation(void) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
         if (gPlayer.actionPhase == 0) {
-            
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 618);
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
-            gPlayer.heldItem = 0;
+            if (!heldItemChange) {
+                gPlayer.heldItem = 0;
+            }
             gPlayer.actionPhase++;
             playSfx(PICKING_UP_SFX);
-            
         } else {
             resetAction();
-            gItemBeingHeld = 0xFF;
-        }
-        
-    }
 
+            if (heldItemChange) {
+                initializePlayerHeldItem();
+                gItemBeingHeld = gPlayer.heldItem;
+            } else {
+                gItemBeingHeld = 0xFF;
+            }
+        } 
+    }
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", handleFishingRodAnimation);
