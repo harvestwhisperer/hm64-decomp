@@ -880,8 +880,8 @@ void updatePlayerAction(void) {
         case (FISHING - 1):
             handleFishingAction();
             break;
-        case 22:
-            handleUnusedAction23();
+        case (CHANGE_TOOL - 1):
+            handleChangeToolAction();
             break;
         case 23:
             handleUnusedAction24();
@@ -1089,9 +1089,7 @@ void handlePlayerInput(void) {
                     set = TRUE;
                     temp = 0xFF;
                     heldToolChange = TRUE;
-                    gPlayer.animationHandler = ANIM_TOOL_USE;
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
-                    playSfx(2);
+                    startAction(CHANGE_TOOL, ANIM_TOOL_USE);
                 }
             }
         }
@@ -3915,6 +3913,17 @@ static const u8 toolHeldItemIndices[5][3] = {
     { HAMMER_HELD_ITEM, SILVER_HAMMER_HELD_ITEM, GOLDEN_HAMMER_HELD_ITEM },
     { WATERING_CAN_HELD_ITEM, SILVER_WATERING_CAN_HELD_ITEM, GOLDEN_WATERING_CAN_HELD_ITEM }
 };
+
+void handleChangeToolAction(void) {
+    // Let the animation play for a short time
+    if (gPlayer.actionPhase == 0) {
+        if (gPlayer.actionPhaseFrameCounter >= 10) {
+            gPlayer.actionPhase = 1;
+            resetAction();
+        }
+        gPlayer.actionPhaseFrameCounter++;
+    }
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", handleToolAnimation);
 

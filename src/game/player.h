@@ -34,7 +34,7 @@
 #define DRINKING 20
 #define STORING_ITEM_IN_RUCKSACK 21
 #define FISHING 22
-// 23 unused
+#define CHANGE_TOOL 23
 // 24 unused
 #define FATIGUE_THRESHOLD 25
 #define CLIMBING_TREE 26
