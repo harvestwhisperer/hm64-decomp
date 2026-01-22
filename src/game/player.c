@@ -44,8 +44,8 @@ u8 gPlayerBirthdaySeason;
 u8 gToolboxSlots[8 * 4];
 
 // wheel status for tools and items
-u8 heldToolChange;
-u8 heldItemChange;
+bool heldToolChange;
+bool heldItemChange;
 
 
 // data
@@ -355,7 +355,6 @@ void handleDrinkAction(void);
 void handleUnusedAction21(void);
 void handleFishingAction(void);
 void handleUnusedAction23(void);
-void handleUnusedAction24(void);
 void handleStaminaExhaustionAction(void);
 void handleUnusedAction25(void);
 void handleTreeClimbingAction(void);
@@ -394,7 +393,6 @@ void handleWhistleForDogAnimation(void);
 void handleWhistleForHorseAnimation(void);
 void handleDrinkingAnimation(void);
 void handleTakeItemFromRucksackAnimation(void);
-void handlePutItemInRucksackAnimation(void);
 void handleFishingRodAnimation(void);
 void handleUnusedAnimation24(void);
 void handleUnusedAnimation25(void);
@@ -544,7 +542,7 @@ inline u8 takeItemFromRucksack(void) {
     u8 itemToStore = gPlayer.heldItem;
     u8 found = 0xFF;
 
-    for (i = 0; i < MAX_RUCKSACK_SLOTS && found == 0xFF; i++) {
+    for (i = 0; i < MAX_RUCKSACK_SLOTS - 1 && found == 0xFF; i++) {
         if (gPlayer.belongingsSlots[i] != 0) {
             nextItem = gPlayer.belongingsSlots[i];
             gPlayer.belongingsSlots[i] = 0;
@@ -874,7 +872,7 @@ void updatePlayerAction(void) {
         case (DRINKING - 1):
             handleDrinkAction();
             break;
-        case (STORING_ITEM_IN_RUCKSACK - 1):
+        case (HANDLING_ITEM - 1):
             handleUnusedAction21();
             break;
         case (FISHING - 1):
@@ -883,8 +881,8 @@ void updatePlayerAction(void) {
         case (CHANGE_TOOL - 1):
             handleChangeToolAction();
             break;
-        case 23:
-            handleUnusedAction24();
+        case (23):
+            handleUnusedAction23();
             break;
         case (STAMINA_EXHAUSTION - 1):
             handleStaminaExhaustionAction();
@@ -1034,13 +1032,15 @@ void handlePlayerInput(void) {
                     temp = 0xFF;
                 }
             }
-            if(checkButtonReleased(CONTROLLER_1, BUTTON_Z) && heldToolChange) {
-                heldToolChange = FALSE;
-            }
-            if(checkButtonReleased(CONTROLLER_1, BUTTON_Z) && heldItemChange) {
-                heldItemChange = FALSE;
-            }
         }
+    }
+
+    if(checkButtonReleased(CONTROLLER_1, BUTTON_Z) && heldToolChange) {
+        heldToolChange = FALSE;
+        playSfx(BELL_SFX);
+    }
+    if(heldItemChange && (checkButtonReleased(CONTROLLER_1, BUTTON_Z) || !checkButtonPressed(CONTROLLER_1, BUTTON_Z))) {
+        heldItemChange = FALSE;
     }
 
     if (!set) {
@@ -1084,12 +1084,12 @@ void handlePlayerInput(void) {
 
     if (!set) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
-            if (checkButtonHeld(CONTROLLER_1, BUTTON_Z) && checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+            if (checkButtonHeld(CONTROLLER_1, BUTTON_Z) && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !gPlayer.heldItem) {
                 if (takeToolFromToolsack() != 0xFF) {
                     set = TRUE;
                     temp = 0xFF;
                     heldToolChange = TRUE;
-                    startAction(CHANGE_TOOL, ANIM_TOOL_USE);
+                    startAction(CHANGE_TOOL, ANIM_TOOL_CHANGE);
                 }
             }
         }
@@ -1157,12 +1157,12 @@ void handlePlayerInput(void) {
 
     if(!set) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
-            if (checkButtonHeld(CONTROLLER_1, BUTTON_Z) && checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
+            if (checkButtonHeld(CONTROLLER_1, BUTTON_Z) && checkButtonPressed(CONTROLLER_1, BUTTON_C_UP) && !heldToolChange) {
                 if (((gPlayer.heldItem == 0) || (getItemFlags(gPlayer.heldItem) & ITEM_RUCKSACK_STORABLE)) && takeItemFromRucksack() != 0xFF) {
                     set = TRUE;
                     temp = 0xFF;
                     heldItemChange = TRUE;
-                    startAction(STORING_ITEM_IN_RUCKSACK, ANIM_HANDLE_ITEM_RUCKSACK);
+                    startAction(HANDLING_ITEM, ANIM_ITEM_CHANGE);
                 }
             }
         }
@@ -1170,12 +1170,12 @@ void handlePlayerInput(void) {
 
     if (!set) {
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_C_UP) && !heldItemChange) {
                 if (gPlayer.heldItem != 0 && getItemFlags(gPlayer.heldItem) & ITEM_RUCKSACK_STORABLE) {
                     if (addItemToRucksack(gPlayer.heldItem) != 0xFF) {
                         set = TRUE;
                         temp = 0xFF;
-                        startAction(STORING_ITEM_IN_RUCKSACK, ANIM_HANDLE_ITEM_RUCKSACK);
+                        startAction(HANDLING_ITEM, ANIM_HANDLE_ITEM_RUCKSACK);
                     }
                 }
             }
@@ -2654,9 +2654,6 @@ void handleFishingAction(void) {
 void handleUnusedAction23(void) {}
 
 // empty function
-void handleUnusedAction24(void) {}
-
-// empty function
 void handleStaminaExhaustionAction(void) {} 
 
 // empty function
@@ -2902,8 +2899,8 @@ void handlePlayerAnimation(void) {
             handleDismountHorseAnimation();
             playerIdleCounter = 0;
             break;
-        case 17:
-            handleUnusedAnimation17();
+        case ANIM_TOOL_CHANGE:
+            handleToolChangeAnimation();
             playerIdleCounter = 0;
             break;
         case 18:
@@ -2927,15 +2924,15 @@ void handlePlayerAnimation(void) {
             playerIdleCounter = 0;
             break;
         case ANIM_HANDLE_ITEM_RUCKSACK:
-            handleRucksackItemAnimation();
+            handlePutItemInRucksackAnimation();
             playerIdleCounter = 0;
             break;
         case ANIM_FISHING:
             handleFishingRodAnimation();
             playerIdleCounter = 0;
             break;
-        case 25:
-            handleUnusedAnimation25();
+        case (ANIM_ITEM_CHANGE):
+            handleTakeItemFromRucksackAnimation();
             playerIdleCounter = 0;
             break;
         case ANIM_FATIGUE_THRESHOLD:
@@ -3673,25 +3670,33 @@ void handleDrinkingAnimation(void) {
 
 }
 
-void handleRucksackItemAnimation(void) {
-    if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
+//INCLUDE_ASM("asm/nonmatchings/game/player", handlePutItemInRucksackAnimation);
+
+void handlePutItemInRucksackAnimation(void) {
+    if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         if (gPlayer.actionPhase == 0) {
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 618);
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
-            if (!heldItemChange) {
-                gPlayer.heldItem = 0;
-            }
+            gPlayer.heldItem = 0;
             gPlayer.actionPhase++;
             playSfx(PICKING_UP_SFX);
         } else {
             resetAction();
+            gItemBeingHeld = 0xFF;
+        }
+    }
+}
 
-            if (heldItemChange) {
-                initializePlayerHeldItem();
-                gItemBeingHeld = gPlayer.heldItem;
-            } else {
-                gItemBeingHeld = 0xFF;
-            }
+void handleTakeItemFromRucksackAnimation(void) {
+    if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
+        if (gPlayer.actionPhase == 0) {
+            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 618);
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
+            gPlayer.actionPhase++;
+            playSfx(PICKING_UP_SFX);
+        } else {
+            initializePlayerHeldItem();
+            resetAction();
         } 
     }
 }
@@ -3915,11 +3920,14 @@ static const u8 toolHeldItemIndices[5][3] = {
 };
 
 void handleChangeToolAction(void) {
-    // Let the animation play for a short time
     if (gPlayer.actionPhase == 0) {
+        if (gPlayer.actionPhaseFrameCounter == 0) {
+            playSfx(TYPHOON_SFX);
+        }
         if (gPlayer.actionPhaseFrameCounter >= 10) {
             gPlayer.actionPhase = 1;
             resetAction();
+            return;
         }
         gPlayer.actionPhaseFrameCounter++;
     }
@@ -3931,7 +3939,7 @@ void handleToolAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.actionPhase == 0)) {
         
-        switch (gPlayer.currentTool) {                          
+        switch (gPlayer.currentTool) {
             case SICKLE:                                     
                 handleSickleAnimation();
                 break;
@@ -4060,6 +4068,84 @@ void handleToolAnimation(void) {
         
     }
     
+}
+
+void handleToolChangeAnimation(void) {
+    u8 animationIndex = 0;
+    switch (gPlayer.currentTool) {
+        case SICKLE:
+            animationIndex = 80 + (gPlayer.currentToolLevel * 8);
+            break;
+        case HOE:
+            animationIndex = 128 + (gPlayer.currentToolLevel * 16);
+            break;
+        case AX:
+            animationIndex = 176 + (gPlayer.currentToolLevel * 16);
+            break;
+        case HAMMER:
+            animationIndex = 224 + (gPlayer.currentToolLevel * 16);
+            break;
+        case WATERING_CAN:
+            // change animation: scripts 272/280/288 (one per level) — these map to player textures 616/617/618
+            animationIndex = 272 + (gPlayer.currentToolLevel * 8);
+            break;
+        case MILKER:
+            animationIndex = 329;
+            break;
+        case BELL:
+            animationIndex = 337;
+            break;
+        case BRUSH:
+            animationIndex = 345;
+            break;
+        case CLIPPERS:
+            animationIndex = 353;
+            break;
+        case TURNIP_SEEDS:
+        case POTATO_SEEDS:
+        case CABBAGE_SEEDS:
+        case TOMATO_SEEDS:
+        case CORN_SEEDS:
+        case EGGPLANT_SEEDS:
+        case STRAWBERRY_SEEDS:
+        case GRASS_SEEDS:
+        case MOON_DROP_SEEDS:
+        case PINK_CAT_MINT_SEEDS:
+        case BLUE_MIST_SEEDS:
+            // TODO: FIND SPRITE, current seems to be planting animation
+            animationIndex = 328;
+            break;
+        case CHICKEN_FEED:
+            animationIndex = 361;
+            break;
+        case FISHING_POLE:
+            animationIndex = 386;
+            break;
+        case MIRACLE_POTION:
+            // change animation: use script 564 (animation 342) — potion/feather overlay
+            animationIndex = 564;
+            break;
+        case COW_MEDICINE:
+            // change animation: use script 564
+            animationIndex = 564;
+            break;
+        case BLUE_FEATHER:
+            // change animation: use script 564
+            animationIndex = 564;
+            break;
+        case EMPTY_BOTTLE:
+            animationIndex = 626;
+            break;
+        default:
+            break;
+    }
+    if (gPlayer.currentTool == WATERING_CAN) {
+        // watering can change uses a single-sprite overlay (scripts 272/280/288 -> textures 616/617/618)
+        // avoid using direction-offset to prevent accidentally selecting nearby running animations
+        setEntityAnimation(ENTITY_PLAYER, animationIndex);
+    } else {
+        setEntityAnimationWithDirectionChange(ENTITY_PLAYER, animationIndex);
+    }
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", handleToolUseAnimation);
