@@ -1022,6 +1022,15 @@ void handlePlayerInput(void) {
         }
     }
 
+    if (!set && (heldItemChange || heldToolChange)) {
+        if (checkButtonReleased(CONTROLLER_1, BUTTON_Z) || !checkButtonHeld(CONTROLLER_1, BUTTON_Z)) {
+            heldItemChange = FALSE;
+            heldToolChange = FALSE;
+            set = TRUE;
+            temp = 0xFF;
+        }
+    }
+
     if (!set) {
         // show text for item being held
         if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
@@ -1033,14 +1042,6 @@ void handlePlayerInput(void) {
                 }
             }
         }
-    }
-
-    if(checkButtonReleased(CONTROLLER_1, BUTTON_Z) && heldToolChange) {
-        heldToolChange = FALSE;
-        playSfx(BELL_SFX);
-    }
-    if(heldItemChange && (checkButtonReleased(CONTROLLER_1, BUTTON_Z) || !checkButtonPressed(CONTROLLER_1, BUTTON_Z))) {
-        heldItemChange = FALSE;
     }
 
     if (!set) {

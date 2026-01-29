@@ -53,3 +53,4 @@ undefined_funcs_auto.txt
 !/config/us/common_bss.ld
 !/tools/build
 /tools/build/mkldscript
+/docs/
