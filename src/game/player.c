@@ -3922,9 +3922,6 @@ static const u8 toolHeldItemIndices[5][3] = {
 
 void handleChangeToolAction(void) {
     if (gPlayer.actionPhase == 0) {
-        if (gPlayer.actionPhaseFrameCounter == 0) {
-            playSfx(TYPHOON_SFX);
-        }
         if (gPlayer.actionPhaseFrameCounter >= 10) {
             gPlayer.actionPhase = 1;
             resetAction();
@@ -4072,23 +4069,22 @@ void handleToolAnimation(void) {
 }
 
 void handleToolChangeAnimation(void) {
-    u8 animationIndex = 0;
+    u16 animationIndex = 0;
     switch (gPlayer.currentTool) {
         case SICKLE:
-            animationIndex = 80 + (gPlayer.currentToolLevel * 8);
+            animationIndex = 80;
             break;
         case HOE:
-            animationIndex = 128 + (gPlayer.currentToolLevel * 16);
+            animationIndex = 128;
             break;
         case AX:
-            animationIndex = 176 + (gPlayer.currentToolLevel * 16);
+            animationIndex = 176;
             break;
         case HAMMER:
-            animationIndex = 224 + (gPlayer.currentToolLevel * 16);
+            animationIndex = 224;
             break;
         case WATERING_CAN:
-            // change animation: scripts 272/280/288 (one per level) — these map to player textures 616/617/618
-            animationIndex = 272 + (gPlayer.currentToolLevel * 8);
+            animationIndex = 272;
             break;
         case MILKER:
             animationIndex = 329;
@@ -4117,18 +4113,18 @@ void handleToolChangeAnimation(void) {
             animationIndex = 328;
             break;
         case CHICKEN_FEED:
-            animationIndex = 361;
+            animationIndex = 361; // Using sickle animation
             break;
         case FISHING_POLE:
-            animationIndex = 386;
+            animationIndex = 386; // Fishing pole ready animation
             break;
         case MIRACLE_POTION:
             // change animation: use script 564 (animation 342) — potion/feather overlay
-            animationIndex = 564;
+            animationIndex = 564; // Getting item animation back
             break;
         case COW_MEDICINE:
             // change animation: use script 564
-            animationIndex = 564;
+            animationIndex = 564; // Getting item animation back
             break;
         case BLUE_FEATHER:
             // change animation: use script 564
@@ -4140,13 +4136,7 @@ void handleToolChangeAnimation(void) {
         default:
             break;
     }
-    if (gPlayer.currentTool == WATERING_CAN) {
-        // watering can change uses a single-sprite overlay (scripts 272/280/288 -> textures 616/617/618)
-        // avoid using direction-offset to prevent accidentally selecting nearby running animations
-        setEntityAnimation(ENTITY_PLAYER, animationIndex);
-    } else {
-        setEntityAnimationWithDirectionChange(ENTITY_PLAYER, animationIndex);
-    }
+    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, animationIndex);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", handleToolUseAnimation);

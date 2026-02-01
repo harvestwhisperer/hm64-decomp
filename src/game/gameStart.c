@@ -32,7 +32,8 @@ void setupGameStart(void) {
     initializeAll(); 
     
     if (contPattern & 1) {
-        launchIntroCutscene(OPENING_LOGOS, 0x61, 1);
+        // launchIntroCutscene(OPENING_LOGOS, 0x61, 1);
+        startGame();
     } else {
 
         setMainLoopCallbackFunctionIndex(NO_OP);
@@ -55,6 +56,7 @@ void startGame(void) {
 
     // set spawnable/foragable items
     func_800598E0();
+    func_8004DFF8();
 
     setDailyEventBit(0x53);
     setDailyEventBit(0x54);
@@ -69,7 +71,7 @@ void startGame(void) {
 
 // unused function: probably for sandboxing during development or demos
 // not in JP version
-// void func_8004DFF8(void) {
+void func_8004DFF8(void) {
     
 //     setLifeEventBit(HAVE_HORSE);
 //     setLifeEventBit(HAVE_KITCHEN);
@@ -96,7 +98,18 @@ void startGame(void) {
     
 //     setSpecialDialogueBit(0x25);
     
-//     gPlayer.belongingsSlots[0] = TOMATO;
+     gPlayer.belongingsSlots[0] = TOMATO;
+     gPlayer.belongingsSlots[1] = COOKIES;
+
+     gPlayer.toolSlots[0] = MILKER;
+     gPlayer.toolSlots[1] = WATERING_CAN;
+    gPlayer.toolSlots[2] = BELL;
+    gPlayer.toolSlots[3] = BRUSH;
+    gPlayer.toolSlots[4] = CLIPPERS;
+    gPlayer.toolSlots[5] = CHICKEN_FEED;
+    gPlayer.toolSlots[6] = FISHING_POLE;
+    gPlayer.toolSlots[7] = MIRACLE_POTION;
+    gPlayer.toolSlots[8] = COW_MEDICINE;
     
 //     initializeHorse();
     
@@ -122,4 +135,4 @@ void startGame(void) {
 //     // unused game variable
 //     D_8016FB00 = 7;
     
-// }
+}
