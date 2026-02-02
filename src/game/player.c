@@ -4070,6 +4070,8 @@ void handleToolAnimation(void) {
 
 void handleToolChangeAnimation(void) {
     u16 animationIndex = 0;
+    bool isToolItem = FALSE;
+    u8 toolItem = 0;
     switch (gPlayer.currentTool) {
         case SICKLE:
             animationIndex = 80;
@@ -4099,42 +4101,87 @@ void handleToolChangeAnimation(void) {
             animationIndex = 353;
             break;
         case TURNIP_SEEDS:
+            toolItem = TURNIP_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
+            break;
         case POTATO_SEEDS:
+            toolItem = POTATO_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
+            break;
         case CABBAGE_SEEDS:
+            toolItem = CABBAGE_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
+            break;
         case TOMATO_SEEDS:
+            toolItem = TOMATO_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
+            break;
         case CORN_SEEDS:
+            toolItem = CORN_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
+            break;
         case EGGPLANT_SEEDS:
+            toolItem = EGGPLANT_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
+            break;
         case STRAWBERRY_SEEDS:
+            toolItem = STRAWBERRY_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
+            break;
         case GRASS_SEEDS:
+            toolItem = GRASS_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
+            break;
         case MOON_DROP_SEEDS:
+            toolItem = MOON_DROP_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
+            break;
         case PINK_CAT_MINT_SEEDS:
+            toolItem = PINK_CAT_MINT_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
+            break;
         case BLUE_MIST_SEEDS:
-            // TODO: FIND SPRITE, current seems to be planting animation
+            toolItem = BLUE_MIST_SEEDS_HELD_ITEM;
+            isToolItem = TRUE;
             animationIndex = 328;
             break;
         case CHICKEN_FEED:
-            animationIndex = 361; // Using sickle animation
+            toolItem = CHICKEN_FEED_HELD_ITEM;
+            isToolItem = TRUE;
             break;
         case FISHING_POLE:
-            animationIndex = 386; // Fishing pole ready animation
+            animationIndex = 386;
             break;
         case MIRACLE_POTION:
-            // change animation: use script 564 (animation 342) — potion/feather overlay
-            animationIndex = 564; // Getting item animation back
+            toolItem = MIRACLE_POTION_HELD_ITEM;
+            isToolItem = TRUE;
             break;
         case COW_MEDICINE:
-            // change animation: use script 564
-            animationIndex = 564; // Getting item animation back
+            toolItem = MEDICINE_HELD_ITEM;
+            isToolItem = TRUE;
             break;
         case BLUE_FEATHER:
-            // change animation: use script 564
-            animationIndex = 564;
+            toolItem = BLUE_FEATHER_HELD_ITEM;
+            isToolItem = TRUE;
             break;
         case EMPTY_BOTTLE:
             animationIndex = 626;
             break;
         default:
             break;
+    }
+    if(isToolItem) {
+        animationIndex = 421;
+        if (gPlayer.actionPhaseFrameCounter >= 10) {
+            initializeHeldItem(0, ITEM_STATE_HELD, toolItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
+            gPlayer.actionPhase++;
+        }
+        if (gPlayer.actionPhase >= 10) {
+            setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
+            handleStopHolding();
+            playSfx(MILKER_SFX);
+            resetAction();
+        }
     }
     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, animationIndex);
 }

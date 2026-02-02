@@ -98,18 +98,18 @@ void func_8004DFF8(void) {
     
 //     setSpecialDialogueBit(0x25);
     
-     gPlayer.belongingsSlots[0] = TOMATO;
-     gPlayer.belongingsSlots[1] = COOKIES;
+    gPlayer.belongingsSlots[0] = TOMATO;
+    gPlayer.belongingsSlots[1] = COOKIES;
 
-     gPlayer.toolSlots[0] = MILKER;
-     gPlayer.toolSlots[1] = WATERING_CAN;
-    gPlayer.toolSlots[2] = BELL;
-    gPlayer.toolSlots[3] = BRUSH;
-    gPlayer.toolSlots[4] = CLIPPERS;
-    gPlayer.toolSlots[5] = CHICKEN_FEED;
-    gPlayer.toolSlots[6] = FISHING_POLE;
-    gPlayer.toolSlots[7] = MIRACLE_POTION;
-    gPlayer.toolSlots[8] = COW_MEDICINE;
+    gPlayer.toolSlots[0] = TURNIP_SEEDS;
+    gPlayer.toolSlots[1] = POTATO_SEEDS;
+    gPlayer.toolSlots[2] = CABBAGE_SEEDS;
+    gPlayer.toolSlots[3] = TOMATO_SEEDS;
+    gPlayer.toolSlots[4] = CORN_SEEDS;
+    gPlayer.toolSlots[5] = EGGPLANT_SEEDS;
+    gPlayer.toolSlots[6] = STRAWBERRY_SEEDS;
+    gPlayer.toolSlots[7] = GRASS_SEEDS;
+    gPlayer.toolSlots[8] = MOON_DROP_SEEDS;
     
 //     initializeHorse();
     
