@@ -32,6 +32,7 @@ ToolUse toolUse;
 ItemContext itemInfo[10];
 
 // shared bss (load game screen)
+u32 totalTurnipsShipped;
 u32 totalStrawberriesShipped;
 u32 totalTomatoesShipped;
 u32 totalCabbageShipped;
@@ -39,6 +40,7 @@ u32 totalCornShipped;
 u32 totalEggplantsShipped;
 u32 totalPotatoesShipped;
 
+// consumable tool counters (seeds, feed)
 u8 tomatoSeedsQuantity;
 u8 cabbageSeedsQuantity;
 u8 grassSeedsQuantity;
@@ -49,13 +51,10 @@ u8 potatoSeedsQuantity;
 u8 pinkCatMintSeedsQuantity;
 u8 strawberrySeedsQuantity;
 u8 eggplantSeedsQuantity;
-
-u32 totalTurnipsShipped;
-
-// consumable tool counters (seeds, feed)
 u8 blueMistSeedsQuantity;
 u16 chickenFeedQuantity;
 u16 fodderQuantity;
+
 u8 wateringCanUses;
 
 u8 upgradedToolIndex;
@@ -168,7 +167,7 @@ u16 itemSpriteAnimations[96][4] = {
 // entity metadata struct
 //   entity asset index
 //   animation index per season
-u16 itemEntityMetadata[224][5] = {
+u16 itemEntityMetadata[256][5] = {
     { 0x005D, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF },
     { 0x005D, 0x0000, 0x008B, 0x008C, 0x008C },
     { 0x005D, 0x0001, 0x0001, 0x0001, 0x0001 },
@@ -390,9 +389,9 @@ u16 itemEntityMetadata[224][5] = {
     { 0x005D, 0x0090, 0x0090, 0x0090, 0x0090 },
     { 0x005D, 0x0095, 0x0095, 0x0095, 0x0095 },
     { 0x005D, 0x0093, 0x0093, 0x0093, 0x0093 },
-    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0x005D, 107, 0x0000, 0x0000, 0x0000 },
+    { 0x005D, 108, 0x0000, 0x0000, 0x0000 },
+    { 0x005D, 255, 0x0000, 0x0000, 0x0000 },
 };
 
 // entity palette index overrides (0xFFFF = use default)

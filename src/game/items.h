@@ -121,7 +121,7 @@
 #define COOKIES 9
 #define BLUE_FEATHER_HELD_ITEM 10
 #define OLD_WINE_HELD_ITEM 11
-#define CHOCOLATE_HELD_ITEM 12
+#define CHOCOLATE_HELD_ITEM 12 // This one seems to be off as it takes chocolate wich should be 45
 #define TURNIP 13
 #define POTATO 14
 #define CABBAGE 15
@@ -161,11 +161,11 @@
 #define MOONLIGHT_STONE 49
 #define PONTANA_ROOT 50
 #define WEATHER_VANE_HELD_ITEM 51
-#define CHOCOLATE_HELD_ITEM 52
-#define NONE_HELD_ITEM2 53
+#define CHOCOLATE_HELD_ITEM1 52 // This one seems to be off as it takes chocolate wich should be 45
+#define NONE_HELD_ITEM2 53 // description is as diary
 #define OCARINA_HELD_ITEM 54
-#define NONE_HELD_ITEM3 55
-#define CHOCOLATE_HELD_ITEM 56
+#define NONE_HELD_ITEM3 55 // description is as diary
+#define CHOCOLATE_HELD_ITEM2 56 // This one seems to be off as it takes chocolate wich should be 45
 #define FODDER_HELD_ITEM 57
 #define TURNIP_SEEDS_HELD_ITEM 58
 #define POTATO_SEEDS_HELD_ITEM 59
@@ -202,6 +202,7 @@
 #define CHICKEN_HELD_ITEM 96
 // multiple directions
 #define CHICK_HELD_ITEM 104
+// multiple directions
 #define EMPTY_BOTTLE_HELD_ITEM 112
 #define BOTTLE_WITH_WATER_HELD_ITEM 113
 #define BOTTLE_WITH_WINE_HELD_ITEM 114

@@ -4143,7 +4143,6 @@ void handleToolChangeAnimation(void) {
         case BLUE_MIST_SEEDS:
             toolItem = BLUE_MIST_SEEDS_HELD_ITEM;
             isToolItem = TRUE;
-            animationIndex = 328;
             break;
         case CHICKEN_FEED:
             toolItem = CHICKEN_FEED_HELD_ITEM;
