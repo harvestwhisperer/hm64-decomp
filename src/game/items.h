@@ -121,7 +121,7 @@
 #define COOKIES 9
 #define BLUE_FEATHER_HELD_ITEM 10
 #define OLD_WINE_HELD_ITEM 11
-#define CHOCOLATE_HELD_ITEM 12 // This one seems to be off as it takes chocolate wich should be 45
+#define CHOCOLATE_HELD_ITEM 12 // This one seems to be off as it uses sprite animation 0 for chocolate
 #define TURNIP 13
 #define POTATO 14
 #define CABBAGE 15
@@ -161,13 +161,14 @@
 #define MOONLIGHT_STONE 49
 #define PONTANA_ROOT 50
 #define WEATHER_VANE_HELD_ITEM 51
-#define CHOCOLATE_HELD_ITEM1 52 // This one seems to be off as it takes chocolate wich should be 45
+#define CHOCOLATE_HELD_ITEM1 52 // This one seems to be off as it uses sprite animation 0 for chocolate
 #define NONE_HELD_ITEM2 53 // description is as diary
 #define OCARINA_HELD_ITEM 54
 #define NONE_HELD_ITEM3 55 // description is as diary
-#define CHOCOLATE_HELD_ITEM2 56 // This one seems to be off as it takes chocolate wich should be 45
-#define FODDER_HELD_ITEM 57
-#define TURNIP_SEEDS_HELD_ITEM 58
+#define CHOCOLATE_HELD_ITEM2 56 // This one seems to be off as it uses sprite animation 0 for chocolate
+#define FODDER_HELD_ITEM 57 // from this one we jump from index 58 to 97
+// What and why is the gap here for indexes on shopItemsAnimationScripts?
+#define TURNIP_SEEDS_HELD_ITEM 58 // we jump to index 97 in shopItemsAnimationScripts
 #define POTATO_SEEDS_HELD_ITEM 59
 #define CABBAGE_SEEDS_HELD_ITEM 60
 #define TOMATO_SEEDS_HELD_ITEM 61
@@ -177,8 +178,9 @@
 #define GRASS_SEEDS_HELD_ITEM 65
 #define MOON_DROP_SEEDS_HELD_ITEM 66
 #define PINK_CAT_MINT_SEEDS_HELD_ITEM 67
-#define BLUE_MIST_SEEDS_HELD_ITEM 68
-#define CHICKEN_FEED_HELD_ITEM 69
+#define BLUE_MIST_SEEDS_HELD_ITEM 68 // seems seeds block ends here ends on index 107 on shopItemsAnimationScripts
+// What and why is the gap here for indexes on shopItemsAnimationScripts?
+#define CHICKEN_FEED_HELD_ITEM 69 // jumps to index 131 on shopItemsAnimationScripts
 #define BARN_FEED_HELD_ITEM 70
 #define MIRACLE_POTION_HELD_ITEM 71
 #define MEDICINE_HELD_ITEM 72
@@ -186,26 +188,27 @@
 #define BRUSH_HELD_ITEM 74
 #define MILKER_HELD_ITEM 75
 #define CALENDAR_HELD_ITEM 76
-#define RUG_HELD_ITEM 77
-#define BLUE_VASE_HELD_ITEM 78
-#define RED_VASE_HELD_ITEM 79
-#define RICE_CAKE 80
+#define RUG_HELD_ITEM 77 // seems this block ends here ends on index 139 on shopItemsAnimationScripts
+// What and why is the gap here for indexes on shopItemsAnimationScripts?
+#define BLUE_VASE_HELD_ITEM 78 // jumps to index 156 on shopItemsAnimationScripts
+#define RED_VASE_HELD_ITEM 79 // really small block of 2 elements, breaks on index 157 on shopItemsAnimationScripts
+#define RICE_CAKE 80 // returns to index 58 on shopItemsAnimationScripts
 #define BREAD 81
 #define EGGS 82
 #define FISH_FILLET_HELD_ITEM 83
 #define SALAD_HELD_ITEM 84
 #define PASTA_HELD_ITEM 85
-#define WATERMELON_HELD_ITEM 86
-#define POWER_NUT 87
-#define DOG_HELD_ITEM 88
+#define WATERMELON_HELD_ITEM 86 // block ends on index 64 on shopItemsAnimationScripts
+#define POWER_NUT 87 // index 211 on shopItemsAnimationScripts
+#define DOG_HELD_ITEM 88 // index 65 on shopItemsAnimationScripts ends on index 72
 // multiple directions
-#define CHICKEN_HELD_ITEM 96
+#define CHICKEN_HELD_ITEM 96 // index 81 on shopItemsAnimationScripts ends on index 88
 // multiple directions
-#define CHICK_HELD_ITEM 104
+#define CHICK_HELD_ITEM 104 // index 89 on shopItemsAnimationScripts ends on index 96
 // multiple directions
-#define EMPTY_BOTTLE_HELD_ITEM 112
-#define BOTTLE_WITH_WATER_HELD_ITEM 113
-#define BOTTLE_WITH_WINE_HELD_ITEM 114
+#define EMPTY_BOTTLE_HELD_ITEM 112 // index 113 on shopItemsAnimationScripts
+#define BOTTLE_WITH_WATER_HELD_ITEM 113 // index 114 on shopItemsAnimationScripts
+#define BOTTLE_WITH_WINE_HELD_ITEM 114 // index 110 on shopItemsAnimationScripts
 #define PUPPY_1_HELD_ITEM 123
 // multiple directions
 #define CAT_HELD_ITEM 131
@@ -218,7 +221,7 @@
 // multiple directions
 #define MONKEY_HELD_ITEM 163
 // multiple directions
-#define DOG_2_HELD_ITEM 171
+#define DOG_2_HELD_ITEM 171 // Starts in index 73 on shopItemsAnimationScripts and ends on index 80
 // multiple directions
 #define BUTTERFLY_HELD_ITEM 179
 #define LADYBUG_HELD_ITEM 180
@@ -252,7 +255,7 @@
 #define BROKEN_MUSIC_BOX_HELD_ITEM 218
 #define MAP_HELD_ITEM 219
 #define PENDANT_HELD_ITEM 220
-#define PLAYER_HELD_ITEM 221
+#define GOLDEN_EGG_HELD_ITEM 221 // Add PACK_ANIM_DATA(159, ANIM_TYPE_LOOP, 0), on slot 251 from shopItemsAnimationScripts it needs to be forced on make to take the change on that file
 #define BABY_HELD_ITEM 222
 #define PLAYER_HELD_ITEM 223
 #define PLAYER_HELD_ITEM 224
