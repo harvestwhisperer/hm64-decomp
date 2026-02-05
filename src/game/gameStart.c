@@ -98,9 +98,8 @@ void func_8004DFF8(void) {
     
 //     setSpecialDialogueBit(0x25);
     
-    gPlayer.belongingsSlots[0] = TOMATO;
-    gPlayer.belongingsSlots[1] = COOKIES;
-    gPlayer.belongingsSlots[2] = GOLDEN_EGG_HELD_ITEM;
+    gPlayer.belongingsSlots[0] = EGG_HELD_ITEM;
+    gPlayer.belongingsSlots[1] = GOLDEN_EGG_HELD_ITEM;
 
     gPlayer.toolSlots[0] = TURNIP_SEEDS;
     gPlayer.toolSlots[1] = POTATO_SEEDS;
