@@ -73,12 +73,12 @@ void startGame(void) {
 // not in JP version
 void func_8004DFF8(void) {
     
-//     setLifeEventBit(HAVE_HORSE);
-//     setLifeEventBit(HAVE_KITCHEN);
-//     setLifeEventBit(HAVE_BATHROOM);
-//     setLifeEventBit(HAVE_STAIRS);
-//     setLifeEventBit(HAVE_GREENHOUSE);
-//     setLifeEventBit(HAVE_LOG_TERRACE);
+     setLifeEventBit(HAVE_HORSE);
+     setLifeEventBit(HAVE_KITCHEN);
+     setLifeEventBit(HAVE_BATHROOM);
+     setLifeEventBit(HAVE_STAIRS);
+     setLifeEventBit(HAVE_GREENHOUSE);
+     setLifeEventBit(HAVE_LOG_TERRACE);
 //     setLifeEventBit(HAVE_BABY_BED);
 //     setLifeEventBit(HAVE_CABINET);
 //     setLifeEventBit(HAVE_TABLECLOTH);
@@ -97,9 +97,12 @@ void func_8004DFF8(void) {
 //     setLifeEventBit(0x5D);
     
 //     setSpecialDialogueBit(0x25);
+
+    gGold = 999999;
     
     gPlayer.belongingsSlots[0] = EGG_HELD_ITEM;
     gPlayer.belongingsSlots[1] = GOLDEN_EGG_HELD_ITEM;
+    gPlayer.belongingsSlots[2] = GOLDEN_MILK;
 
     gPlayer.toolSlots[0] = TURNIP_SEEDS;
     gPlayer.toolSlots[1] = POTATO_SEEDS;
@@ -110,6 +113,13 @@ void func_8004DFF8(void) {
     gPlayer.toolSlots[6] = STRAWBERRY_SEEDS;
     gPlayer.toolSlots[7] = GRASS_SEEDS;
     gPlayer.toolSlots[8] = MOON_DROP_SEEDS;
+
+    gChickens[0].affection = 0;
+    gChickens[1].affection = 111;
+    gChickens[2].affection = 112;
+    gChickens[3].affection = 113;
+    gChickens[4].affection = 120;
+    gChickens[5].affection = 121;
     
 //     initializeHorse();
     

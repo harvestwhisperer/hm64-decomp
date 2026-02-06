@@ -52,7 +52,6 @@ u8 gMilkTypeString[2];
 u8 D_801886D4[6];
 u8 gDeadAnimalName[6];
 
-u8 bornChickenIndex;
 // newest animal index (generic)?
 u8 gSelectedAnimalIndex;
 // dead animal count
@@ -92,15 +91,28 @@ Vec3f farmAnimalStartingCoordinates[] = {
 
 Vec3f pregnantCowStartingCoordinates = { 208.0f, 0.0f, -208.0f };
 
-u16 smallMilkInfo[4] = { SMALL_MILK, 100, 6500, 10 };
-u16 mediumMilkInfo[4] = { MEDIUM_MILK, 150, 7000, 20 };
-u16 largeMilkInfo[4] = { LARGE_MILK, 300,  7500, 30 };
-u16 goldenMilkInfo[4] = { GOLDEN_MILK, 500, 8500, 50 };
+SheepProductInfo sheepWoolInfo = {
+    {
+        { WOOL, 900, 4200, 0 },
+        { WOOL, 900, 4600, 0 },
+        { HIGH_QUALITY_WOOL, 1800, 5000, 0}
+    }
+};
 
-SheepItemInfo sheepWoolInfo = {
-    { WOOL, 900, 4200 },
-    { WOOL, 900, 4600 },
-    { HIGH_QUALITY_WOOL, 1800, 5000}
+CowProductInfo cowMilkInfo = {
+    {
+        { SMALL_MILK, 100, 6500, 10 },
+        { MEDIUM_MILK, 150, 7000, 20 },
+        { LARGE_MILK, 300, 7500, 30 },
+        { GOLDEN_MILK, 500, 8500, 50 }
+    }
+};
+
+ChickenProductInfo chickenEggInfo = {
+    {
+        { EGG_HELD_ITEM, 50, 500, 0 },
+        { GOLDEN_EGG_HELD_ITEM, 100, 2000, 0 }
+    }
 };
 
 // forward declarations
@@ -403,54 +415,16 @@ void adjustFarmAnimalAffection(u8 animalIndex, s8 amount) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", getMilkHeldItemIndex);
 
-inline u16 getMilkHeldItemIndex(u8 animalIndex, u8 arg1) {
-
-    u16 res;
-    
-    if (gFarmAnimals[animalIndex].milkType == 0) {
-
-        res = goldenMilkInfo[arg1];
-        
-    } else {
-
-        if (gFarmAnimals[animalIndex].affection <= 150) {
-            res = smallMilkInfo[arg1];
-        }
-
-        if (150 < gFarmAnimals[animalIndex].affection && gFarmAnimals[animalIndex].affection < 221) {
-            res = mediumMilkInfo[arg1];
-        }
-
-        if (gFarmAnimals[animalIndex].affection >= 221) {
-            res = largeMilkInfo[arg1];
-        }
-        
-    }
-
-    return res;
-
+inline u16 getMilkHeldItemIndex(u8 animalIndex) {
+    return cowMilkInfo.cowProductInfo[GET_MILK_INDEX(GET_COW_PRODUCT_ID(animalIndex))].product;;
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", getWoolHeldItemIndex);
 
-inline u16 getWoolHeldItemIndex(u8 animalIndex, u8 arg1) {
+inline u16 getWoolHeldItemIndex(u8 animalIndex) {
 
-    u16 res;
+    return sheepWoolInfo.sheepProductInfo[GET_SHEEP_INDEX(gFarmAnimals[animalIndex].affection)].product;
 
-    if (gFarmAnimals[animalIndex].affection < 100) {
-        res = sheepWoolInfo.arr[arg1];
-    }
-
-    if (99 < gFarmAnimals[animalIndex].affection && gFarmAnimals[animalIndex].affection < 200) {
-        res = sheepWoolInfo.arr2[arg1];
-    }
-
-    if (gFarmAnimals[animalIndex].affection >= 200) {
-        res = sheepWoolInfo.arr3[arg1];
-    }
-    
-    return res;
-    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", handlePlayerAnimalInteraction);
@@ -10096,7 +10070,7 @@ bool handleMilkCow(void) {
                         if (gFarmAnimals[i].condition < COW_MAD) {
                             adjustFarmAnimalAffection(i, 1);
                             setAnimalState(2, i, 0xFF, 0xFF, 0x11);
-                            gPlayer.heldItem = getMilkHeldItemIndex(i, 0);
+                            gPlayer.heldItem = getMilkHeldItemIndex(i);
                             gFarmAnimals[i].flags |= (FARM_ANIMAL_MILKED | FARM_ANIMAL_COLLISION_WITH_PLAYER);
                             showAnimalExpressionBubble(COW_TYPE, i, 3);
                             set = TRUE;
@@ -10109,7 +10083,7 @@ bool handleMilkCow(void) {
                         adjustFarmAnimalAffection(i, 1);
                         setAnimalState(2, i, 0xFF, 0xFF, 0x11);
 
-                        gPlayer.heldItem = getMilkHeldItemIndex(i, 0);
+                        gPlayer.heldItem = getMilkHeldItemIndex(i);
 
                         if (gPlayer.heldItem != SMALL_MILK) {
                             gPlayer.heldItem--;
@@ -10240,7 +10214,7 @@ void handleShearSheep(void) {
                 adjustFarmAnimalAffection(i, 2);
                 setAnimalState(2, i, SHEARED_SHEEP, 0xFF, 0x11);
                 
-                gPlayer.heldItem = getWoolHeldItemIndex(i, 0);
+                gPlayer.heldItem = getWoolHeldItemIndex(i);
                 gFarmAnimals[i].flags |= FARM_ANIMAL_SHEARED;
                 
                 showAnimalExpressionBubble(COW_TYPE, i, 3);
@@ -10757,65 +10731,21 @@ void setgAnimalSalePrice() {
 
     u8 temp;
     u16 temp2;
-    u16 temp3;
+    u16 milkID;
     
     switch (selectedAnimalType) {
 
         case 2:
-            
-            if (gFarmAnimals[gSelectedAnimalIndex].milkType == 0) {
-                
-                temp2 = goldenMilkInfo[2];
-                
-            } else {
-
-                temp = gFarmAnimals[gSelectedAnimalIndex].affection; 
-
-                if (temp < 151) {
-                    temp2 = smallMilkInfo[2];
-                }
-                
-                if (150 < temp && temp < 221) {
-                    temp2 = mediumMilkInfo[2];
-                }
-    
-                if (temp >= 221) {
-                    temp2 = largeMilkInfo[2];
-                }
-                    
-            }
-
-            gAnimalSalePrice = temp2;
-            
+            gAnimalSalePrice = cowMilkInfo.cowProductInfo[GET_MILK_INDEX(GET_COW_PRODUCT_ID(gSelectedAnimalIndex))].sellAnimalPrice;
             break;
-
         case 3:
-
-            temp = gFarmAnimals[gSelectedAnimalIndex].affection; 
-            
-            if (temp < 100) {
-                temp3 = sheepWoolInfo.arr[2];
-            }
-            
-            if (99 < temp && temp < 200) {
-                temp3 = sheepWoolInfo.arr2[2];
-            }
-
-            if (temp >= 200) {
-                temp3 = sheepWoolInfo.arr3[2];
-            }
-
-            gAnimalSalePrice = temp3;
-            
+            gAnimalSalePrice = sheepWoolInfo.sheepProductInfo[GET_SHEEP_INDEX(gFarmAnimals[gSelectedAnimalIndex].affection)].sellAnimalPrice;
             break;
-        
         case 4:
             gAnimalSalePrice = 500;
             break;
-
         default:
             break;
-
     }
 
     convertNumberToGameVariableString(0x12, gAnimalSalePrice, 0);
@@ -10825,54 +10755,12 @@ void setgAnimalSalePrice() {
 //INCLUDE_ASM("asm/nonmatchings/game/animals", generateMilkTypeString);
 
 void generateMilkTypeString(u8 index) {
-
-    u16 temp;
-
-    if (CALF < gFarmAnimals[index].type && gFarmAnimals[index].type < BABY_SHEEP) {
-
-        if (gFarmAnimals[index].milkType == 0) {
-            
-            temp = goldenMilkInfo[0];
-            
-        } else {
-
-            if (gFarmAnimals[index].affection < 151) {
-                temp = smallMilkInfo[0];
-            }
-            
-            if (150 < gFarmAnimals[index].affection && gFarmAnimals[index].affection < 221) {
-                temp = mediumMilkInfo[0];
-            }
-
-            if (gFarmAnimals[index].affection >= 221) {
-                temp = largeMilkInfo[0];
-            }
-            
-        }
-
-        switch (temp) {
-
-            case 0x15:
-                gMilkTypeString[0] = char_S;
-                break;
-            case 0x16:
-                gMilkTypeString[0] = char_M;
-                break;
-            case 0x17:
-                gMilkTypeString[0] = char_L;
-                break;
-            case 0x18:
-                gMilkTypeString[0] = char_G;
-                break;
-            default:
-                break;
-            
-        }
-        
+    if (IS_ADULT_COW(gFarmAnimals[index].type)) {
+        static const u8 milkChars[] = { char_S, char_M, char_L, char_G };
+        gMilkTypeString[0] = milkChars[GET_MILK_INDEX(GET_COW_PRODUCT_ID(index))];
     } else {
         gMilkTypeString[0] = 0xF6;
     }
-
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BB70);

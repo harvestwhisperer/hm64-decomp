@@ -118,7 +118,7 @@ extern void fadeInLoadGameScreen(void);
 extern void setLoadGameScreenFullAlpha(void);
 extern void fadeOutLoadGameScreen(void);
 extern void setDiaryCursorPosition(u8 arg0, u8 arg1, u8 arg2);
-extern void updateDiaryHighlighted(u8 arg0, u8 arg1, u8 arg2);
+extern void updateDiaryHighlighted(u8 diaryHighlighted, u8 actionColumnHighlighted, bool arg2);
 extern void animateDiarySelected(u8 arg0, u8 arg1);
 extern void loadFarmRankingsListScreen(void);
 extern void loadIndividualRankingScreen(u8);

@@ -614,6 +614,9 @@ u16 D_80116F88[] = {
     0x0000,
     0x0000,
     0x0000,
+    0x00B4, // need to manually add assets/text/diary/text180.txt
+    0x0000,
+    0x0000,
     0x0000,
     0x0000,
     0x0000,
@@ -734,7 +737,7 @@ void showDialogueDownArrow(f32 x, f32 y);
 void showDialogueUpArrow(f32 x, f32 y);
 void hideDialogueDownArrow(void);
 void hideDialogueUpArrow(void);
-void setItemDescriptionVariable(u8 arg0, u8 arg1);
+void setItemDescriptionVariable(u8 arg0, u16 arg1);
 void initializeRaceBettingMessageBoxes(void);
 void fadeInRaceBettingSprites(void);
 void loadRaceResultsScreenSprites(void);
@@ -8001,7 +8004,7 @@ void hideDialogueUpArrow(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setItemDescriptionVariable);
 
-void setItemDescriptionVariable(u8 type, u8 itemOrToolIndex) {
+void setItemDescriptionVariable(u8 type, u16 itemOrToolIndex) {
 
     u16 textIndex;
     u32 idx;
@@ -8082,7 +8085,7 @@ skip:
 
         case 0x42:
             textIndex += gPlayer.bottleContents;
-            break;
+            break; 
 
     }
 

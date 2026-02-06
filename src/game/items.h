@@ -312,7 +312,7 @@ extern void clearAllItemContextSlots();
 extern void loadActiveItemEntities();
 extern u16 getItemFlags(u16 index);
 extern bool handlePickUpGroundItem();
-extern void showHeldItemText(u16 index);
+extern void showHeldItemText(u8 index);
 extern void updateHeldItemState();
 extern u8 getToolLevel(u8 tool);
 extern u8 getItemStaminaIncreaseValue(u16 index);
