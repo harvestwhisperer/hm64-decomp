@@ -462,7 +462,7 @@ static inline void reset() {
 
 void setupPlayerEntity(u16 spawnPoint, u8 resetPlayer) {
  
-    loadEntity(ENTITY_PLAYER, 0, TRUE);
+    loadEntity(ENTITY_PLAYER, ENTITY_ASSET_PLAYER, TRUE);
 
     setEntityCollidable(ENTITY_PLAYER, TRUE);
     setEntityYMovement(ENTITY_PLAYER, TRUE);

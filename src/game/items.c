@@ -470,7 +470,7 @@ u16 itemShippingValues[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // 199
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // 207
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // 215
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0064, 0x0000, 0x0000, 0x0000, // 223
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0064, 0x0000, 0x0000, // 223
 };
 
 u16 itemFlags[] = {
@@ -3339,7 +3339,7 @@ void updateHeldItemState(void) {
                     case ITEM_STATE_THROW_LANDED:
 
                         deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
-                        loadEntity(ENTITY_ITEM_BASE_INDEX + i, 0x5E, 1);
+                        loadEntity(ENTITY_ITEM_BASE_INDEX + i, ENTITY_ASSET_HOLDABLE_ITEMS_3, 1);
                         setEntityColor(ENTITY_ITEM_BASE_INDEX + i, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.r, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.g, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.b, mainMap[MAIN_MAP_INDEX].mapGlobals.currentRGBA.a);
                         setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + i, 0.0f, 0.0f, 0.0f, 0.0f);
                         setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + i, FALSE);

@@ -126,8 +126,7 @@ void func_8004DFF8(void) {
             // Flags: Activa, Entidad cargada (1 | 4)
             gChickens[i].flags = CHICKEN_ACTIVE | CHICKEN_ENTITY_LOADED;
             gChickens[i].type = ADULT_CHICKEN;
-            if(i == 0) gChickens[i].affection = 221; // Empezar con algo de cariño
-            else gChickens[i].affection = 50;
+            gChickens[i].affection = 222;
             gChickens[i].location = COOP; // Que aparezca en la casa
             
             // 3. Coordenadas iniciales (Dentro del gallinero)

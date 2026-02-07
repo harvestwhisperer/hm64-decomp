@@ -504,6 +504,7 @@ bool handlePlayerAnimalInteraction(void) {
                             case ADULT_CHICKEN:
                                 gPlayer.heldItem = CHICKEN_HELD_ITEM;
                                 gChickens[i].flags |= CHICKEN_HELD;
+                                gChickens[i].affection += gChickens[i].affection < 230 ? 20 : 0;
                                 set = TRUE;
                                 break;
                             
@@ -1147,9 +1148,6 @@ u8 initializeNewChicken(u8 animalType, u8 arg1) {
     if (found != 0xFF) {
         if (arg1 == CHICKEN_EGG_HATCHED) {
             gChickens[found].location = COOP;
-            gChickens[found].affection = animalType == CHICKEN_GOLDEN_EGG ? 75 : 0;
-            if(gChickens[found].affection == 75)
-                playSfx(CLIPPERS_SFX);
             gChickens[found].coordinates.x = chickenStartingCoordinates[found].x;
             gChickens[found].coordinates.y = chickenStartingCoordinates[found].y;
             gChickens[found].coordinates.z = chickenStartingCoordinates[found].z;
@@ -1158,12 +1156,11 @@ u8 initializeNewChicken(u8 animalType, u8 arg1) {
             gChickens[found].coordinates.x = gChickens[arg1].coordinates.x;
             gChickens[found].coordinates.y = gChickens[arg1].coordinates.y;
             gChickens[found].coordinates.z = gChickens[arg1].coordinates.z;
+            gChickens[found].affection = gChickens[arg1].affection;
         }
         setAnimalState(COOP_ANIMALS, found, animalType, 0, 0);
-
         gChickens[found].direction = 2;
         gChickens[found].flags = CHICKEN_ACTIVE;
-        
     }
 
     return found;
@@ -1825,58 +1822,39 @@ void updateDogAffectionIfFed(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/animals", updateChickenStartOfDay);
 
 void updateChickenStartOfDay(u8 index) {
-    
     if ((gChickens[index].flags & CHICKEN_ACTIVE) && !(gChickens[index].flags & CHICKEN_NEWBORN)) {
-        
         if (gChickens[index].flags & 0x80) {
-            
             gChickens[index].flags &= ~CHICKEN_FED;
-
         } else {
-
             if (gChickens[index].location != COOP) {
                 gChickens[index].flags &= ~CHICKEN_FED;
             }
-
             if (gChickens[index].location == FARM) {
-                
                 if (gSeason != WINTER) {
                     gChickens[index].flags |= CHICKEN_FED;
-                } 
-
-            } 
-
+                }
+            }
         }
 
         switch (gChickens[index].type) {
-        
             case CHICKEN_EGG:
             case CHICKEN_GOLDEN_EGG:
-                
                 if (gChickens[index].flags & CHICKEN_EGG_INCUBATING) {
-                    
                     gChickens[index].typeCounter++;
-                    
                     if (gChickens[index].typeCounter == CHICKEN_EGG_INCUBATION_DURATION) {
-
-                        // add logic to born a chick with 75 affection if from golden egg
                         bornChickenIndex = initializeNewChicken(CHICK, CHICKEN_EGG_HATCHED);
-
                         if (bornChickenIndex != 0xFF) {
-
+                            gChickens[bornChickenIndex].affection = gChickens[index].type == CHICKEN_GOLDEN_EGG ? 75 : 0;
+                            if(gChickens[bornChickenIndex].affection == 75)
+                                playSfx(MILKER_SFX);
                             gChickens[bornChickenIndex].flags |= CHICKEN_NEWBORN;
                             gChickens[index].flags &= ~CHICKEN_ACTIVE;
-
                             setLifeEventBit(CHICKEN_BORN);
-                            
                         } else {                        
                             gChickens[index].typeCounter--;
                         }
-                        
                     }
-                    
                 }
-                
                 break;
             
             case CHICK:
@@ -2266,32 +2244,27 @@ void initializeDogEntity(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/animals", initializeChickenEntity);
 
 void initializeChickenEntity(u8 chickenIndex) {
-
+    u16 eggAnimIndex;
     if ((gChickens[chickenIndex].flags & CHICKEN_ACTIVE) && (gChickens[chickenIndex].location == gBaseMapIndex) && !(gChickens[chickenIndex].flags & CHICKEN_HELD)) {
-    
         gChickens[chickenIndex].entityIndex = chickenIndex + 2;
-        
         switch (gChickens[chickenIndex].type) {
-
             case ADULT_CHICKEN:
                 initializeAnimalEntity(chickenIndex + 2, (u16*)ENTITY_SLOTS_2_7_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_2_7_ANIM_METADATA, (u32*)ENTITY_SLOTS_2_7_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_2_7_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gChickens[chickenIndex].entityIndex, 0x44, TRUE);
+                loadEntity(gChickens[chickenIndex].entityIndex, ENTITY_ASSET_CHICKEN, TRUE);
                 break;         
-            
             case CHICK:
                 initializeAnimalEntity(chickenIndex + 2, (u16*)ENTITY_CHICK_PALETTE, (AnimationFrameMetadata*)ENTITY_CHICK_ANIM_METADATA, (u32*)ENTITY_CHICK_SPRITESHEET_INDEX, (u32*)ENTITY_CHICK_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gChickens[chickenIndex].entityIndex, 0x43, TRUE);
+                loadEntity(gChickens[chickenIndex].entityIndex, ENTITY_ASSET_CHICK, TRUE);
                 break;
-            
             case CHICKEN_EGG:
             case CHICKEN_GOLDEN_EGG:
+                // needs to select between normal or golden sprite
                 initializeAnimalEntity(chickenIndex + 2, (u16*)ENTITY_SLOTS_8_13_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_8_13_ANIM_METADATA, (u32*)ENTITY_SLOTS_8_13_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_8_13_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gChickens[chickenIndex].entityIndex, 0x5D, TRUE);
+                loadEntity(gChickens[chickenIndex].entityIndex, ENTITY_ASSET_HOLDABLE_ITEMS_2, TRUE);
+                eggAnimIndex = (gChickens[chickenIndex].type == CHICKEN_GOLDEN_EGG) ? 0x0045 : 0x0013;
                 break;
-            
             default:
                 break;
-            
         }
 
         setEntityCollidable(gChickens[chickenIndex].entityIndex, TRUE);
@@ -3484,6 +3457,7 @@ void updateChick(u8 index) {
 
 void updateChickenEgg(u8 chickenIndex) {
 
+    u16 eggType = 0xFF;
     switch (gChickens[chickenIndex].actionState) {
 
         case 0:
@@ -3491,7 +3465,8 @@ void updateChickenEgg(u8 chickenIndex) {
             gChickens[chickenIndex].speed = 0;
             gChickens[chickenIndex].stateTimer = 0;
             gChickens[chickenIndex].unk_1B = 0;
-            setEntityAnimation(gChickens[chickenIndex].entityIndex, 0x13);
+            eggType = (gChickens[chickenIndex].type == CHICKEN_GOLDEN_EGG) ? 0xFC : 0x13;
+            setEntityAnimation(gChickens[chickenIndex].entityIndex, eggType);
             gChickens[chickenIndex].flags |= CHICKEN_STATE_CHANGED;
             
     }
