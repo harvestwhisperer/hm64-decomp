@@ -232,7 +232,7 @@
 #define CRICKET_HELD_ITEM 185
 #define BABY_HELD_ITEM 186
 // multiple directions
-#define BABY_HELD_ITEM 192
+ #define BABY_HELD_ITEM2 192
 // multiple directions
 #define BABY_GROWN_HELD_ITEM 194
 // multiple directions
@@ -256,9 +256,9 @@
 #define MAP_HELD_ITEM 219
 #define PENDANT_HELD_ITEM 220
 #define GOLDEN_EGG_HELD_ITEM 221 // needs to add PACK_ANIM_DATA(159, ANIM_TYPE_LOOP, 0), on slot 251 and PACK_ANIM_DATA(160, ANIM_TYPE_LOOP, 0), on slot 252 from shopItemsAnimationScripts it needs to be forced on make to take the change on that file
-#define BABY_HELD_ITEM 222
+#define BABY_HELD_ITEM3 222
 #define PLAYER_HELD_ITEM 223
-#define PLAYER_HELD_ITEM 224
+#define PLAYER_HELD_ITEM2 224
 
 /* bottle contents */
 #define EMPTY 0

@@ -470,7 +470,7 @@ u16 itemShippingValues[] = {
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // 199
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // 207
     0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // 215
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0064, 0x0000, 0x0000, // 223
+    0x0000, 0x0000, 0x0000, 0x0000, 0x0064, 0x0000, 0x0000, 0x0000, // 223
 };
 
 u16 itemFlags[] = {
@@ -2937,10 +2937,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
 
        case EGG_HELD_ITEM:
        case GOLDEN_EGG_HELD_ITEM:
-            if(itemInfo[itemIndex].heldItemIndex == 221)
             gPlayer.heldAnimalIndex = initializeNewChicken(itemInfo[itemIndex].heldItemIndex == GOLDEN_EGG_HELD_ITEM ? CHICKEN_GOLDEN_EGG : CHICKEN_EGG, 0xFF);
-            if(gPlayer.heldAnimalIndex == CHICKEN_GOLDEN_EGG)
-                playSfx(CLIPPERS_SFX);
             gChickens[gPlayer.heldAnimalIndex].coordinates.x = 92.0f;
             gChickens[gPlayer.heldAnimalIndex].coordinates.y = 0;
             gChickens[gPlayer.heldAnimalIndex].coordinates.z = -148.0f;
@@ -2978,7 +2975,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0xBD:                                     
         case 0xBE:                                     
         case 0xBF:                                     
-        case 0xC0:                                     
+        case 0xC0:
         case 0xC1:                  
 
             npcs[BABY].levelIndex = HOUSE;
@@ -3083,7 +3080,7 @@ void showHeldItemText(u8 index) {
 void processItemShipping(u8 index) {
 
     u32 result;
-    
+
     dailyShippingBinValue += adjustValue(dailyShippingBinValue, itemShippingValues[index], MAX_TOTAL_SHIPPING);
      
     switch (index) {
