@@ -4176,7 +4176,7 @@ void handleCutsceneCompletion(void) {
                         case CHICKEN_TYPE:                             
                             setLifeEventBit(0x32);
                             gNamingScreenIndex = NAMING_SCREEN_TYPE_CHICKEN;
-                            gSelectedAnimalIndex = initializeNewChicken(2, 0xFF);
+                            gSelectedAnimalIndex = initializeNewChicken(ADULT_CHICKEN, 0xFF);
                             break;
 
                         default:

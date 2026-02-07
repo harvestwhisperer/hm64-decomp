@@ -255,7 +255,7 @@
 #define BROKEN_MUSIC_BOX_HELD_ITEM 218
 #define MAP_HELD_ITEM 219
 #define PENDANT_HELD_ITEM 220
-#define GOLDEN_EGG_HELD_ITEM 221 // Add PACK_ANIM_DATA(159, ANIM_TYPE_LOOP, 0), on slot 251 from shopItemsAnimationScripts it needs to be forced on make to take the change on that file
+#define GOLDEN_EGG_HELD_ITEM 221 // needs to add PACK_ANIM_DATA(159, ANIM_TYPE_LOOP, 0), on slot 251 and PACK_ANIM_DATA(160, ANIM_TYPE_LOOP, 0), on slot 252 from shopItemsAnimationScripts it needs to be forced on make to take the change on that file
 #define BABY_HELD_ITEM 222
 #define PLAYER_HELD_ITEM 223
 #define PLAYER_HELD_ITEM 224

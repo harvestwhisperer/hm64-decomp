@@ -270,7 +270,7 @@ void updateFarmStatusRain(void) {
 
                             if (!getRandomNumberInRange(0, 3)) {
                                 
-                                setAnimalState(2, i, 0xFF, COW_MAD, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, COW_MAD, 0);
                                 adjustFarmAnimalAffection(i, -20);
 
                                 gHappiness += adjustValue(gHappiness + 5, -5, MAX_HAPPINESS);
@@ -279,7 +279,7 @@ void updateFarmStatusRain(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                                 
-                                setAnimalState(2, i, 0xFF, COW_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, COW_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                         
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -315,7 +315,7 @@ void updateFarmStatusRain(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                             
-                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -340,7 +340,7 @@ void updateFarmStatusRain(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                                     
-                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -376,9 +376,10 @@ void updateFarmStatusRain(void) {
                     break;
                 case ADULT_CHICKEN:
                     if (gChickens[i].condition == CHICKEN_NORMAL) {
-                        setAnimalState(1, i, 0xFF, CHICKEN_STARVED, 0);
+                        setAnimalState(COOP_ANIMALS, i, 0xFF, CHICKEN_STARVED, 0);
                     }
                 case CHICKEN_EGG:
+                case CHICKEN_GOLDEN_EGG:
                     break;
                 
             } 
@@ -422,7 +423,7 @@ void updateFarmStatusSnow(void) {
 
                             if (!getRandomNumberInRange(0, 1)) {
                                 
-                                setAnimalState(2, i, 0xFF, COW_MAD, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, COW_MAD, 0);
                                 adjustFarmAnimalAffection(i, -20);
 
                                 gHappiness += adjustValue(gHappiness + 5, -5, MAX_HAPPINESS);
@@ -431,7 +432,7 @@ void updateFarmStatusSnow(void) {
                             
                             if (!getRandomNumberInRange(0, 3)) {
                                 
-                                setAnimalState(2, i, 0xFF, COW_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, COW_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                         
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -467,7 +468,7 @@ void updateFarmStatusSnow(void) {
                             
                             if (!getRandomNumberInRange(0, 3)) {
                             
-                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -492,7 +493,7 @@ void updateFarmStatusSnow(void) {
                             
                             if (!getRandomNumberInRange(0, 3)) {
                                     
-                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -526,9 +527,10 @@ void updateFarmStatusSnow(void) {
                     break;
                 case ADULT_CHICKEN:
                     if (gChickens[i].condition == CHICKEN_NORMAL) {
-                        setAnimalState(1, i, 0xFF, CHICKEN_STARVED, 0);
+                        setAnimalState(COOP_ANIMALS, i, 0xFF, CHICKEN_STARVED, 0);
                     }
                 case CHICKEN_EGG:
+                case CHICKEN_GOLDEN_EGG:
                     break;
                 
             } 
@@ -587,7 +589,7 @@ void updateFarmStatusTyphoon(void) {
 
                             if (!getRandomNumberInRange(0, 1)) {
                                 
-                                setAnimalState(2, i, 0xFF, COW_MAD, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, COW_MAD, 0);
                                 adjustFarmAnimalAffection(i, -20);
 
                                 gHappiness += adjustValue(gHappiness + 5, -5, MAX_HAPPINESS);
@@ -596,7 +598,7 @@ void updateFarmStatusTyphoon(void) {
                             
                             if (!getRandomNumberInRange(0, 1)) {
                                 
-                                setAnimalState(2, i, 0xFF, COW_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, COW_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                         
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -632,7 +634,7 @@ void updateFarmStatusTyphoon(void) {
                             
                             if (!getRandomNumberInRange(0, 1)) {
                             
-                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -657,7 +659,7 @@ void updateFarmStatusTyphoon(void) {
                             
                             if (!getRandomNumberInRange(0, 1)) {
                                     
-                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -689,7 +691,7 @@ void updateFarmStatusTyphoon(void) {
 
                 case CHICK:
 
-                    setAnimalState(1, i, 0xFF, CHICKEN_DEAD, 0xFF);
+                    setAnimalState(COOP_ANIMALS, i, 0xFF, CHICKEN_DEAD, 0xFF);
 
                     gChickens[i].flags = 0;
 
@@ -711,7 +713,7 @@ void updateFarmStatusTyphoon(void) {
                         case CHICKEN_NORMAL:
                         case CHICKEN_STARVED:
                         
-                            setAnimalState(1, i, 0xFF, CHICKEN_DEAD, 0xFF);
+                            setAnimalState(COOP_ANIMALS, i, 0xFF, CHICKEN_DEAD, 0xFF);
         
                             gChickens[i].flags = 0;
         
@@ -729,6 +731,7 @@ void updateFarmStatusTyphoon(void) {
                     }
 
                 case CHICKEN_EGG:
+                case CHICKEN_GOLDEN_EGG:
                     break;
                 
             }
@@ -773,7 +776,7 @@ void func_80064CF0(void) {
 
                             if (!getRandomNumberInRange(0, 3)) {
                                 
-                                setAnimalState(2, i, 0xFF, COW_MAD, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, COW_MAD, 0);
                                 adjustFarmAnimalAffection(i, -20);
 
                                 gHappiness += adjustValue(gHappiness + 5, -5, MAX_HAPPINESS);
@@ -782,7 +785,7 @@ void func_80064CF0(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                                 
-                                setAnimalState(2, i, 0xFF, COW_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, COW_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                         
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -818,7 +821,7 @@ void func_80064CF0(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                             
-                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -843,7 +846,7 @@ void func_80064CF0(void) {
                             
                             if (!getRandomNumberInRange(0, 7)) {
                                     
-                                setAnimalState(2, i, 0xFF, SHEEP_SICK, 0);
+                                setAnimalState(BARN_ANIMALS, i, 0xFF, SHEEP_SICK, 0);
                                 adjustFarmAnimalAffection(i, -30);
                                 
                                 gHappiness += adjustValue(gHappiness + 10, -10, MAX_HAPPINESS);
@@ -877,10 +880,11 @@ void func_80064CF0(void) {
                     break;
                 case ADULT_CHICKEN:
                     if (gChickens[i].condition == CHICKEN_NORMAL && !getRandomNumberInRange(0, 3)) {
-                        setAnimalState(1, i, 0xFF, CHICKEN_STARVED, 0);
+                        setAnimalState(COOP_ANIMALS, i, 0xFF, CHICKEN_STARVED, 0);
                     }
                     break;
                 case CHICKEN_EGG:
+                case CHICKEN_GOLDEN_EGG:
                     break;
                 
             } 

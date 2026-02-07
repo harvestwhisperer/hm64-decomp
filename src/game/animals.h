@@ -3,6 +3,9 @@
 
 #include "common.h"
 
+#define COOP_ANIMALS 1
+#define BARN_ANIMALS 2
+
 #define MAX_CHICKENS 12
 #define MAX_MISC_ANIMALS 7
 #define MAX_FARM_ANIMALS 8
@@ -10,6 +13,8 @@
 #define CHICKEN_EGG 0
 #define CHICK 1
 #define ADULT_CHICKEN 2
+#define CHICKEN_GOLDEN_EGG 3
+#define CHICKEN_EGG_HATCHED 0xFF
 
 #define BABY_COW 0
 #define CALF 1
@@ -221,9 +226,7 @@ typedef struct {
 
 typedef struct {
 	u16 product;
-	u16 sellProductPrice;
 	u16 sellAnimalPrice;
-	u16 staminaRestore;
 } AnimalProductInfo;
 
 typedef struct {
@@ -245,8 +248,10 @@ typedef struct {
     : GET_COW_AFF_ID(gFarmAnimals[(animalIdx)].affection))
 
 typedef struct {
-	AnimalProductInfo chickenProductInfo[2];
+	AnimalProductInfo chickenProductInfo[3];
 } ChickenProductInfo;
+
+#define GET_CHICKEN_INDEX(aff) ((aff) >= 221 ? 2 : ((aff) >= 150 ? 1 : 0))
 
 extern u8 initializeNewFarmAnimal(u8 arg0, u8 arg1);
 extern void adjustAllAnimalAffection(s8 amount);

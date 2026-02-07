@@ -1397,7 +1397,7 @@ void handleItemLevelInteraction(u8 arg0) {
 
         if (checkFarmDogBowlInteraction(gBaseMapIndex) != 0xFF) {
             
-            if ((getItemFlags(gPlayer.heldItem) & ITEM_EATABLE) && !set) {    
+            if ((getItemFlags(gPlayer.heldItem) & ITEM_EATABLE) && !set) {
                 startAction(PUTTING_FOOD_IN_DOG_BOWL, ANIM_PUT_FOOD_IN_DOG_BOWL);
             }
             
@@ -4178,7 +4178,6 @@ void handleToolChangeAnimation(void) {
         if (gPlayer.actionPhase >= 10) {
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
             handleStopHolding();
-            playSfx(MILKER_SFX);
             resetAction();
         }
     }

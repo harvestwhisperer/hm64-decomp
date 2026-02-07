@@ -67,6 +67,8 @@ void startGame(void) {
     
 }
 
+u8 i;
+
 //INCLUDE_ASM("asm/nonmatchings/game/gameStart", func_8004DFF8);
 
 // unused function: probably for sandboxing during development or demos
@@ -98,13 +100,13 @@ void func_8004DFF8(void) {
     
 //     setSpecialDialogueBit(0x25);
 
-    gGold = 999999;
+    gGold = 100000;
     
     gPlayer.belongingsSlots[0] = EGG_HELD_ITEM;
     gPlayer.belongingsSlots[1] = GOLDEN_EGG_HELD_ITEM;
     gPlayer.belongingsSlots[2] = GOLDEN_MILK;
 
-    gPlayer.toolSlots[0] = TURNIP_SEEDS;
+    gPlayer.toolSlots[0] = CHICKEN_FEED;
     gPlayer.toolSlots[1] = POTATO_SEEDS;
     gPlayer.toolSlots[2] = CABBAGE_SEEDS;
     gPlayer.toolSlots[3] = TOMATO_SEEDS;
@@ -114,12 +116,32 @@ void func_8004DFF8(void) {
     gPlayer.toolSlots[7] = GRASS_SEEDS;
     gPlayer.toolSlots[8] = MOON_DROP_SEEDS;
 
-    gChickens[0].affection = 0;
-    gChickens[1].affection = 111;
-    gChickens[2].affection = 112;
-    gChickens[3].affection = 113;
-    gChickens[4].affection = 120;
-    gChickens[5].affection = 121;
+    chickenFeedQuantity = 100;
+    
+    // 1. Buscamos el primer slot vacío en el arreglo de gallinas
+    for (i = 0; i < MAX_CHICKENS; i++) {
+        if (!(gChickens[i].flags & CHICKEN_ACTIVE)) {
+            
+            // 2. Limpiamos y activamos los datos básicos
+            // Flags: Activa, Entidad cargada (1 | 4)
+            gChickens[i].flags = CHICKEN_ACTIVE | CHICKEN_ENTITY_LOADED;
+            gChickens[i].type = ADULT_CHICKEN;
+            if(i == 0) gChickens[i].affection = 221; // Empezar con algo de cariño
+            else gChickens[i].affection = 50;
+            gChickens[i].location = COOP; // Que aparezca en la casa
+            
+            // 3. Coordenadas iniciales (Dentro del gallinero)
+            gChickens[i].coordinates.x = 0.0f;
+            gChickens[i].coordinates.y = 0.0f;
+            gChickens[i].coordinates.z = 0.0f;
+            
+            // 4. Registrarla en el sistema de entidades (IMPORTANTE)
+            // Esto reserva el modelo 3D en la memoria de la N64
+            initializeChickenEntity(i);
+            
+            if(i == 1) break; // Solo queremos crear una
+        }
+    }
     
 //     initializeHorse();
     
