@@ -135,7 +135,7 @@ void func_8004DFF8(void) {
 //     npcAffection[POPURI] = MAX_AFFECTION;
     
 //     gSeason = WINTER;
-//     gDayOfMonth = 18;
+     gDayOfMonth = 1;
     
 //     dogInfo.affection = MAX_AFFECTION;
     

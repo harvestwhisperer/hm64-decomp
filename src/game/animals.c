@@ -477,10 +477,11 @@ bool handlePlayerAnimalInteraction(void) {
                     } else {
                         switch (gChickens[i].type) {
                             case ADULT_CHICKEN:
-                                gPlayer.heldItem = CHICKEN_HELD_ITEM;
                                 if(!(gChickens[i].flags & CHICKEN_HELD) && (gChickens[i].flags & CHICKEN_FED))
                                   adjustChickenAffection(i, 10);
+                                gPlayer.heldItem = CHICKEN_HELD_ITEM;
                                 gChickens[i].flags |= CHICKEN_HELD;
+                                set = TRUE;
                                 break;
                             case CHICK:
                                 gPlayer.heldItem = CHICK_HELD_ITEM;
@@ -1843,8 +1844,10 @@ void updateChickenStartOfDay(u8 index) {
                             switch(gChickens[index].conditionCounter){
                                 case 1:
                                     adjustChickenAffection(index, -20);
+                                    break;
                                 case 2:
                                     adjustChickenAffection(index, -40);
+                                    break;
                                 case 3:
                                     setAnimalState(COOP_ANIMALS, index, 0xFF, CHICKEN_DEAD, 0xFF);
                                     gChickens[index].flags = 0;
@@ -1855,6 +1858,9 @@ void updateChickenStartOfDay(u8 index) {
                                     gDeadAnimalName[3] = gChickens[index].name[3];
                                     gDeadAnimalName[4] = gChickens[index].name[4];
                                     gDeadAnimalName[5] = gChickens[index].name[5];
+                                    break;
+                                default:
+                                    break;
                             }
                         }
                         break;
