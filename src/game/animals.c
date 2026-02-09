@@ -333,85 +333,72 @@ inline void adjustHorseAffection(s8 amount) {
     }
 }
 
+inline void adjustChickenAffection(u8 chickenIndex, s8 amount) {
+    if(gChickens[chickenIndex].flags & CHICKEN_ACTIVE){
+        switch (gChickens[chickenIndex].type){
+        case CHICK:
+            break;
+        case ADULT_CHICKEN:
+            adjustValue(gChickens[chickenIndex].affection, amount, MAX_AFFECTION);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 //INCLUDE_ASM("asm/nonmatchings/game/animals", adjustFarmAnimalAffection);
 
 void adjustFarmAnimalAffection(u8 animalIndex, s8 amount) {
-    
     s8 adjusted;
-    
     if (gFarmAnimals[animalIndex].flags & FARM_ANIMAL_ACTIVE) {
-    
         switch (gFarmAnimals[animalIndex].type) {
-
             case BABY_COW:
             case CALF:
             case PREGNANT_COW:
             case BABY_SHEEP:
                 adjusted = amount;
                 break;
-
             case ADULT_COW:
-
                 switch (gFarmAnimals[animalIndex].condition) {
-                    
                     case COW_NORMAL:
                         adjusted = amount;
                         break;
-
                     case COW_MAD:
                         adjusted = (amount >= 0) ? (amount / 2) : -(amount * 2);
                         break;
-                    
                     case COW_HAPPY:
                         adjusted = (amount >= 0) ? (amount * 2) : -(amount / 2);
                         break;
-
                     case COW_SICK:
                         adjusted = (amount >= 0) ? (amount / 2) : -(amount * 2);
                         break;
-                    
                 }
-
                 break;
-
             case SHEARED_SHEEP:
-                
                 switch (gFarmAnimals[animalIndex].condition) {
-
                     case SHEEP_NORMAL:
                         adjusted = amount;
                         break;
-                
                     case SHEEP_SICK:
                         adjusted = (amount >= 0) ? (amount / 2) : -(amount * 2);
                         break;
-                
                 }
-                
                 break;
-
             case ADULT_SHEEP:
-                
                 switch (gFarmAnimals[animalIndex].condition) {
-                    
                     case SHEEP_NORMAL:
                         adjusted = amount;
                         break;
-                        
                     case SHEEP_SICK:
                         adjusted = (amount >= 0) ? (amount / 2) : -(amount * 2);
                         break;
-            
                 }
-
                 break;
-
         }
-
         gFarmAnimals[animalIndex].affection += adjustValue(gFarmAnimals[animalIndex].affection, adjusted, MAX_AFFECTION);
-    
+
     }
-    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", getMilkHeldItemIndex);
@@ -475,45 +462,31 @@ bool handlePlayerAnimalInteraction(void) {
             }
 
             for (i = 0; i < MAX_CHICKENS && !set; i++) {
-
                 if ((gChickens[i].flags & CHICKEN_ENTITY_LOADED) && entities[gChickens[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[gChickens[i].entityIndex].buttonPressed == BUTTON_A) {
-
                     if (checkDailyEventBit(2) && getLevelFlags(gChickens[i].location) & LEVEL_FARM) {
-
                         if (gChickens[i].type == ADULT_CHICKEN) {
-
                             setGameVariableString(0xD, gChickens[i].name, 6);
                             showPinkOverlayText(7);
-                            
                             selectedAnimalType = CHICKEN_TYPE;
                             gSelectedAnimalIndex = i;
-                            
                             setgAnimalSalePrice();
-                            
-                            
                         } else {
                             showTextBox(0, SHOP_TEXT_INDEX, 0x5C, 0, 2);
                         }
-                        
                         set = TRUE;
-                        
                     } else {
-
                         switch (gChickens[i].type) {
-
                             case ADULT_CHICKEN:
                                 gPlayer.heldItem = CHICKEN_HELD_ITEM;
                                 gChickens[i].flags |= CHICKEN_HELD;
-                                gChickens[i].affection += gChickens[i].affection < 230 ? 20 : 0;
-                                set = TRUE;
+                                if(!(gChickens[i].flags & CHICKEN_HELD) && (gChickens[i].flags & CHICKEN_FED))
+                                  adjustChickenAffection(i, 10);
                                 break;
-                            
                             case CHICK:
                                 gPlayer.heldItem = CHICK_HELD_ITEM;
                                 gChickens[i].flags |= CHICKEN_HELD;
                                 set = TRUE;
                                 break;
-                            
                             case CHICKEN_EGG:
                             case CHICKEN_GOLDEN_EGG:
                                 if (!(gChickens[i].flags & CHICKEN_EGG_INCUBATING)) {
@@ -522,24 +495,15 @@ bool handlePlayerAnimalInteraction(void) {
                                     gChickens[i].flags = 0;
                                 }
                                 break;
-                            
                         }
-
                         if (set) {
-                            
                             deactivateEntity(gChickens[i].entityIndex);
-                            
                             setPlayerAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
                             gPlayer.heldAnimalIndex = i;
-                            
                             gChickens[i].flags &= ~CHICKEN_ENTITY_LOADED;
-                            
                         }
-                        
                     }
-                    
                 }
-
             }
 
             for (i = 0; i < MAX_FARM_ANIMALS && !set; i++) {
@@ -637,16 +601,16 @@ bool handlePlayerAnimalInteraction(void) {
                             gFarmAnimals[i].flags |= (FARM_ANIMAL_APPROACHING  | FARM_ANIMAL_FOLLOWING);
                             
                             if (!(gFarmAnimals[i].flags & FARM_ANIMAL_TALKED_TO)) {
-                                
+
                                 adjustFarmAnimalAffection(i, 1);
                                 setAnimalState(BARN_ANIMALS, i, 0xFF, 0xFF, 17);
-    
+
                                 gFarmAnimals[i].flags |= FARM_ANIMAL_COLLISION_WITH_PLAYER;
-                                
+
                                 showAnimalExpressionBubble(COW_TYPE, i, 3);
-    
+
                                 gFarmAnimals[i].flags |= FARM_ANIMAL_TALKED_TO;
-                                
+
                             }
                             
                         }
@@ -1828,10 +1792,12 @@ void updateChickenStartOfDay(u8 index) {
         } else {
             if (gChickens[index].location != COOP) {
                 gChickens[index].flags &= ~CHICKEN_FED;
+                adjustChickenAffection(index, -2);
             }
             if (gChickens[index].location == FARM) {
                 if (gSeason != WINTER) {
                     gChickens[index].flags |= CHICKEN_FED;
+                    adjustChickenAffection(index, 5);
                 }
             }
         }
@@ -1845,8 +1811,6 @@ void updateChickenStartOfDay(u8 index) {
                         bornChickenIndex = initializeNewChicken(CHICK, CHICKEN_EGG_HATCHED);
                         if (bornChickenIndex != 0xFF) {
                             gChickens[bornChickenIndex].affection = gChickens[index].type == CHICKEN_GOLDEN_EGG ? 75 : 0;
-                            if(gChickens[bornChickenIndex].affection == 75)
-                                playSfx(MILKER_SFX);
                             gChickens[bornChickenIndex].flags |= CHICKEN_NEWBORN;
                             gChickens[index].flags &= ~CHICKEN_ACTIVE;
                             setLifeEventBit(CHICKEN_BORN);
@@ -1856,69 +1820,48 @@ void updateChickenStartOfDay(u8 index) {
                     }
                 }
                 break;
-            
             case CHICK:
-                
                 gChickens[index].typeCounter++;
-                
                 if (gChickens[index].typeCounter == CHICK_DURATION) {
                     setAnimalState(COOP_ANIMALS, index, ADULT_CHICKEN, 0, 0);
                 }
-                
                 break;
-            
             case ADULT_CHICKEN:
-                
                 switch (gChickens[index].condition) {
-                    
                     case CHICKEN_NORMAL:
-                        
                         if ((gChickens[index].flags & CHICKEN_FED)) {
-                            // seems in here we define type of egg!!
                             initializeNewChicken(gChickens[index].affection < 221 ? CHICKEN_EGG : CHICKEN_GOLDEN_EGG, index);
                         } else {
                             setAnimalState(COOP_ANIMALS, index, 0xFF, CHICKEN_STARVED, 0);
                         }
-                        
                         break;
-                    
                     case CHICKEN_STARVED:
-                        
                         if (gChickens[index].flags & CHICKEN_FED) {
                             setAnimalState(COOP_ANIMALS, index, 0xFF, CHICKEN_NORMAL, 0);
                         } else {
-                            
                             gChickens[index].conditionCounter++;
-                            
-                            if (gChickens[index].conditionCounter == 3) {
-                                
-                                setAnimalState(COOP_ANIMALS, index, 0xFF, CHICKEN_DEAD, 0xFF);
-                                
-                                gChickens[index].flags = 0;
-
-                                setLifeEventBit(ANIMAL_DIED);
-                                
-                                gDeadAnimalName[0] = gChickens[index].name[0];
-                                gDeadAnimalName[1] = gChickens[index].name[1];
-                                gDeadAnimalName[2] = gChickens[index].name[2];
-                                gDeadAnimalName[3] = gChickens[index].name[3];
-                                gDeadAnimalName[4] = gChickens[index].name[4];
-                                gDeadAnimalName[5] = gChickens[index].name[5];
-
+                            switch(gChickens[index].conditionCounter){
+                                case 1:
+                                    adjustChickenAffection(index, -20);
+                                case 2:
+                                    adjustChickenAffection(index, -40);
+                                case 3:
+                                    setAnimalState(COOP_ANIMALS, index, 0xFF, CHICKEN_DEAD, 0xFF);
+                                    gChickens[index].flags = 0;
+                                    setLifeEventBit(ANIMAL_DIED);
+                                    gDeadAnimalName[0] = gChickens[index].name[0];
+                                    gDeadAnimalName[1] = gChickens[index].name[1];
+                                    gDeadAnimalName[2] = gChickens[index].name[2];
+                                    gDeadAnimalName[3] = gChickens[index].name[3];
+                                    gDeadAnimalName[4] = gChickens[index].name[4];
+                                    gDeadAnimalName[5] = gChickens[index].name[5];
                             }
-                            
                         }
-                        
                         break;
-                    
                 }
-
             break;
-            
         }
-        
     }
-    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", updateFarmAnimalStartOfDay);

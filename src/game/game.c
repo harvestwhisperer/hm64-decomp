@@ -1032,24 +1032,18 @@ void resetDailyBits(void) {
 
 // same as func_80046D50
 inline int adjustValue(int initial, int value, int max) {
-
     int temp;
     int adjusted;
-
     adjusted = value;
     temp = initial + adjusted;
-    
     if (max < temp) {
         adjusted -= temp - max;
         temp = max;
     }
-    
     if (temp < 0) {
         adjusted -= temp;
     } 
-      
     return adjusted;
-    
 }
 
 

@@ -32,8 +32,8 @@ void setupGameStart(void) {
     initializeAll(); 
     
     if (contPattern & 1) {
-        // launchIntroCutscene(OPENING_LOGOS, 0x61, 1);
-        startGame();
+        launchIntroCutscene(OPENING_LOGOS, 0x61, 1);
+        // startGame();
     } else {
 
         setMainLoopCallbackFunctionIndex(NO_OP);
@@ -56,7 +56,7 @@ void startGame(void) {
 
     // set spawnable/foragable items
     func_800598E0();
-    func_8004DFF8();
+    // func_8004DFF8();
 
     setDailyEventBit(0x53);
     setDailyEventBit(0x54);
@@ -73,7 +73,7 @@ u8 i;
 
 // unused function: probably for sandboxing during development or demos
 // not in JP version
-void func_8004DFF8(void) {
+/* void func_8004DFF8(void) {
     
      setLifeEventBit(HAVE_HORSE);
      setLifeEventBit(HAVE_KITCHEN);
@@ -106,39 +106,20 @@ void func_8004DFF8(void) {
     gPlayer.belongingsSlots[1] = GOLDEN_EGG_HELD_ITEM;
     gPlayer.belongingsSlots[2] = GOLDEN_MILK;
 
-    gPlayer.toolSlots[0] = CHICKEN_FEED;
-    gPlayer.toolSlots[1] = POTATO_SEEDS;
-    gPlayer.toolSlots[2] = CABBAGE_SEEDS;
-    gPlayer.toolSlots[3] = TOMATO_SEEDS;
-    gPlayer.toolSlots[4] = CORN_SEEDS;
-    gPlayer.toolSlots[5] = EGGPLANT_SEEDS;
-    gPlayer.toolSlots[6] = STRAWBERRY_SEEDS;
-    gPlayer.toolSlots[7] = GRASS_SEEDS;
-    gPlayer.toolSlots[8] = MOON_DROP_SEEDS;
-
     chickenFeedQuantity = 100;
+    fodderQuantity = 100;
     
-    // 1. Buscamos el primer slot vacío en el arreglo de gallinas
     for (i = 0; i < MAX_CHICKENS; i++) {
         if (!(gChickens[i].flags & CHICKEN_ACTIVE)) {
-            
-            // 2. Limpiamos y activamos los datos básicos
-            // Flags: Activa, Entidad cargada (1 | 4)
             gChickens[i].flags = CHICKEN_ACTIVE | CHICKEN_ENTITY_LOADED;
             gChickens[i].type = ADULT_CHICKEN;
             gChickens[i].affection = 222;
-            gChickens[i].location = COOP; // Que aparezca en la casa
-            
-            // 3. Coordenadas iniciales (Dentro del gallinero)
+            gChickens[i].location = COOP;
             gChickens[i].coordinates.x = 0.0f;
             gChickens[i].coordinates.y = 0.0f;
             gChickens[i].coordinates.z = 0.0f;
-            
-            // 4. Registrarla en el sistema de entidades (IMPORTANTE)
-            // Esto reserva el modelo 3D en la memoria de la N64
             initializeChickenEntity(i);
-            
-            if(i == 1) break; // Solo queremos crear una
+            if(i == 1) break;
         }
     }
     
@@ -166,4 +147,4 @@ void func_8004DFF8(void) {
 //     // unused game variable
 //     D_8016FB00 = 7;
     
-}
+} */
