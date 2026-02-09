@@ -81,14 +81,14 @@ void func_8004DFF8(void) {
      setLifeEventBit(HAVE_STAIRS);
      setLifeEventBit(HAVE_GREENHOUSE);
      setLifeEventBit(HAVE_LOG_TERRACE);
-//     setLifeEventBit(HAVE_BABY_BED);
-//     setLifeEventBit(HAVE_CABINET);
-//     setLifeEventBit(HAVE_TABLECLOTH);
+     setLifeEventBit(HAVE_BABY_BED);
+     setLifeEventBit(HAVE_CABINET);
+     setLifeEventBit(HAVE_TABLECLOTH);
 //     setLifeEventBit(MAYOR_TOUR);
-//     setLifeEventBit(PAINTING_FROM_MARIA);
+     setLifeEventBit(PAINTING_FROM_MARIA);
 //     setLifeEventBit(BASIL_IN_TOWN);
 //     setLifeEventBit(CLIFF_ARRIVED);
-//     setLifeEventBit(BRIDGE_COMPLETED);
+     setLifeEventBit(BRIDGE_COMPLETED);
 //     setLifeEventBit(0x46);
 //     setLifeEventBit(0x47);
 //     setLifeEventBit(0x58);
@@ -123,14 +123,14 @@ void func_8004DFF8(void) {
         }
     }
     
-//     initializeHorse();
+     initializeHorse();
     
-//     horseInfo.grown = TRUE;
+     horseInfo.grown = TRUE;
 
-//     setLifeEventBit(MARRIED);
-//     setLifeEventBit(WIFE_PREGNANT);
+     // setLifeEventBit(MARRIED);
+     // setLifeEventBit(WIFE_PREGNANT);
     
-//     gWife = POPURI;
+     // gWife = KAREN;
     
 //     npcAffection[POPURI] = MAX_AFFECTION;
     
