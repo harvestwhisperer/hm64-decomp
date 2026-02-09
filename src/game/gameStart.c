@@ -56,7 +56,7 @@ void startGame(void) {
 
     // set spawnable/foragable items
     func_800598E0();
-    // func_8004DFF8();
+    func_8004DFF8();
 
     setDailyEventBit(0x53);
     setDailyEventBit(0x54);
@@ -73,7 +73,7 @@ u8 i;
 
 // unused function: probably for sandboxing during development or demos
 // not in JP version
-/* void func_8004DFF8(void) {
+void func_8004DFF8(void) {
     
      setLifeEventBit(HAVE_HORSE);
      setLifeEventBit(HAVE_KITCHEN);
@@ -147,4 +147,4 @@ u8 i;
 //     // unused game variable
 //     D_8016FB00 = 7;
     
-} */
+}

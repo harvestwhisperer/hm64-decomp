@@ -478,9 +478,9 @@ bool handlePlayerAnimalInteraction(void) {
                         switch (gChickens[i].type) {
                             case ADULT_CHICKEN:
                                 gPlayer.heldItem = CHICKEN_HELD_ITEM;
-                                gChickens[i].flags |= CHICKEN_HELD;
                                 if(!(gChickens[i].flags & CHICKEN_HELD) && (gChickens[i].flags & CHICKEN_FED))
                                   adjustChickenAffection(i, 10);
+                                gChickens[i].flags |= CHICKEN_HELD;
                                 break;
                             case CHICK:
                                 gPlayer.heldItem = CHICK_HELD_ITEM;
