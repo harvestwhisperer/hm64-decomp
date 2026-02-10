@@ -102,8 +102,7 @@ typedef struct {
     u8 tvChannelIndex;          // 0xD0
     u8 varietyShowEpisodeCounters[7]; // 0xD1-0xD7
 
-    u32 recipesBits;            // 0xD8-0xDB
-    u32 unk_DC;                 // 0xDC-0xDF (D_8016FB00)
+    u32 recipesBits[2];            // 0xD8-0xDB
     u32 albumBits;              // 0xE0-0xE3
 
     u8 bornChickenIndex;        // 0xE4

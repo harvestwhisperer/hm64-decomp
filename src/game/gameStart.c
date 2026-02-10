@@ -21,9 +21,6 @@
 #include "assetIndices/cutscenes.h"
 #include "assetIndices/maps.h"
 
-// shared bss
-u32 D_8016FB00;
-
 //INCLUDE_ASM("asm/nonmatchings/game/gameStart", setupGameStart);
 
 void setupGameStart(void) {
@@ -32,8 +29,8 @@ void setupGameStart(void) {
     initializeAll(); 
     
     if (contPattern & 1) {
-        launchIntroCutscene(OPENING_LOGOS, 0x61, 1);
-        // startGame();
+        //launchIntroCutscene(OPENING_LOGOS, 0x61, 1);
+        startGame();
     } else {
 
         setMainLoopCallbackFunctionIndex(NO_OP);
@@ -122,6 +119,8 @@ void func_8004DFF8(void) {
             if(i == 1) break;
         }
     }
+
+     addRecipe(HERB_RICE_CAKE);
     
      initializeHorse();
     

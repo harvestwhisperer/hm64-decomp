@@ -339,7 +339,7 @@ inline void adjustChickenAffection(u8 chickenIndex, s8 amount) {
         case CHICK:
             break;
         case ADULT_CHICKEN:
-            adjustValue(gChickens[chickenIndex].affection, amount, MAX_AFFECTION);
+            gChickens[chickenIndex].affection += adjustValue(gChickens[chickenIndex].affection, amount, MAX_AFFECTION);
             break;
         default:
             break;
@@ -1796,9 +1796,11 @@ void updateChickenStartOfDay(u8 index) {
                 adjustChickenAffection(index, -2);
             }
             if (gChickens[index].location == FARM) {
-                if (gSeason != WINTER) {
+                if (gSeason != WINTER && gWeather == SUNNY) {
                     gChickens[index].flags |= CHICKEN_FED;
                     adjustChickenAffection(index, 5);
+                } else if(gWeather != SUNNY && gWeather != TYPHOON){
+                    adjustChickenAffection(index, -10);
                 }
             }
         }
@@ -1811,7 +1813,7 @@ void updateChickenStartOfDay(u8 index) {
                     if (gChickens[index].typeCounter == CHICKEN_EGG_INCUBATION_DURATION) {
                         bornChickenIndex = initializeNewChicken(CHICK, CHICKEN_EGG_HATCHED);
                         if (bornChickenIndex != 0xFF) {
-                            gChickens[bornChickenIndex].affection = gChickens[index].type == CHICKEN_GOLDEN_EGG ? 75 : 0;
+                            adjustChickenAffection(bornChickenIndex, gChickens[index].type == CHICKEN_GOLDEN_EGG ? 75 : 0);
                             gChickens[bornChickenIndex].flags |= CHICKEN_NEWBORN;
                             gChickens[index].flags &= ~CHICKEN_ACTIVE;
                             setLifeEventBit(CHICKEN_BORN);

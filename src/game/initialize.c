@@ -612,9 +612,7 @@ void initializeGameVariables(void) {
     }
 
     recipesBits[0] = 0;
-
-    // unused
-    D_8016FB00 = 0;
+    recipesBits[1] = 0;
 
     albumBits = 0;
 

@@ -26,6 +26,45 @@
 
 #define EGG_VALUE 50
 
+// Recipes constants
+#define CREAM_OF_TURNIP_STEW 0
+#define EASY_TOMATO_SOUP 1 // needs to be changed in 012.png
+#define TOMATO_RICE 2
+#define SIMPLE_TOMATO_SOUP 3
+#define CORN_FRITTER 4
+#define CORN_PASTA 5
+#define MASHED_POTATO 6
+#define FRIED_POTATO_BACON 7
+#define VEGETABLE_TOMATO_SOUP 8 // needs to be changed in 019.png
+#define GARLIC_POTATO_BEEF 9
+#define EGGPLANT_WITH_MISOPASTE 10
+#define ROLLED_CABBAGE 11
+#define STUFFED_OMELET 12
+#define SPA_POACHED_EGG 13
+#define HAND_MADE_BUTTER 14
+#define MUSHROM_RICE 15
+#define FRIED_CHAR 16
+#define GRILLED_TROUT_CHEESE 17
+#define MUSHROOM_STUFFED_CHAR 18 // needs to be changed in 029.png
+#define STEAMED_CLAM_WITH_WINE 19
+#define MISO_SOUP_WITH_SPROUTS 20
+#define SESAME_DANDELION_GREENS 21
+#define MUSHROOM_SALSA 22
+#define STRAWBERRY_DOG 23
+#define HERB_RICE_CAKE 24
+#define BREAD_PUDDING 25
+#define WALNUT_CAKE 26 // needs to be changed in 037.png
+#define POTATO_PANCAKE 27
+#define STRAWBERRY_JAM 28
+#define STRAWBERRY_CHAMPAGNE 29
+#define VERYBERRY_WINE 30
+#define SPICE_TEA 31
+#define HOT_SPICY_WINE 32
+#define CINNAMON_MILK_TEA 33
+#define PICKLED_TURNIP_CABBAGE 34 // needs to be changed in 045.png
+// seems we have free space for 29 more recipes
+
+
 typedef struct {
     u16 callbackIndex;
     u16 frameCount;

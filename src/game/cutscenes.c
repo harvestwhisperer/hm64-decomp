@@ -2768,6 +2768,7 @@ u16 setVillage1Cutscenes(void) {
 
     u16 bytecodeSegmentIndex = 0xFFFF;
     bool set = FALSE;
+    bool shouldEllenDie = (gYear == 2);
 
     if (!checkLifeEventBit(0x9E) && checkLifeEventBit(2) && checkHaveTool(0x13)) {
         setLifeEventBit(0x9E);
@@ -2835,9 +2836,13 @@ u16 setVillage1Cutscenes(void) {
         gCutsceneFlags |= (2 | 4);
         loadCutscene(FALSE);
         set = TRUE;
-    } 
+    }
 
-    if (!set && !checkLifeEventBit(0x31) && npcAffection[ELLEN] >= 30 && gWeather == SUNNY && gYear == 2 && gSeason == SPRING && 5 < gHour && gHour < 18) {
+    if (checkLifeEventBit(ELLEN_SAVED_BY_EGG)) {
+        shouldEllenDie = (gYear == 3);
+    }
+
+    if (!set && !checkLifeEventBit(ELLEN_DIED) && shouldEllenDie && npcAffection[ELLEN] >= 30 && gWeather == SUNNY && gYear == 2 && gSeason == SPRING && 5 < gHour && gHour < 18) {
         gCutsceneIndex = 416;
         gCutsceneFlags |= (2 | 4);
         loadCutscene(FALSE);

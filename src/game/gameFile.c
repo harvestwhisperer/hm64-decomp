@@ -1508,7 +1508,7 @@ void initializeNewGameState(void) {
     tvContext.varietyShowEpisodeCounters[6] = 0;
 
     recipesBits[0] = 0;
-    D_8016FB00 = 0;
+    recipesBits[1] = 0;
     albumBits = 0;
     
     bornChickenIndex = 0;
@@ -1872,8 +1872,8 @@ bool loadGameFromSram(u8 saveSlot, bool gamePakEnabled) {
     tvContext.varietyShowEpisodeCounters[5] = buff->varietyShowEpisodeCounters[5];
     tvContext.varietyShowEpisodeCounters[6] = buff->varietyShowEpisodeCounters[6];
 
-    recipesBits[0] = buff->recipesBits;
-    D_8016FB00 = buff->unk_DC;
+    recipesBits[0] = buff->recipesBits[0];
+    recipesBits[1] = buff->recipesBits[1];
     albumBits = buff->albumBits;
 
     bornChickenIndex = buff->bornChickenIndex;
@@ -2244,8 +2244,8 @@ bool saveGameToSram(u8 saveSlot) {
     sramBuffer.varietyShowEpisodeCounters[5] = tvContext.varietyShowEpisodeCounters[5];
     sramBuffer.varietyShowEpisodeCounters[6] = tvContext.varietyShowEpisodeCounters[6];
 
-    sramBuffer.recipesBits = recipesBits[0];
-    sramBuffer.unk_DC = D_8016FB00;
+    sramBuffer.recipesBits[0] = recipesBits[0];
+    sramBuffer.recipesBits[1] = recipesBits[1];
     sramBuffer.albumBits = albumBits;
 
     sramBuffer.bornChickenIndex = bornChickenIndex;

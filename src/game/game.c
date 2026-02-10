@@ -3533,109 +3533,109 @@ void recruitSpiritFestivalAssistants(void) {
 void setRecipes(void) {
 
     if (checkSpecialDialogueBit(7)) {
-        addRecipe(0);
+        addRecipe(CREAM_OF_TURNIP_STEW);
     }
     if (checkSpecialDialogueBit(0x50)) {
-        addRecipe(1);
+        addRecipe(SIMPLE_TOMATO_SOUP);
     }
     if (checkSpecialDialogueBit(0x51)) {
-        addRecipe(2);
+        addRecipe(TOMATO_RICE);
     }
     if (checkSpecialDialogueBit(0x52)) {
-        addRecipe(3);
+        addRecipe(SIMPLE_TOMATO_SOUP);
     }
     if (checkSpecialDialogueBit(0x53)) {
-        addRecipe(4);
+        addRecipe(CORN_FRITTER);
     }
     if (checkSpecialDialogueBit(0x54)) {
-        addRecipe(5);
+        addRecipe(CORN_PASTA);
     }
     if (checkSpecialDialogueBit(0x55)) {
-        addRecipe(6);
+        addRecipe(MASHED_POTATO);
     }
     if (checkSpecialDialogueBit(0x56)) {
-        addRecipe(7);
+        addRecipe(FRIED_POTATO_BACON);
     }
     if (checkSpecialDialogueBit(0x57)) {
-        addRecipe(8);
+        addRecipe(VEGETABLE_TOMATO_SOUP);
     }
     if (checkSpecialDialogueBit(0x58)) {
-        addRecipe(9);
+        addRecipe(GARLIC_POTATO_BEEF);
     }
     if (checkSpecialDialogueBit(0x59)) {
-        addRecipe(0xA);
+        addRecipe(EGGPLANT_WITH_MISOPASTE);
     }
     if (checkSpecialDialogueBit(0x5A)) {
-        addRecipe(0xB);
+        addRecipe(ROLLED_CABBAGE);
     }
     if (checkSpecialDialogueBit(0x5B)) {
-        addRecipe(0xC);
+        addRecipe(STUFFED_OMELET);
     }
     if (checkSpecialDialogueBit(0x5C)) {
-        addRecipe(0xD);
+        addRecipe(SPA_POACHED_EGG);
     }
     if (checkSpecialDialogueBit(0x5D)) {
-        addRecipe(0xE);
+        addRecipe(HAND_MADE_BUTTER);
     }
     if (checkSpecialDialogueBit(0x5E)) {
-        addRecipe(0xF);
+        addRecipe(MUSHROM_RICE);
     } 
     if (checkSpecialDialogueBit(0x5F)) {
-        addRecipe(0x10);
+        addRecipe(FRIED_CHAR);
     }
     if (checkSpecialDialogueBit(0x60)) {
-        addRecipe(0x11);
+        addRecipe(GRILLED_TROUT_CHEESE);
     }
     if (checkSpecialDialogueBit(0x61)) {
-        addRecipe(0x12);
+        addRecipe(MUSHROOM_STUFFED_CHAR);
     }
     if (checkSpecialDialogueBit(0x62)) {
-        addRecipe(0x13);
+        addRecipe(STEAMED_CLAM_WITH_WINE);
     }
     if (checkSpecialDialogueBit(0x63)) {
-        addRecipe(0x14);
+        addRecipe(MISO_SOUP_WITH_SPROUTS);
     }
     if (checkSpecialDialogueBit(0x64)) {
-        addRecipe(0x15);
+        addRecipe(SESAME_DANDELION_GREENS);
     }
     if (checkSpecialDialogueBit(0x65)) {
-        addRecipe(0x16);
+        addRecipe(MUSHROOM_SALSA);
     }
     if (checkSpecialDialogueBit(0x66)) {
-        addRecipe(0x17);
+        addRecipe(STRAWBERRY_DOG);
     }
     if (checkSpecialDialogueBit(0x67)) {
-        addRecipe(0x18);
+        addRecipe(WALNUT_CAKE);
     }
     if (checkSpecialDialogueBit(0x68)) {
-        addRecipe(0x19);
+        addRecipe(BREAD_PUDDING);
     }
     if (checkSpecialDialogueBit(0x69)) {
-        addRecipe(0x1A);
+        addRecipe(HERB_RICE_CAKE);
     }
     if (checkSpecialDialogueBit(0x6A)) {
-        addRecipe(0x1B);
+        addRecipe(POTATO_PANCAKE);
     }
     if (checkSpecialDialogueBit(0x6B)) {
-        addRecipe(0x1C);
+        addRecipe(STRAWBERRY_JAM);
     }
     if (checkSpecialDialogueBit(0x6C)) {
-        addRecipe(0x1D);
+        addRecipe(STRAWBERRY_CHAMPAGNE);
     }
     if (checkSpecialDialogueBit(0x6D)) {
-        addRecipe(0x1E);
+        addRecipe(VERYBERRY_WINE);
     }
     if (checkSpecialDialogueBit(0x6E)) {
-        addRecipe(0x1F);
+        addRecipe(SPICE_TEA);
     }
     if (checkSpecialDialogueBit(0x6F)) {
-        addRecipe(0x20);
+        addRecipe(HOT_SPICY_WINE);
     }
     if (checkSpecialDialogueBit(0x70)) {
-        addRecipe(0x21);
+        addRecipe(CINNAMON_MILK_TEA);
     }
     if (checkSpecialDialogueBit(0x71)) {
-        addRecipe(0x22);
+        addRecipe(PICKLED_TURNIP_CABBAGE);
     }
 
 }

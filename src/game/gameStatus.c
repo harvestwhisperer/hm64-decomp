@@ -22,7 +22,7 @@ u32 lifeEventBits[32];
 u32 specialDialogueBits[16];
 u32 readMailBits[3];
 u32 mailboxBits[3];
-u32 recipesBits[1];
+u32 recipesBits[2];
 u32 albumBits;
 u32 acquiredPowerNutBits;
 
