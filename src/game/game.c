@@ -1519,9 +1519,8 @@ void func_8005CDCC(void) {
         setLifeEventBit(GIVE_RICK_RARE_METAL);
     }
 
-    if (checkSpecialDialogueBit(SAVE_ELLEN)) {
-        setLifeEventBit(ELLEN_SAVED_BY_EGG); 
-        toggleSpecialDialogueBit(SAVE_ELLEN);
+    if (!checkLifeEventBit(ELLEN_SAVED_BY_EGG) && checkSpecialDialogueBit(SAVE_ELLEN)) {
+        setLifeEventBit(ELLEN_SAVED_BY_EGG);
     }
 
 }

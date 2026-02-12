@@ -1,7 +1,7 @@
 ; Dialogue Bank
 ; Index Start: 0xE8C000
 ; Bytecode Start: 0xE8BD80
-; Segments: 37
+; Segments: 28
 
 ; 0xE8BD80
 .segment_0:
@@ -20,7 +20,7 @@
 ; 0xE8BDD0
 .segment_1:
     SPECIAL_DIALOGUE_BIT_BRANCH 201, NO_TEXT, .segment_10
-    DIALOGUE_VARIABLE_BRANCH 6, 67, 67, 36, .segment_22 ; item off set of -12
+    DIALOGUE_VARIABLE_BRANCH 6, 36, 36, NO_TEXT, .segment_22
     DIALOGUE_VARIABLE_BRANCH 6, 47, 49, 15, .segment_24
     DIALOGUE_VARIABLE_BRANCH 6, 41, 46, 19, .segment_15
     DIALOGUE_VARIABLE_BRANCH 6, 61, 61, 19, .segment_15
@@ -174,8 +174,10 @@
 
 ; 0xE8BFDC
 .segment_22:
-    UPDATE_DIALOGUE_VARIABLE 21, 20
-    SET_SPECIAL_DIALOGUE_BIT 337
+    SPECIAL_DIALOGUE_BIT_BRANCH 337, 14, .segment_23
+    DIALOGUE_VARIABLE_BRANCH 21, 100, 255, 36, .segment_25
+    SHOW_TEXT 14
+    JUMP_TO_DIALOGUE .segment_23
     END_DIALOGUE
 
 ; 0xE8BFE0
@@ -190,6 +192,8 @@
 
 ; 0xE8BFF0
 .segment_25:
+    UPDATE_DIALOGUE_VARIABLE 21, 20
+    SET_SPECIAL_DIALOGUE_BIT 337
     END_DIALOGUE
 
 ; 0xE8BFF4

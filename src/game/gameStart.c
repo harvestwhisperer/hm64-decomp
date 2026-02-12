@@ -81,7 +81,7 @@ void func_8004DFF8(void) {
      setLifeEventBit(HAVE_BABY_BED);
      setLifeEventBit(HAVE_CABINET);
      setLifeEventBit(HAVE_TABLECLOTH);
-//     setLifeEventBit(MAYOR_TOUR);
+     setLifeEventBit(MAYOR_TOUR);
      setLifeEventBit(PAINTING_FROM_MARIA);
 //     setLifeEventBit(BASIL_IN_TOWN);
 //     setLifeEventBit(CLIFF_ARRIVED);
@@ -140,7 +140,7 @@ void func_8004DFF8(void) {
     
 //     dogInfo.affection = MAX_AFFECTION;
     
-//     gHour = 8;
+     gHour = 10;
     
 //     // max recipes
 //     recipesBits[0] = -1;
