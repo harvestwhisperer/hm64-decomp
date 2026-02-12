@@ -102,6 +102,7 @@ void func_8004DFF8(void) {
     gPlayer.belongingsSlots[0] = EGG_HELD_ITEM;
     gPlayer.belongingsSlots[1] = GOLDEN_EGG_HELD_ITEM;
     gPlayer.belongingsSlots[2] = GOLDEN_MILK;
+    gPlayer.belongingsSlots[3] = GOLDEN_EGG_HELD_ITEM;
 
     chickenFeedQuantity = 100;
     fodderQuantity = 100;
@@ -125,6 +126,7 @@ void func_8004DFF8(void) {
      initializeHorse();
     
      horseInfo.grown = TRUE;
+     npcAffection[ELLEN] = 100;
 
      // setLifeEventBit(MARRIED);
      // setLifeEventBit(WIFE_PREGNANT);

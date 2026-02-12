@@ -1042,7 +1042,7 @@ void updateCurrentDialogue(u16 index) {
                 dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 break;
 
-            case DIALOGUE_OPCODE_SPECIAL_DIALOGUE_BIT_BRANCH:
+            case DIALOGUE_OPCODE_SPECIAL_DIALOGUE_BIT_BRANCH: 
                 
                 if (checkSpecialDialogueBitFromPointer(dialogues[index].bytecodeExecutor.specialDialogueBit)) {
                     
