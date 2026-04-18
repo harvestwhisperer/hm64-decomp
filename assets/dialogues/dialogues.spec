@@ -469,75 +469,75 @@ beginseg
 endseg
 
 beginseg
-    name "cutscenes1Dialogue"
+    name "ranchCutscenesDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/cutscenes1Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/ranchCutscenesDialogue.bin.o"
 endseg
 
 beginseg
-    name "cutscenes1DialogueIndex"
+    name "ranchCutscenesDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/cutscenes1DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/ranchCutscenesDialogueIndex.bin.o"
 endseg
 
 beginseg
-    name "text48Dialogue"
+    name "fireworksFestivalDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text48Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/fireworksFestivalDialogue.bin.o"
 endseg
 
 beginseg
-    name "text48DialogueIndex"
+    name "fireworksFestivalDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text48DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/fireworksFestivalDialogueIndex.bin.o"
 endseg
 
 beginseg
-    name "text49Dialogue"
+    name "flowerFestivalDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text49Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/flowerFestivalDialogue.bin.o"
 endseg
 
 beginseg
-    name "text49DialogueIndex"
+    name "flowerFestivalDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text49DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/flowerFestivalDialogueIndex.bin.o"
 endseg
 
 beginseg
-    name "text50Dialogue"
+    name "seaFestivalAndEvaluationDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text50Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/seaFestivalAndEvaluationDialogue.bin.o"
 endseg
 
 beginseg
-    name "text50DialogueIndex"
+    name "seaFestivalAndEvaluationDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text50DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/seaFestivalAndEvaluationDialogueIndex.bin.o"
 endseg
 
 beginseg
-    name "text51Dialogue"
+    name "cowFestivalDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text51Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/cowFestivalDialogue.bin.o"
 endseg
 
 beginseg
-    name "text51DialogueIndex"
+    name "cowFestivalDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text51DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/cowFestivalDialogueIndex.bin.o"
 endseg
 
 beginseg
-    name "text52Dialogue"
+    name "fireflyFestivalDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text52Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/fireflyFestivalDialogue.bin.o"
 endseg
 
 beginseg
-    name "text52DialogueIndex"
+    name "fireflyFestivalDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text52DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/fireflyFestivalDialogueIndex.bin.o"
 endseg
 
 beginseg
@@ -565,39 +565,39 @@ beginseg
 endseg
 
 beginseg
-    name "text54Dialogue"
+    name "mountainCutscenesDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text54Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/mountainCutscenesDialogue.bin.o"
 endseg
 
 beginseg
-    name "text54DialogueIndex"
+    name "mountainCutscenesDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text54DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/mountainCutscenesDialogueIndex.bin.o"
 endseg
 
 beginseg
-    name "text55Dialogue"
+    name "sowingFestivalDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text55Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/sowingFestivalDialogue.bin.o"
 endseg
 
 beginseg
-    name "text55DialogueIndex"
+    name "sowingFestivalDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text55DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/sowingFestivalDialogueIndex.bin.o"
 endseg
 
 beginseg
-    name "text56Dialogue"
+    name "harvestFestivalDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text56Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/harvestFestivalDialogue.bin.o"
 endseg
 
 beginseg
-    name "text56DialogueIndex"
+    name "harvestFestivalDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text56DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/harvestFestivalDialogueIndex.bin.o"
 endseg
 
 beginseg
@@ -625,15 +625,15 @@ beginseg
 endseg
 
 beginseg
-    name "text63Dialogue"
+    name "roadCutscenesDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text63Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/roadCutscenesDialogue.bin.o"
 endseg
 
 beginseg
-    name "text63DialogueIndex"
+    name "roadCutscenesDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text63DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/roadCutscenesDialogueIndex.bin.o"
 endseg
 
 beginseg
@@ -649,15 +649,15 @@ beginseg
 endseg
 
 beginseg
-    name "text65Dialogue"
+    name "houseCutscenesDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text65Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/houseCutscenesDialogue.bin.o"
 endseg
 
 beginseg
-    name "text65DialogueIndex"
+    name "houseCutscenesDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text65DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/houseCutscenesDialogueIndex.bin.o"
 endseg
 
 beginseg
@@ -673,27 +673,27 @@ beginseg
 endseg
 
 beginseg
-    name "marriedDialogue"
+    name "village1CutscenesDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/marriedDialogue.bin.o"
+    include "build/assets/dialogues/bytecode/village1CutscenesDialogue.bin.o"
 endseg
 
 beginseg
-    name "marriedDialogueIndex"
+    name "village1CutscenesDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/marriedDialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/village1CutscenesDialogueIndex.bin.o"
 endseg
 
 beginseg
-    name "text61Dialogue"
+    name "village2CutscenesDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text61Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/village2CutscenesDialogue.bin.o"
 endseg
 
 beginseg
-    name "text61DialogueIndex"
+    name "village2CutscenesDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/text61DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/village2CutscenesDialogueIndex.bin.o"
 endseg
 
 beginseg
@@ -769,39 +769,39 @@ beginseg
 endseg
 
 beginseg
-    name "mrsManaAndJohn1Dialogue"
+    name "mrsManaDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/mrsManaAndJohn1Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/mrsManaDialogue.bin.o"
 endseg
 
 beginseg
-    name "mrsManaAndJohn1DialogueIndex"
+    name "mrsManaDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/mrsManaAndJohn1DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/mrsManaDialogueIndex.bin.o"
 endseg
 
 beginseg
-    name "mrsManaAndJohn2Dialogue"
+    name "johnDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/mrsManaAndJohn2Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/johnDialogue.bin.o"
 endseg
 
 beginseg
-    name "mrsManaAndJohn2DialogueIndex"
+    name "johnDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/mrsManaAndJohn2DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/johnDialogueIndex.bin.o"
 endseg
 
 beginseg
-    name "additionalNpcs1Dialogue"
+    name "gourmetJudgeDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/additionalNpcs1Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/gourmetJudgeDialogue.bin.o"
 endseg
 
 beginseg
-    name "additionalNpcs1DialogueIndex"
+    name "gourmetJudgeDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/additionalNpcs1DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/gourmetJudgeDialogueIndex.bin.o"
 endseg
 
 beginseg
@@ -829,13 +829,13 @@ beginseg
 endseg
 
 beginseg
-    name "additionalNpcs2Dialogue"
+    name "entomologistDialogue"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/additionalNpcs2Dialogue.bin.o"
+    include "build/assets/dialogues/bytecode/entomologistDialogue.bin.o"
 endseg
 
 beginseg
-    name "additionalNpcs2DialogueIndex"
+    name "entomologistDialogueIndex"
     flags OBJECT
-    include "build/assets/dialogues/bytecode/additionalNpcs2DialogueIndex.bin.o"
+    include "build/assets/dialogues/bytecode/entomologistDialogueIndex.bin.o"
 endseg

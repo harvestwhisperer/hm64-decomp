@@ -26,7 +26,7 @@
 
 #include "mainLoop.h"
 
-#include "assetIndices/cutscenes.h"
+#include "assetIndices/cutscenes.h" 
 #include "assetIndices/maps.h"
 #include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
@@ -45,141 +45,160 @@ u8 bakeryCardPoints;
 
 // data
 
+/* All arrays below are indexed by the TOTAL_SHOP_ITEMS-sized shop-item-index
+ * space defined in shop.h. Rows of 4 align with the physical shop groupings:
+ *
+ *   row 0  (0-3)    flower shop: turnip/potato/cabbage/grass seeds
+ *   row 1  (4-7)    flower shop: tomato/corn/eggplant/strawberry seeds
+ *   row 2  (8-11)   flower shop: moon-drop, (gap 9), blue-mist; bakery cake
+ *   row 3  (12-15)  bakery pie; inn/diner slots 13-15
+ *   row 4  (16-19)  inn/diner slots 16-18; Rick store milker
+ *   row 5  (20-23)  Rick store: brush/clippers/blue feather/rug
+ *   row 6  (24-27)  Rick store cabinet/pot; ranch chicken feed/miracle potion
+ *   row 7  (28-31)  ranch cow medicine/fodder; animal shop chicken/sheep
+ *   row 8  (32-35)  ranch store animals; potion shop A/B
+ *   row 9  (36-39)  potion shop C; souvenir shop ocarina/vase-early/vase
+ *   row 10 (40-43)  inn menu: wine, liquor, beer, milk
+ *   row 11 (44-47)  inn menu water; festival vendor slots
+ *   row 12 (48-51)  festival vendor slots
+ *   row 13 (52-55)  festival vendor slot; flower-fest seeds; flower-fest / fireworks empty-bottle grants
+ */
+
 u16 itemDescriptionTextIndices[TOTAL_SHOP_ITEMS] = {
-    0x15, 0x16, 0x17, 0x1C,
-    0x18, 0x19, 0x1A, 0x1B,
-    0x1D, 0x1E, 0x1F, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x2A,
-    0x2B, 0x2C, 0x2D, 0x31,
-    0x32, 0x33, 0x45, 0x46,
-    0x47, 0x48, 0x00, 0x00,
-    0x00, 0x00, 0x65, 0x66,
-    0x67, 0x72, 0x73, 0x74,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x27, 0x25, 0x25
+    21, 22, 23, 28,
+    24, 25, 26, 27,
+    29, 30, 31, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 42,
+    43, 44, 45, 49,
+    50, 51, 69, 70,
+    71, 72, 0, 0,
+    0, 0, 101, 102,
+    103, 114, 115, 116,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 39, 37, 37
 };
 
 u16 purchaseConfirmationTextIndices[TOTAL_SHOP_ITEMS] = {
-    0x20, 0x20, 0x20, 0x20,
-    0x20, 0x20, 0x20, 0x20,
-    0x20, 0x20, 0x20, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x153,
-    0x153, 0x153, 0x153, 0x153,
-    0x153, 0x153, 0x152, 0x152,
-    0x152, 0x152, 0x152, 0x152,
-    0x152, 0x152, 0x157, 0x157,
-    0x157, 0x155, 0x155, 0x155,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x28, 0x4E, 0x4E
+    32, 32, 32, 32,
+    32, 32, 32, 32,
+    32, 32, 32, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 339,
+    339, 339, 339, 339,
+    339, 339, 338, 338,
+    338, 338, 338, 338,
+    338, 338, 343, 343,
+    343, 341, 341, 341,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 40, 78, 78
 };
 
 u16 declinePurchaseTextIndices[TOTAL_SHOP_ITEMS] = {
-    0x22, 0x22, 0x22, 0x22,
-    0x22, 0x22, 0x22, 0x22,
-    0x22, 0x22, 0x22, 0x3F,
-    0x3F, 0x3F, 0x3F, 0x3F,
-    0x3F, 0x3F, 0x3F, 0x2F,
-    0x2F, 0x2F, 0x2F, 0x2F,
-    0x2F, 0x2F, 0x4A, 0x4A,
-    0x4A, 0x4A, 0x54, 0x54,
-    0x54, 0x54, 0x69, 0x69,
-    0x69, 0x76, 0x76, 0x76,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x2A, 0x2C, 0x2C
+    34, 34, 34, 34,
+    34, 34, 34, 34,
+    34, 34, 34, 63,
+    63, 63, 63, 63,
+    63, 63, 63, 47,
+    47, 47, 47, 47,
+    47, 47, 74, 74,
+    74, 74, 84, 84,
+    84, 84, 105, 105,
+    105, 118, 118, 118,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 42, 44, 44
 };
 
 u16 postPurchaseTextIndices[TOTAL_SHOP_ITEMS] = {
-    0x21, 0x21, 0x21, 0x21,
-    0x21, 0x21, 0x21, 0x21,
-    0x21, 0x21, 0x21, 0x3E,
-    0x3E, 0x3E, 0x3A, 0x3A,
-    0x3A, 0x3A, 0x3A, 0x2E,
-    0x2E, 0x2E, 0x2E, 0x35,
-    0x35, 0x35, 0x49, 0x49,
-    0x49, 0x49, 0x50, 0x50,
-    0x50, 0x50, 0x68, 0x68,
-    0x68, 0x75, 0x73, 0x75,
-    0x7B, 0x7B, 0x7B, 0x7C,
-    0x7C, 0x13, 0x13, 0x13,
-    0x13, 0x13, 0x1E, 0x1E,
-    0x1E, 0x2E, 0x2F, 0x2F
+    33, 33, 33, 33,
+    33, 33, 33, 33,
+    33, 33, 33, 62,
+    62, 62, 58, 58,
+    58, 58, 58, 46,
+    46, 46, 46, 53,
+    53, 53, 73, 73,
+    73, 73, 80, 80,
+    80, 80, 104, 104,
+    104, 117, 115, 117,
+    123, 123, 123, 124,
+    124, 19, 19, 19,
+    19, 19, 30, 30,
+    30, 46, 47, 47
 };
 
 u16 notEnoughMoneyTextIndices[TOTAL_SHOP_ITEMS] = {
-    0x23, 0x23, 0x23, 0x23,
-    0x23, 0x23, 0x23, 0x23,
-    0x23, 0x23, 0x23, 0x40,
-    0x40, 0x40, 0x40, 0x40,
-    0x40, 0x40, 0x40, 0x30,
-    0x30, 0x30, 0x30, 0x30,
-    0x30, 0x30, 0x4B, 0x4B,
-    0x4B, 0x4B, 0x4B, 0x4B,
-    0x4B, 0x4B, 0x6A, 0x6A,
-    0x6A, 0x77, 0x77, 0x77,
-    0x39, 0x39, 0x39, 0x39,
-    0x39, 0x15, 0x15, 0x15,
-    0x15, 0x15, 0x20, 0x20,
-    0x20, 0x2B, 0x29, 0x29
+    35, 35, 35, 35,
+    35, 35, 35, 35,
+    35, 35, 35, 64,
+    64, 64, 64, 64,
+    64, 64, 64, 48,
+    48, 48, 48, 48,
+    48, 48, 75, 75,
+    75, 75, 75, 75,
+    75, 75, 106, 106,
+    106, 119, 119, 119,
+    57, 57, 57, 57,
+    57, 21, 21, 21,
+    21, 21, 32, 32,
+    32, 43, 41, 41
 };
 
 u16 exceedMaxQuantityTextIndices[TOTAL_SHOP_ITEMS] = {
-    0x158, 0x158, 0x158, 0x158,
-    0x158, 0x158, 0x158, 0x158,
-    0x158, 0x158, 0x158, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x159, 0x159,
-    0x159, 0x159, 0x56, 0x56,
-    0x56, 0x56, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x2D, 0x00, 0x00
+    344, 344, 344, 344,
+    344, 344, 344, 344,
+    344, 344, 344, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 345, 345,
+    345, 345, 86, 86,
+    86, 86, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 45, 0, 0
 };
 
 // no space in rucksack
 u16 sendToFarmTextIndices[TOTAL_SHOP_ITEMS] = {
-    0x15A, 0x15A, 0x15A, 0x15A,
-    0x15A, 0x15A, 0x15A, 0x15A,
-    0x15A, 0x15A, 0x15A, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x15B,
-    0x15B, 0x15B, 0x15B, 0x15B,
-    0x15B, 0x15B, 0x15C, 0x15C,
-    0x15C, 0x15C, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x15D, 0x15D, 0x15D,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x2E, 0x2F, 0x2F
+    346, 346, 346, 346,
+    346, 346, 346, 346,
+    346, 346, 346, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 347,
+    347, 347, 347, 347,
+    347, 347, 348, 348,
+    348, 348, 0, 0,
+    0, 0, 0, 0,
+    0, 349, 349, 349,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 46, 47, 47
 };
 
 u16 shopItemTextAddressesIndex[TOTAL_SHOP_ITEMS] = {
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x06, 0x06, 0x06,
-    0x06, 0x04, 0x04, 0x04,
-    0x04, 0x04, 0x04, 0x04,
-    0x04, 0x04, 0x04, 0x04
+    6, 6, 6, 6,
+    6, 6, 6, 6,
+    6, 6, 6, 6,
+    6, 6, 6, 6,
+    6, 6, 6, 6,
+    6, 6, 6, 6,
+    6, 6, 6, 6,
+    6, 6, 6, 6,
+    6, 6, 6, 6,
+    6, 6, 6, 6,
+    6, 6, 6, 6,
+    6, 4, 4, 4,
+    4, 4, 4, 4,
+    4, 4, 4, 4
 };
 
 u16 prices[TOTAL_SHOP_ITEMS] = {
@@ -200,37 +219,37 @@ u16 prices[TOTAL_SHOP_ITEMS] = {
 };
 
 u16 shopItemMaxQuantities[TOTAL_SHOP_ITEMS] = {
-    0x14, 0x14, 0x14, 0x14, 
-    0x14, 0x14, 0x14, 0x14, 
-    0x14, 0x14, 0x01, 0x01, 
-    0x01, 0x01, 0x01, 0x01, 
-    0x01, 0x01, 0x01, 0x01, 
-    0x01, 0x01, 0x01, 0x01, 
-    0x01, 0x01, 0x63, 0x01, 
-    0x01, 0x63, 0x01, 0x01, 
-    0x01, 0x01, 0x01, 0x01, 
-    0x01, 0x01, 0x01, 0x01, 
-    0x01, 0x01, 0x01, 0x01, 
-    0x01, 0x01, 0x01, 0x01, 
-    0x01, 0x01, 0x01, 0x01, 
-    0x01, 0x14, 0x01, 0x01
+    20, 20, 20, 20,
+    20, 20, 20, 20,
+    20, 20, 1, 1,
+    1, 1, 1, 1,
+    1, 1, 1, 1,
+    1, 1, 1, 1,
+    1, 1, 99, 1,
+    1, 99, 1, 1,
+    1, 1, 1, 1,
+    1, 1, 1, 1,
+    1, 1, 1, 1,
+    1, 1, 1, 1,
+    1, 1, 1, 1,
+    1, 20, 1, 1
 };
 
 u16 shopItemAnimationIndices[TOTAL_SHOP_ITEMS] = {
-    0x3A, 0x3B, 0x3C, 0x41,
-    0x3D, 0x3E, 0x3F, 0x40,
-    0x42, 0x43, 0x44, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x4B,
-    0x4A, 0x49, 0x0A, 0x4D,
-    0x4C, 0x4C, 0x45, 0x47,
-    0x48, 0x46, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x36, 0x4F, 0x4E,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x43, 0x70, 0x70
+    58, 59, 60, 65,
+    61, 62, 63, 64,
+    66, 67, 68, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 75,
+    74, 73, 10, 77,
+    76, 76, 69, 71,
+    72, 70, 0, 0,
+    0, 0, 0, 0,
+    0, 54, 79, 78,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 67, 112, 112
 };
 
 Vec3f shopItemMapCoordinates[TOTAL_SHOP_ITEMS] = {
@@ -353,20 +372,20 @@ u8 *shopItemTextureBuffers[TOTAL_SHOP_ITEMS][2] = {
 
 // sprite index offsets for shop items
 u8 shopItemSpriteIndexOffsets[TOTAL_SHOP_ITEMS] = {
-    0x00, 0x01, 0x02, 0x03,
-    0x04, 0x05, 0x06, 0x07,
-    0x07, 0xFF, 0x08, 0xFF,
+    0, 1, 2, 3,
+    4, 5, 6, 7,
+    7, 255, 8, 255,
     255, 255, 255, 255,
-    0xFF, 0xFF, 0xFF, 0x00,
-    0x01, 0x02, 0x03, 0x05,
-    0x04, 0x04, 0x00, 0x01,
-    0x02, 0x03, 0xFF, 0xFF,
+    255, 255, 255, 0,
+    1, 2, 3, 5,
+    4, 4, 0, 1,
+    2, 3, 255, 255,
     255, 255, 255, 255,
-    0xFF, 0x00, 0x01, 0x01,
+    255, 0, 1, 1,
     255, 255, 255, 255,
     255, 255, 255, 255,
     255, 255, 255, 255,
-    0xFF, 0x01, 0x02, 0x02
+    255, 1, 2, 2
 };
 
 u8 D_801194D8[TOTAL_SHOP_ITEMS] = {
@@ -404,20 +423,20 @@ u8 shopItemPickUpEnabled[TOTAL_SHOP_ITEMS] = {
 };
 
 u8 shopItemToItemInfoIndices[TOTAL_SHOP_ITEMS] = {
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x09, 0x09, 0x09,
-    0x09, 0x00, 0x00, 0x00
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 9, 9, 9,
+    9, 0, 0, 0
 };
 
 // check if need message box flag 0x8000
@@ -439,72 +458,72 @@ u8 D_80119580[TOTAL_SHOP_ITEMS] = {
 };
 
 u8 shopItemStartingMode[TOTAL_SHOP_ITEMS] = {
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x03,
-    0x03, 0x03, 0x03, 0x03,
-    0x03, 0x03, 0x04, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x03, 0x03,
-    0x03, 0x04, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x03, 0x03, 0x03, 0x03,
-    0x03, 0x03, 0x03, 0x03,
-    0x03, 0x03, 0x03, 0x03,
-    0x03, 0x00, 0x00, 0x00
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 3,
+    3, 3, 3, 3,
+    3, 3, 4, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 3, 3,
+    3, 4, 0, 0,
+    0, 0, 0, 0,
+    3, 3, 3, 3,
+    3, 3, 3, 3,
+    3, 3, 3, 3,
+    3, 0, 0, 0
 };
 
 u8 playerShopActionPhase[TOTAL_SHOP_ITEMS] = {
-    0x02, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x00, 0x00,
-    0x00, 0x00, 0x02, 0x02,
-    0x02, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x00, 0x00,
-    0x00, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x02, 0x02,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x02, 0x02, 0x02
+    2, 2, 2, 2,
+    2, 2, 2, 2,
+    2, 2, 2, 2,
+    2, 2, 0, 0,
+    0, 0, 2, 2,
+    2, 2, 2, 2,
+    2, 2, 2, 2,
+    2, 2, 0, 0,
+    0, 2, 2, 2,
+    2, 2, 2, 2,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 2, 2, 2
 };
 
 u8 playerShopEndActionPhase[TOTAL_SHOP_ITEMS] = {
-    0x02, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0xFF, 0xFF,
-    0xFF, 0xFF, 0x02, 0x02,
-    0x02, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x00, 0x00,
-    0x00, 0x02, 0x02, 0x02,
-    0x02, 0x02, 0x02, 0x02,
+    2, 2, 2, 2,
+    2, 2, 2, 2,
+    2, 2, 2, 2,
+    2, 2, 255, 255,
+    255, 255, 2, 2,
+    2, 2, 2, 2,
+    2, 2, 2, 2,
+    2, 2, 0, 0,
+    0, 2, 2, 2,
+    2, 2, 2, 2,
     255, 255, 255, 255,
     255, 255, 255, 255,
     255, 255, 255, 255,
-    0xFF, 0x02, 0x02, 0x02
+    255, 2, 2, 2
 };
 
 // player animations table when interacting with shop items
 AnimationIndices playerShopAnimationIndices[TOTAL_SHOP_ITEMS] = {
-    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D },
-    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D },
-    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x00, 0x00 },
-    { 0x00, 0x00 }, { 0x00, 0x00 }, { 0x06, 0x08 }, { 0x06, 0x08 },
-    { 0x14, 0x15 }, { 0x14, 0x15 }, { 0x00, 0x00 }, { 0x0B, 0x0D },
-    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D },
-    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D },
-    { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x00, 0x00 }, { 0x00, 0x00 },
-    { 0x00, 0x00 }, { 0x00, 0x00 }, { 0x00, 0x00 }, { 0x00, 0x00 },
-    { 0x00, 0x00 }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D },
-    { 0x14, 0x15 }, { 0x14, 0x15 }, { 0x14, 0x15 }, { 0x14, 0x15 },
-    { 0x14, 0x15 }, { 0x14, 0x15 }, { 0x14, 0x15 }, { 0x14, 0x15 },
-    { 0x14, 0x15 }, { 0x06, 0x08 }, { 0x06, 0x08 }, { 0x06, 0x08 },
-    { 0x06, 0x08 }, { 0x0B, 0x0D }, { 0x0B, 0x0D }, { 0x0B, 0x0D }
+    { 11, 13 }, { 11, 13 }, { 11, 13 }, { 11, 13 },
+    { 11, 13 }, { 11, 13 }, { 11, 13 }, { 11, 13 },
+    { 11, 13 }, { 11, 13 }, { 11, 13 }, { 0, 0 },
+    { 0, 0 }, { 0, 0 }, { 6, 8 }, { 6, 8 },
+    { 20, 21 }, { 20, 21 }, { 0, 0 }, { 11, 13 },
+    { 11, 13 }, { 11, 13 }, { 11, 13 }, { 11, 13 },
+    { 11, 13 }, { 11, 13 }, { 11, 13 }, { 11, 13 },
+    { 11, 13 }, { 11, 13 }, { 0, 0 }, { 0, 0 },
+    { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 },
+    { 0, 0 }, { 11, 13 }, { 11, 13 }, { 11, 13 },
+    { 20, 21 }, { 20, 21 }, { 20, 21 }, { 20, 21 },
+    { 20, 21 }, { 20, 21 }, { 20, 21 }, { 20, 21 },
+    { 20, 21 }, { 6, 8 }, { 6, 8 }, { 6, 8 },
+    { 6, 8 }, { 11, 13 }, { 11, 13 }, { 11, 13 }
 };
 
 
@@ -533,7 +552,8 @@ void intializeShopDialogue(u8 storeItemIndex) {
 
 void loadShopItemSprite(u8 index) {
     
-    dmaSprite(0x62 + shopItemSpriteIndexOffsets[index], 
+    // TODO: label 98 with offset macro
+    dmaSprite(shopItemSpriteIndexOffsets[index] + 98,
         &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, 
         &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, 
         &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 
@@ -549,7 +569,7 @@ void loadShopItemSprite(u8 index) {
     setSpriteBaseRGBA(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 255, 255, 255, 255);
     setSpriteColor(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 255, 255, 255, 255);
 
-    setMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[index], SHOP_ITEMS + shopItemSpriteIndexOffsets[index], getAnimationOffsetFromScript(&shopItemsAnimationScripts, getItemAnimationIndex(shopItemAnimationIndices[index])), shopItemMapCoordinates[index].x, shopItemMapCoordinates[index].y, shopItemMapCoordinates[index].z, 0xFF, 0xFF, 0, 0);
+    setMapObject(MAIN_MAP_INDEX, shopItemSpriteIndexOffsets[index], SHOP_ITEMS + shopItemSpriteIndexOffsets[index], getAnimationOffsetFromScript(&heldItemsAnimationScripts, getItemAnimationIndex(shopItemAnimationIndices[index])), shopItemMapCoordinates[index].x, shopItemMapCoordinates[index].y, shopItemMapCoordinates[index].z, 0xFF, 0xFF, 0, 0);
 
 }
 
@@ -892,107 +912,106 @@ void shopDialogueCallback(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/shop", handlePurchase);
 
-// TODO: label shop item indices
 u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
     u8 result = 0;
     u8 temp;
 
     if (gGold >= quantity*prices[storeItemIndex]) {
-        
+
         result = 1;
-        
+
         switch (storeItemIndex) {
-            
-            case 0:
+
+            case FLOWER_SHOP_TURNIP_SEEDS_ITEM:
 
                 result = 3;
-                
+
                 if ((turnipSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(TURNIP_SEEDS);
                     turnipSeedsQuantity += adjustValue(turnipSeedsQuantity, quantity, MAX_SEEDS);
                 }
-                
+
                 break;
-            
-            case 1:
+
+            case FLOWER_SHOP_POTATO_SEEDS_ITEM:
 
                 result = 3;
-                
+
                 if ((potatoSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(POTATO_SEEDS);
                     potatoSeedsQuantity += adjustValue(potatoSeedsQuantity, quantity, MAX_SEEDS);
                 }
-                
+
                 break;
-            
-            case 2:
+
+            case FLOWER_SHOP_CABBAGE_SEEDS_ITEM:
 
                 result = 3;
-                
+
                 if ((cabbageSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(CABBAGE_SEEDS);
                     cabbageSeedsQuantity += adjustValue(cabbageSeedsQuantity, quantity, MAX_SEEDS);
                 }
-                
+
                 break;
 
-            case 3:
+            case FLOWER_SHOP_GRASS_SEEDS_ITEM:
 
                 result = 3;
-                
+
                 if ((grassSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(GRASS_SEEDS);
                     grassSeedsQuantity += adjustValue(grassSeedsQuantity, quantity, MAX_SEEDS);
                 }
-                
+
                 break;
 
-            case 4:
-                
+            case FLOWER_SHOP_TOMATO_SEEDS_ITEM:
+
                 result = 3;
-                
+
                 if ((tomatoSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(TOMATO_SEEDS);
                     tomatoSeedsQuantity += adjustValue(tomatoSeedsQuantity, quantity, MAX_SEEDS);
                 }
-                
+
                 break;
 
-            case 5:
+            case FLOWER_SHOP_CORN_SEEDS_ITEM:
 
                 result = 3;
-                
+
                 if ((cornSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(CORN_SEEDS);
                     cornSeedsQuantity += adjustValue(cornSeedsQuantity, quantity, MAX_SEEDS);
                 }
 
                 break;
-            
-            case 6:
+
+            case FLOWER_SHOP_EGGPLANT_SEEDS_ITEM:
 
                 result = 3;
-                
+
                 if ((eggplantSeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(EGGPLANT_SEEDS);
                     eggplantSeedsQuantity += adjustValue(eggplantSeedsQuantity, quantity, MAX_SEEDS);
                 }
-                
+
                 break;
-            
-            case 7:
-                
+
+            case FLOWER_SHOP_STRAWBERRY_SEEDS_ITEM:
+
                 result = 3;
-                
+
                 if ((strawberrySeedsQuantity + quantity) < MAX_SEEDS + 1) {
                     result = storeTool(STRAWBERRY_SEEDS);
                     strawberrySeedsQuantity += adjustValue(strawberrySeedsQuantity, quantity, MAX_SEEDS);
                 }
-                
+
                 break;
-            
-            case 8:
+
+            case FLOWER_SHOP_MOON_DROP_SEEDS_ITEM:
                 
                 result = 3;
                 
@@ -1018,165 +1037,151 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 
                 break;
             
-            case 0xA:
+            case FLOWER_SHOP_BLUE_MIST_SEEDS_ITEM:
 
                 result = 3;
-                
+
                 if ((blueMistSeedsQuantity + quantity) < MAX_BLUE_MIST_SEEDS + 1) {
-                    
+
                     result = storeTool(BLUE_MIST_SEEDS);
                     blueMistSeedsQuantity += adjustValue(blueMistSeedsQuantity, quantity, MAX_BLUE_MIST_SEEDS);
 
                     if (!checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
-                        
+
                         acquireKeyItem(FLOWER_SHOP_CARD);
                         shopGiftTextIndex = 0x24;
                         setLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD);
                         flowerShopPoints += adjustValue(flowerShopPoints, quantity, MAX_FLOWER_SHOP_POINTS);
                         result = 4;
-                        
+
                     } else {
-                        
+
                         flowerShopPoints += adjustValue(flowerShopPoints, quantity, MAX_FLOWER_SHOP_POINTS);
-                        
+
                     }
-                    
+
                     setLifeEventBit(BOUGHT_BLUE_MIST_SEEDS);
 
-                }                
-
-                break;
-
-            case 0xB:
-
-                gPlayer.heldItem = CAKE;
-
-                initializePlayerHeldItem();
-
-                if (!checkLifeEventBit(HAVE_BAKEY_CARD)) {
-                    
-                    acquireKeyItem(BAKERY_CARD);
-                    shopGiftTextIndex = 0x41;    
-                    setLifeEventBit(HAVE_BAKEY_CARD);
-                    
-                    bakeryCardPoints += adjustValue(bakeryCardPoints, quantity, MAX_BAKERY_CARD_POINTS);
-
-                    result = 4;
-                    
-                } else {
-                    
-                    bakeryCardPoints += adjustValue(bakeryCardPoints, quantity, MAX_BAKERY_CARD_POINTS);
-                    
                 }
 
                 break;
-            
-            case 0xC:
 
-                gPlayer.heldItem = 8;
+            case BAKERY_CAKE_ITEM:
+
+                gPlayer.heldItem = CAKE_HELD_ITEM;
+
                 initializePlayerHeldItem();
 
                 if (!checkLifeEventBit(HAVE_BAKEY_CARD)) {
-                    
+
                     acquireKeyItem(BAKERY_CARD);
-                    
-                    shopGiftTextIndex = 0x41;    
-                    
+                    shopGiftTextIndex = 0x41;
                     setLifeEventBit(HAVE_BAKEY_CARD);
-                    
+
                     bakeryCardPoints += adjustValue(bakeryCardPoints, quantity, MAX_BAKERY_CARD_POINTS);
 
                     result = 4;
-                    
+
+                } else {
+
+                    bakeryCardPoints += adjustValue(bakeryCardPoints, quantity, MAX_BAKERY_CARD_POINTS);
+
+                }
+
+                break;
+
+            case BAKERY_PIE_ITEM:
+
+                gPlayer.heldItem = PIE_HELD_ITEM;
+                initializePlayerHeldItem();
+
+                if (!checkLifeEventBit(HAVE_BAKEY_CARD)) {
+
+                    acquireKeyItem(BAKERY_CARD);
+
+                    shopGiftTextIndex = 0x41;
+
+                    setLifeEventBit(HAVE_BAKEY_CARD);
+
+                    bakeryCardPoints += adjustValue(bakeryCardPoints, quantity, MAX_BAKERY_CARD_POINTS);
+
+                    result = 4;
+
                 } else {
                     bakeryCardPoints += adjustValue(bakeryCardPoints, quantity, MAX_BAKERY_CARD_POINTS);
-                }   
-                
-                break;
-            
-            case 0xD:
-                
-                gPlayer.heldItem = COOKIES;
-                initializePlayerHeldItem();
-                temp = 0;
-                break;
-            
-            case 0xE:
+                }
 
-                gPlayer.heldItem = CAKE;
+                break;
+
+            case BAKERY_COOKIES:
+                gPlayer.heldItem = COOKIES_HELD_ITEM;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
 
-            case 0xF:
-
-                gPlayer.heldItem = PIE;
+            case BAKERY_CAKE:
+                gPlayer.heldItem = CAKE_HELD_ITEM;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
 
-            case 0x10:
-
-                gPlayer.heldItem = 0x78;
+            case BAKERY_PIE:
+                gPlayer.heldItem = PIE_HELD_ITEM;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
 
-            case 0x11:
-
-                gPlayer.heldItem = 0x71;
+            case BAKERY_TEA:
+                gPlayer.heldItem = BOTTLE_WITH_TEA_HELD_ITEM;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
 
-            case 0x13:
+            case BAKERY_WATER:
+                gPlayer.heldItem = BOTTLE_WITH_WATER_HELD_ITEM;
+                initializePlayerHeldItem();
+                temp = 0;
+                break;
 
-                result = storeTool(MILKER);            
+            case RICK_STORE_MILKER_ITEM:
+                result = storeTool(MILKER);
                 break;
-            
-            case 0x14:
 
-                result = storeTool(BRUSH);               
+            case RICK_STORE_BRUSH_ITEM:
+                result = storeTool(BRUSH);
                 break;
-            
-            case 0x15:
-                
-                result = storeTool(CLIPPERS);              
-                break;
-            
-            case 0x16:
-                            
-                result = storeTool(BLUE_FEATHER);                
-                break;
-            
-            case 0x17:
 
+            case RICK_STORE_CLIPPERS_ITEM:
+                result = storeTool(CLIPPERS);
+                break;
+
+            case RICK_STORE_BLUE_FEATHER_ITEM:
+                result = storeTool(BLUE_FEATHER);
+                break;
+
+            case RICK_STORE_RUG_ITEM:
                 setLifeEventBit(HAVE_RUG);
                 result = 1;
                 temp = 0;
                 break;
 
-            case 0x18:
-
+            case RICK_STORE_CABINET_ITEM:
                 setLifeEventBit(HAVE_CABINET);
-                // ??
                 setAnimalLocations(HOUSE);
                 result = 1;
                 temp = 0;
                 break;
 
-            case 0x19:
+            case RICK_STORE_ICE_CREAM_MAKER_ITEM:
 
-                // blue pot from Saibara?
-                setLifeEventBit(0x19);
-                // ??
+                setLifeEventBit(HAVE_ICE_CREAM_MAKER);
                 setAnimalLocations(FARM);
                 result = 1;
                 temp = 0;
-                
+
                 break;
-            
-            case 0x1A:
+
+            case RANCH_STORE_CHICKEN_FEED_ITEM:
 
                 result = 3;
 
@@ -1187,15 +1192,15 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 break;
 
-            case 0x1B:
+            case RANCH_STORE_MIRACLE_POTION_ITEM:
                 result = storeTool(MIRACLE_POTION);
                 break;
-            
-            case 0x1C:
-                result = storeTool(COW_MEDICINE);            
+
+            case RANCH_STORE_COW_MEDICINE_ITEM:
+                result = storeTool(COW_MEDICINE);
                 break;
-            
-            case 0x1D:
+
+            case RANCH_STORE_FODDER_ITEM:
 
                 if ((fodderQuantity + quantity) < 999 + 1) {
                     fodderQuantity += adjustValue(fodderQuantity, quantity, 999);
@@ -1206,25 +1211,25 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
                 break;
 
-            case 0x1E:
+            case RANCH_STORE_CHICKEN_ITEM:
 
                 // check animal count
-                if (getTotalChickenCount() != 6) { 
+                if (getTotalChickenCount() != 6) {
 
                     result = 1;
-                    
-                    setDailyEventBit(1);
-                    setDailyEventBit(5);
-                    
+
+                    setDailyEventBit(PURCHASED_ANIMAL);
+                    setDailyEventBit(DAILY_ANIMAL_TRANSACTION);
+
                     selectedAnimalType = CHICKEN_TYPE;
-                    
+
                 } else {
                     result = 3;
                 }
 
                 break;
 
-            case 0x1F:
+            case RANCH_STORE_SHEEP_ITEM:
 
                 if (getTotalFarmAnimalsCount() != 8) {
                 
@@ -1233,14 +1238,14 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                     if (!checkLifeEventBit(HAVE_BELL)) {
                         
                         storeTool(BELL);
-                        shopGiftTextIndex = 0x53;
+                        shopGiftTextIndex = 83;
                         result = 4;
                         setLifeEventBit(HAVE_BELL);
                         
                     }
 
-                    setDailyEventBit(1);
-                    setDailyEventBit(5);
+                    setDailyEventBit(PURCHASED_ANIMAL);
+                    setDailyEventBit(DAILY_ANIMAL_TRANSACTION);
                     selectedAnimalType = SHEEP_TYPE;
                     
                 } else {
@@ -1250,179 +1255,161 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
                 }
 
                 break;
-                
-            case 0x20:
+
+            case RANCH_STORE_COW_ITEM:
 
                 if (getTotalFarmAnimalsCount() != 8) {
 
                     result = 1;
-                    
+
                     if (!checkLifeEventBit(HAVE_BELL)) {
 
                         storeTool(BELL);
-                        shopGiftTextIndex = 0x53;
+                        shopGiftTextIndex = 83;
                         result = 4;
                         setLifeEventBit(HAVE_BELL);
-                        
+
                     }
 
-                    setDailyEventBit(1);
-                    setDailyEventBit(5);
+                    setDailyEventBit(PURCHASED_ANIMAL);
+                    setDailyEventBit(DAILY_ANIMAL_TRANSACTION);
                     selectedAnimalType = COW_TYPE;
-                    
+
                 } else {
                     result = 3;
                 }
 
                 break;
-            
-            case 0x22:
 
-                gPlayer.bottleContents = 3;
+            case POTION_SHOP_CURE_ALL_ITEM:
+                gPlayer.bottleContents = BOTTLE_CONTENTS_CURE_ALL_MEDICINE;
                 result = 1;
-                
+
                 break;
 
-            case 0x23:
-                
-                gPlayer.bottleContents = 4;
+            case POTION_SHOP_VITAMIN_ITEM:
+                gPlayer.bottleContents = BOTTLE_CONTENTS_VITAMIN_PREPARATION;
                 result = 1;
-                
+
                 break;
 
-            case 0x24:
-                
-                gPlayer.bottleContents = 5;
+            case POTION_SHOP_STRONG_VITAMINS_ITEM:
+                gPlayer.bottleContents = BOTTLE_CONTENTS_VITAMIN_GOLD;
                 result = 1;
-                
+
                 break;
 
-            case 0x25:
-
+            case SOUVENIR_SHOP_OCARINA_ITEM:
                 acquireKeyItem(OCARINA);
                 setLifeEventBit(HAVE_OCARINA);
                 result = 1;
                 temp = 0;
-                
+
                 break;
-            
-            case 0x27:
+
+            case SOUVENIR_SHOP_BLUE_VASE_ITEM:
                 setLifeEventBit(HAVE_VASE);
                 temp = 0;
                 break;
-            
-            case 0x28:
-            
+
+            case TAVERN_WINE_ITEM:
                 gPlayer.heldItem = BOTTLE_WITH_WINE_HELD_ITEM;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
-            
-            case 0x29:
-                        
-                gPlayer.heldItem = 0x79;
-                initializePlayerHeldItem();
-                temp = 0;
-                break;
-            
-            case 0x2A:
-                                    
-                gPlayer.heldItem = 0x7A;
-                initializePlayerHeldItem();
-                temp = 0;
-                break;
-            
-            case 0x2B:
-                                    
-                gPlayer.heldItem = 0x76;
-                initializePlayerHeldItem();
-                temp = 0;
-                break;
-            
-            case 0x2C:
 
-                gPlayer.heldItem = 0x71;
+            case TAVERN_LIQUOR_ITEM:
+                gPlayer.heldItem = 121;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
-            
-            case 0x2D:
 
-                gPlayer.heldItem = 0x78;
+            case TAVERN_BEER_ITEM:
+                gPlayer.heldItem = 122;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
-            
-            case 0x2E:
-          
-                gPlayer.heldItem = 0x76;
-                initializePlayerHeldItem();
-                temp = 0;
-                break;
-            
-            case 0x2F:
-            
-                gPlayer.heldItem = 0x78;
-                initializePlayerHeldItem();
-                temp = 0;
-                break;
-            
-            case 0x30:
-                      
-                gPlayer.heldItem = 0x76;
-                initializePlayerHeldItem();
-                temp = 0;
-                break;
-            
-            case 0x31:
 
-                gPlayer.heldItem = COOKIES;
+            case TAVERN_MILK_ITEM:
+                gPlayer.heldItem = BOTTLE_WITH_MILK_HELD_ITEM;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
-            
-            case 0x32:
 
-                gPlayer.heldItem = COTTON_CANDY;
+            case TAVERN_WATERN_ITEM:
+                gPlayer.heldItem = BOTTLE_WITH_WATER_HELD_ITEM;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
-            
-            case 0x33:
 
-                gPlayer.heldItem = FRIED_OCTUPUS;
+            case HORSE_RACE_TEA:
+                gPlayer.heldItem = BOTTLE_WITH_TEA_HELD_ITEM;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
-            
-            case 0x34:
 
-                gPlayer.heldItem = ROASTED_CORN;
+            case HORSE_RACE_MILK:
+                gPlayer.heldItem = BOTTLE_WITH_MILK_HELD_ITEM;
+                initializePlayerHeldItem();
+                temp = 0;
+                break;
+
+            case DOG_RACE_TEA:
+                gPlayer.heldItem = BOTTLE_WITH_TEA_HELD_ITEM;
+                initializePlayerHeldItem();
+                temp = 0;
+                break;
+
+            case DOR_RACE_MILK:
+                gPlayer.heldItem = BOTTLE_WITH_MILK_HELD_ITEM;
+                initializePlayerHeldItem();
+                temp = 0;
+                break;
+
+            case RACE_COOKIES:
+                gPlayer.heldItem = COOKIES_HELD_ITEM;
+                initializePlayerHeldItem();
+                temp = 0;
+                break;
+
+            case FESTIVAL_COTTON_CANDY:
+                gPlayer.heldItem = COTTON_CANDY_HELD_ITEM;
+                initializePlayerHeldItem();
+                temp = 0;
+                break;
+
+            case FESTIVAL_FRIED_OCTOPUS:
+                gPlayer.heldItem = FRIED_OCTUPUS_HELD_ITEM;
+                initializePlayerHeldItem();
+                temp = 0;
+                break;
+
+            case FESTIVAL_ROASTED_CORN:
+                gPlayer.heldItem = ROASTED_CORN_HELD_ITEM;
                 initializePlayerHeldItem();
                 temp = 0;
                 break;
             
-            case 0x35:
+            case FLOWER_FESTIVAL_PINK_CAT_MINT_SEEDS_ITEM:
 
                 if ((pinkCatMintSeedsQuantity + quantity) < 20 + 1) {
-                    
+
                     result = storeTool(PINK_CAT_MINT_SEEDS);
                     pinkCatMintSeedsQuantity += adjustValue(pinkCatMintSeedsQuantity, quantity, 20);
 
                     if (checkLifeEventBit(HAVE_FLOWER_SHOP_GIFT_CARD)) {
                         flowerShopPoints += adjustValue(flowerShopPoints, quantity, MAX_FLOWER_SHOP_POINTS);
                     }
-                    
+
                 } else {
                     result = 3;
                 }
 
                 break;
-            
-            case 0x36:
-            case 0x37:
-                
-                result =  storeTool(EMPTY_BOTTLE);           
+
+            case FLOWER_FESTIVAL_EMPTY_BOTTLE_ITEM:
+            case FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM:
+                result = storeTool(EMPTY_BOTTLE);
                 break;
 
             default:
@@ -1447,51 +1434,50 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/shop", checkShopItemShouldBeDisplayed);
 
-// TODO: label store item indices
 bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
     bool result = FALSE;
-    
+
     switch (itemIndex) {
-        
-        case 0:
-            
-            if (gSeason != SPRING) {
-                if (checkLifeEventBit(HAVE_GREENHOUSE)) {
-                    result = 1;
-                }
-            } else {   
-                result = 1;
-            }
 
-            break;
-        
-        case 1:
-            
+        case FLOWER_SHOP_TURNIP_SEEDS_ITEM:
+
             if (gSeason != SPRING) {
                 if (checkLifeEventBit(HAVE_GREENHOUSE)) {
                     result = 1;
                 }
-            } else {   
+            } else {
                 result = 1;
             }
 
             break;
 
-        case 2:
-            
+        case FLOWER_SHOP_POTATO_SEEDS_ITEM:
+
             if (gSeason != SPRING) {
                 if (checkLifeEventBit(HAVE_GREENHOUSE)) {
                     result = 1;
                 }
-            } else {   
+            } else {
                 result = 1;
             }
-            
+
+            break;
+
+        case FLOWER_SHOP_CABBAGE_SEEDS_ITEM:
+
+            if (gSeason != SPRING) {
+                if (checkLifeEventBit(HAVE_GREENHOUSE)) {
+                    result = 1;
+                }
+            } else {
+                result = 1;
+            }
+
             break;
 
 
-        case 3:
+        case FLOWER_SHOP_GRASS_SEEDS_ITEM:
 
             // FIXME: should be a range
             if ((u32)(gSeason - 1) < SUMMER) {
@@ -1500,90 +1486,90 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-        case 4:
-            
+        case FLOWER_SHOP_TOMATO_SEEDS_ITEM:
+
             if (gSeason != SUMMER) {
                 if (checkLifeEventBit(HAVE_GREENHOUSE)) {
                     result = 1;
                 }
-            } else {   
+            } else {
                 result = 1;
             }
-            
+
             break;
 
-        case 5:
-            
+        case FLOWER_SHOP_CORN_SEEDS_ITEM:
+
             if (gSeason != SUMMER) {
                 if (checkLifeEventBit(HAVE_GREENHOUSE)) {
                     result = 1;
                 }
-            } else {   
+            } else {
                 result = 1;
             }
-            
+
             break;
 
-       case 6:
-            
+       case FLOWER_SHOP_EGGPLANT_SEEDS_ITEM:
+
             if (gSeason != AUTUMN) {
                 if (checkLifeEventBit(HAVE_GREENHOUSE)) {
                     result = 1;
                 }
-            } else {   
+            } else {
                 result = 1;
             }
-            
+
             break;
-        
-       case 7:
-            
+
+       case FLOWER_SHOP_STRAWBERRY_SEEDS_ITEM:
+
             if (gSeason == WINTER) {
                 if (checkLifeEventBit(HAVE_GREENHOUSE)) {
                     result = 1;
                 }
             }
-            
+
             break;
-        
-        case 8:
-            
+
+        case FLOWER_SHOP_MOON_DROP_SEEDS_ITEM:
+
             if (gSeason == SPRING) {
                 result = 1;
             }
-            
+
             break;
 
-        case 0xA:
+        case FLOWER_SHOP_BLUE_MIST_SEEDS_ITEM:
 
             if (!checkLifeEventBit(BOUGHT_BLUE_MIST_SEEDS)) {
-                
+
                 if (gYear >= 2) {
 
                     // FIXME: probably should be a switch
                     if (gSeason != SUMMER) {
-                        
+
                         if (gSeason == SPRING) {
-                        
+
                             if (gDayOfMonth >= 24) {
                                 result = 1;
                                 break;
                             }
-                        } 
-                        
+                        }
+
                         break;
 
-                    } 
-                    
+                    }
+
                     result = 1;
-                    
+
                 }
             }
 
             break;
-        
-        case 0x13:
-            
+
+        case RICK_STORE_MILKER_ITEM:
+
             if (!getTotalFarmAnimalsByType(2) && !getTotalFarmAnimalsByType(1) && !getTotalFarmAnimalsByType(0) && !getTotalFarmAnimalsByType(3)) {
                 // removed code
             } else if (!checkHaveTool(MILKER)) {
@@ -1591,8 +1577,8 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
             }
 
             break;
-        
-        case 0x14:
+
+        case RICK_STORE_BRUSH_ITEM:
 
             if (!checkHaveTool(BRUSH)) {
                 result = 1;
@@ -1600,7 +1586,7 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-        case 0x15:
+        case RICK_STORE_CLIPPERS_ITEM:
 
             if (!getTotalFarmAnimalsByType(5) && !getTotalFarmAnimalsByType(4) && !getTotalFarmAnimalsByType(6)) {
                 // removed code
@@ -1610,15 +1596,15 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-        case 0x16:
+        case RICK_STORE_BLUE_FEATHER_ITEM:
 
             if (checkBacheloretteReadyForMarriage() && !checkHaveTool(BLUE_FEATHER) && checkLifeEventBit(HAVE_KITCHEN) && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(ENGAGED)) {
                 result = 1;
             }
 
-            break;   
+            break;
 
-        case 0x17:
+        case RICK_STORE_RUG_ITEM:
 
             if (gYear == 1 && !(gSeason < AUTUMN) || !(gYear < 2)) {
                 if (!checkLifeEventBit(HAVE_RUG)) {
@@ -1628,8 +1614,8 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-        case 0x18:
-            
+        case RICK_STORE_CABINET_ITEM:
+
             if (gYear == 1 && !(gSeason < SUMMER) || !(gYear < 2)) {
                 if (!checkLifeEventBit(HAVE_CABINET)) {
                     result = 1;
@@ -1637,40 +1623,40 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
             }
 
             break;
-        
-        case 0x1A:
+
+        case RANCH_STORE_CHICKEN_FEED_ITEM:
             result = 1;
             break;
 
-        case 0x1B:
+        case RANCH_STORE_MIRACLE_POTION_ITEM:
 
             if (getTotalFarmAnimalsByType(2) && !getTotalFarmAnimalsByType(3) && getTotalPregnantFamAnimals() == 0) {
                 if (!checkHaveTool(MIRACLE_POTION)) {
                     result = 1;
                 }
             }
-            
+
             break;
-        
-        case 0x1C:
+
+        case RANCH_STORE_COW_MEDICINE_ITEM:
 
             if (getTotalFarmAnimalsCount() != 0) {
                 if (!checkHaveTool(COW_MEDICINE)) {
                     result = 1;
                 }
             }
-        
+
             break;
 
-        case 0x1D:
+        case RANCH_STORE_FODDER_ITEM:
             result = 1;
             break;
-        
-        case 0x22:
+
+        case POTION_SHOP_CURE_ALL_ITEM:
 
             if (gYear == 1 && !(gSeason < SUMMER) || !(gYear < 2)) {
                 if (checkHaveTool(EMPTY_BOTTLE) == TRUE) {
-                    if (gPlayer.bottleContents == EMPTY) {
+                    if (gPlayer.bottleContents == BOTTLE_CONTENTS_EMPTY) {
                         result = 1;
                     } else {
                         result = 2;
@@ -1682,11 +1668,11 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-        case 0x23:
+        case POTION_SHOP_VITAMIN_ITEM:
 
             if (gYear == 1 && !(gSeason < AUTUMN) || !(gYear < 2)) {
                 if (checkHaveTool(EMPTY_BOTTLE) == TRUE) {
-                    if (gPlayer.bottleContents == EMPTY) {
+                    if (gPlayer.bottleContents == BOTTLE_CONTENTS_EMPTY) {
                         result = 1;
                     } else {
                         result = 2;
@@ -1698,44 +1684,44 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-        case 0x24:
+        case POTION_SHOP_STRONG_VITAMINS_ITEM:
 
-            if (checkLifeEventBit(9)) {
-                
+            if (checkLifeEventBit(GAVE_PONTATA_ROOT_TO_POTION_SHOP_DEALER)) {
+
                 if (checkHaveTool(EMPTY_BOTTLE) == TRUE) {
-                    
-                    if (gPlayer.bottleContents == EMPTY) {
+
+                    if (gPlayer.bottleContents == BOTTLE_CONTENTS_EMPTY) {
                         result = 1;
                     } else {
                         result = 2;
                     }
-                        
+
                 } else {
                     result = 3;
                 }
             }
-            
+
             break;
 
-        case 0x25:
+        case SOUVENIR_SHOP_OCARINA_ITEM:
 
             if (gYear == 1 && !(gSeason < AUTUMN) || !(gYear < SUMMER)) {
                 if (!checkHaveKeyItem(OCARINA)) {
                     result = 1;
                 }
             }
-            
+
             break;
 
-        case 0x26:
-        
+        case SOUVENIR_SHOP_VASE_EARLY_ITEM:
+
             if (!checkLifeEventBit(GAVE_BLUE_ROCK_TO_SAIBARA) && !checkLifeEventBit(HAVE_VASE)) {
                 result = 1;
             }
 
             break;
 
-        case 0x27:
+        case SOUVENIR_SHOP_BLUE_VASE_ITEM:
 
             if (checkLifeEventBit(GAVE_BLUE_ROCK_TO_SAIBARA) && !checkLifeEventBit(HAVE_VASE)) {
                 result = 1;
@@ -1743,7 +1729,7 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-        case 0x35:
+        case FLOWER_FESTIVAL_PINK_CAT_MINT_SEEDS_ITEM:
 
             if (gCutsceneIndex == FLOWER_FESTIVAL) {
                 result = 1;
@@ -1751,7 +1737,7 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-        case 0x36:
+        case FLOWER_FESTIVAL_EMPTY_BOTTLE_ITEM:
 
             if (gCutsceneIndex == FLOWER_FESTIVAL) {
                 if (!checkHaveTool(EMPTY_BOTTLE)) {
@@ -1761,7 +1747,7 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-        case 0x37:
+        case FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM:
 
             if (gCutsceneIndex == FIREWORKS_FESTIVAL) {
                 if (!checkHaveTool(EMPTY_BOTTLE)) {

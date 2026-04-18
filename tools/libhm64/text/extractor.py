@@ -206,7 +206,7 @@ class TextDecoder:
                         elif item['name'] == 'TEXTEND':
                             seen_textend = True
                             if self.modding:
-                                break
+                                break  # Stop here in modding mode
                         else:
                             if seen_textend:
                                 if not self.modding:

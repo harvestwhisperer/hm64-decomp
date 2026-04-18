@@ -360,7 +360,9 @@ bool startSpriteAnimation(u16 spriteIndex, u16 animationIndex, u8 animationModeO
                 globalSprites[spriteIndex].animationCounter[1] = 0xFF;
            
             }
+            
         }
+
     }
 
     return result;

@@ -206,7 +206,7 @@
 
 ; 0xFF86C
 .doug_leaving:
-    TOGGLE_SPECIAL_BIT 2, dailyEventBits[0]
+    CLEAR_SPECIAL_BIT 2, dailyEventBits[0]
     SET_CALLBACK_ROUTINE 0xFFFF, BUTTON_A, .show_doug_sell_animal_dialogue
     EXECUTE_SUBROUTINE .setup_message_box_1
     INIT_MESSAGE_BOX_TYPE1 0, SHOP_TEXT_INDEX, 93
@@ -229,7 +229,7 @@
 
 ; 0xFF8CC
 .executor_doug_sell_animal:
-    TOGGLE_SPECIAL_BIT 4, dailyEventBits[0]
+    CLEAR_SPECIAL_BIT 4, dailyEventBits[0]
     SETUP_ENTITY 35, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 35, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS 0
@@ -260,7 +260,6 @@
     WAIT_RGBA_FINISHED
     ENTITY_WALK 34, SOUTHEAST, 2
     EXECUTE_SUBROUTINE .setup_message_box_2
-    ; "Hey!"
     INIT_MESSAGE_BOX_TYPE1 0, FARM_VISITS_TEXT_INDEX, 620
     EXECUTE_SUBROUTINE .wait_message_box_closed
     TOGGLE_PAUSE_ENTITIES
@@ -286,8 +285,9 @@
 
 ; 0xFF9E8
 .doug_cow_festival_leaving_default:
-    TOGGLE_SPECIAL_BIT 29, dailyEventBits[0]
-    TOGGLE_SPECIAL_BIT 31, dailyEventBits[0]
+    CLEAR_SPECIAL_BIT 29, dailyEventBits[0]
+    CLEAR_SPECIAL_BIT 31, dailyEventBits[0]
+    ; set COW_FESTIVAL_ENTRY_RESOLVED
     SET_SPECIAL_BIT 30, dailyEventBits[0]
     SET_CALLBACK_ROUTINE 0xFFFF, BUTTON_A, .start_dialogue
     EXECUTE_SUBROUTINE .setup_message_box_1
@@ -329,8 +329,9 @@
 
 ; 0xFFA9C
 .handle_not_entering_cow_festival:
-    TOGGLE_SPECIAL_BIT 29, dailyEventBits
-    TOGGLE_SPECIAL_BIT 31, dailyEventBits
+    CLEAR_SPECIAL_BIT 29, dailyEventBits
+    CLEAR_SPECIAL_BIT 31, dailyEventBits
+    ; set COW_FESTIVAL_ENTRY_RESOLVED
     SET_SPECIAL_BIT 30, dailyEventBits
     UPDATE_U8_VALUE -5, 255, npcAffection[DOUG]
     INIT_MESSAGE_BOX_TYPE1 0, FARM_VISITS_TEXT_INDEX, 105
@@ -347,8 +348,8 @@
 
 ; 0xFFAFC
 .executor_doug_cow_festival_leave:
-    TOGGLE_SPECIAL_BIT 31, dailyEventBits
-    TOGGLE_SPECIAL_BIT 0, dailyEventBits[1]
+    CLEAR_SPECIAL_BIT 31, dailyEventBits
+    CLEAR_SPECIAL_BIT 0, dailyEventBits[1]
     SETUP_ENTITY 35, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 35, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS 0
@@ -448,7 +449,7 @@
     EXECUTE_SUBROUTINE .wait_message_box_closed
     TOGGLE_PAUSE_ENTITIES
     SET_ENTITY_PHYSICS_FLAGS 1
-    TOGGLE_SPECIAL_BIT 8, dailyEventBits[0]
+    CLEAR_SPECIAL_BIT 8, dailyEventBits[0]
     ENTITY_WALK 64, 2, 2
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
@@ -502,7 +503,7 @@
 
 ; master carpenter leave leave
 .branch_FFDD0:
-    TOGGLE_SPECIAL_BIT 10, dailyEventBits[0]
+    CLEAR_SPECIAL_BIT 10, dailyEventBits[0]
     SET_SPECIAL_BIT 12, dailyEventBits[0]
     SET_CALLBACK_ROUTINE 0xFFFF, BUTTON_A, .branch_FFDAC
     ENTITY_WALK 32, 4, 2
@@ -627,7 +628,6 @@
     EXECUTE_SUBROUTINE .wait_until_leave
 
 ; 0x100004
-; "heh heh, you'll be surprised"
 .carpenter_dialogue_alternate:
     FLIP_ENTITY_DIRECTION ENTITY_PLAYER
     EXECUTE_SUBROUTINE .setup_message_box_1
@@ -650,8 +650,8 @@
 
 ; 0x100044
 .executor_master_carpenter_construction_completed:
-    TOGGLE_SPECIAL_BIT 11, dailyEventBits[0]
-    TOGGLE_SPECIAL_BIT 0, var0
+    CLEAR_SPECIAL_BIT 11, dailyEventBits[0]
+    CLEAR_SPECIAL_BIT 0, var0
     SETUP_ENTITY 32, ENTITY_ASSET_MASTER_CARPENTER, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS 0

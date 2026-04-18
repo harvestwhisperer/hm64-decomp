@@ -60,22 +60,22 @@ void initializeEntities(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", initializeEntityAsset);
 
-bool initializeEntityAsset(u16 entityAssetIndex, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32 arg5, u32 arg6, u8 arg7, u8 arg8, u16* arg9) {
+bool initializeEntityAsset(u16 entityAssetIndex, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8 isType1Sprite, u8 shadowSpriteIndex, u16* animationScripts) {
 
     bool result = FALSE;
 
     if (entityAssetIndex < MAX_ENTITY_ASSETS) {
 
-        if (!(entityAssetDescriptors[entityAssetIndex].flags & 1)) {
-            
-            entityAssetDescriptors[entityAssetIndex].romTextureStart = arg1;
-            entityAssetDescriptors[entityAssetIndex].romTextureEnd = arg2;
-            entityAssetDescriptors[entityAssetIndex].romAssetsIndexStart = arg3;
-            entityAssetDescriptors[entityAssetIndex].romAssetsIndexEnd = arg4;
-            entityAssetDescriptors[entityAssetIndex].romSpritesheetIndexStart = arg5;
-            entityAssetDescriptors[entityAssetIndex].romSpritesheetIndexEnd = arg6;
-            entityAssetDescriptors[entityAssetIndex].shadowSpriteIndex = arg8;
-            entityAssetDescriptors[entityAssetIndex].animationScripts = arg9;
+        if (!(entityAssetDescriptors[entityAssetIndex].flags & ENTITY_ASSET_ACTIVE)) {
+
+            entityAssetDescriptors[entityAssetIndex].romTextureStart = romTextureStart;
+            entityAssetDescriptors[entityAssetIndex].romTextureEnd = romTextureEnd;
+            entityAssetDescriptors[entityAssetIndex].romAssetsIndexStart = romAssetsIndexStart;
+            entityAssetDescriptors[entityAssetIndex].romAssetsIndexEnd = romAssetsIndexEnd;
+            entityAssetDescriptors[entityAssetIndex].romSpritesheetIndexStart = romSpritesheetIndexStart;
+            entityAssetDescriptors[entityAssetIndex].romSpritesheetIndexEnd = romSpritesheetIndexEnd;
+            entityAssetDescriptors[entityAssetIndex].shadowSpriteIndex = shadowSpriteIndex;
+            entityAssetDescriptors[entityAssetIndex].animationScripts = animationScripts;
 
             entityAssetDescriptors[entityAssetIndex].collisionBufferX = 0;
             entityAssetDescriptors[entityAssetIndex].collisionBufferY = 0;
@@ -83,10 +83,10 @@ bool initializeEntityAsset(u16 entityAssetIndex, u32 arg1, u32 arg2, u32 arg3, u
             entityAssetDescriptors[entityAssetIndex].spriteWidth = 0;
             entityAssetDescriptors[entityAssetIndex].spriteHeight = 0;
 
-            entityAssetDescriptors[entityAssetIndex].flags = 1;
+            entityAssetDescriptors[entityAssetIndex].flags = ENTITY_ASSET_ACTIVE;
 
-            if (arg7) {
-                entityAssetDescriptors[entityAssetIndex].flags = 3;
+            if (isType1Sprite) {
+                entityAssetDescriptors[entityAssetIndex].flags = (ENTITY_ASSET_ACTIVE | ENTITY_ASSET_IS_TYPE_1_SPRITE);
             }
             
             result = TRUE;
@@ -108,7 +108,7 @@ bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIn
 
         if (!(entities[entityIndex].flags & ENTITY_ACTIVE)) {
 
-            entities[entityIndex].flags = 1;
+            entities[entityIndex].flags = ENTITY_ACTIVE;
 
             entities[entityIndex].globalSpriteIndex = globalSpriteIndex;
             entities[entityIndex].shadowSpriteIndex = shadowSpriteIndex;
@@ -145,21 +145,21 @@ bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIn
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", initializeAnimalEntity);
 
-bool initializeAnimalEntity(u16 index, u16* arg1, AnimationFrameMetadata* arg2, u32* arg3, u32* arg4) {
+bool initializeAnimalEntity(u16 index, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationMetadata, u32* vaddrTextureToPaletteLookup, u32* vaddrSpritesheetIndex) {
 
     bool result = FALSE;
-    
+
     if (index < MAX_ENTITIES) {
-        
+
         result = TRUE;
-        
-        entities[index].vaddrSpritesheetIndex = arg4;
-        
+
+        entities[index].vaddrSpritesheetIndex = vaddrSpritesheetIndex;
+
         entities[index].flags = 1;
-        
-        entities[index].vaddrPalette = arg1;
-        entities[index].vaddrAnimationMetadata = arg2;
-        entities[index].vaddrTextureToPaletteLookup = arg3;
+
+        entities[index].vaddrPalette = vaddrPalette;
+        entities[index].vaddrAnimationMetadata = vaddrAnimationMetadata;
+        entities[index].vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
 
         entities[index].coordinates.x = 0;
         entities[index].coordinates.y = 0;
@@ -244,7 +244,7 @@ bool loadEntity(u16 index, u16 entityAssetIndex, bool transformExempt) {
             entities[index].entityAssetIndex = entityAssetIndex;
             entities[index].transformExempt = transformExempt;
 
-            if (entityAssetDescriptors[entities[index].entityAssetIndex].flags & 2) {
+            if (entityAssetDescriptors[entities[index].entityAssetIndex].flags & ENTITY_ASSET_IS_TYPE_1_SPRITE) {
 
                 dmaSprite(entities[index].globalSpriteIndex, 
                     entityAssetDescriptors[entities[index].entityAssetIndex].romTextureStart, 
@@ -278,7 +278,7 @@ bool loadEntity(u16 index, u16 entityAssetIndex, bool transformExempt) {
                     entities[index].vaddrAnimationMetadata,
                     entities[index].vaddrTextureToPaletteLookup,
                     NULL,
-                    entityAssetDescriptors[entities[index].entityAssetIndex].flags & 2 == 1,
+                    entityAssetDescriptors[entities[index].entityAssetIndex].flags & ENTITY_ASSET_IS_TYPE_1_SPRITE == TRUE,
                     entities[index].transformExempt                    
                     );
                 
@@ -336,20 +336,20 @@ bool loadEntity(u16 index, u16 entityAssetIndex, bool transformExempt) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", initializeShadowSprite);
 
-bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 animationIndex, u8 frameIndex) {
+bool initializeShadowSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32* vaddrSpritesheet, u16* vaddrPalette, u16* vaddrUnknownAssetSheet, u16* vaddrAnimationMetadata, u16 animationIndex, u8 frameIndex) {
 
     bool result = FALSE;
     
     if (index < MAX_SHADOW_SPRITES) {
         result = TRUE;
-        shadowSpriteDescriptors[index].romTextureStart = arg1;
-        shadowSpriteDescriptors[index].romTextureEnd = arg2;
-        shadowSpriteDescriptors[index].romAssetsIndexStart = arg3;
-        shadowSpriteDescriptors[index].romAssetsIndexEnd = arg4;
-        shadowSpriteDescriptors[index].vaddrSpritesheet = arg5;
-        shadowSpriteDescriptors[index].vaddrPalette = arg6;
-        shadowSpriteDescriptors[index].vaddrUnknownAssetSheet = arg7;
-        shadowSpriteDescriptors[index].vaddrAnimationMetadata = arg8;
+        shadowSpriteDescriptors[index].romTextureStart = romTextureStart;
+        shadowSpriteDescriptors[index].romTextureEnd = romTextureEnd;
+        shadowSpriteDescriptors[index].romAssetsIndexStart = romAssetsIndexStart;
+        shadowSpriteDescriptors[index].romAssetsIndexEnd = romAssetsIndexEnd;
+        shadowSpriteDescriptors[index].vaddrSpritesheet = vaddrSpritesheet;
+        shadowSpriteDescriptors[index].vaddrPalette = vaddrPalette;
+        shadowSpriteDescriptors[index].vaddrUnknownAssetSheet = vaddrUnknownAssetSheet;
+        shadowSpriteDescriptors[index].vaddrAnimationMetadata = vaddrAnimationMetadata;
         shadowSpriteDescriptors[index].animationIndex = animationIndex;
         shadowSpriteDescriptors[index].frameIndex = frameIndex;
     }
@@ -401,6 +401,7 @@ bool setEntityPaletteIndex(u16 index, u16 paletteIndex) {
     }
     
     return result;
+
 }
  
 //INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityAttachmentOffset);
@@ -430,7 +431,7 @@ bool setMainMapIndex(u16 mapIndex) {
 
     bool result = FALSE;
 
-    if ((mapIndex == MAIN_MAP_INDEX) && (mapControllers[mapIndex].flags & 1) && (mapControllers[mapIndex].flags & 2)) {
+    if ((mapIndex == MAIN_MAP_INDEX) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ASSETS_LOADED)) {
         gMainMapIndex = mapIndex;
         result = TRUE;
     }
@@ -1036,7 +1037,7 @@ bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue) {
     
     if (entityIndex < MAX_ENTITY_ASSETS) {
     
-        if (entityAssetDescriptors[entityIndex].flags & 1) {
+        if (entityAssetDescriptors[entityIndex].flags & ENTITY_ASSET_ACTIVE) {
             entityAssetDescriptors[entityIndex].collisionBufferX = xValue;
             entityAssetDescriptors[entityIndex].collisionBufferY = yValue;
             result = TRUE;
@@ -1050,15 +1051,15 @@ bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/entity", setEntitySpriteDimensions);
 
-bool setEntitySpriteDimensions(u16 entityAssetIndex, u8 arg1, u8 arg2) {
+bool setEntitySpriteDimensions(u16 entityAssetIndex, u8 spriteWidth, u8 spriteHeight) {
 
     bool result = FALSE;
 
     if (entityAssetIndex < MAX_ENTITY_ASSETS) {
 
-        if (entityAssetDescriptors[entityAssetIndex].flags & 1) {
-            entityAssetDescriptors[entityAssetIndex].spriteWidth = arg1;
-            entityAssetDescriptors[entityAssetIndex].spriteHeight = arg2;
+        if (entityAssetDescriptors[entityAssetIndex].flags & ENTITY_ASSET_ACTIVE) {
+            entityAssetDescriptors[entityAssetIndex].spriteWidth = spriteWidth;
+            entityAssetDescriptors[entityAssetIndex].spriteHeight = spriteHeight;
             result = TRUE;
         }
 

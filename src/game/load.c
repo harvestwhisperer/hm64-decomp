@@ -23,25 +23,25 @@ void func_800598E0(void) {
 
     resetDailyBits();
     
-    setDailyEventBit(0xE);
+    setDailyEventBit(DAY_START_6AM_GUARD);
     
-    if ((checkLifeEventBit(0x32)) && (!checkLifeEventBit(0x33))) {
-        setDailyEventBit(0x22);
+    if ((checkLifeEventBit(ACQUIRED_CHICKEN)) && (!checkLifeEventBit(KENT_CHICKEN_VISIT))) {
+        setDailyEventBit(KENT_ACQUIRED_CHICKEN_VISIT_DAILY);
     }
-    if ((checkLifeEventBit(0x34)) && (!checkLifeEventBit(0x35))) {
-        setDailyEventBit(0x23);
+    if ((checkLifeEventBit(ACQUIRED_SHEEP)) && (!checkLifeEventBit(KENT_SHEEP_VISIT))) {
+        setDailyEventBit(KENT_ACQUIRED_SHEEP_VISIT_DAILY);
     }
-    if ((checkLifeEventBit(0x36)) && (!checkLifeEventBit(0x37))) {
-        setDailyEventBit(0x24);
+    if ((checkLifeEventBit(ACQUIRED_COW)) && (!checkLifeEventBit(KENT_COW_VISIT))) {
+        setDailyEventBit(KENT_ACQUIRED_COW_VISIT_DAILY);
     }
-    if ((checkLifeEventBit(0x38)) && (!checkLifeEventBit(0x39))) {
-        setDailyEventBit(0x25);
+    if ((checkLifeEventBit(CHICK_HATCHED)) && (!checkLifeEventBit(KENT_CHICK_VISIT))) {
+        setDailyEventBit(KENT_CHICK_HATCHED_VISIT_DAILY);
     }
-    if ((checkLifeEventBit(0x3A)) && (!checkLifeEventBit(0x3B))) {
-        setDailyEventBit(0x26);
+    if ((checkLifeEventBit(ACQUIRED_HORSE)) && (!checkLifeEventBit(KENT_HORSE_VISIT))) {
+        setDailyEventBit(KENT_ACQUIRED_HORSE_VISIT_DAILY);
     }
-    if ((checkLifeEventBit(0x3C)) && (!checkLifeEventBit(0x3D))) {
-        setDailyEventBit(0x27);
+    if ((checkLifeEventBit(HORSE_GROWN)) && (!checkLifeEventBit(KENT_HORSE_GROWN_VISIT))) {
+        setDailyEventBit(KENT_HORSE_GROWN_VISIT_DAILY);
     }
     
     randomizeNPCLocations();
@@ -70,7 +70,7 @@ void func_800598E0(void) {
             }
 
             if (gSeason == WINTER && gDayOfMonth == 6) {
-                toggleLifeEventBit(MRS_MANA_COWS_EVENT);
+                clearLifeEventBit(MRS_MANA_COWS_EVENT);
             }
 
         }
@@ -81,50 +81,50 @@ void func_800598E0(void) {
     decrementFamilyAndPetAffection();
     setFestivalDailyBits();
     
-    if (checkDailyEventBit(0x4E)) {
+    if (checkDailyEventBit(FORCE_SUNNY_WEATHER_DAILY)) {
         gWeather = SUNNY;
     }
     
-    if ((checkLifeEventBit(0x4E)) && (!checkLifeEventBit(0x4F))) {
-        setLifeEventBit(0x4F);
-        setDailyEventBit(0x3F);
+    if ((checkLifeEventBit(EARTHQUAKE_HAPPENED)) && (!checkLifeEventBit(EARTHQUAKE_CARPENTER_VISIT))) {
+        setLifeEventBit(EARTHQUAKE_CARPENTER_VISIT);
+        setDailyEventBit(EARTHQUAKE_CARPENTER_VISIT_DAILY);
     }
     
     if (gSeason == SPRING && gDayOfMonth == 17) {
-        setDailyEventBit(0x41);
-        toggleLifeEventBit(0x90);
+        setDailyEventBit(HORSE_RACE);
+        clearLifeEventBit(HORSE_RACE_WON_THIS_YEAR);
         initializeRaceContext();
     }
     
     if (gSeason == AUTUMN && gDayOfMonth == 28) {
-        setDailyEventBit(0x41);
-        toggleLifeEventBit(0x90);
+        setDailyEventBit(HORSE_RACE);
+        clearLifeEventBit(HORSE_RACE_WON_THIS_YEAR);
         initializeRaceContext();
     }
     
     if (gSeason == WINTER && gDayOfMonth == 19) {
-        setDailyEventBit(0x42);
+        setDailyEventBit(DOG_RACE);
         initializeRaceContext();            
     }
 
     if (gSeason == AUTUMN) {
 
         if (gDayOfMonth == 3) {
-            toggleLifeEventBit(0x91);
+            clearLifeEventBit(COW_FESTIVAL_WON_THIS_YEAR);
             // animal index
-            gCowFestivalEnteredCowIndex= 0xFF;
+            gCowFestivalEnteredCowIndex = 0xFF;
         }
 
         // redundant code: macro or static inline?
         if (gSeason == AUTUMN && gDayOfMonth == 5) {  
             // animal index     
-            gCowFestivalEnteredCowIndex= 0xFF;
+            gCowFestivalEnteredCowIndex = 0xFF;
         }
 
     }
     
     if (gSeason == SUMMER && gDayOfMonth == 9) {
-        toggleLifeEventBit(0x92);
+        clearLifeEventBit(WON_VEGETABLE_FESTIVAL);
     }
 
     // FIXME: possible fake match

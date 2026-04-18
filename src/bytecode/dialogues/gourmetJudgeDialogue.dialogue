@@ -1,0 +1,86 @@
+; Dialogue Bank
+; Index Start: 0xE92E90
+; Bytecode Start: 0xE92DE0
+; Segments: 10
+
+; aliases for segments names
+.define .entry 0
+.define .review_held_item 1
+.define .fallthrough 2
+.define .introduction 3
+.define .finish_converation 4
+.define .wine_directions 5
+.define .cake_directions 6
+.define .end 7
+.define .dub_recipe_master 8
+
+; 0xE92DE0
+.entry:
+    SPECIAL_DIALOGUE_BIT_BRANCH GOURMET_JUDGE_INTRODUCTION_DIALOGUE, NO_TEXT, .introduction
+    SPECIAL_DIALOGUE_BIT_BRANCH GOURMET_DUBBING_RECIPE_MASTER_DIALOGUE, NO_TEXT, .dub_recipe_master
+    SPECIAL_DIALOGUE_BIT_BRANCH GREETED_GOURMET_JUDGE_DIALOGUE, NO_TEXT, .finish_converation
+    SET_SPECIAL_DIALOGUE_BIT GREETED_GOURMET_JUDGE_DIALOGUE
+    SPECIAL_DIALOGUE_BIT_BRANCH 116, NO_TEXT, .wine_directions
+    SPECIAL_DIALOGUE_BIT_BRANCH 185, NO_TEXT, .end
+    SHOW_TEXT 6
+    END_DIALOGUE
+
+; entry 2? dispatches on held item
+; 0xE92E0C
+.review_held_item:
+    SPECIAL_DIALOGUE_BIT_BRANCH GOURMET_JUDGE_INTRODUCTION_DIALOGUE, NO_TEXT, .introduction
+    ; rock / weed / poisonous mushroom
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_ROCK, HELD_ITEM_POISONOUS_MUSHROOM, 13, .fallthrough
+    ; fodder / log / ores / rocks
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_FODDER, HELD_ITEM_MOONLIGHT_STONE, 12, .fallthrough
+    ; wild animals / baby / dog / insects
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, 50, HELD_ITEM_DOG_2, 12, .fallthrough
+    SPECIAL_DIALOGUE_BIT_BRANCH 298, 14, .fallthrough
+    CLEAR_SPECIAL_DIALOGUE_BIT 298
+    ; moondrop / pink cat mint flower
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_MOONDROP_FLOWER, HELD_ITEM_PINK_CAT_MINT_FLOWER, 13, .fallthrough
+    ; large / golden milk
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_LARGE_MILK, HELD_ITEM_GOLDEN_MILK, 11, .fallthrough
+    ; cake / pie
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_CAKE, HELD_ITEM_PIE, 11, .fallthrough
+    ; any other item
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_TURNIP, 67, 10, .fallthrough
+    END_DIALOGUE
+
+; 0xE92E64
+.fallthrough:
+    END_DIALOGUE
+
+; 0xE92E68
+.introduction:
+    SHOW_TEXT 6
+    CLEAR_SPECIAL_DIALOGUE_BIT GOURMET_JUDGE_INTRODUCTION_DIALOGUE
+    END_DIALOGUE
+
+; 0xE92E70
+.finish_converation:
+    SHOW_TEXT 14
+    END_DIALOGUE
+
+; 0xE92E74
+.wine_directions:
+    SHOW_TEXT 7
+    END_DIALOGUE
+
+; 0xE92E78
+.cake_directions:
+    SHOW_TEXT 8
+    END_DIALOGUE
+
+; 0xE92E7C
+.end:
+    END_DIALOGUE
+
+; 0xE92E80
+.dub_recipe_master:
+    SHOW_TEXT 18
+    CLEAR_SPECIAL_DIALOGUE_BIT GOURMET_DUBBING_RECIPE_MASTER_DIALOGUE
+    END_DIALOGUE
+
+; 0xE92E88
+.segment_9:  ; alignment padding

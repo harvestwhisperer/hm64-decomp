@@ -1,6 +1,13 @@
 ; ============================================
 ; Bank 26 - Demos
 ; ============================================
+;
+;   1500 - Farm          
+;   1501 - Mountain 2    
+;   1502 - Mountain 1
+;   1503 - Village 1   
+
+; ============================================
 
 #include "entities.h"
 
@@ -12,31 +19,35 @@
 
 .array npcAffection, u8
 
-.entry
+.dispatch:
     TOGGLE_PAUSE_ENTITIES
     SET_SPECIAL_BIT 12, gCutsceneCompletionFlags
     SET_U8_VALUE 12, gHour
-    BRANCH_U16_VAR_WITHIN_RANGE 1500, 1500, gCutsceneIndex, .branch_150280
-    BRANCH_U16_VAR_WITHIN_RANGE 1501, 1501, gCutsceneIndex, .branch_1506E0
-    BRANCH_U16_VAR_WITHIN_RANGE 1502, 1502, gCutsceneIndex, .branch_150A24
-    BRANCH_U16_VAR_WITHIN_RANGE 1503, 1503, gCutsceneIndex, .branch_150BD4
+    BRANCH_U16_VAR_WITHIN_RANGE 1500, 1500, gCutsceneIndex, .farm_demo_start
+    BRANCH_U16_VAR_WITHIN_RANGE 1501, 1501, gCutsceneIndex, .mountain_2_demo_start
+    BRANCH_U16_VAR_WITHIN_RANGE 1502, 1502, gCutsceneIndex, .mountain_1_demo_start
+    BRANCH_U16_VAR_WITHIN_RANGE 1503, 1503, gCutsceneIndex, .village_demo_start
 
-.sub_150178:
+; Shared: finish the demo and unpause the game.
+.exit_demo:
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_150184:
+; Shared: park an executor in an infinite wait loop.
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_15018C:
+; Shared: build the player entity tracked by the camera.
+.setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
-.executor_16_1501AC: 
-    SETUP_ENTITY 39, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+; Caption sprite tracking the player (farm demo, opening title card).
+.caption_track_player:
+    SETUP_ENTITY 39, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 39, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -44,10 +55,11 @@
     SET_RGBA 255, 255, 255, 255
     SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
     SET_ENTITY_ANIMATION 21
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_16_1501EC:
-    SETUP_ENTITY 39, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+; Caption sprite tracking Cliff (mountain 2 demo).
+.caption_track_cliff:
+    SETUP_ENTITY 39, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 39, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -55,10 +67,11 @@
     SET_RGBA 255, 255, 255, 255
     SET_ENTITY_TRACKING_TARGET 21, 0, 14, 16, 255
     SET_ENTITY_ANIMATION 26
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_16_15022C:
-    SETUP_ENTITY 39, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+; Caption sprite tracking Harris (farm demo talk).
+.caption_track_harris:
+    SETUP_ENTITY 39, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 39, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -66,26 +79,31 @@
     SET_RGBA 255, 255, 255, 255
     SET_ENTITY_TRACKING_TARGET 31, 0, 14, 16, 255
     SET_ENTITY_ANIMATION 211
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_16_15026C:
+; Caption retargets to the player and swaps to the ending graphic.
+.caption_show_ending:
     SET_ENTITY_TRACKING_TARGET 0, 0, 14, 16, 255
     SET_ENTITY_ANIMATION 230
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_150280:
+; ============================================
+; Farm demo (gCutsceneIndex = 1500)
+; ============================================
+
+.farm_demo_start:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_AUDIO_SEQUENCE 0, _springSegmentRomStart, _springSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 128
-    SPAWN_EXECUTOR 1, .executor_1_15047C
-    SPAWN_EXECUTOR 2, .executor_2_1504FC
-    SPAWN_EXECUTOR 3, .executor_3_150528
-    SPAWN_EXECUTOR 4, .executor_4_150554
-    SPAWN_EXECUTOR 40, .executor_40_150448
-    SPAWN_EXECUTOR 41, .executor_41_150664
-    EXECUTE_SUBROUTINE .sub_15018C
+    SPAWN_EXECUTOR 1, .setup_cow_1
+    SPAWN_EXECUTOR 2, .setup_cow_2
+    SPAWN_EXECUTOR 3, .setup_cow_3
+    SPAWN_EXECUTOR 4, .setup_farm_sheep
+    SPAWN_EXECUTOR 40, .farm_setup_map
+    SPAWN_EXECUTOR 41, .farm_skip_watcher
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 0, 0, -224
     SET_ASSET_ROTATION SOUTHWEST
@@ -104,15 +122,15 @@
     WAIT_ENTITY_ANIMATION
     SET_SFX 36, 128
     SET_HOLDING_ANIMATION_FLAG TRUE
-    SPAWN_EXECUTOR 16, .executor_16_1501AC
+    SPAWN_EXECUTOR 16, .caption_track_player
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
     SET_WAIT_FRAMES 20
     SET_SFX 54, 128
-    SET_OTHER_EXECUTOR_PTR 40, .executor_40_15045C
+    SET_OTHER_EXECUTOR_PTR 40, .farm_pan_camera_1
     ENTITY_WALK 40, SOUTHWEST, 2
     ENTITY_WALK 128, NORTHWEST, 2
     SET_WAIT_FRAMES 15
-    SPAWN_EXECUTOR 5, .executor_5_150588
+    SPAWN_EXECUTOR 5, .setup_harris
     SET_SFX 4, 128
     SET_HOLDING_ANIMATION_FLAG FALSE
     DEACTIVATE_EXECUTOR 16
@@ -121,20 +139,21 @@
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 40, .executor_40_150470
+    SET_OTHER_EXECUTOR_PTR 40, .farm_pan_camera_2
     ENTITY_WALK 32, SOUTHWEST, 2
     ENTITY_WALK 24, NORTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 5, .executor_5_1505BC
-    EXECUTE_SUBROUTINE .sub_150184
+    SET_OTHER_EXECUTOR_PTR 5, .harris_arrives
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_1503C8:
-    SET_OTHER_EXECUTOR_PTR 16, .executor_16_15026C
+; End sequence for the farm demo: plays anims 475 / 496 / 502 then fades out.
+.farm_demo_finale:
+    SET_OTHER_EXECUTOR_PTR 16, .caption_show_ending
     SET_ASSET_ROTATION SOUTHWEST
     SET_ENTITY_ANIMATION 475
     SET_WAIT_FRAMES 120
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     DEACTIVATE_EXECUTOR 16
-    SPAWN_EXECUTOR 6, .executor_6_1505F8
+    SPAWN_EXECUTOR 6, .setup_farm_dog
     SET_WAIT_FRAMES 30
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 15
@@ -154,24 +173,26 @@
     DEACTIVATE_EXECUTOR 40
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_150178
+    EXECUTE_SUBROUTINE .exit_demo
 
-.executor_40_150448:
+.farm_setup_map:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_COORDINATES 0, 96, 0
     SET_ASSET_ROTATION SOUTH
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_40_15045C:
+; Per-frame camera translation applied after the player walks in.
+.farm_pan_camera_1:
     SET_FRAME_DELTA -1, 0, 1, 64
     SET_FRAME_DELTA -2, 0, 0, 104
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_40_150470:
+; Per-frame camera translation used later in the farm demo.
+.farm_pan_camera_2:
     SET_FRAME_DELTA -1, 0, 1, 64
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_15047C:
+.setup_cow_1:
     SETUP_ENTITY 21, ENTITY_ASSET_COW, 1
     SET_ENTITY_ANIMATIONS 21, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
@@ -179,74 +200,76 @@
     SET_COORDINATES -32, 0, 0
     SET_ASSET_ROTATION SOUTHWEST
 
-.sub_1504A8:
-    BRANCH_ON_RANDOM 0, 24, .branch_1504CC
-    BRANCH_ON_RANDOM 25, 49, .branch_1504D8
-    BRANCH_ON_RANDOM 50, 74, .branch_1504E4
-    BRANCH_ON_RANDOM 75, 100, .branch_1504F0
-    EXECUTE_SUBROUTINE .sub_1504A8
+; Pick one of four random idle animations for the cow and loop.
+.cow_random_idle:
+    BRANCH_ON_RANDOM 0, 24, .cow_idle_a
+    BRANCH_ON_RANDOM 25, 49, .cow_idle_b
+    BRANCH_ON_RANDOM 50, 74, .cow_idle_c
+    BRANCH_ON_RANDOM 75, 100, .cow_idle_d
+    EXECUTE_SUBROUTINE .cow_random_idle
 
-.branch_1504CC:
+.cow_idle_a:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 48
     SET_WAIT_FRAMES 45
-    EXECUTE_SUBROUTINE .sub_1504A8
+    EXECUTE_SUBROUTINE .cow_random_idle
 
-.branch_1504D8:
+.cow_idle_b:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 56
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_1504A8
+    EXECUTE_SUBROUTINE .cow_random_idle
 
-.branch_1504E4:
+.cow_idle_c:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 64
     SET_WAIT_FRAMES 30
-    EXECUTE_SUBROUTINE .sub_1504A8
+    EXECUTE_SUBROUTINE .cow_random_idle
 
-.branch_1504F0:
+.cow_idle_d:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 72
     SET_WAIT_FRAMES 25
-    EXECUTE_SUBROUTINE .sub_1504A8
+    EXECUTE_SUBROUTINE .cow_random_idle
 
-.executor_2_1504FC:
+.setup_cow_2:
     SETUP_ENTITY 22, ENTITY_ASSET_COW, 1
     SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 96, 0, -64
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_1504A8
+    EXECUTE_SUBROUTINE .cow_random_idle
 
-.executor_3_150528:
+.setup_cow_3:
     SETUP_ENTITY 23, ENTITY_ASSET_COW, 1
     SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -80, 0, -72
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_1504A8
+    EXECUTE_SUBROUTINE .cow_random_idle
 
-.executor_4_150554:
+.setup_farm_sheep:
     SETUP_ENTITY 14, ENTITY_ASSET_SHEEP, 1
     SET_ENTITY_ANIMATIONS 14, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 96, 0, 80
     SET_ASSET_ROTATION SOUTHWEST
     SET_ENTITY_WANDER 1, 32, 32
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_150588:
+.setup_harris:
     SETUP_ENTITY 31, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -438, 0, 152
     SET_ASSET_ROTATION SOUTHEAST
     ENTITY_WALK 48, SOUTHEAST, 2
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_1505BC:
+; Harris plays anim 16, caption appears, plays anim 16 again, walks NW.
+.harris_arrives:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
     WAIT_ENTITY_ANIMATION
-    SPAWN_EXECUTOR 16, .executor_16_15022C
+    SPAWN_EXECUTOR 16, .caption_track_harris
     SET_WAIT_FRAMES 30
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_1503C8
+    SET_OTHER_EXECUTOR_PTR 0, .farm_demo_finale
     SET_WAIT_FRAMES 30
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
     WAIT_ENTITY_ANIMATION
@@ -254,7 +277,7 @@
     ENTITY_WALK 128, NORTHWEST, 2
     DEACTIVATE_SELF
 
-.executor_6_1505F8:
+.setup_farm_dog:
     SETUP_ENTITY 1, ENTITY_ASSET_PLAYER_DOG, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
@@ -265,22 +288,24 @@
     SET_SFX 59, 128
     ENTITY_RUN 38, NORTHEAST, 4
 
-.sub_150640:
+; Dog runs SE / SW / NW / NE in a loop.
+.dog_circle_loop:
     ENTITY_RUN 16, SOUTHEAST, 4
     ENTITY_RUN 16, SOUTHWEST, 4
     ENTITY_RUN 16, NORTHWEST, 4
     ENTITY_RUN 16, NORTHEAST, 4
-    EXECUTE_SUBROUTINE .sub_150640
+    EXECUTE_SUBROUTINE .dog_circle_loop
 
-.executor_41_150664:
+; Watches for START being pressed to skip the farm demo.
+.farm_skip_watcher:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_BUTTON_PRESSED 0, 4096, .branch_150678
-    EXECUTE_SUBROUTINE .executor_41_150664
+    BRANCH_ON_BUTTON_PRESSED 0, BUTTON_START, .farm_on_skip
+    EXECUTE_SUBROUTINE .farm_skip_watcher
 
-.branch_150678:
+.farm_on_skip:
     PAUSE_ENTITIES
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 2
-    SET_OTHER_EXECUTOR_PTR 40, .executor_40_1506D0
+    SET_OTHER_EXECUTOR_PTR 40, .fade_out_and_exit
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     SET_WAIT_FRAMES 32
     DEACTIVATE_EXECUTOR 0
@@ -294,59 +319,68 @@
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_SPECIAL_BIT 11, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_150178
+    EXECUTE_SUBROUTINE .exit_demo
 
-.executor_40_1506D0:
+; Shared fade-to-black cleanup used by farm and mountain 2 skip handlers.
+.fade_out_and_exit:
     UPDATE_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_SELF
 
-.branch_1506E0:
+; ============================================
+; Mountain 2 demo (gCutsceneIndex = 1501)
+; ============================================
+
+.mountain_2_demo_start:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_AUDIO_SEQUENCE 0, _mountainSegmentRomStart, _mountainSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 128
-    SPAWN_EXECUTOR 1, .executor_1_150840
-    SPAWN_EXECUTOR 2, .executor_2_150890
-    SPAWN_EXECUTOR 3, .executor_3_1508C0
-    SPAWN_EXECUTOR 4, .executor_4_1508F0
-    SPAWN_EXECUTOR 40, .executor_40_150778
-    SPAWN_EXECUTOR 41, .executor_41_1509B8
-    EXECUTE_SUBROUTINE .sub_15018C
+    SPAWN_EXECUTOR 1, .setup_cliff
+    SPAWN_EXECUTOR 2, .setup_master_carpenter
+    SPAWN_EXECUTOR 3, .setup_assistant_carpenter_a
+    SPAWN_EXECUTOR 4, .setup_assistant_carpenter_b
+    SPAWN_EXECUTOR 40, .mountain_2_setup_map
+    SPAWN_EXECUTOR 41, .mountain_2_skip_watcher
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -128, 0, 200
     SET_ASSET_ROTATION NORTHEAST
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     SET_WAIT_FRAMES 40
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_15086C
-    SPAWN_EXECUTOR 5, .executor_5_150924
-    EXECUTE_SUBROUTINE .sub_150184
+    SET_OTHER_EXECUTOR_PTR 1, .cliff_notice_player
+    SPAWN_EXECUTOR 5, .hawk_fly_across
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_15076C:
+; Cliff walks SE after the main sequence finishes.
+.cliff_walk_off:
     ENTITY_WALK 48, SOUTHEAST, 2
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_40_150778:
+.mountain_2_setup_map:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_COORDINATES -64, 96, 128
     SET_ASSET_ROTATION SOUTH
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_16_15078C:
+; Caption sprite retargets the player and repositions, then disappears.
+.caption_zoom_to_player:
     SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
     SET_WAIT_FRAMES 16
     SET_ENTITY_TRACKING_TARGET 0, 0, 32, 16, 255
     SET_WAIT_FRAMES 10
     DEACTIVATE_SELF
 
-.executor_1_1507B0:
+.cliff_face_southeast:
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_1507B8:
+; Main sequence of the mountain 2 demo: player anims 24 / 437 / 456, then
+; both player and Cliff run SE off-screen while the scene fades out.
+.mountain_2_demo_main:
     SET_ASSET_ROTATION SOUTHWEST
-    SET_OTHER_EXECUTOR_PTR 16, .executor_16_15078C
+    SET_OTHER_EXECUTOR_PTR 16, .caption_zoom_to_player
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
     SET_WAIT_FRAMES 16
     SET_ENTITY_ANIMATION 437
@@ -357,9 +391,9 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 456
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_1507B0
+    SET_OTHER_EXECUTOR_PTR 1, .cliff_face_southeast
     ENTITY_RUN 16, SOUTHEAST, 4
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_15076C
+    SET_OTHER_EXECUTOR_PTR 1, .cliff_walk_off
     ENTITY_RUN 16, SOUTHEAST, 4
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     ENTITY_RUN 32, SOUTHEAST, 4
@@ -370,53 +404,55 @@
     DEACTIVATE_EXECUTOR 5
     DEACTIVATE_EXECUTOR 40
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_150178
+    EXECUTE_SUBROUTINE .exit_demo
 
-.executor_1_150840:
+.setup_cliff:
     SETUP_ENTITY 21, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 21, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -128, 0, 160
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_15086C:
+; Cliff plays anim 16, spawns the caption, then idles in the wait loop.
+.cliff_notice_player:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
     WAIT_ENTITY_ANIMATION
-    SPAWN_EXECUTOR 16, .executor_16_1501EC
+    SPAWN_EXECUTOR 16, .caption_track_cliff
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_1507B8
+    SET_OTHER_EXECUTOR_PTR 0, .mountain_2_demo_main
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_150890:
+.setup_master_carpenter:
     SETUP_ENTITY 22, ENTITY_ASSET_MASTER_CARPENTER, 1
     SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -80, 0, 112
     SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 17
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_1508C0:
+.setup_assistant_carpenter_a:
     SETUP_ENTITY 23, ENTITY_ASSET_ASSISTANT_CARPENTER, 1
     SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -16, 0, 128
     SET_ASSET_ROTATION NORTHEAST
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 20
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_1508F0:
+.setup_assistant_carpenter_b:
     SETUP_ENTITY 24, ENTITY_ASSET_ASSISTANT_CARPENTER, 1
     SET_ENTITY_ANIMATIONS 24, 36, 36, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 0, 0, 32
     SET_ASSET_ROTATION SOUTHWEST
     SET_ENTITY_WANDER 2, 32, 32
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_150924:
+; Hawk spawns at Y=224 and moves SW repeatedly, emitting SFX 76 each step.
+.hawk_fly_across:
     SET_SHADOW_FLAGS 58, 2
     SETUP_ENTITY 14, ENTITY_ASSET_HAWK, 1
     SET_ENTITY_ANIMATIONS 14, 0, 24, 16, 0, 0, 0
@@ -437,16 +473,16 @@
     ENTITY_WALK 64, SOUTHWEST, 4
     DEACTIVATE_SELF
 
-.executor_41_1509B8:
+.mountain_2_skip_watcher:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_BUTTON_PRESSED 0, 4096, .branch_1509CC
-    EXECUTE_SUBROUTINE .executor_41_1509B8
+    BRANCH_ON_BUTTON_PRESSED 0, BUTTON_START, .mountain_2_on_skip
+    EXECUTE_SUBROUTINE .mountain_2_skip_watcher
 
-.branch_1509CC:
+.mountain_2_on_skip:
     PAUSE_ENTITIES
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 2
-    SET_OTHER_EXECUTOR_PTR 40, .executor_40_1506D0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_40_1506D0
+    SET_OTHER_EXECUTOR_PTR 40, .fade_out_and_exit
+    SET_OTHER_EXECUTOR_PTR 0, .fade_out_and_exit
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     SET_WAIT_FRAMES 32
     DEACTIVATE_EXECUTOR 1
@@ -458,32 +494,45 @@
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_SPECIAL_BIT 11, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_150178
+    EXECUTE_SUBROUTINE .exit_demo
 
-.branch_150A24:
-    SPAWN_EXECUTOR 1, .executor_1_150AFC
-    SPAWN_EXECUTOR 2, .executor_2_150B40
-    SPAWN_EXECUTOR 41, .executor_41_150B84
-    EXECUTE_SUBROUTINE .sub_15018C
+; ============================================
+; Mountain 1 demo (gCutsceneIndex = 1502)
+; ============================================
+; Launched from cutscenes.c when the mountain 2 demo finishes naturally
+; (see the case-32 handler that calls launchIntroCutscene(1502, 0x1A, 1)
+; with spawn point MOUNTAIN_1_SPAWN_POINT_1). The player runs past Basil
+; and then Greg, each of whom plays a single animation. This demo does
+; not spawn executor 40 (map setup), start new audio, or set bit 31 of
+; gCutsceneCompletionFlags -- all unique vs. the other three demos.
+
+.mountain_1_demo_start:
+    SPAWN_EXECUTOR 1, .setup_basil
+    SPAWN_EXECUTOR 2, .setup_greg
+    SPAWN_EXECUTOR 41, .mountain_1_skip_watcher
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -256, 0, 128
     SET_ASSET_ROTATION SOUTHEAST
     ENTITY_RUN 48, SOUTHEAST, 4
     ENTITY_RUN 24, NORTHEAST, 4
     SET_ASSET_ROTATION NORTHEAST
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_150B28
-    EXECUTE_SUBROUTINE .sub_150184
+    SET_OTHER_EXECUTOR_PTR 1, .basil_anim
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_150A6C:
+; After basil_anim finishes: player plays anim 487, runs NE, hands off to Greg.
+.after_basil_anim:
     SET_ENTITY_ANIMATION 487
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 30
     ENTITY_RUN 40, NORTHEAST, 4
     SET_ASSET_ROTATION SOUTHEAST
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_150B6C
-    EXECUTE_SUBROUTINE .sub_150184
+    SET_OTHER_EXECUTOR_PTR 2, .greg_anim
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_150A94:
+; After greg_anim finishes: player plays anim 456, runs NE / SE / E / NE / NW,
+; then fades to black and cleans up.
+.after_greg_anim:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 456
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
@@ -500,44 +549,44 @@
     DEACTIVATE_EXECUTOR 2
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_150178
+    EXECUTE_SUBROUTINE .exit_demo
 
-.executor_1_150AFC:
+.setup_basil:
     SETUP_ENTITY 21, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 21, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -112, 0, -32
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_150B28:
+.basil_anim:
     SET_ENTITY_ANIMATION 21
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_150A6C
-    EXECUTE_SUBROUTINE .sub_150184
+    SET_OTHER_EXECUTOR_PTR 0, .after_basil_anim
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_150B40:
+.setup_greg:
     SETUP_ENTITY 22, ENTITY_ASSET_GREG, 1
     SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 32, 0, -128
     SET_ASSET_ROTATION NORTHWEST
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_150B6C:
+.greg_anim:
     SET_ENTITY_ANIMATION 24
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_150A94
-    EXECUTE_SUBROUTINE .sub_150184
+    SET_OTHER_EXECUTOR_PTR 0, .after_greg_anim
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_150B84:
+.mountain_1_skip_watcher:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_BUTTON_PRESSED 0, 4096, .branch_150B98
-    EXECUTE_SUBROUTINE .executor_41_150B84
+    BRANCH_ON_BUTTON_PRESSED 0, BUTTON_START, .mountain_1_on_skip
+    EXECUTE_SUBROUTINE .mountain_1_skip_watcher
 
-.branch_150B98:
+.mountain_1_on_skip:
     PAUSE_ENTITIES
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -548,28 +597,32 @@
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_SPECIAL_BIT 11, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_150178
+    EXECUTE_SUBROUTINE .exit_demo
 
-.branch_150BD4:
+; ============================================
+; Village 1 demo (gCutsceneIndex = 1503)
+; ============================================
+
+.village_demo_start:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_AUDIO_SEQUENCE 0, _villageSegmentRomStart, _villageSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 128
-    SPAWN_EXECUTOR 1, .executor_1_150DEC
-    SPAWN_EXECUTOR 2, .executor_2_150D08
-    SPAWN_EXECUTOR 3, .executor_3_150E5C
-    SPAWN_EXECUTOR 4, .executor_4_150EF8
-    SPAWN_EXECUTOR 5, .executor_5_150F30
-    SPAWN_EXECUTOR 6, .executor_6_150F70
-    SPAWN_EXECUTOR 7, .executor_7_150FD0
-    SPAWN_EXECUTOR 41, .executor_41_15104C
-    EXECUTE_SUBROUTINE .sub_15018C
+    SPAWN_EXECUTOR 1, .setup_popuri
+    SPAWN_EXECUTOR 2, .setup_village_dog
+    SPAWN_EXECUTOR 3, .setup_elli
+    SPAWN_EXECUTOR 4, .setup_ellen
+    SPAWN_EXECUTOR 5, .setup_kent
+    SPAWN_EXECUTOR 6, .setup_stu
+    SPAWN_EXECUTOR 7, .setup_pastor
+    SPAWN_EXECUTOR 41, .village_skip_watcher
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 304, 0, -104
     SET_ASSET_ROTATION NORTHEAST
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     SET_WAIT_FRAMES 40
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_150E18
+    SET_OTHER_EXECUTOR_PTR 1, .popuri_anim_sequence
     SET_WAIT_FRAMES 20
     SET_ENTITY_ANIMATION 487
     WAIT_ENTITY_ANIMATION
@@ -584,28 +637,29 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 10
     ENTITY_WALK 20, SOUTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_150D60
+    SET_OTHER_EXECUTOR_PTR 2, .dog_wander
     ENTITY_WALK 20, SOUTHWEST, 2
     SET_WAIT_FRAMES 10
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_150E88
+    SET_OTHER_EXECUTOR_PTR 3, .elli_walk_northeast
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 456
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_150CC8:
+; Player plays anim 484 then walks NW / N / NW; hands off to Elli, dog, pastor.
+.village_player_leaves:
     SET_ENTITY_ANIMATION 484
     WAIT_ENTITY_ANIMATION
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_150EDC
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_150DA8
+    SET_OTHER_EXECUTOR_PTR 3, .elli_step_aside
+    SET_OTHER_EXECUTOR_PTR 2, .dog_run_and_loop
     ENTITY_WALK 96, NORTHWEST, 2
     ENTITY_WALK 48, NORTH, 2
     ENTITY_WALK 48, NORTHWEST, 2
     SET_ASSET_ROTATION NORTHEAST
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_150FFC
-    EXECUTE_SUBROUTINE .sub_150184
+    SET_OTHER_EXECUTOR_PTR 7, .pastor_anim_then_exit
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_150D08:
+.setup_village_dog:
     SETUP_ENTITY 1, ENTITY_ASSET_PLAYER_DOG, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
@@ -622,9 +676,9 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 128
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 40
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_150D60:
+.dog_wander:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
@@ -640,32 +694,35 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 176
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_150DA8:
+; Dog emits SFX 59, runs NW twice, hands Kent and Stu their loop routines,
+; falls into the anim-208 loop below.
+.dog_run_and_loop:
     SET_SFX 59, 128
     ENTITY_RUN 10, NORTHWEST, 4
     SET_SFX 59, 128
     ENTITY_RUN 54, NORTHWEST, 4
-    SET_OTHER_EXECUTOR_PTR 5, .executor_5_150F5C
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_150F9C
+    SET_OTHER_EXECUTOR_PTR 5, .kent_anim_loop
+    SET_OTHER_EXECUTOR_PTR 6, .stu_anim_loop
 
-.sub_150DD8:
+.dog_anim_loop:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 208
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_150DD8
+    EXECUTE_SUBROUTINE .dog_anim_loop
 
-.executor_1_150DEC:
+.setup_popuri:
     SETUP_ENTITY 21, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 21, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 304, 0, -144
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_150E18:
+; Popuri plays anims 35 / 39 / 35, pauses, then 48 / 50 / 48.
+.popuri_anim_sequence:
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 39
@@ -682,17 +739,18 @@
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_150E5C:
+.setup_elli:
     SETUP_ENTITY 22, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 280, 0, 112
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_150E88:
+; Elli rotates NE / SE, walks NE, plays anims 37 / 41 / 37 / 123.
+.elli_walk_northeast:
     SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 15
     SET_ASSET_ROTATION SOUTHEAST
@@ -710,53 +768,56 @@
     SET_ENTITY_ANIMATION 123
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_150CC8
-    EXECUTE_SUBROUTINE .sub_150184
+    SET_OTHER_EXECUTOR_PTR 0, .village_player_leaves
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_150EDC:
+; Elli walks SW, faces SE, hands Ellen her next animation.
+.elli_step_aside:
     ENTITY_WALK 32, SOUTHWEST, 2
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 4, .executor_4_150F28
-    EXECUTE_SUBROUTINE .sub_150184
+    SET_OTHER_EXECUTOR_PTR 4, .ellen_set_anim_3
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_150EF8:
+.setup_ellen:
     SETUP_ENTITY 23, ENTITY_ASSET_ELLEN, 1
     SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 312, 0, 112
     SET_ASSET_ROTATION SOUTHWEST
     SET_ENTITY_ANIMATION 8
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_150F28:
+.ellen_set_anim_3:
     SET_ENTITY_ANIMATION 3
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_150F30:
+.setup_kent:
     SETUP_ENTITY 24, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -32, 0, -16
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_150F5C:
+; Loop: Kent plays anim 27, waits, resets, waits again.
+.kent_anim_loop:
     SET_ENTITY_ANIMATION 27
     SET_WAIT_FRAMES 40
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 30
-    EXECUTE_SUBROUTINE .executor_5_150F5C
+    EXECUTE_SUBROUTINE .kent_anim_loop
 
-.executor_6_150F70:
+.setup_stu:
     SETUP_ENTITY 25, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 0, 0, 16
     SET_ASSET_ROTATION NORTHEAST
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_6_150F9C:
+; Loop: Stu plays anims 38 / 42 / 38, then 34, with pauses between.
+.stu_anim_loop:
     SET_WAIT_FRAMES 10
     SET_ENTITY_ANIMATION 38
     WAIT_ENTITY_ANIMATION
@@ -769,17 +830,18 @@
     SET_ENTITY_ANIMATION 34
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .executor_6_150F9C
+    EXECUTE_SUBROUTINE .stu_anim_loop
 
-.executor_7_150FD0:
+.setup_pastor:
     SETUP_ENTITY 26, ENTITY_ASSET_PASTOR, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -64, 0, -128
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_150184
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_150FFC:
+; Pastor plays anim 16, waits, then fades global RGBA to black and exits.
+.pastor_anim_then_exit:
     SET_ENTITY_ANIMATION 16
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
@@ -796,14 +858,14 @@
     DEACTIVATE_EXECUTOR 6
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_150178
+    EXECUTE_SUBROUTINE .exit_demo
 
-.executor_41_15104C:
+.village_skip_watcher:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_BUTTON_PRESSED 0, 4096, .branch_151060
-    EXECUTE_SUBROUTINE .executor_41_15104C
+    BRANCH_ON_BUTTON_PRESSED 0, BUTTON_START, .village_on_skip
+    EXECUTE_SUBROUTINE .village_skip_watcher
 
-.branch_151060:
+.village_on_skip:
     PAUSE_ENTITIES
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -818,4 +880,4 @@
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_SPECIAL_BIT 11, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_150178
+    EXECUTE_SUBROUTINE .exit_demo

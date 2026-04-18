@@ -17,7 +17,7 @@ from ..data import TEXT_ADDRESSES_CSV, TEXT_SELECTION_SEGMENTS_CSV
 # Used in modding mode to skip extraction of ROM artifacts
 JUNK_DATA_BANKS = {
     'ann', 'elli', 'farmVisits', 'jeff', 'maria',
-    'popuri', 'shop', 'text54', 'text65', 'tv'
+    'popuri', 'shop', 'mountainCutscenes', 'houseCutscenes', 'tv'
 }
 
 

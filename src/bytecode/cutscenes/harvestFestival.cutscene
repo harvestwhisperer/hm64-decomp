@@ -1,8 +1,38 @@
-; ============================================
+; ============================================================
 ; Bank 19 - Harvest Festival
-; ============================================
+; ============================================================
+; Cutscene index 1200: the Harvest Festival, triggered each
+; autumn day 12 between 6:00 and 17:59 (see cutscenes.c).
+; Mayor opens the ceremony, Elli offers the coin cake to the
+; player, the next Harvest King is announced, and a dance
+; sequence plays with each of the five bachelorette candidates.
+;
+; Executor slots:
+;   0       - player
+;   1..5    - bachelorette candidates: Maria, Popuri, Elli, Ann, Karen
+;   6..12   - townspeople always present (Mayor, Mayor wife,
+;             Potion Shop Dealer, May, Kent, Stu, Harris)
+;   13..16  - conditional spouses of Maria / Elli / Ann / Karen
+;             (Gray, Jeff, Cliff, Kai) shown after marriage or
+;             when NPC affection is high enough
+;   17, 18  - Assistant Carpenter and Shipper
+;   19..34  - festival decoration items (entity asset
+;             ENTITY_ASSET_STATIC_ITEM)
+;   40      - Elli cake / coin overlay
+;   41      - random-number ticker that picks the Harvest King
+;   33      - dance-phase timer and finale
+;
+; var0 bit layout:
+;   bit 0       - cake ceremony has finished, dance prompt is armed
+;   bits 1..5   - per-bachelorette first-interaction flags (Maria..Karen)
+;   bit 6       - an interaction is currently active (lock)
+;
+; var1 bit layout (once-per-cutscene affection bumps):
+;   bits 0..17  - one flag per interactive NPC
 
 #include "entities.h"
+#include "texts.h"
+#include "dialogues.h"
 
 .buffer 2
 
@@ -15,11 +45,10 @@
 
 #define MAIN_MAP_INDEX 0
 
+; lifeEventBits[0] bit index
 #define MARRIED 0
 
-#define MARIA 0
-
-.entry
+.start:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 12, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 13, gCutsceneCompletionFlags
@@ -31,274 +60,292 @@
     SET_AUDIO_SEQUENCE 0, _namingScreenSegmentRomStart, _namingScreenSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
     TOGGLE_PAUSE_ENTITIES
-    BRANCH_U16_VAR_WITHIN_RANGE 1200, 1200, gCutsceneIndex, .branch_13B090
+    BRANCH_U16_VAR_WITHIN_RANGE 1200, 1200, gCutsceneIndex, .main
 
-.sub_13B028:
+; ============================================================
+; Shared helpers
+; ============================================================
+.exit_cutscene:
     SET_U32_VALUE 0, var0
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_13B040:
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_13B048:
+.setup_message_box:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_13B068:
+.setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
-.executor_6_13B088:
-    SET_ASSET_ROTATION 7
-    EXECUTE_SUBROUTINE .sub_13B040
+.executor_6_wait_stub:
+    SET_ASSET_ROTATION SOUTH
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13B090:
+; ============================================================
+; Main setup - spawn NPCs and trigger the coin-cake ceremony
+; ============================================================
+.main:
     INIT_MAP_ADDITION 2, 0
     INIT_MAP_ADDITION 3, 0
     INIT_MAP_ADDITION 4, 0
     INIT_MAP_ADDITION 5, 0
-    SPAWN_EXECUTOR 1, .executor_1_13B730
-    SPAWN_EXECUTOR 2, .executor_2_13B8C4
-    SPAWN_EXECUTOR 4, .executor_4_13BB54
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_13B0F4
-    SPAWN_EXECUTOR 5, .executor_5_13BCE8
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_13B0F4
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0xA, .branch_13B238
+    SPAWN_EXECUTOR 1, .maria_setup
+    SPAWN_EXECUTOR 2, .popuri_setup
+    SPAWN_EXECUTOR 4, .ann_setup
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .spawn_remaining_npcs
+    SPAWN_EXECUTOR 5, .karen_setup
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .spawn_remaining_npcs
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[KAI], .spawn_kai_high_affection
 
-.branch_13B0F4:
-    SPAWN_EXECUTOR 6, .executor_6_13BE7C
-    SPAWN_EXECUTOR 7, .executor_7_13BF0C
-    SPAWN_EXECUTOR 8, .executor_8_13BFA4
-    SPAWN_EXECUTOR 9, .executor_9_13C02C
-    SPAWN_EXECUTOR 10, .executor_10_13C0C0
-    SPAWN_EXECUTOR 11, .executor_11_13C144
-    SPAWN_EXECUTOR 12, .executor_12_13C1D8
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x7, .branch_13B220
-    SPAWN_EXECUTOR 14, .executor_14_13C328
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_13B158
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x9, .branch_13B22C
+.spawn_remaining_npcs:
+    SPAWN_EXECUTOR 6, .mayor_setup
+    SPAWN_EXECUTOR 7, .mayor_wife_setup
+    SPAWN_EXECUTOR 8, .potion_shop_dealer_setup
+    SPAWN_EXECUTOR 9, .may_setup
+    SPAWN_EXECUTOR 10, .kent_setup
+    SPAWN_EXECUTOR 11, .stu_setup
+    SPAWN_EXECUTOR 12, .harris_setup
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[GRAY], .spawn_gray_high_affection
+    SPAWN_EXECUTOR 14, .jeff_setup
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .spawn_decorations
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[CLIFF], .spawn_cliff_high_affection
 
-.branch_13B158:
-    SPAWN_EXECUTOR 17, .executor_17_13C560
-    SPAWN_EXECUTOR 18, .executor_18_13C5EC
-    SPAWN_EXECUTOR 19, .executor_19_13B318
-    SPAWN_EXECUTOR 20, .executor_20_13B344
-    SPAWN_EXECUTOR 21, .executor_21_13B370
-    SPAWN_EXECUTOR 22, .executor_22_13B39C
-    SPAWN_EXECUTOR 23, .executor_23_13B3C8
-    SPAWN_EXECUTOR 24, .executor_24_13B3F4
-    SPAWN_EXECUTOR 25, .executor_25_13B420
-    SPAWN_EXECUTOR 26, .executor_26_13B44C
-    SPAWN_EXECUTOR 27, .executor_27_13B478
-    SPAWN_EXECUTOR 28, .executor_28_13B4A4
-    SPAWN_EXECUTOR 29, .executor_29_13B4D0
-    SPAWN_EXECUTOR 30, .executor_30_13B4FC
-    SPAWN_EXECUTOR 31, .executor_31_13B528
-    SPAWN_EXECUTOR 32, .executor_32_13B554
-    SPAWN_EXECUTOR 33, .executor_33_13B580
-    SPAWN_EXECUTOR 34, .executor_34_13B5AC
-    EXECUTE_SUBROUTINE .sub_13B068
+.spawn_decorations:
+    SPAWN_EXECUTOR 17, .assistant_carpenter_setup
+    SPAWN_EXECUTOR 18, .shipper_setup
+    SPAWN_EXECUTOR 19, .executor_19_setup
+    SPAWN_EXECUTOR 20, .executor_20_setup
+    SPAWN_EXECUTOR 21, .executor_21_setup
+    SPAWN_EXECUTOR 22, .executor_22_setup
+    SPAWN_EXECUTOR 23, .executor_23_setup
+    SPAWN_EXECUTOR 24, .executor_24_setup
+    SPAWN_EXECUTOR 25, .executor_25_setup
+    SPAWN_EXECUTOR 26, .executor_26_setup
+    SPAWN_EXECUTOR 27, .executor_27_setup
+    SPAWN_EXECUTOR 28, .executor_28_setup
+    SPAWN_EXECUTOR 29, .executor_29_setup
+    SPAWN_EXECUTOR 30, .executor_30_setup
+    SPAWN_EXECUTOR 31, .executor_31_setup
+    SPAWN_EXECUTOR 32, .executor_32_setup
+    SPAWN_EXECUTOR 33, .executor_33_setup
+    SPAWN_EXECUTOR 34, .executor_34_setup
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 128, 0, -32
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     SET_WAIT_FRAMES 32
     SET_U16_VALUE 0, D_80189824
-    SPAWN_EXECUTOR 41, .executor_41_13B258
+    SPAWN_EXECUTOR 41, .executor_41_roll_for_coin
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.branch_13B220:
-    SPAWN_EXECUTOR 13, .executor_13_13C288
+.spawn_gray_high_affection:
+    SPAWN_EXECUTOR 13, .gray_setup
     RETURN_FROM_SUBROUTINE
 
-.branch_13B22C:
-    SPAWN_EXECUTOR 15, .executor_15_13C410
+.spawn_cliff_high_affection:
+    SPAWN_EXECUTOR 15, .cliff_setup
     RETURN_FROM_SUBROUTINE
 
-.branch_13B238:
-    SPAWN_EXECUTOR 16, .executor_16_13C4B0
+.spawn_kai_high_affection:
+    SPAWN_EXECUTOR 16, .kai_setup
     RETURN_FROM_SUBROUTINE
 
-.executor_41_13B244:
+; ============================================================
+; Executor 41 - random-number ticker that picks the Harvest King
+; ============================================================
+.executor_41_post_dance:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES -32, 96, -32
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_13B258:
+.executor_41_roll_for_coin:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_SPECIAL_BIT 6, var0, .executor_41_13B258
+    BRANCH_ON_SPECIAL_BIT 6, var0, .executor_41_roll_for_coin
     UPDATE_U16_VALUE 1, 9999, D_80189824
-    BRANCH_U16_VAR_WITHIN_RANGE 1000, 1000, D_80189824, .branch_13B288
-    EXECUTE_SUBROUTINE .executor_41_13B258
+    BRANCH_U16_VAR_WITHIN_RANGE 1000, 1000, D_80189824, .executor_41_trigger_cake_delivery
+    EXECUTE_SUBROUTINE .executor_41_roll_for_coin
 
-.branch_13B288:
-    SPAWN_EXECUTOR 3, .executor_3_13BA58
+.executor_41_trigger_cake_delivery:
+    SPAWN_EXECUTOR 3, .elli_setup
     DEACTIVATE_SELF
 
-.executor_40_13B294:
-    SETUP_ENTITY 22, 93, 1
+; ============================================================
+; Executor 40 - cake / coin overlay spawned by Elli
+; ============================================================
+.executor_40_cake_on_ground:
+    SETUP_ENTITY 22, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 22, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 3, 0, 14, 20, 255
     SET_ENTITY_ANIMATION 6
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_40_13B2C4:
-    SETUP_ENTITY 22, 93, 1
+.executor_40_coin_on_player:
+    SETUP_ENTITY 22, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 22, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 0, -12, 52, 8, 0
     SET_ENTITY_ANIMATION 229
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_40_13B2F4:
+.executor_40_coin_fade_out:
     SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
     SET_WAIT_FRAMES 16
     SET_ENTITY_TRACKING_TARGET 0, 0, 32, 16, 255
     SET_WAIT_FRAMES 10
     DEACTIVATE_SELF
 
-.executor_19_13B318:
-    SETUP_ENTITY 23, 93, 1
+; ============================================================
+; Executors 19-34 - festival decoration items
+; ============================================================
+.executor_19_setup:
+    SETUP_ENTITY 23, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 23, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -184, 0, 160
     SET_ENTITY_ANIMATION 57
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_13B344:
-    SETUP_ENTITY 24, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+.executor_20_setup:
+    SETUP_ENTITY 24, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 24, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -144, 0, 160
     SET_ENTITY_ANIMATION 58
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_21_13B370:
-    SETUP_ENTITY 25, 93, 1
+.executor_21_setup:
+    SETUP_ENTITY 25, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 25, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -192, 0, 192
     SET_ENTITY_ANIMATION 59
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_22_13B39C:
-    SETUP_ENTITY 26, 93, 1
+.executor_22_setup:
+    SETUP_ENTITY 26, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 26, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -160, 0, 192
     SET_ENTITY_ANIMATION 61
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_23_13B3C8:
-    SETUP_ENTITY 27, 93, 1
+.executor_23_setup:
+    SETUP_ENTITY 27, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 27, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -128, 0, 192
     SET_ENTITY_ANIMATION 57
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_24_13B3F4:
-    SETUP_ENTITY 28, 93, 1
+.executor_24_setup:
+    SETUP_ENTITY 28, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 28, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 32, 0, 160
     SET_ENTITY_ANIMATION 60
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_25_13B420:
-    SETUP_ENTITY 29, 93, 1
+.executor_25_setup:
+    SETUP_ENTITY 29, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 29, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 80, 0, 160
     SET_ENTITY_ANIMATION 61
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_26_13B44C:
-    SETUP_ENTITY 30, 93, 1
+.executor_26_setup:
+    SETUP_ENTITY 30, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 30, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 64, 0, 192
     SET_ENTITY_ANIMATION 59
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_27_13B478:
-    SETUP_ENTITY 31, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+.executor_27_setup:
+    SETUP_ENTITY 31, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 31, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -168, 0, -224
     SET_ENTITY_ANIMATION 62
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_28_13B4A4:
-    SETUP_ENTITY 32, 93, 1
+.executor_28_setup:
+    SETUP_ENTITY 32, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 32, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -192, 0, -192
     SET_ENTITY_ANIMATION 60
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_29_13B4D0:
-    SETUP_ENTITY 33, 93, 1
+.executor_29_setup:
+    SETUP_ENTITY 33, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 33, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -160, 0, -192
     SET_ENTITY_ANIMATION 58
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_30_13B4FC:
-    SETUP_ENTITY 34, 93, 1
+.executor_30_setup:
+    SETUP_ENTITY 34, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 34, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -132, 0, -198
     SET_ENTITY_ANIMATION 112
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_31_13B528:
-    SETUP_ENTITY 35, 93, 1
+.executor_31_setup:
+    SETUP_ENTITY 35, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 35, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 32, 0, -224
     SET_ENTITY_ANIMATION 112
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_32_13B554:
-    SETUP_ENTITY 36, 93, 1
+.executor_32_setup:
+    SETUP_ENTITY 36, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 36, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 72, 0, -224
     SET_ENTITY_ANIMATION 61
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_33_13B580:
-    SETUP_ENTITY 37, 93, 1
+.executor_33_setup:
+    SETUP_ENTITY 37, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 37, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 80, 0, -192
     SET_ENTITY_ANIMATION 62
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_34_13B5AC:
-    SETUP_ENTITY 39, 93, 1
+.executor_34_setup:
+    SETUP_ENTITY 39, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 39, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 32, 0, -192
     SET_ENTITY_ANIMATION 7
-    EXECUTE_SUBROUTINE .sub_13B040
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_13B5D8:
+; ============================================================
+; Player executors - cake ceremony and post-dance reset
+; ============================================================
+.executor_0_cake_ceremony:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_13B068
-    SET_ASSET_ROTATION 0
-    SET_OTHER_EXECUTOR_PTR 40, .executor_40_13B2F4
+    EXECUTE_SUBROUTINE .setup_player
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_OTHER_EXECUTOR_PTR 40, .executor_40_coin_fade_out
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
     SET_WAIT_FRAMES 16
     SET_ENTITY_ANIMATION 437
@@ -306,44 +353,44 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 10
     FLIP_ENTITY_DIRECTION 3
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gHarvestCoinFinder, .branch_13B670
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gHarvestCoinFinder, .executor_0_coin_found
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 256
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 62
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 62
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 256
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_13B088
+    SET_OTHER_EXECUTOR_PTR 6, .executor_6_wait_stub
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 65
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 65
     WAIT_MESSAGE_BOX_CLOSED 0
-    EXECUTE_SUBROUTINE .sub_13B6E8
+    EXECUTE_SUBROUTINE .announce_king_and_start_dance
 
-.branch_13B670:
+.executor_0_coin_found:
     UPDATE_U8_VALUE 5, 255, gHappiness
     SET_ENTITY_ANIMATION 369
-    SPAWN_EXECUTOR 40, .executor_40_13B2C4
+    SPAWN_EXECUTOR 40, .executor_40_coin_on_player
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 256
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 63
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 63
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 256
     DEACTIVATE_EXECUTOR 40
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_13B088
+    SET_OTHER_EXECUTOR_PTR 6, .executor_6_wait_stub
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 64
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 64
     WAIT_MESSAGE_BOX_CLOSED 0
 
-.sub_13B6E8:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 66
+.announce_king_and_start_dance:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 66
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 67
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 67
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
@@ -351,846 +398,903 @@
     TOGGLE_PAUSE_ENTITY 0
     DEACTIVATE_SELF
 
-.executor_0_13B718:
-    EXECUTE_SUBROUTINE .sub_13B068
+.executor_0_post_dance:
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 48, 0, 0
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_13B040
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_13B730:
-    SETUP_ENTITY 1, 1, 1
+; ============================================================
+; Executor 1 - Maria (bachelorette candidate)
+; ============================================================
+.maria_setup:
+    SETUP_ENTITY 1, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -96, 0, 192
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
 
-.sub_13B758:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13B764
-    EXECUTE_SUBROUTINE .sub_13B040
+.maria_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .maria_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13B764:
-    BRANCH_ON_SPECIAL_BIT 0, var1, .branch_13B784
-    UPDATE_U8_VALUE 2, 255, npcAffection
+.maria_on_interact:
+    BRANCH_ON_SPECIAL_BIT 0, var1, .maria_dialogue_dispatch
+    UPDATE_U8_VALUE 2, 255, npcAffection[MARIA]
     SET_SPECIAL_BIT 0, var1
 
-.branch_13B784:
+.maria_dialogue_dispatch:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13B898
-    BRANCH_ON_SPECIAL_BIT 26, lifeEventBits[0], .branch_13B878
-    BRANCH_ON_SPECIAL_BIT 1, var0, .branch_13B7FC
+    BRANCH_ON_SPECIAL_BIT 0, var0, .maria_dance_prompt
+    BRANCH_ON_SPECIAL_BIT 26, lifeEventBits[0], .maria_talk_elli_taught
+    BRANCH_ON_SPECIAL_BIT 1, var0, .maria_repeat_interact
     SET_SPECIAL_BIT 1, var0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_13B7EC
-    INIT_DIALOGUE_SESSION 0, 49, 7
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .maria_married_first_interact
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 7
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13B758
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .maria_wait
 
-.branch_13B7EC:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .branch_13B838
+.maria_married_first_interact:
+    BRANCH_U8_VAR_WITHIN_RANGE MARIA, MARIA, gWife, .maria_talk_cooking_not_organized
     RETURN_FROM_SUBROUTINE
 
-.branch_13B7FC:
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_13B828
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 28
+.maria_repeat_interact:
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .maria_married_repeat
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 28
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13B758
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .maria_wait
 
-.branch_13B828:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .branch_13B858
+.maria_married_repeat:
+    BRANCH_U8_VAR_WITHIN_RANGE MARIA, MARIA, gWife, .maria_talk_stew
     RETURN_FROM_SUBROUTINE
 
-.branch_13B838:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 27
+.maria_talk_cooking_not_organized:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 27
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13B758
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .maria_wait
 
-.branch_13B858:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 29
+.maria_talk_stew:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 29
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13B758
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .maria_wait
 
-.branch_13B878:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 30
+.maria_talk_elli_taught:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 30
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13B758
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .maria_wait
 
-.branch_13B898:
-    INIT_DIALOGUE_SESSION 0, 49, 3
+.maria_dance_prompt:
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 3
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_13C798
-    BRANCH_ON_DIALOGUE 0, 1, .branch_13B8BC
+    BRANCH_ON_DIALOGUE 0, 0, .choose_dance_maria
+    BRANCH_ON_DIALOGUE 0, 1, .maria_dance_declined
 
-.branch_13B8BC:
+.maria_dance_declined:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_13B758
+    EXECUTE_SUBROUTINE .maria_wait
 
-.executor_2_13B8C4:
-    SETUP_ENTITY 2, 2, 1
+; ============================================================
+; Executor 2 - Popuri (bachelorette candidate)
+; ============================================================
+.popuri_setup:
+    SETUP_ENTITY 2, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -128, 0, -256
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
 
-.sub_13B8EC:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13B8F8
-    EXECUTE_SUBROUTINE .sub_13B040
+.popuri_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .popuri_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13B8F8:
-    BRANCH_ON_SPECIAL_BIT 1, var1, .branch_13B918
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1
+.popuri_on_interact:
+    BRANCH_ON_SPECIAL_BIT 1, var1, .popuri_dialogue_dispatch
+    UPDATE_U8_VALUE 2, 255, npcAffection[POPURI]
     SET_SPECIAL_BIT 1, var1
 
-.branch_13B918:
+.popuri_dialogue_dispatch:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13BA2C
-    BRANCH_ON_SPECIAL_BIT 27, lifeEventBits[0], .branch_13BA0C
-    BRANCH_ON_SPECIAL_BIT 2, var0, .branch_13B990
+    BRANCH_ON_SPECIAL_BIT 0, var0, .popuri_dance_prompt
+    BRANCH_ON_SPECIAL_BIT 27, lifeEventBits[0], .popuri_talk_husband_quiet
+    BRANCH_ON_SPECIAL_BIT 2, var0, .popuri_repeat_interact
     SET_SPECIAL_BIT 2, var0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_13B980
-    INIT_DIALOGUE_SESSION 0, 49, 11
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .popuri_married_first_interact
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 11
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13B8EC
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .popuri_wait
 
-.branch_13B980:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .branch_13B9CC
+.popuri_married_first_interact:
+    BRANCH_U8_VAR_WITHIN_RANGE POPURI, POPURI, gWife, .popuri_talk_herbs_missing
     RETURN_FROM_SUBROUTINE
 
-.branch_13B990:
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_13B9BC
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 36
+.popuri_repeat_interact:
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .popuri_married_repeat
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 36
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13B8EC
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .popuri_wait
 
-.branch_13B9BC:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .branch_13B9EC
+.popuri_married_repeat:
+    BRANCH_U8_VAR_WITHIN_RANGE POPURI, POPURI, gWife, .popuri_talk_herb_stew
     RETURN_FROM_SUBROUTINE
 
-.branch_13B9CC:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 37
+.popuri_talk_herbs_missing:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 37
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13B8EC
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .popuri_wait
 
-.branch_13B9EC:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 38
+.popuri_talk_herb_stew:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 38
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13B8EC
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .popuri_wait
 
-.branch_13BA0C:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 39
+.popuri_talk_husband_quiet:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 39
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13B8EC
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .popuri_wait
 
-.branch_13BA2C:
-    INIT_DIALOGUE_SESSION 0, 49, 3
+.popuri_dance_prompt:
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 3
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_13C8C8
-    BRANCH_ON_DIALOGUE 0, 1, .branch_13BA50
+    BRANCH_ON_DIALOGUE 0, 0, .choose_dance_popuri
+    BRANCH_ON_DIALOGUE 0, 1, .popuri_dance_declined
 
-.branch_13BA50:
+.popuri_dance_declined:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_13B8EC
+    EXECUTE_SUBROUTINE .popuri_wait
 
-.executor_3_13BA58:
-    SETUP_ENTITY 3, 3, 1
+; ============================================================
+; Executor 3 - Elli (bachelorette candidate, also brings the coin cake)
+; ============================================================
+.elli_setup:
+    SETUP_ENTITY 3, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -288, 0, 80
-    SET_ASSET_ROTATION 6
-    ENTITY_WALK 48, 6, 2
-    ENTITY_WALK 32, 5, 2
-    SET_ASSET_ROTATION 6
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13BAA4
-    EXECUTE_SUBROUTINE .sub_13B040
+    SET_ASSET_ROTATION SOUTHEAST
+    ENTITY_WALK 48, SOUTHEAST, 2
+    ENTITY_WALK 32, EAST, 2
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .elli_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13BAA4:
-    BRANCH_ON_SPECIAL_BIT 2, var1, .branch_13BAC4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x2
+.elli_on_interact:
+    BRANCH_ON_SPECIAL_BIT 2, var1, .elli_give_cake
+    UPDATE_U8_VALUE 2, 255, npcAffection[ELLI]
     SET_SPECIAL_BIT 2, var1
 
-.branch_13BAC4:
+.elli_give_cake:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
     WAIT_ENTITY_ANIMATION
-    SPAWN_EXECUTOR 40, .executor_40_13B294
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 61
+    SPAWN_EXECUTOR 40, .executor_40_cake_on_ground
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 61
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SPAWN_EXECUTOR 0, .executor_0_13B5D8
+    SPAWN_EXECUTOR 0, .executor_0_cake_ceremony
 
-.sub_13BAFC:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13BB08
-    EXECUTE_SUBROUTINE .sub_13B040
+.elli_wait_post_cake:
+    SET_CALLBACK_ROUTINE 0, 32768, .elli_on_interact_post_cake
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13BB08:
+.elli_on_interact_post_cake:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13BB28
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 0, var0, .elli_dance_prompt
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_13BAFC
+    EXECUTE_SUBROUTINE .elli_wait_post_cake
 
-.branch_13BB28:
-    INIT_DIALOGUE_SESSION 0, 49, 3
+.elli_dance_prompt:
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 3
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_13C9F8
-    BRANCH_ON_DIALOGUE 0, 1, .branch_13BB4C
+    BRANCH_ON_DIALOGUE 0, 0, .choose_dance_elli
+    BRANCH_ON_DIALOGUE 0, 1, .elli_dance_declined
 
-.branch_13BB4C:
+.elli_dance_declined:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_13BAFC
+    EXECUTE_SUBROUTINE .elli_wait_post_cake
 
-.executor_4_13BB54:
-    SETUP_ENTITY 4, 4, 1
+; ============================================================
+; Executor 4 - Ann (bachelorette candidate)
+; ============================================================
+.ann_setup:
+    SETUP_ENTITY 4, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 32, 0, 96
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
 
-.sub_13BB7C:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13BB88
-    EXECUTE_SUBROUTINE .sub_13B040
+.ann_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13BB88:
-    BRANCH_ON_SPECIAL_BIT 3, var1, .branch_13BBA8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x3
+.ann_on_interact:
+    BRANCH_ON_SPECIAL_BIT 3, var1, .ann_dialogue_dispatch
+    UPDATE_U8_VALUE 2, 255, npcAffection[ANN]
     SET_SPECIAL_BIT 3, var1
 
-.branch_13BBA8:
+.ann_dialogue_dispatch:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13BCBC
-    BRANCH_ON_SPECIAL_BIT 29, lifeEventBits[0], .branch_13BC9C
-    BRANCH_ON_SPECIAL_BIT 4, var0, .branch_13BC20
+    BRANCH_ON_SPECIAL_BIT 0, var0, .ann_dance_prompt
+    BRANCH_ON_SPECIAL_BIT 29, lifeEventBits[0], .ann_talk_jealous
+    BRANCH_ON_SPECIAL_BIT 4, var0, .ann_repeat_interact
     SET_SPECIAL_BIT 4, var0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_13BC10
-    INIT_DIALOGUE_SESSION 0, 49, 15
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .ann_married_first_interact
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 15
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BB7C
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .ann_wait
 
-.branch_13BC10:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .branch_13BC5C
+.ann_married_first_interact:
+    BRANCH_U8_VAR_WITHIN_RANGE ANN, ANN, gWife, .ann_talk_proud_cooked
     RETURN_FROM_SUBROUTINE
 
-.branch_13BC20:
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_13BC4C
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 45
+.ann_repeat_interact:
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .ann_married_repeat
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 45
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BB7C
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .ann_wait
 
-.branch_13BC4C:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .branch_13BC7C
+.ann_married_repeat:
+    BRANCH_U8_VAR_WITHIN_RANGE ANN, ANN, gWife, .ann_talk_impressive
     RETURN_FROM_SUBROUTINE
 
-.branch_13BC5C:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 46
+.ann_talk_proud_cooked:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 46
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BB7C
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .ann_wait
 
-.branch_13BC7C:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 47
+.ann_talk_impressive:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 47
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BB7C
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .ann_wait
 
-.branch_13BC9C:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 50
+.ann_talk_jealous:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 50
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BB7C
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .ann_wait
 
-.branch_13BCBC:
-    INIT_DIALOGUE_SESSION 0, 49, 3
+.ann_dance_prompt:
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 3
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_13CB28
-    BRANCH_ON_DIALOGUE 0, 1, .branch_13BCE0
+    BRANCH_ON_DIALOGUE 0, 0, .choose_dance_ann
+    BRANCH_ON_DIALOGUE 0, 1, .ann_dance_declined
 
-.branch_13BCE0:
+.ann_dance_declined:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_13BB7C
+    EXECUTE_SUBROUTINE .ann_wait
 
-.executor_5_13BCE8:
-    SETUP_ENTITY 5, 5, 1
+; ============================================================
+; Executor 5 - Karen (bachelorette candidate)
+; ============================================================
+.karen_setup:
+    SETUP_ENTITY 5, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 5, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 128, 0, 128
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
 
-.sub_13BD10:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13BD1C
-    EXECUTE_SUBROUTINE .sub_13B040
+.karen_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13BD1C:
-    BRANCH_ON_SPECIAL_BIT 4, var1, .branch_13BD3C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x4
+.karen_on_interact:
+    BRANCH_ON_SPECIAL_BIT 4, var1, .karen_dialogue_dispatch
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAREN]
     SET_SPECIAL_BIT 4, var1
 
-.branch_13BD3C:
+.karen_dialogue_dispatch:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13BE50
-    BRANCH_ON_SPECIAL_BIT 30, lifeEventBits[0], .branch_13BE30
-    BRANCH_ON_SPECIAL_BIT 5, var0, .branch_13BDB4
+    BRANCH_ON_SPECIAL_BIT 0, var0, .karen_dance_prompt
+    BRANCH_ON_SPECIAL_BIT 30, lifeEventBits[0], .karen_talk_fish_from_kai
+    BRANCH_ON_SPECIAL_BIT 5, var0, .karen_repeat_interact
     SET_SPECIAL_BIT 5, var0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_13BDA4
-    INIT_DIALOGUE_SESSION 0, 49, 19
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .karen_married_first_interact
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 19
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BD10
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .karen_wait
 
-.branch_13BDA4:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .branch_13BDF0
+.karen_married_first_interact:
+    BRANCH_U8_VAR_WITHIN_RANGE KAREN, KAREN, gWife, .karen_talk_dance
     RETURN_FROM_SUBROUTINE
 
-.branch_13BDB4:
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_13BDE0
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 57
+.karen_repeat_interact:
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .karen_married_repeat
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 57
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BD10
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .karen_wait
 
-.branch_13BDE0:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .branch_13BE10
+.karen_married_repeat:
+    BRANCH_U8_VAR_WITHIN_RANGE KAREN, KAREN, gWife, .karen_talk_cooking_improved
     RETURN_FROM_SUBROUTINE
 
-.branch_13BDF0:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 58
+.karen_talk_dance:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 58
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BD10
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .karen_wait
 
-.branch_13BE10:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 59
+.karen_talk_cooking_improved:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 59
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BD10
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .karen_wait
 
-.branch_13BE30:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 60
+.karen_talk_fish_from_kai:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 60
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BD10
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .karen_wait
 
-.branch_13BE50:
-    INIT_DIALOGUE_SESSION 0, 49, 3
+.karen_dance_prompt:
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 3
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_13CC58
-    BRANCH_ON_DIALOGUE 0, 1, .branch_13BE74
+    BRANCH_ON_DIALOGUE 0, 0, .choose_dance_karen
+    BRANCH_ON_DIALOGUE 0, 1, .karen_dance_declined
 
-.branch_13BE74:
+.karen_dance_declined:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_13BD10
+    EXECUTE_SUBROUTINE .karen_wait
 
-.executor_6_13BE7C:
-    SETUP_ENTITY 6, 12, 1
+; ============================================================
+; Executor 6 - Mayor
+; ============================================================
+.mayor_setup:
+    SETUP_ENTITY 6, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 6, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -192, 0, -32
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
 
-.sub_13BEA4:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13BEB0
-    EXECUTE_SUBROUTINE .sub_13B040
+.mayor_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13BEB0:
-    BRANCH_ON_SPECIAL_BIT 5, var1, .branch_13BED0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xB
+.mayor_on_interact:
+    BRANCH_ON_SPECIAL_BIT 5, var1, .mayor_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR]
     SET_SPECIAL_BIT 5, var1
 
-.branch_13BED0:
+.mayor_talk:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 0
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 0
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BEA4
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .mayor_wait
 
-.executor_6_13BEFC:
+.executor_6_post_dance:
     SET_COORDINATES -48, 0, -64
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_13B040
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_13BF0C:
-    SETUP_ENTITY 7, 13, 1
+; ============================================================
+; Executor 7 - Mayor wife
+; ============================================================
+.mayor_wife_setup:
+    SETUP_ENTITY 7, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 7, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -224, 0, -256
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
 
-.sub_13BF34:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13BF40
-    EXECUTE_SUBROUTINE .sub_13B040
+.mayor_wife_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_wife_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13BF40:
-    BRANCH_ON_SPECIAL_BIT 6, var1, .branch_13BF60
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xC
+.mayor_wife_on_interact:
+    BRANCH_ON_SPECIAL_BIT 6, var1, .mayor_wife_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR_WIFE]
     SET_SPECIAL_BIT 6, var1
 
-.branch_13BF60:
+.mayor_wife_talk:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 1
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 1
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BF34
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .mayor_wife_wait
 
-.executor_7_13BF94:
+.executor_7_post_dance:
     SET_COORDINATES -48, 0, -96
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_13B040
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_8_13BFA4:
-    SETUP_ENTITY 8, 20, 1
+; ============================================================
+; Executor 8 - Potion Shop Dealer
+; ============================================================
+.potion_shop_dealer_setup:
+    SETUP_ENTITY 8, ENTITY_ASSET_POTION_SHOP_DEALER, 1
     SET_ENTITY_ANIMATIONS 8, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -96, 0, -128
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
 
-.sub_13BFCC:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13BFD8
-    EXECUTE_SUBROUTINE .sub_13B040
+.potion_shop_dealer_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .potion_shop_dealer_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13BFD8:
-    BRANCH_ON_SPECIAL_BIT 7, var1, .branch_13BFF8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x13
+.potion_shop_dealer_on_interact:
+    BRANCH_ON_SPECIAL_BIT 7, var1, .potion_shop_dealer_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_POTION_SHOP_DEALER]
     SET_SPECIAL_BIT 7, var1
 
-.branch_13BFF8:
+.potion_shop_dealer_talk:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 2
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 2
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13BFCC
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .potion_shop_dealer_wait
 
-.executor_9_13C02C:
-    SETUP_ENTITY 9, 24, 1
+; ============================================================
+; Executor 9 - May
+; ============================================================
+.may_setup:
+    SETUP_ENTITY 9, ENTITY_ASSET_MAY, 1
     SET_ENTITY_ANIMATIONS 9, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 0, 0, 160
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
 
-.sub_13C054:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13C060
-    EXECUTE_SUBROUTINE .sub_13B040
+.may_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .may_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13C060:
-    BRANCH_ON_SPECIAL_BIT 8, var1, .branch_13C080
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x17
+.may_on_interact:
+    BRANCH_ON_SPECIAL_BIT 8, var1, .may_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAY]
     SET_SPECIAL_BIT 8, var1
 
-.branch_13C080:
+.may_talk:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    INIT_DIALOGUE_SESSION 0, 49, 6
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 6
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C054
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .may_wait
 
-.executor_9_13C0B0:
+.executor_9_post_dance:
     SET_COORDINATES -96, 0, 0
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_13B040
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_10_13C0C0:
-    SETUP_ENTITY 10, 21, 1
+; ============================================================
+; Executor 10 - Kent
+; ============================================================
+.kent_setup:
+    SETUP_ENTITY 10, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 10, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 64, 0, -160
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
 
-.sub_13C0E8:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13C0F4
-    EXECUTE_SUBROUTINE .sub_13B040
+.kent_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .kent_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13C0F4:
-    BRANCH_ON_SPECIAL_BIT 9, var1, .branch_13C114
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x14
+.kent_on_interact:
+    BRANCH_ON_SPECIAL_BIT 9, var1, .kent_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_KENT]
     SET_SPECIAL_BIT 9, var1
 
-.branch_13C114:
+.kent_talk:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    INIT_DIALOGUE_SESSION 0, 49, 4
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 4
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C0E8
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .kent_wait
 
-.executor_11_13C144:
-    SETUP_ENTITY 11, 22, 1
+; ============================================================
+; Executor 11 - Stu
+; ============================================================
+.stu_setup:
+    SETUP_ENTITY 11, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 11, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 96, 0, -160
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
 
-.sub_13C16C:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13C178
-    EXECUTE_SUBROUTINE .sub_13B040
+.stu_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .stu_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13C178:
-    BRANCH_ON_SPECIAL_BIT 10, var1, .branch_13C198
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x15
+.stu_on_interact:
+    BRANCH_ON_SPECIAL_BIT 10, var1, .stu_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_STU]
     SET_SPECIAL_BIT 10, var1
 
-.branch_13C198:
+.stu_talk:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    INIT_DIALOGUE_SESSION 0, 49, 5
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 5
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C16C
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .stu_wait
 
-.executor_11_13C1C8:
+.executor_11_post_dance:
     SET_COORDINATES -96, 0, 32
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_13B040
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_12_13C1D8:
-    SETUP_ENTITY 12, 7, 1
+; ============================================================
+; Executor 12 - Harris
+; ============================================================
+.harris_setup:
+    SETUP_ENTITY 12, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 12, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -128, 0, 128
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
 
-.sub_13C200:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13C20C
-    EXECUTE_SUBROUTINE .sub_13B040
+.harris_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .harris_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13C20C:
-    BRANCH_ON_SPECIAL_BIT 11, var1, .branch_13C22C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x6
+.harris_on_interact:
+    BRANCH_ON_SPECIAL_BIT 11, var1, .harris_dialogue_dispatch
+    UPDATE_U8_VALUE 2, 255, npcAffection[HARRIS]
     SET_SPECIAL_BIT 11, var1
 
-.branch_13C22C:
+.harris_dialogue_dispatch:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x6, .branch_13C26C
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 9
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[HARRIS], .harris_talk_high_affection
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 9
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C200
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .harris_wait
 
-.branch_13C26C:
-    INIT_DIALOGUE_SESSION 0, 49, 1
+.harris_talk_high_affection:
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 1
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C200
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .harris_wait
 
-.executor_13_13C288:
-    SETUP_ENTITY 13, 8, 1
+; ============================================================
+; Executor 13 - Gray (shown on high affection or after marriage)
+; ============================================================
+.gray_setup:
+    SETUP_ENTITY 13, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 13, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 0, 0, -288
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
 
-.sub_13C2B0:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13C2BC
-    EXECUTE_SUBROUTINE .sub_13B040
+.gray_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .gray_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13C2BC:
-    BRANCH_ON_SPECIAL_BIT 12, var1, .branch_13C2DC
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x7
+.gray_on_interact:
+    BRANCH_ON_SPECIAL_BIT 12, var1, .gray_dialogue_dispatch
+    UPDATE_U8_VALUE 2, 255, npcAffection[GRAY]
     SET_SPECIAL_BIT 12, var1
 
-.branch_13C2DC:
+.gray_dialogue_dispatch:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    BRANCH_ON_SPECIAL_BIT 27, lifeEventBits[0], .branch_13C31C
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 12
+    BRANCH_ON_SPECIAL_BIT 27, lifeEventBits[0], .gray_talk_look_healthy
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 12
 
-.sub_13C304:
+.gray_talk_done:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C2B0
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .gray_wait
 
-.branch_13C31C:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 13
-    EXECUTE_SUBROUTINE .sub_13C304
+.gray_talk_look_healthy:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 13
+    EXECUTE_SUBROUTINE .gray_talk_done
 
-.executor_14_13C328:
-    SETUP_ENTITY 14, 9, 1
+; ============================================================
+; Executor 14 - Jeff (shown unless lifeEventBits[1] bit 13 set)
+; ============================================================
+.jeff_setup:
+    SETUP_ENTITY 14, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 14, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -192, 0, 128
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
 
-.sub_13C350:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13C35C
-    EXECUTE_SUBROUTINE .sub_13B040
+.jeff_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .jeff_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13C35C:
-    BRANCH_ON_SPECIAL_BIT 13, var1, .branch_13C37C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x8
+.jeff_on_interact:
+    BRANCH_ON_SPECIAL_BIT 13, var1, .jeff_dialogue_dispatch
+    UPDATE_U8_VALUE 2, 255, npcAffection[JEFF]
     SET_SPECIAL_BIT 13, var1
 
-.branch_13C37C:
+.jeff_dialogue_dispatch:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    BRANCH_ON_SPECIAL_BIT 28, lifeEventBits[0], .branch_13C3D4
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 99, npcAffection + 0x8, .branch_13C3C8
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 15
+    BRANCH_ON_SPECIAL_BIT 28, lifeEventBits[0], .jeff_dialogue_prompt
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 99, npcAffection[JEFF], .jeff_talk_elli_busy
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 15
 
-.sub_13C3B0:
+.jeff_talk_done:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C350
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .jeff_wait
 
-.branch_13C3C8:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 14
-    EXECUTE_SUBROUTINE .sub_13C3B0
+.jeff_talk_elli_busy:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 14
+    EXECUTE_SUBROUTINE .jeff_talk_done
 
-.branch_13C3D4:
-    INIT_DIALOGUE_SESSION 0, 49, 2
+.jeff_dialogue_prompt:
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 2
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_13C3F8
-    BRANCH_ON_DIALOGUE 0, 1, .branch_13C404
+    BRANCH_ON_DIALOGUE 0, 0, .jeff_talk_agree
+    BRANCH_ON_DIALOGUE 0, 1, .jeff_talk_disagree
 
-.branch_13C3F8:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 18
-    EXECUTE_SUBROUTINE .sub_13C3B0
+.jeff_talk_agree:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 18
+    EXECUTE_SUBROUTINE .jeff_talk_done
 
-.branch_13C404:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 19
-    EXECUTE_SUBROUTINE .sub_13C3B0
+.jeff_talk_disagree:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 19
+    EXECUTE_SUBROUTINE .jeff_talk_done
 
-.executor_15_13C410:
-    SETUP_ENTITY 15, 10, 1
+; ============================================================
+; Executor 15 - Cliff (shown on high affection or after marriage)
+; ============================================================
+.cliff_setup:
+    SETUP_ENTITY 15, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 15, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 128, 0, 224
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
 
-.sub_13C438:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13C444
-    EXECUTE_SUBROUTINE .sub_13B040
+.cliff_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cliff_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13C444:
-    BRANCH_ON_SPECIAL_BIT 14, var1, .branch_13C464
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x9
+.cliff_on_interact:
+    BRANCH_ON_SPECIAL_BIT 14, var1, .cliff_dialogue_dispatch
+    UPDATE_U8_VALUE 2, 255, npcAffection[CLIFF]
     SET_SPECIAL_BIT 14, var1
 
-.branch_13C464:
+.cliff_dialogue_dispatch:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    BRANCH_ON_SPECIAL_BIT 29, lifeEventBits[0], .branch_13C4A4
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 20
+    BRANCH_ON_SPECIAL_BIT 29, lifeEventBits[0], .cliff_talk_wife_cooking
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 20
 
-.sub_13C48C:
+.cliff_talk_done:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C438
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .cliff_wait
 
-.branch_13C4A4:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 21
-    EXECUTE_SUBROUTINE .sub_13C48C
+.cliff_talk_wife_cooking:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 21
+    EXECUTE_SUBROUTINE .cliff_talk_done
 
-.executor_16_13C4B0:
-    SETUP_ENTITY 16, 11, 1
+; ============================================================
+; Executor 16 - Kai (shown on high affection or after marriage)
+; ============================================================
+.kai_setup:
+    SETUP_ENTITY 16, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 16, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 160, 0, 32
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
 
-.sub_13C4D8:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13C4E4
-    EXECUTE_SUBROUTINE .sub_13B040
+.kai_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .kai_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13C4E4:
-    BRANCH_ON_SPECIAL_BIT 15, var1, .branch_13C504
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xA
+.kai_on_interact:
+    BRANCH_ON_SPECIAL_BIT 15, var1, .kai_dialogue_dispatch
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAI]
     SET_SPECIAL_BIT 15, var1
 
-.branch_13C504:
+.kai_dialogue_dispatch:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    BRANCH_ON_SPECIAL_BIT 30, lifeEventBits[0], .branch_13C540
-    INIT_DIALOGUE_SESSION 0, 49, 24
+    BRANCH_ON_SPECIAL_BIT 30, lifeEventBits[0], .kai_talk_drink_wine
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_56, 24
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C4D8
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .kai_wait
 
-.branch_13C540:
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 71
+.kai_talk_drink_wine:
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 71
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C4D8
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .kai_wait
 
-.executor_17_13C560:
-    SETUP_ENTITY 17, 31, 1
+; ============================================================
+; Executor 17 - Assistant Carpenter
+; ============================================================
+.assistant_carpenter_setup:
+    SETUP_ENTITY 17, ENTITY_ASSET_ASSISTANT_CARPENTER, 1
     SET_ENTITY_ANIMATIONS 17, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 192, 0, -144
 
-.sub_13C588:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13C598
-    EXECUTE_SUBROUTINE .sub_13B040
+.assistant_carpenter_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .assistant_carpenter_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13C598:
-    BRANCH_ON_SPECIAL_BIT 16, var1, .branch_13C5B8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1E
+.assistant_carpenter_on_interact:
+    BRANCH_ON_SPECIAL_BIT 16, var1, .assistant_carpenter_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_CARPENTER_1]
     SET_SPECIAL_BIT 16, var1
 
-.branch_13C5B8:
+.assistant_carpenter_talk:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 73
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 73
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C588
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .assistant_carpenter_wait
 
-.executor_18_13C5EC:
-    SETUP_ENTITY 18, 27, 1
+; ============================================================
+; Executor 18 - Shipper
+; ============================================================
+.shipper_setup:
+    SETUP_ENTITY 18, ENTITY_ASSET_SHIPPER, 1
     SET_ENTITY_ANIMATIONS 18, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 192, 0, 112
 
-.sub_13C614:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13C624
-    EXECUTE_SUBROUTINE .sub_13B040
+.shipper_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .shipper_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13C624:
-    BRANCH_ON_SPECIAL_BIT 17, var1, .branch_13C644
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1A
+.shipper_on_interact:
+    BRANCH_ON_SPECIAL_BIT 17, var1, .shipper_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_SHIPPER]
     SET_SPECIAL_BIT 17, var1
 
-.branch_13C644:
+.shipper_talk:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_13B048
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 6, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 55, 72
+    INIT_MESSAGE_BOX_TYPE1 0, HARVEST_FESTIVAL_TEXT_INDEX, 72
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    TOGGLE_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13C614
+    CLEAR_SPECIAL_BIT 6, var0
+    EXECUTE_SUBROUTINE .shipper_wait
 
-.sub_13C678:
+; ============================================================
+; Dance phase - entered when a bachelorette candidate accepts
+; ============================================================
+.start_dance_phase:
     SET_WAIT_FRAMES 20
     SET_AUDIO_SEQUENCE 0, _festivalDanceSegmentRomStart, _festivalDanceSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 128
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_13CDB8
+    SET_OTHER_EXECUTOR_PTR 0, .player_dance_sequence
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 33, .executor_33_13D41C
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_13D340
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_13D3C0
-    SET_OTHER_EXECUTOR_PTR 9, .executor_9_13D400
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_13D380
+    SPAWN_EXECUTOR 33, .dance_finale_timer
+    SET_OTHER_EXECUTOR_PTR 6, .mayor_dance_sequence
+    SET_OTHER_EXECUTOR_PTR 7, .mayor_wife_dance_sequence
+    SET_OTHER_EXECUTOR_PTR 9, .may_dance_sequence
+    SET_OTHER_EXECUTOR_PTR 11, .stu_dance_sequence
     RETURN_FROM_SUBROUTINE
 
-.sub_13C6C8:
+.deactivate_non_dancer_npcs:
     DEACTIVATE_EXECUTOR 8
     DEACTIVATE_EXECUTOR 10
     DEACTIVATE_EXECUTOR 12
@@ -1221,23 +1325,24 @@
     IDLE_WHILE_SEQUENCE_PLAYING 0
     RETURN_FROM_SUBROUTINE
 
-.sub_13C740:
+.restore_player_post_fade:
     TOGGLE_PAUSE_ENTITY 0
-    SPAWN_EXECUTOR 0, .executor_0_13B718
+    SPAWN_EXECUTOR 0, .executor_0_post_dance
     SET_WAIT_FRAMES 1
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_13BEFC
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_13BF94
-    SET_OTHER_EXECUTOR_PTR 9, .executor_9_13C0B0
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_13C1C8
-    SPAWN_EXECUTOR 41, .executor_41_13B244
+    SET_OTHER_EXECUTOR_PTR 6, .executor_6_post_dance
+    SET_OTHER_EXECUTOR_PTR 7, .executor_7_post_dance
+    SET_OTHER_EXECUTOR_PTR 9, .executor_9_post_dance
+    SET_OTHER_EXECUTOR_PTR 11, .executor_11_post_dance
+    SPAWN_EXECUTOR 41, .executor_41_post_dance
     SET_COORDINATES 48, 0, -32
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     RETURN_FROM_SUBROUTINE
 
-.branch_13C798:
+; ----- Maria dance path -----
+.choose_dance_maria:
     UPDATE_U8_VALUE 10, 255, npcAffection[MARIA]
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -1246,52 +1351,52 @@
     DEACTIVATE_EXECUTOR 3
     DEACTIVATE_EXECUTOR 4
     DEACTIVATE_EXECUTOR 5
-    EXECUTE_SUBROUTINE .sub_13C6C8
-    EXECUTE_SUBROUTINE .sub_13C740
-    EXECUTE_SUBROUTINE .sub_13C678
+    EXECUTE_SUBROUTINE .deactivate_non_dancer_npcs
+    EXECUTE_SUBROUTINE .restore_player_post_fade
+    EXECUTE_SUBROUTINE .start_dance_phase
 
-.sub_13C7D4:
+.maria_dance_sequence:
     SET_ENTITY_ANIMATION 91
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13C888
+    EXECUTE_SUBROUTINE .maria_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 91
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13C888
+    EXECUTE_SUBROUTINE .maria_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 92
     SET_FRAME_DELTA 0, 0, -1, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13C888
+    EXECUTE_SUBROUTINE .maria_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 92
     SET_FRAME_DELTA 0, 0, 1, 48
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_13C888
-    EXECUTE_SUBROUTINE .sub_13C8A4
+    EXECUTE_SUBROUTINE .maria_dance_step_a
+    EXECUTE_SUBROUTINE .maria_dance_step_b
     SET_ENTITY_ANIMATION 92
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13C888
+    EXECUTE_SUBROUTINE .maria_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 92
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13C888
+    EXECUTE_SUBROUTINE .maria_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 92
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13C888
+    EXECUTE_SUBROUTINE .maria_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 92
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 13
-    EXECUTE_SUBROUTINE .sub_13C888
-    EXECUTE_SUBROUTINE .sub_13C8A4
-    EXECUTE_SUBROUTINE .sub_13C7D4
+    EXECUTE_SUBROUTINE .maria_dance_step_a
+    EXECUTE_SUBROUTINE .maria_dance_step_b
+    EXECUTE_SUBROUTINE .maria_dance_sequence
 
-.sub_13C888:
+.maria_dance_step_a:
     SET_ENTITY_ANIMATION 93
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 94
@@ -1300,7 +1405,7 @@
     WAIT_ENTITY_ANIMATION
     RETURN_FROM_SUBROUTINE
 
-.sub_13C8A4:
+.maria_dance_step_b:
     SET_ENTITY_ANIMATION 96
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 97
@@ -1311,8 +1416,9 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_13C8C8:
-    UPDATE_U8_VALUE 10, 255, npcAffection + 0x1
+; ----- Popuri dance path -----
+.choose_dance_popuri:
+    UPDATE_U8_VALUE 10, 255, npcAffection[POPURI]
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
@@ -1320,52 +1426,52 @@
     DEACTIVATE_EXECUTOR 3
     DEACTIVATE_EXECUTOR 4
     DEACTIVATE_EXECUTOR 5
-    EXECUTE_SUBROUTINE .sub_13C6C8
-    EXECUTE_SUBROUTINE .sub_13C740
-    EXECUTE_SUBROUTINE .sub_13C678
+    EXECUTE_SUBROUTINE .deactivate_non_dancer_npcs
+    EXECUTE_SUBROUTINE .restore_player_post_fade
+    EXECUTE_SUBROUTINE .start_dance_phase
 
-.sub_13C904:
+.popuri_dance_sequence:
     SET_ENTITY_ANIMATION 97
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13C9B8
+    EXECUTE_SUBROUTINE .popuri_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 97
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13C9B8
+    EXECUTE_SUBROUTINE .popuri_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 98
     SET_FRAME_DELTA 0, 0, -1, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13C9B8
+    EXECUTE_SUBROUTINE .popuri_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 98
     SET_FRAME_DELTA 0, 0, 1, 48
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_13C9B8
-    EXECUTE_SUBROUTINE .sub_13C9D4
+    EXECUTE_SUBROUTINE .popuri_dance_step_a
+    EXECUTE_SUBROUTINE .popuri_dance_step_b
     SET_ENTITY_ANIMATION 98
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13C9B8
+    EXECUTE_SUBROUTINE .popuri_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 98
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13C9B8
+    EXECUTE_SUBROUTINE .popuri_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 98
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13C9B8
+    EXECUTE_SUBROUTINE .popuri_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 98
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 13
-    EXECUTE_SUBROUTINE .sub_13C9B8
-    EXECUTE_SUBROUTINE .sub_13C9D4
-    EXECUTE_SUBROUTINE .sub_13C904
+    EXECUTE_SUBROUTINE .popuri_dance_step_a
+    EXECUTE_SUBROUTINE .popuri_dance_step_b
+    EXECUTE_SUBROUTINE .popuri_dance_sequence
 
-.sub_13C9B8:
+.popuri_dance_step_a:
     SET_ENTITY_ANIMATION 99
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 100
@@ -1374,7 +1480,7 @@
     WAIT_ENTITY_ANIMATION
     RETURN_FROM_SUBROUTINE
 
-.sub_13C9D4:
+.popuri_dance_step_b:
     SET_ENTITY_ANIMATION 102
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 103
@@ -1385,8 +1491,9 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_13C9F8:
-    UPDATE_U8_VALUE 10, 255, npcAffection + 0x2
+; ----- Elli dance path -----
+.choose_dance_elli:
+    UPDATE_U8_VALUE 10, 255, npcAffection[ELLI]
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
@@ -1394,52 +1501,52 @@
     DEACTIVATE_EXECUTOR 2
     DEACTIVATE_EXECUTOR 4
     DEACTIVATE_EXECUTOR 5
-    EXECUTE_SUBROUTINE .sub_13C6C8
-    EXECUTE_SUBROUTINE .sub_13C740
-    EXECUTE_SUBROUTINE .sub_13C678
+    EXECUTE_SUBROUTINE .deactivate_non_dancer_npcs
+    EXECUTE_SUBROUTINE .restore_player_post_fade
+    EXECUTE_SUBROUTINE .start_dance_phase
 
-.sub_13CA34:
+.elli_dance_sequence:
     SET_ENTITY_ANIMATION 87
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13CAE8
+    EXECUTE_SUBROUTINE .elli_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 87
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13CAE8
+    EXECUTE_SUBROUTINE .elli_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 88
     SET_FRAME_DELTA 0, 0, -1, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CAE8
+    EXECUTE_SUBROUTINE .elli_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 88
     SET_FRAME_DELTA 0, 0, 1, 48
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_13CAE8
-    EXECUTE_SUBROUTINE .sub_13CB04
+    EXECUTE_SUBROUTINE .elli_dance_step_a
+    EXECUTE_SUBROUTINE .elli_dance_step_b
     SET_ENTITY_ANIMATION 88
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CAE8
+    EXECUTE_SUBROUTINE .elli_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 88
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CAE8
+    EXECUTE_SUBROUTINE .elli_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 88
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CAE8
+    EXECUTE_SUBROUTINE .elli_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 88
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 13
-    EXECUTE_SUBROUTINE .sub_13CAE8
-    EXECUTE_SUBROUTINE .sub_13CB04
-    EXECUTE_SUBROUTINE .sub_13CA34
+    EXECUTE_SUBROUTINE .elli_dance_step_a
+    EXECUTE_SUBROUTINE .elli_dance_step_b
+    EXECUTE_SUBROUTINE .elli_dance_sequence
 
-.sub_13CAE8:
+.elli_dance_step_a:
     SET_ENTITY_ANIMATION 89
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 90
@@ -1448,7 +1555,7 @@
     WAIT_ENTITY_ANIMATION
     RETURN_FROM_SUBROUTINE
 
-.sub_13CB04:
+.elli_dance_step_b:
     SET_ENTITY_ANIMATION 92
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 93
@@ -1459,8 +1566,9 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_13CB28:
-    UPDATE_U8_VALUE 10, 255, npcAffection + 0x3
+; ----- Ann dance path -----
+.choose_dance_ann:
+    UPDATE_U8_VALUE 10, 255, npcAffection[ANN]
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
@@ -1468,52 +1576,52 @@
     DEACTIVATE_EXECUTOR 2
     DEACTIVATE_EXECUTOR 3
     DEACTIVATE_EXECUTOR 5
-    EXECUTE_SUBROUTINE .sub_13C6C8
-    EXECUTE_SUBROUTINE .sub_13C740
-    EXECUTE_SUBROUTINE .sub_13C678
+    EXECUTE_SUBROUTINE .deactivate_non_dancer_npcs
+    EXECUTE_SUBROUTINE .restore_player_post_fade
+    EXECUTE_SUBROUTINE .start_dance_phase
 
-.sub_13CB64:
+.ann_dance_sequence:
     SET_ENTITY_ANIMATION 92
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13CC18
+    EXECUTE_SUBROUTINE .ann_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 92
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13CC18
+    EXECUTE_SUBROUTINE .ann_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 93
     SET_FRAME_DELTA 0, 0, -1, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CC18
+    EXECUTE_SUBROUTINE .ann_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 93
     SET_FRAME_DELTA 0, 0, 1, 48
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_13CC18
-    EXECUTE_SUBROUTINE .sub_13CC34
+    EXECUTE_SUBROUTINE .ann_dance_step_a
+    EXECUTE_SUBROUTINE .ann_dance_step_b
     SET_ENTITY_ANIMATION 93
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CC18
+    EXECUTE_SUBROUTINE .ann_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 93
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CC18
+    EXECUTE_SUBROUTINE .ann_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 93
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CC18
+    EXECUTE_SUBROUTINE .ann_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 93
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 13
-    EXECUTE_SUBROUTINE .sub_13CC18
-    EXECUTE_SUBROUTINE .sub_13CC34
-    EXECUTE_SUBROUTINE .sub_13CB64
+    EXECUTE_SUBROUTINE .ann_dance_step_a
+    EXECUTE_SUBROUTINE .ann_dance_step_b
+    EXECUTE_SUBROUTINE .ann_dance_sequence
 
-.sub_13CC18:
+.ann_dance_step_a:
     SET_ENTITY_ANIMATION 94
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 95
@@ -1522,7 +1630,7 @@
     WAIT_ENTITY_ANIMATION
     RETURN_FROM_SUBROUTINE
 
-.sub_13CC34:
+.ann_dance_step_b:
     SET_ENTITY_ANIMATION 97
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 98
@@ -1533,8 +1641,9 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_13CC58:
-    UPDATE_U8_VALUE 10, 255, npcAffection + 0x4
+; ----- Karen dance path -----
+.choose_dance_karen:
+    UPDATE_U8_VALUE 10, 255, npcAffection[KAREN]
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
@@ -1542,57 +1651,57 @@
     DEACTIVATE_EXECUTOR 2
     DEACTIVATE_EXECUTOR 3
     DEACTIVATE_EXECUTOR 4
-    EXECUTE_SUBROUTINE .sub_13C6C8
-    EXECUTE_SUBROUTINE .sub_13C740
-    EXECUTE_SUBROUTINE .sub_13C678
+    EXECUTE_SUBROUTINE .deactivate_non_dancer_npcs
+    EXECUTE_SUBROUTINE .restore_player_post_fade
+    EXECUTE_SUBROUTINE .start_dance_phase
 
-.sub_13CC94:
+.karen_dance_sequence:
     SET_ENTITY_ANIMATION 66
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13CD48
+    EXECUTE_SUBROUTINE .karen_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 66
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13CD48
+    EXECUTE_SUBROUTINE .karen_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 68
     SET_FRAME_DELTA 0, 0, -1, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CD48
+    EXECUTE_SUBROUTINE .karen_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 68
     SET_FRAME_DELTA 0, 0, 1, 48
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_13CD48
-    EXECUTE_SUBROUTINE .sub_13CD54
+    EXECUTE_SUBROUTINE .karen_dance_step_a
+    EXECUTE_SUBROUTINE .karen_dance_step_b
     SET_ENTITY_ANIMATION 68
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CD48
+    EXECUTE_SUBROUTINE .karen_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 68
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CD48
+    EXECUTE_SUBROUTINE .karen_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 68
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CD48
+    EXECUTE_SUBROUTINE .karen_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 68
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 13
-    EXECUTE_SUBROUTINE .sub_13CD48
-    EXECUTE_SUBROUTINE .sub_13CD54
-    EXECUTE_SUBROUTINE .sub_13CC94
+    EXECUTE_SUBROUTINE .karen_dance_step_a
+    EXECUTE_SUBROUTINE .karen_dance_step_b
+    EXECUTE_SUBROUTINE .karen_dance_sequence
 
-.sub_13CD48:
+.karen_dance_step_a:
     SET_ENTITY_ANIMATION 70
     WAIT_ENTITY_ANIMATION
     RETURN_FROM_SUBROUTINE
 
-.sub_13CD54:
+.karen_dance_step_b:
     SET_ENTITY_ANIMATION 72
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 74
@@ -1603,7 +1712,8 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.sub_13CD78:
+; ----- Player dance -----
+.player_dance_step_a:
     SET_ENTITY_ANIMATION 660
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 661
@@ -1612,7 +1722,7 @@
     WAIT_ENTITY_ANIMATION
     RETURN_FROM_SUBROUTINE
 
-.sub_13CD94:
+.player_dance_step_b:
     SET_ENTITY_ANIMATION 663
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 664
@@ -1623,348 +1733,350 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.executor_0_13CDB8:
+.player_dance_sequence:
     SET_ENTITY_ANIMATION 658
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13CD78
+    EXECUTE_SUBROUTINE .player_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 658
     SET_WAIT_FRAMES 78
-    EXECUTE_SUBROUTINE .sub_13CD78
+    EXECUTE_SUBROUTINE .player_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 659
     SET_FRAME_DELTA 0, 0, 1, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CD78
+    EXECUTE_SUBROUTINE .player_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 659
     SET_FRAME_DELTA 0, 0, -1, 48
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_13CD78
-    EXECUTE_SUBROUTINE .sub_13CD94
+    EXECUTE_SUBROUTINE .player_dance_step_a
+    EXECUTE_SUBROUTINE .player_dance_step_b
     SET_ENTITY_ANIMATION 659
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CD78
+    EXECUTE_SUBROUTINE .player_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 659
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CD78
+    EXECUTE_SUBROUTINE .player_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 659
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_13CD78
+    EXECUTE_SUBROUTINE .player_dance_step_a
     SET_WAIT_FRAMES 2
     SET_ENTITY_ANIMATION 659
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 13
-    EXECUTE_SUBROUTINE .sub_13CD78
-    EXECUTE_SUBROUTINE .sub_13CD94
-    EXECUTE_SUBROUTINE .executor_0_13CDB8
+    EXECUTE_SUBROUTINE .player_dance_step_a
+    EXECUTE_SUBROUTINE .player_dance_step_b
+    EXECUTE_SUBROUTINE .player_dance_sequence
 
-.sub_13CE6C:
+; ----- Background dancer helpers -----
+.bg_dancer_rotate_seq_a:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 3
     RETURN_FROM_SUBROUTINE
 
-.sub_13CEB4:
+.bg_dancer_intro_seq_a:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_WAIT_FRAMES 78
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_WAIT_FRAMES 78
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA 0, 0, 1, 48
     SET_WAIT_FRAMES 24
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA 0, 0, -1, 48
     SET_WAIT_FRAMES 20
     RETURN_FROM_SUBROUTINE
 
-.sub_13CFB4:
+.bg_dancer_outro_seq_a:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 13
     RETURN_FROM_SUBROUTINE
 
-.sub_13D0C4:
+.bg_dancer_rotate_seq_b:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 3
     RETURN_FROM_SUBROUTINE
 
-.sub_13D10C:
+.bg_dancer_intro_seq_b:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_WAIT_FRAMES 78
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_WAIT_FRAMES 78
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA 0, 0, -1, 48
     SET_WAIT_FRAMES 24
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA 0, 0, 1, 48
     SET_WAIT_FRAMES 20
     RETURN_FROM_SUBROUTINE
 
-.sub_13D20C:
+.bg_dancer_outro_seq_b:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 3
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 5
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 8
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 13
     RETURN_FROM_SUBROUTINE
 
-.sub_13D31C:
+; ----- Mayor (slot 6) background dance -----
+.mayor_dance_step:
     SET_ENTITY_ANIMATION 23
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 24
@@ -1975,16 +2087,17 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.executor_6_13D340:
-    EXECUTE_SUBROUTINE .sub_13CEB4
-    EXECUTE_SUBROUTINE .sub_13CE6C
-    EXECUTE_SUBROUTINE .sub_13D31C
-    EXECUTE_SUBROUTINE .sub_13CFB4
-    EXECUTE_SUBROUTINE .sub_13CE6C
-    EXECUTE_SUBROUTINE .sub_13D31C
-    EXECUTE_SUBROUTINE .executor_6_13D340
+.mayor_dance_sequence:
+    EXECUTE_SUBROUTINE .bg_dancer_intro_seq_a
+    EXECUTE_SUBROUTINE .bg_dancer_rotate_seq_a
+    EXECUTE_SUBROUTINE .mayor_dance_step
+    EXECUTE_SUBROUTINE .bg_dancer_outro_seq_a
+    EXECUTE_SUBROUTINE .bg_dancer_rotate_seq_a
+    EXECUTE_SUBROUTINE .mayor_dance_step
+    EXECUTE_SUBROUTINE .mayor_dance_sequence
 
-.sub_13D35C:
+; ----- Stu (slot 11) background dance -----
+.stu_dance_step:
     SET_ENTITY_ANIMATION 44
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 45
@@ -1995,16 +2108,17 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.executor_11_13D380:
-    EXECUTE_SUBROUTINE .sub_13CEB4
-    EXECUTE_SUBROUTINE .sub_13CE6C
-    EXECUTE_SUBROUTINE .sub_13D35C
-    EXECUTE_SUBROUTINE .sub_13CFB4
-    EXECUTE_SUBROUTINE .sub_13CE6C
-    EXECUTE_SUBROUTINE .sub_13D35C
-    EXECUTE_SUBROUTINE .executor_11_13D380
+.stu_dance_sequence:
+    EXECUTE_SUBROUTINE .bg_dancer_intro_seq_a
+    EXECUTE_SUBROUTINE .bg_dancer_rotate_seq_a
+    EXECUTE_SUBROUTINE .stu_dance_step
+    EXECUTE_SUBROUTINE .bg_dancer_outro_seq_a
+    EXECUTE_SUBROUTINE .bg_dancer_rotate_seq_a
+    EXECUTE_SUBROUTINE .stu_dance_step
+    EXECUTE_SUBROUTINE .stu_dance_sequence
 
-.sub_13D39C:
+; ----- Mayor wife (slot 7) background dance -----
+.mayor_wife_dance_step:
     SET_ENTITY_ANIMATION 18
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 19
@@ -2015,16 +2129,17 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.executor_7_13D3C0:
-    EXECUTE_SUBROUTINE .sub_13D10C
-    EXECUTE_SUBROUTINE .sub_13D0C4
-    EXECUTE_SUBROUTINE .sub_13D39C
-    EXECUTE_SUBROUTINE .sub_13D20C
-    EXECUTE_SUBROUTINE .sub_13D0C4
-    EXECUTE_SUBROUTINE .sub_13D39C
-    EXECUTE_SUBROUTINE .executor_7_13D3C0
+.mayor_wife_dance_sequence:
+    EXECUTE_SUBROUTINE .bg_dancer_intro_seq_b
+    EXECUTE_SUBROUTINE .bg_dancer_rotate_seq_b
+    EXECUTE_SUBROUTINE .mayor_wife_dance_step
+    EXECUTE_SUBROUTINE .bg_dancer_outro_seq_b
+    EXECUTE_SUBROUTINE .bg_dancer_rotate_seq_b
+    EXECUTE_SUBROUTINE .mayor_wife_dance_step
+    EXECUTE_SUBROUTINE .mayor_wife_dance_sequence
 
-.sub_13D3DC:
+; ----- May (slot 9) background dance -----
+.may_dance_step:
     SET_ENTITY_ANIMATION 20
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 21
@@ -2035,16 +2150,19 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.executor_9_13D400:
-    EXECUTE_SUBROUTINE .sub_13D10C
-    EXECUTE_SUBROUTINE .sub_13D0C4
-    EXECUTE_SUBROUTINE .sub_13D3DC
-    EXECUTE_SUBROUTINE .sub_13D20C
-    EXECUTE_SUBROUTINE .sub_13D0C4
-    EXECUTE_SUBROUTINE .sub_13D3DC
-    EXECUTE_SUBROUTINE .executor_9_13D400
+.may_dance_sequence:
+    EXECUTE_SUBROUTINE .bg_dancer_intro_seq_b
+    EXECUTE_SUBROUTINE .bg_dancer_rotate_seq_b
+    EXECUTE_SUBROUTINE .may_dance_step
+    EXECUTE_SUBROUTINE .bg_dancer_outro_seq_b
+    EXECUTE_SUBROUTINE .bg_dancer_rotate_seq_b
+    EXECUTE_SUBROUTINE .may_dance_step
+    EXECUTE_SUBROUTINE .may_dance_sequence
 
-.executor_33_13D41C:
+; ============================================================
+; Dance finale timer (executor 33) - fades out and exits
+; ============================================================
+.dance_finale_timer:
     SET_WAIT_FRAMES 1100
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 4
@@ -2061,4 +2179,4 @@
     DEACTIVATE_EXECUTOR 11
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_13B028
+    EXECUTE_SUBROUTINE .exit_cutscene

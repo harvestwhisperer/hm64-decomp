@@ -56,8 +56,8 @@ void startGame(void) {
     // set spawnable/foragable items
     func_800598E0();
 
-    setDailyEventBit(0x53);
-    setDailyEventBit(0x54);
+    setDailyEventBit(EAT_BREAKFAST);
+    setDailyEventBit(DEFAULT_MORNING);
 
     gHour = 6;
 
@@ -85,18 +85,18 @@ void func_8004DFF8(void) {
     setLifeEventBit(BASIL_IN_TOWN);
     setLifeEventBit(CLIFF_ARRIVED);
     setLifeEventBit(BRIDGE_COMPLETED);
-    setLifeEventBit(0x46);
-    setLifeEventBit(0x47);
-    setLifeEventBit(0x58);
-    setLifeEventBit(0x59);
-    setLifeEventBit(0x5A);
+    setLifeEventBit(HAVE_TURTLE_FIGURINE);
+    setLifeEventBit(HAVE_INVINCILE_KATORI);
+    setLifeEventBit(HAVE_STUFFED_HORSE);
+    setLifeEventBit(HAVE_CUTE_CLOCK);
+    setLifeEventBit(HAVE_CUSHION);
     setLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE);
-    setLifeEventBit(0x5C);
-    setLifeEventBit(0x5D);
+    setLifeEventBit(HAVE_MUG);
+    setLifeEventBit(HAVE_LUNCHEON_MAT);
     
-    setSpecialDialogueBit(0x25);
+    setSpecialDialogueBit(HARVEST_GODDESS_OFFERING_ADVICE_DIALOGUE);
     
-    gPlayer.belongingsSlots[0] = TOMATO;
+    gPlayer.belongingsSlots[0] = TOMATO_HELD_ITEM;
     
     initializeHorse();
     

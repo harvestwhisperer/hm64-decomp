@@ -3,123 +3,152 @@
 ; Bytecode Start: 0xE92950
 ; Segments: 19
 
+; aliases for segments names
+.define .entry 0
+.define .held_item_entry 1
+.define .already_greeted 2
+.define .young_low_affection 3
+.define .young_mid_affection 4
+.define .increment_affection 5
+.define .young_high_affection 7
+.define .fallthrough 8
+.define .holding_rock 11
+.define .older_branch 12
+.define .older_low_affection 13
+.define .older_mid_affection 14
+.define .older_high_affection 15
+
 ; 0xE92950
-.segment_0:
-    SPECIAL_DIALOGUE_BIT_BRANCH 254, NO_TEXT, .segment_2
+.entry:
+    SPECIAL_DIALOGUE_BIT_BRANCH 254, NO_TEXT, .already_greeted
     SET_SPECIAL_DIALOGUE_BIT 254
-    UPDATE_DIALOGUE_VARIABLE 37, 2
-    DIALOGUE_VARIABLE_BRANCH 2, 0, 6, 25, .segment_8
-    DIALOGUE_VARIABLE_BRANCH 2, 20, 24, 25, .segment_8
-    DIALOGUE_VARIABLE_BRANCH 63, 160, 255, NO_TEXT, .segment_12
-    DIALOGUE_VARIABLE_BRANCH 65, 160, 255, NO_TEXT, .segment_12
-    DIALOGUE_VARIABLE_BRANCH 58, 160, 255, NO_TEXT, .segment_12
-    DIALOGUE_VARIABLE_BRANCH 66, 160, 255, NO_TEXT, .segment_12
-    DIALOGUE_VARIABLE_BRANCH 61, 160, 255, NO_TEXT, .segment_12
-    DIALOGUE_VARIABLE_BRANCH 37, 0, 99, NO_TEXT, .segment_3
-    DIALOGUE_VARIABLE_BRANCH 37, 100, 179, NO_TEXT, .segment_4
-    DIALOGUE_VARIABLE_BRANCH 37, 180, 255, NO_TEXT, .segment_7
+    UPDATE_DIALOGUE_VARIABLE VAR_AFFECTION_BABY, 2
+    DIALOGUE_VARIABLE_BRANCH VAR_HOUR, 0, 6, 25, .fallthrough
+    DIALOGUE_VARIABLE_BRANCH VAR_HOUR, 20, 24, 25, .fallthrough
+    ; older-baby branch when any baby age counter passes 160
+    DIALOGUE_VARIABLE_BRANCH VAR_BABY_AGE_3, 160, 255, NO_TEXT, .older_branch
+    DIALOGUE_VARIABLE_BRANCH VAR_BABY_AGE_4, 160, 255, NO_TEXT, .older_branch
+    DIALOGUE_VARIABLE_BRANCH VAR_BABY_AGE,   160, 255, NO_TEXT, .older_branch
+    DIALOGUE_VARIABLE_BRANCH VAR_BABY_AGE_5, 160, 255, NO_TEXT, .older_branch
+    DIALOGUE_VARIABLE_BRANCH VAR_BABY_AGE_2, 160, 255, NO_TEXT, .older_branch
+    ; baby-affection tier dispatch
+    DIALOGUE_VARIABLE_BRANCH VAR_AFFECTION_BABY, 0, 99, NO_TEXT, .young_low_affection
+    DIALOGUE_VARIABLE_BRANCH VAR_AFFECTION_BABY, 100, 179, NO_TEXT, .young_mid_affection
+    DIALOGUE_VARIABLE_BRANCH VAR_AFFECTION_BABY, 180, 255, NO_TEXT, .young_high_affection
     END_DIALOGUE
 
+; held-item handler entry
 ; 0xE929C4
-.segment_1:
-    DIALOGUE_VARIABLE_BRANCH 6, 47, 49, 8, .segment_11
-    DIALOGUE_VARIABLE_BRANCH 6, 61, 61, 6, .segment_8
-    DIALOGUE_VARIABLE_BRANCH 6, 41, 46, 6, .segment_8
-    SPECIAL_DIALOGUE_BIT_BRANCH 291, 5, .segment_8
+.held_item_entry:
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_ROCK, HELD_ITEM_POISONOUS_MUSHROOM, 8, .holding_rock
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_PONTATA_ROOT, HELD_ITEM_PONTATA_ROOT, 6, .fallthrough
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_FODDER, HELD_ITEM_MOONLIGHT_STONE, 6, .fallthrough
+    SPECIAL_DIALOGUE_BIT_BRANCH 291, 5, .fallthrough
     SET_SPECIAL_DIALOGUE_BIT 291
-    DIALOGUE_VARIABLE_BRANCH 6, 9, 12, 9, .segment_5
-    DIALOGUE_VARIABLE_BRANCH 6, 15, 17, 10, .segment_10
-    DIALOGUE_VARIABLE_BRANCH 6, 1, 40, 10, .segment_5
-    DIALOGUE_VARIABLE_BRANCH 6, 51, 67, 9, .segment_5
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_SMALL_MILK, HELD_ITEM_GOLDEN_MILK, 9, .increment_affection
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_CAKE, HELD_ITEM_COOKIES, 10, .segment_10
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_TURNIP, 40, 10, .increment_affection
+    ; HELD_ITEM_DOG..67 spans dog/insects/chicken/puppy (67 is an unmapped upper bound)
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_DOG, 67, 9, .increment_affection
     END_DIALOGUE
 
 ; 0xE92A18
-.segment_2:
+.already_greeted:
     SHOW_TEXT 2
     END_DIALOGUE
 
+
+; baby reactions by affection tier (young path)
+
 ; 0xE92A1C
-.segment_3:
-    RANDOM_BRANCH 0, 25, 8, .segment_8
-    RANDOM_BRANCH 0, 25, 2, .segment_8
-    RANDOM_BRANCH 0, 25, 4, .segment_8
+.young_low_affection:
+    RANDOM_BRANCH 0, 25, 8, .fallthrough
+    RANDOM_BRANCH 0, 25, 2, .fallthrough
+    RANDOM_BRANCH 0, 25, 4, .fallthrough
     SHOW_TEXT 11
     END_DIALOGUE
 
 ; 0xE92A38
-.segment_4:
-    RANDOM_BRANCH 0, 25, 0, .segment_8
-    RANDOM_BRANCH 0, 25, 2, .segment_8
-    RANDOM_BRANCH 0, 25, 1, .segment_8
+.young_mid_affection:
+    RANDOM_BRANCH 0, 25, 0, .fallthrough
+    RANDOM_BRANCH 0, 25, 2, .fallthrough
+    RANDOM_BRANCH 0, 25, 1, .fallthrough
     SHOW_TEXT 3
     END_DIALOGUE
 
+; +2 baby affection
 ; 0xE92A54
-.segment_5:
-    UPDATE_DIALOGUE_VARIABLE 37, 2
+.increment_affection:
+    UPDATE_DIALOGUE_VARIABLE VAR_AFFECTION_BABY, 2
     END_DIALOGUE
 
+; -3 baby affection
 ; 0xE92A5C
 .segment_6:
-    UPDATE_DIALOGUE_VARIABLE 37, -3
+    UPDATE_DIALOGUE_VARIABLE VAR_AFFECTION_BABY, -3
     END_DIALOGUE
 
 ; 0xE92A64
-.segment_7:
-    RANDOM_BRANCH 0, 20, 5, .segment_8
-    RANDOM_BRANCH 0, 20, 7, .segment_8
-    RANDOM_BRANCH 0, 20, 9, .segment_8
-    RANDOM_BRANCH 0, 20, 6, .segment_8
+.young_high_affection:
+    RANDOM_BRANCH 0, 20, 5, .fallthrough
+    RANDOM_BRANCH 0, 20, 7, .fallthrough
+    RANDOM_BRANCH 0, 20, 9, .fallthrough
+    RANDOM_BRANCH 0, 20, 6, .fallthrough
     SHOW_TEXT 4
     END_DIALOGUE
 
 ; 0xE92A84
-.segment_8:
+.fallthrough:
     END_DIALOGUE
 
 ; 0xE92A88
 .segment_9:
     END_DIALOGUE
 
+; +5 baby affection
 ; 0xE92A8C
 .segment_10:
-    UPDATE_DIALOGUE_VARIABLE 37, 5
+    UPDATE_DIALOGUE_VARIABLE VAR_AFFECTION_BABY, 5
     END_DIALOGUE
 
+; -5 baby affection (rock-class items)
 ; 0xE92A94
-.segment_11:
-    UPDATE_DIALOGUE_VARIABLE 37, -5
+.holding_rock:
+    UPDATE_DIALOGUE_VARIABLE VAR_AFFECTION_BABY, -5
     END_DIALOGUE
+
+
+; older-baby branch (entered when any VAR_BABY_AGE_* > 160)
 
 ; 0xE92A9C
-.segment_12:
+.older_branch:
     RANDOM_BRANCH 0, 49, NO_TEXT, .segment_17
-    DIALOGUE_VARIABLE_BRANCH 37, 0, 99, NO_TEXT, .segment_13
-    DIALOGUE_VARIABLE_BRANCH 37, 100, 179, NO_TEXT, .segment_14
-    DIALOGUE_VARIABLE_BRANCH 37, 180, 255, NO_TEXT, .segment_15
+    DIALOGUE_VARIABLE_BRANCH VAR_AFFECTION_BABY, 0, 99, NO_TEXT, .older_low_affection
+    DIALOGUE_VARIABLE_BRANCH VAR_AFFECTION_BABY, 100, 179, NO_TEXT, .older_mid_affection
+    DIALOGUE_VARIABLE_BRANCH VAR_AFFECTION_BABY, 180, 255, NO_TEXT, .older_high_affection
     END_DIALOGUE
 
 ; 0xE92AC4
-.segment_13:
-    RANDOM_BRANCH 0, 25, 12, .segment_8
-    RANDOM_BRANCH 0, 25, 23, .segment_8
-    RANDOM_BRANCH 0, 25, 24, .segment_8
+.older_low_affection:
+    RANDOM_BRANCH 0, 25, 12, .fallthrough
+    RANDOM_BRANCH 0, 25, 23, .fallthrough
+    RANDOM_BRANCH 0, 25, 24, .fallthrough
     SHOW_TEXT 11
     END_DIALOGUE
 
 ; 0xE92AE0
-.segment_14:
-    RANDOM_BRANCH 0, 25, 14, .segment_8
-    RANDOM_BRANCH 0, 25, 15, .segment_8
-    RANDOM_BRANCH 0, 25, 17, .segment_8
+.older_mid_affection:
+    RANDOM_BRANCH 0, 25, 14, .fallthrough
+    RANDOM_BRANCH 0, 25, 15, .fallthrough
+    RANDOM_BRANCH 0, 25, 17, .fallthrough
     SHOW_TEXT 11
     END_DIALOGUE
 
 ; 0xE92AFC
-.segment_15:
-    RANDOM_BRANCH 0, 25, 16, .segment_8
-    RANDOM_BRANCH 0, 25, 20, .segment_8
-    RANDOM_BRANCH 0, 25, 21, .segment_8
+.older_high_affection:
+    RANDOM_BRANCH 0, 25, 16, .fallthrough
+    RANDOM_BRANCH 0, 25, 20, .fallthrough
+    RANDOM_BRANCH 0, 25, 21, .fallthrough
     SHOW_TEXT 22
     END_DIALOGUE
 
@@ -130,9 +159,9 @@
 
 ; 0xE92B1C
 .segment_17:
-    RANDOM_BRANCH 0, 25, 17, .segment_8
-    RANDOM_BRANCH 0, 25, 18, .segment_8
-    RANDOM_BRANCH 0, 25, 19, .segment_8
+    RANDOM_BRANCH 0, 25, 17, .fallthrough
+    RANDOM_BRANCH 0, 25, 18, .fallthrough
+    RANDOM_BRANCH 0, 25, 19, .fallthrough
     SHOW_TEXT 26
     END_DIALOGUE
 

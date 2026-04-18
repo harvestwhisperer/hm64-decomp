@@ -14,6 +14,8 @@
 #define MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE 8
 #define MAP_CONTROLLER_ROTATING_CLOCKWISE 0x10
 
+#define MAP_DATA_ADDRESS_ACTIVE 1
+
 // 0x802055D8
 typedef struct {
 	u32 *mapDataIndex; // virtual address for map data dma

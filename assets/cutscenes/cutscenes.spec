@@ -11,9 +11,9 @@ beginseg
 endseg
 
 beginseg
-    name "familyCutscenes"
+    name "houseCutscenes"
     flags OBJECT
-    include "build/assets/cutscenes/familyCutscenes.bin.o"
+    include "build/assets/cutscenes/houseCutscenes.bin.o"
 endseg
 
 beginseg

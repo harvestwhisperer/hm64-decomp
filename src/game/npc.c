@@ -127,13 +127,13 @@ u16 npcToDialogueBytecodeIndex[] = {
     DIALOGUE_SYDNEY, 
     DIALOGUE_MRS_MANA_AND_JOHN_1, 
     DIALOGUE_MRS_MANA_AND_JOHN_2, 
-    DIALOGUE_ADDITIONAL_NPCS_1, 
+    DIALOGUE_GOURMET_JUDGE, 
     DIALOGUE_NPC_BABY, 
     DIALOGUE_NPC_BABY, 
     DIALOGUE_NPC_BABY, 
     DIALOGUE_NPC_BABY, 
     DIALOGUE_NPC_BABY, 
-    DIALOGUE_ADDITIONAL_NPCS_2
+    DIALOGUE_ENTOMOLOGIST
 };
 
 // forward declarations
@@ -1129,7 +1129,7 @@ void setMariaLocation(void) {
     npcs[MARIA].idleAnimation = 0;
     npcs[MARIA].movingAnimation = 8;
 
-    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(0x56)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(MARIA_LOCATION_OVERRIDE)) {
 
         if (checkLifeEventBit(MARRIED) && gWife == MARIA) {
 
@@ -1260,9 +1260,9 @@ void setMariaLocation(void) {
                 npcs[MARIA].movingAnimation = 0x76;
             }
     
-        } else if (!checkDailyEventBit(0x4D)) {
+        } else if (!checkDailyEventBit(FESTIVAL)) {
 
-            if (checkLifeEventBit(0x1A)) {
+            if (checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
 
                 switch (gDayOfWeek) {
 
@@ -1414,7 +1414,7 @@ void setMariaLocation(void) {
                             npcs[MARIA].startingCoordinates.z = 128.0f;
                             npcs[MARIA].flags |= NPC_ACTIVE;
     
-                            setSpecialDialogueBit(0x136);
+                            setSpecialDialogueBit(MARIA_AT_MOUNTAIN_DIALOGUE);
                                 
                         }
                         
@@ -1466,7 +1466,7 @@ void setMariaLocation(void) {
                                 npcs[MARIA].startingCoordinates.z = -160.0f;
                                 npcs[MARIA].flags |= NPC_ACTIVE;
         
-                                setSpecialDialogueBit(0x136);
+                                setSpecialDialogueBit(MARIA_AT_MOUNTAIN_DIALOGUE);
                                 
                             }
                             
@@ -1482,7 +1482,7 @@ void setMariaLocation(void) {
                                 npcs[MARIA].startingCoordinates.z = -32.0f;
                                 npcs[MARIA].flags |= NPC_ACTIVE;
     
-                                setSpecialDialogueBit(0x136);
+                                setSpecialDialogueBit(MARIA_AT_MOUNTAIN_DIALOGUE);
                                 
                             }
                             
@@ -1552,7 +1552,7 @@ void setMariaLocation(void) {
                         npcs[MARIA].startingCoordinates.x = -224.0f;
                         npcs[MARIA].flags |= NPC_ACTIVE;
 
-                        setSpecialDialogueBit(177);
+                        setSpecialDialogueBit(MARIA_AT_BEACH_DIALOGUE);
                         
                     }
                     
@@ -1579,7 +1579,7 @@ void setPopuriLocation(void) {
     npcs[POPURI].idleAnimation = 0;
     npcs[POPURI].movingAnimation = 8;
 
-    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(0x57)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(POPURI_LOCATION_OVERRIDE)) {
 
         if (checkLifeEventBit(MARRIED) && gWife == POPURI) {
 
@@ -1613,7 +1613,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].startingCoordinates.z = -96.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;
         
-                                setSpecialDialogueBit(0x91);
+                                setSpecialDialogueBit(POPURI_AT_MOUNTAIN_2_DIALOGUE);
                                 
                             } else {
                                 
@@ -1738,9 +1738,9 @@ void setPopuriLocation(void) {
                 npcs[POPURI].movingAnimation = 132;
             }
     
-        } else if (!checkDailyEventBit(0x4D)) {
+        } else if (!checkDailyEventBit(FESTIVAL)) {
 
-            if (checkLifeEventBit(0x1B)) {
+            if (checkLifeEventBit(POPURI_GRAY_MARRIED)) {
 
                 switch (gDayOfWeek) {
 
@@ -1767,7 +1767,7 @@ void setPopuriLocation(void) {
                                     npcs[POPURI].defaultAnimationMode = NPC_ANIMATION_CUSTOM;
                                 }
 
-                                setSpecialDialogueBit(0x46);
+                                setSpecialDialogueBit(POPURI_AT_RANCH_DIALOGUE);
                                                 
                             } else {
                                 
@@ -1855,7 +1855,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].startingCoordinates.z = -128.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;  
 
-                                setSpecialDialogueBit(0x91);
+                                setSpecialDialogueBit(POPURI_AT_MOUNTAIN_2_DIALOGUE);
                                 
                             }
 
@@ -1871,7 +1871,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].startingCoordinates.x = 64.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;  
 
-                                setSpecialDialogueBit(0x92);
+                                setSpecialDialogueBit(POPURI_AT_MOON_MOUNTAIN_DIALOGUE);
                                 
                             }
                             
@@ -1911,7 +1911,7 @@ void setPopuriLocation(void) {
                                 npcs[POPURI].startingCoordinates.z = -416.0f;
                                 npcs[POPURI].flags |= NPC_ACTIVE;  
 
-                                setSpecialDialogueBit(0x91);
+                                setSpecialDialogueBit(POPURI_AT_MOUNTAIN_2_DIALOGUE);
                                 
                             }
 
@@ -1962,7 +1962,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].startingCoordinates.z = -96.0f;
                             npcs[POPURI].flags |= NPC_ACTIVE;
     
-                            setSpecialDialogueBit(0x46);
+                            setSpecialDialogueBit(POPURI_AT_RANCH_DIALOGUE);
                             
                         }
                                             
@@ -1978,7 +1978,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].defaultAnimationMode = NPC_ANIMATION_IDLE;
                             npcs[POPURI].flags |= NPC_ACTIVE;
     
-                            setSpecialDialogueBit(0x93);
+                            setSpecialDialogueBit(POPURI_AT_BAKERY_DIALOGUE);
                             
                         }
                         
@@ -2000,7 +2000,7 @@ void setPopuriLocation(void) {
                             npcs[POPURI].startingCoordinates.x = -224.0f;
                             npcs[POPURI].flags |= NPC_ACTIVE;
     
-                            setSpecialDialogueBit(0xB4);
+                            setSpecialDialogueBit(POPURI_AT_BEACH_DIALOGUE);
                             
                         }
                     
@@ -2021,7 +2021,7 @@ void setPopuriLocation(void) {
                         npcs[POPURI].startingCoordinates.z = -160.0f;
                         npcs[POPURI].flags |= NPC_ACTIVE;  
 
-                        setSpecialDialogueBit(0x91);
+                        setSpecialDialogueBit(POPURI_AT_MOUNTAIN_2_DIALOGUE);
                                    
                     }
                     
@@ -2064,7 +2064,7 @@ void setElliLocation(void) {
     npcs[ELLI].idleAnimation = 0;
     npcs[ELLI].movingAnimation = 8;
 
-    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(0x58)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(ELLI_LOCATION_OVERRIDE)) {
 
         if (checkLifeEventBit(MARRIED) && gWife == ELLI) {
 
@@ -2104,7 +2104,7 @@ void setElliLocation(void) {
                         npcs[ELLI].startingCoordinates.z = -64.0f;
                         npcs[ELLI].flags |= NPC_ACTIVE;  
         
-                        setSpecialDialogueBit(0x97);
+                        setSpecialDialogueBit(ELLI_AT_MOUNTAIN_2_DIALOGUE);
                                 
                     } else {
                         
@@ -2211,9 +2211,9 @@ void setElliLocation(void) {
                 npcs[ELLI].movingAnimation = 0x73;
             }
     
-        } else if (!checkDailyEventBit(0x4D)) {
+        } else if (!checkDailyEventBit(FESTIVAL)) {
 
-            if (checkLifeEventBit(0x1C)) {
+            if (checkLifeEventBit(ELLI_JEFF_MARRIED)) {
 
                 if (gWeather == SUNNY) {
 
@@ -2236,7 +2236,7 @@ void setElliLocation(void) {
                                         npcs[ELLI].startingCoordinates.z = -64.0f;
                                         npcs[ELLI].flags |= NPC_ACTIVE;  
                 
-                                        setSpecialDialogueBit(0x97);
+                                        setSpecialDialogueBit(ELLI_AT_MOUNTAIN_2_DIALOGUE);
                                         
                                     }            
                                             
@@ -2270,7 +2270,7 @@ void setElliLocation(void) {
                                         npcs[ELLI].startingCoordinates.z = -32.0f;
                                         npcs[ELLI].flags |= NPC_ACTIVE;  
                 
-                                        setSpecialDialogueBit(0x96);
+                                        setSpecialDialogueBit(ELLI_AT_MOUNTAIN_1_DIALOGUE);
                                         
                                     }       
 
@@ -2292,7 +2292,7 @@ void setElliLocation(void) {
                                 npcs[ELLI].startingCoordinates.z = -16.0f;
                                 npcs[ELLI].flags |= NPC_ACTIVE;  
         
-                                setSpecialDialogueBit(0x98);
+                                setSpecialDialogueBit(ELLI_AT_FLOWER_SHOP_DIALOGUE);
         
                             }
 
@@ -2408,7 +2408,7 @@ void setElliLocation(void) {
                         npcs[ELLI].startingCoordinates.z = -16.0f;
                         npcs[ELLI].flags |= NPC_ACTIVE;  
 
-                        setSpecialDialogueBit(0x98);
+                        setSpecialDialogueBit(ELLI_AT_FLOWER_SHOP_DIALOGUE);
 
                     }
 
@@ -2456,7 +2456,7 @@ void setElliLocation(void) {
                                 npcs[ELLI].startingCoordinates.z = -64.0f;
                                 npcs[ELLI].flags |= NPC_ACTIVE;  
         
-                                setSpecialDialogueBit(0x97);
+                                setSpecialDialogueBit(ELLI_AT_MOUNTAIN_2_DIALOGUE);
                                 
                             }            
                             
@@ -2472,7 +2472,7 @@ void setElliLocation(void) {
                                 npcs[ELLI].startingCoordinates.z = -32.0f;
                                 npcs[ELLI].flags |= NPC_ACTIVE;  
         
-                                setSpecialDialogueBit(0x96);
+                                setSpecialDialogueBit(ELLI_AT_MOUNTAIN_1_DIALOGUE);
                                 
                             }       
                             
@@ -2511,14 +2511,14 @@ void setElliLocation(void) {
                             npcs[ELLI].startingCoordinates.x = -224.0f;
                             npcs[ELLI].flags |= NPC_ACTIVE;  
     
-                            setSpecialDialogueBit(0x99);
+                            setSpecialDialogueBit(ELLI_AT_BEACH_DIALOGUE);
                             
                         }
                         
                     }
 
                     if (gSeason == SUMMER && gDayOfWeek == MONDAY && gWeather == SUNNY) {
-    
+     
                         if (7 < gHour && gHour < 17) {
            
                             npcs[ELLI].levelIndex = BEACH;
@@ -2529,7 +2529,7 @@ void setElliLocation(void) {
                             npcs[ELLI].startingCoordinates.z = 160.0f;
                             npcs[ELLI].flags |= NPC_ACTIVE;  
     
-                            setSpecialDialogueBit(0x99);
+                            setSpecialDialogueBit(ELLI_AT_BEACH_DIALOGUE);
                             
                         }
                                          
@@ -2558,7 +2558,7 @@ void setAnnLocation(void) {
     npcs[ANN].idleAnimation = 0;
     npcs[ANN].movingAnimation = 8;
 
-    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(0x59)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(ANN_LOCATION_OVERRIDE)) {
 
         if (checkLifeEventBit(MARRIED) && gWife == ANN) {
 
@@ -2588,7 +2588,7 @@ void setAnnLocation(void) {
                         npcs[ANN].defaultAnimationMode = NPC_ANIMATION_IDLE;
                         npcs[ANN].flags |= NPC_ACTIVE;  
 
-                        setSpecialDialogueBit(0xA1);
+                        setSpecialDialogueBit(ANN_AT_RICK_STORE_DIALOGUE);
 
                     } else  {
 
@@ -2824,7 +2824,7 @@ void setAnnLocation(void) {
                                         npcs[ANN].startingCoordinates.z = -160.0f;
                                         npcs[ANN].flags |= NPC_ACTIVE;  
                 
-                                        setSpecialDialogueBit(0x9E);
+                                        setSpecialDialogueBit(ANN_AT_MOUNTAIN_DIALOGUE);
 
                                         break;
 
@@ -2838,7 +2838,7 @@ void setAnnLocation(void) {
                                         npcs[ANN].startingCoordinates.z = -224.0f;
                                         npcs[ANN].flags |= NPC_ACTIVE;  
                 
-                                        setSpecialDialogueBit(0x9E);
+                                        setSpecialDialogueBit(ANN_AT_MOUNTAIN_DIALOGUE);
 
                                         break;
 
@@ -2941,7 +2941,7 @@ void setAnnLocation(void) {
                                     npcs[ANN].startingCoordinates.z = 32.0f;
                                     npcs[ANN].flags |= NPC_ACTIVE;  
             
-                                    setSpecialDialogueBit(0x9E);
+                                    setSpecialDialogueBit(ANN_AT_MOUNTAIN_DIALOGUE);
                                     
                                 }        
                                 
@@ -2959,7 +2959,7 @@ void setAnnLocation(void) {
                                     npcs[ANN].startingCoordinates.z = -160.0f;
                                     npcs[ANN].flags |= NPC_ACTIVE;  
             
-                                    setSpecialDialogueBit(0x9E);
+                                    setSpecialDialogueBit(ANN_AT_MOUNTAIN_DIALOGUE);
                                     
                                 }            
                                 break;
@@ -2976,7 +2976,7 @@ void setAnnLocation(void) {
                                     npcs[ANN].startingCoordinates.z = -144.0f;
                                     npcs[ANN].flags |= NPC_ACTIVE;  
             
-                                    setSpecialDialogueBit(0xA0);
+                                    setSpecialDialogueBit(ANN_AT_VINEYARD_DIALOGUE);
                                     
                                 }        
                                 
@@ -2995,7 +2995,7 @@ void setAnnLocation(void) {
                                     npcs[ANN].defaultAnimationMode = NPC_ANIMATION_IDLE;
                                     npcs[ANN].flags |= NPC_ACTIVE;  
             
-                                    setSpecialDialogueBit(0xA1);
+                                    setSpecialDialogueBit(ANN_AT_RICK_STORE_DIALOGUE);
                                     
                                 }
                             
@@ -3088,7 +3088,7 @@ void setAnnLocation(void) {
                         npcs[ANN].startingCoordinates.x = -224.0f;
                         npcs[ANN].flags |= NPC_ACTIVE;  
 
-                        setSpecialDialogueBit(0x9F);
+                        setSpecialDialogueBit(ANN_AT_BEACH_DIALOGUE);
                         
                     }
                                      
@@ -3116,7 +3116,7 @@ void setKarenLocation(void) {
     npcs[KAREN].idleAnimation = 0;
     npcs[KAREN].movingAnimation = 8;
 
-    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkLifeEventBit(0x2F) && !checkDailyEventBit(0x5A)) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkLifeEventBit(KAREN_GONE) && !checkDailyEventBit(KAREN_LOCATION_OVERRIDE)) {
 
         if (checkLifeEventBit(MARRIED) && gWife == KAREN) {
 
@@ -3148,7 +3148,7 @@ void setKarenLocation(void) {
                             npcs[KAREN].startingCoordinates.x = -224.0f;
                             npcs[KAREN].flags |= NPC_ACTIVE;
 
-                            setSpecialDialogueBit(0xA9);
+                            setSpecialDialogueBit(KAREN_AT_BEACH_DIALOGUE);
 
                             break;
                         
@@ -3174,7 +3174,7 @@ void setKarenLocation(void) {
                             npcs[KAREN].startingCoordinates.z = 96.0f;
                             npcs[KAREN].flags |= NPC_ACTIVE;
 
-                            setSpecialDialogueBit(0xAa);
+                            setSpecialDialogueBit(KAREN_AT_MOUNTAIN_DIALOGUE);
 
                             break;
                         
@@ -3269,9 +3269,9 @@ void setKarenLocation(void) {
                 npcs[KAREN].movingAnimation = 0x70;
             }
     
-        } else if (!checkDailyEventBit(0x4D)) {
+        } else if (!checkDailyEventBit(FESTIVAL)) {
 
-            if (checkLifeEventBit(0x1E)) {
+            if (checkLifeEventBit(KAREN_KAI_MARRIED)) {
 
                 if (gWeather == SUNNY) {
 
@@ -3289,7 +3289,7 @@ void setKarenLocation(void) {
                                 npcs[KAREN].startingCoordinates.x = -224.0f;
                                 npcs[KAREN].flags |= NPC_ACTIVE;
             
-                                setSpecialDialogueBit(0xA9);
+                                setSpecialDialogueBit(KAREN_AT_BEACH_DIALOGUE);
                                 
                             }
 
@@ -3379,164 +3379,164 @@ void setKarenLocation(void) {
                 
             } else {
 
-            if ((gDayOfWeek == MONDAY || gDayOfWeek == THURSDAY) && gWeather == SUNNY && 8 < gHour && gHour < 17) {
-                    
-                npcs[KAREN].levelIndex = VINEYARD;
-                npcs[KAREN].startingCoordinates.y = 0.0f;
-                npcs[KAREN].direction = NORTHEAST;
-                npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_WANDER;
-                npcs[KAREN].startingCoordinates.x = 192.0f;
-                npcs[KAREN].startingCoordinates.z = 192.0f;
-                npcs[KAREN].flags |= NPC_ACTIVE;
-                                  
-            }
-
-            switch (gDayOfWeek) {
-
-
-                case TUESDAY:
-                case WEDNESDAY:
-                case FRIDAY:
-                case SATURDAY:
-                    
-                    if (gWeather == SUNNY) {
-
-                        switch (npcs[KAREN].location) {
-                            
-                            case 0:
-
-                                if (9 < gHour && gHour < 17) {
-                                    
-                                    npcs[KAREN].levelIndex = MOUNTAIN_2;
-                                    npcs[KAREN].startingCoordinates.y = 0.0f;
-                                    npcs[KAREN].direction = SOUTHWEST;
-                                    npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_IDLE;
-                                    npcs[KAREN].startingCoordinates.x = -80.0f;
-                                    npcs[KAREN].startingCoordinates.z = 160.0f;
-                                    npcs[KAREN].flags |= NPC_ACTIVE;
-        
-                                    setSpecialDialogueBit(0xAA);
-                                    
-                                } 
-                            
-                                break;
-
-                            case 1:
-
-                                if (9 < gHour && gHour < 17) {
-                                    
-                                    npcs[KAREN].levelIndex = BEACH;
-                                    npcs[KAREN].startingCoordinates.y = 0.0f;
-                                    npcs[KAREN].direction = SOUTHEAST;
-                                    npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_IDLE;
-                                    npcs[KAREN].startingCoordinates.x = -96.0f;
-                                    npcs[KAREN].startingCoordinates.z = 176.0f;
-                                    npcs[KAREN].flags |= NPC_ACTIVE;
-                
-                                    setSpecialDialogueBit(0xA9);
-                                    
-                                }
-
-                                break;
-                            
-                            case 2:
-                            case 3:
-                                break;
-                            
-                        }
+                if ((gDayOfWeek == MONDAY || gDayOfWeek == THURSDAY) && gWeather == SUNNY && 8 < gHour && gHour < 17) {
                         
-                    }
-
-
-                
-            }
-
-            if (gDayOfWeek == SUNDAY && gWeather == SUNNY) {
-
-                if (9 < gHour && gHour < 18) {
-                    
-                    npcs[KAREN].levelIndex = BEACH;
-                    npcs[KAREN].startingCoordinates.y = 0.0f;
-                    npcs[KAREN].startingCoordinates.z = 0.0f;
-                    npcs[KAREN].direction = SOUTHEAST;
-                    npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_IDLE;
-                    npcs[KAREN].startingCoordinates.x = -224.0f;
-                    npcs[KAREN].flags |= NPC_ACTIVE;
-
-                    setSpecialDialogueBit(0xA9);
-                
-                    
-                }
-                
-            } 
-
-            if (gSeason == AUTUMN && 7 < gDayOfMonth && gDayOfMonth < 11 && gWeather == SUNNY) {
-
-                if (8 < gHour && gHour < 17) {
-                    
                     npcs[KAREN].levelIndex = VINEYARD;
                     npcs[KAREN].startingCoordinates.y = 0.0f;
-                    npcs[KAREN].startingCoordinates.z = 0.0f;
-                    npcs[KAREN].direction = SOUTHWEST;
-                    npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_CUSTOM;
-                    npcs[KAREN].startingCoordinates.x = -192.0f;
-                    npcs[KAREN].flags |= NPC_ACTIVE;
-                    
-                }
-                
-            }
-
-            if NIGHTTIME {
-
-                if (3 < gDayOfWeek && gDayOfWeek < 7) {
-                    
-                    npcs[KAREN].levelIndex = TAVERN;
-                    npcs[KAREN].startingCoordinates.y = 0.0f;
-                    npcs[KAREN].direction = SOUTHWEST;
+                    npcs[KAREN].direction = NORTHEAST;
                     npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_WANDER;
-                    npcs[KAREN].startingCoordinates.x = 64.0f;
-                    npcs[KAREN].startingCoordinates.z = -32.0f;
+                    npcs[KAREN].startingCoordinates.x = 192.0f;
+                    npcs[KAREN].startingCoordinates.z = 192.0f;
                     npcs[KAREN].flags |= NPC_ACTIVE;
+                                    
+                }
 
-                    setSpecialDialogueBit(0xAB);
+                switch (gDayOfWeek) {
+
+
+                    case TUESDAY:
+                    case WEDNESDAY:
+                    case FRIDAY:
+                    case SATURDAY:
+                        
+                        if (gWeather == SUNNY) {
+
+                            switch (npcs[KAREN].location) {
+                                
+                                case 0:
+
+                                    if (9 < gHour && gHour < 17) {
+                                        
+                                        npcs[KAREN].levelIndex = MOUNTAIN_2;
+                                        npcs[KAREN].startingCoordinates.y = 0.0f;
+                                        npcs[KAREN].direction = SOUTHWEST;
+                                        npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_IDLE;
+                                        npcs[KAREN].startingCoordinates.x = -80.0f;
+                                        npcs[KAREN].startingCoordinates.z = 160.0f;
+                                        npcs[KAREN].flags |= NPC_ACTIVE;
+            
+                                        setSpecialDialogueBit(KAREN_AT_MOUNTAIN_DIALOGUE);
+                                        
+                                    } 
+                                
+                                    break;
+
+                                case 1:
+
+                                    if (9 < gHour && gHour < 17) {
+                                        
+                                        npcs[KAREN].levelIndex = BEACH;
+                                        npcs[KAREN].startingCoordinates.y = 0.0f;
+                                        npcs[KAREN].direction = SOUTHEAST;
+                                        npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_IDLE;
+                                        npcs[KAREN].startingCoordinates.x = -96.0f;
+                                        npcs[KAREN].startingCoordinates.z = 176.0f;
+                                        npcs[KAREN].flags |= NPC_ACTIVE;
+                    
+                                        setSpecialDialogueBit(KAREN_AT_BEACH_DIALOGUE);
+                                        
+                                    }
+
+                                    break;
+                                
+                                case 2:
+                                case 3:
+                                    break;
+                                
+                            }
+                            
+                        }
+
+
                     
                 }
 
-                if (gDayOfWeek == MONDAY) {
+                if (gDayOfWeek == SUNDAY && gWeather == SUNNY) {
 
-                    npcs[KAREN].levelIndex = TAVERN;
-                    npcs[KAREN].startingCoordinates.y = 0;
-                    npcs[KAREN].direction = SOUTHWEST;
-                    npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_IDLE;
-                    npcs[KAREN].startingCoordinates.x = -64.0f;
-                    npcs[KAREN].startingCoordinates.z = -64.0f;
-                    npcs[KAREN].flags |= NPC_ACTIVE;
-
-                    setSpecialDialogueBit(0xAB);
-                    
-                }
-                
-            }
-
-            if (gSeason == SUMMER && gDayOfWeek == SATURDAY && gWeather == SUNNY && npcs[KAREN].location == 0) {
-
-                if (18 < gHour && gHour < 21) {
-
+                    if (9 < gHour && gHour < 18) {
+                        
                         npcs[KAREN].levelIndex = BEACH;
                         npcs[KAREN].startingCoordinates.y = 0.0f;
                         npcs[KAREN].startingCoordinates.z = 0.0f;
-                        npcs[KAREN].direction = SOUTHWEST;
-                        npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_LOCATION_SPECIAL;
+                        npcs[KAREN].direction = SOUTHEAST;
+                        npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_IDLE;
                         npcs[KAREN].startingCoordinates.x = -224.0f;
                         npcs[KAREN].flags |= NPC_ACTIVE;
 
-                        setSpecialDialogueBit(0xA9);
+                        setSpecialDialogueBit(KAREN_AT_BEACH_DIALOGUE);
+                    
+                        
+                    }
+                    
+                } 
+
+                if (gSeason == AUTUMN && 7 < gDayOfMonth && gDayOfMonth < 11 && gWeather == SUNNY) {
+
+                    if (8 < gHour && gHour < 17) {
+                        
+                        npcs[KAREN].levelIndex = VINEYARD;
+                        npcs[KAREN].startingCoordinates.y = 0.0f;
+                        npcs[KAREN].startingCoordinates.z = 0.0f;
+                        npcs[KAREN].direction = SOUTHWEST;
+                        npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_CUSTOM;
+                        npcs[KAREN].startingCoordinates.x = -192.0f;
+                        npcs[KAREN].flags |= NPC_ACTIVE;
+                        
+                    }
+                    
+                }
+
+                if NIGHTTIME {
+
+                    if (3 < gDayOfWeek && gDayOfWeek < 7) {
+                        
+                        npcs[KAREN].levelIndex = TAVERN;
+                        npcs[KAREN].startingCoordinates.y = 0.0f;
+                        npcs[KAREN].direction = SOUTHWEST;
+                        npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_WANDER;
+                        npcs[KAREN].startingCoordinates.x = 64.0f;
+                        npcs[KAREN].startingCoordinates.z = -32.0f;
+                        npcs[KAREN].flags |= NPC_ACTIVE;
+
+                        setSpecialDialogueBit(KAREN_AT_TAVERN_DIALOGUE);
+                        
+                    }
+
+                    if (gDayOfWeek == MONDAY) {
+
+                        npcs[KAREN].levelIndex = TAVERN;
+                        npcs[KAREN].startingCoordinates.y = 0;
+                        npcs[KAREN].direction = SOUTHWEST;
+                        npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_IDLE;
+                        npcs[KAREN].startingCoordinates.x = -64.0f;
+                        npcs[KAREN].startingCoordinates.z = -64.0f;
+                        npcs[KAREN].flags |= NPC_ACTIVE;
+
+                        setSpecialDialogueBit(KAREN_AT_TAVERN_DIALOGUE);
+                        
+                    }
+                    
+                }
+
+                if (gSeason == SUMMER && gDayOfWeek == SATURDAY && gWeather == SUNNY && npcs[KAREN].location == 0) {
+
+                    if (18 < gHour && gHour < 21) {
+
+                            npcs[KAREN].levelIndex = BEACH;
+                            npcs[KAREN].startingCoordinates.y = 0.0f;
+                            npcs[KAREN].startingCoordinates.z = 0.0f;
+                            npcs[KAREN].direction = SOUTHWEST;
+                            npcs[KAREN].defaultAnimationMode = NPC_ANIMATION_LOCATION_SPECIAL;
+                            npcs[KAREN].startingCoordinates.x = -224.0f;
+                            npcs[KAREN].flags |= NPC_ACTIVE;
+
+                            setSpecialDialogueBit(KAREN_AT_BEACH_DIALOGUE);
+                        
+                    }
                     
                 }
                 
             }
-            
-        }
             
         } 
         
@@ -3552,7 +3552,7 @@ void setBabyLocation(void) {
 
     u8 set = FALSE;
     
-    toggleDailyEventBit(0x16);
+    clearDailyEventBit(PICKED_UP_BABY);
 
     if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
 
@@ -3589,7 +3589,7 @@ void setBabyLocation(void) {
             npcs[BABY].startingCoordinates.z = -64.0f;
             npcs[BABY].flags |= NPC_ACTIVE;
 
-            setDailyEventBit(0x16);
+            setDailyEventBit(PICKED_UP_BABY);
             
         }
 
@@ -3603,7 +3603,7 @@ void setBabyLocation(void) {
             npcs[BABY].startingCoordinates.z = -64.0f;
             npcs[BABY].flags |= NPC_ACTIVE;
 
-            setDailyEventBit(0x16);
+            setDailyEventBit(PICKED_UP_BABY);
             
         } 
 
@@ -3774,7 +3774,7 @@ void setHarrisLocation(void) {
         npcs[HARRIS].startingCoordinates.x = -144.0f;
         npcs[HARRIS].flags |= NPC_ACTIVE;
 
-        setSpecialDialogueBit(0x40);
+        setSpecialDialogueBit(HARRIS_AT_TAVERN_DIALOGUE);
         
     }
 
@@ -3881,7 +3881,7 @@ void setGrayLocation(void) {
         npcs[GRAY].startingCoordinates.x = 80.0f;
         npcs[GRAY].flags |= NPC_ACTIVE;
 
-        setSpecialDialogueBit(0x131);
+        setSpecialDialogueBit(GRAY_AT_TAVERN_DIALOGUE);
         
     }
 
@@ -4014,7 +4014,7 @@ void setJeffLocation(void) {
             npcs[JEFF].startingCoordinates.z = -64.0f;
             npcs[JEFF].flags |= NPC_ACTIVE;
 
-            setSpecialDialogueBit(0x132);
+            setSpecialDialogueBit(JEFF_AT_TAVERN_DIALOGUE);
     
         }
         
@@ -4123,7 +4123,7 @@ void setCliffLocation(void) {
 
             }
             
-        } else if (checkLifeEventBit(CLIFF_ARRIVED) && !checkLifeEventBit(0x42)) {
+        } else if (checkLifeEventBit(CLIFF_ARRIVED) && !checkLifeEventBit(CLIFF_LEAVING)) {
 
             if (gWeather == SUNNY) {
                 
@@ -4291,7 +4291,7 @@ void setCliffLocation(void) {
                             npcs[CLIFF].startingCoordinates.z = -64.0f;
                             npcs[CLIFF].flags |= NPC_ACTIVE;
             
-                            setSpecialDialogueBit(0x133);
+                            setSpecialDialogueBit(CLIFF_AT_TAVERN_DIALOGUE);
                         
                         }
                         
@@ -4318,7 +4318,7 @@ void setKaiLocation(void) {
     npcs[KAI].idleAnimation = 0;
     npcs[KAI].movingAnimation = 8;
 
-    if (!checkLifeEventBit(KAI_GONE) && !checkDailyEventBit(0x4F)) {
+    if (!checkLifeEventBit(KAI_GONE) && !checkDailyEventBit(KAREN_YELLOW_HEART_EVENT_DAILY)) {
 
         if (checkLifeEventBit(KAREN_KAI_MARRIED)) {
 
@@ -4453,7 +4453,7 @@ void setKaiLocation(void) {
                     npcs[KAI].startingCoordinates.z = 96.0f;
                     npcs[KAI].flags |= NPC_ACTIVE;
 
-                    setSpecialDialogueBit(0x134);
+                    setSpecialDialogueBit(KAI_AT_TAVERN_DIALOGUE);
                 
             }
             
@@ -5156,7 +5156,7 @@ void setKentLocation(void) {
                                     npcs[KENT].startingCoordinates.z = -160.0f;
                                     npcs[KENT].flags |= NPC_ACTIVE;
                                     
-                                    setSpecialDialogueBit(0x137);
+                                    setSpecialDialogueBit(KENT_AT_MOUNTAIN_DIALOGUE);
                                     
                                 }
                                 
@@ -5226,7 +5226,7 @@ void setKentLocation(void) {
                                 npcs[KENT].startingCoordinates.z = -160.0f;
                                 npcs[KENT].flags |= NPC_ACTIVE;
 
-                                setSpecialDialogueBit(0x137);
+                                setSpecialDialogueBit(KENT_AT_MOUNTAIN_DIALOGUE);
                                  
                              }
                             
@@ -5262,7 +5262,7 @@ void setKentLocation(void) {
                                 npcs[KENT].startingCoordinates.z = -160.0f;
                                 npcs[KENT].flags |= NPC_ACTIVE;
 
-                                setSpecialDialogueBit(0x137);
+                                setSpecialDialogueBit(KENT_AT_MOUNTAIN_DIALOGUE);
                                  
                              }
                             
@@ -5334,7 +5334,7 @@ void setKentLocation(void) {
                         npcs[KENT].startingCoordinates.z = -96.0f;
                         npcs[KENT].flags |= NPC_ACTIVE;
 
-                        setSpecialDialogueBit(0x137);
+                        setSpecialDialogueBit(KENT_AT_MOUNTAIN_DIALOGUE);
                         
                     }
                     
@@ -6246,7 +6246,7 @@ void setCarpenter1Location(void) {
     npcs[CARPENTER_1].idleAnimation = 0;
     npcs[CARPENTER_1].movingAnimation = 8;
 
-    if (!checkLifeEventBit(0xD) && !checkDailyEventBit(9) 
+    if (!checkLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION) && !checkDailyEventBit(CARPENTER_ESTIMATE) 
         && (gYear != 1 
             || (gSeason != AUTUMN || !(19 < gDayOfMonth && gDayOfMonth < 28))
             && ((gSeason != WINTER || !(8 < gDayOfMonth && gDayOfMonth < 17)))
@@ -6326,7 +6326,7 @@ void setCarpenter2Location(void) {
     npcs[CARPENTER_2].idleAnimation = 0;
     npcs[CARPENTER_2].movingAnimation = 8;
 
-    if (!checkLifeEventBit(0xD) && !checkDailyEventBit(9) 
+    if (!checkLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION) && !checkDailyEventBit(CARPENTER_ESTIMATE) 
         && (gYear != 1 
             || (gSeason != AUTUMN || !(19 < gDayOfMonth && gDayOfMonth < 28))
             && ((gSeason != WINTER || !(8 < gDayOfMonth && gDayOfMonth < 17)))
@@ -6406,7 +6406,7 @@ void setMasterCarpenterLocation(void) {
     npcs[MASTER_CARPENTER].idleAnimation = 0;
     npcs[MASTER_CARPENTER].movingAnimation = 8;
 
-    if (!checkLifeEventBit(0xD) && !checkDailyEventBit(9) 
+    if (!checkLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION) && !checkDailyEventBit(CARPENTER_ESTIMATE) 
         && (gYear != 1 
             || (gSeason != AUTUMN || !(19 < gDayOfMonth && gDayOfMonth < 28))
             && ((gSeason != WINTER || !(8 < gDayOfMonth && gDayOfMonth < 17)))
@@ -6620,7 +6620,7 @@ void setMrsManaLocation(void) {
     npcs[MRS_MANA].idleAnimation = 0;
     npcs[MRS_MANA].movingAnimation = 8;
 
-    if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(0x94) && NIGHTTIME) {
+    if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(MRS_MANA_COWS_EVENT) && NIGHTTIME) {
 
         npcs[MRS_MANA].levelIndex = TAVERN;
         npcs[MRS_MANA].startingCoordinates.y = 0;
@@ -6647,7 +6647,7 @@ void setJohnLocation(void) {
     npcs[JOHN].idleAnimation = 0;
     npcs[JOHN].movingAnimation = 8;
 
-    if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(0x94) && (9 < gHour && gHour < 16)) {
+    if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(MRS_MANA_COWS_EVENT) && (9 < gHour && gHour < 16)) {
 
         npcs[JOHN].levelIndex = BARN;
         npcs[JOHN].startingCoordinates.y = 0;
@@ -6674,7 +6674,7 @@ void setGourmetJudgeLocation(void) {
     npcs[GOURMET_JUDGE].idleAnimation = 0;
     npcs[GOURMET_JUDGE].movingAnimation = 8;
 
-    if (checkLifeEventBit(0x20) && npcs[GOURMET_JUDGE].location == 0 && (8 < gHour && gHour < 17)) {
+    if (checkLifeEventBit(VINEYARD_FIRST_WINE) && npcs[GOURMET_JUDGE].location == 0 && (8 < gHour && gHour < 17)) {
 
         npcs[GOURMET_JUDGE].levelIndex = ROAD;
         npcs[GOURMET_JUDGE].startingCoordinates.y = 0;
@@ -6688,7 +6688,7 @@ void setGourmetJudgeLocation(void) {
 
     }
 
-    if (checkLifeEventBit(0x19) && (8 < gHour && gHour < 17)) {
+    if (checkLifeEventBit(HAVE_ICE_CREAM_MAKER) && (8 < gHour && gHour < 17)) {
         
         npcs[GOURMET_JUDGE].levelIndex = VILLAGE_1;
         npcs[GOURMET_JUDGE].startingCoordinates.y = 0;

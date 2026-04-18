@@ -7,6 +7,8 @@
 #define MAX_MISC_ANIMALS 7
 #define MAX_FARM_ANIMALS 8
 
+#define TOTAL_CHICKEN_STALLS 6
+
 #define CHICKEN_EGG 0
 #define CHICK 1
 #define ADULT_CHICKEN 2
@@ -86,6 +88,7 @@
 #define HORSE_BEING_RODE 		8	
 #define HORSE_FOLLOWING         0x10
 #define HORSE_COLLISION_WITH_PLAYER 0x20
+// 0x40
 #define HORSE_BRUSHED_DAILY     0x100
 #define HORSE_WHISTLED_DAILY    0x200
 #define HORSE_RODE_DAILY        0x400

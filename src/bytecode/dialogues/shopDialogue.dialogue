@@ -3,62 +3,128 @@
 ; Bytecode Start: 0xE92640
 ; Segments: 43
 
+; This bank hosts bytecode for several shops/menus. Each shop has its own
+; entry segment invoked from C with initializeDialogueSession / showMessageBox
+; (see game.c showDialogueTextBox, overlayScreens.c). Many segments here are
+; independent entry points rather than links from segment_0.
+
+; aliases for segment names
+
+.define .lillia_menu 0
+.define .lillia_season_branch 1
+.define .lillia_grass_reply 2
+.define .lillia_flowers_reply 3
+.define .lillia_exit_reply 4
+.define .lillia_spring_veg_menu 5
+.define .lillia_summer_veg_menu 6
+.define .lillia_autumn_veg_info 7
+.define .lillia_winter_veg_info 34
+.define .lillia_turnip_info 32
+.define .lillia_potato_info 36
+.define .lillia_cabbage_info 35
+.define .lillia_tomato_info 37
+.define .lillia_corn_info 38
+.define .lillia_welcome 39
+
+.define .flower_notebook_menu 10
+.define .flower_notebook_moondrop 20
+.define .flower_notebook_pink_cat_mint 21
+.define .flower_notebook_blue_mist 22
+.define .flower_notebook_entry 40
+
+.define .bakery_counter_menu 11
+
+.define .tavern_drink_menu 18
+
+.define .jeff_bakery_menu 12
+
+; Doug's animal shop
+.define .doug_main_menu 13
+.define .doug_buy_menu 14
+.define .doug_sell_confirm 15
+.define .doug_sell_intro 28
+.define .doug_not_needed 29
+.define .doug_sell_yes 30
+.define .doug_sell_cancel 31
+
+; Doug's animal notebook
+.define .animal_notebook_menu 16
+.define .animal_notebook_chickens 23
+.define .animal_notebook_sheep 24
+.define .animal_notebook_cows 25
+.define .animal_notebook_sickness 26
+.define .animal_notebook_prevention 27
+.define .animal_notebook_entry 41
+
+; Potion shop
+.define .potion_shop_no_bottle 17
+
+; Library
+.define .library_greeting 19
+
+; Master Carpenter
+.define .master_carpenter_confirm 33
+
+
+; Flower shop
+
 ; 0xE92640
-.segment_0:
+.lillia_menu:
+    ; choices from text 1: Vegetables / Grass / Flowers / Nothing
     SHOW_SELECTION_MENU 1, 4
-    HANDLE_MENU_SELECTION_BRANCH 0, .segment_1
-    HANDLE_MENU_SELECTION_BRANCH 1, .segment_2
-    HANDLE_MENU_SELECTION_BRANCH 2, .segment_3
-    HANDLE_MENU_SELECTION_BRANCH 3, .segment_4
+    HANDLE_MENU_SELECTION_BRANCH 0, .lillia_season_branch
+    HANDLE_MENU_SELECTION_BRANCH 1, .lillia_grass_reply
+    HANDLE_MENU_SELECTION_BRANCH 2, .lillia_flowers_reply
+    HANDLE_MENU_SELECTION_BRANCH 3, .lillia_exit_reply
     END_DIALOGUE
 
 ; 0xE92658
-.segment_1:
-    DIALOGUE_VARIABLE_BRANCH 1, 1, 1, NO_TEXT, .segment_5
-    DIALOGUE_VARIABLE_BRANCH 1, 2, 2, NO_TEXT, .segment_6
-    DIALOGUE_VARIABLE_BRANCH 1, 3, 3, NO_TEXT, .segment_7
-    DIALOGUE_VARIABLE_BRANCH 1, 4, 4, NO_TEXT, .segment_34
+.lillia_season_branch:
+    DIALOGUE_VARIABLE_BRANCH VAR_SEASON, 1, 1, NO_TEXT, .lillia_spring_veg_menu
+    DIALOGUE_VARIABLE_BRANCH VAR_SEASON, 2, 2, NO_TEXT, .lillia_summer_veg_menu
+    DIALOGUE_VARIABLE_BRANCH VAR_SEASON, 3, 3, NO_TEXT, .lillia_autumn_veg_info
+    DIALOGUE_VARIABLE_BRANCH VAR_SEASON, 4, 4, NO_TEXT, .lillia_winter_veg_info
     END_DIALOGUE
 
 ; 0xE92684
-.segment_2:
-    RANDOM_BRANCH 0, 49, 11, .segment_0
+.lillia_grass_reply:
+    RANDOM_BRANCH 0, 49, 11, .lillia_menu
     SHOW_TEXT 12
-    JUMP_TO_DIALOGUE .segment_0
+    JUMP_TO_DIALOGUE .lillia_menu
     END_DIALOGUE
 
 ; 0xE92694
-.segment_3:
+.lillia_flowers_reply:
     SHOW_TEXT 13
-    JUMP_TO_DIALOGUE .segment_0
+    JUMP_TO_DIALOGUE .lillia_menu
     END_DIALOGUE
 
 ; 0xE9269C
-.segment_4:
+.lillia_exit_reply:
     SHOW_TEXT 151
     END_DIALOGUE
 
 ; 0xE926A0
-.segment_5:
+.lillia_spring_veg_menu:
     SHOW_SELECTION_MENU 2, 4
-    HANDLE_MENU_SELECTION_BRANCH 0, .segment_32
-    HANDLE_MENU_SELECTION_BRANCH 1, .segment_36
-    HANDLE_MENU_SELECTION_BRANCH 2, .segment_35
-    HANDLE_MENU_SELECTION_BRANCH 3, .segment_0
+    HANDLE_MENU_SELECTION_BRANCH 0, .lillia_turnip_info
+    HANDLE_MENU_SELECTION_BRANCH 1, .lillia_potato_info
+    HANDLE_MENU_SELECTION_BRANCH 2, .lillia_cabbage_info
+    HANDLE_MENU_SELECTION_BRANCH 3, .lillia_menu
     END_DIALOGUE
 
 ; 0xE926B8
-.segment_6:
+.lillia_summer_veg_menu:
     SHOW_SELECTION_MENU 3, 3
-    HANDLE_MENU_SELECTION_BRANCH 0, .segment_37
-    HANDLE_MENU_SELECTION_BRANCH 1, .segment_38
-    HANDLE_MENU_SELECTION_BRANCH 2, .segment_0
+    HANDLE_MENU_SELECTION_BRANCH 0, .lillia_tomato_info
+    HANDLE_MENU_SELECTION_BRANCH 1, .lillia_corn_info
+    HANDLE_MENU_SELECTION_BRANCH 2, .lillia_menu
     END_DIALOGUE
 
 ; 0xE926CC
-.segment_7:
+.lillia_autumn_veg_info:
     SHOW_TEXT 4
-    JUMP_TO_DIALOGUE .segment_0
+    JUMP_TO_DIALOGUE .lillia_menu
     END_DIALOGUE
 
 ; 0xE926D4
@@ -69,200 +135,239 @@
 .segment_9:
     END_DIALOGUE
 
+
+; Popuri's flower notebook
+
 ; 0xE926DC
-.segment_10:
+.flower_notebook_menu:
+    ; choices from text 38: Moon-drop / P-cat-mint / Blue-mist / Close
     SHOW_SELECTION_MENU 38, 4
-    HANDLE_MENU_SELECTION_BRANCH 0, .segment_20
-    HANDLE_MENU_SELECTION_BRANCH 1, .segment_21
-    HANDLE_MENU_SELECTION_BRANCH 2, .segment_22
+    HANDLE_MENU_SELECTION_BRANCH 0, .flower_notebook_moondrop
+    HANDLE_MENU_SELECTION_BRANCH 1, .flower_notebook_pink_cat_mint
+    HANDLE_MENU_SELECTION_BRANCH 2, .flower_notebook_blue_mist
     END_DIALOGUE
 
+
+; Bakery food menu
+; Called from handleBakeryLevelInteractions case 18 (src/game/levelInteractions.c);
+; hands the player items 14-17 (BAKERY_CAKE/PIE/TEA/WATER held-item forms).
+
 ; 0xE926F0
-.segment_11:
+.bakery_counter_menu:
     SHOW_TEXT 55
     SHOW_SELECTION_MENU 56, 4
     END_DIALOGUE
 
+
+; Bakery food menu
+
 ; 0xE926F8
-.segment_12:
+.jeff_bakery_menu:
     SHOW_TEXT 60
     SHOW_SELECTION_MENU 61, 4
     END_DIALOGUE
 
+
+; Ranch store
+
 ; 0xE92700
-.segment_13:
+.doug_main_menu:
     SHOW_TEXT 76
     SHOW_SELECTION_MENU 77, 3
     END_DIALOGUE
 
 ; 0xE92708
-.segment_14:
+.doug_buy_menu:
     SHOW_TEXT 78
     SHOW_SELECTION_MENU 79, 4
     END_DIALOGUE
 
 ; 0xE92710
-.segment_15:
+.doug_sell_confirm:
     SHOW_TEXT 88
     SHOW_SELECTION_MENU 89, 2
-    HANDLE_MENU_SELECTION_BRANCH 0, .segment_30
-    HANDLE_MENU_SELECTION_BRANCH 1, .segment_31
+    HANDLE_MENU_SELECTION_BRANCH 0, .doug_sell_yes
+    HANDLE_MENU_SELECTION_BRANCH 1, .doug_sell_cancel
     END_DIALOGUE
+
+
+; Ranch store animal notebook
 
 ; 0xE92720
-.segment_16:
+.animal_notebook_menu:
     SHOW_SELECTION_MENU 95, 6
-    HANDLE_MENU_SELECTION_BRANCH 0, .segment_23
-    HANDLE_MENU_SELECTION_BRANCH 1, .segment_24
-    HANDLE_MENU_SELECTION_BRANCH 2, .segment_25
-    HANDLE_MENU_SELECTION_BRANCH 3, .segment_26
-    HANDLE_MENU_SELECTION_BRANCH 4, .segment_27
+    HANDLE_MENU_SELECTION_BRANCH 0, .animal_notebook_chickens
+    HANDLE_MENU_SELECTION_BRANCH 1, .animal_notebook_sheep
+    HANDLE_MENU_SELECTION_BRANCH 2, .animal_notebook_cows
+    HANDLE_MENU_SELECTION_BRANCH 3, .animal_notebook_sickness
+    HANDLE_MENU_SELECTION_BRANCH 4, .animal_notebook_prevention
     END_DIALOGUE
 
+
+; Potion shop
+
 ; 0xE9273C
-.segment_17:
+.potion_shop_no_bottle:
     SHOW_TEXT 107
     SHOW_SELECTION_MENU 108, 2
     END_DIALOGUE
 
+
+; Tavern
+
 ; 0xE92744
-.segment_18:
+.tavern_drink_menu:
     SHOW_TEXT 121
     SHOW_SELECTION_MENU 122, 5
     END_DIALOGUE
 
+
+; Library Maria interaction
+
 ; 0xE9274C
-.segment_19:
+.library_greeting:
     SHOW_TEXT 214
     SHOW_SELECTION_MENU 215, 2
     END_DIALOGUE
 
+
+; Popuri's flower notebook entries
+
 ; 0xE92754
-.segment_20:
+.flower_notebook_moondrop:
     SHOW_TEXT 39
-    JUMP_TO_DIALOGUE .segment_10
+    JUMP_TO_DIALOGUE .flower_notebook_menu
     END_DIALOGUE
 
 ; 0xE9275C
-.segment_21:
+.flower_notebook_pink_cat_mint:
     SHOW_TEXT 40
-    JUMP_TO_DIALOGUE .segment_10
+    JUMP_TO_DIALOGUE .flower_notebook_menu
     END_DIALOGUE
 
 ; 0xE92764
-.segment_22:
+.flower_notebook_blue_mist:
     SHOW_TEXT 41
-    JUMP_TO_DIALOGUE .segment_10
+    JUMP_TO_DIALOGUE .flower_notebook_menu
     END_DIALOGUE
 
+
+; Ranch store animal notebook entries
+
 ; 0xE9276C
-.segment_23:
+.animal_notebook_chickens:
     SHOW_TEXT 96
-    JUMP_TO_DIALOGUE .segment_16
+    JUMP_TO_DIALOGUE .animal_notebook_menu
     END_DIALOGUE
 
 ; 0xE92774
-.segment_24:
+.animal_notebook_sheep:
     SHOW_TEXT 97
-    JUMP_TO_DIALOGUE .segment_16
+    JUMP_TO_DIALOGUE .animal_notebook_menu
     END_DIALOGUE
 
 ; 0xE9277C
-.segment_25:
+.animal_notebook_cows:
     SHOW_TEXT 98
-    JUMP_TO_DIALOGUE .segment_16
+    JUMP_TO_DIALOGUE .animal_notebook_menu
     END_DIALOGUE
 
 ; 0xE92784
-.segment_26:
+.animal_notebook_sickness:
     SHOW_TEXT 99
-    JUMP_TO_DIALOGUE .segment_16
+    JUMP_TO_DIALOGUE .animal_notebook_menu
     END_DIALOGUE
 
 ; 0xE9278C
-.segment_27:
+.animal_notebook_prevention:
     SHOW_TEXT 100
-    JUMP_TO_DIALOGUE .segment_16
+    JUMP_TO_DIALOGUE .animal_notebook_menu
     END_DIALOGUE
 
+
+; Doug counter interactions
+
 ; 0xE92794
-.segment_28:
+.doug_sell_intro:
     SHOW_TEXT 85
     END_DIALOGUE
 
 ; 0xE92798
-.segment_29:
+.doug_not_needed:
     SHOW_TEXT 84
     END_DIALOGUE
 
 ; 0xE9279C
-.segment_30:
+.doug_sell_yes:
     SHOW_TEXT 90
     END_DIALOGUE
 
 ; 0xE927A0
-.segment_31:
+.doug_sell_cancel:
     SHOW_TEXT 91
     END_DIALOGUE
 
+
+; Lillia's seed info texts
+
 ; 0xE927A4
-.segment_32:
+.lillia_turnip_info:
     SHOW_TEXT 5
-    JUMP_TO_DIALOGUE .segment_1
+    JUMP_TO_DIALOGUE .lillia_season_branch
     END_DIALOGUE
 
 ; 0xE927AC
-.segment_33:
+.master_carpenter_confirm:
     SHOW_TEXT 129
     SHOW_SELECTION_MENU 130, 2
     END_DIALOGUE
 
 ; 0xE927B4
-.segment_34:
+.lillia_winter_veg_info:
     SHOW_TEXT 10
-    JUMP_TO_DIALOGUE .segment_0
+    JUMP_TO_DIALOGUE .lillia_menu
     END_DIALOGUE
 
 ; 0xE927BC
-.segment_35:
+.lillia_cabbage_info:
     SHOW_TEXT 7
-    JUMP_TO_DIALOGUE .segment_1
+    JUMP_TO_DIALOGUE .lillia_season_branch
     END_DIALOGUE
 
 ; 0xE927C4
-.segment_36:
+.lillia_potato_info:
     SHOW_TEXT 6
-    JUMP_TO_DIALOGUE .segment_1
+    JUMP_TO_DIALOGUE .lillia_season_branch
     END_DIALOGUE
 
 ; 0xE927CC
-.segment_37:
+.lillia_tomato_info:
     SHOW_TEXT 8
-    JUMP_TO_DIALOGUE .segment_1
+    JUMP_TO_DIALOGUE .lillia_season_branch
     END_DIALOGUE
 
 ; 0xE927D4
-.segment_38:
+.lillia_corn_info:
     SHOW_TEXT 9
-    JUMP_TO_DIALOGUE .segment_1
+    JUMP_TO_DIALOGUE .lillia_season_branch
     END_DIALOGUE
 
 ; 0xE927DC
-.segment_39:
+.lillia_welcome:
     SHOW_TEXT 0
-    JUMP_TO_DIALOGUE .segment_0
+    JUMP_TO_DIALOGUE .lillia_menu
     END_DIALOGUE
 
 ; 0xE927E4
-.segment_40:
+.flower_notebook_entry:
     SHOW_TEXT 37
-    JUMP_TO_DIALOGUE .segment_10
+    JUMP_TO_DIALOGUE .flower_notebook_menu
     END_DIALOGUE
 
 ; 0xE927EC
-.segment_41:
+.animal_notebook_entry:
     SHOW_TEXT 94
-    JUMP_TO_DIALOGUE .segment_16
+    JUMP_TO_DIALOGUE .animal_notebook_menu
 
 ; 0xE927F4
 .segment_42:  ; alignment padding

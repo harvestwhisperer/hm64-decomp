@@ -1,14 +1,39 @@
-; ============================================
+; ===========================================================================
 ; Bank 6 - Ranch Cutscenes
-; ============================================
+;
+; Index  Description
+; -----  -----------
+; 650    Get horse
+; 651    Horse naming follow-up (post-650, loads level and initializes horse)
+; 652    Popuri visits ranch, talks flowers with Ann (spawn point 1)
+; 653    Same as 652 (spawn point 2)
+; 654    Gray and Popuri talk at ranch evening (spawn point 1)
+; 655    Same as 654 (spawn point 2)
+; 656    Message about not bothering someone
+; 657    Ann and Popuri talk about Gray (spawn point 1)
+; 658    Same as 657 (spawn point 2)
+; 659    Ann fireworks at ranch (Summer 1 evening)
+; 660    Cliff meets Ann at ranch
+; 661    Ann high-affection ranch scene
+; 662    Ann visits ranch in winter (Winter 10)
+; 663    Ann sick visit (in Ann room, after 666 transition)
+; 664    Ann marriage repair (in Ann room, after 667 transition)
+; 665    Doug free-roam at ranch (alt horse receiving, lifeEventBit 0xE set)
+; 666    Ann sick visit transition (loads into Ann room -> 663)
+; 667    Ann marriage repair transition (loads into Ann room -> 664)
+; ===========================================================================
 
 #include "entities.h"
 #include "entityBuffers.h"
 #include "texts.h"
+#include "maps.h"
+#include "dialogues.h"
 
 .buffer 2
 
 #define MAIN_MAP_INDEX 0
+
+#define RANCH_GET_HORSE_CUTSCENE 14
 
 #define HAVE_BABY 1
 
@@ -18,59 +43,81 @@
 .array npcAffection, u8
 .array lifeEventBits, u32
 
-.entry
-    TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_115450
-    BRANCH_U16_VAR_WITHIN_RANGE 650, 650, gCutsceneIndex, .branch_115630
-    BRANCH_U16_VAR_WITHIN_RANGE 651, 651, gCutsceneIndex, .branch_115B20
-    BRANCH_U16_VAR_WITHIN_RANGE 652, 652, gCutsceneIndex, .branch_115BEC
-    BRANCH_U16_VAR_WITHIN_RANGE 653, 653, gCutsceneIndex, .branch_115E00
-    BRANCH_U16_VAR_WITHIN_RANGE 654, 654, gCutsceneIndex, .branch_115E7C
-    BRANCH_U16_VAR_WITHIN_RANGE 655, 655, gCutsceneIndex, .branch_11608C
-    BRANCH_U16_VAR_WITHIN_RANGE 656, 656, gCutsceneIndex, .branch_11610C
-    BRANCH_U16_VAR_WITHIN_RANGE 657, 657, gCutsceneIndex, .branch_116144
-    BRANCH_U16_VAR_WITHIN_RANGE 658, 658, gCutsceneIndex, .branch_1162E8
-    BRANCH_U16_VAR_WITHIN_RANGE 659, 659, gCutsceneIndex, .branch_116350
-    BRANCH_U16_VAR_WITHIN_RANGE 660, 660, gCutsceneIndex, .branch_116934
-    BRANCH_U16_VAR_WITHIN_RANGE 661, 661, gCutsceneIndex, .branch_116CB8
-    BRANCH_U16_VAR_WITHIN_RANGE 662, 662, gCutsceneIndex, .branch_116E88
-    BRANCH_U16_VAR_WITHIN_RANGE 663, 663, gCutsceneIndex, .branch_116FDC
-    BRANCH_U16_VAR_WITHIN_RANGE 664, 664, gCutsceneIndex, .branch_1171A4
-    BRANCH_U16_VAR_WITHIN_RANGE 665, 665, gCutsceneIndex, .branch_1173C4
-    BRANCH_U16_VAR_WITHIN_RANGE 666, 666, gCutsceneIndex, .branch_11745C
-    BRANCH_U16_VAR_WITHIN_RANGE 667, 667, gCutsceneIndex, .branch_117554
+; ===========================================================================
+; Dispatch Table
+; ===========================================================================
 
-.sub_11543C:
+.dispatch:
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U16_VAR_WITHIN_RANGE 650, 650, gCutsceneIndex, .cutscene_650
+    BRANCH_U16_VAR_WITHIN_RANGE 651, 651, gCutsceneIndex, .cutscene_651
+    BRANCH_U16_VAR_WITHIN_RANGE 652, 652, gCutsceneIndex, .cutscene_652
+    BRANCH_U16_VAR_WITHIN_RANGE 653, 653, gCutsceneIndex, .cutscene_653
+    BRANCH_U16_VAR_WITHIN_RANGE 654, 654, gCutsceneIndex, .cutscene_654
+    BRANCH_U16_VAR_WITHIN_RANGE 655, 655, gCutsceneIndex, .cutscene_655
+    BRANCH_U16_VAR_WITHIN_RANGE 656, 656, gCutsceneIndex, .cutscene_656
+    BRANCH_U16_VAR_WITHIN_RANGE 657, 657, gCutsceneIndex, .cutscene_657
+    BRANCH_U16_VAR_WITHIN_RANGE 658, 658, gCutsceneIndex, .cutscene_658
+    BRANCH_U16_VAR_WITHIN_RANGE 659, 659, gCutsceneIndex, .cutscene_659
+    BRANCH_U16_VAR_WITHIN_RANGE 660, 660, gCutsceneIndex, .cutscene_660
+    BRANCH_U16_VAR_WITHIN_RANGE 661, 661, gCutsceneIndex, .cutscene_661
+    BRANCH_U16_VAR_WITHIN_RANGE 662, 662, gCutsceneIndex, .cutscene_662
+    BRANCH_U16_VAR_WITHIN_RANGE 663, 663, gCutsceneIndex, .cutscene_663
+    BRANCH_U16_VAR_WITHIN_RANGE 664, 664, gCutsceneIndex, .cutscene_664
+    BRANCH_U16_VAR_WITHIN_RANGE 665, 665, gCutsceneIndex, .cutscene_665
+    BRANCH_U16_VAR_WITHIN_RANGE 666, 666, gCutsceneIndex, .cutscene_666
+    BRANCH_U16_VAR_WITHIN_RANGE 667, 667, gCutsceneIndex, .cutscene_667
+
+; ===========================================================================
+; Shared Helpers
+; ===========================================================================
+
+; --- Complete cutscene: set completion flag and deactivate ---
+
+.complete_cutscene:
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_115448:
-    SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_115448
+; --- Infinite wait loop ---
 
-.sub_115450:
+.wait_loop:
+    SET_WAIT_FRAMES 1
+    EXECUTE_SUBROUTINE .wait_loop
+
+; --- Standard message box configuration ---
+
+.setup_message_box:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_115470:
+; --- Alternate message box configuration ---
+
+.setup_message_box_alt:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_115490:
-    SETUP_ENTITY 47, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+; --- Setup holdable items (type 2) ---
+
+.setup_holdable_items_2:
+    SETUP_ENTITY 47, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
+; --- Holdable item tracking: cake on Ann ---
+
 .executor_32_1154B0:
-    EXECUTE_SUBROUTINE .sub_115490
+    EXECUTE_SUBROUTINE .setup_holdable_items_2
     SET_ENTITY_TRACKING_TARGET 37, 0, 14, 16, 255
     SET_ENTITY_ANIMATION 6
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
+
+; --- Holdable item: player eating animation ---
 
 .executor_32_1154C8:
     SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
@@ -79,46 +126,60 @@
     SET_WAIT_FRAMES 10
     DEACTIVATE_SELF
 
-.sub_1154EC:
-    SETUP_ENTITY 47, ENTITY_ASSET_HOLDABLE_ITEMS_1, 1
+; --- Setup holdable items (type 1) ---
+
+.setup_holdable_items_1:
+    SETUP_ENTITY 47, ENTITY_ASSET_EXPRESSION_BUBBLES, 1
     SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
+; --- Holdable item: sparkler on Ann (anim 1) ---
+
 .executor_13_11550C:
-    EXECUTE_SUBROUTINE .sub_1154EC
+    EXECUTE_SUBROUTINE .setup_holdable_items_1
     SET_ENTITY_TRACKING_TARGET 36, -8, 64, 8, 0
     SET_ENTITY_ANIMATION 1
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
+; --- Holdable item: sparkler on Popuri (anim 2) ---
+
 .executor_13_115528:
-    EXECUTE_SUBROUTINE .sub_1154EC
+    EXECUTE_SUBROUTINE .setup_holdable_items_1
     SET_ENTITY_TRACKING_TARGET 37, 0, 64, 8, 0
     SET_ENTITY_ANIMATION 2
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
+; --- Holdable item: sparkler on Ann (anim 6) ---
+
 .executor_13_115544:
-    EXECUTE_SUBROUTINE .sub_1154EC
+    EXECUTE_SUBROUTINE .setup_holdable_items_1
     SET_ENTITY_TRACKING_TARGET 36, 16, 48, 8, 0
     SET_ENTITY_ANIMATION 6
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
+; --- Holdable item: blue feather on player (anim 5) ---
+
 .executor_32_115560:
-    EXECUTE_SUBROUTINE .sub_1154EC
+    EXECUTE_SUBROUTINE .setup_holdable_items_1
     SET_ENTITY_TRACKING_TARGET 37, -24, 32, 8, 0
     SET_ENTITY_ANIMATION 5
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
+; --- Holdable item: blue feather on player (anim 1) ---
+
 .executor_32_11557C:
-    EXECUTE_SUBROUTINE .sub_1154EC
+    EXECUTE_SUBROUTINE .setup_holdable_items_1
     SET_ENTITY_TRACKING_TARGET 37, -8, 64, 8, 0
     SET_ENTITY_ANIMATION 1
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
+
+; --- Setup player entity ---
 
 .setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
@@ -126,7 +187,9 @@
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
-.sub_1155B8:
+; --- Player eat animation ---
+
+.player_eat_anim:
     SET_ASSET_ROTATION SOUTHWEST
     SET_OTHER_EXECUTOR_PTR 32, .executor_32_1154C8
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
@@ -135,85 +198,99 @@
     WAIT_ENTITY_ANIMATION
     RETURN_FROM_SUBROUTINE
 
-.executor_7_1155D8:
+; --- Shared rotation states (used as SET_OTHER_EXECUTOR_PTR targets) ---
+
+.player_release_map_dep:
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_7_1155E0:
+.player_release_with_track:
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     SET_WAIT_FRAMES 1
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_7_1155F0:
+.face_east_and_wait:
     SET_ASSET_ROTATION EAST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
     SET_ASSET_ROTATION SOUTH
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_115600:
+.face_north_and_wait:
     SET_ASSET_ROTATION NORTH
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_115608:
+.face_west_and_wait:
     SET_ASSET_ROTATION WEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_115610:
+.face_northeast_and_wait:
     SET_ASSET_ROTATION NORTHEAST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_115618:
+.face_southwest_and_wait:
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_115620:
+.face_southeast_and_wait:
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_115628:
+.face_northwest_and_wait:
     SET_ASSET_ROTATION NORTHWEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_115630:
-    SPAWN_EXECUTOR 41, .executor_41_11563C
+; ===========================================================================
+; Cutscene 650 - Acquire horse
+; ===========================================================================
+
+.cutscene_650:
+    SPAWN_EXECUTOR 41, .wait_for_interaction
     DEACTIVATE_SELF
 
-.executor_41_11563C:
+; --- Wait for player to reach interaction point ---
+
+.wait_for_interaction:
     SET_WAIT_FRAMES 1
-    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, cutsceneLevelInteractionIndex, .branch_115650
-    EXECUTE_SUBROUTINE .executor_41_11563C
+    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, cutsceneLevelInteractionIndex, .after_interaction
+    EXECUTE_SUBROUTINE .wait_for_interaction
 
-.branch_115650:
+.after_interaction:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
-    SPAWN_EXECUTOR 1, .executor_1_115AE8
-    SPAWN_EXECUTOR 7, .executor_7_11566C
+    SPAWN_EXECUTOR 1, .horse_initial_setup
+    SPAWN_EXECUTOR 7, .player_walk_to_doug
     DEACTIVATE_SELF
 
-.executor_7_11566C:
+; --- Player walks northwest then west ---
+
+.player_walk_to_doug:
     EXECUTE_SUBROUTINE .setup_player
     ENTITY_WALK 16, NORTHWEST, 2
     ENTITY_WALK 72, WEST, 2
     SET_ASSET_ROTATION NORTHWEST
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_115B00
+    SET_OTHER_EXECUTOR_PTR 1, .horse_stop_walking
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 456
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SPAWN_EXECUTOR 2, .executor_2_1156A4
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 2, .ann_approach_and_talk
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_1156A4:
-    EXECUTE_SUBROUTINE .sub_115DA4
+; --- Ann walks in, asks Doug about horse ---
+
+.ann_approach_and_talk:
+    EXECUTE_SUBROUTINE .setup_ann_entity_23
     SET_COORDINATES -160, 0, -272
     ENTITY_WALK 80, SOUTHWEST, 2
     SET_ASSET_ROTATION WEST
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1155F0
-    INIT_DIALOGUE_SESSION 0, 39, 0
+    SET_OTHER_EXECUTOR_PTR 7, .face_east_and_wait
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_CUTSCENES_1, 0
     WAIT_FOR_DIALOGUE_INPUT 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_1156DC
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 2, .ann_look_around
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_1156DC:
+; --- Ann looks around between Doug and player ---
+
+.ann_look_around:
     ENTITY_WALK 20, WEST, 2
     SET_WAIT_FRAMES 15
     SET_ASSET_ROTATION SOUTHWEST
@@ -239,21 +316,21 @@
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 50
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 4
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 4
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     ENTITY_WALK 96, NORTHEAST, 2
-    SPAWN_EXECUTOR 3, .executor_3_115A98
+    SPAWN_EXECUTOR 3, .gray_walk_in
     SET_COORDINATES -160, 0, -304
     ENTITY_WALK 96, SOUTHWEST, 2
     SET_ASSET_ROTATION WEST
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 6
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 6
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 7
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 7
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_115A68
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_115610
+    SET_OTHER_EXECUTOR_PTR 3, .gray_walk_away
+    SET_OTHER_EXECUTOR_PTR 7, .face_northeast_and_wait
     SET_WAIT_FRAMES 16
     SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 16
@@ -263,7 +340,7 @@
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 41
     WAIT_ENTITY_ANIMATION
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 8
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 8
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 37
@@ -272,15 +349,17 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 30
     SET_ASSET_ROTATION SOUTHWEST
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 9
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 9
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SPAWN_EXECUTOR 4, .executor_4_115818
-    SPAWN_EXECUTOR 5, .executor_5_115A34
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 4, .doug_offer_horse
+    SPAWN_EXECUTOR 5, .horse_pony_walk_in
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_115818:
-    SET_SPECIAL_BIT 14, lifeEventBits
+; --- Doug offers horse, dialogue choice ---
+
+.doug_offer_horse:
+    SET_SPECIAL_BIT RANCH_GET_HORSE_CUTSCENE, lifeEventBits
     SETUP_ENTITY 25, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
@@ -288,104 +367,116 @@
     SET_COORDINATES -160, 0, -304
     ENTITY_WALK 112, SOUTHWEST, 2
     SET_ASSET_ROTATION WEST
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1155F0
-    INIT_DIALOGUE_SESSION 0, 39, 3
+    SET_OTHER_EXECUTOR_PTR 7, .face_east_and_wait
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_CUTSCENES_1, 3
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_115930
-    BRANCH_ON_DIALOGUE 0, 1, .branch_115880
+    BRANCH_ON_DIALOGUE 0, 0, .player_accept_horse
+    BRANCH_ON_DIALOGUE 0, 1, .player_decline_horse
 
-.branch_115880:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 17
+; --- Player declines horse ---
+
+.player_decline_horse:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 17
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_1158B0
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1155D8
+    SET_OTHER_EXECUTOR_PTR 2, .ann_free_roam_interact
+    SET_OTHER_EXECUTOR_PTR 7, .player_release_map_dep
 
-.sub_1158A0:
+.doug_free_roam_callback:
     TOGGLE_PAUSE_ENTITIES
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1158E0
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_CALLBACK_ROUTINE 0, 32768, .doug_on_interact_horse
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_1158B0:
+.ann_free_roam_interact:
     TOGGLE_PAUSE_ENTITIES
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1158C0
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_on_interact_horse
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1158C0:
-    EXECUTE_SUBROUTINE .sub_115450
+.ann_on_interact_horse:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 21
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 21
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .executor_2_1158B0
+    EXECUTE_SUBROUTINE .ann_free_roam_interact
 
-.branch_1158E0:
-    EXECUTE_SUBROUTINE .sub_115450
+; --- Doug re-offers horse on interact ---
+
+.doug_on_interact_horse:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 39, 4
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_CUTSCENES_1, 4
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_115930
-    BRANCH_ON_DIALOGUE 0, 1, .branch_115910
+    BRANCH_ON_DIALOGUE 0, 0, .player_accept_horse
+    BRANCH_ON_DIALOGUE 0, 1, .doug_tell_player_go_home
 
-.branch_115910:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 20
+.doug_tell_player_go_home:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 20
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_1158A0
+    EXECUTE_SUBROUTINE .doug_free_roam_callback
 
-.branch_115924:
+.doug_facing_set:
     SET_SPECIAL_BIT 0, var0
     RETURN_FROM_SUBROUTINE
 
-.branch_115930:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 13
+; --- Player accepts horse ---
+
+.player_accept_horse:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 13
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    BRANCH_ON_ENTITY_DIR 25, NORTHEAST, .branch_115924
-    BRANCH_ON_ENTITY_DIR 25, EAST, .branch_115924
-    BRANCH_ON_ENTITY_DIR 25, SOUTHEAST, .branch_115924
-    BRANCH_ON_ENTITY_DIR 25, SOUTH, .branch_115924
-    BRANCH_ON_ENTITY_DIR 25, SOUTHEAST, .branch_115924
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_1159C8
-    SET_OTHER_EXECUTOR_PTR 5, .executor_5_1159B4
+    BRANCH_ON_ENTITY_DIR 25, NORTHEAST, .doug_facing_set
+    BRANCH_ON_ENTITY_DIR 25, EAST, .doug_facing_set
+    BRANCH_ON_ENTITY_DIR 25, SOUTHEAST, .doug_facing_set
+    BRANCH_ON_ENTITY_DIR 25, SOUTH, .doug_facing_set
+    BRANCH_ON_ENTITY_DIR 25, SOUTHEAST, .doug_facing_set
+    SET_OTHER_EXECUTOR_PTR 2, .ann_watch_doug_leave
+    SET_OTHER_EXECUTOR_PTR 5, .horse_pony_leave
     ENTITY_WALK 32, NORTHEAST, 2
     ENTITY_WALK 64, SOUTHEAST, 2
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_1159A8
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_1159E0
+    BRANCH_ON_SPECIAL_BIT 0, var0, .doug_exit_from_facing
+    SET_OTHER_EXECUTOR_PTR 2, .ann_farewell_southwest
 
-.sub_11599C:
+.doug_exit_walk:
     ENTITY_WALK 64, SOUTHEAST, 2
     DEACTIVATE_SELF
 
-.branch_1159A8:
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_1159E8
-    EXECUTE_SUBROUTINE .sub_11599C
+.doug_exit_from_facing:
+    SET_OTHER_EXECUTOR_PTR 2, .ann_farewell_south
+    EXECUTE_SUBROUTINE .doug_exit_walk
 
-.executor_5_1159B4:
+.horse_pony_leave:
     ENTITY_WALK 32, NORTHEAST, 2
     ENTITY_WALK 128, SOUTHEAST, 2
     DEACTIVATE_SELF
 
-.executor_2_1159C8:
+; --- Ann watches Doug leave, turns ---
+
+.ann_watch_doug_leave:
     SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 16
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 16
     SET_ASSET_ROTATION EAST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_1159E0:
+; --- Ann says farewell (facing southwest) ---
+
+.ann_farewell_southwest:
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_1159F0
+    EXECUTE_SUBROUTINE .horse_accepted_farewell
 
-.executor_2_1159E8:
+; --- Ann says farewell (facing south) ---
+
+.ann_farewell_south:
     SET_ASSET_ROTATION SOUTH
-    EXECUTE_SUBROUTINE .sub_1159F0
+    EXECUTE_SUBROUTINE .horse_accepted_farewell
 
-.sub_1159F0:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 14
+.horse_accepted_farewell:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 14
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
@@ -397,38 +488,48 @@
     DEACTIVATE_EXECUTOR 5
     DEACTIVATE_EXECUTOR 7
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_5_115A34:
+; --- Horse pony walks in behind Doug ---
+
+.horse_pony_walk_in:
     SETUP_ENTITY 15, ENTITY_ASSET_HORSE_PONY, 1
     SET_ENTITY_ANIMATIONS 15, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -128, 0, -304
     ENTITY_WALK 112, SOUTHWEST, 2
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_115A68:
+; --- Gray walks in from northeast ---
+
+.gray_walk_away:
     ENTITY_WALK 96, NORTHEAST, 2
     DEACTIVATE_SELF
 
-.sub_115A74:
+; --- Setup Gray entity ---
+
+.setup_gray_entity:
     SETUP_ENTITY 24, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_3_115A98:
-    EXECUTE_SUBROUTINE .sub_115A74
+; --- Gray walks in, waits ---
+
+.gray_walk_in:
+    EXECUTE_SUBROUTINE .setup_gray_entity
     SET_COORDINATES -192, 0, -272
     ENTITY_WALK 96, SOUTHWEST, 2
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
     ENTITY_WALK 32, NORTHWEST, 2
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_115AC0:
+; --- Setup horse (unbridled, adult) ---
+
+.setup_horse_unbridled:
     SETUP_ENTITY 14, ENTITY_ASSET_HORSE_UNBRIDLED, 1
     SET_ENTITY_ANIMATIONS 14, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
@@ -436,41 +537,51 @@
     SET_ENTITY_PALETTE 0
     RETURN_FROM_SUBROUTINE
 
-.executor_1_115AE8:
-    EXECUTE_SUBROUTINE .sub_115AC0
+; --- Horse initial setup for cutscene 650 ---
+
+.horse_initial_setup:
+    EXECUTE_SUBROUTINE .setup_horse_unbridled
     SET_COORDINATES -238, 0, 0
     ENTITY_WALK 32, NORTHEAST, 1
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_115B00:
+.horse_stop_walking:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_115B08:
+; ===========================================================================
+; Cutscene 651 - Horse Naming Follow-up
+; ===========================================================================
+
+; --- Nighttime audio variant ---
+
+.cutscene_651_night:
     SET_AUDIO_SEQUENCE 0, _nightAmbienceSpringSegmentRomStart, _nightAmbienceSpringSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
-    EXECUTE_SUBROUTINE .sub_115B4C
+    EXECUTE_SUBROUTINE .cutscene_651_setup
 
-.branch_115B20:
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 24, gHour, .branch_115B08
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .branch_115B08
+; --- Daytime: check hour, branch to night if late ---
+
+.cutscene_651:
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 24, gHour, .cutscene_651_night
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cutscene_651_night
     SET_AUDIO_SEQUENCE 0, _springSegmentRomStart, _springSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
 
-.sub_115B4C:
-    SPAWN_EXECUTOR 1, .executor_1_115BC4
-    SPAWN_EXECUTOR 2, .executor_2_115BD8
-    SPAWN_EXECUTOR 7, .executor_7_115B68
+.cutscene_651_setup:
+    SPAWN_EXECUTOR 1, .horse_named_setup
+    SPAWN_EXECUTOR 2, .ann_named_setup
+    SPAWN_EXECUTOR 7, .player_named_setup
     DEACTIVATE_SELF
 
-.executor_7_115B68:
+.player_named_setup:
     EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -160, 0, -112
     SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
     WAIT_RGBA_FINISHED
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 15
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 15
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
@@ -480,29 +591,33 @@
     IDLE_WHILE_SEQUENCE_PLAYING 0
     DEACTIVATE_EXECUTOR 1
     DEACTIVATE_EXECUTOR 2
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_1_115BC4:
-    EXECUTE_SUBROUTINE .sub_115AC0
+.horse_named_setup:
+    EXECUTE_SUBROUTINE .setup_horse_unbridled
     SET_COORDINATES -256, 0, -48
     SET_ASSET_ROTATION EAST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_115BD8:
-    EXECUTE_SUBROUTINE .sub_115DA4
+.ann_named_setup:
+    EXECUTE_SUBROUTINE .setup_ann_entity_23
     SET_COORDINATES -192, 0, -112
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_115BEC:
+; ===========================================================================
+; Cutscene 652 - Popuri and Ann Talk About Flowers (spawn point 1)
+; ===========================================================================
+
+.cutscene_652:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_115D90
-    SPAWN_EXECUTOR 2, .executor_2_115DEC
-    SPAWN_EXECUTOR 7, .executor_7_115D60
-    SPAWN_EXECUTOR 11, .executor_11_115C14
+    SPAWN_EXECUTOR 1, .popuri_flower_setup
+    SPAWN_EXECUTOR 2, .ann_flower_setup
+    SPAWN_EXECUTOR 7, .player_idle_cutscene
+    SPAWN_EXECUTOR 11, .cutscene_652_camera
     DEACTIVATE_SELF
 
-.executor_11_115C14:
+.cutscene_652_camera:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 1
@@ -510,42 +625,46 @@
     WAIT_RGBA_FINISHED
     SET_FRAME_DELTA -1, 0, 3, 88
 
-.sub_115C34:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 22
+; --- Shared flower conversation ---
+
+.popuri_ann_flower_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 22
     WAIT_MESSAGE_BOX_CLOSED 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_7_115610
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 23
+    SET_OTHER_EXECUTOR_PTR 2, .face_northeast_and_wait
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 23
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_115C64
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 1, .popuri_talk_about_flowers
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_115C64:
+; --- Popuri talks, reacts, then leaves ---
+
+.popuri_talk_about_flowers:
     SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 15
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 50
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 24
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 24
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_115600
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 25
+    SET_OTHER_EXECUTOR_PTR 2, .face_north_and_wait
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 25
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     ENTITY_WALK 32, EAST, 2
     SET_ASSET_ROTATION SOUTHWEST
-    SET_OTHER_EXECUTOR_PTR 2, .executor_7_115610
+    SET_OTHER_EXECUTOR_PTR 2, .face_northeast_and_wait
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 39
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 26
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 26
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 35
@@ -554,72 +673,90 @@
     SET_WAIT_FRAMES 15
     ENTITY_WALK 96, NORTHEAST, 2
     SET_WAIT_FRAMES 30
-    BRANCH_U16_VAR_WITHIN_RANGE 652, 652, gCutsceneIndex, .branch_115D28
-    BRANCH_U16_VAR_WITHIN_RANGE 653, 653, gCutsceneIndex, .branch_115D34
+    BRANCH_U16_VAR_WITHIN_RANGE 652, 652, gCutsceneIndex, .cutscene_652_exit
+    BRANCH_U16_VAR_WITHIN_RANGE 653, 653, gCutsceneIndex, .cutscene_653_exit
     DEACTIVATE_SELF
 
-.branch_115D28:
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_115D40
+.cutscene_652_exit:
+    SET_OTHER_EXECUTOR_PTR 11, .cutscene_652_camera_restore
     DEACTIVATE_SELF
 
-.branch_115D34:
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_115E54
+.cutscene_653_exit:
+    SET_OTHER_EXECUTOR_PTR 11, .cutscene_653_camera_restore
     DEACTIVATE_SELF
 
-.executor_11_115D40:
+; --- Camera restore for 652 ---
+
+.cutscene_652_camera_restore:
     SET_FRAME_DELTA 1, 0, -3, 88
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1155E0
+    SET_OTHER_EXECUTOR_PTR 7, .player_release_with_track
     DEACTIVATE_EXECUTOR 2
-    SPAWN_EXECUTOR 32, .sub_11543C
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 32, .complete_cutscene
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_115D60:
+; --- Player idle (no behavior) ---
+
+.player_idle_cutscene:
     EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_115D6C:
+; --- Setup Popuri entity ---
+
+.setup_popuri_entity:
     SETUP_ENTITY 37, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 37, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_1_115D90:
-    EXECUTE_SUBROUTINE .sub_115D6C
+; --- Popuri flower cutscene position ---
+
+.popuri_flower_setup:
+    EXECUTE_SUBROUTINE .setup_popuri_entity
     SET_COORDINATES 96, 0, -216
     SET_ASSET_ROTATION NORTHWEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_115DA4:
+; --- Setup Ann entity (slot 23) ---
+
+.setup_ann_entity_23:
     SETUP_ENTITY 23, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 23, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.sub_115DC8:
+; --- Setup Ann entity (slot 36) ---
+
+.setup_ann_entity_36:
     SETUP_ENTITY 36, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 36, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_2_115DEC:
-    EXECUTE_SUBROUTINE .sub_115DC8
+; --- Ann flower cutscene position ---
+
+.ann_flower_setup:
+    EXECUTE_SUBROUTINE .setup_ann_entity_36
     SET_COORDINATES 96, 0, -184
     SET_ASSET_ROTATION NORTH
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_115E00:
+; ===========================================================================
+; Cutscene 653 - Popuri and Ann Talk About Flowers (spawn point 2)
+; ===========================================================================
+
+.cutscene_653:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_115D90
-    SPAWN_EXECUTOR 2, .executor_2_115DEC
-    SPAWN_EXECUTOR 7, .executor_7_115D60
-    SPAWN_EXECUTOR 11, .executor_11_115E28
+    SPAWN_EXECUTOR 1, .popuri_flower_setup
+    SPAWN_EXECUTOR 2, .ann_flower_setup
+    SPAWN_EXECUTOR 7, .player_idle_cutscene
+    SPAWN_EXECUTOR 11, .cutscene_653_camera
     DEACTIVATE_SELF
 
-.executor_11_115E28:
+.cutscene_653_camera:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 1
@@ -627,24 +764,30 @@
     WAIT_RGBA_FINISHED
     SET_FRAME_DELTA -2, 0, 2, 120
     SET_FRAME_DELTA -2, 0, 0, 64
-    EXECUTE_SUBROUTINE .sub_115C34
+    EXECUTE_SUBROUTINE .popuri_ann_flower_talk
 
-.executor_11_115E54:
+; --- Camera restore for 653 ---
+
+.cutscene_653_camera_restore:
     SET_FRAME_DELTA 2, 0, 0, 64
     SET_FRAME_DELTA 2, 0, -2, 120
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1155E0
+    SET_OTHER_EXECUTOR_PTR 7, .player_release_with_track
     DEACTIVATE_EXECUTOR 2
-    SPAWN_EXECUTOR 32, .sub_11543C
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 32, .complete_cutscene
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_115E7C:
+; ===========================================================================
+; Cutscene 654 - Gray and Popuri Talk at Ranch Evening (spawn point 1)
+; ===========================================================================
+
+.cutscene_654:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_115ED0
-    SPAWN_EXECUTOR 7, .executor_7_115D60
-    SPAWN_EXECUTOR 11, .executor_11_115E9C
+    SPAWN_EXECUTOR 1, .popuri_evening_setup
+    SPAWN_EXECUTOR 7, .player_idle_cutscene
+    SPAWN_EXECUTOR 11, .cutscene_654_camera
     DEACTIVATE_SELF
 
-.executor_11_115E9C:
+.cutscene_654_camera:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 1
@@ -652,24 +795,30 @@
     WAIT_RGBA_FINISHED
     SET_FRAME_DELTA -2, 0, 2, 144
     SET_FRAME_DELTA -4, 0, 0, 16
-    SPAWN_EXECUTOR 2, .executor_2_115F08
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 2, .gray_enter
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_115ED0:
-    EXECUTE_SUBROUTINE .sub_115D6C
+; --- Popuri evening position ---
+
+.popuri_evening_setup:
+    EXECUTE_SUBROUTINE .setup_popuri_entity
     SET_COORDINATES -96, 0, -216
     SET_ASSET_ROTATION NORTHWEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_115EE4:
+; --- Setup Gray entity (slot 36) ---
+
+.setup_gray_entity_36:
     SETUP_ENTITY 36, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 36, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_2_115F08:
-    EXECUTE_SUBROUTINE .sub_115EE4
+; --- Gray enters from offscreen, carries items ---
+
+.gray_enter:
+    EXECUTE_SUBROUTINE .setup_gray_entity_36
     SET_COORDINATES -352, 0, -88
     SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 15
@@ -678,17 +827,19 @@
     SPAWN_EXECUTOR 13, .executor_13_11550C
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_115F48
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 1, .popuri_gray_manure_talk
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_115F48:
+; --- Popuri and Gray conversation about manure ---
+
+.popuri_gray_manure_talk:
     ENTITY_WALK 80, NORTHWEST, 2
     SET_ASSET_ROTATION SOUTHWEST
-    SET_OTHER_EXECUTOR_PTR 2, .executor_7_115610
+    SET_OTHER_EXECUTOR_PTR 2, .face_northeast_and_wait
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 50
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 27
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 27
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 48
@@ -698,65 +849,75 @@
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 39
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_115618
+    SET_OTHER_EXECUTOR_PTR 2, .face_southwest_and_wait
     SPAWN_EXECUTOR 13, .executor_13_115544
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 28
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 28
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SPAWN_EXECUTOR 13, .executor_13_115528
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 29
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 29
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_115FE4
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 2, .gray_talk_manure
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_115FE4:
+; --- Gray says he was carrying manure ---
+
+.gray_talk_manure:
     ENTITY_WALK 16, SOUTHWEST, 2
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 30
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 30
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_116008
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 1, .popuri_respond_fertilizer
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_116008:
+; --- Popuri responds about fertilizer ---
+
+.popuri_respond_fertilizer:
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 50
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 31
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 31
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    BRANCH_U16_VAR_WITHIN_RANGE 654, 654, gCutsceneIndex, .branch_116048
-    BRANCH_U16_VAR_WITHIN_RANGE 655, 655, gCutsceneIndex, .branch_116054
-    EXECUTE_SUBROUTINE .sub_115448
+    BRANCH_U16_VAR_WITHIN_RANGE 654, 654, gCutsceneIndex, .cutscene_654_exit
+    BRANCH_U16_VAR_WITHIN_RANGE 655, 655, gCutsceneIndex, .cutscene_655_exit
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_116048:
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_116060
-    EXECUTE_SUBROUTINE .sub_115448
+.cutscene_654_exit:
+    SET_OTHER_EXECUTOR_PTR 11, .cutscene_654_camera_restore
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_116054:
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_1160E0
-    EXECUTE_SUBROUTINE .sub_115448
+.cutscene_655_exit:
+    SET_OTHER_EXECUTOR_PTR 11, .cutscene_655_camera_restore
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_11_116060:
+; --- Camera restore for 654 ---
+
+.cutscene_654_camera_restore:
     SET_FRAME_DELTA 2, 0, -2, 144
     SET_FRAME_DELTA 2, 0, 0, 32
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1155E0
+    SET_OTHER_EXECUTOR_PTR 7, .player_release_with_track
     DEACTIVATE_EXECUTOR 1
     DEACTIVATE_EXECUTOR 2
-    SPAWN_EXECUTOR 32, .sub_11543C
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 32, .complete_cutscene
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_11608C:
+; ===========================================================================
+; Cutscene 655 - Gray and Popuri Talk at Ranch Evening (spawn point 2)
+; ===========================================================================
+
+.cutscene_655:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_115ED0
-    SPAWN_EXECUTOR 7, .executor_7_115D60
-    SPAWN_EXECUTOR 11, .executor_11_1160AC
+    SPAWN_EXECUTOR 1, .popuri_evening_setup
+    SPAWN_EXECUTOR 7, .player_idle_cutscene
+    SPAWN_EXECUTOR 11, .cutscene_655_camera
     DEACTIVATE_SELF
 
-.executor_11_1160AC:
+.cutscene_655_camera:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 1
@@ -764,54 +925,66 @@
     WAIT_RGBA_FINISHED
     SET_FRAME_DELTA -2, 0, 2, 144
     SET_FRAME_DELTA -4, 0, 0, 88
-    SPAWN_EXECUTOR 2, .executor_2_115F08
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 2, .gray_enter
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_11_1160E0:
+; --- Camera restore for 655 ---
+
+.cutscene_655_camera_restore:
     SET_FRAME_DELTA 4, 0, 0, 88
     SET_FRAME_DELTA 2, 0, -2, 144
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1155E0
+    SET_OTHER_EXECUTOR_PTR 7, .player_release_with_track
     DEACTIVATE_EXECUTOR 1
     DEACTIVATE_EXECUTOR 2
-    SPAWN_EXECUTOR 32, .sub_11543C
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 32, .complete_cutscene
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_11610C:
-    SPAWN_EXECUTOR 7, .executor_7_116118
+; ===========================================================================
+; Cutscene 656 - Dont Bother Him
+; ===========================================================================
+
+.cutscene_656:
+    SPAWN_EXECUTOR 7, .player_dont_bother
     DEACTIVATE_SELF
 
-.executor_7_116118:
+; --- Player sees message and walks away ---
+
+.player_dont_bother:
     EXECUTE_SUBROUTINE .setup_player
-    EXECUTE_SUBROUTINE .sub_115470
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 32
+    EXECUTE_SUBROUTINE .setup_message_box_alt
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 32
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_115450
+    EXECUTE_SUBROUTINE .setup_message_box
     ENTITY_WALK 16, NORTHEAST, 2
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_116144:
+; ===========================================================================
+; Cutscene 657 - Ann and Popuri Talk About Gray (spawn point 1)
+; ===========================================================================
+
+.cutscene_657:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_11616C
-    SPAWN_EXECUTOR 2, .executor_2_116180
-    SPAWN_EXECUTOR 7, .executor_7_115D60
-    SPAWN_EXECUTOR 11, .executor_11_116194
+    SPAWN_EXECUTOR 1, .popuri_brother_setup
+    SPAWN_EXECUTOR 2, .ann_brother_setup
+    SPAWN_EXECUTOR 7, .player_idle_cutscene
+    SPAWN_EXECUTOR 11, .cutscene_657_camera
     DEACTIVATE_SELF
 
-.executor_1_11616C:
-    EXECUTE_SUBROUTINE .sub_115D6C
+.popuri_brother_setup:
+    EXECUTE_SUBROUTINE .setup_popuri_entity
     SET_COORDINATES 104, 0, -288
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_116180:
-    EXECUTE_SUBROUTINE .sub_115DC8
+.ann_brother_setup:
+    EXECUTE_SUBROUTINE .setup_ann_entity_36
     SET_COORDINATES 104, 0, -256
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_11_116194:
+.cutscene_657_camera:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 1
@@ -819,176 +992,200 @@
     WAIT_RGBA_FINISHED
     SET_FRAME_DELTA 0, 0, 2, 96
 
-.sub_1161B4:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 33
-    WAIT_MESSAGE_BOX_CLOSED 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_115620
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 34
-    WAIT_MESSAGE_BOX_CLOSED 0
-    RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_115628
-    SET_WAIT_FRAMES 12
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 35
-    WAIT_MESSAGE_BOX_CLOSED 0
-    RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_2_115618
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 36
-    WAIT_MESSAGE_BOX_CLOSED 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_115608
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 37
-    WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 38
-    WAIT_MESSAGE_BOX_CLOSED 0
-    RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_116238
-    EXECUTE_SUBROUTINE .sub_115448
+; --- Ann and Popuri discuss Gray ---
 
-.executor_2_116238:
+.ann_popuri_brother_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 33
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_OTHER_EXECUTOR_PTR 1, .face_southeast_and_wait
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 34
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_OTHER_EXECUTOR_PTR 2, .face_northwest_and_wait
+    SET_WAIT_FRAMES 12
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 35
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_OTHER_EXECUTOR_PTR 1, .face_southwest_and_wait
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 36
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_OTHER_EXECUTOR_PTR 2, .face_west_and_wait
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 37
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 38
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_OTHER_EXECUTOR_PTR 2, .ann_run_off
+    EXECUTE_SUBROUTINE .wait_loop
+
+; --- Ann runs off embarrassed ---
+
+.ann_run_off:
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 15
     SET_ENTITY_ANIMATION 66
     WAIT_ENTITY_ANIMATION
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 39
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 39
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     ENTITY_WALK 48, SOUTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_116274
+    SET_OTHER_EXECUTOR_PTR 1, .popuri_leave
     ENTITY_WALK 96, NORTHWEST, 2
     DEACTIVATE_SELF
 
-.executor_1_116274:
+; --- Popuri watches Ann leave, then walks off ---
+
+.popuri_leave:
     SPAWN_EXECUTOR 13, .executor_13_115528
     SET_WAIT_FRAMES 30
     ENTITY_WALK 32, EAST, 2
     ENTITY_WALK 96, NORTHEAST, 2
-    BRANCH_U16_VAR_WITHIN_RANGE 657, 657, gCutsceneIndex, .branch_1162B4
-    BRANCH_U16_VAR_WITHIN_RANGE 658, 658, gCutsceneIndex, .branch_1162DC
+    BRANCH_U16_VAR_WITHIN_RANGE 657, 657, gCutsceneIndex, .cutscene_657_done
+    BRANCH_U16_VAR_WITHIN_RANGE 658, 658, gCutsceneIndex, .cutscene_658_done
     DEACTIVATE_SELF
 
-.branch_1162B4:
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_1162C0
+.cutscene_657_done:
+    SET_OTHER_EXECUTOR_PTR 11, .cutscene_657_camera_restore
     DEACTIVATE_SELF
 
-.executor_11_1162C0:
+.cutscene_657_camera_restore:
     SET_FRAME_DELTA 0, 0, -2, 96
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1155E0
-    SPAWN_EXECUTOR 32, .sub_11543C
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 7, .player_release_with_track
+    SPAWN_EXECUTOR 32, .complete_cutscene
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1162DC:
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_116334
+.cutscene_658_done:
+    SET_OTHER_EXECUTOR_PTR 11, .cutscene_658_camera_restore
     DEACTIVATE_SELF
 
-.branch_1162E8:
+; ===========================================================================
+; Cutscene 658 - Ann and Popuri Talk About Gray (spawn point 2)
+; ===========================================================================
+
+.cutscene_658:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_11616C
-    SPAWN_EXECUTOR 2, .executor_2_116180
-    SPAWN_EXECUTOR 7, .executor_7_115D60
-    SPAWN_EXECUTOR 11, .executor_11_116310
+    SPAWN_EXECUTOR 1, .popuri_brother_setup
+    SPAWN_EXECUTOR 2, .ann_brother_setup
+    SPAWN_EXECUTOR 7, .player_idle_cutscene
+    SPAWN_EXECUTOR 11, .cutscene_658_camera
     DEACTIVATE_SELF
 
-.executor_11_116310:
+.cutscene_658_camera:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
     WAIT_RGBA_FINISHED
     SET_FRAME_DELTA -3, 0, 2, 96
-    EXECUTE_SUBROUTINE .sub_1161B4
+    EXECUTE_SUBROUTINE .ann_popuri_brother_talk
 
-.executor_11_116334:
+.cutscene_658_camera_restore:
     SET_FRAME_DELTA 3, 0, -2, 96
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1155E0
-    SPAWN_EXECUTOR 32, .sub_11543C
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 7, .player_release_with_track
+    SPAWN_EXECUTOR 32, .complete_cutscene
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_116350:
-    SPAWN_EXECUTOR 41, .executor_41_11635C
+; ===========================================================================
+; Cutscene 659 - Ann Fireworks at Ranch
+; ===========================================================================
+
+.cutscene_659:
+    SPAWN_EXECUTOR 41, .fireworks_wait_for_interaction
     DEACTIVATE_SELF
 
-.executor_41_11635C:
+.fireworks_wait_for_interaction:
     SET_WAIT_FRAMES 1
-    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, cutsceneLevelInteractionIndex, .branch_116370
-    EXECUTE_SUBROUTINE .executor_41_11635C
+    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, cutsceneLevelInteractionIndex, .fireworks_interaction_done
+    EXECUTE_SUBROUTINE .fireworks_wait_for_interaction
 
-.branch_116370:
+.fireworks_interaction_done:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
-    SPAWN_EXECUTOR 0, .executor_0_116384
+    SPAWN_EXECUTOR 0, .player_walk_to_ann
     DEACTIVATE_SELF
 
-.executor_0_116384:
+; --- Player walks to meet Ann ---
+
+.player_walk_to_ann:
     EXECUTE_SUBROUTINE .setup_player
     ENTITY_WALK 32, NORTHWEST, 2
     ENTITY_WALK 104, SOUTHWEST, 2
     SET_ASSET_ROTATION SOUTHEAST
-    SPAWN_EXECUTOR 1, .executor_1_116488
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 1, .ann_fireworks_scene
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_1163A8:
+; --- Player position changes during fireworks ---
+
+.player_sit_southeast:
     ENTITY_WALK 32, SOUTHEAST, 2
     SET_ASSET_ROTATION SOUTH
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_1163B8:
+.player_walk_to_watch:
     ENTITY_WALK 144, SOUTHEAST, 2
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_1163C4:
+.player_look_up:
     SET_ENTITY_ANIMATION 501
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 507
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_1163D4:
+.player_look_up_then_idle:
     SET_ENTITY_ANIMATION 501
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_1163E4:
+; --- Player leaves after low-affection fireworks ---
+
+.player_leave_fireworks:
     SET_ENTITY_ANIMATION 457
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 5
     ENTITY_WALK 32, NORTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 1, .executor_2_115600
+    SET_OTHER_EXECUTOR_PTR 1, .face_north_and_wait
     ENTITY_WALK 32, NORTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 1, .executor_2_115628
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest_and_wait
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
     UPDATE_GLOBAL_RGBA 0, 0, 0, SOUTHWEST, 2
     ENTITY_WALK 64, NORTHWEST, 2
     STOP_SEQUENCE_WITH_FADE 0, 1
     DEACTIVATE_EXECUTOR 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_0_116440:
+.player_fireworks_position:
     SET_COORDINATES 128, 0, -256
     SET_ASSET_ROTATION WEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_116450:
+.player_sit_with_sparkler:
     SET_ASSET_ROTATION SOUTHWEST
     SET_ENTITY_ANIMATION 440
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 448
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_116464:
+; --- Setup Ann entity (slot 37) ---
+
+.setup_ann_entity_37:
     SETUP_ENTITY 37, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 37, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_1_116488:
-    EXECUTE_SUBROUTINE .sub_116464
+; --- Ann fireworks main scene ---
+
+.ann_fireworks_scene:
+    EXECUTE_SUBROUTINE .setup_ann_entity_37
     SET_ASSET_ROTATION NORTHWEST
     SET_COORDINATES 144, 0, 112
     ENTITY_WALK 80, NORTHWEST, 2
     SET_ENTITY_ANIMATION 36
     WAIT_ENTITY_ANIMATION
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_1163A8
+    SET_OTHER_EXECUTOR_PTR 0, .player_sit_southeast
     SET_ENTITY_ANIMATION 40
     SET_WAIT_FRAMES 30
     SET_ENTITY_ANIMATION 36
@@ -997,26 +1194,28 @@
     SET_WAIT_FRAMES 30
     SET_ASSET_ROTATION NORTH
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, 64, 256
-    INIT_MESSAGE_BOX_TYPE2 0, CUTSCENES_1_TEXT_INDEX, 40
+    INIT_MESSAGE_BOX_TYPE2 0, RANCH_CUTSCENES_TEXT_INDEX, 40
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 256
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_1163B8
+    SET_OTHER_EXECUTOR_PTR 0, .player_walk_to_watch
     ENTITY_WALK 128, SOUTHEAST, 2
     SET_WAIT_FRAMES 60
     SET_ENTITY_ANIMATION 53
     WAIT_ENTITY_ANIMATION
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_1163C4
+    SET_OTHER_EXECUTOR_PTR 0, .player_look_up
     SET_ENTITY_ANIMATION 55
     SET_WAIT_FRAMES 60
+    ; Start fireworks sound and sprite
     SET_AUDIO_SEQUENCE 1, _fireworksSfxSegmentRomStart, _fireworksSfxSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 1, 128, 128
-    SPAWN_EXECUTOR 40, .executor_40_1167B0
+    SPAWN_EXECUTOR 40, .firework_sprite
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE2 0, CUTSCENES_1_TEXT_INDEX, 41
+    INIT_MESSAGE_BOX_TYPE2 0, RANCH_CUTSCENES_TEXT_INDEX, 41
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 60
+    ; Ann looks around during fireworks
     SET_ENTITY_ANIMATION 53
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
@@ -1040,42 +1239,46 @@
     SET_ENTITY_ANIMATION 53
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 55
+    ; Wait for fireworks sfx to finish
     IDLE_WHILE_SEQUENCE_PLAYING 1
-    SET_OTHER_EXECUTOR_PTR 40, .executor_40_116918
+    SET_OTHER_EXECUTOR_PTR 40, .firework_fade_out
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_1163D4
+    SET_OTHER_EXECUTOR_PTR 0, .player_look_up_then_idle
     SET_WAIT_FRAMES 4
     SET_ENTITY_ANIMATION 53
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 30
+    ; Check Ann affection for branching
     UPDATE_U8_VALUE 5, 255, npcAffection[ANN]
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 59, npcAffection[ANN], .branch_11676C
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 59, npcAffection[ANN], .ann_low_affection
+    ; --- High affection path: sparkler scene ---
     UPDATE_U8_VALUE 5, 255, gHappiness
     UPDATE_GLOBAL_RGBA 0, 0, 0, SOUTHWEST, 2
     WAIT_RGBA_FINISHED
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_116440
+    SET_OTHER_EXECUTOR_PTR 0, .player_fireworks_position
     SET_ASSET_ROTATION EAST
     SET_COORDINATES 96, 0, -224
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE2 0, CUTSCENES_1_TEXT_INDEX, 43
+    INIT_MESSAGE_BOX_TYPE2 0, RANCH_CUTSCENES_TEXT_INDEX, 43
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
     SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 28
     WAIT_ENTITY_ANIMATION
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_116450
+    SET_OTHER_EXECUTOR_PTR 0, .player_sit_with_sparkler
     SET_ENTITY_ANIMATION 32
     SET_WAIT_FRAMES 30
-    SPAWN_EXECUTOR 32, .executor_32_1166EC
-    SPAWN_EXECUTOR 33, .executor_33_11672C
-    SPAWN_EXECUTOR 34, .executor_34_1166CC
+    ; Sparkler sprites on Ann and player
+    SPAWN_EXECUTOR 32, .sparkler_on_player
+    SPAWN_EXECUTOR 33, .sparkler_on_ann
+    SPAWN_EXECUTOR 34, .sparkler_sfx_loop
     SET_WAIT_FRAMES 60
-    INIT_MESSAGE_BOX_TYPE2 0, CUTSCENES_1_TEXT_INDEX, 44
+    INIT_MESSAGE_BOX_TYPE2 0, RANCH_CUTSCENES_TEXT_INDEX, 44
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 60
@@ -1089,60 +1292,71 @@
     STOP_SEQUENCE_WITH_FADE 0, 1
     DEACTIVATE_EXECUTOR 0
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_34_1166CC:
+; --- Sparkler sound effect loop ---
+
+.sparkler_sfx_loop:
     SET_SFX 93, 128
     SET_WAIT_FRAMES 7
-    EXECUTE_SUBROUTINE .executor_34_1166CC
+    EXECUTE_SUBROUTINE .sparkler_sfx_loop
     UPDATE_RGBA 0, 0, 0, 0, 6
     WAIT_RGBA_FINISHED
     DEACTIVATE_SELF
 
-.executor_32_1166EC:
+; --- Sparkler sprite on player ---
+
+.sparkler_on_player:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 47, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+    SETUP_ENTITY 47, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_RGBA 255, 255, 255, 255
     SET_ENTITY_TRACKING_TARGET 0, 0, 10, 20, 255
     SET_ENTITY_ANIMATION 142
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_33_11672C:
+; --- Sparkler sprite on Ann ---
+
+.sparkler_on_ann:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 40, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+    SETUP_ENTITY 40, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 40, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_RGBA 255, 255, 255, 255
     SET_ENTITY_TRACKING_TARGET 37, 0, 10, 20, 255
     SET_ENTITY_ANIMATION 142
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_11676C:
+; --- Low affection path ---
+
+.ann_low_affection:
     SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 5
-    SET_OTHER_EXECUTOR_PTR 0, .executor_2_115618
+    SET_OTHER_EXECUTOR_PTR 0, .face_southwest_and_wait
     SET_WAIT_FRAMES 5
-    INIT_MESSAGE_BOX_TYPE2 0, CUTSCENES_1_TEXT_INDEX, 42
+    INIT_MESSAGE_BOX_TYPE2 0, RANCH_CUTSCENES_TEXT_INDEX, 42
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 37
     WAIT_ENTITY_ANIMATION
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_1163E4
+    SET_OTHER_EXECUTOR_PTR 0, .player_leave_fireworks
     SET_ENTITY_ANIMATION 41
     SET_WAIT_FRAMES 30
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_40_1167B0:
+; --- Firework sprite (full-screen overlay with color cycling) ---
+
+.firework_sprite:
     DMA_SPRITE 128, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, ENTITY_REGION_SLOT_39_BASE, 0, ENTITY_SLOTS_8_13_PALETTE, ENTITY_SLOTS_8_13_ANIM_METADATA, ENTITY_SLOTS_8_13_SPRITESHEET_INDEX, ENTITY_SLOTS_8_13_TEXTURE_TO_PALETTE_LOOKUP
-    SET_ANIM_DATA_PTR_WITH_FLAG .anim_116928
+    SET_ANIM_DATA_PTR_WITH_FLAG .firework_anim_data
     SET_COORDINATES 0, 0, 254
     SET_SPRITE_SCALE 20, 20, 0
     SET_SPRITE_RENDERING_LAYER 2
     SET_RGBA 0, 0, 0, 0
     SET_WAIT_FRAMES 1
+    ; Initial color sequence: yellow, red, blue, orange, blue, green
     UPDATE_RGBA 255, 255, 0, 36, 255
     WAIT_RGBA_FINISHED
     UPDATE_RGBA 255, 255, 0, 0, 8
@@ -1168,7 +1382,9 @@
     UPDATE_RGBA 0, 255, 0, 0, 12
     WAIT_RGBA_FINISHED
 
-.sub_11689C:
+; --- Repeating firework color loop ---
+
+.firework_color_loop:
     UPDATE_RGBA 255, 255, 0, 36, 255
     WAIT_RGBA_FINISHED
     UPDATE_RGBA 255, 255, 0, 0, 16
@@ -1189,66 +1405,86 @@
     WAIT_RGBA_FINISHED
     UPDATE_RGBA 255, 128, 0, 0, 16
     WAIT_RGBA_FINISHED
-    EXECUTE_SUBROUTINE .sub_11689C
+    EXECUTE_SUBROUTINE .firework_color_loop
 
-.executor_40_116918:
+; --- Firework fade out ---
+
+.firework_fade_out:
     UPDATE_RGBA 0, 0, 0, 0, 3
     WAIT_RGBA_FINISHED
     DEACTIVATE_SELF
 
-.anim_116928:
+; --- Firework animation data ---
+
+.firework_anim_data:
     .anim_frame 0, 0xFE, (0, 0, 0), 255, 0
     .anim_end
 
-.branch_116934:
-    SET_WAIT_FRAMES 1
-    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, cutsceneLevelInteractionIndex, .branch_116948
-    EXECUTE_SUBROUTINE .branch_116934
+; ===========================================================================
+; Cutscene 660 - Cliff Meets Ann at Ranch
+; ===========================================================================
 
-.branch_116948:
+; --- Wait for interaction, then check item held ---
+
+.cutscene_660:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, cutsceneLevelInteractionIndex, .cutscene_660_setup
+    EXECUTE_SUBROUTINE .cutscene_660
+
+.cutscene_660_setup:
     EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_116998
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .holding_item_abort
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_1169A0
-    SPAWN_EXECUTOR 2, .executor_2_1169B4
-    SPAWN_EXECUTOR 41, .executor_41_11697C
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 1, .horse_cliff_setup
+    SPAWN_EXECUTOR 2, .cliff_setup
+    SPAWN_EXECUTOR 41, .cutscene_660_camera
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_11697C:
+.cutscene_660_camera:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_FRAME_DELTA -2, 0, 2, 80
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_1169E4
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 2, .cliff_startled
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_116998:
+; --- Abort: player is holding an item ---
+
+.holding_item_abort:
     SET_HOLDING_ANIMATION_FLAG TRUE
     RETURN_FROM_SUBROUTINE
 
-.executor_1_1169A0:
-    EXECUTE_SUBROUTINE .sub_115AC0
+; --- Horse for Cliff scene ---
+
+.horse_cliff_setup:
+    EXECUTE_SUBROUTINE .setup_horse_unbridled
     SET_COORDINATES -304, 0, 0
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_1169B4:
+; --- Cliff setup ---
+
+.cliff_setup:
     SETUP_ENTITY 36, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 36, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -256, 0, 0
     SET_ASSET_ROTATION NORTHWEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_1169E4:
+; --- Cliff gets startled ---
+
+.cliff_startled:
     SET_ENTITY_ANIMATION 19
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SPAWN_EXECUTOR 3, .executor_3_1169FC
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 3, .ann_arrive_and_talk
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_1169FC:
+; --- Ann runs in and confronts Cliff ---
+
+.ann_arrive_and_talk:
     SETUP_ENTITY 37, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 37, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
@@ -1258,155 +1494,175 @@
     SET_ENTITY_ANIMATION 99
     SET_FRAME_DELTA 0, 0, -4, 56
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_115618
+    SET_OTHER_EXECUTOR_PTR 2, .face_southwest_and_wait
     SET_WAIT_FRAMES 15
     SET_ENTITY_ANIMATION 37
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 41
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 45
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 45
     WAIT_MESSAGE_BOX_CLOSED 0
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 46
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 46
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 65
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 47
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 47
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_116AB4
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_116CAC
+    SET_OTHER_EXECUTOR_PTR 0, .player_after_cliff_scene
+    SET_OTHER_EXECUTOR_PTR 1, .horse_walk_away
     ENTITY_WALK 128, SOUTHWEST, 2
     DEACTIVATE_SELF
 
-.executor_0_116AB4:
+; --- Player walks away after Cliff scene ---
+
+.player_after_cliff_scene:
     SET_HOLDING_ANIMATION_FLAG FALSE
     ENTITY_WALK 20, NORTHWEST, 2
     ENTITY_WALK 80, WEST, 2
     SET_WAIT_FRAMES 10
-    SET_OTHER_EXECUTOR_PTR 2, .executor_7_1155F0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 48
+    SET_OTHER_EXECUTOR_PTR 2, .face_east_and_wait
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 48
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 485
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_116AFC
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 2, .cliff_walk_away
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_116AFC:
+; --- Cliff walks away, fade to black ---
+
+.cliff_walk_away:
     ENTITY_WALK 32, NORTHEAST, 2
     ENTITY_WALK 80, EAST, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_116C94
+    SET_OTHER_EXECUTOR_PTR 0, .player_restore_and_complete
     DEACTIVATE_SELF
 
-.sub_116B24:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWeather, .branch_116C0C
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .branch_116BA0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHour, .branch_116BAC
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 7, gHour, .branch_116BB8
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .branch_116BC4
-    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .branch_116BD0
-    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, gHour, .branch_116BDC
-    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, gHour, .branch_116BE8
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .branch_116BAC
-    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .branch_116BA0
-    EXECUTE_SUBROUTINE .sub_116CA0
+; ---------------------------------------------------------------------------
+; Restore lighting by time of day (shared by cutscene 660)
+; ---------------------------------------------------------------------------
 
-.branch_116BA0:
+.restore_lighting_by_time:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWeather, .restore_lighting_rain
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .lighting_night
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHour, .lighting_dawn
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 7, gHour, .lighting_early_morning
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .lighting_morning
+    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .lighting_midday
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, gHour, .lighting_afternoon
+    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, gHour, .lighting_dusk
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .lighting_dawn
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .lighting_night
+    EXECUTE_SUBROUTINE .finish_lighting_restore
+
+.lighting_night:
     UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116BAC:
+.lighting_dawn:
     UPDATE_GLOBAL_RGBA 128, 128, 128, 128, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116BB8:
+.lighting_early_morning:
     UPDATE_GLOBAL_RGBA 192, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116BC4:
+.lighting_morning:
     UPDATE_GLOBAL_RGBA 224, 224, 224, 224, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116BD0:
+.lighting_midday:
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116BDC:
+.lighting_afternoon:
     UPDATE_GLOBAL_RGBA 255, 224, 224, 224, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116BE8:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWeather, .branch_116C00
+.lighting_dusk:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWeather, .lighting_dusk_overcast
     UPDATE_GLOBAL_RGBA 255, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116C00:
+.lighting_dusk_overcast:
     UPDATE_GLOBAL_RGBA 192, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116C0C:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .branch_116C64
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 7, gHour, .branch_116C70
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .branch_116C7C
-    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .branch_116C88
-    BRANCH_U8_VAR_WITHIN_RANGE 16, 17, gHour, .branch_116C7C
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .branch_116C70
-    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .branch_116C64
-    EXECUTE_SUBROUTINE .sub_116CA0
+; --- Rain lighting ---
 
-.branch_116C64:
+.restore_lighting_rain:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .rain_night
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 7, gHour, .rain_dawn
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .rain_morning
+    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .rain_midday
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 17, gHour, .rain_morning
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .rain_dawn
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .rain_night
+    EXECUTE_SUBROUTINE .finish_lighting_restore
+
+.rain_night:
     UPDATE_GLOBAL_RGBA 80, 80, 128, 80, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116C70:
+.rain_dawn:
     UPDATE_GLOBAL_RGBA 112, 112, 192, 112, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116C7C:
+.rain_morning:
     UPDATE_GLOBAL_RGBA 128, 128, 208, 128, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.branch_116C88:
+.rain_midday:
     UPDATE_GLOBAL_RGBA 144, 144, 255, 144, 8
-    EXECUTE_SUBROUTINE .sub_116CA0
+    EXECUTE_SUBROUTINE .finish_lighting_restore
 
-.executor_0_116C94:
+; --- Player restores tracking and completes cutscene ---
+
+.player_restore_and_complete:
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_116B24
+    EXECUTE_SUBROUTINE .restore_lighting_by_time
 
-.sub_116CA0:
+.finish_lighting_restore:
     WAIT_RGBA_FINISHED
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_1_116CAC:
+; --- Horse walks off screen ---
+
+.horse_walk_away:
     ENTITY_WALK 152, SOUTHWEST, 2
     DEACTIVATE_SELF
 
-.branch_116CB8:
+; ===========================================================================
+; Cutscene 661 - Ann High-Affection Ranch Scene
+; ===========================================================================
+
+.cutscene_661:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 168, 0, -360
     SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 40
-    SPAWN_EXECUTOR 1, .executor_1_116CE0
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 1, .ann_approach_and_talk_hey
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_116CE0:
+; --- Ann approaches and says hey ---
+
+.ann_approach_and_talk_hey:
     UPDATE_U8_VALUE 10, 255, gHappiness
-    EXECUTE_SUBROUTINE .sub_116464
+    EXECUTE_SUBROUTINE .setup_ann_entity_37
     SET_COORDINATES 168, 0, -112
     SET_ASSET_ROTATION NORTHEAST
     ENTITY_WALK 104, NORTHEAST, 2
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 49
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 49
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ASSET_ROTATION SOUTHEAST
@@ -1416,59 +1672,70 @@
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 101
     SET_WAIT_FRAMES 15
-    INIT_DIALOGUE_SESSION 0, 39, 5
+    ; Dialogue choice: accept or reject
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_CUTSCENES_1, 5
     WAIT_FOR_DIALOGUE_INPUT 0
     SET_ENTITY_ANIMATION 100
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 10
-    BRANCH_ON_DIALOGUE 0, 0, .branch_116E38
-    BRANCH_ON_DIALOGUE 0, 1, .branch_116D68
+    BRANCH_ON_DIALOGUE 0, 0, .player_reject_ann
+    BRANCH_ON_DIALOGUE 0, 1, .player_accept_ann
 
-.branch_116D68:
+; --- Player accepts Ann ---
+
+.player_accept_ann:
     SET_ASSET_ROTATION NORTHEAST
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 54
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 54
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_116D88
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 0, .player_show_feather
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_116D88:
+; --- Player holds up blue feather ---
+
+.player_show_feather:
     SET_HOLDING_ANIMATION_FLAG TRUE
     ENTITY_WALK 16, SOUTHWEST, 1
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_116DA4
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 1, .ann_react_to_feather
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_116DA4:
+; --- Ann reacts to feather ---
+
+.ann_react_to_feather:
     SET_ENTITY_ANIMATION 65
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_116DC0
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 0, .player_present_feather
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_116DC0:
+; --- Player presents blue feather ---
+
+.player_present_feather:
     SPAWN_EXECUTOR 32, .executor_32_11557C
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_116DD4
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 1, .ann_take_feather
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_116DD4:
+.ann_take_feather:
     SET_WAIT_FRAMES 30
     SET_ENTITY_ANIMATION 102
     SET_WAIT_FRAMES 10
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_116E18
+    SET_OTHER_EXECUTOR_PTR 0, .player_put_away_feather
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_ASSET_ROTATION SOUTHWEST
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 55
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 55
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     ENTITY_WALK 128, SOUTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 0, .executor_7_1155E0
-    EXECUTE_SUBROUTINE .sub_11543C
+    SET_OTHER_EXECUTOR_PTR 0, .player_release_with_track
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_0_116E18:
+; --- Player puts away feather ---
+
+.player_put_away_feather:
     SET_ENTITY_ANIMATION 511
     WAIT_ENTITY_ANIMATION
     SET_HOLDING_ANIMATION_FLAG FALSE
@@ -1476,11 +1743,13 @@
     SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 15
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_116E38:
+; --- Player rejects Ann ---
+
+.player_reject_ann:
     SET_ASSET_ROTATION SOUTHWEST
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 52
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 52
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     ENTITY_WALK 16, SOUTHWEST, 2
@@ -1488,187 +1757,227 @@
     SET_ENTITY_ANIMATION 37
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 41
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 53
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 53
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     ENTITY_WALK 88, SOUTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 0, .executor_7_1155D8
-    EXECUTE_SUBROUTINE .sub_11543C
+    SET_OTHER_EXECUTOR_PTR 0, .player_release_map_dep
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_116E88:
-    SPAWN_EXECUTOR 1, .executor_1_116E94
+; ===========================================================================
+; Cutscene 662 - Ann Birthday Cake (Winter 10)
+; ===========================================================================
+
+.cutscene_662:
+    SPAWN_EXECUTOR 1, .ann_birthday_on_interact
     DEACTIVATE_SELF
 
-.executor_1_116E94:
-    EXECUTE_SUBROUTINE .sub_116464
+; --- Ann setup, waits for interact ---
+
+.ann_birthday_on_interact:
+    EXECUTE_SUBROUTINE .setup_ann_entity_37
     SET_COORDINATES 96, 0, -296
     SET_ASSET_ROTATION SOUTHEAST
     UPDATE_RGBA 254, 254, 254, 254, 0
     WAIT_RGBA_FINISHED
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_116EBC
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_on_interact_handler
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_116EBC:
-    EXECUTE_SUBROUTINE .sub_115450
+; --- Ann interaction handler ---
+
+.ann_on_interact_handler:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT 29, lifeEventBits[0], .branch_116F98
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 56
+    BRANCH_ON_SPECIAL_BIT 29, lifeEventBits[0], .ann_married_cake
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 56
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
 
-.branch_116EE8:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_116EF4
-    EXECUTE_SUBROUTINE .sub_115448
+; --- Wait for player to give Ann an item ---
 
-.branch_116EF4:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_116EE8
-    EXECUTE_SUBROUTINE .sub_115450
+.ann_wait_for_gift:
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_check_gift
+    EXECUTE_SUBROUTINE .wait_loop
+
+.ann_check_gift:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .ann_wait_for_gift
+    EXECUTE_SUBROUTINE .setup_message_box
     UPDATE_U8_VALUE 3, 255, gHappiness
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
     WAIT_ENTITY_ANIMATION
     SPAWN_EXECUTOR 32, .executor_32_1154B0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 57
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 57
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SPAWN_EXECUTOR 0, .executor_0_116F78
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 0, .player_eat_cake
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_116F48:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_116F54
-    EXECUTE_SUBROUTINE .sub_115448
+; --- Repeat interaction: Ann says same line ---
 
-.branch_116F54:
-    EXECUTE_SUBROUTINE .sub_115450
+.ann_repeat_interact:
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_repeat_handler
+    EXECUTE_SUBROUTINE .wait_loop
+
+.ann_repeat_handler:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 80
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 80
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_116F48
+    EXECUTE_SUBROUTINE .ann_repeat_interact
 
-.executor_0_116F78:
+; --- Player eats cake, then Ann becomes free-roam ---
+
+.player_eat_cake:
     TOGGLE_PAUSE_ENTITY 0
     EXECUTE_SUBROUTINE .setup_player
-    EXECUTE_SUBROUTINE .sub_1155B8
+    EXECUTE_SUBROUTINE .player_eat_anim
     FLIP_ENTITY_DIRECTION 37
-    SET_OTHER_EXECUTOR_PTR 1, .sub_116F48
+    SET_OTHER_EXECUTOR_PTR 1, .ann_repeat_interact
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.branch_116F98:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 58
+; --- Ann married: husband ran away from cake ---
+
+.ann_married_cake:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 58
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
 
-.sub_116FAC:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_116FB8
-    EXECUTE_SUBROUTINE .sub_115448
+.ann_married_repeat:
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_married_repeat_handler
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_116FB8:
-    EXECUTE_SUBROUTINE .sub_115450
+.ann_married_repeat_handler:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 59
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 59
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_116FAC
+    EXECUTE_SUBROUTINE .ann_married_repeat
 
-.branch_116FDC:
+; ===========================================================================
+; Cutscene 663 - Ann Sick Visit (in Ann Room)
+; ===========================================================================
+
+.cutscene_663:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
-    SPAWN_EXECUTOR 1, .executor_1_117024
+    SPAWN_EXECUTOR 1, .ann_floating_setup
     EXECUTE_SUBROUTINE .setup_player
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_116998
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .holding_item_abort
     SET_COORDINATES -112, 0, 0
     SET_ASSET_ROTATION SOUTHWEST
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
-    SPAWN_EXECUTOR 41, .executor_41_11704C
+    SPAWN_EXECUTOR 41, .ann_room_interaction_poll
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_1_117024:
+; --- Ann floating in bed (sick) ---
+
+.ann_floating_setup:
     SET_SHADOW_FLAGS 3, 255
-    EXECUTE_SUBROUTINE .sub_116464
+    EXECUTE_SUBROUTINE .setup_ann_entity_37
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -98, 80, 84
 
-.executor_1_11703C:
+; --- Ann lying down animation ---
+
+.ann_lying_down:
     SET_ENTITY_ANIMATION 119
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_117044:
+; --- Ann sitting up animation ---
+
+.ann_sitting_up:
     SET_ENTITY_ANIMATION 120
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_11704C:
+; --- Poll for player interaction in Ann room ---
+
+.ann_room_interaction_poll:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_BUTTON_PRESSED 0, 32768, .branch_11706C
-    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, cutsceneLevelInteractionIndex, .branch_117158
-    EXECUTE_SUBROUTINE .executor_41_11704C
+    BRANCH_ON_BUTTON_PRESSED 0, 32768, .check_interaction_target
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, cutsceneLevelInteractionIndex, .ann_goodbye
+    EXECUTE_SUBROUTINE .ann_room_interaction_poll
 
-.branch_11706C:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_41_11704C
-    EXECUTE_SUBROUTINE .sub_115450
-    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, interactedWithLevelInteractionIndex, .branch_1170B0
-    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, interactedWithLevelInteractionIndex, .branch_1170F4
-    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, interactedWithLevelInteractionIndex, .branch_11710C
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 18, interactedWithLevelInteractionIndex, .branch_117140
-    EXECUTE_SUBROUTINE .executor_41_11704C
+; --- Check what the player interacted with ---
 
-.branch_1170B0:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_117044
+.check_interaction_target:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .ann_room_interaction_poll
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, interactedWithLevelInteractionIndex, .interact_with_ann
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, interactedWithLevelInteractionIndex, .interact_with_wool
+    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, interactedWithLevelInteractionIndex, .interact_with_shells
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 18, interactedWithLevelInteractionIndex, .interact_with_stuffed_horse
+    EXECUTE_SUBROUTINE .ann_room_interaction_poll
+
+; --- Interact with Ann (sick in bed) ---
+
+.interact_with_ann:
+    SET_OTHER_EXECUTOR_PTR 1, .ann_sitting_up
     PAUSE_ENTITIES
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_1170E8
+    BRANCH_ON_SPECIAL_BIT 0, var0, .interact_with_ann_repeat
     SET_SPECIAL_BIT 0, var0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 60
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 60
 
-.sub_1170D8:
+.dismiss_and_resume_poll:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .executor_41_11704C
+    EXECUTE_SUBROUTINE .ann_room_interaction_poll
 
-.branch_1170E8:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 61
-    EXECUTE_SUBROUTINE .sub_1170D8
+.interact_with_ann_repeat:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 61
+    EXECUTE_SUBROUTINE .dismiss_and_resume_poll
 
-.branch_1170F4:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_11703C
+; --- Interact with wool ---
+
+.interact_with_wool:
+    SET_OTHER_EXECUTOR_PTR 1, .ann_lying_down
     PAUSE_ENTITIES
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 63
-    EXECUTE_SUBROUTINE .sub_1170D8
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 63
+    EXECUTE_SUBROUTINE .dismiss_and_resume_poll
 
-.branch_11710C:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_117044
+; --- Interact with shell jar ---
+
+.interact_with_shells:
+    SET_OTHER_EXECUTOR_PTR 1, .ann_sitting_up
     PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_115470
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 64
+    EXECUTE_SUBROUTINE .setup_message_box_alt
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 64
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_115450
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 65
-    EXECUTE_SUBROUTINE .sub_1170D8
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 65
+    EXECUTE_SUBROUTINE .dismiss_and_resume_poll
 
-.branch_117140:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_117044
+; --- Interact with stuffed horse ---
+
+.interact_with_stuffed_horse:
+    SET_OTHER_EXECUTOR_PTR 1, .ann_sitting_up
     PAUSE_ENTITIES
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 66
-    EXECUTE_SUBROUTINE .sub_1170D8
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 66
+    EXECUTE_SUBROUTINE .dismiss_and_resume_poll
 
-.branch_117158:
+; --- Ann says goodbye, cutscene ends ---
+
+.ann_goodbye:
     UPDATE_U8_VALUE 10, 255, npcAffection[ANN]
     PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_115450
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 62
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 62
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
@@ -1677,42 +1986,54 @@
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     DEACTIVATE_EXECUTOR 1
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_1171A4:
+; ===========================================================================
+; Cutscene 664 - Ann Marriage Repair (in Ann Room)
+; ===========================================================================
+
+.cutscene_664:
     SET_SPECIAL_BIT 30, gCutsceneCompletionFlags
-    SPAWN_EXECUTOR 1, .executor_1_1171EC
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_1171E0
+    SPAWN_EXECUTOR 1, .ann_setup_in_room
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .ann_room_has_baby
     EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -64, 0, 0
     SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 40
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_117208
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_OTHER_EXECUTOR_PTR 1, .ann_talk_come_home
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1171E0:
-    SPAWN_EXECUTOR 2, .executor_2_117274
+.ann_room_has_baby:
+    SPAWN_EXECUTOR 2, .baby_setup
     RETURN_FROM_SUBROUTINE
 
-.executor_1_1171EC:
-    EXECUTE_SUBROUTINE .sub_116464
+; --- Ann entity setup in room ---
+
+.ann_setup_in_room:
+    EXECUTE_SUBROUTINE .setup_ann_entity_37
     SET_COORDINATES -96, 0, 0
     SET_ASSET_ROTATION SOUTHEAST
-    SET_CALLBACK_ROUTINE 0, 32768, .executor_1_117208
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_talk_come_home
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_117208:
-    EXECUTE_SUBROUTINE .sub_115450
+; --- Ann talks about coming home ---
+
+.ann_talk_come_home:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITIES
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_11722C
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .ann_talk_with_baby
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 67
-    EXECUTE_SUBROUTINE .sub_117234
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 67
+    EXECUTE_SUBROUTINE .ann_reconcile
 
-.branch_11722C:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 68
+; --- Ann talk variant when baby exists ---
 
-.sub_117234:
+.ann_talk_with_baby:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 68
+
+; --- Ann reconciles, sets affection, loads ranch store ---
+
+.ann_reconcile:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -1722,36 +2043,42 @@
     DEACTIVATE_EXECUTOR 0
     UPDATE_U8_VALUE 30, 255, npcAffection[ANN]
     SET_SPECIAL_BIT 29, gCutsceneCompletionFlags
-    SPAWN_EXECUTOR 41, .executor_41_1172C8
+    SPAWN_EXECUTOR 41, .load_ranch_store
     DEACTIVATE_SELF
 
-.executor_2_117274:
+; --- Baby entity setup ---
+
+.baby_setup:
     SET_SHADOW_FLAGS 6, 255
     SETUP_ENTITY 36, ENTITY_ASSET_BABY, 1
     SET_ENTITY_ANIMATIONS 36, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 0
-    BRANCH_U8_VAR_WITHIN_RANGE 30, 255, gBabyAge, .branch_1172B8
+    BRANCH_U8_VAR_WITHIN_RANGE 30, 255, gBabyAge, .baby_older
     SET_COORDINATES -120, 32, 60
     SET_ENTITY_ANIMATION 55
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1172B8:
+.baby_older:
     SET_COORDINATES -126, 32, 52
     SET_ENTITY_ANIMATION 56
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_1172C8:
+; --- Load ranch store map, spawn family ---
+
+.load_ranch_store:
     DEACTIVATE_MAP_OBJECTS 0
-    LOAD_MAP 0, 6
+    LOAD_MAP MAIN_MAP_INDEX, RANCH_STORE
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_ASSET_ROTATION SOUTH
-    SPAWN_EXECUTOR 0, .executor_0_1172F8
-    SPAWN_EXECUTOR 3, .executor_3_11736C
-    SPAWN_EXECUTOR 4, .executor_4_117398
-    EXECUTE_SUBROUTINE .sub_115448
+    SPAWN_EXECUTOR 0, .player_at_ranch_store
+    SPAWN_EXECUTOR 3, .doug_setup_in_store
+    SPAWN_EXECUTOR 4, .gray_setup_in_store
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_1172F8:
+; --- Player at ranch store ---
+
+.player_at_ranch_store:
     EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -16, 0, 96
     SET_ASSET_ROTATION NORTHEAST
@@ -1759,9 +2086,9 @@
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 10
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 70
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 70
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 71
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 71
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
@@ -1773,69 +2100,90 @@
     DEACTIVATE_EXECUTOR 3
     DEACTIVATE_EXECUTOR 4
     DEACTIVATE_EXECUTOR 41
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_3_11736C:
+; --- Doug in store ---
+
+.doug_setup_in_store:
     SETUP_ENTITY 24, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -32, 0, 64
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_117398:
+; --- Gray in store ---
+
+.gray_setup_in_store:
     SETUP_ENTITY 25, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 0, 0, 64
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1173C4:
-    SPAWN_EXECUTOR 2, .executor_2_117448
-    SPAWN_EXECUTOR 4, .executor_4_1173E0
-    SPAWN_EXECUTOR 5, .executor_5_117418
+; ===========================================================================
+; Cutscene 665 - Doug Free-Roam at Ranch (alt horse receiving)
+; ===========================================================================
+
+.cutscene_665:
+    SPAWN_EXECUTOR 2, .ann_setup_free_roam
+    SPAWN_EXECUTOR 4, .doug_setup_free_roam
+    SPAWN_EXECUTOR 5, .horse_pony_setup
     DEACTIVATE_SELF
 
-.executor_4_1173E0:
+; --- Doug free-roam: offers horse on interact ---
+
+.doug_setup_free_roam:
     SETUP_ENTITY 25, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -160, 0, -80
     SET_ASSET_ROTATION NORTHEAST
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1158E0
-    EXECUTE_SUBROUTINE .sub_115448
+    SET_CALLBACK_ROUTINE 0, 32768, .doug_on_interact_horse
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_117418:
+; --- Horse pony standing ---
+
+.horse_pony_setup:
     SETUP_ENTITY 15, ENTITY_ASSET_HORSE_PONY, 1
     SET_ENTITY_ANIMATIONS 15, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -128, 0, -80
     SET_ASSET_ROTATION NORTHEAST
-    EXECUTE_SUBROUTINE .sub_115448
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_117448:
-    EXECUTE_SUBROUTINE .sub_115DA4
+; --- Ann free-roam at ranch ---
+
+.ann_setup_free_roam:
+    EXECUTE_SUBROUTINE .setup_ann_entity_23
     SET_COORDINATES -192, 0, -112
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .executor_2_1158B0
+    EXECUTE_SUBROUTINE .ann_free_roam_interact
 
-.branch_11745C:
-    SPAWN_EXECUTOR 1, .executor_1_1174EC
+; ===========================================================================
+; Cutscene 666 - Ann Sick Visit Transition
+; ===========================================================================
+
+.cutscene_666:
+    SPAWN_EXECUTOR 1, .doug_setup_at_ranch
     SET_WAIT_FRAMES 1
     EXECUTE_SUBROUTINE .setup_player
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_116998
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .holding_item_abort
     SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 40
-    INIT_DIALOGUE_SESSION 0, 39, 6
+    ; Dialogue choice: visit Ann or decline
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_CUTSCENES_1, 6
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_1174A4
-    BRANCH_ON_DIALOGUE 0, 1, .branch_1174D4
+    BRANCH_ON_DIALOGUE 0, 0, .player_accept_visit
+    BRANCH_ON_DIALOGUE 0, 1, .player_decline_visit
 
-.branch_1174A4:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 74
+; --- Player accepts: Doug says go to back room ---
+
+.player_accept_visit:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 74
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -1843,67 +2191,85 @@
     DEACTIVATE_EXECUTOR 1
     SET_WAIT_FRAMES 1
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_1174D4:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 75
+; --- Player declines ---
+
+.player_decline_visit:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 75
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_1_1174EC:
+; --- Doug entity at ranch store ---
+
+.doug_setup_at_ranch:
     SETUP_ENTITY 37, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 37, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -96, 0, 64
     SET_ASSET_ROTATION SOUTHEAST
 
-.sub_117514:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_117520
-    EXECUTE_SUBROUTINE .sub_115448
+; --- Doug waits for interact ---
 
-.branch_117520:
+.doug_wait_for_interact:
+    SET_CALLBACK_ROUTINE 0, 32768, .doug_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
+
+; --- Doug on interact (shared by 666/667) ---
+
+.doug_on_interact:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_115450
-    BRANCH_U16_VAR_WITHIN_RANGE 667, 667, gCutsceneIndex, .branch_11758C
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 75
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U16_VAR_WITHIN_RANGE 667, 667, gCutsceneIndex, .doug_ask_about_marriage
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 75
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_117514
+    EXECUTE_SUBROUTINE .doug_wait_for_interact
 
-.branch_117554:
-    SPAWN_EXECUTOR 1, .executor_1_1174EC
+; ===========================================================================
+; Cutscene 667 - Ann Marriage Repair Transition
+; ===========================================================================
+
+.cutscene_667:
+    SPAWN_EXECUTOR 1, .doug_setup_at_ranch
     SET_WAIT_FRAMES 1
     EXECUTE_SUBROUTINE .setup_player
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_116998
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .holding_item_abort
     SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 40
     PAUSE_ENTITIES
-    SET_OTHER_EXECUTOR_PTR 1, .branch_11758C
+    SET_OTHER_EXECUTOR_PTR 1, .doug_ask_about_marriage
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.branch_11758C:
-    INIT_DIALOGUE_SESSION 0, 39, 7
-    WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_1175B0
-    BRANCH_ON_DIALOGUE 0, 1, .branch_1175D8
+; --- Doug asks about marriage repair ---
 
-.branch_1175B0:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 78
+.doug_ask_about_marriage:
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_CUTSCENES_1, 7
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 0, .player_accept_repair
+    BRANCH_ON_DIALOGUE 0, 1, .player_decline_repair
+
+; --- Player accepts: fade and transition ---
+
+.player_accept_repair:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 78
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_11543C
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_1175D8:
-    INIT_MESSAGE_BOX_TYPE1 0, CUTSCENES_1_TEXT_INDEX, 79
+; --- Player declines ---
+
+.player_decline_repair:
+    INIT_MESSAGE_BOX_TYPE1 0, RANCH_CUTSCENES_TEXT_INDEX, 79
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_117514
+    EXECUTE_SUBROUTINE .doug_wait_for_interact

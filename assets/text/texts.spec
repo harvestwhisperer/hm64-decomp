@@ -73,15 +73,15 @@ beginseg
 endseg
 
 beginseg
-    name "shopText"
+    name "levelInteractionsText"
     flags RAW
-    include "build/assets/text/shopText.bin.o"
+    include "build/assets/text/levelInteractionsText.bin.o"
 endseg
 
 beginseg
-    name "shopTextIndex"
+    name "levelInteractionsTextIndex"
     flags RAW
-    include "build/assets/text/shopTextIndex.bin.o"
+    include "build/assets/text/levelInteractionsTextIndex.bin.o"
 endseg
 
 beginseg
@@ -541,15 +541,15 @@ beginseg
 endseg
 
 beginseg
-    name "cutscenes1Text"
+    name "ranchCutscenesText"
     flags RAW
-    include "build/assets/text/cutscenes1Text.bin.o"
+    include "build/assets/text/ranchCutscenesText.bin.o"
 endseg
 
 beginseg
-    name "cutscenes1TextIndex"
+    name "ranchCutscenesTextIndex"
     flags RAW
-    include "build/assets/text/cutscenes1TextIndex.bin.o"
+    include "build/assets/text/ranchCutscenesTextIndex.bin.o"
 endseg
 
 beginseg
@@ -565,63 +565,63 @@ beginseg
 endseg
 
 beginseg
-    name "text48Text"
+    name "fireworksFestivalText"
     flags RAW
-    include "build/assets/text/text48Text.bin.o"
+    include "build/assets/text/fireworksFestivalText.bin.o"
 endseg
 
 beginseg
-    name "text48TextIndex"
+    name "fireworksFestivalTextIndex"
     flags RAW
-    include "build/assets/text/text48TextIndex.bin.o"
+    include "build/assets/text/fireworksFestivalTextIndex.bin.o"
 endseg
 
 beginseg
-    name "text49Text"
+    name "flowerFestivalText"
     flags RAW
-    include "build/assets/text/text49Text.bin.o"
+    include "build/assets/text/flowerFestivalText.bin.o"
 endseg
 
 beginseg
-    name "text49TextIndex"
+    name "flowerFestivalTextIndex"
     flags RAW
-    include "build/assets/text/text49TextIndex.bin.o"
+    include "build/assets/text/flowerFestivalTextIndex.bin.o"
 endseg
 
 beginseg
-    name "text50Text"
+    name "seaFestivalAndEvaluationText"
     flags RAW
-    include "build/assets/text/text50Text.bin.o"
+    include "build/assets/text/seaFestivalAndEvaluationText.bin.o"
 endseg
 
 beginseg
-    name "text50TextIndex"
+    name "seaFestivalAndEvaluationTextIndex"
     flags RAW
-    include "build/assets/text/text50TextIndex.bin.o"
+    include "build/assets/text/seaFestivalAndEvaluationTextIndex.bin.o"
 endseg
 
 beginseg
-    name "text51Text"
+    name "cowFestivalText"
     flags RAW
-    include "build/assets/text/text51Text.bin.o"
+    include "build/assets/text/cowFestivalText.bin.o"
 endseg
 
 beginseg
-    name "text51TextIndex"
+    name "cowFestivalTextIndex"
     flags RAW
-    include "build/assets/text/text51TextIndex.bin.o"
+    include "build/assets/text/cowFestivalTextIndex.bin.o"
 endseg
 
 beginseg
-    name "text52Text"
+    name "fireflyFestivalText"
     flags RAW
-    include "build/assets/text/text52Text.bin.o"
+    include "build/assets/text/fireflyFestivalText.bin.o"
 endseg
 
 beginseg
-    name "text52TextIndex"
+    name "fireflyFestivalTextIndex"
     flags RAW
-    include "build/assets/text/text52TextIndex.bin.o"
+    include "build/assets/text/fireflyFestivalTextIndex.bin.o"
 endseg
 
 beginseg
@@ -637,39 +637,39 @@ beginseg
 endseg
 
 beginseg
-    name "text54Text"
+    name "mountainCutscenesText"
     flags RAW
-    include "build/assets/text/text54Text.bin.o"
+    include "build/assets/text/mountainCutscenesText.bin.o"
 endseg
 
 beginseg
-    name "text54TextIndex"
+    name "mountainCutscenesTextIndex"
     flags RAW
-    include "build/assets/text/text54TextIndex.bin.o"
+    include "build/assets/text/mountainCutscenesTextIndex.bin.o"
 endseg
 
 beginseg
-    name "text55Text"
+    name "sowingFestivalText"
     flags RAW
-    include "build/assets/text/text55Text.bin.o"
+    include "build/assets/text/sowingFestivalText.bin.o"
 endseg
 
 beginseg
-    name "text55TextIndex"
+    name "sowingFestivalTextIndex"
     flags RAW
-    include "build/assets/text/text55TextIndex.bin.o"
+    include "build/assets/text/sowingFestivalTextIndex.bin.o"
 endseg
 
 beginseg
-    name "text56Text"
+    name "harvestFestivalText"
     flags RAW
-    include "build/assets/text/text56Text.bin.o"
+    include "build/assets/text/harvestFestivalText.bin.o"
 endseg
 
 beginseg
-    name "text56TextIndex"
+    name "harvestFestivalTextIndex"
     flags RAW
-    include "build/assets/text/text56TextIndex.bin.o"
+    include "build/assets/text/harvestFestivalTextIndex.bin.o"
 endseg
 
 beginseg
@@ -709,27 +709,27 @@ beginseg
 endseg
 
 beginseg
-    name "marriedDialoguesText"
+    name "village1CutscenesText"
     flags RAW
-    include "build/assets/text/marriedDialoguesText.bin.o"
+    include "build/assets/text/village1CutscenesText.bin.o"
 endseg
 
 beginseg
-    name "marriedDialoguesTextIndex"
+    name "village1CutscenesTextIndex"
     flags RAW
-    include "build/assets/text/marriedDialoguesTextIndex.bin.o"
+    include "build/assets/text/village1CutscenesTextIndex.bin.o"
 endseg
 
 beginseg
-    name "text61Text"
+    name "village2CutscenesText"
     flags RAW
-    include "build/assets/text/text61Text.bin.o"
+    include "build/assets/text/village2CutscenesText.bin.o"
 endseg
 
 beginseg
-    name "text61TextIndex"
+    name "village2CutscenesTextIndex"
     flags RAW
-    include "build/assets/text/text61TextIndex.bin.o"
+    include "build/assets/text/village2CutscenesTextIndex.bin.o"
 endseg
 
 beginseg
@@ -745,15 +745,15 @@ beginseg
 endseg
 
 beginseg
-    name "text63Text"
+    name "roadCutscenesText"
     flags RAW
-    include "build/assets/text/text63Text.bin.o"
+    include "build/assets/text/roadCutscenesText.bin.o"
 endseg
 
 beginseg
-    name "text63TextIndex"
+    name "roadCutscenesTextIndex"
     flags RAW
-    include "build/assets/text/text63TextIndex.bin.o"
+    include "build/assets/text/roadCutscenesTextIndex.bin.o"
 endseg
 
 beginseg
@@ -769,15 +769,15 @@ beginseg
 endseg
 
 beginseg
-    name "text65Text"
+    name "houseCutscenesText"
     flags RAW
-    include "build/assets/text/text65Text.bin.o"
+    include "build/assets/text/houseCutscenesText.bin.o"
 endseg
 
 beginseg
-    name "text65TextIndex"
+    name "houseCutscenesTextIndex"
     flags RAW
-    include "build/assets/text/text65TextIndex.bin.o"
+    include "build/assets/text/houseCutscenesTextIndex.bin.o"
 endseg
 
 beginseg
@@ -841,15 +841,15 @@ beginseg
 endseg
 
 beginseg
-    name "additionalNpcsText"
+    name "additionalNPCsText"
     flags RAW
-    include "build/assets/text/additionalNpcsText.bin.o"
+    include "build/assets/text/additionalNPCsText.bin.o"
 endseg
 
 beginseg
-    name "additionalNpcsTextIndex"
+    name "additionalNPCsTextIndex"
     flags RAW
-    include "build/assets/text/additionalNpcsTextIndex.bin.o"
+    include "build/assets/text/additionalNPCsTextIndex.bin.o"
 endseg
 
 beginseg

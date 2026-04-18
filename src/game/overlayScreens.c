@@ -358,8 +358,18 @@ volatile u16 keyItemAnimationIndices[] = {
 };
 
 
-// power nut bits
-static u32 powerNutBits[] = { 1, 2, 4, 8, 0x10, 0x20, 0x40, 0x80, 0x100, 0x200 };
+static u32 powerNutBits[] = {
+    FARM_POWER_NUT,
+    HARVEST_SPRITES_POWER_NUT,
+    FISHING_POWER_NUT,
+    KAPPA_POWER_NUT,
+    MOUNTAIN_BOULDER_POWER_NUT,
+    MINE_POWER_NUT,
+    HARVEST_GODDESS_POWER_NUT,
+    FLOWER_FESTIVAL_POWER_NUT,
+    EGG_FESTIVAL_POWER_NUT,
+    BASIL_POWER_NUT,
+};
 
 u16 D_80116F4C[] = {
     0x0000,
@@ -860,7 +870,7 @@ void loadClockSprites(void) {
     setSpriteColor(CLOCK, 0xFF, 0xFF, 0xFF, 0);
     setSpriteBlendMode(CLOCK, 2);
 
-    if (checkLifeEventBit(0x59)) {
+    if (checkLifeEventBit(HAVE_CUTE_CLOCK)) {
         // cow skin background
         startSpriteAnimation(CLOCK, 6, 0);
     } else {
@@ -2418,7 +2428,7 @@ void loadPauseScreenItemSprites(void) {
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
             setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
+            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
         
         }
         
@@ -2430,7 +2440,7 @@ void loadPauseScreenItemSprites(void) {
         setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
         setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
         setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
+        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
     }
 
     for (i = 0; i < 8; i++) {
@@ -2449,7 +2459,7 @@ void loadPauseScreenItemSprites(void) {
             setSpriteBlendMode(KEY_ITEMS_BASE + i, 2);
             setBilinearFiltering(KEY_ITEMS_BASE + i, 1);
 
-            startSpriteAnimation(KEY_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, keyItemAnimationIndices[gPlayer.keyItemSlots[overlayScreenTable.pageNumber * 8 + i]]), 0);
+            startSpriteAnimation(KEY_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, keyItemAnimationIndices[gPlayer.keyItemSlots[overlayScreenTable.pageNumber * 8 + i]]), 0);
         
         }
         
@@ -4140,7 +4150,7 @@ void loadFreezerItemSprites(void) {
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(0xA3 + i, 2);
             setBilinearFiltering(0xA3 + i, 1);
-            startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(D_80237420[(overlayScreenTable.pageNumber * 8) + i])), 0);
+            startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(D_80237420[(overlayScreenTable.pageNumber * 8) + i])), 0);
         
         }
         
@@ -4163,7 +4173,7 @@ void loadFreezerItemSprites(void) {
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
             setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
+            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
         
         }
         
@@ -4175,7 +4185,7 @@ void loadFreezerItemSprites(void) {
         setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
         setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
         setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
+        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
     }
 
 }
@@ -4921,7 +4931,7 @@ void loadCabinetItemSprites(void) {
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(0xA3 + i, 2);
             setBilinearFiltering(0xA3 + i, 1);
-            startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(D_801890E8[(overlayScreenTable.pageNumber * 8) + i])), 0);
+            startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(D_801890E8[(overlayScreenTable.pageNumber * 8) + i])), 0);
         
         }
         
@@ -4947,7 +4957,7 @@ void loadCabinetItemSprites(void) {
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
             setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
+            startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
         
         }
         
@@ -4959,7 +4969,7 @@ void loadCabinetItemSprites(void) {
         setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
         setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
         setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
-        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(shopItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
+        startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
     }
     
 }
@@ -5820,10 +5830,10 @@ void houseExtensionsSelectionScreenCallback(void) {
                 
                 switch (overlayScreenTable.pageNumber) {                      
                     case 0:                                 
-                        initializeMessageBox(0, SHOP_TEXT_INDEX, 131, 0);
+                        initializeMessageBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 131, 0);
                         break;
                     case 1:                                 
-                        initializeMessageBox(0, SHOP_TEXT_INDEX, 132, 0);
+                        initializeMessageBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 132, 0);
                     }
                 
                 overlayScreenTable.screenState = 5;
@@ -5853,7 +5863,7 @@ void houseExtensionsSelectionScreenCallback(void) {
                         resetAnimationState(CURSOR_HAND);
                         overlayScreenTable.screenState = 2;
                         gHouseExtensionSelection = overlayScreenTable.cellIndex;
-                        setDailyEventBit(8);
+                        setDailyEventBit(HOUSE_EXTENSION_SELECTED);
                         break;
 
                     case 1:
@@ -5915,7 +5925,7 @@ void houseExtensionsSelectionScreenCallback(void) {
                 setMessageBoxInterpolationWithFlags(0, -4, 0);
                 
                 if (checkLifeEventBit(buff[overlayScreenTable.cellIndex])) {
-                    initializeMessageBox(0, SHOP_TEXT_INDEX, 109, 0);
+                    initializeMessageBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 109, 0);
                     overlayScreenTable.screenState = 6;
                 } else {
                     initializeDialogueSession(0, DIALOGUE_SHOP, 33, 0x40);
@@ -6488,7 +6498,7 @@ void loadCalendarStickers(void) {
     D_80205640[3] = 3;
     D_80205640[4] = 4;
 
-    if (checkLifeEventBit(0x5B)) {
+    if (checkLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE)) {
         D_80205640[5] = 5;
         D_80205640[6] = 6;
         D_80205640[7] = 7;
@@ -8379,9 +8389,9 @@ void loadRaceBettingScreenCallback(void) {
     openOverlayScreen();
     
     if (checkDailyEventBit(HORSE_RACE)) {
-        removeKeyItem(0xE);
+        removeKeyItem(HORSE_RACE_TICKET);
     } else {
-        removeKeyItem(0xF);
+        removeKeyItem(DOG_RACE_TICKET);
     }
 
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
@@ -9177,7 +9187,7 @@ void initializeRaceContext(void) {
 
     gRacingContext.playerRaceNumber = 0xFF;
 
-    if ((checkLifeEventBit(0x51)) || (checkLifeEventBit(0x52))) {
+    if ((checkLifeEventBit(ENTERED_HORSE_RACE)) || (checkLifeEventBit(ENTERED_DOG_RACE))) {
         gRacingContext.playerRaceNumber = getRandomNumberInRange(0, 2);
     }
 
@@ -9271,13 +9281,13 @@ void initializeRaceContext(void) {
         
     }
 
-    if (checkLifeEventBit(0x51)) {
+    if (checkLifeEventBit(ENTERED_HORSE_RACE)) {
         temp3 = getRandomNumberInRange(0, 2);
         gRacingContext.racerNameIndices[1][temp3 * 6] = 0;
         gRacingContext.unk_6E = temp3;
     }
 
-    if (checkLifeEventBit(0x52)) {
+    if (checkLifeEventBit(ENTERED_DOG_RACE)) {
         temp3 = getRandomNumberInRange(0, 2);
         gRacingContext.racerNameIndices[0][temp3 * 6 + 1] = 0;
         gRacingContext.unk_6E = temp3;
@@ -9317,9 +9327,9 @@ void loadRaceResultsScreenCallback(void) {
     openOverlayScreen();
     
     if (checkDailyEventBit(HORSE_RACE)) {
-        removeKeyItem(0xE);
+        removeKeyItem(HORSE_RACE_TICKET);
     } else {
-        removeKeyItem(0xF);
+        removeKeyItem(DOG_RACE_TICKET);
     }
     
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
@@ -9618,7 +9628,7 @@ void raceResultsScreenCallback(void) {
             deactivateSprite(0x80);
             exitOverlayScreen();
             resumeGameplay();
-            setDailyEventBit(0x40);
+            setDailyEventBit(RACE_COMPLETED);
             setSpawnPoint(RACE_TRACK_SPAWN_POINT_1);
             setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
             setMainLoopCallbackFunctionIndex(MAP_LOAD);
@@ -9925,7 +9935,7 @@ void raceGiftsScreenCallback(void) {
                     
                     if (checkDailyEventBit(HORSE_RACE)) {
                         
-                        if (!func_800CE714(overlayScreenTable.cellIndex)) {
+                        if (!checkAlreadyHaveHorseRacePrize(overlayScreenTable.cellIndex)) {
                             goto label1;
                         } else {
                             goto label2;
@@ -9933,7 +9943,7 @@ void raceGiftsScreenCallback(void) {
                         
                     }
                     
-                    if (!(func_800CE828(overlayScreenTable.cellIndex))) {
+                    if (!(checkAlreadyHaveDogRacePrize(overlayScreenTable.cellIndex))) {
 label1:
                         initializeDialogueSession(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 11, 0x40);
                         overlayScreenTable.screenState = 7;
@@ -9969,26 +9979,26 @@ label2:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE714);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", checkAlreadyHaveHorseRacePrize);
 
-bool func_800CE714(u8 arg0) {
+bool checkAlreadyHaveHorseRacePrize(u8 prize) {
 
     bool result = FALSE;
     
-    switch (arg0) {
+    switch (prize) {
         
         case 0:
-            if (checkLifeEventBit(0x56)) {
+            if (checkLifeEventBit(HAVE_STABLE)) {
                 result = TRUE;
             }
             break;
         case 1:
-            if (checkLifeEventBit(0x58)) {
+            if (checkLifeEventBit(HAVE_STUFFED_HORSE)) {
                 result = TRUE;
             }
             break;
         case 2:
-            if (checkHaveKeyItem(0x15)) {
+            if (checkHaveKeyItem(STAMINA_CARROT)) {
                 result = TRUE;
             }
             break;
@@ -10005,11 +10015,11 @@ void handleGetHorseRacePrize(u8 arg0) {
 
     switch (arg0) {                              
         case 0:
-            setLifeEventBit(0x56);
+            setLifeEventBit(HAVE_STABLE);
             adjustHorseAffection(10);
             break;
         case 1:
-            setLifeEventBit(0x58);
+            setLifeEventBit(HAVE_STUFFED_HORSE);
             break;
         case 2:
             acquireKeyItem(STAMINA_CARROT);
@@ -10017,20 +10027,20 @@ void handleGetHorseRacePrize(u8 arg0) {
         }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CE828);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", checkAlreadyHaveDogRacePrize);
 
-bool func_800CE828(u8 arg0) {
+bool checkAlreadyHaveDogRacePrize(u8 prize) {
 
     bool result = FALSE;
 
-    switch (arg0) {
+    switch (prize) {
         case 0:
-            if (checkLifeEventBit(0x57)) {
+            if (checkLifeEventBit(HAVE_NEW_DOG_HOUSE)) {
                 result = TRUE;
             }
             break;
         case 1:
-            if (checkLifeEventBit(0x59)) {
+            if (checkLifeEventBit(HAVE_CUTE_CLOCK)) {
                 result = TRUE;
             }
             break;
@@ -10048,11 +10058,11 @@ void handleGetDogRacePrize(u8 arg0) {
 
     switch (arg0) {                              
         case 0:
-            setLifeEventBit(0x57);
+            setLifeEventBit(HAVE_NEW_DOG_HOUSE);
             adjustDogAffection(10);
             return;
         case 1:
-            setLifeEventBit(0x59);
+            setLifeEventBit(HAVE_CUTE_CLOCK);
             return;
         case 2:
             gLumber += adjustValue(gLumber, 500, MAX_LUMBER);
@@ -10409,7 +10419,7 @@ bool checkAvailableFlowerShopPrize(u8 arg0) {
         case 4:
             break;
         case 0:
-            if (checkLifeEventBit(0x5A)) {
+            if (checkLifeEventBit(HAVE_CUSHION)) {
                 result = TRUE;
             }
             break;
@@ -10419,7 +10429,7 @@ bool checkAvailableFlowerShopPrize(u8 arg0) {
             }
             break;
         case 2:
-            if (checkLifeEventBit(0x5B)) {
+            if (checkLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE)) {
                 result = TRUE;
             }
             break;
@@ -10435,13 +10445,13 @@ void handleGetFlowerShopPrize(u8 arg0) {
 
     switch (arg0) {
         case 0:
-            setLifeEventBit(0x5A);
+            setLifeEventBit(HAVE_CUSHION);
             break;
         case 1:
             acquireKeyItem(FLOWER_BATH_CRYSTALS);
             break;
         case 2:
-            setLifeEventBit(0x5B);
+            setLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE);
             break;
         case 3:
             storeTool(PINK_CAT_MINT_SEEDS);
@@ -10470,13 +10480,13 @@ bool checkAvailableBakeryPrize(u8 arg0) {
             break;
  
         case 1:
-             if (checkLifeEventBit(0x5C)) {
+             if (checkLifeEventBit(HAVE_MUG)) {
                  result = TRUE;
              }
             break;
         
         case 2:
-             if (checkLifeEventBit(0x5D)) {
+             if (checkLifeEventBit(HAVE_LUNCHEON_MAT)) {
                  result = TRUE;
              }
             break;
@@ -10501,7 +10511,7 @@ void handleGetBakeryPrize(u8 arg0) {
         
         case 0:
             
-            setLifeEventBit(0x17);
+            setLifeEventBit(HAVE_TABLECLOTH);
             
             if (checkLifeEventBit(MARRIED) && gWife == MARIA) {
                 npcAffection[MARIA] += adjustValue(npcAffection[MARIA], 10, MAX_AFFECTION);
@@ -10523,7 +10533,7 @@ void handleGetBakeryPrize(u8 arg0) {
 
         case 1:
             
-            setLifeEventBit(0x5C);
+            setLifeEventBit(HAVE_MUG);
             
             if (checkLifeEventBit(MARRIED) && gWife == MARIA) {
                 npcAffection[MARIA] += adjustValue(npcAffection[MARIA], 8, MAX_AFFECTION);
@@ -10544,20 +10554,20 @@ void handleGetBakeryPrize(u8 arg0) {
             break;
 
         case 2:
-            setLifeEventBit(0x5D);
+            setLifeEventBit(HAVE_LUNCHEON_MAT);
             break;
         
         case 3:
             
             if (checkHaveTool(EMPTY_BOTTLE)) {
-                gPlayer.bottleContents = 7;
+                gPlayer.bottleContents = BOTTLE_CONTENTS_HONEY;
             } else {
-                gPlayer.heldItem = COOKIES;
+                gPlayer.heldItem = COOKIES_HELD_ITEM;
             }
             break;
         
         case 4:
-            gPlayer.heldItem = COOKIES;
+            gPlayer.heldItem = COOKIES_HELD_ITEM;
             break;
     
     }

@@ -81,7 +81,7 @@ void setForecast(void) {
 
     do {
         
-        if (checkLifeEventBit(0x44) || checkLifeEventBit(0x46)) {
+        if (checkLifeEventBit(WEATHER_WISH) || checkLifeEventBit(HAVE_TURTLE_FIGURINE)) {
            currentScore += buffer2[gSeasonTomorrow-1][i];
         } else {
             currentScore += buffer[gSeasonTomorrow-1][i];

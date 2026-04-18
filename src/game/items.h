@@ -7,7 +7,7 @@
 #define MAX_KEY_ITEMS 24 
 #define MAX_TOOLS 30
 
-  /* holdable item flags */
+/* holdable item flags */
 #define ITEM_EATABLE                    0x0001  
 #define ITEM_RUCKSACK_STORABLE          0x0002   
 #define ITEM_SHIPPABLE                  0x0004   
@@ -107,7 +107,6 @@
 #define FLOWER_BATH_CRYSTALS 20
 #define STAMINA_CARROT 21
 
-// TODO: finish adding items
 /* item indices */
 #define WEED_HELD_ITEM 1
 #define ROCK_HELD_ITEM 2
@@ -115,64 +114,72 @@
 #define MOONDROP_FLOWER_HELD_ITEM 4
 #define PINK_CAT_MINT_FLOWER_HELD_ITEM 5  
 #define BLUE_MIST_FLOWER_HELD_ITEM 6
-#define CAKE 7
-#define PIE 8
-#define COOKIES 9
-// 10-13 not used?
-#define TURNIP 13
-#define POTATO 14
-#define CABBAGE 15
-#define TOMATO 16
-#define CORN 17
-#define EGGPLANT 18
-#define STRAWBERRY 19
+#define CAKE_HELD_ITEM 7
+#define PIE_HELD_ITEM 8
+#define COOKIES_HELD_ITEM 9
+#define BLUE_FEATHER_HELD_ITEM 10
+#define DOOR_TO_HEAVEN_HELD_ITEM 11
+// 12 = chocolate
+#define TURNIP_HELD_ITEM 13
+#define POTATO_HELD_ITEM 14
+#define CABBAGE_HELD_ITEM 15
+#define TOMATO_HELD_ITEM 16
+#define CORN_HELD_ITEM 17
+#define EGGPLANT_HELD_ITEM 18
+#define STRAWBERRY_HELD_ITEM 19
 #define EGG_HELD_ITEM 20
-#define SMALL_MILK 21
-#define MEDIUM_MILK 22
-#define LARGE_MILK 23
-#define GOLDEN_MILK 24
-#define WOOL 25
-#define HIGH_QUALITY_WOOL 26
-#define WILD_GRAPES 27
-#define VERYBERRY 28
-#define TROPICAL_FRUIT 29
-#define WALNUT 30
-#define MUSHROOM 31
-#define POISONOUS_MUSHROOM 32
-#define BOOK 33
-#define BERRY_OF_THE_FULLMOON 34
-#define MEDICINAL_HERB 35
-#define EDIBLE_HERB 36
-#define SMALL_FISH 37
-#define MEDIUM_FISH 38
-#define LARGE_FISH 39
-#define DUMPLING 40
-#define COTTON_CANDY 41
-#define FRIED_OCTUPUS 42
-#define ROASTED_CORN 43
-#define CANDY 44
-#define CHOCOLATE 45
-#define IRON_ORE 46
-#define BLUE_ROCK 47
-#define RARE_METAL 48
-#define MOONLIGHT_STONE 49
-#define PONTANA_ROOT 50
+#define SMALL_MILK_HELD_ITEM 21
+#define MEDIUM_MILK_HELD_ITEM 22
+#define LARGE_MILK_HELD_ITEM 23
+#define GOLDEN_MILK_HELD_ITEM 24
+#define WOOL_HELD_ITEM 25
+#define HIGH_QUALITY_WOOL_HELD_ITEM 26
+#define WILD_GRAPES_HELD_ITEM 27
+#define VERYBERRY_HELD_ITEM 28
+#define TROPICAL_FRUIT_HELD_ITEM 29
+#define WALNUT_HELD_ITEM 30
+#define MUSHROOM_HELD_ITEM 31
+#define POISONOUS_MUSHROOM_HELD_ITEM 32
+#define BOOK_HELD_ITEM 33
+#define BERRY_OF_THE_FULLMOON_HELD_ITEM 34
+#define MEDICINAL_HERB_HELD_ITEM 35
+#define EDIBLE_HERB_HELD_ITEM 36
+#define SMALL_FISH_HELD_ITEM 37
+#define MEDIUM_FISH_HELD_ITEM 38
+#define LARGE_FISH_HELD_ITEM 39
+#define DUMPLING_HELD_ITEM 40
+#define COTTON_CANDY_HELD_ITEM 41
+#define FRIED_OCTUPUS_HELD_ITEM 42
+#define ROASTED_CORN_HELD_ITEM 43
+#define CANDY_HELD_ITEM 44
+#define CHOCOLATE_HELD_ITEM 45
+#define IRON_ORE_HELD_ITEM 46
+#define BLUE_ROCK_HELD_ITEM 47
+#define RARE_METAL_HELD_ITEM 48
+#define MOONLIGHT_STONE_HELD_ITEM 49
+#define PONTATA_ROOT_HELD_ITEM 50
 #define FODDER_HELD_ITEM 57
 #define SEEDS_HELD_ITEM 64
-#define MEDICINE 72
+#define MEDICINE_HELD_ITEM 72
 #define SHEARS_HELD_ITEM 73
-#define RICE_CAKE 80
-#define BREAD 81
-#define EGGS 82
-#define POWER_NUT 87
+#define RICE_CAKE_HELD_ITEM 80
+#define BREAD_HELD_ITEM 81
+#define EGGS_HELD_ITEM 82
+#define POWER_NUT_HELD_ITEM 87
 #define DOG_HELD_ITEM 88
 // multiple directions
 #define CHICKEN_HELD_ITEM 96
 // multiple directions
 #define CHICK_HELD_ITEM 104
+// 105-111
 #define EMPTY_BOTTLE_HELD_ITEM 112
 #define BOTTLE_WITH_WATER_HELD_ITEM 113
 #define BOTTLE_WITH_WINE_HELD_ITEM 114
+// 115-117
+#define BOTTLE_WITH_MILK_HELD_ITEM 118
+// 119
+#define BOTTLE_WITH_TEA_HELD_ITEM 120
+// 121-122
 #define PUPPY_1_HELD_ITEM 123
 // multiple directions
 #define CAT_HELD_ITEM 131
@@ -200,7 +207,7 @@
 #define BABY_GROWN_HELD_ITEM 194
 // multiple directions
 // #define BABY_GROWN_HELD_ITEM 195
-#define OPEN_BOOK 202
+#define OPEN_BOOK_HELD_ITEM 202
 #define SICKLE_HELD_ITEM 203
 #define SILVER_SICKLE_HELD_ITEM 204
 #define GOLDEN_SICKLE_HELD_ITEM 205
@@ -219,8 +226,79 @@
 #define BROKEN_MUSIC_BOX_HELD_ITEM 218
 #define OCARINA_HELD_ITEM 225
 
+/* held item dialogue indices */
+#define HELD_ITEM_DIALOGUE_TURNIP                1   // raw TURNIP (13)
+#define HELD_ITEM_DIALOGUE_POTATO                2   // raw POTATO (14)
+#define HELD_ITEM_DIALOGUE_CABBAGE               3   // raw CABBAGE (15)
+#define HELD_ITEM_DIALOGUE_TOMATO                4   // raw TOMATO (16)
+#define HELD_ITEM_DIALOGUE_CORN                  5   // raw CORN (17)
+#define HELD_ITEM_DIALOGUE_EGGPLANT              6   // raw EGGPLANT (18)
+#define HELD_ITEM_DIALOGUE_STRAWBERRY            7   // raw STRAWBERRY (19)
+#define HELD_ITEM_DIALOGUE_EGG                   8   // raw EGG_HELD_ITEM (20)
+#define HELD_ITEM_DIALOGUE_SMALL_MILK            9   // raw SMALL_MILK (21)
+#define HELD_ITEM_DIALOGUE_MEDIUM_MILK           10  // raw MEDIUM_MILK (22)
+#define HELD_ITEM_DIALOGUE_LARGE_MILK            11  // raw LARGE_MILK (23)
+#define HELD_ITEM_DIALOGUE_GOLDEN_MILK           12  // raw GOLDEN_MILK (24)
+#define HELD_ITEM_DIALOGUE_MOONDROP_FLOWER       13  // raw MOONDROP_FLOWER_HELD_ITEM (4)
+#define HELD_ITEM_DIALOGUE_PINK_CAT_MINT_FLOWER  14  // raw PINK_CAT_MINT_FLOWER_HELD_ITEM (5)
+#define HELD_ITEM_DIALOGUE_CAKE                  15  // raw CAKE (7)
+#define HELD_ITEM_DIALOGUE_PIE                   16  // raw PIE (8)
+#define HELD_ITEM_DIALOGUE_COOKIES               17  // raw COOKIES (9)
+#define HELD_ITEM_DIALOGUE_WOOL                  18  // raw WOOL (25)
+#define HELD_ITEM_DIALOGUE_HIGH_QUALITY_WOOL     19  // raw HIGH_QUALITY_WOOL (26)
+#define HELD_ITEM_DIALOGUE_WILD_GRAPES           20  // raw WILD_GRAPES (27)
+#define HELD_ITEM_DIALOGUE_VERYBERRY             21  // raw VERYBERRY (28)
+#define HELD_ITEM_DIALOGUE_TROPICAL_FRUIT        22  // raw TROPICAL_FRUIT (29)
+#define HELD_ITEM_DIALOGUE_WALNUT                23  // raw WALNUT (30)
+#define HELD_ITEM_DIALOGUE_MUSHROOM              24  // raw MUSHROOM (31)
+#define HELD_ITEM_DIALOGUE_BERRY_OF_THE_FULLMOON 25  // raw BERRY_OF_THE_FULLMOON (34)
+#define HELD_ITEM_DIALOGUE_DUMPLING              26  // raw DUMPLING (40)
+#define HELD_ITEM_DIALOGUE_MEDICINAL_HERB        27  // raw MEDICINAL_HERB (35)
+#define HELD_ITEM_DIALOGUE_EDIBLE_HERB           28  // raw EDIBLE_HERB (36)
+#define HELD_ITEM_DIALOGUE_SMALL_FISH            29  // raw SMALL_FISH (37)
+#define HELD_ITEM_DIALOGUE_MEDIUM_FISH           30  // raw MEDIUM_FISH (38)
+#define HELD_ITEM_DIALOGUE_LARGE_FISH            31  // raw LARGE_FISH (39)
+#define HELD_ITEM_DIALOGUE_COTTON_CANDY          32  // raw COTTON_CANDY (41)
+#define HELD_ITEM_DIALOGUE_FRIED_OCTUPUS         33  // raw FRIED_OCTUPUS (42)
+#define HELD_ITEM_DIALOGUE_CHOCOLATE             34  // raw CHOCOLATE (45)
+#define HELD_ITEM_DIALOGUE_CANDY                 35  // raw CANDY (44)
+// 36-40: no raw items remap to these indices
+#define HELD_ITEM_DIALOGUE_FODDER                41  // raw FODDER_HELD_ITEM (57)
+#define HELD_ITEM_DIALOGUE_LOG                   42  // raw LOG_HELD_ITEM (3)
+#define HELD_ITEM_DIALOGUE_IRON_ORE              43  // raw IRON_ORE (46)
+#define HELD_ITEM_DIALOGUE_RARE_METAL            44  // raw RARE_METAL (48)
+#define HELD_ITEM_DIALOGUE_BLUE_ROCK             45  // raw BLUE_ROCK (47)
+#define HELD_ITEM_DIALOGUE_MOONLIGHT_STONE       46  // raw MOONLIGHT_STONE (49)
+#define HELD_ITEM_DIALOGUE_ROCK                  47  // raw ROCK_HELD_ITEM (2)
+#define HELD_ITEM_DIALOGUE_WEED                  48  // raw WEED_HELD_ITEM (1)
+#define HELD_ITEM_DIALOGUE_POISONOUS_MUSHROOM    49  // raw POISONOUS_MUSHROOM (32)
+// 50: raw 10 (unnamed in items.h); routed to .proposal in mariaDialogue
+#define HELD_ITEM_DIALOGUE_DOG                   51  // raw DOG_HELD_ITEM (88) + 7 direction variants
+#define HELD_ITEM_DIALOGUE_BABY                  52  // raw BABY_HELD_ITEM (186) + grown + 14 variants
+#define HELD_ITEM_DIALOGUE_HORNED_BEETLE         53  // raw HORNED_BEETLE_HELD_ITEM (182)
+#define HELD_ITEM_DIALOGUE_STAG_BEETLE           54  // raw STAG_BEETLE_HELD_ITEM (183)
+// 55: no raw items remap to this index
+#define HELD_ITEM_DIALOGUE_CICADA                56  // raw CICADA_HELD_ITEM (181)
+#define HELD_ITEM_DIALOGUE_BUTTERFLY             57  // raw BUTTERFLY_HELD_ITEM (179)
+#define HELD_ITEM_DIALOGUE_LADYBUG               58  // raw LADYBUG_HELD_ITEM (180)
+#define HELD_ITEM_DIALOGUE_RED_DRAGONFLY         59  // raw RED_DRAGONFLY_HELD_ITEM (184)
+#define HELD_ITEM_DIALOGUE_CRICKET               60  // raw CRICKET_HELD_ITEM (185)
+#define HELD_ITEM_DIALOGUE_PONTATA_ROOT          61  // raw PONTATA_ROOT (50)
+#define HELD_ITEM_DIALOGUE_CHICKEN               62  // raw CHICKEN_HELD_ITEM (96) + 7 direction variants
+#define HELD_ITEM_DIALOGUE_CHICK                 63  // raw CHICK_HELD_ITEM (104) + 7 direction variants
+// 64: aggregate wild-animal index (CAT, FOX, SQUIRREL, RABBIT, MONKEY — 40 raw IDs)
+#define HELD_ITEM_DIALOGUE_PUPPY                 65  // raw PUPPY_1_HELD_ITEM (123) + 7 direction variants
+#define HELD_ITEM_DIALOGUE_DOG_2                 66  // raw DOG_2_HELD_ITEM (171) + 7 direction variants
+
 /* bottle contents */
-#define EMPTY 0
+#define BOTTLE_CONTENTS_EMPTY 0
+#define BOTTLE_CONTENTS_WATER 1
+#define BOTTLE_CONTENTS_WINE 2
+#define BOTTLE_CONTENTS_CURE_ALL_MEDICINE 3
+#define BOTTLE_CONTENTS_VITAMIN_PREPARATION 4
+#define BOTTLE_CONTENTS_VITAMIN_GOLD 5
+#define BOTTLE_CONTENTS_MILK 6
+#define BOTTLE_CONTENTS_HONEY 7
 
 // 0x80204DF8
 typedef struct {

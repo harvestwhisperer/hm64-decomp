@@ -754,7 +754,7 @@ bool setMapObject(u16 mapIndex, u8 index, u16 spriteIndex, u16 animationIndex, f
         mainMap[mapIndex].mapObjects[index].unk_10 = arg7;
         mainMap[mapIndex].mapObjects[index].animationMode = animationMode;
 
-        mainMap[mapIndex].mapObjects[index].flags |= 1;
+        mainMap[mapIndex].mapObjects[index].flags |= MAP_OBJECT_ACTIVE;
         
         if (screenWrap) {
             mainMap[mapIndex].mapObjects[index].flags |= MAP_OBJECT_SCREEN_WRAP;

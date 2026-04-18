@@ -141,7 +141,7 @@ CUTSCENE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.tr
 CUTSCENE_OBJECTS := \
 	$(CUTSCENE_BUILD_DIR)/farmBusiness.bin.o \
 	$(CUTSCENE_BUILD_DIR)/farmVisits.bin.o \
-	$(CUTSCENE_BUILD_DIR)/familyCutscenes.bin.o \
+	$(CUTSCENE_BUILD_DIR)/houseCutscenes.bin.o \
 	$(CUTSCENE_BUILD_DIR)/roadCutscenes.bin.o \
 	$(CUTSCENE_BUILD_DIR)/mountainCutscenes.bin.o \
 	$(CUTSCENE_BUILD_DIR)/ranchCutscenes.bin.o \
@@ -255,44 +255,44 @@ DIALOGUE_OBJECTS := \
 	$(DIALOGUE_BUILD_DIR)/pastorDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/potionShopDealerDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/potionShopDealerDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/cutscenes1Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/cutscenes1DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text48Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text48DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text49Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text49DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text50Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text50DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text51Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text51DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text52Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text52DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/ranchCutscenesDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/ranchCutscenesDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/fireworksFestivalDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/fireworksFestivalDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/flowerFestivalDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/flowerFestivalDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/seaFestivalAndEvaluationDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/seaFestivalAndEvaluationDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/cowFestivalDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/cowFestivalDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/fireflyFestivalDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/fireflyFestivalDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/dogRaceDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/dogRaceDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/vegetableFestivalDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/vegetableFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text54Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text54DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text55Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text55DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text56Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text56DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mountainCutscenesDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mountainCutscenesDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/sowingFestivalDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/sowingFestivalDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/harvestFestivalDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/harvestFestivalDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/horseRaceDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/horseRaceDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/vineyardCutscenesDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/vineyardCutscenesDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text63Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text63DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/roadCutscenesDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/roadCutscenesDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/farmVisitsDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/farmVisitsDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text65Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text65DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/houseCutscenesDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/houseCutscenesDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/eggFestivalDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/eggFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/marriedDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/marriedDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text61Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text61DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/village1CutscenesDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/village1CutscenesDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/village2CutscenesDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/village2CutscenesDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/namingScreenDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/namingScreenDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/newYearFestivalDialogue.bin.o \
@@ -305,18 +305,18 @@ DIALOGUE_OBJECTS := \
 	$(DIALOGUE_BUILD_DIR)/festivalOverlaySelectionsDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/babyDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/babyDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mrsManaAndJohn1Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mrsManaAndJohn1DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mrsManaAndJohn2Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mrsManaAndJohn2DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mrsManaDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/mrsManaDialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/johnDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/johnDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/libraryDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/libraryDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/additionalNpcs1Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/additionalNpcs1DialogueIndex.bin.o \
+	$(DIALOGUE_BUILD_DIR)/gourmetJudgeDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/gourmetJudgeDialogueIndex.bin.o \
 	$(DIALOGUE_BUILD_DIR)/npcBabyDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/npcBabyDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/additionalNpcs2Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/additionalNpcs2DialogueIndex.bin.o
+	$(DIALOGUE_BUILD_DIR)/entomologistDialogue.bin.o \
+	$(DIALOGUE_BUILD_DIR)/entomologistDialogueIndex.bin.o
 
 DECOMPILED_TEXTS := text1 \
 	library \
@@ -324,7 +324,7 @@ DECOMPILED_TEXTS := text1 \
 	recipesJapanese \
 	festivalOverlaySelections \
 	letters \
-	shop \
+	levelInteractions \
 	animalInteractions \
 	tv \
 	text10 \
@@ -363,32 +363,32 @@ DECOMPILED_TEXTS := text1 \
 	midwife \
 	pastor \
 	saibara \
-	cutscenes1 \
+	ranchCutscenes \
 	funeralIntro \
-	text48 \
-	text49 \
-	text50 \
-	text51 \
-	text52 \
+	fireworksFestival \
+	flowerFestival \
+	seaFestivalAndEvaluation \
+	cowFestival \
+	fireflyFestival \
 	dogRace \
-	text54 \
-	text55 \
-	text56 \
+	mountainCutscenes \
+	sowingFestival \
+	harvestFestival \
 	newYearFestival \
 	spiritFestival \
 	horseRace \
-	marriedDialogues \
-	text61 \
+	village1Cutscenes \
+	village2Cutscenes \
 	vineyardCutscenes \
-	text63 \
+	roadCutscenes \
 	farmVisits \
-	text65 \
+	houseCutscenes \
 	eggFestival \
 	beachCutscenes \
 	vegetableFestival \
 	baby \
 	mrsManaAndJohn \
-	additionalNpcs \
+	additionalNPCs \
 	howToPlay
 
 TEXT_ASSETS_DIR := assets/text
@@ -1042,12 +1042,16 @@ $(TARGET): $(BASENAME).elf
 check: $(TARGET)
 	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
 
+fresh:
+	$(MAKE) setup
+	$(MAKE) -j4
 
 .PHONY: all modern clean clean-assets setup split rerun check codesegment
 .PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
 .PHONY: extract-animation-sprites extract-animations extract-gifs
 .PHONY: extract-texts extract-map-sprites extract-cutscenes
 .PHONY: extract-fonts assemble-fonts extract-font
+.PHONY: fresh
 
 CUTSCENE_ASM := $(patsubst $(CUTSCENE_BUILD_DIR)/%.bin.o,$(CUTSCENE_ASSETS_DIR)/%.s,$(CUTSCENE_OBJECTS))
 DIALOGUE_ASM := $(patsubst $(DIALOGUE_BUILD_DIR)/%.bin.o,$(DIALOGUE_ASSETS_DIR)/%.s,$(DIALOGUE_OBJECTS))

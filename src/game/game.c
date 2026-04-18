@@ -36,6 +36,7 @@
 #include "buffers/buffers.h"
 
 #include "assetIndices/cutscenes.h"
+#include "assetIndices/dialogueMenus.h"
 #include "assetIndices/dialogues.h"
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
@@ -525,7 +526,7 @@ static const s16 houseExtensionLumberCosts[6];
 
 // forward declarations
 extern inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, u32 flag, u16 arg4);
-extern void showPinkOverlayText(u8);
+extern void showDialogueTextBox(u8);
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", updateFamilyStates);
 
@@ -541,26 +542,26 @@ void updateFamilyStates(void) {
 
     if (!checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT) && gWifePregnancyCounter >= 60) {
          
-        toggleLifeEventBit(WIFE_PREGNANT);
+        clearLifeEventBit(WIFE_PREGNANT);
         setLifeEventBit(HAVE_BABY);
-        setSpecialDialogueBit(4);
+        setSpecialDialogueBit(HAVE_BABY_DIALOGUE);
         
          switch (gWife) {        
 
             case MARIA:                              
-                setSpecialDialogueBit(0x151);
+                setSpecialDialogueBit(HAVE_BABY_WIFE_MARIA_DIALOGUE);
                 break;
             case POPURI:                             
-                setSpecialDialogueBit(0x152);
+                setSpecialDialogueBit(HAVE_BABY_WIFE_POPURI_DIALOGUE);
                 break;
             case ELLI:                                
-                setSpecialDialogueBit(0x153);
+                setSpecialDialogueBit(HAVE_BABY_WIFE_ELLI_DIALOGUE);
                 break;
             case ANN:                      
-                setSpecialDialogueBit(0x154);
+                setSpecialDialogueBit(HAVE_BABY_WIFE_ANN_DIALOGUE);
                 break;
             case KAREN:                    
-                setSpecialDialogueBit(0x155);
+                setSpecialDialogueBit(HAVE_BABY_WIFE_KAREN_DIALOGUE);
                 break;
             default:
                 break;
@@ -581,19 +582,19 @@ void updateFamilyStates(void) {
         
          switch (gWife) {                        
             case MARIA:                               
-                setSpecialDialogueBit(WIFE_PREGNANT_MARIA);
+                setSpecialDialogueBit(WIFE_PREGNANT_MARIA_DIALOGUE);
                 break;
             case POPURI:                               
-                setSpecialDialogueBit(WIFE_PREGNANT_POPURI);
+                setSpecialDialogueBit(WIFE_PREGNANT_POPURI_DIALOGUE);
                 break;
             case ELLI:                                
-                setSpecialDialogueBit(WIFE_PREGNANT_ELLI);
+                setSpecialDialogueBit(WIFE_PREGNANT_ELLI_DIALOGUE);
                 break;
             case ANN:                             
-                setSpecialDialogueBit(WIFE_PREGNANT_ANN);
+                setSpecialDialogueBit(WIFE_PREGNANT_ANN_DIALOGUE);
                 break;
             case KAREN:                               
-                setSpecialDialogueBit(WIFE_PREGNANT_KAREN);
+                setSpecialDialogueBit(WIFE_PREGNANT_KAREN_DIALOGUE);
                 break;
             default:
                 break;
@@ -612,10 +613,10 @@ not_married:
         }
 
         if (!checkLifeEventBit(MARIA_HARRIS_HAVE_BABY) && checkLifeEventBit(MARIA_PREGNANT) && mariaHarrisPregnancyCounter >= 60) {
-            toggleLifeEventBit(MARIA_PREGNANT);
+            clearLifeEventBit(MARIA_PREGNANT);
             setLifeEventBit(MARIA_HARRIS_HAVE_BABY);
             setSpecialDialogueBit(MARIA_HARRIS_HAVE_BABY_DIALOGUE);
-            toggleSpecialDialogueBit(MARIA_PREGNANT_DIALOGUE);
+            clearSpecialDialogueBit(MARIA_PREGNANT_DIALOGUE);
         }
 
         if (!checkLifeEventBit(MARIA_HARRIS_HAVE_BABY) && checkLifeEventBit(MARIA_PREGNANT)) {
@@ -639,10 +640,10 @@ not_married:
         }
 
         if (!checkLifeEventBit(POPURI_GRAY_HAVE_BABY) && checkLifeEventBit(POPURI_PREGNANT) && popuriGrayPregnancyCounter >= 60) {
-            toggleLifeEventBit(POPURI_PREGNANT);
+            clearLifeEventBit(POPURI_PREGNANT);
             setLifeEventBit(POPURI_GRAY_HAVE_BABY);
             setSpecialDialogueBit(POPURI_GRAY_HAVE_BABY_DIALOGUE);
-            toggleSpecialDialogueBit(0x38);
+            clearSpecialDialogueBit(POPURI_PREGNANT_DIALOGUE);
         }
 
         if (!checkLifeEventBit(POPURI_GRAY_HAVE_BABY) && checkLifeEventBit(POPURI_PREGNANT)) {
@@ -652,7 +653,7 @@ not_married:
         if (!checkLifeEventBit(POPURI_GRAY_HAVE_BABY) && !checkLifeEventBit(POPURI_PREGNANT) && npcAffection[GRAY] >= 250 && popuriGrayNewlywedCounter >= 30) {
             setLifeEventBit(POPURI_PREGNANT);
             popuriGrayPregnancyCounter = 0;
-            setSpecialDialogueBit(0x38);
+            setSpecialDialogueBit(POPURI_PREGNANT_DIALOGUE);
         }
 
     }
@@ -666,10 +667,10 @@ not_married:
         }
 
         if (!checkLifeEventBit(ELLI_JEFF_HAVE_BABY) && checkLifeEventBit(ELLI_PREGNANT) && elliJeffPregnancyCounter >= 60) {
-            toggleLifeEventBit(ELLI_PREGNANT);
+            clearLifeEventBit(ELLI_PREGNANT);
             setLifeEventBit(ELLI_JEFF_HAVE_BABY);
             setSpecialDialogueBit(ELLI_JEFF_HAVE_BABY_DIALOGUE);
-            toggleSpecialDialogueBit(ELLI_PREGNANT_DIALOGUE);
+            clearSpecialDialogueBit(ELLI_PREGNANT_DIALOGUE);
         }
 
         if (!checkLifeEventBit(ELLI_JEFF_HAVE_BABY) && checkLifeEventBit(ELLI_PREGNANT)) {
@@ -693,10 +694,10 @@ not_married:
         }
 
         if (!checkLifeEventBit(ANN_CLIFF_HAVE_BABY) && checkLifeEventBit(ANN_PREGNANT) && annPregnancyCounter >= 60) {
-            toggleLifeEventBit(ANN_PREGNANT);
+            clearLifeEventBit(ANN_PREGNANT);
             setLifeEventBit(ANN_CLIFF_HAVE_BABY);
             setSpecialDialogueBit(ANN_CLIFF_HAVE_BABY_DIALOGUE);
-            toggleSpecialDialogueBit(ANN_PREGNANT_DIALOGUE);
+            clearSpecialDialogueBit(ANN_PREGNANT_DIALOGUE);
         }
 
         if (!checkLifeEventBit(ANN_CLIFF_HAVE_BABY) && checkLifeEventBit(ANN_PREGNANT)) {
@@ -720,10 +721,10 @@ not_married:
         }
 
         if (!checkLifeEventBit(KAREN_KAI_HAVE_BABY) && checkLifeEventBit(KAREN_PREGNANT) && karenPregnancyCounter >= 60) {
-            toggleLifeEventBit(KAREN_PREGNANT);
+            clearLifeEventBit(KAREN_PREGNANT);
             setLifeEventBit(KAREN_KAI_HAVE_BABY);
             setSpecialDialogueBit(KAREN_KAI_HAVE_BABY_DIALOGUE);
-            toggleSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
+            clearSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
         }
 
         if (!checkLifeEventBit(KAREN_KAI_HAVE_BABY) && checkLifeEventBit(KAREN_PREGNANT)) {
@@ -731,7 +732,7 @@ not_married:
         }
 
         if (!checkLifeEventBit(KAREN_KAI_HAVE_BABY) && !checkLifeEventBit(KAREN_PREGNANT) && npcAffection[KAI] >= 250 && karenKaiNewlywedCounter >= 30) {
-            setLifeEventBit(0x25);
+            setLifeEventBit(KAREN_PREGNANT);
             karenPregnancyCounter = 0;
             setSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
         }
@@ -776,30 +777,26 @@ handle_animals:
 
 }
 
-// func_8005A708
 //INCLUDE_ASM("asm/nonmatchings/game/game", setSpecialDialogues);
 
 void setSpecialDialogues(void) {
 
-    // have at least 1 house extensions
     if (getTotalCowsCount()) {
-        setSpecialDialogueBit(HAVE_HOUSE_EXTENSION);
+        setSpecialDialogueBit(HAVE_COW_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(HAVE_HOUSE_EXTENSION);
+        clearSpecialDialogueBit(HAVE_COW_DIALOGUE);
     }
 
-    // cow and sheep status
     if (getTotalSheepCount()) {
-        setSpecialDialogueBit(0x28);
+        setSpecialDialogueBit(HAVE_SHEEP_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(0x28);
+        clearSpecialDialogueBit(HAVE_SHEEP_DIALOGUE);
     }
 
-    // chicken status
     if (getTotalChickenCount()) {
-        setSpecialDialogueBit(0x2C);
+        setSpecialDialogueBit(HAVE_CHICKEN_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(0x2C);
+        clearSpecialDialogueBit(HAVE_CHICKEN_DIALOGUE);
     }
 
     if (checkLifeEventBit(HAVE_HORSE)) {
@@ -809,42 +806,42 @@ void setSpecialDialogues(void) {
     if (gForecast == RAIN) {
         setSpecialDialogueBit(RAIN_FORECAST_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(RAIN_FORECAST_DIALOGUE);
+        clearSpecialDialogueBit(RAIN_FORECAST_DIALOGUE);
     }
 
     if (checkLifeEventBit(HAVE_KITCHEN)) {
-        setSpecialDialogueBit(0x18);
+        setSpecialDialogueBit(HAVE_KITCHEN_DIALOGUE);
     }
 
     if (checkLifeEventBit(HAVE_BATHROOM)) {
-        setSpecialDialogueBit(0x19);
+        setSpecialDialogueBit(HAVE_BATHROOM_DIALOGUE);
     }
 
     if (checkLifeEventBit(HAVE_STAIRS)) {
-        setSpecialDialogueBit(0x1A);
+        setSpecialDialogueBit(HAVE_STAIRS_DIALOGUE);
     }
 
     if (checkLifeEventBit(HAVE_GREENHOUSE)) {
-        setSpecialDialogueBit(0x1B);
+        setSpecialDialogueBit(HAVE_GREENHOUSE_DIALOGUE);
     }
 
     // spirit festival
     if (gSeason == WINTER && gDayOfMonth == 27) {
 
         if (gHarvestKing == PLAYER) {
-            setSpecialDialogueBit(PLAYER_HARVEST_KING_SPIRIT_FESTIVAL_ASSISTANTS);
+            setSpecialDialogueBit(PLAYER_HARVEST_KING_SPIRIT_FESTIVAL_ASSISTANTS_DIALOGUE);
         }
 
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA);
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI);
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI);
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN);
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN);
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS);
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY);
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF);
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF);
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI);
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA_DIALOGUE);
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI_DIALOGUE);
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI_DIALOGUE);
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN_DIALOGUE);
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN_DIALOGUE);
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS_DIALOGUE);
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY_DIALOGUE);
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF_DIALOGUE);
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF_DIALOGUE);
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI_DIALOGUE);
 
         numberOfSpiritFestivalAssistantsRecruited = 0;
         spiritFestivalAssistant1 = 0;
@@ -852,88 +849,88 @@ void setSpecialDialogues(void) {
         spiritFestivalAssistant3 = 0;
 
     } else {
-        toggleSpecialDialogueBit(PLAYER_HARVEST_KING_SPIRIT_FESTIVAL_ASSISTANTS);
+        clearSpecialDialogueBit(PLAYER_HARVEST_KING_SPIRIT_FESTIVAL_ASSISTANTS_DIALOGUE);
     }
 
     if (gSeason == WINTER && gDayOfMonth == 10) {
-        setSpecialDialogueBit(THANKSGIVING);
+        setSpecialDialogueBit(THANKSGIVING_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(THANKSGIVING);
+        clearSpecialDialogueBit(THANKSGIVING_DIALOGUE);
     }
 
     if (gSeason == WINTER && gDayOfMonth == 30) {
-        setSpecialDialogueBit(NEW_YEARS_EVE);
+        setSpecialDialogueBit(NEW_YEARS_EVE_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(NEW_YEARS_EVE);
+        clearSpecialDialogueBit(NEW_YEARS_EVE_DIALOGUE);
     }
 
     if (gSeason == WINTER && gDayOfMonth == 24) {
-        setSpecialDialogueBit(STARRY_NIGHT_FESTIVAL_DIALOGUE_BIT);
+        setSpecialDialogueBit(STARRY_NIGHT_FESTIVAL_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(STARRY_NIGHT_FESTIVAL_DIALOGUE_BIT);
+        clearSpecialDialogueBit(STARRY_NIGHT_FESTIVAL_DIALOGUE);
     }
 
     if (gSeason == WINTER && gDayOfMonth == 11) {
-        setSpecialDialogueBit(MARIA_BIRTHDAY);
+        setSpecialDialogueBit(MARIA_BIRTHDAY_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(MARIA_BIRTHDAY);
+        clearSpecialDialogueBit(MARIA_BIRTHDAY_DIALOGUE);
     }
 
     if (gSeason == SPRING && gDayOfMonth == 22) {
-        setSpecialDialogueBit(POPURI_BIRTHDAY);
+        setSpecialDialogueBit(POPURI_BIRTHDAY_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(POPURI_BIRTHDAY);
+        clearSpecialDialogueBit(POPURI_BIRTHDAY_DIALOGUE);
     }
 
     if (gSeason == AUTUMN && gDayOfMonth == 1) {
-        setSpecialDialogueBit(ELLI_BIRTHDAY);
+        setSpecialDialogueBit(ELLI_BIRTHDAY_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(ELLI_BIRTHDAY);
+        clearSpecialDialogueBit(ELLI_BIRTHDAY_DIALOGUE);
     }
 
     if (gSeason == SUMMER && gDayOfMonth == 14) {
-        setSpecialDialogueBit(ANN_BIRTHDAY);
+        setSpecialDialogueBit(ANN_BIRTHDAY_DIALOGUE);
     } else {
-        toggleSpecialDialogueBit(ANN_BIRTHDAY);
+        clearSpecialDialogueBit(ANN_BIRTHDAY_DIALOGUE);
     }
 
     if (gSeason == WINTER && gDayOfMonth == 29) {
-        setSpecialDialogueBit(KAREN_BIRTHDAY);
+        setSpecialDialogueBit(KAREN_BIRTHDAY_DIALOGUE);
     }
     else {
-        toggleSpecialDialogueBit(KAREN_BIRTHDAY);
+        clearSpecialDialogueBit(KAREN_BIRTHDAY_DIALOGUE);
     }
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", clearTempSpecialDialogueBits);
+//INCLUDE_ASM("asm/nonmatchings/game/game", clearNPCAlternateLocationDialogueBits);
 
-void clearTempSpecialDialogueBits(void) {
+void clearNPCAlternateLocationDialogueBits(void) {
 
-    toggleSpecialDialogueBit(0x40);
-    toggleSpecialDialogueBit(0x46);
-    toggleSpecialDialogueBit(0x91);
-    toggleSpecialDialogueBit(0x92);
-    toggleSpecialDialogueBit(0x93);
-    toggleSpecialDialogueBit(180);
-    toggleSpecialDialogueBit(0x96);
-    toggleSpecialDialogueBit(0x97);
-    toggleSpecialDialogueBit(0x98);
-    toggleSpecialDialogueBit(0x99);
-    toggleSpecialDialogueBit(0x9E);
-    toggleSpecialDialogueBit(0x9F);
-    toggleSpecialDialogueBit(160);
-    toggleSpecialDialogueBit(0xA1);
-    toggleSpecialDialogueBit(0xA9);
-    toggleSpecialDialogueBit(0xAA);
-    toggleSpecialDialogueBit(0xAB);
-    toggleSpecialDialogueBit(0xB1);
-    toggleSpecialDialogueBit(0x131);
-    toggleSpecialDialogueBit(0x132);
-    toggleSpecialDialogueBit(0x133);
-    toggleSpecialDialogueBit(0x134);
-    toggleSpecialDialogueBit(0x136);
-    toggleSpecialDialogueBit(0x137);
+    clearSpecialDialogueBit(HARRIS_AT_TAVERN_DIALOGUE);
+    clearSpecialDialogueBit(POPURI_AT_RANCH_DIALOGUE);
+    clearSpecialDialogueBit(POPURI_AT_MOUNTAIN_2_DIALOGUE);
+    clearSpecialDialogueBit(POPURI_AT_MOON_MOUNTAIN_DIALOGUE);
+    clearSpecialDialogueBit(POPURI_AT_BAKERY_DIALOGUE);
+    clearSpecialDialogueBit(POPURI_AT_BEACH_DIALOGUE);
+    clearSpecialDialogueBit(ELLI_AT_MOUNTAIN_1_DIALOGUE);
+    clearSpecialDialogueBit(ELLI_AT_MOUNTAIN_2_DIALOGUE);
+    clearSpecialDialogueBit(ELLI_AT_FLOWER_SHOP_DIALOGUE);
+    clearSpecialDialogueBit(ELLI_AT_BEACH_DIALOGUE);
+    clearSpecialDialogueBit(ANN_AT_MOUNTAIN_DIALOGUE);
+    clearSpecialDialogueBit(ANN_AT_BEACH_DIALOGUE);
+    clearSpecialDialogueBit(ANN_AT_VINEYARD_DIALOGUE);
+    clearSpecialDialogueBit(ANN_AT_RICK_STORE_DIALOGUE);
+    clearSpecialDialogueBit(KAREN_AT_BEACH_DIALOGUE);
+    clearSpecialDialogueBit(KAREN_AT_MOUNTAIN_DIALOGUE);
+    clearSpecialDialogueBit(KAREN_AT_TAVERN_DIALOGUE);
+    clearSpecialDialogueBit(MARIA_AT_BEACH_DIALOGUE);
+    clearSpecialDialogueBit(GRAY_AT_TAVERN_DIALOGUE);
+    clearSpecialDialogueBit(JEFF_AT_TAVERN_DIALOGUE);
+    clearSpecialDialogueBit(CLIFF_AT_TAVERN_DIALOGUE);
+    clearSpecialDialogueBit(KAI_AT_TAVERN_DIALOGUE);
+    clearSpecialDialogueBit(MARIA_AT_MOUNTAIN_DIALOGUE);
+    clearSpecialDialogueBit(KENT_AT_MOUNTAIN_DIALOGUE);
     
 }
 
@@ -947,82 +944,91 @@ void resetDailyBits(void) {
         dailyEventBits[i] = 0;
     }
     
-    toggleSpecialDialogueBit(1);
-    toggleSpecialDialogueBit(0xE1);
-    toggleSpecialDialogueBit(0xE2);
-    toggleSpecialDialogueBit(0xE3);
-    toggleSpecialDialogueBit(0xE4);
-    toggleSpecialDialogueBit(0xE5);
-    toggleSpecialDialogueBit(0xE6);
-    toggleSpecialDialogueBit(0xE7);
-    toggleSpecialDialogueBit(0xE8);
-    toggleSpecialDialogueBit(0xE9);
-    toggleSpecialDialogueBit(0xEA);
-    toggleSpecialDialogueBit(0xEB);
-    toggleSpecialDialogueBit(0xEC);
-    toggleSpecialDialogueBit(0xED);
-    toggleSpecialDialogueBit(0xEE);
-    toggleSpecialDialogueBit(0xEF);
-    toggleSpecialDialogueBit(0xF0);
-    toggleSpecialDialogueBit(0xF1);
-    toggleSpecialDialogueBit(0xF2);
-    toggleSpecialDialogueBit(0xF3);
-    toggleSpecialDialogueBit(0xF4);
-    toggleSpecialDialogueBit(0xF5);
-    toggleSpecialDialogueBit(0xF6);
-    toggleSpecialDialogueBit(0xF7);
-    toggleSpecialDialogueBit(0xF8);
-    toggleSpecialDialogueBit(0xF9);
-    toggleSpecialDialogueBit(0xFA);
-    toggleSpecialDialogueBit(0xFB);
-    toggleSpecialDialogueBit(0xFC);
-    toggleSpecialDialogueBit(0xFD);
-    toggleSpecialDialogueBit(0xFE);
-    toggleSpecialDialogueBit(0xFF);
-    toggleSpecialDialogueBit(0x100);
-    toggleSpecialDialogueBit(0x101);
-    toggleSpecialDialogueBit(0x102);
-    toggleSpecialDialogueBit(0x103);
-    toggleSpecialDialogueBit(0x104);
-    toggleSpecialDialogueBit(0x105);
-    toggleSpecialDialogueBit(2);
-    toggleSpecialDialogueBit(0x106);
-    toggleSpecialDialogueBit(0x107);
-    toggleSpecialDialogueBit(0x108);
-    toggleSpecialDialogueBit(0x109);
-    toggleSpecialDialogueBit(0x10A);
-    toggleSpecialDialogueBit(0x10B);
-    toggleSpecialDialogueBit(0x10C);
-    toggleSpecialDialogueBit(0x10D);
-    toggleSpecialDialogueBit(0x10E);
-    toggleSpecialDialogueBit(0x10F);
-    toggleSpecialDialogueBit(0x110);
-    toggleSpecialDialogueBit(0x111);
-    toggleSpecialDialogueBit(0x112);
-    toggleSpecialDialogueBit(0x113);
-    toggleSpecialDialogueBit(0x114);
-    toggleSpecialDialogueBit(0x115);
-    toggleSpecialDialogueBit(0x116);
-    toggleSpecialDialogueBit(0x117);
-    toggleSpecialDialogueBit(0x118);
-    toggleSpecialDialogueBit(0x119);
-    toggleSpecialDialogueBit(0x11A);
-    toggleSpecialDialogueBit(0x11B);
-    toggleSpecialDialogueBit(0x11C);
-    toggleSpecialDialogueBit(0x11D);
-    toggleSpecialDialogueBit(0x11E);
-    toggleSpecialDialogueBit(0x11F);
-    toggleSpecialDialogueBit(0x120);
-    toggleSpecialDialogueBit(0x121);
-    toggleSpecialDialogueBit(0x122);
-    toggleSpecialDialogueBit(0x123);
-    toggleSpecialDialogueBit(0x124);
-    toggleSpecialDialogueBit(0x125);
-    toggleSpecialDialogueBit(0x126);
-    toggleSpecialDialogueBit(0x127);
-    toggleSpecialDialogueBit(0x128);
-    toggleSpecialDialogueBit(0x129);
-    toggleSpecialDialogueBit(0x12A);
+    // clear greeted NPC dialogues
+    clearSpecialDialogueBit(GREETED_MARIA_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_POPURI_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_ELLI_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_ANN_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_KAREN_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_HARRIS_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_GRAY_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_JEFF_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_CLIFF_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_KAI_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_MAYOR_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_MAYOR_WIFE_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_LILLIA_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_BASIL_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_ELLEN_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_PASTOR_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_RICK_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_SAIBARA_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_POTION_SHOP_DEALER_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_KENT_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_STU_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_MIDWIFE_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_MAY_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_ASSITANT_CARPENTER_1_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_ASSITANT_CARPENTER_2_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_MASTER_CARPENTER_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_HARVEST_SPRITE_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_SYDNEY_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_BARLEY_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_GREG_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_BABY_DIALOGUE);
+
+    // cut/unused NPC
+    clearSpecialDialogueBit(255);
+
+    clearSpecialDialogueBit(GREETED_DOUG_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_GOTZ_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_SASHA_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_SHIPPER_DIALOGUE);
+    clearSpecialDialogueBit(GREETED_DUKE_DIALOGUE);
+
+    // clear gave gift
+    clearSpecialDialogueBit(GREETED_GOURMET_JUDGE_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_MARIA_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_POPURI_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_ELLI_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_ANN_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_KAREN_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_HARRIS_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_GRAY_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_JEFF_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_CLIFF_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_KAI_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_MAYOR_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_MAYOR_WIFE_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_LILLIA_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_BASIL_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_ELLEN_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_PASTOR_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_RICK_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_SAIBARA_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_POTION_SHOP_DEALER_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_KENT_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_STU_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_MIDWIFE_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_MAY_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_ASSITANT_CARPENTER_1_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_ASSITANT_CARPENTER_2_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_MASTER_CARPENTER_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_HARVEST_SPRITE_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_SYDNEY_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_BARLEY_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_GREG_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_BABY_DIALOGUE);
+
+    // cut/unused NPC
+    clearSpecialDialogueBit(292);
+
+    clearSpecialDialogueBit(GAVE_GIFT_DOUG_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_GOTZ_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_SASHA_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_SHIPPER_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_DUKE_DIALOGUE);
+    clearSpecialDialogueBit(GAVE_GIFT_GOURMET_JUDGE_DIALOGUE);
 
 }
 
@@ -1131,133 +1137,133 @@ inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dia
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", showPinkOverlayText);
+//INCLUDE_ASM("asm/nonmatchings/game/game", showDialogueTextBox);
 
-void showPinkOverlayText(u8 dialogueMenuIndex) {
+void showDialogueTextBox(u8 dialogueMenuIndex) {
 
     gameLoopContext.dialogueMenuIndex = dialogueMenuIndex;
 
     switch (dialogueMenuIndex) {
 
         // diary menus
-        case 0:
+        case DIALOGUE_MENU_DIARY_ROOT:
             showMessageBox(1, DIALOGUE_DIARY, 0, 0, 2);
             break;
-        case 1:
+        case DIALOGUE_MENU_DIARY_SAVE_PROMPT:
             showMessageBox(1, DIALOGUE_DIARY, 1, 0, 2);
             break;
             
         // shop selection
-        case 2:
-            showMessageBox(0, DIALOGUE_SHOP, 12, 0x40, 0);
+        case DIALOGUE_MENU_BAKERY_FOOD:
+            showMessageBox(0, DIALOGUE_SHOP, DIALOGUE_SHOP_BAKERY_DRINK_MENU, 0x40, 0);
             break;         
-        case 3:
-            showMessageBox(0, DIALOGUE_SHOP, 11, 0x40, 0);
+        case DIALOGUE_MENU_BAKERY_DRINK_MENU:
+            showMessageBox(0, DIALOGUE_SHOP, DIALOGUE_SHOP_BAKERY_FOOD_MENU, 0x40, 0);
             break;          
-        case 4:
-            showMessageBox(0, DIALOGUE_SHOP, 18, 0x40, 0);
+        case DIALOGUE_MENU_TAVERN_MENU:
+            showMessageBox(0, DIALOGUE_SHOP, DIALOGUE_SHOP_TAVERN_MENU, 0x40, 0);
             break;       
-        case 5:
-            showMessageBox(0, DIALOGUE_SHOP, 13, 0x40, 0);
+        case DIALOGUE_MENU_RANCH_STORE_ANIMALS_ROOT:
+            showMessageBox(0, DIALOGUE_SHOP, DIALOGUE_SHOP_RANCH_STORE_MAIN_MENU, 0x40, 0);
             break;        
-        case 6:
-            showMessageBox(0, DIALOGUE_SHOP, 14, 0x40, 0);
+        case DIALOGUE_MENU_RANCH_STORE_ANIMAL_BUY:
+            showMessageBox(0, DIALOGUE_SHOP, DIALOGUE_SHOP_RANCH_STORE_BUY_MENU, 0x40, 0);
             break;      
-        case 7:
-            showMessageBox(0, DIALOGUE_SHOP, 15, 0x40, 0);
+        case DIALOGUE_MENU_RANCH_STORE_ANIMAL_SELL_CONFIRM:
+            showMessageBox(0, DIALOGUE_SHOP, DIALOGUE_SHOP_RANCH_STORE_SELL_CONFIRM, 0x40, 0);
             break;      
 
         // festivals
-        case 8:
-            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 7, 0x40, 0);
+        case DIALOGUE_MENU_COW_FESTIVAL_ENTRY_CONFIRM:
+            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, DIALOGUE_FESTIVAL_OVERLAY_COW_ENTRY, 0x40, 0);
             break;      
-        case 9:
-            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 6, 0x40, 0);
+        case DIALOGUE_MENU_FLOWER_FESTIVAL_VOTE:
+            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, DIALOGUE_FESTIVAL_OVERLAY_FLOWER_VOTE, 0x40, 0);
             break;    
-        case 10:
-            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 2, 0x40, 0);
-            break;  
-        case 11:
-            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 0, 0x40, 0);
-            break;        
-        case 12:
-            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 1, 0x40, 0);
+        case DIALOGUE_MENU_SQUARE_STALL:
+            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, DIALOGUE_FESTIVAL_OVERLAY_SQUARE_STALL, 0x40, 0);
+            break;
+        case DIALOGUE_MENU_HORSE_RACE_STALL:
+            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, DIALOGUE_FESTIVAL_OVERLAY_HORSE_RACE_STALL, 0x40, 0);
+            break;   
+        case DIALOGUE_MENU_DOG_RACE_STALL:
+            showMessageBox(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, DIALOGUE_FESTIVAL_OVERLAY_DOG_RACE_STALL, 0x40, 0);
             break;
             
         // library
-        case 13:
+        case DIALOGUE_MENU_LIBRARY_BOOKSHELF_1:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, DIALOGUE_LIBRARY, 0, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_1_SPRING_WINTER, 0, 2);
             } else {
-                showMessageBox(1, DIALOGUE_LIBRARY, 10, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_1_SUMMER_AUTUMN, 0, 2);
             }            
             break;
-        case 14:
+        case DIALOGUE_MENU_LIBRARY_BOOKSHELF_2:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, DIALOGUE_LIBRARY, 1, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_2_SPRING_WINTER, 0x40, 2);
             } else {
-                showMessageBox(1, DIALOGUE_LIBRARY, 11, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_2_SUMMER_AUTUMN, 0, 2);
             }
             break;
-        case 15:
+        case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, DIALOGUE_LIBRARY, 2, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_3_SPRING_WINTER, 0x40, 2);
             } else {
-                showMessageBox(1, DIALOGUE_LIBRARY, 12, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_3_SUMMER_AUTUMN, 0, 2);
             }
             break; 
-        case 16:
+        case DIALOGUE_MENU_LIBRARY_BOOKSHELF_4:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, DIALOGUE_LIBRARY, 3, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_4_SPRING_WINTER, 0x40, 2);
             } else {
-                showMessageBox(1, DIALOGUE_LIBRARY, 13, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_4_SUMMER_AUTUMN, 0, 2);
             }
-            break;   
-        case 17:
+            break;
+        case DIALOGUE_MENU_LIBRARY_BOOKSHELF_5:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, DIALOGUE_LIBRARY, 4, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_5_SPRING_WINTER, 0x40, 2);
             } else {
-                showMessageBox(1, DIALOGUE_LIBRARY, 14, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_5_SUMMER_AUTUMN, 0, 2);
             }
-            break;     
-        case 18:
+            break;
+        case DIALOGUE_MENU_LIBRARY_BOOKSHELF_6:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, DIALOGUE_LIBRARY, 5, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_6_SPRING_WINTER, 0x40, 2);
             } else {
-                showMessageBox(1, DIALOGUE_LIBRARY, 15, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_6_SUMMER_AUTUMN, 0, 2);
             }
-            break;        
-        case 19:
+            break;
+        case DIALOGUE_MENU_LIBRARY_BOOKSHELF_7:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, DIALOGUE_LIBRARY, 6, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_7_SPRING_WINTER, 0x40, 2);
             } else {
-                showMessageBox(1, DIALOGUE_LIBRARY, 16, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_7_SUMMER_AUTUMN, 0, 2);
             }
-            break;        
-        case 20:
+            break;
+        case DIALOGUE_MENU_LIBRARY_BOOKSHELF_8:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, DIALOGUE_LIBRARY, 7, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_8_SPRING_WINTER, 0x40, 2);
             } else {
-                showMessageBox(1, DIALOGUE_LIBRARY, 17, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_8_SUMMER_AUTUMN, 0, 2);
             }
-            break;       
-        case 21:
+            break;
+        case DIALOGUE_MENU_LIBRARY_BOOKSHELF_9:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, DIALOGUE_LIBRARY, 8, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_9_SPRING_WINTER, 0x40, 2);
             } else {
-                showMessageBox(1, DIALOGUE_LIBRARY, 18, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_9_SUMMER_AUTUMN, 0, 2);
             }
-            break;       
-        case 22:
+            break;
+        case DIALOGUE_MENU_LIBRARY_BOOKSHELF_10:
             if (gSeason == SPRING || gSeason == WINTER) {
-                showMessageBox(1, DIALOGUE_LIBRARY, 9, 0x40, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_10_SPRING_WINTER, 0x40, 2);
             } else {
-                showMessageBox(1, DIALOGUE_LIBRARY, 19, 0, 2);
+                showMessageBox(1, DIALOGUE_LIBRARY, DIALOGUE_LIBRARY_BOOKSHELF_10_SUMMER_AUTUMN, 0, 2);
             }
-            break;     
+            break;
         
-        // diary
-        case 23:
+        // continue after ending
+        case DIALOGUE_MENU_EVALUATION_CONTINUE_PROMPT:
             showMessageBox(1, DIALOGUE_DIARY, 21, 0, 2);
             break;
 
@@ -1276,7 +1282,7 @@ void setMapAudioAndLighting(void) {
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
     } else {
         
-        if (!checkDailyEventBit(0x4B)) {
+        if (!checkDailyEventBit(CUTSCENE_AUDIO_OVERRIDE)) {
             setLevelAudio(gBaseMapIndex, gSeason, gHour);
             //setLevelAudio(currentMapContext.currentMapIndex, gSeason, gHour);
         }
@@ -1337,7 +1343,7 @@ void setLevelLighting(s16 rate, u16 callbackFunctionIndex) {
         setEntitiesRGBAWithTransition(globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, rate);
         setMapControllerRGBAWithTransition(0, globalLightingRGBA.r, globalLightingRGBA.g, globalLightingRGBA.b, globalLightingRGBA.a, rate);
         
-        if (!checkDailyEventBit(0x4B)) {
+        if (!checkDailyEventBit(CUTSCENE_AUDIO_OVERRIDE)) {
             setAudioSequenceVolume(gCurrentAudioSequenceIndex, gAudioSequenceVolume);
         }
 
@@ -1485,17 +1491,17 @@ void func_8005CDCC(void) {
     npcAffection[HARVEST_SPRITE_2] = npcAffection[HARVEST_SPRITE_1];
     npcAffection[HARVEST_SPRITE_3] = npcAffection[HARVEST_SPRITE_1];
     
-    toggleSpecialDialogueBit(0x135);
+    clearSpecialDialogueBit(USED_BLUE_FEATHER_DIALOGUE);
 
     recruitSpiritFestivalAssistants();
 
     setRecipes();
     
-    if (checkSpecialDialogueBit(0x22) && !checkHaveKeyItem(DOOR_TO_HEAVEN)) {
+    if (checkSpecialDialogueBit(HAVE_DOOR_TO_HEAVEN_WINE_DIALOGUE) && !checkHaveKeyItem(DOOR_TO_HEAVEN)) {
         acquireKeyItem(DOOR_TO_HEAVEN);
     }
     
-    if (checkSpecialDialogueBit(0xB0)) {
+    if (checkSpecialDialogueBit(FIXED_MUSIC_BOX_DIALOGUE)) {
         if (!checkHaveKeyItem(FIXED_MUSIC_BOX)) {
             removeKeyItem(BROKEN_MUSIC_BOX);
             acquireKeyItem(FIXED_MUSIC_BOX);
@@ -1504,23 +1510,23 @@ void func_8005CDCC(void) {
         removeKeyItem(FIXED_MUSIC_BOX);
     }
     
-    if (!checkSpecialDialogueBit(0x15)) {
+    if (!checkSpecialDialogueBit(HAVE_WEATHER_VANE_DIALOGUE)) {
         removeKeyItem(WEATHER_VANE);
     }
     
-    if (!checkSpecialDialogueBit(0x17)) {
+    if (!checkSpecialDialogueBit(HAVE_GOLD_PENDANT_DIALOGUE)) {
         removeKeyItem(GOLD_PENDANT);
     }
     
-    if (checkSpecialDialogueBit(0x14)) {
-        setLifeEventBit(9);
+    if (checkSpecialDialogueBit(GAVE_PONTATA_ROOT_TO_POTION_SHOP_DEALER_DIALOGUE)) {
+        setLifeEventBit(GAVE_PONTATA_ROOT_TO_POTION_SHOP_DEALER);
     }
     
-    if (checkSpecialDialogueBit(0x20)) {
+    if (checkSpecialDialogueBit(GAVE_BLUE_ROCK_TO_SAIBARA_DIALOGUE)) {
         setLifeEventBit(GAVE_BLUE_ROCK_TO_SAIBARA);
     }
 
-    if (checkSpecialDialogueBit(0x84)) {
+    if (checkSpecialDialogueBit(GAVE_RICK_RARE_METAL_DIALOGUE)) {
         setLifeEventBit(GIVE_RICK_RARE_METAL);
     }
 
@@ -1611,9 +1617,9 @@ void mapLoadCallback(void) {
     s16 maxHappiness;
     u8 happinessIncrease;
     
-    toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
-    toggleDailyEventBit(18);
-    toggleDailyEventBit(19);
+    clearDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
+    clearDailyEventBit(BLOCK_BUTTON_USAGE);
+    clearDailyEventBit(BLOCK_PAUSE_SCREEN);
 
     setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
 
@@ -1622,15 +1628,15 @@ void mapLoadCallback(void) {
     set = FALSE;
     
     // chicken born
-    if (gBaseMapIndex == COOP && checkLifeEventBit(3)) {
+    if (gBaseMapIndex == COOP && checkLifeEventBit(CHICKEN_BORN)) {
         
         gNamingScreenIndex = NAMING_SCREEN_TYPE_CHICKEN;
         gSelectedAnimalIndex = bornChickenIndex;
         gChickens[bornChickenIndex].flags &= ~CHICKEN_NEWBORN;
         
         setMainLoopCallbackFunctionIndex(NAMING_SCREEN_LOAD);
-        toggleLifeEventBit(3);
-        setLifeEventBit(0x38);
+        clearLifeEventBit(CHICKEN_BORN);
+        setLifeEventBit(CHICK_HATCHED);
         
         set = TRUE;
         
@@ -1657,7 +1663,7 @@ void mapLoadCallback(void) {
     }
     
     // farm animal born
-    if (gBaseMapIndex == BARN && checkLifeEventBit(4)) {
+    if (gBaseMapIndex == BARN && checkLifeEventBit(ANIMAL_SOLD)) {
         
         // TODO: this might be an inline function
 
@@ -1666,7 +1672,7 @@ void mapLoadCallback(void) {
         gFarmAnimals[bornAnimalIndex].flags &= ~FARM_ANIMAL_NEWBORN;
             
         setMainLoopCallbackFunctionIndex(NAMING_SCREEN_LOAD);
-        toggleLifeEventBit(4);
+        clearLifeEventBit(ANIMAL_SOLD);
             
         set = TRUE;
         
@@ -1694,8 +1700,8 @@ void mapLoadCallback(void) {
     }
     
     if (gHour >= 18) {
-        setDailyEventBit(0xF);
-        setDailyEventBit(0x10);
+        setDailyEventBit(NIGHTTIME_AUDIO_STOPPED);
+        setDailyEventBit(NIGHTTIME_AUDIO_STARTED);
     }
     
     if (!set) {
@@ -1803,9 +1809,9 @@ static inline void launchIntroCutscene_2(u16 cutsceneIndex, u16 spawnPoint, u8 a
 
 // possible split
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", pinkOverlayMenuCallback);
+//INCLUDE_ASM("asm/nonmatchings/game/game", dialogueMenuCallback);
 
-void pinkOverlayMenuCallback() {
+void dialogueMenuCallback() {
 
     u8 selectedMenuRow;
 
@@ -1819,15 +1825,14 @@ void pinkOverlayMenuCallback() {
 
         switch (gameLoopContext.dialogueMenuIndex) {
 
-            case 0:          
+            case DIALOGUE_MENU_DIARY_ROOT:          
 
                 switch (selectedMenuRow) {                      
                     case 0:
-                        // show another message box                 
-                        showPinkOverlayText(1);
+                        showDialogueTextBox(DIALOGUE_MENU_DIARY_SAVE_PROMPT);
                         break;
                     case 1:                                 
-                        showMessageBox(1, 1, 2, 0x80, 2);
+                        showMessageBox(1, DIALOGUE_DIARY, 2, 0x80, 2);
                         break;
                     case 2:                                 
                         setMainLoopCallbackFunctionIndex(ESTIMATE_LOAD);
@@ -1842,8 +1847,7 @@ void pinkOverlayMenuCallback() {
                 
                 break;
             
-            // diary
-            case 1:
+            case DIALOGUE_MENU_DIARY_SAVE_PROMPT:
 
                 switch (selectedMenuRow) {
                      
@@ -1851,7 +1855,7 @@ void pinkOverlayMenuCallback() {
                     case 0:                                 
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         setPlayerAction(GETTING_INTO_BED, ANIM_GET_INTO_BED);
-                        setDailyEventBit(7);
+                        setDailyEventBit(WROTE_IN_DIARY);
                         break;
                         
                     // don't write
@@ -1868,42 +1872,43 @@ void pinkOverlayMenuCallback() {
                 
                 break;
 
-            case 2:                       
+            case DIALOGUE_MENU_BAKERY_FOOD:                       
                 pickUpShopItem(selectedMenuRow, 11, 12, 13, 18);
                 break;
 
-            case 3:
+            case DIALOGUE_MENU_BAKERY_DRINK_MENU:
                 pickUpShopItem(selectedMenuRow, 14, 15, 16, 17);
                 break;
 
-            case 4:       
+            case DIALOGUE_MENU_TAVERN_MENU:       
                 inline2(selectedMenuRow, 40, 41, 42, 43, 44);
                 break;
 
-            case 5:                                     
+            case DIALOGUE_MENU_RANCH_STORE_ANIMALS_ROOT:                                     
                 switch (selectedMenuRow) {                    
                     case 0:
-                        // show another message box               
-                        showPinkOverlayText(6);
+                        showDialogueTextBox(DIALOGUE_MENU_RANCH_STORE_ANIMAL_BUY);
                         break;
+                    // sell animal
                     case 1:                                
-                        showTextBox(0, SHOP_TEXT_INDEX, 0x55, 0, 0);
-                        setDailyEventBit(2);
-                        setDailyEventBit(5);
+                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 85, 0, 0);
+                        setDailyEventBit(ANIMAL_SALE_IN_PROGRESS);
+                        setDailyEventBit(DAILY_ANIMAL_TRANSACTION);
                         break;
+                    // "Not now"
                     case 2:                                
-                        handlePickUpShopItem(0x21);
+                        handlePickUpShopItem(RANCH_STORE_SHOP_CANCEL);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                         break;
                     }
                 
                 break;
 
-            case 6:                                
+            case DIALOGUE_MENU_RANCH_STORE_ANIMAL_BUY:                                
                 pickUpShopItem(selectedMenuRow, 30, 31, 32, 33);
                 break;
 
-            case 7: 
+            case DIALOGUE_MENU_RANCH_STORE_ANIMAL_SELL_CONFIRM: 
 
                 switch (selectedMenuRow) {                   
 
@@ -1919,8 +1924,8 @@ void pinkOverlayMenuCallback() {
 
                         handleExitLevel(0, MAP_LOAD);
 
-                        toggleDailyEventBit(2);
-                        setDailyEventBit(4);
+                        clearDailyEventBit(ANIMAL_SALE_IN_PROGRESS);
+                        setDailyEventBit(ANIMAL_SOLD);
 
                         switch (selectedAnimalType) {
                             case CHICKEN_TYPE:
@@ -1944,7 +1949,7 @@ void pinkOverlayMenuCallback() {
                 
                 break;
 
-            case 8:                
+            case DIALOGUE_MENU_COW_FESTIVAL_ENTRY_CONFIRM:                
 
                 switch (selectedMenuRow) {         
 
@@ -1956,10 +1961,9 @@ void pinkOverlayMenuCallback() {
 
                         handleExitLevel(0, MAP_LOAD);
 
-                        toggleDailyEventBit(0x1D);
-                        setDailyEventBit(0x1E);
-                        setDailyEventBit(0x20);
-                        // cow festival
+                        clearDailyEventBit(COW_FESTIVAL_ELIGIBLE);
+                        setDailyEventBit(COW_FESTIVAL_ENTRY_RESOLVED);
+                        setDailyEventBit(COW_FESTIVAL_COW_TAKEN);
                         gCowFestivalEnteredCowIndex = gSelectedAnimalIndex;
                         break;
                         
@@ -1972,7 +1976,7 @@ void pinkOverlayMenuCallback() {
                 
                 break;
 
-            case 9:                
+            case DIALOGUE_MENU_FLOWER_FESTIVAL_VOTE:                
 
                 if (selectedMenuRow >= 5) {
                     gVoteForFlowerFestivalGoddess = 0xFF;
@@ -1985,7 +1989,7 @@ void pinkOverlayMenuCallback() {
                 setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 break;
             
-            case 10:                
+            case DIALOGUE_MENU_SQUARE_STALL:                
 
                 switch (selectedMenuRow) {                   
                     case 0:                                 
@@ -2007,7 +2011,7 @@ void pinkOverlayMenuCallback() {
                 
                     break;
 
-            case 11:                 
+            case DIALOGUE_MENU_HORSE_RACE_STALL:                 
 
                 switch (selectedMenuRow) {                     
                     case 0:                                 
@@ -2029,7 +2033,7 @@ void pinkOverlayMenuCallback() {
                 
                 break;
 
-            case 12:                   
+            case DIALOGUE_MENU_DOG_RACE_STALL:                   
 
                 switch (selectedMenuRow) {                     
                     case 0:                                 
@@ -2051,7 +2055,7 @@ void pinkOverlayMenuCallback() {
                 
                 break;
 
-            case 13:                                    
+            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_1:                                    
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2113,7 +2117,7 @@ void pinkOverlayMenuCallback() {
 
                 break;
 
-            case 14:                                   
+            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_2:                                   
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2176,7 +2180,7 @@ void pinkOverlayMenuCallback() {
                 break;
 
 
-            case 15:                 
+            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:                 
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2238,7 +2242,7 @@ void pinkOverlayMenuCallback() {
 
                 break;
 
-            case 16:   
+            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_4:   
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2300,7 +2304,7 @@ void pinkOverlayMenuCallback() {
                 
                 break;
 
-            case 17:   
+            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_5:   
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2368,7 +2372,7 @@ void pinkOverlayMenuCallback() {
         
                 break;
 
-            case 18:                             
+            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_6:                             
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2436,7 +2440,7 @@ void pinkOverlayMenuCallback() {
 
                 break;
             
-            case 19:            
+            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_7:            
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2504,7 +2508,7 @@ void pinkOverlayMenuCallback() {
 
                 break;
             
-            case 20:                                    
+            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_8:                                    
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2572,7 +2576,7 @@ void pinkOverlayMenuCallback() {
 
                 break;
 
-            case 21:                                   
+            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_9:                                   
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2642,7 +2646,7 @@ void pinkOverlayMenuCallback() {
 
                 break;
 
-            case 22:             
+            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_10:             
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2710,7 +2714,7 @@ void pinkOverlayMenuCallback() {
                 
                 break;
 
-            case 23:           
+            case DIALOGUE_MENU_EVALUATION_CONTINUE_PROMPT:           
 
                 switch (selectedMenuRow) {                
 
@@ -2826,7 +2830,7 @@ void endOfDayCallback1(void) {
             return;
         }
         
-        if (!checkDailyEventBit(0)) {
+        if (!checkDailyEventBit(DAILY_SHIPMENT)) {
             handleDailyShipment();
         }
         
@@ -2838,7 +2842,7 @@ void endOfDayCallback1(void) {
                 tempTime += 24;
             }
             
-            if (checkLifeEventBit(0x5A)) {
+            if (checkLifeEventBit(HAVE_CUSHION)) {
                 gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -((30 - tempTime) * 3), 100);
             } else {
                 gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -((30 - tempTime) * 2), 100);
@@ -2846,9 +2850,9 @@ void endOfDayCallback1(void) {
         }
         
         if (17 < gHour && gHour < 23) {
-            setLifeEventBit(0x60);
+            setLifeEventBit(WENT_TO_BED_EARLY);
         } else {
-            toggleLifeEventBit(0x60);
+            clearLifeEventBit(WENT_TO_BED_EARLY);
         }
          
         setClockNewDay(); 
@@ -2860,8 +2864,8 @@ void endOfDayCallback1(void) {
         
         setMainLoopCallbackFunctionIndex(MAP_LOAD);
         
-        setDailyEventBit(0x53);
-        setDailyEventBit(0x54);
+        setDailyEventBit(EAT_BREAKFAST);
+        setDailyEventBit(DEFAULT_MORNING);
 
     }
 }
@@ -2875,15 +2879,11 @@ void endOfDayCallback2(void) {
 
         clearHeldItemsAtEndOfDay();
 
-        if (gPlayer.flags & 1) {
-
-            gPlayer.flags &= ~1;
-            
-            toggleDailyEventBit(0x5C);
-             
+        if (gPlayer.flags & PLAYER_RIDING_HORSE) {
+            gPlayer.flags &= ~PLAYER_RIDING_HORSE;
+            clearDailyEventBit(RIDING_HORSE);
             setHorseLocation(0xFF);
-            horseInfo.flags &= ~0x8;
-            
+            horseInfo.flags &= ~HORSE_BEING_RODE;
         }
 
         // earthquake
@@ -2909,7 +2909,7 @@ void endOfDayCallback2(void) {
             return;
         }
 
-        if (!checkDailyEventBit(0)) {
+        if (!checkDailyEventBit(DAILY_SHIPMENT)) {
             // handle daily shipment
             handleDailyShipment();
         }
@@ -2920,8 +2920,8 @@ void endOfDayCallback2(void) {
         
         setMainLoopCallbackFunctionIndex(MAP_LOAD);
 
-        setDailyEventBit(0x53);
-        setDailyEventBit(0x54);
+        setDailyEventBit(EAT_BREAKFAST);
+        setDailyEventBit(DEFAULT_MORNING);
 
     }
 }
@@ -2930,128 +2930,146 @@ void endOfDayCallback2(void) {
 
 void setFestivalDailyBits(void) {
 
+    // New Year's Festival
     if (gSeason == SPRING && gDayOfMonth == 1) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
     
+    // Planting Festival
     if (gSeason == SPRING && gDayOfMonth == 8) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
     
+    // Horse race spring
     if (gSeason == SPRING && gDayOfMonth == 17) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
 
+    // Horse race autumn
     if (gSeason == AUTUMN && gDayOfMonth == 28) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
     
+    // Flower Festival
     if (gSeason == SPRING && gDayOfMonth == 23) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
 
+    // Fireworks
     if (gSeason == SUMMER && gDayOfMonth == 1) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
     
+    // Vegetable Festival
     if (gSeason == SUMMER && gDayOfMonth == 9) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
 
+    // Firefly Festival
     if (gSeason == SUMMER && gDayOfMonth == 17) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
 
+    // Swimming Festival
     if (gSeason == SUMMER && gDayOfMonth == 24) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
 
+    // Cow Festival
     if (gSeason == AUTUMN && gDayOfMonth == 4) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
 
+    // Harvest Festival
     if (gSeason == AUTUMN && gDayOfMonth == 12) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
     
+    // Egg Festival
     if (gSeason == AUTUMN && gDayOfMonth == 20) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
 
+    // Thanksgiving
     if (gSeason == WINTER && gDayOfMonth == 10) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
     
+    // Dog Race
     if (gSeason == WINTER && gDayOfMonth == 19) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x28);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(DAY_CONSUMING_CUTSCENE);
         setDailyEventBit(FESTIVAL);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
 
+    // Starry Night Festival
     if (gSeason == WINTER && gDayOfMonth == 24) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
     
+    // Spirit Festival
     if (gSeason == WINTER && gDayOfMonth == 27) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x4E);
-    }
-    if (gSeason == WINTER && gDayOfMonth == 30) {
-        setDailyEventBit(0x30);
-        setDailyEventBit(0x4E);
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
 
-    if (gDayOfWeek == SUNDAY && checkLifeEventBit(0xF)) {
-        setDailyEventBit(0x4E);
+    // New Year's Eve
+    if (gSeason == WINTER && gDayOfMonth == 30) {
+        setDailyEventBit(FESTIVAL_DAY_CUTSCENE_GUARD);
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
+    }
+
+    // Wedding
+    if (gDayOfWeek == SUNDAY && checkLifeEventBit(ENGAGED)) {
+        setDailyEventBit(FORCE_SUNNY_WEATHER_DAILY);
     }
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", checkEarthquakeShouldHappen);
 
-// earthquake
 bool checkEarthquakeShouldHappen(void) {
 
     bool result = FALSE;
 
-    if (!checkLifeEventBit(0x4E) && gSeason > AUTUMN && (5 < gDayOfMonth && gDayOfMonth < 10)) {
+    if (!checkLifeEventBit(EARTHQUAKE_HAPPENED) && gSeason > AUTUMN && (5 < gDayOfMonth && gDayOfMonth < 10)) {
 
         if (!getRandomNumberInRange(0, 2) || gDayOfMonth == 9) {
-            setLifeEventBit(0x4E);
+            setLifeEventBit(EARTHQUAKE_HAPPENED);
             func_80064CF0();
             result = TRUE;
         }
@@ -3383,7 +3401,7 @@ u8 handlePurchaseHouseExtension(u8 houseExtensionIndex) {
 
             houseExtensionConstructionCounter = 0;
             
-            setDailyEventBit(9);
+            setDailyEventBit(CARPENTER_ESTIMATE);
             
             return 0;
 
@@ -3411,7 +3429,7 @@ void setFlowerFestivalGoddess(void) {
     
     gFlowerFestivalGoddess = temp;
     
-    if (checkLifeEventBit(0x2F) && gFlowerFestivalGoddess == KAREN) {
+    if (checkLifeEventBit(KAREN_GONE) && gFlowerFestivalGoddess == KAREN) {
         gFlowerFestivalGoddess = MARIA;
     }
 
@@ -3477,172 +3495,171 @@ static inline void setSpiritFestivalAssistant(u8 npcIndex) {
 
 void recruitSpiritFestivalAssistants(void) {
     
-    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA)) {
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA);
+    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA_DIALOGUE)) {
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_MARIA_DIALOGUE);
         setSpiritFestivalAssistant(MARIA+1);
     }
     
-    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI)) {
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI);
+    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI_DIALOGUE)) {
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_POPURI_DIALOGUE);
         setSpiritFestivalAssistant(ELLI+1);
     }
 
-    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI)) {
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI);
+    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI_DIALOGUE)) {
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ELLI_DIALOGUE);
         setSpiritFestivalAssistant(POPURI+1);
     }
     
-    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN)) {
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN);
+    if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN_DIALOGUE)) {
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_ANN_DIALOGUE);
         setSpiritFestivalAssistant(ANN+1);
     }
     
-   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN)) {
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN);
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN_DIALOGUE)) {
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAREN_DIALOGUE);
         setSpiritFestivalAssistant(KAREN+1);
     } 
 
-   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS)) {
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS);
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS_DIALOGUE)) {
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_HARRIS_DIALOGUE);
         setSpiritFestivalAssistant(HARRIS);
     }
 
-   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY)) {
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY);
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY_DIALOGUE)) {
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_GRAY_DIALOGUE);
         setSpiritFestivalAssistant(GRAY);
     } 
 
-   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF)) {
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF);
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF_DIALOGUE)) {
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_JEFF_DIALOGUE);
         setSpiritFestivalAssistant(JEFF);
     } 
 
-   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF)) {
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF);
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF_DIALOGUE)) {
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_CLIFF_DIALOGUE);
         setSpiritFestivalAssistant(CLIFF);
     } 
 
-   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI)) {
-        toggleSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI);
+   if (checkSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI_DIALOGUE)) {
+        clearSpecialDialogueBit(SPIRIT_FESTIVAL_RECRUITING_KAI_DIALOGUE);
         setSpiritFestivalAssistant(KAI);
 
     } 
     
     if (numberOfSpiritFestivalAssistantsRecruited >= 3) {
-        toggleSpecialDialogueBit(PLAYER_HARVEST_KING_SPIRIT_FESTIVAL_ASSISTANTS);
+        clearSpecialDialogueBit(PLAYER_HARVEST_KING_SPIRIT_FESTIVAL_ASSISTANTS_DIALOGUE);
     }
 
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", setRecipes);
 
-// TODO: label recipes
 void setRecipes(void) {
 
-    if (checkSpecialDialogueBit(7)) {
-        addRecipe(0);
+    if (checkSpecialDialogueBit(CREAM_OF_TURNIP_STEW_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_CREAM_OF_TURNIP_STEW);
     }
-    if (checkSpecialDialogueBit(0x50)) {
-        addRecipe(1);
+    if (checkSpecialDialogueBit(EASY_TOMATO_SOUP_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_EASY_TOMATO_SOUP);
     }
-    if (checkSpecialDialogueBit(0x51)) {
-        addRecipe(2);
+    if (checkSpecialDialogueBit(TOMATO_RICE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_TOMATO_RICE);
     }
-    if (checkSpecialDialogueBit(0x52)) {
-        addRecipe(3);
+    if (checkSpecialDialogueBit(TOMATO_SOUP_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_TOMATO_SOUP);
     }
-    if (checkSpecialDialogueBit(0x53)) {
-        addRecipe(4);
+    if (checkSpecialDialogueBit(CORN_FRITTER_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_CORN_FRITTER);
     }
-    if (checkSpecialDialogueBit(0x54)) {
-        addRecipe(5);
+    if (checkSpecialDialogueBit(CORN_PASTA_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_CORN_PASTA);
     }
-    if (checkSpecialDialogueBit(0x55)) {
-        addRecipe(6);
+    if (checkSpecialDialogueBit(MASHED_POTATO_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_MASHED_POTATO);
     }
-    if (checkSpecialDialogueBit(0x56)) {
-        addRecipe(7);
+    if (checkSpecialDialogueBit(FRIED_POTATOES_AND_BACON_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_FRIED_POTATOES_AND_BACON);
     }
-    if (checkSpecialDialogueBit(0x57)) {
-        addRecipe(8);
+    if (checkSpecialDialogueBit(VEGETABLE_TOMATO_STEW_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_VEGETABLE_TOMATO_STEW);
     }
-    if (checkSpecialDialogueBit(0x58)) {
-        addRecipe(9);
+    if (checkSpecialDialogueBit(GARLIC_POTATO_BEEF_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_GARLIC_POTATO_BEEF);
     }
-    if (checkSpecialDialogueBit(0x59)) {
-        addRecipe(0xA);
+    if (checkSpecialDialogueBit(EGGPLANT_WITH_MISO_PASTE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_EGGPLANT_WITH_MISO_PASTE);
     }
-    if (checkSpecialDialogueBit(0x5A)) {
-        addRecipe(0xB);
+    if (checkSpecialDialogueBit(ROLLED_CABBAGE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_ROLLED_CABBAGE);
     }
-    if (checkSpecialDialogueBit(0x5B)) {
-        addRecipe(0xC);
+    if (checkSpecialDialogueBit(STUFFED_OMELET_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_STUFFED_OMELET);
     }
-    if (checkSpecialDialogueBit(0x5C)) {
-        addRecipe(0xD);
+    if (checkSpecialDialogueBit(SPA_POACHED_EGG_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_SPA_POACHED_EGG);
     }
-    if (checkSpecialDialogueBit(0x5D)) {
-        addRecipe(0xE);
+    if (checkSpecialDialogueBit(HANDMADE_BUTTER_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_HANDMADE_BUTTER);
     }
-    if (checkSpecialDialogueBit(0x5E)) {
-        addRecipe(0xF);
-    } 
-    if (checkSpecialDialogueBit(0x5F)) {
-        addRecipe(0x10);
+    if (checkSpecialDialogueBit(MUSHROOM_RICE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_MUSHROOM_RICE);
     }
-    if (checkSpecialDialogueBit(0x60)) {
-        addRecipe(0x11);
+    if (checkSpecialDialogueBit(FRIED_CHAR_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_FRIED_CHAR);
     }
-    if (checkSpecialDialogueBit(0x61)) {
-        addRecipe(0x12);
+    if (checkSpecialDialogueBit(GRILLED_TROUT_CHEESE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_GRILLED_TROUT_CHEESE);
     }
-    if (checkSpecialDialogueBit(0x62)) {
-        addRecipe(0x13);
+    if (checkSpecialDialogueBit(MUSHROOM_STUFFED_CHAR_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_MUSHROOM_STUFFED_CHAR);
     }
-    if (checkSpecialDialogueBit(0x63)) {
-        addRecipe(0x14);
+    if (checkSpecialDialogueBit(STEAMED_CLAM_WITH_WINE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_STEAMED_CLAM_WITH_WINE);
     }
-    if (checkSpecialDialogueBit(0x64)) {
-        addRecipe(0x15);
+    if (checkSpecialDialogueBit(MISO_SOUP_WITH_SPROUTS_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_MISO_SOUP_WITH_SPROUTS);
     }
-    if (checkSpecialDialogueBit(0x65)) {
-        addRecipe(0x16);
+    if (checkSpecialDialogueBit(SESAME_DANDELION_GREENS_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_SESAME_DANDELION_GREENS);
     }
-    if (checkSpecialDialogueBit(0x66)) {
-        addRecipe(0x17);
+    if (checkSpecialDialogueBit(MUSHROOM_SALSA_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_MUSHROOM_SALSA);
     }
-    if (checkSpecialDialogueBit(0x67)) {
-        addRecipe(0x18);
+    if (checkSpecialDialogueBit(STRAWBERRY_DOG_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_STRAWBERRY_DOG);
     }
-    if (checkSpecialDialogueBit(0x68)) {
-        addRecipe(0x19);
+    if (checkSpecialDialogueBit(WALNUT_CAKE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_WALNUT_CAKE);
     }
-    if (checkSpecialDialogueBit(0x69)) {
-        addRecipe(0x1A);
+    if (checkSpecialDialogueBit(BREAD_PUDDING_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_BREAD_PUDDING);
     }
-    if (checkSpecialDialogueBit(0x6A)) {
-        addRecipe(0x1B);
+    if (checkSpecialDialogueBit(HERB_RICE_CAKE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_HERB_RICE_CAKE);
     }
-    if (checkSpecialDialogueBit(0x6B)) {
-        addRecipe(0x1C);
+    if (checkSpecialDialogueBit(POTATO_PANCAKE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_POTATO_PANCAKE);
     }
-    if (checkSpecialDialogueBit(0x6C)) {
-        addRecipe(0x1D);
+    if (checkSpecialDialogueBit(STRAWBERRY_JAM_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_STRAWBERRY_JAM);
     }
-    if (checkSpecialDialogueBit(0x6D)) {
-        addRecipe(0x1E);
+    if (checkSpecialDialogueBit(STRAWBERRY_CHAMPAGNE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_STRAWBERRY_CHAMPAGNE);
     }
-    if (checkSpecialDialogueBit(0x6E)) {
-        addRecipe(0x1F);
+    if (checkSpecialDialogueBit(VERYBERRY_WINE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_VERYBERRY_WINE);
     }
-    if (checkSpecialDialogueBit(0x6F)) {
-        addRecipe(0x20);
+    if (checkSpecialDialogueBit(SPICE_TEA_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_SPICE_TEA);
     }
-    if (checkSpecialDialogueBit(0x70)) {
-        addRecipe(0x21);
+    if (checkSpecialDialogueBit(HOT_SPICY_WINE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_HOT_SPICY_WINE);
     }
-    if (checkSpecialDialogueBit(0x71)) {
-        addRecipe(0x22);
+    if (checkSpecialDialogueBit(CINNAMON_MILK_TEA_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_CINNAMON_MILK_TEA);
+    }
+    if (checkSpecialDialogueBit(PICKLED_TURNIPS_AND_CABBAGE_RECIPE_DIALOGUE)) {
+        addRecipe(RECIPE_PICKLED_TURNIPS_AND_CABBAGE);
     }
 
 }
@@ -3667,12 +3684,12 @@ u8 handleHouseConstruction(u8 day) {
 
         if (houseExtensionConstructionCounter >= buffer1[day]) {
 
-            toggleLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION);
+            clearLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION);
             setDailyEventBit(CARPENTER_FINISHED);
             setLifeEventBit(buffer2[day]);
 
             if (day == 3) {
-                toggleLifeEventBit(0xD7);
+                clearLifeEventBit(GREENHOUSE_DESTROYED);
             }
 
             setAnimalLocations(buffer3[day]);
@@ -3713,12 +3730,12 @@ u8 handleHouseConstruction(u8 day) {
 
         if (houseExtensionConstructionCounter >= dayArrayPtr[day]) {
             
-            toggleLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION);
+            clearLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION);
             setDailyEventBit(CARPENTER_FINISHED);
             setLifeEventBit(((u16*)(&lifeEventBitArray))[day]);
             
             if (day == 3) {
-                toggleLifeEventBit(0xD7);
+                clearLifeEventBit(GREENHOUSE_DESTROYED);
             }
             
             setAnimalLocations(animalLocationsArrayPtr[day]);
@@ -3733,306 +3750,305 @@ u8 handleHouseConstruction(u8 day) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", setLetters);
 
-// TODO: label mail bits
 void setLetters(void) {
 
-    if (!checkMailRead(0) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(0);
+    if (!checkMailRead(MAIL_MARIA_SPRING) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_MARIA_SPRING);
     }
 
-    if (!checkMailRead(1) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
-        setMail(1);
+    if (!checkMailRead(MAIL_MARIA_SUMMER) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_MARIA_SUMMER);
     }
 
-    if (!checkMailRead(2) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 160 && gSeason == AUTUMN && !getRandomNumberInRange(0, 10)) {
-        setMail(2);
+    if (!checkMailRead(MAIL_MARIA_AUTUMN) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 160 && gSeason == AUTUMN && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_MARIA_AUTUMN);
     }
 
-    if (!checkMailRead(3) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
-        setMail(3);
+    if (!checkMailRead(MAIL_MARIA_WINTER) && (!checkLifeEventBit(MARRIED) || gWife != MARIA) && npcAffection[MARIA] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_MARIA_WINTER);
     }
 
-    if (!checkMailRead(4) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(4);
+    if (!checkMailRead(MAIL_POPURI_SPRING) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_POPURI_SPRING);
     }
 
-    if (!checkMailRead(5) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
-        setMail(5);
+    if (!checkMailRead(MAIL_POPURI_SUMMER) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_POPURI_SUMMER);
     }
-    if (!checkMailRead(6) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 160 && gSeason == AUTUMN && !getRandomNumberInRange(0, 10)) {
-        setMail(6);
+    if (!checkMailRead(MAIL_POPURI_AUTUMN) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 160 && gSeason == AUTUMN && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_POPURI_AUTUMN);
     }
 
-    if (!checkMailRead(7) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
-        setMail(7);
+    if (!checkMailRead(MAIL_POPURI_WINTER) && (!checkLifeEventBit(MARRIED) || gWife != POPURI) && npcAffection[POPURI] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_POPURI_WINTER);
     }
 
-    if (!checkMailRead(8) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && npcAffection[ELLI] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(8);
+    if (!checkMailRead(MAIL_ELLI_SPRING) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && npcAffection[ELLI] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_ELLI_SPRING);
     }
 
-    if (!checkMailRead(9) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && npcAffection[ELLI] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
-        setMail(9);
+    if (!checkMailRead(MAIL_ELLI_SUMMER) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && npcAffection[ELLI] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_ELLI_SUMMER);
     }
 
-    if (!checkMailRead(0xA) && (!checkLifeEventBit(MARRIED) || (gWife != ELLI)) && npcAffection[ELLI] >= 160 && gSeason == AUTUMN && !getRandomNumberInRange(0, 10)) {
-        setMail(0xA);
+    if (!checkMailRead(MAIL_ELLI_AUTUMN) && (!checkLifeEventBit(MARRIED) || (gWife != ELLI)) && npcAffection[ELLI] >= 160 && gSeason == AUTUMN && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_ELLI_AUTUMN);
     }
 
-    if (!checkMailRead(0xB) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && npcAffection[ELLI] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
-        setMail(0xB);
+    if (!checkMailRead(MAIL_ELLI_WINTER) && (!checkLifeEventBit(MARRIED) || gWife != ELLI) && npcAffection[ELLI] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_ELLI_WINTER);
     }
 
-    if (!checkMailRead(0xC) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(0xC);
+    if (!checkMailRead(MAIL_ANN_SPRING) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_ANN_SPRING);
     }
 
-    if (!checkMailRead(0xD) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
-        setMail(0xD);
+    if (!checkMailRead(MAIL_ANN_SUMMER) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_ANN_SUMMER);
     }
 
-    if (!checkMailRead(0xE) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 160 && (gSeason == AUTUMN) && !getRandomNumberInRange(0, 10)) {
-        setMail(0xE);
+    if (!checkMailRead(MAIL_ANN_AUTUMN) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 160 && (gSeason == AUTUMN) && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_ANN_AUTUMN);
     }
 
-    if (!checkMailRead(0xF) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
-        setMail(0xF);
+    if (!checkMailRead(MAIL_ANN_WINTER) && (!checkLifeEventBit(MARRIED) || gWife != ANN) && npcAffection[ANN] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_ANN_WINTER);
     }
 
-    if (!checkMailRead(0x10) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(0x10);
+    if (!checkMailRead(MAIL_KAREN_SPRING) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_KAREN_SPRING);
     }
-    
-    if (!checkMailRead(0x11) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
-        setMail(0x11);
+
+    if (!checkMailRead(MAIL_KAREN_SUMMER) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 140 && gSeason == SUMMER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_KAREN_SUMMER);
     }
 
-    if (!checkMailRead(0x12) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 160 && gSeason == AUTUMN && !getRandomNumberInRange(0, 10)) {
-        setMail(0x12);
+    if (!checkMailRead(MAIL_KAREN_AUTUMN) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 160 && gSeason == AUTUMN && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_KAREN_AUTUMN);
     }
 
-    if (!checkMailRead(0x13) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
-        setMail(0x13);
+    if (!checkMailRead(MAIL_KAREN_WINTER) && (!checkLifeEventBit(MARRIED) || gWife != KAREN) && npcAffection[KAREN] >= 180 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_KAREN_WINTER);
     }
 
-    if (!checkMailRead(0x14) && npcAffection[MAYOR] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(0x14);
+    if (!checkMailRead(MAIL_MAYOR_SPRING) && npcAffection[MAYOR] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_MAYOR_SPRING);
     }
 
-    if (!checkMailRead(0x15) && npcAffection[HARRIS] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(0x15);
+    if (!checkMailRead(MAIL_HARRIS_SPRING) && npcAffection[HARRIS] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_HARRIS_SPRING);
     }
 
-    if (!checkMailRead(0x16) && checkLifeEventBit(MARIA_HARRIS_HAVE_BABY)) {
-        setMail(0x16);
+    if (!checkMailRead(MAIL_MARIA_HARRIS_BABY) && checkLifeEventBit(MARIA_HARRIS_HAVE_BABY)) {
+        setMail(MAIL_MARIA_HARRIS_BABY);
     }
 
-    if (!checkMailRead(0x17) && npcAffection[GRAY] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(0x17);
+    if (!checkMailRead(MAIL_GRAY_SPRING) && npcAffection[GRAY] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_GRAY_SPRING);
     }
 
-    if (!checkMailRead(0x18) && checkLifeEventBit(POPURI_GRAY_HAVE_BABY)) {
-        setMail(0x18);
+    if (!checkMailRead(MAIL_POPURI_GRAY_BABY) && checkLifeEventBit(POPURI_GRAY_HAVE_BABY)) {
+        setMail(MAIL_POPURI_GRAY_BABY);
     }
 
-    if (!checkMailRead(0x19) && npcAffection[JEFF] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(0x19);
+    if (!checkMailRead(MAIL_JEFF_SPRING) && npcAffection[JEFF] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_JEFF_SPRING);
     }
 
-    if (!checkMailRead(0x1A) && checkLifeEventBit(ELLI_JEFF_HAVE_BABY)) {
-        setMail(0x1A);
+    if (!checkMailRead(MAIL_ELLI_JEFF_BABY) && checkLifeEventBit(ELLI_JEFF_HAVE_BABY)) {
+        setMail(MAIL_ELLI_JEFF_BABY);
     }
 
-    if (!checkMailRead(0x1B) && checkLifeEventBit(CLIFF_GONE) && !getRandomNumberInRange(0, 10)) {
-        setMail(0x1B);
+    if (!checkMailRead(MAIL_CLIFF_GONE) && checkLifeEventBit(CLIFF_GONE) && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_CLIFF_GONE);
     }
- 
-    if (!checkMailRead(0x1C) && checkLifeEventBit(ANN_CLIFF_HAVE_BABY)) {
-        setMail(0x1C);
+
+    if (!checkMailRead(MAIL_ANN_CLIFF_BABY) && checkLifeEventBit(ANN_CLIFF_HAVE_BABY)) {
+        setMail(MAIL_ANN_CLIFF_BABY);
     }
 
-    if (!checkMailRead(0x1D) && npcAffection[KAI] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(0x1D);
+    if (!checkMailRead(MAIL_KAI_SPRING) && npcAffection[KAI] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_KAI_SPRING);
     }
 
-    if (!checkMailRead(0x1E) && checkLifeEventBit(KAREN_KAI_HAVE_BABY)) {
-        setMail(0x1E);
+    if (!checkMailRead(MAIL_KAREN_KAI_BABY) && checkLifeEventBit(KAREN_KAI_HAVE_BABY)) {
+        setMail(MAIL_KAREN_KAI_BABY);
     }
 
-    if (!checkMailRead(0x1F) && checkLifeEventBit(KAI_GONE) && !getRandomNumberInRange(0, 10)) {
-        setMail(0x1F);
+    if (!checkMailRead(MAIL_KAI_GONE) && checkLifeEventBit(KAI_GONE) && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_KAI_GONE);
     }
 
-    if (!checkMailRead(0x20) && (npcAffection[KENT] + npcAffection[STU]) >= 160 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(0x20);
+    if (!checkMailRead(MAIL_KENT_STU_SPRING) && (npcAffection[KENT] + npcAffection[STU]) >= 160 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_KENT_STU_SPRING);
     }
 
-    if (!checkMailRead(0x21) && npcAffection[RICK] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
-        setMail(0x21);
+    if (!checkMailRead(MAIL_RICK_SPRING) && npcAffection[RICK] >= 120 && gSeason == SPRING && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_RICK_SPRING);
     }
-    
-    if (!checkMailRead(0x22) && npcAffection[BASIL] >= 100 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
-        setMail(0x22);
+
+    if (!checkMailRead(MAIL_BASIL_WINTER) && npcAffection[BASIL] >= 100 && gSeason == WINTER && !getRandomNumberInRange(0, 10)) {
+        setMail(MAIL_BASIL_WINTER);
     }
 
-    if (!checkMailRead(0x23) && checkLifeEventBit(SHADY_SALESMAN_MARIA_CUTSCENE)) {
-        setMail(0x23);
+    if (!checkMailRead(MAIL_SHADY_SALESMAN_GOLD_PENDANT) && checkLifeEventBit(SHADY_SALESMAN_MARIA_CUTSCENE)) {
+        setMail(MAIL_SHADY_SALESMAN_GOLD_PENDANT);
     }
 
-    if (!checkMailRead(0x24) && checkLifeEventBit(MARRIED) && gWife == MARIA) {
-        setMail(0x24);
+    if (!checkMailRead(MAIL_WEDDING_MARIA) && checkLifeEventBit(MARRIED) && gWife == MARIA) {
+        setMail(MAIL_WEDDING_MARIA);
     }
 
-    if (!checkMailRead(0x25) && checkLifeEventBit(MARRIED) && (gWife == POPURI)) {
-        setMail(0x25);
+    if (!checkMailRead(MAIL_WEDDING_POPURI) && checkLifeEventBit(MARRIED) && (gWife == POPURI)) {
+        setMail(MAIL_WEDDING_POPURI);
     }
 
-    if (!checkMailRead(0x26) && checkLifeEventBit(MARRIED) && (gWife == ELLI)) {
-        setMail(0x26);
+    if (!checkMailRead(MAIL_WEDDING_ELLI) && checkLifeEventBit(MARRIED) && (gWife == ELLI)) {
+        setMail(MAIL_WEDDING_ELLI);
     }
 
-    if (!checkMailRead(0x27) && checkLifeEventBit(MARRIED) && (gWife == ANN)) {
-        setMail(0x27);
+    if (!checkMailRead(MAIL_WEDDING_ANN) && checkLifeEventBit(MARRIED) && (gWife == ANN)) {
+        setMail(MAIL_WEDDING_ANN);
     }
 
-    if (!checkMailRead(0x28) && checkLifeEventBit(MARRIED) && (gWife == KAREN)) {
-        setMail(0x28);
+    if (!checkMailRead(MAIL_WEDDING_KAREN) && checkLifeEventBit(MARRIED) && (gWife == KAREN)) {
+        setMail(MAIL_WEDDING_KAREN);
     }
 
-    if (!checkMailRead(0x29) && checkLifeEventBit(HAVE_BABY) && (gWife == MARIA)) {
-        setMail(0x29);
+    if (!checkMailRead(MAIL_BIRTH_MARIA) && checkLifeEventBit(HAVE_BABY) && (gWife == MARIA)) {
+        setMail(MAIL_BIRTH_MARIA);
     }
 
-    if (!checkMailRead(0x2A) && checkLifeEventBit(HAVE_BABY) && (gWife == POPURI)) {
-        setMail(0x2A);
+    if (!checkMailRead(MAIL_BIRTH_POPURI) && checkLifeEventBit(HAVE_BABY) && (gWife == POPURI)) {
+        setMail(MAIL_BIRTH_POPURI);
     }
 
-    if (!checkMailRead(0x2B) && checkLifeEventBit(HAVE_BABY) && (gWife == ELLI)) {
-        setMail(0x2B);
+    if (!checkMailRead(MAIL_BIRTH_ELLI) && checkLifeEventBit(HAVE_BABY) && (gWife == ELLI)) {
+        setMail(MAIL_BIRTH_ELLI);
     }
 
-    if (!checkMailRead(0x2C) && checkLifeEventBit(HAVE_BABY) && (gWife == ANN)) {
-        setMail(0x2C);
+    if (!checkMailRead(MAIL_BIRTH_ANN) && checkLifeEventBit(HAVE_BABY) && (gWife == ANN)) {
+        setMail(MAIL_BIRTH_ANN);
     }
 
-    if (!checkMailRead(0x2D) && checkLifeEventBit(HAVE_BABY) && (gWife == KAREN)) {
-        setMail(0x2D);
+    if (!checkMailRead(MAIL_BIRTH_KAREN) && checkLifeEventBit(HAVE_BABY) && (gWife == KAREN)) {
+        setMail(MAIL_BIRTH_KAREN);
     }
 
-    if (!checkMailRead(0x2E) && checkDailyEventBit(0x34)) {
-        setMail(0x2E);
+    if (!checkMailRead(MAIL_PHOTO_SOWING_FESTIVAL) && checkDailyEventBit(SOWING_FESTIVAL_BALLOON_RIDE_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_SOWING_FESTIVAL);
     }
 
-    if (!checkMailRead(0x2F) && checkDailyEventBit(0x35)) {
-        setMail(0x2F);
+    if (!checkMailRead(MAIL_PHOTO_HORSE_RACE) && checkDailyEventBit(WON_HORSE_RACE_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_HORSE_RACE);
     }
 
-    if (!checkMailRead(0x30) && checkDailyEventBit(0x37)) {
-        setMail(0x30);
+    if (!checkMailRead(MAIL_PHOTO_SEA_FESTIVAL) && checkDailyEventBit(WON_SEA_FESTIVAL_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_SEA_FESTIVAL);
     }
 
-    if (!checkMailRead(0x31) && checkDailyEventBit(0x39)) {
-        setMail(0x31);
+    if (!checkMailRead(MAIL_PHOTO_DOG_RACE) && checkDailyEventBit(WON_DOG_RACE_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_DOG_RACE);
     }
 
-    if (!checkMailRead(0x32) && checkDailyEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE)) {
-        setMail(0x32);
+    if (!checkMailRead(MAIL_PHOTO_HOT_SPRINGS) && checkDailyEventBit(HOT_SPRINGS_COMPLETED_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_HOT_SPRINGS);
     }
 
-    if (!checkMailRead(0x33) && checkLifeEventBit(HAVE_KITCHEN) && checkLifeEventBit(HAVE_BATHROOM) && checkLifeEventBit(HAVE_STAIRS) && checkLifeEventBit(HAVE_GREENHOUSE) && checkLifeEventBit(HAVE_LOG_TERRACE) && checkLifeEventBit(HAVE_BABY_BED)) {
-        setMail(0x33);
+    if (!checkMailRead(MAIL_PHOTO_HOME_EXTENSIONS) && checkLifeEventBit(HAVE_KITCHEN) && checkLifeEventBit(HAVE_BATHROOM) && checkLifeEventBit(HAVE_STAIRS) && checkLifeEventBit(HAVE_GREENHOUSE) && checkLifeEventBit(HAVE_LOG_TERRACE) && checkLifeEventBit(HAVE_BABY_BED)) {
+        setMail(MAIL_PHOTO_HOME_EXTENSIONS);
     }
-    
-    if (!checkMailRead(0x34) && checkDailyEventBit(0x36)) {
-        setMail(0x34);
+
+    if (!checkMailRead(MAIL_PHOTO_COW_FESTIVAL) && checkDailyEventBit(WON_COW_FESTIVAL_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_COW_FESTIVAL);
     }
 
-    if (!checkMailRead(0x35) && checkDailyEventBit(0x3A)) {
-        setMail(0x35);
+    if (!checkMailRead(MAIL_PHOTO_MARIA_FIREFLIES) && checkDailyEventBit(MARIA_FIREFLIES_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_MARIA_FIREFLIES);
     }
 
-    if (!checkMailRead(0x36) && checkDailyEventBit(0x3B)) {
-        setMail(0x36);
+    if (!checkMailRead(MAIL_PHOTO_POPURI_BLUE_MIST) && checkDailyEventBit(POPURI_BLUE_MIST_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_POPURI_BLUE_MIST);
     }
 
-    if (!checkMailRead(0x37) && checkDailyEventBit(0x3C)) {
-        setMail(0x37);
+    if (!checkMailRead(MAIL_PHOTO_ELLI_ESSENCE_OF_MOONDROP) && checkDailyEventBit(ELLI_ESSENCE_OF_MOONDROP_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_ELLI_ESSENCE_OF_MOONDROP);
     }
 
-    if (!checkMailRead(0x38) && checkDailyEventBit(0x3D)) {
-        setMail(0x38);
+    if (!checkMailRead(MAIL_PHOTO_ANN_PIKA_BUNNY) && checkDailyEventBit(ANN_PIKA_BUNNY_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_ANN_PIKA_BUNNY);
     }
 
-    if (!checkMailRead(0x39) && checkDailyEventBit(0x3E)) {
-        setMail(0x39);
+    if (!checkMailRead(MAIL_PHOTO_KAREN_KEIFU_FAIRIES) && checkDailyEventBit(KAREN_KEIFU_FAIRIES_PHOTO_MAIL)) {
+        setMail(MAIL_PHOTO_KAREN_KEIFU_FAIRIES);
     }
 
-    if (!checkMailRead(0x3A) && ((gYear == 1 && 1 < gSeason) || 1 < gYear)) {
-        setMail(0x3A);
+    if (!checkMailRead(MAIL_RICK_CHEST_OF_DRAWERS) && ((gYear == 1 && 1 < gSeason) || 1 < gYear)) {
+        setMail(MAIL_RICK_CHEST_OF_DRAWERS);
     }
 
-    if (!checkMailRead(0x3B) && gSeason == SPRING && gDayOfMonth == 20) {
-        setMail(0x3B);
+    if (!checkMailRead(MAIL_PINK_CAT_MINT_SEEDS) && gSeason == SPRING && gDayOfMonth == 20) {
+        setMail(MAIL_PINK_CAT_MINT_SEEDS);
     }
 
-    if (!checkMailRead(0x3D) && gSeason == SPRING && gDayOfMonth == 15) {
-        setMail(0x3D);
+    if (!checkMailRead(MAIL_HORSE_RACE_NOTICE) && gSeason == SPRING && gDayOfMonth == 15) {
+        setMail(MAIL_HORSE_RACE_NOTICE);
     }
 
-    if (!checkMailRead(0x3E) && gSeason == SPRING && gDayOfMonth == 19) {
-        setMail(0x3E);
+    if (!checkMailRead(MAIL_GODDESS_VOTING) && gSeason == SPRING && gDayOfMonth == 19) {
+        setMail(MAIL_GODDESS_VOTING);
     }
 
-    if (!checkMailRead(0x3F) && gSeason == SUMMER && gDayOfMonth == 1) {
-        setMail(0x3F);
+    if (!checkMailRead(MAIL_VEGETABLE_FESTIVAL_NOTICE) && gSeason == SUMMER && gDayOfMonth == 1) {
+        setMail(MAIL_VEGETABLE_FESTIVAL_NOTICE);
     }
 
-    if (!checkMailRead(0x40) && !getRandomNumberInRange(0, 20)) {
-        setMail(0x40);
+    if (!checkMailRead(MAIL_MOUNTAIN_CARPENTERS_AD) && !getRandomNumberInRange(0, 20)) {
+        setMail(MAIL_MOUNTAIN_CARPENTERS_AD);
     }
-    
-    if (!checkMailRead(0x41) && gSeason == SPRING && gDayOfMonth == 30) {
-        setMail(0x41);
+
+    if (!checkMailRead(MAIL_LIBRARY_CLOSURE_SPRING) && gSeason == SPRING && gDayOfMonth == 30) {
+        setMail(MAIL_LIBRARY_CLOSURE_SPRING);
     }
 
-    if (!checkMailRead(0x42) && gSeason == AUTUMN && gDayOfMonth == 30) {
-        setMail(0x42);
+    if (!checkMailRead(MAIL_LIBRARY_CLOSURE_AUTUMN) && gSeason == AUTUMN && gDayOfMonth == 30) {
+        setMail(MAIL_LIBRARY_CLOSURE_AUTUMN);
     }
 
-    if (!checkMailRead(0x43) && gSeason == AUTUMN && gDayOfMonth == 10) {
-        setMail(0x43);
+    if (!checkMailRead(MAIL_HARVEST_FESTIVAL_NOTICE) && gSeason == AUTUMN && gDayOfMonth == 10) {
+        setMail(MAIL_HARVEST_FESTIVAL_NOTICE);
     }
 
-    if (!checkMailRead(0x44) && gSeason == AUTUMN && gDayOfMonth == 1) {
-        setMail(0x44);
+    if (!checkMailRead(MAIL_RICK_CARPETS) && gSeason == AUTUMN && gDayOfMonth == 1) {
+        setMail(MAIL_RICK_CARPETS);
     }
 
-    if (!checkMailRead(0x45) && gSeason == WINTER && gDayOfMonth == 7) {
-        setMail(0x45);
+    if (!checkMailRead(MAIL_ORE_MINE_OPENS) && gSeason == WINTER && gDayOfMonth == 7) {
+        setMail(MAIL_ORE_MINE_OPENS);
     }
 
-    if (!checkMailRead(0x46) && gSeason == WINTER && gDayOfMonth == 6) {
-        setMail(0x46);
+    if (!checkMailRead(MAIL_DOG_RACE_NOTICE) && gSeason == WINTER && gDayOfMonth == 6) {
+        setMail(MAIL_DOG_RACE_NOTICE);
     }
 
-    if (!checkMailRead(0x47) && gSeason == WINTER && gDayOfMonth == 17) {
-        setMail(0x47);
+    if (!checkMailRead(MAIL_HOT_SPRING_COMPLETED) && gSeason == WINTER && gDayOfMonth == 17) {
+        setMail(MAIL_HOT_SPRING_COMPLETED);
     }
 
-    if (!checkMailRead(0x49) && gYear >= 2 && gSeason == SPRING && gDayOfMonth == 24) {
-        setMail(0x49);
+    if (!checkMailRead(MAIL_BLUE_MIST_SEEDS) && gYear >= 2 && gSeason == SPRING && gDayOfMonth == 24) {
+        setMail(MAIL_BLUE_MIST_SEEDS);
     }
-    
-    if (!checkMailRead(0x4A) && gYear >= 2 && gSeason == SPRING) {
-        setMail(0x4A);
+
+    if (!checkMailRead(MAIL_DAD_SPRING_CHECK_IN) && gYear >= 2 && gSeason == SPRING) {
+        setMail(MAIL_DAD_SPRING_CHECK_IN);
     }
 
-    if (!checkMailRead(0x4B) && checkLifeEventBit(MARRIED)) {
-        setMail(0x4B);
+    if (!checkMailRead(MAIL_DAD_WEDDING_CONGRATS) && checkLifeEventBit(MARRIED)) {
+        setMail(MAIL_DAD_WEDDING_CONGRATS);
     }
 
-    if (!checkMailRead(0x4C) && gYear >= 3 && gSeason == SPRING && gDayOfMonth == 3) {
-        setMail(0x4C);
+    if (!checkMailRead(MAIL_DAD_SPRING_VISIT) && gYear >= 3 && gSeason == SPRING && gDayOfMonth == 3) {
+        setMail(MAIL_DAD_SPRING_VISIT);
     }
 
 }

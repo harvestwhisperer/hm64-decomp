@@ -1,8 +1,45 @@
-; ============================================
+; ============================================================
 ; Bank 23 - New Year Festival
-; ============================================
+; ============================================================
+; Cutscene index 1400: the New Year Festival, triggered on
+; Spring day 1 between 6:00 and 17:59 (see cutscenes.c).
+; Every townsperson NPC is spawned in a circle. Each one is a
+; miniature toast encounter -- the player interacts, the NPC
+; talks and clinks glasses, a drink-glass overlay is shown,
+; and the player sprite plays a toast-drink animation. Each
+; toast decrements gAlcoholTolerance by 1; when it reaches 0
+; the player plays a pass-out animation and the festival ends.
+; The Assistant Carpenter also offers a Yes/No prompt to leave
+; early.
+;
+; Cutscene indices:
+;   1400 - New Year Festival main scene
+;
+; Executor slots:
+;   0       - player drink reaction (toast anim or pass-out)
+;   1..13   - always-present townspeople in the festival circle:
+;             Mayor, Mayor wife, Maria, Rick, Potion Shop
+;             Dealer, Midwife, Popuri, Lillia, Elli, Ann, Karen,
+;             Assistant Carpenter, Shipper
+;   14..18  - conditional attendees spawned only at high
+;             affection (and for bachelors, only if not yet
+;             married to them): Harris, Gray, Jeff, Cliff, Kai
+;   19      - player-side drink-glass static item (one-off)
+;   20      - NPC-side drink-glass static item (sustained,
+;             re-spawned per NPC toast)
+;
+; var0 bit layout:
+;   bit 0 - Assistant Carpenter affection already bumped this run
+;   bit 1 - Shipper affection already bumped this run
+;
+; Gating bits on lifeEventBits[1]:
+;   bit 13 - skips the Cliff affection check
+;   bit 14 - skips the Kai affection check
+;   bit 15 - skips spawning Karen
 
 #include "entities.h"
+#include "texts.h"
+#include "dialogues.h"
 
 .buffer 2
 
@@ -10,10 +47,9 @@
 .local var0, u32, 0
 
 .array npcAffection, u8
+.array lifeEventBits, u32
 
-#define MARIA 0
-
-.entry
+.main:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 12, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 13, gCutsceneCompletionFlags
@@ -26,58 +62,63 @@
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
     UPDATE_U8_VALUE 3, 255, gHappiness
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_148638
-    BRANCH_U16_VAR_WITHIN_RANGE 1400, 1400, gCutsceneIndex, .branch_148678
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U16_VAR_WITHIN_RANGE 1400, 1400, gCutsceneIndex, .spawn_attendees
+    ; fall through -- index outside range, exit cleanly
 
-.sub_148624:
+.end_festival:
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_148630:
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_148638:
+.setup_message_box:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_148658:
+.setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
-.branch_148678:
-    SPAWN_EXECUTOR 1, .executor_1_148A44
-    SPAWN_EXECUTOR 2, .executor_2_148B4C
-    SPAWN_EXECUTOR 3, .executor_3_148C10
-    SPAWN_EXECUTOR 4, .executor_4_148D28
-    SPAWN_EXECUTOR 5, .executor_5_148DFC
-    SPAWN_EXECUTOR 6, .executor_6_148EE4
-    SPAWN_EXECUTOR 7, .executor_7_149008
-    SPAWN_EXECUTOR 8, .executor_8_1490FC
-    SPAWN_EXECUTOR 9, .executor_9_1491D4
-    SPAWN_EXECUTOR 10, .executor_10_149300
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_1486DC
-    SPAWN_EXECUTOR 11, .executor_11_1493F4
+; ============================================================
+; Spawn the festival attendees
+; ============================================================
 
-.branch_1486DC:
-    SPAWN_EXECUTOR 12, .executor_12_1495AC
-    SPAWN_EXECUTOR 13, .executor_13_1496EC
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x6, .branch_148764
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x7, .branch_148770
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x8, .branch_14877C
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_148728
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x9, .branch_148788
+.spawn_attendees:
+    SPAWN_EXECUTOR 1, .executor_1_mayor
+    SPAWN_EXECUTOR 2, .executor_2_mayor_wife
+    SPAWN_EXECUTOR 3, .executor_3_maria
+    SPAWN_EXECUTOR 4, .executor_4_rick
+    SPAWN_EXECUTOR 5, .executor_5_potion_shop_dealer
+    SPAWN_EXECUTOR 6, .executor_6_midwife
+    SPAWN_EXECUTOR 7, .executor_7_popuri
+    SPAWN_EXECUTOR 8, .executor_8_lillia
+    SPAWN_EXECUTOR 9, .executor_9_elli
+    SPAWN_EXECUTOR 10, .executor_10_ann
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .spawn_support_npcs
+    SPAWN_EXECUTOR 11, .executor_11_karen
 
-.branch_148728:
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_148740
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0xA, .branch_148794
+.spawn_support_npcs:
+    SPAWN_EXECUTOR 12, .executor_12_assistant_carpenter
+    SPAWN_EXECUTOR 13, .executor_13_shipper
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[HARRIS], .spawn_harris
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[GRAY], .spawn_gray
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[JEFF], .spawn_jeff
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .check_kai
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[CLIFF], .spawn_cliff
 
-.branch_148740:
-    EXECUTE_SUBROUTINE .sub_148658
+.check_kai:
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .no_optional_attendee
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[KAI], .spawn_kai
+
+.no_optional_attendee:
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 160, 0, -32
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
@@ -85,139 +126,155 @@
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.branch_148764:
-    SPAWN_EXECUTOR 14, .executor_14_149790
+.spawn_harris:
+    SPAWN_EXECUTOR 14, .executor_14_harris
     RETURN_FROM_SUBROUTINE
 
-.branch_148770:
-    SPAWN_EXECUTOR 15, .executor_15_149894
+.spawn_gray:
+    SPAWN_EXECUTOR 15, .executor_15_gray
     RETURN_FROM_SUBROUTINE
 
-.branch_14877C:
-    SPAWN_EXECUTOR 16, .executor_16_149980
+.spawn_jeff:
+    SPAWN_EXECUTOR 16, .executor_16_jeff
     RETURN_FROM_SUBROUTINE
 
-.branch_148788:
-    SPAWN_EXECUTOR 17, .executor_17_149A54
+.spawn_cliff:
+    SPAWN_EXECUTOR 17, .executor_17_cliff
     RETURN_FROM_SUBROUTINE
 
-.branch_148794:
-    SPAWN_EXECUTOR 18, .executor_18_149B28
+.spawn_kai:
+    SPAWN_EXECUTOR 18, .executor_18_kai
     RETURN_FROM_SUBROUTINE
 
-.sub_1487A0:
-    SETUP_ENTITY 22, 93, 1
+; ============================================================
+; SHARED HELPERS -- drink-glass overlays
+; ============================================================
+
+; Player-side drink glass (one-off, deactivates after 16 frames)
+.setup_player_drink_glass:
+    SETUP_ENTITY 22, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 22, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_ANIMATION 109
     RETURN_FROM_SUBROUTINE
 
-.sub_1487C4:
-    SETUP_ENTITY 23, 93, 1
+; NPC-side drink glass (sustained, one per NPC toast)
+.setup_npc_drink_glass:
+    SETUP_ENTITY 23, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 23, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_ANIMATION 109
     RETURN_FROM_SUBROUTINE
 
-.executor_19_1487E8:
-    EXECUTE_SUBROUTINE .sub_1487A0
+.executor_19_player_glass:
+    EXECUTE_SUBROUTINE .setup_player_drink_glass
     SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
     SET_WAIT_FRAMES 16
     DEACTIVATE_SELF
 
-.executor_20_148800:
-    EXECUTE_SUBROUTINE .sub_1487C4
+; ----- Per-NPC tracking overlays (executor slot 20, re-spawned per toast) -----
+
+.executor_20_mayor_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 1, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_148814:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_mayor_wife_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 2, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_148828:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_maria_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 3, 0, 14, 8, 6
     SET_WAIT_FRAMES 3
     SET_ENTITY_TRACKING_TARGET 3, 0, 16, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_14884C:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_rick_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 4, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_148860:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_potion_shop_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 5, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_148874:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_midwife_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 6, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_148888:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_popuri_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 7, 0, 14, 8, 6
     SET_WAIT_FRAMES 3
     SET_ENTITY_TRACKING_TARGET 7, 0, 16, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_1488AC:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_lillia_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 8, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_1488C0:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_elli_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 9, 0, 14, 8, 6
     SET_WAIT_FRAMES 3
     SET_ENTITY_TRACKING_TARGET 9, 0, 16, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_1488E4:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_ann_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 10, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_1488F8:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_karen_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 11, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_14890C:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_harris_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 14, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_148920:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_gray_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 15, -8, 14, 20, 3
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_148934:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_jeff_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 16, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_148948:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_cliff_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 17, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_14895C:
-    EXECUTE_SUBROUTINE .sub_1487C4
+.executor_20_kai_glass:
+    EXECUTE_SUBROUTINE .setup_npc_drink_glass
     SET_ENTITY_TRACKING_TARGET 18, 0, 14, 8, 6
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_148970:
-    EXECUTE_SUBROUTINE .sub_148658
-    SET_ASSET_ROTATION 0
-    SPAWN_EXECUTOR 19, .executor_19_1487E8
+; ============================================================
+; Executor 0 -- player drink reaction / pass-out
+; ============================================================
+; Plays anim 438 if gAlcoholTolerance > 0 (and decrements it);
+; otherwise plays anim 691, fades to black, tears down every
+; attendee executor, shows the pass-out message, and ends the
+; cutscene.
+
+.executor_0_player_drink:
+    EXECUTE_SUBROUTINE .setup_player
+    SET_ASSET_ROTATION SOUTHWEST
+    SPAWN_EXECUTOR 19, .executor_19_player_glass
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
     SET_WAIT_FRAMES 16
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gAlcoholTolerance, .branch_1489B8
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gAlcoholTolerance, .player_passed_out
     SET_ENTITY_ANIMATION 438
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 10
@@ -226,7 +283,7 @@
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.branch_1489B8:
+.player_passed_out:
     SET_ENTITY_ANIMATION 691
     WAIT_ENTITY_ANIMATION
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -250,29 +307,33 @@
     DEACTIVATE_EXECUTOR 16
     DEACTIVATE_EXECUTOR 17
     DEACTIVATE_EXECUTOR 18
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 46
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 46
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
     SET_WAIT_FRAMES 32
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_148624
+    EXECUTE_SUBROUTINE .end_festival
 
-.executor_1_148A44:
+; ============================================================
+; Executor 1 -- Mayor
+; ============================================================
+
+.executor_1_mayor:
     SETUP_ENTITY 1, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -176, 0, -32
-    SET_ASSET_ROTATION 6
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148AB0
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_talk_happy_new_year
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_148A7C:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xB
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_148800
+.mayor_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_mayor_glass
     SET_ENTITY_ANIMATION 22
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 30
@@ -280,98 +341,106 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_148AB0:
+.mayor_talk_happy_new_year:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 0
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 0
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_148A7C
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148AE0
+    EXECUTE_SUBROUTINE .mayor_toast_anim
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_talk_mayor_duty
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148AE0:
+.mayor_talk_mayor_duty:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 1
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 1
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_148A7C
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148B10
+    EXECUTE_SUBROUTINE .mayor_toast_anim
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_talk_cant_drink
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148B10:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xB
+.mayor_talk_cant_drink:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 2
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 2
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_148B3C
+    EXECUTE_SUBROUTINE .mayor_walk_off
 
-.sub_148B3C:
-    ENTITY_WALK 130, 6, 2
+.mayor_walk_off:
+    ENTITY_WALK 130, SOUTHEAST, 2
     TOGGLE_PAUSE_ENTITY 0
     DEACTIVATE_SELF
 
-.executor_2_148B4C:
-    SETUP_ENTITY 2, 13, 1
+; ============================================================
+; Executor 2 -- Mayor wife
+; ============================================================
+
+.executor_2_mayor_wife:
+    SETUP_ENTITY 2, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -112, 0, 48
-    SET_ASSET_ROTATION 7
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148B84
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION SOUTH
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_wife_talk_ho_ho
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148B84:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xC
+.mayor_wife_talk_ho_ho:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR_WIFE]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 3
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 3
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SET_ASSET_ROTATION 6
-    SPAWN_EXECUTOR 20, .executor_20_148814
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SET_ASSET_ROTATION SOUTHEAST
+    SPAWN_EXECUTOR 20, .executor_20_mayor_wife_glass
     SET_WAIT_FRAMES 50
     DEACTIVATE_EXECUTOR 20
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148BD8
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_wife_talk_going_home
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148BD8:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xC
+.mayor_wife_talk_going_home:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR_WIFE]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 4
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 4
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 130, 6, 2
+    ENTITY_WALK 130, SOUTHEAST, 2
     TOGGLE_PAUSE_ENTITY 0
     DEACTIVATE_SELF
 
-.executor_3_148C10:
-    SETUP_ENTITY 3, 1, 1
+; ============================================================
+; Executor 3 -- Maria
+; ============================================================
+
+.executor_3_maria:
+    SETUP_ENTITY 3, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -80, 0, 80
-    SET_ASSET_ROTATION 3
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148C88
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION NORTH
+    SET_CALLBACK_ROUTINE 0, 32768, .maria_talk_cheers
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_148C48:
+.maria_toast_anim:
     UPDATE_U8_VALUE 2, 255, npcAffection[MARIA]
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_148828
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_maria_glass
     SET_ENTITY_ANIMATION 38
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 42
@@ -382,57 +451,61 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_148C88:
+.maria_talk_cheers:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 14
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 14
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_148C48
+    EXECUTE_SUBROUTINE .maria_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148CB8
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .maria_talk_cant_drink_much
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148CB8:
+.maria_talk_cant_drink_much:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 15
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 15
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_148C48
+    EXECUTE_SUBROUTINE .maria_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148CE8
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .maria_talk_excuse_me
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148CE8:
+.maria_talk_excuse_me:
     UPDATE_U8_VALUE 2, 255, npcAffection[MARIA]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 16
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 16
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 16, 5, 2
-    ENTITY_WALK 118, 6, 2
+    ENTITY_WALK 16, EAST, 2
+    ENTITY_WALK 118, SOUTHEAST, 2
     TOGGLE_PAUSE_ENTITY 0
     DEACTIVATE_SELF
 
-.executor_4_148D28:
-    SETUP_ENTITY 4, 25, 1
+; ============================================================
+; Executor 4 -- Rick
+; ============================================================
+
+.executor_4_rick:
+    SETUP_ENTITY 4, ENTITY_ASSET_RICK, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -80, 0, -160
-    SET_ASSET_ROTATION 7
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148D94
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION SOUTH
+    SET_CALLBACK_ROUTINE 0, 32768, .rick_talk_toast_routine
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_148D60:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x18
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_14884C
+.rick_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_RICK]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_rick_glass
     SET_ENTITY_ANIMATION 16
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 30
@@ -440,44 +513,48 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_148D94:
+.rick_talk_toast_routine:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 7
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 7
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_148D60
+    EXECUTE_SUBROUTINE .rick_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148DC4
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .rick_talk_leaving
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148DC4:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x18
+.rick_talk_leaving:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_RICK]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 8
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 8
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 130, 6, 2
+    ENTITY_WALK 130, SOUTHEAST, 2
     TOGGLE_PAUSE_ENTITY 0
     DEACTIVATE_SELF
 
-.executor_5_148DFC:
-    SETUP_ENTITY 5, 20, 1
+; ============================================================
+; Executor 5 -- Potion Shop Dealer
+; ============================================================
+
+.executor_5_potion_shop_dealer:
+    SETUP_ENTITY 5, ENTITY_ASSET_POTION_SHOP_DEALER, 1
     SET_ENTITY_ANIMATIONS 5, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES 32, 0, -256
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148E68
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .potion_shop_talk_toast
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_148E34:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x13
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_148860
+.potion_shop_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_POTION_SHOP_DEALER]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_potion_shop_glass
     SET_ENTITY_ANIMATION 17
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 30
@@ -485,46 +562,50 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_148E68:
+.potion_shop_talk_toast:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 5
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 5
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_148E34
+    EXECUTE_SUBROUTINE .potion_shop_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148E98
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .potion_shop_talk_good_year
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148E98:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x13
+.potion_shop_talk_good_year:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_POTION_SHOP_DEALER]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 6
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 6
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 50, 0, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495E8
-    ENTITY_WALK 96, 6, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495F8
+    ENTITY_WALK 50, SOUTHWEST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_west
+    ENTITY_WALK 96, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_east
     DEACTIVATE_SELF
 
-.executor_6_148EE4:
-    SETUP_ENTITY 6, 23, 1
+; ============================================================
+; Executor 6 -- Midwife
+; ============================================================
+
+.executor_6_midwife:
+    SETUP_ENTITY 6, ENTITY_ASSET_MIDWIFE, 1
     SET_ENTITY_ANIMATIONS 6, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_COORDINATES 64, 0, -224
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148F5C
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .midwife_talk_young_adults
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_148F1C:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x16
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_148874
+.midwife_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MIDWIFE]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_midwife_glass
     SET_ENTITY_ANIMATION 21
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 25
@@ -535,58 +616,62 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_148F5C:
+.midwife_talk_young_adults:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 9
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 9
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_148F1C
+    EXECUTE_SUBROUTINE .midwife_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148F8C
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .midwife_talk_hold_your_liquor
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148F8C:
+.midwife_talk_hold_your_liquor:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 10
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 10
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_148F1C
+    EXECUTE_SUBROUTINE .midwife_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_148FBC
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .midwife_talk_drink_a_lot
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148FBC:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x16
+.midwife_talk_drink_a_lot:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MIDWIFE]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 11
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 11
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 34, 0, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495E8
-    ENTITY_WALK 80, 6, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495F8
+    ENTITY_WALK 34, SOUTHWEST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_west
+    ENTITY_WALK 80, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_east
     DEACTIVATE_SELF
 
-.executor_7_149008:
-    SETUP_ENTITY 7, 2, 1
+; ============================================================
+; Executor 7 -- Popuri
+; ============================================================
+
+.executor_7_popuri:
+    SETUP_ENTITY 7, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 7, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 64, 0, -96
-    SET_ASSET_ROTATION 6
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149080
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .popuri_talk_toast
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_149040:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_148888
+.popuri_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[POPURI]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_popuri_glass
     SET_ENTITY_ANIMATION 38
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 42
@@ -597,87 +682,95 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_149080:
+.popuri_talk_toast:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 17
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 17
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149040
+    EXECUTE_SUBROUTINE .popuri_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1490B0
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .popuri_talk_tipsy
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1490B0:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1
+.popuri_talk_tipsy:
+    UPDATE_U8_VALUE 2, 255, npcAffection[POPURI]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 18
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 18
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 32, 4, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495E8
-    ENTITY_WALK 80, 6, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495F8
+    ENTITY_WALK 32, NORTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_west
+    ENTITY_WALK 80, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_east
     DEACTIVATE_SELF
 
-.executor_8_1490FC:
-    SETUP_ENTITY 8, 14, 1
+; ============================================================
+; Executor 8 -- Lillia
+; ============================================================
+
+.executor_8_lillia:
+    SETUP_ENTITY 8, ENTITY_ASSET_LILLIA, 1
     SET_ENTITY_ANIMATIONS 8, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 96, 0, -128
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149134
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .lillia_talk_about_had_it
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149134:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xD
+.lillia_talk_about_had_it:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_LILLIA]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 12
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 12
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_ASSET_ROTATION 6
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_1488AC
+    SET_ASSET_ROTATION SOUTHEAST
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_lillia_glass
     SET_WAIT_FRAMES 40
     DEACTIVATE_EXECUTOR 20
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149188
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .lillia_talk_goodnight
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149188:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xD
+.lillia_talk_goodnight:
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_LILLIA]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 13
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 13
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 16, 4, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495E8
-    ENTITY_WALK 64, 6, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495F8
+    ENTITY_WALK 16, NORTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_west
+    ENTITY_WALK 64, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_east
     DEACTIVATE_SELF
 
-.executor_9_1491D4:
-    SETUP_ENTITY 9, 3, 1
+; ============================================================
+; Executor 9 -- Elli
+; ============================================================
+
+.executor_9_elli:
+    SETUP_ENTITY 9, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 9, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 96, 0, -64
-    SET_ASSET_ROTATION 3
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_14924C
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION NORTH
+    SET_CALLBACK_ROUTINE 0, 32768, .elli_talk_toast
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_14920C:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x2
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_1488C0
+.elli_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[ELLI]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_elli_glass
     SET_ENTITY_ANIMATION 38
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 42
@@ -688,59 +781,63 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14924C:
+.elli_talk_toast:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 19
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 19
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_14920C
+    EXECUTE_SUBROUTINE .elli_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_14927C
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .elli_talk_cooking_only
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14927C:
+.elli_talk_cooking_only:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 20
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 20
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_14920C
+    EXECUTE_SUBROUTINE .elli_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1492AC
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .elli_talk_cant_drink
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1492AC:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x2
+.elli_talk_cant_drink:
+    UPDATE_U8_VALUE 2, 255, npcAffection[ELLI]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 21
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 21
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 24, 5, 2
-    ENTITY_WALK 24, 4, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495E8
-    ENTITY_WALK 48, 6, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495F8
+    ENTITY_WALK 24, EAST, 2
+    ENTITY_WALK 24, NORTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_west
+    ENTITY_WALK 48, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_east
     DEACTIVATE_SELF
 
-.executor_10_149300:
-    SETUP_ENTITY 10, 4, 1
+; ============================================================
+; Executor 10 -- Ann
+; ============================================================
+
+.executor_10_ann:
+    SETUP_ENTITY 10, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 10, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 32, 0, 96
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149378
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_talk_toast
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_149338:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x3
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_1488E4
+.ann_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[ANN]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_ann_glass
     SET_ENTITY_ANIMATION 38
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 42
@@ -751,47 +848,51 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_149378:
+.ann_talk_toast:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 22
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 22
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149338
+    EXECUTE_SUBROUTINE .ann_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1493A8
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_talk_feel_funny
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1493A8:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x3
+.ann_talk_feel_funny:
+    UPDATE_U8_VALUE 2, 255, npcAffection[ANN]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 23
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 23
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 30, 6, 2
-    SET_OTHER_EXECUTOR_PTR 13, .executor_13_149728
-    ENTITY_WALK 70, 6, 2
-    SET_OTHER_EXECUTOR_PTR 13, .executor_13_149738
+    ENTITY_WALK 30, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 13, .shipper_walk_west
+    ENTITY_WALK 70, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 13, .shipper_walk_east
     DEACTIVATE_SELF
 
-.executor_11_1493F4:
-    SETUP_ENTITY 11, 5, 1
+; ============================================================
+; Executor 11 -- Karen
+; ============================================================
+
+.executor_11_karen:
+    SETUP_ENTITY 11, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 11, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 32, 0, 128
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149470
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_talk_under_table
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_149430:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x4
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_1488F8
+.karen_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAREN]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_karen_glass
     SET_ENTITY_ANIMATION 38
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 42
@@ -802,120 +903,133 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_149470:
+.karen_talk_under_table:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 24
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 24
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149430
+    EXECUTE_SUBROUTINE .karen_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1494A0
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_talk_great_event
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1494A0:
+.karen_talk_great_event:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 25
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 25
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149430
+    EXECUTE_SUBROUTINE .karen_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1494D0
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_talk_another_toast
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1494D0:
+.karen_talk_another_toast:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 26
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 26
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149430
+    EXECUTE_SUBROUTINE .karen_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149500
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_talk_yet_another_toast
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149500:
+.karen_talk_yet_another_toast:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 27
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 27
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149430
+    EXECUTE_SUBROUTINE .karen_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149530
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_talk_exchange_greetings
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149530:
+.karen_talk_exchange_greetings:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 28
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 28
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149430
+    EXECUTE_SUBROUTINE .karen_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149560
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_talk_give_up
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149560:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x4
+.karen_talk_give_up:
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAREN]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 29
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 29
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 20, 6, 2
-    SET_OTHER_EXECUTOR_PTR 13, .executor_13_149728
-    ENTITY_WALK 80, 6, 2
-    SET_OTHER_EXECUTOR_PTR 13, .executor_13_149738
+    ENTITY_WALK 20, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 13, .shipper_walk_west
+    ENTITY_WALK 80, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 13, .shipper_walk_east
     DEACTIVATE_SELF
 
-.executor_12_1495AC:
-    SETUP_ENTITY 12, 31, 1
+; ============================================================
+; Executor 12 -- Assistant Carpenter (goodbye prompt)
+; ============================================================
+; Runs a Yes/No dialogue (session DIALOGUE_NEW_YEAR_FESTIVAL):
+;   Yes -> shows text 50, fades out, tears down every attendee,
+;          stops the music, and ends the festival.
+;   No  -> shows text 51 ("drink up") and returns to the wait
+;          state so the player can keep toasting.
+; The slot-12 entity is also driven by SET_OTHER_EXECUTOR_PTR
+; from neighboring NPCs via .assistant_carpenter_walk_west /
+; .assistant_carpenter_walk_east below, which briefly move him
+; out and back.
+
+.executor_12_assistant_carpenter:
+    SETUP_ENTITY 12, ENTITY_ASSET_ASSISTANT_CARPENTER, 1
     SET_ENTITY_ANIMATIONS 12, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 192, 0, -144
 
-.sub_1495D8:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_14960C
-    EXECUTE_SUBROUTINE .sub_148630
+.assistant_carpenter_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .assistant_carpenter_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_12_1495E8:
-    ENTITY_WALK 32, 1, 2
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_148630
+.assistant_carpenter_walk_west:
+    ENTITY_WALK 32, WEST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_12_1495F8:
-    ENTITY_WALK 32, 5, 2
-    SET_ASSET_ROTATION 2
+.assistant_carpenter_walk_east:
+    ENTITY_WALK 32, EAST, 2
+    SET_ASSET_ROTATION NORTHWEST
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14960C:
-    EXECUTE_SUBROUTINE .sub_148638
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_149630
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1E
+.assistant_carpenter_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 0, var0, .assistant_carpenter_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_CARPENTER_1]
     SET_SPECIAL_BIT 0, var0
 
-.branch_149630:
+.assistant_carpenter_talk:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 59, 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_NEW_YEAR_FESTIVAL, 0
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_14965C
-    BRANCH_ON_DIALOGUE 0, 1, .branch_1496D4
+    BRANCH_ON_DIALOGUE 0, 0, .assistant_carpenter_goodbye
+    BRANCH_ON_DIALOGUE 0, 1, .assistant_carpenter_drink_up
 
-.branch_14965C:
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 50
+.assistant_carpenter_goodbye:
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 50
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 2
@@ -940,68 +1054,78 @@
     DEACTIVATE_EXECUTOR 18
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_148624
+    EXECUTE_SUBROUTINE .end_festival
 
-.branch_1496D4:
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 51
+.assistant_carpenter_drink_up:
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 51
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_1495D8
+    EXECUTE_SUBROUTINE .assistant_carpenter_wait
 
-.executor_13_1496EC:
-    SETUP_ENTITY 13, 27, 1
+; ============================================================
+; Executor 13 -- Shipper
+; ============================================================
+; Plain toast encounter; also relays neighbor walk nudges via
+; SET_OTHER_EXECUTOR_PTR from Ann and Karen.
+
+.executor_13_shipper:
+    SETUP_ENTITY 13, ENTITY_ASSET_SHIPPER, 1
     SET_ENTITY_ANIMATIONS 13, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 192, 0, 112
 
-.sub_149718:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_14974C
-    EXECUTE_SUBROUTINE .sub_148630
+.shipper_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .shipper_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_13_149728:
-    ENTITY_WALK 32, 1, 2
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_148630
+.shipper_walk_west:
+    ENTITY_WALK 32, WEST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_13_149738:
-    ENTITY_WALK 32, 5, 2
-    SET_ASSET_ROTATION 2
+.shipper_walk_east:
+    ENTITY_WALK 32, EAST, 2
+    SET_ASSET_ROTATION NORTHWEST
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_148630
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14974C:
-    EXECUTE_SUBROUTINE .sub_148638
-    BRANCH_ON_SPECIAL_BIT 1, var0, .branch_149770
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1A
+.shipper_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 1, var0, .shipper_talk_carrier
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_SHIPPER]
     SET_SPECIAL_BIT 1, var0
 
-.branch_149770:
+.shipper_talk_carrier:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 47
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 47
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_149718
+    EXECUTE_SUBROUTINE .shipper_wait
 
-.executor_14_149790:
-    SETUP_ENTITY 14, 7, 1
+; ============================================================
+; Executor 14 -- Harris (spawned only at high affection)
+; ============================================================
+
+.executor_14_harris:
+    SETUP_ENTITY 14, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 14, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -176, 0, 192
-    SET_ASSET_ROTATION 3
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1497FC
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION NORTH
+    SET_CALLBACK_ROUTINE 0, 32768, .harris_talk_delivering_cards
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_1497C8:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x6
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_14890C
+.harris_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[HARRIS]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_harris_glass
     SET_ENTITY_ANIMATION 23
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 30
@@ -1009,56 +1133,62 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_1497FC:
+.harris_talk_delivering_cards:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 31
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 31
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_1497C8
+    EXECUTE_SUBROUTINE .harris_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_14982C
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .harris_talk_cant_drink_much
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14982C:
+.harris_talk_cant_drink_much:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 32
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 32
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_1497C8
+    EXECUTE_SUBROUTINE .harris_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_14985C
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .harris_talk_sorry_leaving
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14985C:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x6
+.harris_talk_sorry_leaving:
+    UPDATE_U8_VALUE 2, 255, npcAffection[HARRIS]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 33
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 33
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 130, 6, 2
+    ENTITY_WALK 130, SOUTHEAST, 2
     TOGGLE_PAUSE_ENTITY 0
     DEACTIVATE_SELF
 
-.executor_15_149894:
-    SETUP_ENTITY 15, 8, 1
+; ============================================================
+; Executor 15 -- Gray (spawned only at high affection)
+; ============================================================
+; Gray has only the toast line; the follow-up state simply
+; loops on itself (text 35).
+
+.executor_15_gray:
+    SETUP_ENTITY 15, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 15, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 128, 0, 192
-    SET_ASSET_ROTATION 3
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149900
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION NORTH
+    SET_CALLBACK_ROUTINE 0, 32768, .gray_talk_toast
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_1498CC:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x7
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_148920
+.gray_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[GRAY]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_gray_glass
     SET_ENTITY_ANIMATION 19
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 30
@@ -1066,45 +1196,49 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_149900:
+.gray_talk_toast:
     PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 34
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 34
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_1498CC
+    EXECUTE_SUBROUTINE .gray_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_14992C
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .gray_talk_upset_loop
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14992C:
+.gray_talk_upset_loop:
     PAUSE_ENTITY 0
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 256
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 35
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 35
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 256
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_14992C
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .gray_talk_upset_loop
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_16_149980:
-    SETUP_ENTITY 16, 9, 1
+; ============================================================
+; Executor 16 -- Jeff (spawned only at high affection)
+; ============================================================
+
+.executor_16_jeff:
+    SETUP_ENTITY 16, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 16, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -208, 0, 160
-    SET_ASSET_ROTATION 7
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1499EC
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION SOUTH
+    SET_CALLBACK_ROUTINE 0, 32768, .jeff_talk_toast
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_1499B8:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x8
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_148934
+.jeff_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[JEFF]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_jeff_glass
     SET_ENTITY_ANIMATION 23
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 30
@@ -1112,44 +1246,48 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_1499EC:
+.jeff_talk_toast:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 36
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 36
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_1499B8
+    EXECUTE_SUBROUTINE .jeff_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149A1C
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .jeff_talk_prefers_tea
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149A1C:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x8
+.jeff_talk_prefers_tea:
+    UPDATE_U8_VALUE 2, 255, npcAffection[JEFF]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 37
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 37
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 130, 6, 2
+    ENTITY_WALK 130, SOUTHEAST, 2
     TOGGLE_PAUSE_ENTITY 0
     DEACTIVATE_SELF
 
-.executor_17_149A54:
-    SETUP_ENTITY 17, 10, 1
+; ============================================================
+; Executor 17 -- Cliff (spawned only at high affection and Cliff not gone)
+; ============================================================
+
+.executor_17_cliff:
+    SETUP_ENTITY 17, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 17, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -208, 0, -256
-    SET_ASSET_ROTATION 7
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149AC0
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION SOUTH
+    SET_CALLBACK_ROUTINE 0, 32768, .cliff_talk_toast
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_149A8C:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x9
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_148948
+.cliff_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[CLIFF]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_cliff_glass
     SET_ENTITY_ANIMATION 23
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 30
@@ -1157,44 +1295,48 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_149AC0:
+.cliff_talk_toast:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 39
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 39
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149A8C
+    EXECUTE_SUBROUTINE .cliff_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149AF0
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .cliff_talk_leaving
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149AF0:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x9
+.cliff_talk_leaving:
+    UPDATE_U8_VALUE 2, 255, npcAffection[CLIFF]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 40
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 40
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 130, 6, 2
+    ENTITY_WALK 130, SOUTHEAST, 2
     TOGGLE_PAUSE_ENTITY 0
     DEACTIVATE_SELF
 
-.executor_18_149B28:
-    SETUP_ENTITY 18, 11, 1
+; ============================================================
+; Executor 18 -- Kai (spawned only at high affection and Kai not gone)
+; ============================================================
+
+.executor_18_kai:
+    SETUP_ENTITY 18, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 18, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 128, 0, -224
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149B94
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .kai_talk_wine_maker
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_149B60:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xA
-    SPAWN_EXECUTOR 0, .executor_0_148970
-    SPAWN_EXECUTOR 20, .executor_20_14895C
+.kai_toast_anim:
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAI]
+    SPAWN_EXECUTOR 0, .executor_0_player_drink
+    SPAWN_EXECUTOR 20, .executor_20_kai_glass
     SET_ENTITY_ANIMATION 23
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 50
@@ -1202,69 +1344,69 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     RETURN_FROM_SUBROUTINE
 
-.branch_149B94:
+.kai_talk_wine_maker:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 41
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 41
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149B60
+    EXECUTE_SUBROUTINE .kai_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149BC4
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .kai_talk_not_drinking_game
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149BC4:
+.kai_talk_not_drinking_game:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 42
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 42
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149B60
+    EXECUTE_SUBROUTINE .kai_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149BF4
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .kai_talk_social_person
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149BF4:
+.kai_talk_social_person:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 43
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 43
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149B60
+    EXECUTE_SUBROUTINE .kai_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149C24
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .kai_talk_cant_drink_more
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149C24:
+.kai_talk_cant_drink_more:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 44
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 44
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_149B60
+    EXECUTE_SUBROUTINE .kai_toast_anim
     TOGGLE_PAUSE_ENTITY 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_149C54
-    EXECUTE_SUBROUTINE .sub_148630
+    SET_CALLBACK_ROUTINE 0, 32768, .kai_talk_done_leaving
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_149C54:
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xA
+.kai_talk_done_leaving:
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAI]
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_148638
-    INIT_MESSAGE_BOX_TYPE1 0, 56, 45
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, NEW_YEAR_FESTIVAL_TEXT_INDEX, 45
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 38
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 39
     WAIT_ENTITY_ANIMATION
-    ENTITY_WALK 30, 0, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495E8
-    ENTITY_WALK 10, 0, 2
-    ENTITY_WALK 50, 6, 2
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_1495F8
+    ENTITY_WALK 30, SOUTHWEST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_west
+    ENTITY_WALK 10, SOUTHWEST, 2
+    ENTITY_WALK 50, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 12, .assistant_carpenter_walk_east
     DEACTIVATE_SELF

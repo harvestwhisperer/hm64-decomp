@@ -1,0 +1,52 @@
+; Dialogue Bank
+; Index Start: 0xE93060
+; Bytecode Start: 0xE92FF0
+; Segments: 7
+
+; Entomologist NPC -- looking for the legendary (sky-blue swallowtail) butterfly.
+
+.define .entry              0
+.define .offer_item         1
+.define .fallthrough        2
+.define .butterfly_hint     4
+.define .quest_explanation  5
+
+; 0xE92FF0
+.entry:
+    SPECIAL_DIALOGUE_BIT_BRANCH ENTOMOLOGST_INTRODUCTION_DIALOGUE, NO_TEXT, .quest_explanation
+    SHOW_TEXT 19
+    SET_SPECIAL_DIALOGUE_BIT ENTOMOLOGST_INTRODUCTION_DIALOGUE
+    END_DIALOGUE
+
+; 0xE93000
+.offer_item:
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_ROCK, HELD_ITEM_POISONOUS_MUSHROOM, 22, .fallthrough
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_FODDER, HELD_ITEM_MOONLIGHT_STONE, 22, .fallthrough
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, 50, 66, 23, .fallthrough
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, HELD_ITEM_MOONDROP_FLOWER, HELD_ITEM_PINK_CAT_MINT_FLOWER, 25, .fallthrough
+    DIALOGUE_VARIABLE_BRANCH VAR_ITEM_BEING_HELD, 1, 67, 21, .fallthrough
+    END_DIALOGUE
+
+; 0xE93034
+.fallthrough:
+    END_DIALOGUE
+
+; 0xE93038
+.segment_3:
+    END_DIALOGUE
+
+; 0xE9303C
+.butterfly_hint:
+    DIALOGUE_VARIABLE_BRANCH VAR_WEATHER, RAIN, RAIN, 26, .fallthrough
+    SHOW_TEXT 24
+    END_DIALOGUE
+
+; 0xE9304C
+.quest_explanation:
+    SPECIAL_DIALOGUE_BIT_BRANCH ENTOMOLOGIST_LOOKING_FOR_BUTTERFLY_DIALOGUE, NO_TEXT, .butterfly_hint
+    SHOW_TEXT 20
+    SET_SPECIAL_DIALOGUE_BIT ENTOMOLOGIST_LOOKING_FOR_BUTTERFLY_DIALOGUE
+    END_DIALOGUE
+
+; 0xE9305C
+.segment_6:  ; alignment padding

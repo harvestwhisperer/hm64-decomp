@@ -87,11 +87,11 @@ bool setMapDataAddresses(u16 mapIndex, void *start, void *end) {
     bool result = FALSE;
     
     if (mapIndex < MAX_MAP_ADDRESSES) {
-        if (!(mapDataAddresses[mapIndex].flags & 1)) {
+        if (!(mapDataAddresses[mapIndex].flags & MAP_DATA_ADDRESS_ACTIVE)) {
             result = TRUE;
             mapDataAddresses[mapIndex].romStart = start;
             mapDataAddresses[mapIndex].romEnd = end;
-            mapDataAddresses[mapIndex].flags = 1;
+            mapDataAddresses[mapIndex].flags = MAP_DATA_ADDRESS_ACTIVE;
         }
     }
 

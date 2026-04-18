@@ -429,21 +429,21 @@ u16 itemPaletteOverrides[] = {
     0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0x0000, 0x0000, 0x0000
 };
 
-u8 heldItemIndices[] = {
-    0x00, 0x30, 0x2F, 0x2A, 0x0D, 0x0E, 0x00, 0x0F, 0x10, 0x11, 0x32, 0x00, 0x00, 0x01, 0x02, 0x03, 
-    0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 
-    0x31, 0x00, 0x19, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x1A, 0x20, 0x21, 0x00, 0x23, 0x22, 0x2B, 0x2D, 
-    0x2C, 0x2E, 0x3D, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x29, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 
-    0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3E, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x41, 0x41, 0x41, 0x41, 
-    0x41, 0x41, 0x41, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 
-    0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 
-    0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x42, 0x42, 0x42, 0x42, 0x42, 
-    0x42, 0x42, 0x42, 0x39, 0x3A, 0x38, 0x35, 0x36, 0x3B, 0x3C, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 
-    0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+u8 heldItemDialogueItemIndices[] = {
+     0, 48, 47, 42, 13, 14,  0, 15, 16, 17, 50,  0,  0,  1,  2,  3,
+     4,  5,  6,  7,  8,  9, 10, 11, 12, 18, 19, 20, 21, 22, 23, 24,
+    49,  0, 25, 27, 28, 29, 30, 31, 26, 32, 33,  0, 35, 34, 43, 45,
+    44, 46, 61,  0,  0,  0,  0,  0,  0, 41,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0, 51, 51, 51, 51, 51, 51, 51, 51,
+    62, 62, 62, 62, 62, 62, 62, 62, 63, 63, 63, 63, 63, 63, 63, 63,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 65, 65, 65, 65, 65,
+    65, 65, 65, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 66, 66, 66, 66, 66,
+    66, 66, 66, 57, 58, 56, 53, 54, 59, 60, 52, 52, 52, 52, 52, 52,
+    52, 52, 52, 52, 52, 52, 52, 52, 52, 52,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 };
 
 u16 itemTextIndices[] = {
@@ -628,7 +628,7 @@ void loadHeldItemEntity(u8, u16);
 bool handlePutDownHeldItem(u8 itemIndex);
 void processItemShipping(u8 index);
 void handleItemDroppedInWater(u8 arg0, u8 index);
-u8 getHeldItemIndex(u8);
+u8 getHeldItemDialogueItemIndex(u8);
 u16 getItemFlags(u16 index);
 
 
@@ -665,7 +665,7 @@ u8 getToolLevel(u8 tool) {
 
 void spawnToolEffectEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
-    loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, ENTITY_ASSET_HOLDABLE_ITEMS_4, 1);
+    loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, ENTITY_ASSET_TOOL_EFFECTS, 1);
     setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
     setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemOffset, 0xFFFF, 0xFF);
     setEntityCollidable(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
@@ -680,7 +680,7 @@ void spawnToolEffectEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z
 
 void spawnFishingRodEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
-    loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1);
+    loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, ENTITY_ASSET_STATIC_ITEM, 1);
     setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
     setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemOffset, 0xFFFF, 0xFF);
     setEntityCollidable(ENTITY_ITEM_BASE_INDEX + itemOffset, FALSE);
@@ -833,7 +833,7 @@ inline u8 handleMusicBoxDigging(s16 arg0, s16 arg1) {
     
     if (gBaseMapIndex == FARM) {
          
-        setDailyEventBit(0x29); 
+        setDailyEventBit(POWER_NUT_ELIGIBLE_TOOL_USE); 
         
         if (arg0 == 12 && arg1 == 2) {
             toolUse.musicBoxTileDigCounter++;
@@ -1219,7 +1219,7 @@ void useHoe(void) {
             
             case 1:
 
-                if (!checkDailyEventBit(0x4A)) {
+                if (!checkDailyEventBit(74)) {
 
                     if (direction & 1) {
 
@@ -1241,7 +1241,7 @@ void useHoe(void) {
             
             case 2:
                 
-                if (!checkDailyEventBit(0x4A)) {
+                if (!checkDailyEventBit(74)) {
 
                     if (direction & 1) {
 
@@ -1573,7 +1573,7 @@ void useHammer(void) {
  
     if (gBaseMapIndex == MOUNTAIN_1 && (getLevelInteractionIndexFromEntityPosition(ENTITY_PLAYER, 0, 32.0f) == 0x11) && (gPlayer.currentToolLevel == 2)) {
         deactivateMapObject(MAIN_MAP_INDEX, 3);
-        setDailyEventBit(0x29);
+        setDailyEventBit(POWER_NUT_ELIGIBLE_TOOL_USE);
     }
     
     handleHitFarmAnimalWithTool();
@@ -2233,9 +2233,9 @@ void useFishingPole(void) {
 void useMiraclePotion(void) {
 
     if (handleUseMiraclePotion()) {
-        setDailyEventBit(0x14);
+        setDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
     } else {
-        toggleDailyEventBit(0x14);
+        clearDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
     }
 
     toolUse.toolUseState = 0;
@@ -2247,9 +2247,9 @@ void useMiraclePotion(void) {
 void useCowMedicine(void) {
 
     if (handleAnimalMedicineUse()) {
-        setDailyEventBit(0x14);
+        setDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
     } else {
-        toggleDailyEventBit(0x14);
+        clearDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
     }
 
     toolUse.toolUseState = 0;
@@ -2332,7 +2332,7 @@ static const u8 D_80122374[12] = { 5, 4, 3, 6, 8, 2, 7, 0, 1, 0, 0, 0 };
 
 void handleBlueFeatherUse(void) {
      
-    toggleDailyEventBit(SUCCESSFUL_PROPOSAL);
+    clearDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
     
     if (npcTalkingTo == 0xFF) goto func_end;
 
@@ -2340,13 +2340,13 @@ void handleBlueFeatherUse(void) {
     
     npcs[npcTalkingTo].animationMode = npcs[npcTalkingTo].defaultAnimationMode;
     
-    setSpecialDialogueBit(0x135);
+    setSpecialDialogueBit(USED_BLUE_FEATHER_DIALOGUE);
     
     switch (npcTalkingTo) {
         case MARIA:
             if (npcAffection[MARIA] >= 220) {
                 gWife = MARIA;   
-                setDailyEventBit(SUCCESSFUL_PROPOSAL);
+                setDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(MARIA);
             }
@@ -2354,7 +2354,7 @@ void handleBlueFeatherUse(void) {
         case POPURI:
             if (npcAffection[POPURI] >= 220) {
                 gWife = POPURI;
-                setDailyEventBit(SUCCESSFUL_PROPOSAL);
+                setDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(POPURI);
             }
@@ -2362,7 +2362,7 @@ void handleBlueFeatherUse(void) {
         case ELLI:
             if (npcAffection[ELLI] >= 220) {
                 gWife = ELLI;
-                setDailyEventBit(SUCCESSFUL_PROPOSAL);
+                setDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(ELLI);
             }
@@ -2370,7 +2370,7 @@ void handleBlueFeatherUse(void) {
         case ANN:
             if (npcAffection[ANN] >= 220) {
                 gWife = ANN;
-                setDailyEventBit(SUCCESSFUL_PROPOSAL);
+                setDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(ANN);
             }
@@ -2378,7 +2378,7 @@ void handleBlueFeatherUse(void) {
         case KAREN:
             if (npcAffection[KAREN] >= 220) {
                 gWife = KAREN;
-                setDailyEventBit(SUCCESSFUL_PROPOSAL);
+                setDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
                 setLifeEventBit(ENGAGED);
                 setDefaultBabyName(KAREN);
             }
@@ -2387,7 +2387,7 @@ void handleBlueFeatherUse(void) {
             break;
         }
 
-    if (checkDailyEventBit(SUCCESSFUL_PROPOSAL)) {
+    if (checkDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL)) {
 
         // use up blue feather if successful proposal
         gPlayer.currentTool = 0;
@@ -2404,9 +2404,9 @@ func_end:
 void useEmptyBottle(void) {
 
     if (checkWaterableSoilInteraction(gBaseMapIndex)) {
-        gPlayer.bottleContents = 1;
+        gPlayer.bottleContents = BOTTLE_CONTENTS_WATER;
     } else if (checkWineBarrelInteraction(gBaseMapIndex) ) {
-        gPlayer.bottleContents = 2;
+        gPlayer.bottleContents = BOTTLE_CONTENTS_WINE;
     } else {
         handleGetMilkWithBottle();
     }
@@ -2469,7 +2469,7 @@ inline u8 initializeHeldItem(u8 index, u8 arg1, u32 heldItemIndex, s32 hasDirect
     itemInfo[index].itemAnimationFrameCounter = 0;
     itemInfo[index].flags = hasDirectionFrame | (useAttachment | 1);
     
-    gItemBeingHeld = getHeldItemIndex(heldItemIndex);
+    gItemBeingHeld = getHeldItemDialogueItemIndex(heldItemIndex);
     
     return index;
 
@@ -2501,7 +2501,7 @@ u8 allocateThrownItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg
         itemInfo[index].flags = arg3 | (arg4 | tempBit);
         itemInfo[index].itemAnimationFrameCounter = 0;
 
-        gItemBeingHeld = getHeldItemIndex(heldItemIndex);
+        gItemBeingHeld = getHeldItemDialogueItemIndex(heldItemIndex);
 
         // index = initializeHeldItem(index, arg1, arg2, arg3, arg4);
 
@@ -2806,7 +2806,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0x6E:                                     
         case 0x6F:                                     
 
-            vec2 = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec2 = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
             gChickens[gPlayer.heldAnimalIndex].coordinates = vec2;
 
@@ -2828,7 +2828,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0x5E:                                     
         case 0x5F:                              
 
-            vec3 = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec3 = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
             dogInfo.coordinates = vec3;
 
@@ -2849,7 +2849,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0xB0:                                     
         case 0xB1:                                     
         case 0xB2:     
-            vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             initializeMiscAnimalEntity(spawnMiscAnimal(0, direction, vec.x, vec.y, vec.z), 0);
 
@@ -2863,7 +2863,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0x80:                                     
         case 0x81:                                     
         case 0x82: 
-            vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             initializeMiscAnimalEntity(spawnMiscAnimal(1, direction, vec.x, vec.y, vec.z), 0);
 
@@ -2877,7 +2877,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0x88:                                     
         case 0x89:                                     
         case 0x8A:        
-            vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             initializeMiscAnimalEntity(spawnMiscAnimal(2, direction, vec.x, vec.y, vec.z), 0);
 
@@ -2891,7 +2891,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0x90:                                     
         case 0x91:                                     
         case 0x92:   
-            vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             initializeMiscAnimalEntity(spawnMiscAnimal(7, direction, vec.x, vec.y, vec.z), 0);
 
@@ -2905,7 +2905,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0x98:                                     
         case 0x99:                                     
         case 0x9A:  
-            vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             initializeMiscAnimalEntity(spawnMiscAnimal(9, direction, vec.x, vec.y, vec.z), 0);
 
@@ -2919,7 +2919,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0xA0:                                     
         case 0xA1:                                     
         case 0xA2:         
-            vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             initializeMiscAnimalEntity(spawnMiscAnimal(8, direction, vec.x, vec.y, vec.z), 0);
             break;     
@@ -2932,7 +2932,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0xA8:                                     
         case 0xA9:                                     
         case 0xAA:    
-            vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             initializeMiscAnimalEntity(spawnMiscAnimal(10, direction, vec.x, vec.y, vec.z), 0);
             break;     
@@ -2969,7 +2969,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
                     break;
             }
 
-            vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
             direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             vec.y = entities[ENTITY_PLAYER].coordinates.y;
@@ -3053,7 +3053,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         case 0xC8:                                     
         case 0xC9:                               
 
-            vec4 = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+            vec4 = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
             npcs[BABY].startingCoordinates = vec4;
 
@@ -3077,10 +3077,10 @@ bool handlePutDownHeldItem(u8 itemIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getHeldItemIndex);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getHeldItemDialogueItemIndex);
 
-u8 getHeldItemIndex(u8 index) {
-    return heldItemIndices[index];
+u8 getHeldItemDialogueItemIndex(u8 index) {
+    return heldItemDialogueItemIndices[index];
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", showHeldItemText);
@@ -3098,7 +3098,7 @@ void showHeldItemText(u8 index) {
             break;
     }
 
-    showTextBox(1, SHOP_TEXT_INDEX, temp, 0, 2);
+    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, temp, 0, 2);
 
 }
 
@@ -3121,7 +3121,7 @@ void showHeldItemText(u8 index) {
 //     temp2 = D_80118000[index];
     
 // func_end:
-//     showTextBox(1, SHOP_TEXT_INDEX, temp2, 0, 2);
+//     showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, temp2, 0, 2);
 // }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processItemShipping);
@@ -3133,38 +3133,38 @@ void processItemShipping(u8 index) {
     dailyShippingBinValue += adjustValue(dailyShippingBinValue, itemShippingValues[index], MAX_TOTAL_SHIPPING);
      
     switch (index) {
-        case TURNIP:
+        case TURNIP_HELD_ITEM:
             totalTurnipsShipped += adjustValue(totalTurnipsShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case POTATO:
+        case POTATO_HELD_ITEM:
             totalPotatoesShipped += adjustValue(totalPotatoesShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case EGGPLANT:
+        case EGGPLANT_HELD_ITEM:
             totalEggplantsShipped += adjustValue(totalEggplantsShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case CABBAGE:
+        case CABBAGE_HELD_ITEM:
             totalCabbageShipped += adjustValue(totalCabbageShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case STRAWBERRY:
+        case STRAWBERRY_HELD_ITEM:
             totalStrawberriesShipped += adjustValue(totalStrawberriesShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case TOMATO:
+        case TOMATO_HELD_ITEM:
             totalTomatoesShipped += adjustValue(totalTomatoesShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case CORN:
+        case CORN_HELD_ITEM:
             totalCornShipped += adjustValue(totalCornShipped, 1, MAX_ITEM_SHIPPING_VALUE);
             gTotalCropsShipped += adjustValue(gTotalCropsShipped, 1, MAX_TOTAL_CROPS_SHIPPED);
             break;
-        case SMALL_MILK:
-        case MEDIUM_MILK:
-        case LARGE_MILK:
-        case GOLDEN_MILK:
+        case SMALL_MILK_HELD_ITEM:
+        case MEDIUM_MILK_HELD_ITEM:
+        case LARGE_MILK_HELD_ITEM:
+        case GOLDEN_MILK_HELD_ITEM:
             gTotalMilkShipped += adjustValue(gTotalMilkShipped, 1, MAX_ANIMAL_ITEM_SHIPPED);
             break;
         case EGG_HELD_ITEM:
@@ -3237,7 +3237,7 @@ void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
             setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xE9);
         }
         
-        if (!(gCutsceneFlags & 1)) {
+        if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
 
             // FIXME: use a range
             // fish
@@ -3245,8 +3245,7 @@ void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
                 setDailyEventBit(KAPPA_FISH_OFFERING_DAILY);
             }
 
-            // check kappa power nut
-            if (!checkLifeEventBit(KAPPA_POWER_NUT) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY) && itemInfo[itemIndex].heldItemIndex == LARGE_FISH && 8 < gHour && gHour < 17) {
+            if (!checkLifeEventBit(KAPPA_POWER_NUT_GIFT) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY) && itemInfo[itemIndex].heldItemIndex == LARGE_FISH_HELD_ITEM && 8 < gHour && gHour < 17) {
                 setDailyEventBit(KAPPA_LARGE_FISH_OFFERING_DAILY);
             }
 
@@ -3264,7 +3263,7 @@ void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
             setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 233);
         }
         
-        if (!(gCutsceneFlags & 1)) {
+        if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
             if (!checkDailyEventBit(HARVEST_GODDESS_INTERACTION) && (itemFlags[itemInfo[itemIndex].heldItemIndex] & ITEM_HARVEST_GODDESS_OFFERABLE) && 8 < gHour && gHour < 17) {
                 setDailyEventBit(HARVEST_GODDESS_OFFERING);    
             }
@@ -3553,10 +3552,9 @@ void updateHeldItemState(void) {
                             
                             if (checkDailyEventBit(HARVEST_GODDESS_OFFERING)) {
                                 
-                                if (checkSpecialDialogueBit(0x25)) {
+                                if (checkSpecialDialogueBit(HARVEST_GODDESS_OFFERING_ADVICE_DIALOGUE)) {
                                     
-                                    if (!checkSpecialDialogueBit(0x14B)) {
-                                        // initial harvest goddess offering
+                                    if (!checkSpecialDialogueBit(GRAPEVINE_SPIRIT_AWAKENED_DIALOGUE)) {
                                          gCutsceneIndex = 344;
                                     } else {
                                          gCutsceneIndex = 341;
