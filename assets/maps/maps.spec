@@ -1,3 +1,5 @@
+// Maps
+
 beginseg
     name "ranchSpringMap"
     flags RAW
@@ -44,12 +46,6 @@ beginseg
     name "ranchHouseMap"
     flags RAW
     include "build/assets/maps/ranch/ranchHouseMap.hm64map.o"
-endseg
-
-beginseg
-    name "emptyMap1"
-    flags RAW
-    include "build/assets/maps/unknown/emptyMap1.hm64map.o"
 endseg
 
 beginseg
@@ -386,12 +382,6 @@ beginseg
     name "potionShopMap"
     flags RAW
     include "build/assets/maps/potionShop/potionShopMap.hm64map.o"
-endseg
-
-beginseg
-    name "emptyMap2"
-    flags RAW
-    include "build/assets/maps/unknown/emptyMap2.hm64map.o"
 endseg
 
 beginseg

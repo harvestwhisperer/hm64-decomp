@@ -89,18 +89,6 @@ beginseg
 endseg
 
 beginseg
-    name "emptyMountainSprite1Texture"
-    flags RAW
-    include "build/bin/assets/sprites/mapObjects/mountain/empty/emptyMountainSprite1Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMountainSprite2Texture"
-    flags RAW
-    include "build/bin/assets/sprites/mapObjects/mountain/empty/emptyMountainSprite2Texture.bin.o"
-endseg
-
-beginseg
     name "mountainPathTilesTexture"
     flags RAW
     include "build/assets/sprites/mapObjects/mountain/mountainPathTiles/mountainPathTilesTexture.bin.o"
@@ -209,42 +197,6 @@ beginseg
 endseg
 
 beginseg
-    name "emptyMapSprite1Texture"
-    flags RAW
-    include "build/bin/assets/sprites/mapObjects/unknown/empty/emptyMapSprite1Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMapSprite2Texture"
-    flags RAW
-    include "build/bin/assets/sprites/mapObjects/unknown/empty/emptyMapSprite2Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMapSprite3Texture"
-    flags RAW
-    include "build/bin/assets/sprites/mapObjects/unknown/empty/emptyMapSprite3Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMapSprite4Texture"
-    flags RAW
-    include "build/bin/assets/sprites/mapObjects/unknown/empty/emptyMapSprite4Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMapSprite5Texture"
-    flags RAW
-    include "build/bin/assets/sprites/mapObjects/unknown/empty/emptyMapSprite5Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMapSprite6Texture"
-    flags RAW
-    include "build/bin/assets/sprites/mapObjects/unknown/empty/emptyMapSprite6Texture.bin.o"
-endseg
-
-beginseg
     name "stoneTexture"
     flags RAW
     include "build/assets/sprites/mapObjects/bathroom/stone/stoneTexture.bin.o"
@@ -278,18 +230,6 @@ beginseg
     name "vineyardTreeSpritesheetIndex"
     flags RAW
     include "build/assets/sprites/mapObjects/vineyard/vineyardTree/vineyardTreeSpritesheetIndex.bin.o"
-endseg
-
-beginseg
-    name "emptyMap1Texture"
-    flags RAW
-    include "build/bin/assets/sprites/mapObjects/unknown/empty/emptyMap1Texture.bin.o"
-endseg
-
-beginseg
-    name "emptyMap2Texture"
-    flags RAW
-    include "build/bin/assets/sprites/mapObjects/unknown/empty/emptyMap2Texture.bin.o"
 endseg
 
 beginseg

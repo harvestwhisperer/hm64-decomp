@@ -6,22 +6,17 @@ REGION ?= us
 BASEROM := baserom.$(REGION).z64
 
 # Options
-
 VERBOSE := 0
-PERMUTER ?= 0
-
 MODERN_GCC ?= 0
 
 # Directories
-
 SRC_DIRS := src
 BIN_DIRS := bin
-
 BUILD_DIR := build
 TOOLS_DIR := tools
+ASSETS_DIR := assets
 
 # Files
-
 C_FILES = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.c))
 BIN_FILES=$(foreach dir, $(BIN_DIRS), $(wildcard $(dir)/*.bin))
 
@@ -55,7 +50,6 @@ MKDIR = @mkdir -p $(dir $@)
 SPEC := spec
 SPEC_PROCESSED := $(BUILD_DIR)/spec
 LD_SCRIPT := $(BUILD_DIR)/$(BASENAME).ld
-BSS_LD_SCRIPT := config/$(REGION)/common_bss.ld
 
 # Export BUILD_DIR for mkldscript's $(BUILD_DIR) expansion
 export BUILD_DIR
@@ -125,18 +119,32 @@ NU_OPTFLAGS := -O3
 
 ULTRALIBVER := -DBUILD_VERSION=7
 
-LDFLAGS := -G 0  -T config/$(REGION)/undefined_syms.txt -T $(BSS_LD_SCRIPT) -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
+LDFLAGS := -G 0 -T config/$(REGION)/undefined_syms.txt -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
 
-# Binary asset matching (cutscenes, dialogues, texts)
+ifeq ($(VERBOSE),0)
+V := @
+endif
 
-# Cutscenes
-# DSL source in src/bytecode/cutscenes/, ASM output to assets/cutscenes/
+# Create all output directories upfront
+$(shell mkdir -p $(sort $(dir $(OBJECTS))))
+
+# ==============================================================================
+# CUTSCENES
+# ==============================================================================
 
 CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
 CUTSCENE_ASSETS_DIR := assets/cutscenes
 CUTSCENE_BUILD_DIR := $(BUILD_DIR)/assets/cutscenes
 
 CUTSCENE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.transpiler
+
+$(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
+	@mkdir -p $(CUTSCENE_ASSETS_DIR)
+	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
+
+$(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
+	$(MKDIR)
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 CUTSCENE_OBJECTS := \
 	$(CUTSCENE_BUILD_DIR)/farmBusiness.bin.o \
@@ -167,14 +175,27 @@ CUTSCENE_OBJECTS := \
 	$(CUTSCENE_BUILD_DIR)/demos.bin.o \
 	$(CUTSCENE_BUILD_DIR)/howToPlay.bin.o
 
-# Dialogues
-# DSL source in src/bytecode/dialogues/, ASM output to assets/dialogues/
+# ==============================================================================
+# DIALOGUES
+# ==============================================================================
 
 DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
 DIALOGUE_ASSETS_DIR := assets/dialogues
 DIALOGUE_BUILD_DIR := $(BUILD_DIR)/assets/dialogues/bytecode
 
 DIALOGUE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.dialogues.transpiler
+
+$(DIALOGUE_ASSETS_DIR)/%.s: $(DIALOGUE_SRC_DIR)/%.dialogue
+	@mkdir -p $(DIALOGUE_ASSETS_DIR)
+	$(V)$(DIALOGUE_TRANSPILER) transpile $< -n $* -o $(DIALOGUE_ASSETS_DIR)/
+
+# Mark dependency
+$(DIALOGUE_ASSETS_DIR)/%Index.s: $(DIALOGUE_ASSETS_DIR)/%.s
+	@:
+
+$(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_ASSETS_DIR)/%.s
+	$(MKDIR)
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 DIALOGUE_OBJECTS := \
 	$(DIALOGUE_BUILD_DIR)/text1Dialogue.bin.o \
@@ -318,16 +339,24 @@ DIALOGUE_OBJECTS := \
 	$(DIALOGUE_BUILD_DIR)/entomologistDialogue.bin.o \
 	$(DIALOGUE_BUILD_DIR)/entomologistDialogueIndex.bin.o
 
-DECOMPILED_TEXTS := text1 \
+# ==============================================================================
+# Texts
+# ==============================================================================
+
+TEXT_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.text.transpiler
+TEXT_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.text.extractor
+
+TEXT_ASSETS_DIR := assets/text
+TEXT_BUILD_DIR := $(BUILD_DIR)/assets/text
+
+TEXT_BANKS := text1 \
 	library \
 	diary \
-	recipesJapanese \
 	festivalOverlaySelections \
 	letters \
 	levelInteractions \
 	animalInteractions \
 	tv \
-	text10 \
 	namingScreen \
 	elli \
 	kai \
@@ -391,120 +420,138 @@ DECOMPILED_TEXTS := text1 \
 	additionalNPCs \
 	howToPlay
 
-TEXT_ASSETS_DIR := assets/text
-TEXT_BUILD_DIR := $(BUILD_DIR)/assets/text
-
-TEXT_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.text.transpiler
-TEXT_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.text.extractor
+# ==============================================================================
+# Sprites
+# ==============================================================================
 
 SPRITE_ASSETS_DIR := assets/sprites
 SPRITE_BUILD_DIR := $(BUILD_DIR)/assets/sprites
 SPRITE_ASSEMBLER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.sprites.assembler
 SPRITE_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.sprites.extractor
 
+extract-sprites:
+	@find $(SPRITE_ASSETS_DIR) -type f ! -name "*.spec" -delete 2>/dev/null || true
+	@find $(SPRITE_ASSETS_DIR) -type d -empty -delete 2>/dev/null || true
+	$(V)$(SPRITE_EXTRACTOR) extract_all
+
+# Each sprite directory produces 3 bin files: <label>Texture.bin, <label>AssetsIndex.bin, <label>SpritesheetIndex.bin
+# The Texture.bin rule produces all three; the other two are marked as depending on it.
+
+$(SPRITE_BUILD_DIR)/%AssetsIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
+	@:
+
+$(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
+	@:
+
+$(SPRITE_BUILD_DIR)/%.bin.o: $(SPRITE_BUILD_DIR)/%.bin
+	$(V)$(LD) -r -b binary -o $@ $<
+
+.SECONDEXPANSION:
+
+$(SPRITE_BUILD_DIR)/%Texture.bin: $(SPRITE_ASSETS_DIR)/$$(dir $$*)manifest.json
+	@mkdir -p $(dir $@)
+	$(V)$(SPRITE_ASSEMBLER) assemble $(SPRITE_ASSETS_DIR)/$(dir $*) $(dir $@)
+
+# ==============================================================================
+# Fonts
+# ==============================================================================
+
 FONT_ASSETS_DIR := assets/font
 FONT_BUILD_DIR := $(BUILD_DIR)/assets/font
 FONT_ASSEMBLER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.assembler
 FONT_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.extractor
-FONT_PNG_EXPORTER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.png_exporter
-
-ifeq ($(VERBOSE),0)
-V := @
-endif
-
-ifeq ($(PERMUTER),1)
-MACROS += -D_PERMUTER=1
-endif
-
-# Create all output directories upfront
-$(shell mkdir -p $(sort $(dir $(OBJECTS))))
-
-# Flag overrides
-
-build/lib/nusys-1/src/nusys/nuboot.o: NU_OPTFLAGS := -O0
-build/lib/nusys-1/src/sample/nunospak/nupakmenu.o: NU_OPTFLAGS += -g2
-build/lib/nusys-1/src/sample/nunospak/nupakmenuloadfont.o: NU_OPTFLAGS += -g2
-build/lib/libultra/src/io/aisetnextbuf.o: ULTRALIBVER := -DBUILD_VERSION=6
-
-# Targets
-
-ifeq ($(MODERN_GCC),1)
-  $(info Building with modern GCC (non-matching))
-  $(info Compiler: $(CC))
-endif
-
-all: check
-
-jp-%:
-	$(MAKE) -f Makefile.jp $*
-
-jp:
-	$(MAKE) -f Makefile.jp
-
-clean:
-	@rm -rf asm
-	@rm -rf bin
-	@rm -rf build
-# remove transpiled bytecode .s files
-	@find assets -type f -name "*.s" -delete 2>/dev/null || true
-	@rm -f $(LD_SCRIPT)
-	@rm -f $(BASENAME).elf
-	@rm -f $(BASENAME).map
-	@rm -f $(TARGET)
-
-clean-assets:
-	@find assets -type f ! -name "*.spec" -delete 2>/dev/null || true
-# clean up empty directories
-	@find assets -type d -empty -delete 2>/dev/null || true
-
-clean-all: clean clean-assets
-
-split:
-# only extract what's needed and don't generate linker script
-	$(V)$(PYTHON) -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts seq hm64map
-
-setup: clean split extract-sprites extract-fonts
-
-rerun: clean $(LD_SCRIPT) check
-
-# Asset extraction
-
-# For build
-
-extract-sprites:
-# don't delete spec files
-	@find assets/sprites -type f ! -name "*.spec" -delete 2>/dev/null || true
-# clean up empty directories
-	@find assets/sprites -type d -empty -delete 2>/dev/null || true
-	$(V)$(SPRITE_EXTRACTOR) extract_all    
 
 extract-fonts:
 	@rm -f $(FONT_ASSETS_DIR)/*.ci2 $(FONT_ASSETS_DIR)/*.pal 2>/dev/null || true
 	$(V)$(FONT_EXTRACTOR)
 
-assemble-fonts:
-	$(V)$(FONT_ASSEMBLER)
+$(FONT_BUILD_DIR)/fontTexture.bin: $(FONT_ASSETS_DIR)/fontTexture.ci2 $(FONT_ASSETS_DIR)/fontPalette1.pal $(FONT_ASSETS_DIR)/fontPalette2.pal $(FONT_ASSETS_DIR)/fontPalette3.pal
+	@mkdir -p $(dir $@)
+	$(V)$(FONT_ASSEMBLER) --assets-dir $(FONT_ASSETS_DIR) --output-dir $(FONT_BUILD_DIR)
 
-# Extra
+$(FONT_BUILD_DIR)/fontPalette1.bin: $(FONT_BUILD_DIR)/fontTexture.bin
+	@:
 
+$(FONT_BUILD_DIR)/fontPalette2.bin: $(FONT_BUILD_DIR)/fontTexture.bin
+	@:
 
-extract-gifs:
-	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.animations.gif_builder
+$(FONT_BUILD_DIR)/fontPalette3.bin: $(FONT_BUILD_DIR)/fontTexture.bin
+	@:
+
+$(FONT_BUILD_DIR)/%.bin.o: $(FONT_BUILD_DIR)/%.bin
+	$(V)$(LD) -r -b binary -o $@ $<
+
+# ==============================================================================
+# ASSET PATHS
+# ==============================================================================
+
+BOOT_BIN := bin/makerom/ipl3.bin
+
+MAPS_DIR := bin/maps
+SEQ_DIR := bin/audio
+
+SPRITES_DIR := assets/sprites
+TEXTS_DIR := assets/text
+
+# ==============================================================================
+# TARGETS
+# ==============================================================================
+
+.DEFAULT_GOAL := all
+
+.PHONY: all extract split extract-texts extract-sprites extract-fonts
+.PHONY: clean clean-extracted clean-all-dangerous
+
+all: $(TARGET)
+
+# ==============================================================================
+# ASSET EXTRACTION
+# ==============================================================================
+
+# Extract all assets required for a dev rebuild
+extract: split extract-texts extract-sprites extract-fonts
+
+split:
+	$(V)$(PYTHON) -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code animationScripts bin hm64map seq
 
 extract-texts:
-	$(V)$(TEXT_EXTRACTOR) extract_all
+	$(V)$(TEXT_EXTRACTOR) extract_all --modding
 
-extract-map-sprites:
-	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.maps.png_exporter all
+# ==============================================================================
+# TEXTS
+# ==============================================================================
 
-extract-cutscenes:
-	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.extractor --all
+# Pattern rule: Text .txt files -> .s assembly files
+# Rebuilds whenever any .txt file in the bank directory changes
+define TEXT_BANK_RULE
+$(TEXT_ASSETS_DIR)/$(1)Text.s: $$(wildcard $(TEXT_ASSETS_DIR)/$(1)/*.txt)
+	@echo "Transpiling text bank: $(1)"
+	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$(1) -n $(1)Text -o $(TEXT_ASSETS_DIR)/ --modding
 
-extract-font:
-	$(V)$(FONT_PNG_EXPORTER) extract_all
-	$(V)$(FONT_PNG_EXPORTER) extract_all_palettes
+# Mark the index as depending on the main file
+$(TEXT_ASSETS_DIR)/$(1)TextIndex.s: $(TEXT_ASSETS_DIR)/$(1)Text.s
+	@:
+endef
 
-# Main code segment
+# Generate rules for all text banks
+$(foreach bank,$(TEXT_BANKS),$(eval $(call TEXT_BANK_RULE,$(bank))))
+
+$(TEXT_BUILD_DIR)/%Text.bin.o: $(TEXT_ASSETS_DIR)/%Text.s
+	$(MKDIR)
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+$(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
+	$(MKDIR)
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
+
+# ==============================================================================
+# CODE
+# ==============================================================================
+
+build/lib/nusys-1/src/nusys/nuboot.o: NU_OPTFLAGS := -O0
+build/lib/nusys-1/src/sample/nunospak/nupakmenu.o: NU_OPTFLAGS += -g2
+build/lib/nusys-1/src/sample/nunospak/nupakmenuloadfont.o: NU_OPTFLAGS += -g2
+build/lib/libultra/src/io/aisetnextbuf.o: ULTRALIBVER := -DBUILD_VERSION=6
 
 $(BUILD_DIR)/src/mainproc.o: src/mainproc.c
 	$(MKDIR)
@@ -578,10 +625,6 @@ $(BUILD_DIR)/lib/libultra/src/os/%.o: lib/libultra/src/os/%.s
 	$(MKDIR)
 	$(CC) $(CC_FLAG) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) $(OS_ASM_FLAG) -x assembler-with-cpp -o $@ $<
 
-$(BUILD_DIR)/lib/libultra/src/os/unusedPadding.o: lib/libultra/src/os/unusedPadding.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
 $(BUILD_DIR)/lib/libultra/src/rmon/%.o: lib/libultra/src/rmon/%.s
 	$(MKDIR)
 	$(CC) $(CC_FLAG) -c -I lib/libultra/include $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
@@ -591,7 +634,6 @@ $(BUILD_DIR)/lib/libultra/src/rmon/%.o: lib/libultra/src/rmon/%.s
 $(BUILD_DIR)/lib/ucode/%.o: lib/ucode/%.s
 	$(MKDIR)
 	gcc -E -x assembler-with-cpp -I include $(HASM_AS_DEFINES) $< | $(AS) $(ASFLAGS) -I lib/ucode -o $@ -
-# 	$(CC) -B $(KMC_PATH) -E -I include $(HASM_AS_DEFINES) $< | $(AS) $(ASFLAGS) -o $@ -
 
 # ROM header
 
@@ -609,86 +651,6 @@ $(BUILD_DIR)/makerom/entry.o: makerom/entry.s
 	$(MKDIR)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
-# Asset building
-
-# Transpile cutscene DSL to assembly
-$(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
-	@mkdir -p $(CUTSCENE_ASSETS_DIR)
-	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
-
-# Cutscenes: assemble from assets/cutscenes/
-$(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-# Transpile dialogue DSL to assembly
-$(DIALOGUE_ASSETS_DIR)/%.s: $(DIALOGUE_SRC_DIR)/%.dialogue
-	@mkdir -p $(DIALOGUE_ASSETS_DIR)
-	$(V)$(DIALOGUE_TRANSPILER) transpile $< -n $* -o $(DIALOGUE_ASSETS_DIR)/
-
-# Mark dependency
-$(DIALOGUE_ASSETS_DIR)/%Index.s: $(DIALOGUE_ASSETS_DIR)/%.s
-	@:
-
-$(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_ASSETS_DIR)/%.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-# Extract texts to assets directory and transpile to assembly (generates two files: bytecode and index)
-$(TEXT_ASSETS_DIR)/%Text.s:
-	$(V)$(TEXT_EXTRACTOR) extract $*
-	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/
-
-# Mark dependency
-$(TEXT_ASSETS_DIR)/%TextIndex.s: $(TEXT_ASSETS_DIR)/%Text.s
-	@:
-
-$(TEXT_BUILD_DIR)/%Text.bin.o: $(TEXT_ASSETS_DIR)/%Text.s
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-$(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-# Sprites: assemble from assets and compile to .bin.o
-# Each sprite directory produces 3 bin files: <label>Texture.bin, <label>AssetsIndex.bin, <label>SpritesheetIndex.bin
-
-# Secondary files are created by the Texture.bin rule
-$(SPRITE_BUILD_DIR)/%AssetsIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
-	@:
-
-$(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
-	@:
-
-# Compile sprite .bin to .bin.o
-$(SPRITE_BUILD_DIR)/%.bin.o: $(SPRITE_BUILD_DIR)/%.bin
-	$(V)$(LD) -r -b binary -o $@ $<
-
-# Only the Texture.bin rule needs SECONDEXPANSION for $(dir $*) in prerequisite
-.SECONDEXPANSION:
-
-$(SPRITE_BUILD_DIR)/%Texture.bin: $(SPRITE_ASSETS_DIR)/$$(dir $$*)manifest.json
-	@mkdir -p $(dir $@)
-	$(V)$(SPRITE_ASSEMBLER) assemble $(SPRITE_ASSETS_DIR)/$(dir $*) $(dir $@)
-
-# Font assets: assemble from assets/font/ to build/assets/font/
-$(FONT_BUILD_DIR)/fontTexture.bin: $(FONT_ASSETS_DIR)/fontTexture.ci2 $(FONT_ASSETS_DIR)/fontPalette1.pal $(FONT_ASSETS_DIR)/fontPalette2.pal $(FONT_ASSETS_DIR)/fontPalette3.pal
-	@mkdir -p $(dir $@)
-	$(V)$(FONT_ASSEMBLER) --assets-dir $(FONT_ASSETS_DIR) --output-dir $(FONT_BUILD_DIR)
-
-$(FONT_BUILD_DIR)/fontPalette1.bin: $(FONT_BUILD_DIR)/fontTexture.bin
-	@:
-
-$(FONT_BUILD_DIR)/fontPalette2.bin: $(FONT_BUILD_DIR)/fontTexture.bin
-	@:
-
-$(FONT_BUILD_DIR)/fontPalette3.bin: $(FONT_BUILD_DIR)/fontTexture.bin
-	@:
-
-$(FONT_BUILD_DIR)/%.bin.o: $(FONT_BUILD_DIR)/%.bin
-	$(V)$(LD) -r -b binary -o $@ $<
-
-# Rest of code and extracted binary files
-
 $(BUILD_DIR)/%.s.o: %.s
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
@@ -700,6 +662,12 @@ $(BUILD_DIR)/%.seq.o: %.seq
 
 $(BUILD_DIR)/%.bin.o: %.bin
 	$(V)$(LD) -r -b binary -o $@ $<
+
+
+# ==============================================================================
+# CODE SEGMENT
+# ==============================================================================
+
 
 NUBOOT_OBJECTS := \
 	$(BUILD_DIR)/lib/nusys-1/src/nusys/nuboot.o
@@ -715,10 +683,7 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/system/sprite.o \
 	$(BUILD_DIR)/src/system/globalSprites.o \
 	$(BUILD_DIR)/src/system/entity.o \
-	$(BUILD_DIR)/src/system/unknownData.o \
-	$(BUILD_DIR)/src/system/unknownData2.o \
 	$(BUILD_DIR)/src/system/staticGfx.o \
-	$(BUILD_DIR)/src/system/paddingData.o \
 	$(BUILD_DIR)/src/system/map.o \
 	$(BUILD_DIR)/src/system/mapController.o \
 	$(BUILD_DIR)/src/system/audio.o \
@@ -756,8 +721,7 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/game/gameFile.o \
 	$(BUILD_DIR)/src/data/animationScripts/animationScripts.o \
 	$(BUILD_DIR)/src/data/audio/sfx.o \
-	$(BUILD_DIR)/src/game/namingScreen.o \
-	$(BUILD_DIR)/src/game/bssPadding.o
+	$(BUILD_DIR)/src/game/namingScreen.o
 
 NUSYS_SAMPLE_OBJECTS := \
 	$(BUILD_DIR)/lib/nusys-1/src/sample/nunospak/nupakmenu.o \
@@ -854,7 +818,6 @@ LIBULTRA_OBJECTS := \
 	$(BUILD_DIR)/lib/libultra/src/gu/sinf.o \
 	$(BUILD_DIR)/lib/libultra/src/gu/translate.o \
 	$(BUILD_DIR)/lib/libultra/src/os/invaldcache.o \
-	$(BUILD_DIR)/lib/libultra/src/os/unusedPadding.o \
 	$(BUILD_DIR)/lib/libultra/src/os/setintmask.o \
 	$(BUILD_DIR)/lib/libultra/src/os/writebackdcache.o \
 	$(BUILD_DIR)/lib/libultra/src/os/writebackdcacheall.o \
@@ -1016,50 +979,65 @@ ALL_CODE_OBJECTS := \
 	$(LIBULTRA_OBJECTS) \
 	$(LIBKMC_OBJECTS)
 
-# Single combined codesegment.o - equivalent to static linking
 $(BUILD_DIR)/codesegment.o: $(ALL_CODE_OBJECTS)
 	$(MKDIR)
 	$(V)$(LD) -r -G 0 -o $@ $^
 
-# Linker script generation from spec file
+# ==============================================================================
+# LINKER SCRIPT
+# ==============================================================================
 
 $(SPEC_PROCESSED): $(SPEC)
 	$(MKDIR)
 	$(V)$(CPP) $(SPEC_CPP_FLAGS) $< > $@
 
-$(LD_SCRIPT): $(SPEC_PROCESSED) $(MKLDSCRIPT)
+$(LD_SCRIPT) $(ENTRY_ASM): $(SPEC_PROCESSED) $(MKLDSCRIPT)
 	$(V)$(MKLDSCRIPT) $< $@
 
-# Final binary
+# ==============================================================================
+# TARGET
+# ==============================================================================
 
 $(BASENAME).elf: $(OBJECTS) $(LD_SCRIPT)
 	$(V)$(LD) $(LDFLAGS) -o $@
 
 $(TARGET): $(BASENAME).elf
 	$(V)$(OBJCOPY) -O binary --gap-fill=0xFF $< $@
-	$(V)$(PYTHON) $(TOOLS_DIR)/build/makemask.py $@ --pad
+	$(V)python3 $(TOOLS_DIR)/build/makemask.py $@ --pad
 
-check: $(TARGET)
-	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
+# ==============================================================================
+# CLEAN
+# ==============================================================================
 
-fresh:
-	$(MAKE) setup
-	$(MAKE) -j4
+# Clean build artifacts only
+clean:
+	@rm -rf $(BUILD_DIR)
+	@rm -f $(LD_SCRIPT)
+	@rm -f $(BASENAME).elf
+	@rm -f $(BASENAME).map
+	@rm -f $(TARGET)
+	@rm -rf asm
+	@find assets -type f -name "*.s" -delete 2>/dev/null || true
 
-.PHONY: all modern clean clean-assets setup split rerun check codesegment
-.PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
-.PHONY: extract-animation-sprites extract-animations extract-gifs
-.PHONY: extract-texts extract-map-sprites extract-cutscenes
-.PHONY: extract-fonts assemble-fonts extract-font
-.PHONY: fresh
+# Clean only extracted bin files (not extracted texts)
+clean-extracted:
+	@rm -rf bin
+	@rm lib/ucode/*.bin
+
+# Clean everything including texts
+clean-all-dangerous: clean
+	@rm -rf bin
+	@rm lib/ucode/*.bin
+# Remove everything in assets except .spec files
+	@find assets -type f ! -name "*.spec" -delete 2>/dev/null || true
+	@find assets -type d -empty -delete 2>/dev/null || true
+
 
 CUTSCENE_ASM := $(patsubst $(CUTSCENE_BUILD_DIR)/%.bin.o,$(CUTSCENE_ASSETS_DIR)/%.s,$(CUTSCENE_OBJECTS))
 DIALOGUE_ASM := $(patsubst $(DIALOGUE_BUILD_DIR)/%.bin.o,$(DIALOGUE_ASSETS_DIR)/%.s,$(DIALOGUE_OBJECTS))
-TEXT_ASM := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
-TEXTURE_BIN := $(patsubst $(SPRITE_BUILD_DIR)/%Texture.bin.o,$(SPRITE_BUILD_DIR)/%AssetsIndex.bin.o, $(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin.o)
+TEXT_ASM := $(foreach bank,$(TEXT_BANKS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
 
 # Prevent Make from deleting intermediate .s files
-.SECONDARY:
-.PRECIOUS: %.bin
+.SECONDARY: $(CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
 
 MAKEFLAGS += --no-builtin-rules

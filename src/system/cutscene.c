@@ -222,10 +222,6 @@ void (*cutsceneCommandHandlers[])(u16) = {
     cutsceneHandlerSetMessageInterpolation
 };
 
-// unused
-// unused buffers
-u32 D_80113558[] = { NULL, NULL, 0x802E2CC0, 0x802EE000, 0x802F3200, 0x802B9F40, 0x802C08C0, 0x8030F800, NULL, NULL };
-
 // bss
 CutsceneExecutor cutsceneExecutors[MAX_BYTECODE_EXECUTORS];
 
@@ -268,6 +264,7 @@ void initializeCutsceneExecutors(void) {
 
         cutsceneExecutors[i].behaviorFlags = 0;
     }
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", spawnCutsceneExecutor);
@@ -306,25 +303,25 @@ bool spawnCutsceneExecutor(u16 index, void *bytecodePtr) {
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", func_80046A58);
 
 // unused
-bool func_80046A58(u16 index, void* bytecodePtr) {
+// bool func_80046A58(u16 index, void* bytecodePtr) {
     
-    bool result = FALSE;
+//     bool result = FALSE;
 
-    if (index < MAX_BYTECODE_EXECUTORS) {
+//     if (index < MAX_BYTECODE_EXECUTORS) {
         
-        if (cutsceneExecutors[index].flags & CUTSCENE_ASSET_ACTIVE) {
+//         if (cutsceneExecutors[index].flags & CUTSCENE_ASSET_ACTIVE) {
             
-            cutsceneExecutors[index].waitFrames = 0;
-            cutsceneExecutors[index].bytecodePtr = bytecodePtr;
+//             cutsceneExecutors[index].waitFrames = 0;
+//             cutsceneExecutors[index].bytecodePtr = bytecodePtr;
             
-            result = TRUE;
+//             result = TRUE;
 
-        }
-    }
+//         }
+//     }
 
-    return result;
+//     return result;
 
-}
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/cutscene", deactivateCutsceneExecutor);
 
@@ -550,9 +547,6 @@ void updateCutsceneSpriteAnimation(u16 index) {
     u8 animationModeOrFrameIndex;
     u8 flipFlags;
 
-    // FIXME: fake
-    asm("");
-
     if (cutsceneExecutors[index].animationFrameCounter == 0)  {
         
         while (cutsceneExecutors[index].animationFrameCounter == 0) {
@@ -615,8 +609,6 @@ label:
     
                 if (animationModeOrFrameIndex == 0xFE) {
                     cutsceneExecutors[index].flags |= CUTSCENE_ASSET_BEHAVIOR_MOVING_DEFAULT;
-                    // FIXME: fake
-                    asm("");
                 } else {
                     cutsceneExecutors[index].flags &= ~CUTSCENE_ASSET_BEHAVIOR_MOVING_DEFAULT;
                 }
@@ -1769,12 +1761,7 @@ void cutsceneHandlerEntityWalk(u16 index) {
 
     setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
     
-    // perhaps dead code
-    if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
-    } else {
-        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
-    }
+    vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
 
     cutsceneExecutors[index].frameDelta.x = vec.x;
     cutsceneExecutors[index].frameDelta.y = vec.y;
@@ -1993,12 +1980,7 @@ void cutsceneHandlerEntityRun(u16 index) {
 
     setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
     
-    // possible dead code
-    if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
-    } else {
-        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
-    }
+    vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
 
     cutsceneExecutors[index].frameDelta.x = vec.x;
     cutsceneExecutors[index].frameDelta.y = vec.y;

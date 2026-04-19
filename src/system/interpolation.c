@@ -89,9 +89,9 @@ s16 calculateInterpolatorStep(Interpolator* interpolator) {
 //INCLUDE_ASM("asm/nonmatchings/system/interpolator", setAccumulatedInterpolatorValue);
 
 // unused
-void setAccumulatedInterpolatorValue(Interpolator* interpolator, s16 value) {
-    interpolator->accumulatedValue = value;
-}
+// void setAccumulatedInterpolatorValue(Interpolator* interpolator, s16 value) {
+//     interpolator->accumulatedValue = value;
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/system/interpolator", getInterpolatorValue);
 

@@ -8,8 +8,6 @@
 
 // bss
 u16 sceneNodeCounter;
-// unused
-u8 D_80189135[9];
 SceneNode sceneNodes[MAX_SCENE_NODES];
 SceneMatrices sceneMatrices[2];
 
@@ -19,17 +17,7 @@ SceneMatrices sceneMatrices[2];
 void initializeSceneNodes(void) {
 
     u16 i;
-     
-    D_80189135[0] = 0xFF;
-    D_80189135[1] = 0xFF;
-    D_80189135[2] = 0xFF;
-    D_80189135[3] = 0xFF;
-    D_80189135[4] = 0xFF;
-    D_80189135[5] = 0xFF;
-    D_80189135[6] = 0xFF;
-    D_80189135[7] = 0xFF;
-    D_80189135[8] = 0xFF;
- 
+
     for (i = 0; i < MAX_SCENE_NODES; i++) {
         sceneNodes[i].flags = 0;
         sceneNodes[i].positions.x = 0;
@@ -123,9 +111,6 @@ Gfx* renderSceneGraph(Gfx* dl, SceneMatrices* matrices) {
     f32 rotatedY;
     f32 tempZ;
     
-    // FIXME: shouldn't be necessary
-    u32 padding[11];
-
     gDPPipeSync(dl++);
     gDPSetCycleType(dl++, G_CYC_1CYCLE);
     gDPSetTextureLUT(dl++, G_TT_RGBA16);

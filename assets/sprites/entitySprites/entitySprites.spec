@@ -935,42 +935,6 @@ beginseg
 endseg
 
 beginseg
-    name "princessTexture"
-    flags RAW
-    include "build/assets/sprites/entitySprites/npc/princess/princessTexture.bin.o"
-endseg
-
-beginseg
-    name "princessAssetsIndex"
-    flags RAW
-    include "build/assets/sprites/entitySprites/npc/princess/princessAssetsIndex.bin.o"
-endseg
-
-beginseg
-    name "princessSpritesheetIndex"
-    flags RAW
-    include "build/assets/sprites/entitySprites/npc/princess/princessSpritesheetIndex.bin.o"
-endseg
-
-beginseg
-    name "emptyNPCTexture"
-    flags RAW
-    include "build/bin/assets/sprites/entitySprites/npc/empty/emptyNPCTexture.bin.o"
-endseg
-
-beginseg
-    name "emptyNPCAssetsIndex"
-    flags RAW
-    include "build/bin/assets/sprites/entitySprites/npc/empty/emptyNPCAssetsIndex.bin.o"
-endseg
-
-beginseg
-    name "emptyNPCSpritesheetIndex"
-    flags RAW
-    include "build/bin/assets/sprites/entitySprites/npc/empty/emptyNPCSpritesheetIndex.bin.o"
-endseg
-
-beginseg
     name "bunnyTexture"
     flags RAW
     include "build/assets/sprites/entitySprites/animals/bunny/bunnyTexture.bin.o"
@@ -1616,24 +1580,6 @@ beginseg
     name "horseRacerSpritesheetIndex"
     flags RAW
     include "build/assets/sprites/entitySprites/horseRace/horseRacer/horseRacerSpritesheetIndex.bin.o"
-endseg
-
-beginseg
-    name "emptyEntityTexture"
-    flags RAW
-    include "build/bin/assets/sprites/entitySprites/empty/emptyEntityTexture.bin.o"
-endseg
-
-beginseg
-    name "emptyEntityAssetsIndex"
-    flags RAW
-    include "build/bin/assets/sprites/entitySprites/empty/emptyEntityAssetsIndex.bin.o"
-endseg
-
-beginseg
-    name "emptyEntitySpritesheetIndex"
-    flags RAW
-    include "build/bin/assets/sprites/entitySprites/empty/emptyEntitySpritesheetIndex.bin.o"
 endseg
 
 beginseg

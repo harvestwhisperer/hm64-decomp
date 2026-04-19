@@ -263,9 +263,7 @@ void deactivateNPCEntities(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/npc", ma);
 
-u8 setupNPCEntity(u8 npcIndex, int currentEntityOffset) {
-
-    int currentEntityIndex = currentEntityOffset;
+u8 setupNPCEntity(u8 npcIndex, u8 currentEntityOffset) {
 
     if ((npcs[npcIndex].flags & NPC_ACTIVE) && npcs[npcIndex].levelIndex == gBaseMapIndex) {
         
@@ -276,40 +274,40 @@ u8 setupNPCEntity(u8 npcIndex, int currentEntityOffset) {
                 if (checkLifeEventBit(MARRIED) && gWife == MARIA) {
                     npcs[npcIndex].entityIndex = ENTITY_WIFE; 
                 } else {
-                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                    currentEntityIndex++;
+                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + currentEntityOffset;
+                    currentEntityOffset++;
                 }
                 break;
             case POPURI:
                 if (checkLifeEventBit(MARRIED) && gWife == POPURI) {
                     npcs[npcIndex].entityIndex = ENTITY_WIFE;
                 } else {
-                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                    currentEntityIndex++;
+                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + currentEntityOffset;
+                    currentEntityOffset++;
                 }
                 break;
             case ELLI:
                 if (checkLifeEventBit(MARRIED) && gWife == ELLI) {
                     npcs[npcIndex].entityIndex = ENTITY_WIFE;
                 } else {
-                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                    currentEntityIndex++;
+                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + currentEntityOffset;
+                    currentEntityOffset++;
                 }
                 break;
             case ANN:
                 if (checkLifeEventBit(MARRIED) && gWife == ANN) {
                     npcs[npcIndex].entityIndex = ENTITY_WIFE;
                 } else {
-                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                    currentEntityIndex++;
+                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + currentEntityOffset;
+                    currentEntityOffset++;
                 }
                 break;
             case KAREN:
                 if (checkLifeEventBit(MARRIED) && gWife == KAREN) {
                     npcs[npcIndex].entityIndex = ENTITY_WIFE;
                 } else {
-                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                    currentEntityIndex++;
+                    npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + currentEntityOffset;
+                    currentEntityOffset++;
                 }
                 break;
             case BABY:                               
@@ -352,8 +350,8 @@ u8 setupNPCEntity(u8 npcIndex, int currentEntityOffset) {
             case BARLEY:                                
             case MRS_MANA:
             default:
-                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + (u8)currentEntityIndex;
-                currentEntityIndex++;
+                npcs[npcIndex].entityIndex = ENTITY_NPC_BASE + currentEntityOffset;
+                currentEntityOffset++;
                 break;
         }
     
@@ -407,7 +405,7 @@ u8 setupNPCEntity(u8 npcIndex, int currentEntityOffset) {
         
     }
 
-    return currentEntityIndex;
+    return currentEntityOffset;
     
 }
 
@@ -464,6 +462,7 @@ void randomizeNPCLocations(void) {
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/npc", updateNPCMovement);
+
 void updateNPCMovement(u8 npcIndex) {
 
     Vec3f vec;
@@ -512,6 +511,7 @@ void updateNPCMovement(u8 npcIndex) {
     
 }
 
+
 //INCLUDE_ASM("asm/nonmatchings/game/npc", stopNPCMovement);
 
 inline void stopNPCMovement(u8 npcIndex) {
@@ -526,7 +526,7 @@ inline void stopNPCMovement(u8 npcIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", updateNPCWanderAnimation);
+//INCLUDE_ASM("asm/nonmatchings/game/npc", updateNPCRandomAnimation);
 
 // FIXME: should be inline?
 void updateNPCWanderAnimation(u8 index) {
@@ -595,7 +595,7 @@ inline void handleBabyIdleAnimation(u8 index, u8 animationIndex) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/npc", updateBabyWanderAnimation);
 
-void updateBabyWanderAnimation(u8 index, u8 animationIndex1, u8 animationIndex2) {
+void updateBabyWanderAnimation(u8 index, u8 idleAnimation, u8 animationIndex2) {
 
     u16 temp;
     
@@ -604,7 +604,7 @@ void updateBabyWanderAnimation(u8 index, u8 animationIndex1, u8 animationIndex2)
         npcs[index].speed = 0;
         npcs[index].animationTimer = 0;
 
-        setEntityAnimationWithDirectionChange(npcs[index].entityIndex, animationIndex1);
+        setEntityAnimationWithDirectionChange(npcs[index].entityIndex, idleAnimation);
 
         temp = getRandomNumberInRange(0, 60);
 
@@ -646,7 +646,7 @@ void updateBabyWanderAnimation(u8 index, u8 animationIndex1, u8 animationIndex2)
 
 //INCLUDE_ASM("asm/nonmatchings/game/npc", updateBabyAnimations);
 
-void updateBabyAnimations(u8 npcIndex, u8 animationIndex1, u8 animationIndex2, u8 animationIndex3, u8 animationIndex4, u8 animationIndex5, u8 animationIndex6, u8 animationIndex7, u8 animationIndex8, u8 animationIndex9, u8 animationIndex10, u8 animationIndex11) {
+void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 animationIndex3, u8 animationIndex4, u8 animationIndex5, u8 animationIndex6, u8 animationIndex7, u8 animationIndex8, u8 animationIndex9, u8 idleAnimation0, u8 idleAnimation1) {
 
     u16 temp;
     
@@ -658,7 +658,7 @@ void updateBabyAnimations(u8 npcIndex, u8 animationIndex1, u8 animationIndex2, u
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 10;
             
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex1);
+            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, idleAnimation);
 
             temp = getRandomNumberInRange(0, 60);
             
@@ -822,7 +822,7 @@ void updateBabyAnimations(u8 npcIndex, u8 animationIndex1, u8 animationIndex2, u
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
             
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex10);
+            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, idleAnimation0);
 
             if (getRandomNumberInRange(0, 19) < 8) {
                 npcs[npcIndex].animationState = 9;
@@ -837,7 +837,7 @@ void updateBabyAnimations(u8 npcIndex, u8 animationIndex1, u8 animationIndex2, u
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 10;
 
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex11);
+            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, idleAnimation1);
 
             npcs[npcIndex].animationState = 10;
 
@@ -9079,46 +9079,34 @@ static inline bool checkHoldingItem() {
     return gPlayer.heldItem != 0;
 }
 
-// FIXME: totally cursed
 // initiates dialogue with NPC on button press or pick up baby
 u8 checkNPCInteraction(void) {
     
     u8 result = 0;
     u8 i = 0;
     
-    s32 i2;
-    u16 dialogueEntryIndex;
-
-    // ??
-    u8 *ptr2 = &gPlayer.heldItem;
-    u8 *ptr = npcAffection + 5;
+    u16 dialogueEntryIndex = 0xFFFF;
 
     do {
 
-        // ???
-        ptr = npcAffection+5;
-        
         if (npcs[i].flags & NPC_ENTITY_LOADED) {
             
             if (entities[npcs[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[npcs[i].entityIndex].buttonPressed == BUTTON_A) {
 
-                // FIXME: might be static inline baby handler function
                 if (i == BABY && gBabyAge < 120) {
                                  
-                    // should be gPlayer.heldItem == 0
-                    if (*ptr2 == 0) {
+                    if (gPlayer.heldItem == 0) {
          
-                        // should be !(gPlayer.flags & PLAYER_RIDING_HORSE)
-                        if (!(*(u16*)(ptr2+0x4A) & 1)) {
+                        if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
 
                             if (gBabyAge >= 30) {
-                                *ptr2 = 0xC2;
+                                gPlayer.heldItem = 0xC2;
                             } else {
-                                *ptr2 = 0xBA;  
+                                gPlayer.heldItem = 0xBA;  
                             }
 
                             if (!checkDailyEventBit(HELD_BABY)) {
-                                *ptr += adjustValue(*ptr, 2, MAX_AFFECTION);
+                                npcAffection[BABY] += adjustValue(npcAffection[BABY], 2, MAX_AFFECTION);
                                 setDailyEventBit(HELD_BABY);
                             }
                             
@@ -9136,23 +9124,16 @@ u8 checkNPCInteraction(void) {
                     } 
                                  
                 } else {
+                    // use entry point 1 if player holding item, otherwie use entry point 0
                     dialogueEntryIndex = checkHoldingItem();
                 }
    
                 if (dialogueEntryIndex != 0xFFFF) {
 
-                    // ?? switch statement?
-                    i2 = i;
-
-                    if (i2 < 5) {
-
-                        if (!(i2 < 0)) {
-
-                            setOverlayIconSprite(0, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
-                            setOverlayIconSprite(1, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
-                       
-                        }
-                        
+                    // show heart icon
+                    if (i >= MARIA && i < BABY) {
+                        setOverlayIconSprite(0, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
+                        setOverlayIconSprite(1, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
                     }
                     
                     showMessageBox(0, npcToDialogueBytecodeIndex[i], dialogueEntryIndex, 0, 0);
@@ -9160,7 +9141,9 @@ u8 checkNPCInteraction(void) {
                     npcs[i].animationMode = NPC_ANIMATION_TALKING;
                     
                 } 
+            
             }    
+
         }
         
         i++;
@@ -9200,32 +9183,21 @@ bool findNPCToTalkTo(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", checkBlueFeatherResponse);
-
-bool getBlueFeatherResponse(int index, u16 arg1) {
+bool getBlueFeatherResponse(u8 index, u16 textIndex) {
 
     bool result;
-    
-    int temp;
-    // FIXME: likely a struct?
-    u8 arr[8];
-    
-    arr[7] = index;
-    index = temp;
-    index = arr[7];
     
     result = FALSE;
     
     if (npcs[index].flags & NPC_ENTITY_LOADED) {
 
-        // FIXME: fake match
-        // check if girl and load heart icon
-        if ((index < 5) && (index >= (result = 0))) {
+        // show heart
+        if (index >= MARIA && index < BABY) {
             setOverlayIconSprite(0, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
             setOverlayIconSprite(1, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
         }
 
-        showMessageBox(0, npcToDialogueBytecodeIndex[arr[7]], arg1, 0, 0);
+        showMessageBox(0, npcToDialogueBytecodeIndex[index], textIndex, 0, 0);
         result = TRUE;
         
     }

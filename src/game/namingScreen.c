@@ -11,6 +11,7 @@
 #include "system/globalSprites.h"
 
 #include "game/animals.h"
+#include "game/cutscenes.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStart.h"
@@ -30,12 +31,6 @@
 #include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
 
-
-// FIXME:
-// instead of including the header, defining here because loadCutscene(u32) doesn't match in namingScreenCallback
-extern void loadCutscene(void);
-extern u16 gCutsceneIndex;
-
 // bss
 NamingScreenContext namingScreenContext;
 
@@ -45,16 +40,16 @@ u8 D_8011C680[13][6] = {
     { 0x6E, 0x77, 0xE1, 0xFF, 0xFF, 0xFF },
     { 0x96, 0x94, 0x77, 0xFF, 0xFF, 0xFF },
     { 0x53, 0x77, 0x9D, 0xFF, 0xFF, 0xFF },
-    { 0x76, 0x7D, 255, 255, 255, 255 },
+    { 0x76, 0x7D, 0xFF, 0xFF, 0xFF, 0xFF },
     { 0x55, 0x79, 0x7D, 0xFF, 0xFF, 0xFF },
     { 0x69, 0x77, 0x5C, 0xFF, 0xFF, 0xFF },
     { 0x80, 0x79, 0x51, 0xFF, 0xFF, 0xFF },
     { 0x84, 0x9F, 0x6B, 0xFF, 0xFF, 0xFF },
     { 0x57, 0x77, 0x6B, 0xFF, 0xFF, 0xFF },
-    { 0x55, 0x51, 255, 255, 255, 255 },
+    { 0x55, 0x51, 0xFF, 0xFF, 0xFF, 0xFF },
     { 0x58, 0x7D, 0x5F, 0xFF, 0xFF, 0xFF },
-    { 0x74, 0x52, 255, 255, 255, 255 },
-    { 0x71, 0x51, 255, 255, 255, 255 }
+    { 0x74, 0x52, 0xFF, 0xFF, 0xFF, 0xFF },
+    { 0x71, 0x51, 0xFF, 0xFF, 0xFF, 0xFF }
 };
 
 // columns x rows
@@ -162,11 +157,11 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     setMessageBoxSpriteIndices(0, 1, 0, 0);
     
     namingScreenContext.dialogueIndex = arg1;
-
+    
     stopCurrentAudioSequence(NAMING_SCREEN_THEME);
     setCurrentAudioSequence(NAMING_SCREEN_THEME);
     setAudioSequenceVolume(NAMING_SCREEN_THEME, SEQUENCE_VOLUME);
-
+    
     setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
     
 }
@@ -179,7 +174,7 @@ void namingScreenCallback(void) {
     s32 temp = (namingScreenContext.flags & NAMING_SCREEN_SCREEN_STATE_MASK) >> NAMING_SCREEN_SCREEN_STATE_SHIFT;
     s32 temp2;
 
-    if (globalSprites[144].stateFlags & SPRITE_RGBA_IN_PROGRESS) {
+    if (globalSprites[0x90].stateFlags & 0x400) {
         
         if (namingScreenContext.flags & NAMING_SCREEN_GOTO_SEASON_SELECT) {
 
@@ -277,7 +272,7 @@ void namingScreenCallback(void) {
             setMessageBoxSpriteIndices(0, 0, 0, 0);
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
 
-             switch (namingScreenContext.screenType) {
+switch (namingScreenContext.screenType) {
 
                  case NAMING_SCREEN_TYPE_PLAYER:
                     initializeNamingScreen(gFarmName, NAMING_SCREEN_TYPE_FARM);
@@ -294,16 +289,16 @@ void namingScreenCallback(void) {
                  case NAMING_SCREEN_TYPE_HORSE:
                     setLevelAudio(gBaseMapIndex, gSeason, gHour);
                     gCutsceneIndex = 651;
-                    loadCutscene();
+                    loadCutscene(FALSE);
                     exitOverlayScreen();
                     setLevelLighting(8, MAIN_GAME);
 
                     return;
-
+                 
                  case NAMING_SCREEN_TYPE_BABY:
 
                     setLevelAudio(gBaseMapIndex, gSeason, gHour);
-
+                     
                     switch (gWife) {
                         case MARIA:
                             gCutsceneIndex = 5;
@@ -326,14 +321,14 @@ void namingScreenCallback(void) {
                             clearSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
                             break;
                         }
-
-                        loadCutscene();
+                     
+                        loadCutscene(FALSE);
 
                         exitOverlayScreen();
                         setLevelLighting(8, MAIN_GAME);
-
+                     
                     return;
-
+                 
                  case NAMING_SCREEN_TYPE_COW:
                  case NAMING_SCREEN_TYPE_SHEEP:
                  case NAMING_SCREEN_TYPE_CHICKEN:
@@ -341,7 +336,7 @@ void namingScreenCallback(void) {
                     exitOverlayScreen();
                     setLevelLighting(8, MAIN_GAME);
                     return;
-
+                 
              }
 
         } else {
@@ -360,8 +355,8 @@ void namingScreenCallback(void) {
                  
             if (dialogues[0].sessionManager.flags & 4) {
                 
-                    switch (temp) {
-
+                    switch (temp) {   
+    
                         case NAMING_SCREEN_STATE_NAMING_GRID:
                             handleNamingGridInput();
                             return;
@@ -369,7 +364,7 @@ void namingScreenCallback(void) {
                         case NAMING_SCREEN_STATE_SEASON_SELECT:
                             handleSeasonSelectionInput();
                             return;
-
+    
                         case NAMING_SCREEN_STATE_SEASON_CONFIRM:
 
                             if (dialogues[0].sessionManager.selectedMenuRow == 0) {
@@ -588,6 +583,7 @@ void loadNameSelectionSprites(void) {
         } else {
             break;
         }
+
     } 
       
     namingScreenContext.flags |= i << NAMING_SCREEN_NAME_POSITION_SHIFT;
@@ -829,11 +825,8 @@ void moveCursorRight(void) {
         }
 
     } else {
-        // FIXME: probably different control flow
-        do {} while (0);
         namingScreenContext.cursor.x = -126.0f;
         namingScreenContext.shadow.x = -116.0f;
-
     }
 
     updateBottomRowUI();
@@ -925,100 +918,92 @@ void moveCursorDown(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", checkNameProhibited);
-
-// unused or inline
-bool checkNameProhibited(void) {
+// bool checkNameProhibited(void) {
     
-    bool processingChar;
-    bool doneProcessingWord;
-    int processedWordCount;
+//     bool processingChar;
+//     bool doneProcessingWord;
+//     int processedWordCount;
     
-    int spaceChar;
-    int endChar;
-    int endWord;
+//     int spaceChar;
+//     int endChar;
+//     int endWord;
     
-    u8 *currentNamePtr;
-    u8 *D_8011C680_ptr;
-    u8 *D_8011C680_stringPtr;
-    u8 *namingScreenContextNamePtr;
+//     u8 *currentNamePtr;
+//     u8 *D_8011C680_ptr;
+//     u8 *D_8011C680_stringPtr;
+//     u8 *namingScreenContextNamePtr;
     
-    processedWordCount = 0;
-    namingScreenContextNamePtr = namingScreenContext.name;
+//     processedWordCount = 0;
+//     namingScreenContextNamePtr = namingScreenContext.name;
     
-    spaceChar = 0xEE;
-    endChar = 0xFF;
+//     spaceChar = 0xEE;
+//     endChar = 0xFF;
     
-    D_8011C680_ptr = D_8011C680;
+//     D_8011C680_ptr = D_8011C680;
     
-    while (processedWordCount < 13) {
+//     while (processedWordCount < 13) {
         
-        // FIXME: fake
-        do { 
-            processingChar = 0; 
-            doneProcessingWord = 0; 
-            D_8011C680_stringPtr = D_8011C680_ptr; 
-        } while (0);
+//         processingChar = 0; 
+//         doneProcessingWord = 0; 
+//         D_8011C680_stringPtr = D_8011C680_ptr; 
         
-        currentNamePtr = namingScreenContextNamePtr;
-        endWord = D_8011C680_stringPtr + 6;
+//         currentNamePtr = namingScreenContextNamePtr;
+//         endWord = D_8011C680_stringPtr + 6;
         
-        do {
+//         do {
         
-            if (processingChar || (*currentNamePtr == 0xEE || *currentNamePtr == 0xFF) == 0) {
+//             if (processingChar || (*currentNamePtr == 0xEE || *currentNamePtr == 0xFF) == 0) {
                 
-                processingChar = TRUE;
+//                 processingChar = TRUE;
                 
-                if (*currentNamePtr != *D_8011C680_stringPtr) {
+//                 if (*currentNamePtr != *D_8011C680_stringPtr) {
                     
-                    if (*currentNamePtr != spaceChar) {
-                        doneProcessingWord = TRUE;
-                        break;
-                    } else if (*D_8011C680_stringPtr != endChar) {
-                        doneProcessingWord = TRUE;
-                        break;
-                    }
+//                     if (*currentNamePtr != spaceChar) {
+//                         doneProcessingWord = TRUE;
+//                         break;
+//                     } else if (*D_8011C680_stringPtr != endChar) {
+//                         doneProcessingWord = TRUE;
+//                         break;
+//                     }
                     
-                } else {
+//                 } else {
                 
-                    D_8011C680_stringPtr++;
-                    currentNamePtr++;
-                    continue;
+//                     D_8011C680_stringPtr++;
+//                     currentNamePtr++;
+//                     continue;
                 
-                }
+//                 }
                 
-            }
+//             }
                     
-            D_8011C680_stringPtr++;
+//             D_8011C680_stringPtr++;
         
-            // FIXME
-            if (*D_8011C680_ptr) {
-                currentNamePtr++;
-            } else {
-                currentNamePtr++;
-            }
+//             // FIXME
+//             if (*D_8011C680_ptr) {
+//                 currentNamePtr++;
+//             } else {
+//                 currentNamePtr++;
+//             }
         
-        } while ((s32)D_8011C680_stringPtr < (s32)endWord);
+//         } while ((s32)D_8011C680_stringPtr < (s32)endWord);
             
-        if (doneProcessingWord) {
+//         if (doneProcessingWord) {
             
-            processedWordCount++;
-            // skip to next word
-            D_8011C680_ptr += 6;
+//             processedWordCount++;
+//             // skip to next word
+//             D_8011C680_ptr += 6;
         
-            if (processedWordCount >= 13) {
-                return TRUE;
-            }
+//             if (processedWordCount >= 13) {
+//                 return TRUE;
+//             }
         
-        } else {
-            return FALSE;
-        }
+//         } else {
+//             return FALSE;
+//         }
         
-    }
+//     }
     
-}
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", deactivateNamingScreenSprites);
+// }
 
 void deactivateNamingScreenSprites(void) {
 
@@ -1031,20 +1016,6 @@ void deactivateNamingScreenSprites(void) {
     
 }
 
-// alternate
-/*
-void deactivateNamingScreenSprites(void) {
-
-    s32 i;
-
-    for (i = 0x80; i < 0x92; i++) {
-        deactivateSprite(i);
-    } 
-    
-}
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", updateBottomRowUI);
 
 void updateBottomRowUI(void) {
 

@@ -69,6 +69,7 @@ void startGame(void) {
 
 // unused function: probably for sandboxing during development or demos
 // not in JP version
+/*
 void func_8004DFF8(void) {
     
     setLifeEventBit(HAVE_HORSE);
@@ -123,6 +124,4 @@ void func_8004DFF8(void) {
     D_8016FB00 = 7;
     
 }
-
-// empty function
-void func_8004E154(void) {}
+*/

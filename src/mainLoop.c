@@ -74,11 +74,6 @@ void mainLoop(void) {
             
             D_8020564C -= 1;    
 
-            // dead code
-            if (D_8020564C) {
-
-            }
-            
             resetBitmaps();
             updateAudio(); 
             resetSceneNodeCounter();
@@ -93,15 +88,8 @@ void mainLoop(void) {
             updateMessageBox(); 
             updateDialogues();
 
-            // no op
-            // shelved or debug code
-            func_800293B8(); 
-
             stepMainLoop = FALSE; 
 
-            // unused
-            D_80237A04 = retraceCount;
-              
             // update RNG seed
             rand();
             
@@ -132,17 +120,13 @@ bool registerMainLoopCallback(u16 index, void *(func)()) {
 
 //INCLUDE_ASM("asm/nonmatchings/mainLoop", setMainLoopCallbackFunctionIndex);
 
-u32 setMainLoopCallbackFunctionIndex(u16 index) {
+bool setMainLoopCallbackFunctionIndex(u16 index) {
     
-    u32 result = FALSE;
+    bool result = FALSE;
 
-    volatile int *temp;
-    
     if (index < MAIN_LOOP_CALLBACK_FUNCTION_TABLE_SIZE) {
 
-        temp = (volatile int*)mainLoopCallbacksTable;
-      
-        if (temp[index]) {
+        if (mainLoopCallbacksTable[index]) {
             mainLoopCallbackCurrentIndex = index;
             result = TRUE;
         }
@@ -150,27 +134,6 @@ u32 setMainLoopCallbackFunctionIndex(u16 index) {
     
     return result;
 
-}
-
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", func_8002620C);
-
-// unused
-void func_8002620C(void) {
-    D_80204B38 = 1;
-}
-
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", func_80026220);
-
-// unused
-void func_80026220(void) {
-    D_80204B38 = 0;
-}
-
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", func_80026230);
-
-// unused
-void func_80026230(u16 num) {
-    D_80182BA0 = num;
 }
 
 void noOpCallback(void) {}
@@ -242,14 +205,12 @@ u8 gfxRetraceCallback(int pendingGfx) {
     }
     
     // no op
-    func_8004DF00();
+    // func_8004DF00();
     
     frameCount++;
     retraceCount++;
-
     // reset to 0 when pendingGfx < 3
-    // FIXME: unnecessary assignment
-    temp = framebufferCount++;
+    framebufferCount++;
     
     return framebufferCount;
     
@@ -268,12 +229,6 @@ void handleGraphicsUpdate(int pendingGfx) {
       previousDrawnFrameCount = drawnFrameCount;
       drawnFrameCount = 0;
 
-      // < hz
-      if (previousDrawnFrameCount < (60 / frameRate)) {
-        // unused
-        D_80222730 = 2;
-      }
-
     }
       
     if (pendingGfx < 3) { 
@@ -285,8 +240,6 @@ void handleGraphicsUpdate(int pendingGfx) {
         drawFrame();
 
         drawnFrameCount += 1;
-        // FIXME: unnecessary assignment, might be return value
-        temp = drawnFrameCount;
 
         framebufferCount = 0;
         
@@ -307,12 +260,6 @@ void updateMainLoopTimer(int pendingGfx) {
           previousLoopStepsPerCycle = loopStepsPerCycle;
           loopStepsPerCycle = 0;
 
-          // < hz
-          if (previousLoopStepsPerCycle < (60 / mainLoopUpdateRate)) {
-            // unused
-            D_80222730 = 1;
-          }
-
         }
       
         if (stepMainLoop == FALSE) {
@@ -321,8 +268,6 @@ void updateMainLoopTimer(int pendingGfx) {
 
           retraceCount = 0;
           loopStepsPerCycle += 1;
-          // FIXME: ? might be return value
-          loopStepsPerCycle;  
 
         }
     }
@@ -335,9 +280,6 @@ void gfxBufferSwap(void *gfxTask) {
     
     currentGfxTaskPtr = gfxTask;
     nuGfxSwapCfb(gfxTask);
-    
-    // unused
-    currentFramebufferIndex = framebufferCount;
     
 }
 
