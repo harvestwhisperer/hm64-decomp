@@ -66,8 +66,6 @@ u8 upgradedToolLevelIndex;
 u8 toolSweepOffsetsLeft[] = { 8, 0, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0 };
 u8 toolSweepOffsetsRight[] = { 8, 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0 }; 
 
-u8 unused[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-
 u16 itemSpriteAnimations[96][4] = {
     { 0xFFFF,  0xFFFF,  0xFFFF,  0xFFFF }, /* 0 */
     {      0,      61,      62,      62 }, /* WEED_HELD_ITEM */
@@ -3550,8 +3548,7 @@ void usePinkCatMintSeeds(void) {
  
     if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
-        // FIXME: should be range
-        if ((gSeason - 1 < 2U) || gBaseMapIndex == GREENHOUSE) {
+        if ((gSeason >= SPRING && gSeason < AUTUMN) || gBaseMapIndex == GREENHOUSE) {
             groundObjectIndex = PINK_CAT_MINT_PLANTED_STAGE_1; 
         } else {
             groundObjectIndex = INVALID_GROUND_OBJECT;
@@ -3920,6 +3917,7 @@ u8 allocateThrownItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDir
     }
     
     return index;
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", allocateGroundItemSlot);
@@ -4171,14 +4169,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
     
     bool result = FALSE;
 
-    // FIXME: I am beyond clueless
-    temp2 = *(u16*)0&itemInfo[itemIndex].heldItemIndex;
-    
-    if (temp2) {
-        heldItemIndex = itemInfo[itemIndex].heldItemIndex;
-    } else {
-        heldItemIndex = itemInfo[itemIndex].heldItemIndex;
-    }
+    heldItemIndex = itemInfo[itemIndex].heldItemIndex;
     
     switch (itemInfo[itemIndex].heldItemIndex) {        
         
@@ -4485,7 +4476,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getHeldItemDialogueItemIndex);
+//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getHeldItemIndex);
 
 u8 getHeldItemDialogueItemIndex(u8 index) {
     return heldItemDialogueItemIndices[index];
@@ -4509,28 +4500,6 @@ void showHeldItemText(u8 index) {
     showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, temp, 0, 2);
 
 }
-
-// alternate for reference
-// void showHeldItemText(u8 index) {
-    
-//     s32 temp;
-//     u16 temp2;
-
-//     temp = index;
-    
-//     if (temp < 0x70) {
-//         if (temp > 0x5F) {
-//             temp2 = gPlayer.heldAnimalIndex + 0xF5;
-//             goto func_end;
-//         } 
-//     } 
-
-// 
-//     temp2 = D_80118000[index];
-    
-// func_end:
-//     showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, temp2, 0, 2);
-// }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processItemShipping);
 
@@ -4624,10 +4593,8 @@ void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
     if (gBaseMapIndex == FARM) {
         
         temp = getLevelInteractionIndexFromEntityPosition(0, 0.0f, 32.0f);
-        // FIXME: possibly fake
-        temp2 = temp - 0x1B;
         
-        if (temp2 < 2 || temp == 0x1D) {
+        if (26 < temp && temp2 < 28 || temp == 29) {
             setVec3f(itemIndex, 288.0f, 80.0f, -404.0f);
             itemInfo[itemIndex].flags |= ITEM_CONTEXT_USE_POSITION;
             setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xE9);
@@ -4700,9 +4667,6 @@ void updateHeldItemState(void) {
             
             do {
 
-                // FIXME: fake match/likely dead code
-                if (itemInfo[i].stateIndex) {};
-                
                 y = 14.0f;
                 z = 20.0f;
                 x = -16.0f;
@@ -4943,18 +4907,8 @@ void updateHeldItemState(void) {
 
                                 deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
 
-                                // FIXME: fake match in order to get float registers right
-                                if (y2) {
-                                    itemInfo[i].stateIndex = ITEM_STATE_INACTIVE;
-                                } else {
-                                    itemInfo[i].stateIndex = ITEM_STATE_INACTIVE;
-                                }
-
-                                if (z2) {
-                                    itemInfo[i].flags = 0;
-                                } else {
-                                    itemInfo[i].flags = 0;
-                                }
+                                itemInfo[i].stateIndex = ITEM_STATE_INACTIVE;
+                                itemInfo[i].flags = 0;
 
                             }
                             

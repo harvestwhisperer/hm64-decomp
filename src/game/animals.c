@@ -1162,8 +1162,6 @@ void resetAnimalStatuses(void) {
 
 u8 initializeNewChicken(u8 animalType, u8 arg1) {
 
-    u32 padding[4];
-    
     u8 found;
     u8 i;
     u8 temp;
@@ -1245,9 +1243,6 @@ void initializeChicken(u8 chickenIndex) {
 //INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008820C);
 
 u8 initializeNewFarmAnimal(u8 animalType, u8 arg1) {
-
-    // FIXME: shouldn't be necessary
-    u32 padding[4];
 
     u8 index = 0xFF;
     u8 i = 0;
@@ -1816,8 +1811,6 @@ void spawnMiscAnimals(void) {
 //INCLUDE_ASM("asm/nonmatchings/game/animals", spawnMiscAnimal);
 
 u8 spawnMiscAnimal(u8 animalType, u8 direction, f32 x, f32 y, f32 z) {
-
-    u32 padding[4];
 
     u8 i = 0;
     u8 found = (animalType != MISC_ANIMAL_PLAYER_DOG) ? 0xFF : 6;
@@ -10613,8 +10606,7 @@ u8 getTotalChickenCount(void) {
 
         if (gChickens[i].flags & CHICKEN_ACTIVE) {
             
-            // FIXME: should be range
-            if ((gChickens[i].type - 1) < 2U) {
+            if (0 < gChickens[i].type && gChickens[i].type < 3) {
                 count++;
             }
 
@@ -10743,12 +10735,7 @@ u8 func_8009B828(u8 arg0) {
                 || (gFarmAnimals[i].type == BABY_COW || gFarmAnimals[i].type == PREGNANT_COW))
             && gFarmAnimals[i].location == FARM && (arg0 == 0 || (gFarmAnimals[i].milkType == 0)))) {
 
-            // FIXME: fake match to do a regswap
-            if (count) {
-                count++;
-            } else {
-                count++;
-            }
+            count++;
         
         }
         
@@ -10761,7 +10748,6 @@ u8 func_8009B828(u8 arg0) {
     return count;
     
 }
-
 //INCLUDE_ASM("asm/nonmatchings/game/animals", setgAnimalSalePrice);
 
 void setgAnimalSalePrice() {
@@ -10890,14 +10876,14 @@ void generateMilkTypeString(u8 index) {
 
 // same as func_80061690
 // unused
-void func_8009BB70(void) {
-    D_801886D4[0] = 0xF6;
-    D_801886D4[1] = 0xF6;
-    D_801886D4[2] = 0xF6;
-    D_801886D4[3] = 0xF6;
-    D_801886D4[4] = 0xF6;
-    D_801886D4[5] = 0xF6;
-}
+// void func_8009BB70(void) {
+//     D_801886D4[0] = 0xF6;
+//     D_801886D4[1] = 0xF6;
+//     D_801886D4[2] = 0xF6;
+//     D_801886D4[3] = 0xF6;
+//     D_801886D4[4] = 0xF6;
+//     D_801886D4[5] = 0xF6;
+// }
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", getBestCowMilkType);
 

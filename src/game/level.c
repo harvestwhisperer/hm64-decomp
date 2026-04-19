@@ -379,8 +379,7 @@ u8 levelToMusicMappings[TOTAL_MAPS][8] = {
     { 0, 0, 0, 0, 0, 0, 0, 0 },
 };
 
-// FIXME: probably shouldn't be volatile but need it for matching
-volatile u8 spawnPointToMap[] = {
+u8 spawnPointToMap[] = {
     FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, FARM, 
     HOUSE, HOUSE, HOUSE, 
     BATHROOM, BATHROOM, KITCHEN, KITCHEN, 
@@ -431,33 +430,6 @@ volatile u8 spawnPointToMap[] = {
     RANCH, RANCH 
 };
 
-static u8 unused[] = {
-    10, 10, 10, 10, 10, 10, 10, 10, 
-    10, 10, 10, 10, 10, 10, 10, 10, 
-    10, 10, 10, 10, 10, 10, 10, 10, 
-    10, 10, 10, 10, 10, 10, 10, 10, 
-    10, 10, 10, 10, 10, 10, 10, 10, 
-    10, 10, 10, 10, 10, 10, 10, 10, 
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 9, 9, 9, 9, 9, 
-    9, 9, 9, 10, 10, 10, 10, 10, 10, 
-    10, 10, 10, 10, 10, 10, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 
-};
-
 static const Vec3f chickenFeedCoordinates[];
 static const Vec3f barnFodderCoordinates[];
 
@@ -468,15 +440,11 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex);
 void loadLevelMapObjects(u16 levelIndex);
 void initializeMapAdditionsForLevel(u16 levelIndex);
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", setSpawnPoint);
-
 void setSpawnPoint(u16 index) {
     u16 temp = gSpawnPointIndex;
     gSpawnPointIndex = index;
     previousSpawnPoint = temp;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/level", loadMapAtSpawnPoint);
 
 void loadMapAtSpawnPoint(u16 spawnPoint) {
 
@@ -2146,7 +2114,6 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
         case SQUARE:
         case POTION_SHOP_BEDROOM:
         // unused/cut map
-        case 65:
         case CAVE:
         case MINE_2:
         case VINEYARD:

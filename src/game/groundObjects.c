@@ -260,9 +260,6 @@ GroundObjectInfo groundObjectsInfo[MAX_FIELD_OBJECTS] = {
 // forward declarations
 u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthIndex);
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", setMapGroundObjects);
-
 void setMapGroundObjects(u8 mapIndex) {
 
     u8 i, j;
@@ -373,8 +370,6 @@ void setMapGroundObjects(u8 mapIndex) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", clearForagableObjects);
-
 void clearForagableObjects(u8 mapIndex) {
 
     u8 i, j;
@@ -418,8 +413,6 @@ void clearForagableObjects(u8 mapIndex) {
     }   
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", setDefaultGroundObjectsForLevel);
 
 void setDefaultGroundObjectsForLevel(void) {
 
@@ -768,8 +761,6 @@ void setDefaultGroundObjectsForLevel(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectMapAdditionIndex);
-
 u8 getGroundObjectMapAdditionIndex(u8 index) {
 
     u8 result;
@@ -784,24 +775,20 @@ u8 getGroundObjectMapAdditionIndex(u8 index) {
     
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectSpriteIndex);
-
 // unused
-u8 getGroundObjectSpriteIndex(u8 index) {
+// u8 getGroundObjectSpriteIndex(u8 index) {
 
-    u8 result;
+//     u8 result;
 
-    if (index >= MAX_FIELD_OBJECTS) {
-        result = 0;
-    } else {
-        result = groundObjectsInfo[index].spriteIndex; 
-    }
+//     if (index >= MAX_FIELD_OBJECTS) {
+//         result = 0;
+//     } else {
+//         result = groundObjectsInfo[index].spriteIndex; 
+//     }
     
-    return result;
+//     return result;
     
-}
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getHeldItemIndexFromGroundObject);
+// }
 
 u8 getHeldItemIndexFromGroundObject(u8 index) {
 
@@ -817,8 +804,6 @@ u8 getHeldItemIndexFromGroundObject(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectToolInteractionFlags);
-
 u8 getGroundObjectToolInteractionFlags(u8 groundObjectIndex) {
 
     u8 result;
@@ -832,9 +817,6 @@ u8 getGroundObjectToolInteractionFlags(u8 groundObjectIndex) {
     return result;
     
 }
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectPlayerInteractionsFlags);
 
 u8 getGroundObjectPlayerInteractionsFlags(u8 index) {
 
@@ -861,8 +843,6 @@ u8 getGroundObjectPlayerInteractionsFlags(u8 index) {
     return 0;
 }
 */
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectIndexFromTilePosition);
 
 u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthIndex) {
     
@@ -986,8 +966,6 @@ u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthInd
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", setFieldTile);
-
 bool setFieldTile(u8 mapIndex, u8 groundObjectIndex, u8 heightIndex, u8 widthIndex) {
 
     bool set = FALSE;
@@ -1072,15 +1050,12 @@ bool setFieldTile(u8 mapIndex, u8 groundObjectIndex, u8 heightIndex, u8 widthInd
             }
             set = TRUE;
             break;
-        
-        
-    }
+
+}
 
     return set;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", addGroundObjectToMap);
 
 inline void addGroundObjectToMap(u8 mapIndex, u8 groundObjectIndex, u8 x, u8 z) {
     
@@ -1116,8 +1091,6 @@ inline void addGroundObjectToMap(u8 mapIndex, u8 groundObjectIndex, u8 x, u8 z) 
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", addGroundObjectToMapFromPlayerPosition);
 
 void addGroundObjectToMapFromPlayerPosition(u8 groundObjectIndex, f32 arg1, u8 arg2) {
 
@@ -1165,8 +1138,6 @@ static inline u8 subtractZ(u8 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectIndexFromPlayerPosition);
-
 u8 getGroundObjectIndexFromPlayerPosition(f32 arg0, u8 arg1) {
     
     Vec3f vec;
@@ -1188,8 +1159,6 @@ u8 getGroundObjectIndexFromPlayerPosition(f32 arg0, u8 arg1) {
     return groundObjectIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectIndexFromCoordinates);
 
 u8 getGroundObjectIndexFromCoordinates(f32 x, f32 z) {
 
@@ -1215,9 +1184,7 @@ u8 getGroundObjectIndexFromCoordinates(f32 x, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", updategroundObjectsOvernight);
-
-void updategroundObjectsOvernight(void) {
+void updateGroundObjectsOvernight(void) {
 
     u8 i, j;
     u8 flags;
@@ -1333,9 +1300,8 @@ void updategroundObjectsOvernight(void) {
                                 case PINK_CAT_MINT_SPROUT_STAGE_1 ... PINK_CAT_MINT_RIPE_WATERED:
                                     currentGroundObject = PINK_CAT_MINT_DEAD;
                                     break;
-                                    
-                                
-                            }
+
+}
                             
                             break;
                         
@@ -1363,9 +1329,8 @@ void updategroundObjectsOvernight(void) {
                             }
                             
                             break;
-    
-                        
-                    }
+
+}
                     
                 }
                 
@@ -1442,8 +1407,6 @@ void updategroundObjectsOvernight(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", updateCropsIfRain);
-
 void updateCropsIfRain(void) {
 
     u8 i, j;
@@ -1492,8 +1455,6 @@ void updateCropsIfRain(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", checkAnimalCanEatGrass);
-
 bool checkAnimalCanEatGrass(void) {
 
     u8 i, j;
@@ -1533,8 +1494,6 @@ bool checkAnimalCanEatGrass(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", randomlyAddWeedsToFarmField);
-
 void randomlyAddWeedsToFarmField(void) {
 
     u8 i, j;
@@ -1551,8 +1510,6 @@ void randomlyAddWeedsToFarmField(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", randomlyBreakLogPieces);
-
 void randomlyBreakLogPieces(u8 randomRange) {
 
     u8 i, j;
@@ -1566,8 +1523,6 @@ void randomlyBreakLogPieces(u8 randomRange) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", randomlyCutGrass);
 
 // randomly cut grass
 void randomlyCutGrass(u8 randomRange) {
@@ -1589,9 +1544,8 @@ void randomlyCutGrass(u8 randomRange) {
                     break;
                 
             }
-            
-            
-        }
+
+}
     }
     
 }
@@ -1622,8 +1576,6 @@ void randomlyCutGrass(u8 arg0) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", randomlyDestroyCrops);
-
 void randomlyDestroyCrops(u8 randomRange) {
 
     u8 i;
@@ -1649,48 +1601,6 @@ void randomlyDestroyCrops(u8 randomRange) {
     }
     
 }
-
-// alternate
-/*
-void randomlyDestroyCrops(u8 arg0) {
-
-    u8 i;
-    u8 j;
-    
-    int temp;
-    int temp2;
-    int temp3;
-    int temp4;
-    
-    for (i = 0; i < FIELD_HEIGHT; i++) {
-    
-        for (j = 0; j < FIELD_WIDTH; j++) {
-            
-            temp = GRASS_PLANTED_STAGE_1;
-            temp2 = MOONDROP_PLANTED;
-            temp3 = 8;
-            temp4 = BOULDER;
-            
-            if (farmFieldTiles[i][j] >= temp3) {
-                if (farmFieldTiles[i][j] >= temp) {
-                     if (farmFieldTiles[i][j] < temp4 && farmFieldTiles[i][j] >= temp2) {
-                        goto label;
-                     }
-                } else {
-label:
-                    if (!getRandomNumberInRange(0, arg0)) {
-                        setFieldTile(FARM, 2, j, i);    
-                    }
-                }
-            }
-            
-        }
-    }
-    
-}
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", randomlyResetGreenhouseTiles);
 
 // update greenhouse field after earthquake
 void randomlyResetGreenhouseTiles(u8 randomRange) {
@@ -1720,49 +1630,6 @@ void randomlyResetGreenhouseTiles(u8 randomRange) {
     
 }
 
-// alternate
-/*
-void randomlyResetGreenhouseTiles(u8 arg0) {
-    
-    u8 i;
-    u8 j;
-    
-    int temp;
-    int temp2;
-    int temp3;
-    int temp4;
-    
-    for (i = 0; i < FIELD_HEIGHT; i++) {
-    
-        for (j = 0; j < FIELD_WIDTH; j++) {
-            
-            temp = GRASS_PLANTED_STAGE_1;
-            temp2 = MOONDROP_PLANTED_STAGE_1;
-            temp3 = 8;
-            temp4 = BOULDER;
-            
-            // FIXME: probably ranged switch
-            if (greenhouseFieldTiles[i][j] >= temp3) {
-                if (greenhouseFieldTiles[i][j] >= temp) {
-                     if (greenhouseFieldTiles[i][j] < temp4 && greenhouseFieldTiles[i][j] >= temp2) {
-                        goto label;
-                     }
-                } else {
-label:
-                    if (!getRandomNumberInRange(0, arg0)) {
-                        setFieldTile(GREENHOUSE, 2, j, i);    
-                    }
-                }
-            }
-            
-        }
-    }
-    
-}
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getFarmGrassTilesSum);
-
 u16 getFarmGrassTilesSum(void) {
     
     u8 i;
@@ -1790,38 +1657,6 @@ u16 getFarmGrassTilesSum(void) {
     
 }
 
-// alternate
-/*
-u16 getFarmGrassTilesSum(void) {
-    
-    u8 i;
-    u8 j;
-    u16 count = 0; 
-    
-    int temp;
-    int temp2;
-    
-    for (i = 0; i < FIELD_HEIGHT; i++) {
-    
-        for (j = 0; j < FIELD_WIDTH; j++) {
-            
-            temp = MOONDROP_PLANTED_STAGE_1;
-            temp2 = GRASS_PLANTED_STAGE_1;
-            
-            if (farmFieldTiles[i][j] < temp && farmFieldTiles[i][j] >= temp2) {
-                count++;
-            }
-            
-        }
-    }
-
-    return count;
-    
-}
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getFarmMoondropFlowerCount);
-
 u16 getFarmMoondropFlowerCount(void) {
     
     u8 i;
@@ -1840,46 +1675,13 @@ u16 getFarmMoondropFlowerCount(void) {
                     break;
                 
             }
-            
-            
-        }
+
+}
     }
 
     return count;
 
 }
-
-// alternate
-/*
-u16 getFarmMoondropFlowerCount(void) {
-    
-    u8 i;
-    u8 j;
-    u16 count = 0; 
-
-    int temp;
-    int temp2;
-
-    for (i = 0; i < FIELD_HEIGHT; i++) {
-        
-    for (j = 0; j < FIELD_WIDTH; j++) {
-        
-    temp = 0x9E;
-    temp2 = 0x9C;
-
-    if (farmFieldTiles[i][j] < temp && farmFieldTiles[i][j] >= temp2) {
-        count++;
-    }
-
-            }
-        }
-        
-    return count;
-    
-}
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGreenhouseMoondropFlowerCount);
 
 u16 getGreenhouseMoondropFlowerCount(void) {
 
@@ -1899,46 +1701,13 @@ u16 getGreenhouseMoondropFlowerCount(void) {
                     break;
                 
             }
-            
-            
-        }
+
+}
     }
 
     return count;
     
 }
-
-// alternate
-/*
-u16 getGreenhouseMoondropFlowerCount(void) {
-
-    u8 i;
-    u8 j;
-    u16 count = 0; 
-    
-    int temp;
-    int temp2;
-    
-    for (i = 0; i < FIELD_HEIGHT; i++) {
-    
-        for (j = 0; j < FIELD_WIDTH; j++) {
-            
-            temp = 0x9E;
-            temp2 = 0x9C;
-            
-             if (greenhouseFieldTiles[i][j] < temp && greenhouseFieldTiles[i][j] >= temp2) {
-                count++;
-            }
-            
-        }
-    }
-
-    return count;
-    
-}
-*/
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getFarmPinkCatMintFlowersCount);
 
 u16 getFarmPinkCatMintFlowersCount(void) {
 
@@ -1960,8 +1729,6 @@ u16 getFarmPinkCatMintFlowersCount(void) {
     return count;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGreenhousePinkCatMintFlowersCount);
-
 u16 getGreenhousePinkCatMintFlowersCount(void) {
 
     u8 i, j;
@@ -1981,8 +1748,6 @@ u16 getGreenhousePinkCatMintFlowersCount(void) {
     
     return count;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", removePinkCatMintFlowerFromFarm);
 
 void removePinkCatMintFlowerFromFarm(void) {
 

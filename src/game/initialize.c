@@ -19,16 +19,15 @@
 
 #include "game/animals.h" 
 #include "game/cutscenes.h"
-#include "game/groundObjects.h"
 #include "data/fieldTileMaps/fieldTiles.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameFile.h"
 #include "game/gameStart.h"
 #include "game/gameStatus.h"
+#include "game/groundObjects.h"
 #include "game/items.h"
 #include "game/level.h" 
-#include "game/groundObjects.h"
 #include "game/namingScreen.h"
 #include "game/npc.h"
 #include "game/overlayScreens.h"
@@ -192,20 +191,13 @@ static inline void setNPCIntroductionDialogueBits() {
     setSpecialDialogueBit(HARVEST_SPRITE_INTRODUCTION_DIALOGUE);
     setSpecialDialogueBit(SYDNEY_INTRODUCTION_DIALOGUE);
     setSpecialDialogueBit(BARLEY_INTRODUCTION_DIALOGUE);
-    setSpecialDialogueBit(DUKE_INTRODUCTION_DIALOGUE); // set out of order; also set again below
+    setSpecialDialogueBit(DUKE_INTRODUCTION_DIALOGUE);
     setSpecialDialogueBit(GREG_INTRODUCTION_DIALOGUE);
-
-    // cut NPCs or possibly Mrs. Mana and John
-    setSpecialDialogueBit(217);
-    setSpecialDialogueBit(218);
 
     setSpecialDialogueBit(DOUG_INTRODUCTION_DIALOGUE);
     setSpecialDialogueBit(GOTZ_INTRODUCTION_DIALOGUE);
     setSpecialDialogueBit(SASHA_INTRODUCTION_DIALOGUE);
     setSpecialDialogueBit(SHIPPER_INTRODUCTION_DIALOGUE);
-    
-    // Duke set twice
-    setSpecialDialogueBit(DUKE_INTRODUCTION_DIALOGUE);
     
     setSpecialDialogueBit(GOURMET_JUDGE_INTRODUCTION_DIALOGUE);
 
@@ -245,8 +237,6 @@ static inline void initializeToolboxSlots() {
        
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeAll);
-
 void initializeAll(void) {
     
     volatile musConfig c;
@@ -273,8 +263,6 @@ void initializeAll(void) {
     initializeWaveTable(0);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeGameVariables);
 
 // TODO: there might be some static inlines for each group being initialized
 void initializeGameVariables(void) {
@@ -646,8 +634,6 @@ void initializeGameVariables(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", registerMainLoopCallbacks);
-
 void registerMainLoopCallbacks(void) {
 
     // game.c
@@ -701,7 +687,7 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(CALENDAR, calendarScreenCallback);
     registerMainLoopCallback(RECIPE_BOOK, recipeBookScreenCallback);
     registerMainLoopCallback(ALBUM, albumScreenCallback);
-    registerMainLoopCallback(PAUSE_SCREEN_MAP, pauseScreenMapCallback);
+    // registerMainLoopCallback(PAUSE_SCREEN_MAP, pauseScreenMapCallback);
     registerMainLoopCallback(HORSE_RACE_BETTING, raceBettingScreenCallback);
     registerMainLoopCallback(HORSE_RACE_RESULTS, raceResultsScreenCallback);
     registerMainLoopCallback(HORSE_RACE_GIFTS, raceGiftsScreenCallback);
@@ -717,15 +703,9 @@ void registerMainLoopCallbacks(void) {
     // game file
     registerMainLoopCallback(SELECT_GAME, gameSelectCallback);
     registerMainLoopCallback(FARM_RANKING_SCREEN, farmRankingScreenCallback);
-
-    // game status
-    // empty funtions
-    registerMainLoopCallback(55, func_800657B4);
-    registerMainLoopCallback(56, func_800657C4);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeEntityAssets);
 
 void initializeEntityAssets(void) {
     
@@ -941,14 +921,6 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_KAPPA, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_KAPPA, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_PRINCESS, &_princessTextureSegmentRomStart, &_princessTextureSegmentRomEnd, &_princessAssetsIndexSegmentRomStart, &_princessAssetsIndexSegmentRomEnd, &_princessSpritesheetIndexSegmentRomStart, &_princessSpritesheetIndexSegmentRomEnd, 1, 0, &princessAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_PRINCESS, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_PRINCESS, 12, 12);
-    
-    initializeEntityAsset(ENTITY_ASSET_EMPTY_NPC_SPRITE, &_emptyNPCTextureSegmentRomStart, &_emptyNPCTextureSegmentRomEnd, &_emptyNPCAssetsIndexSegmentRomStart, &_emptyNPCAssetsIndexSegmentRomEnd, &_emptyNPCSpritesheetIndexSegmentRomStart, &_emptyNPCSpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_EMPTY_NPC_SPRITE, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_EMPTY_NPC_SPRITE, 12, 12);
-    
     initializeEntityAsset(ENTITY_ASSET_BUNNY, &_bunnyTextureSegmentRomStart, &_bunnyTextureSegmentRomEnd, &_bunnyAssetsIndexSegmentRomStart, &_bunnyAssetsIndexSegmentRomEnd, &_bunnySpritesheetIndexSegmentRomStart, &_bunnySpritesheetIndexSegmentRomEnd, 1, 0, &bunnyAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_BUNNY, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_BUNNY, 12, 12);
@@ -1093,10 +1065,6 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_HORSE_RACER, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_HORSE_RACER, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_EMPTY_ENTITY, &_emptyEntityTextureSegmentRomStart, &_emptyEntityTextureSegmentRomEnd, &_emptyEntityAssetsIndexSegmentRomStart, &_emptyEntityAssetsIndexSegmentRomEnd, &_emptyEntitySpritesheetIndexSegmentRomStart, &_emptyEntitySpritesheetIndexSegmentRomEnd, 1, 0, &playerAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_EMPTY_ENTITY, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_EMPTY_ENTITY, 12, 12);
-    
     initializeEntityAsset(ENTITY_ASSET_EXPRESSION_BUBBLES, &_holdableItemsTextureSegmentRomStart, &_holdableItemsTextureSegmentRomEnd, &_holdableItemsAssetsIndexSegmentRomStart, &_holdableItemsAssetsIndexSegmentRomEnd, &_holdableItemsSpritesheetIndexSegmentRomStart, &_holdableItemsSpritesheetIndexSegmentRomEnd, 1, 0xFF, &expressionBubblesAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_EXPRESSION_BUBBLES, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_EXPRESSION_BUBBLES, 12, 12);
@@ -1143,7 +1111,6 @@ void initializeEntityAssets(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", loadMapAddresses);
 
 void loadMapAddresses(void) {
     
@@ -1158,8 +1125,6 @@ void loadMapAddresses(void) {
     setMapDataAddresses(RANCH_STORE, &_ranchStoreMapSegmentRomStart, &_ranchStoreMapSegmentRomEnd);
     setMapDataAddresses(RANCH_HOUSE, &_ranchHouseMapSegmentRomStart, &_ranchHouseMapSegmentRomEnd);
 
-    setMapDataAddresses(EMPTY_MAP_1, &_emptyMap1SegmentRomStart, &_emptyMap1SegmentRomEnd);
-    
     setMapDataAddresses(BEACH_SPRING, &_beachSpringMapSegmentRomStart, &_beachSpringMapSegmentRomEnd);
     setMapDataAddresses(BEACH_SUMMER, &_beachSummerMapSegmentRomStart, &_beachSummerMapSegmentRomEnd);
     setMapDataAddresses(BEACH_AUTUMN, &_beachFallMapSegmentRomStart, &_beachFallMapSegmentRomEnd);
@@ -1242,9 +1207,6 @@ void loadMapAddresses(void) {
     setMapDataAddresses(POTION_SHOP_BEDROOM, &_potionShopBackroomMapSegmentRomStart, &_potionShopBackroomMapSegmentRomEnd);
     setMapDataAddresses(POTION_SHOP, &_potionShopMapSegmentRomStart, &_potionShopMapSegmentRomEnd);
 
-    // empty, referenced in getCantEnterTextIndex 
-    setMapDataAddresses(EMPTY_MAP_2, &_emptyMap2SegmentRomStart, &_emptyMap2SegmentRomEnd);
-    
     setMapDataAddresses(HARVEST_SPRITE_CAVE, &_harvestSpriteCaveMapSegmentRomStart, &_harvestSpriteCaveMapSegmentRomEnd);
     setMapDataAddresses(CAVE, &_caveMapSegmentRomStart, &_caveMapSegmentRomEnd);    
     setMapDataAddresses(MINE, &_emptyMineMapSegmentRomStart, &_emptyMineMapSegmentRomEnd);
@@ -1286,7 +1248,6 @@ void loadMapAddresses(void) {
 
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeMainMessageBoxes);
 
 void initializeMainMessageBoxes(void) {
 
@@ -1338,20 +1299,17 @@ void initializeMainMessageBoxes(void) {
     
 }
     
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeTextAddresses);
 
 void initializeTextAddresses(void) {
 
     setTextAddresses(TEXT_1_TEXT_INDEX, &_text1TextIndexSegmentRomStart, &_text1TextIndexSegmentRomEnd, &_text1TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(LIBRARY_TEXT_INDEX, &_libraryTextIndexSegmentRomStart, &_libraryTextIndexSegmentRomEnd, &_libraryTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(DIARY_TEXT_INDEX, &_diaryTextIndexSegmentRomStart, &_diaryTextIndexSegmentRomEnd, &_diaryTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
-    setTextAddresses(RECIPES_JAPANESE_TEXT_INDEX, &_recipesJapaneseTextIndexSegmentRomStart, &_recipesJapaneseTextIndexSegmentRomEnd, &_recipesJapaneseTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(FESTIVALS_TEXT_INDEX, &_festivalOverlaySelectionsTextIndexSegmentRomStart, &_festivalOverlaySelectionsTextIndexSegmentRomEnd, &_festivalOverlaySelectionsTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(LETTERS_TEXT_INDEX, &_lettersTextIndexSegmentRomStart, &_lettersTextIndexSegmentRomEnd, &_lettersTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(LEVEL_INTERACTIONS_TEXT_INDEX, &_levelInteractionsTextIndexSegmentRomStart, &_levelInteractionsTextIndexSegmentRomEnd, &_levelInteractionsTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(ANIMAL_INTERACTIONS_TEXT_INDEX, &_animalInteractionsTextIndexSegmentRomStart, &_animalInteractionsTextIndexSegmentRomEnd, &_animalInteractionsTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(TV_TEXT_INDEX, &_tvTextIndexSegmentRomStart, &_tvTextIndexSegmentRomEnd, &_tvTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
-    setTextAddresses(TEXT_10_TEXT_INDEX, &_text10TextIndexSegmentRomStart, &_text10TextIndexSegmentRomEnd, &_text10TextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(NAMING_SCREEN_TEXT_INDEX, &_namingScreenTextIndexSegmentRomStart, &_namingScreenTextIndexSegmentRomEnd, &_namingScreenTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
 
     setTextAddresses(MARIA_TEXT_INDEX, &_mariaTextIndexSegmentRomStart, &_mariaTextIndexSegmentRomEnd, &_mariaTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
@@ -1403,8 +1361,6 @@ void initializeTextAddresses(void) {
     setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     setTextAddresses(NPC_BABY_TEXT_INDEX, &_babyTextIndexSegmentRomStart, &_babyTextIndexSegmentRomEnd, &_babyTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     
-    // unnecessary additional load
-    setTextAddresses(ADDITIONAL_NPCS_TEXT_INDEX, &_additionalNPCsTextIndexSegmentRomStart, &_additionalNPCsTextIndexSegmentRomEnd, &_additionalNPCsTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
     
     // cutscenes and festivals
     setTextAddresses(FARM_VISITS_TEXT_INDEX, &_farmVisitsTextIndexSegmentRomStart, &_farmVisitsTextIndexSegmentRomEnd, &_farmVisitsTextSegmentRomStart, (u32*)TEXT_ADDRESSES_INDEX_BUFFER);
@@ -1435,7 +1391,6 @@ void initializeTextAddresses(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeGameVariableStrings);
 
 void initializeGameVariableStrings(void) {
     
@@ -1534,7 +1489,6 @@ void initializeGameVariableStrings(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeDialogueSystem);
 
 void initializeDialogueSystem(void) {
 
@@ -1554,7 +1508,6 @@ void initializeDialogueSystem(void) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", setDialogueBytecodeAddresses);
 
 void setDialogueBytecodeAddresses(void) {
     
@@ -1635,7 +1588,6 @@ void setDialogueBytecodeAddresses(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeDialogueVariables);
 
 void initializeDialogueVariables(void) {
 

@@ -35,12 +35,6 @@ beginseg
 endseg
 
 beginseg
-    name "emptyEffectTexture"
-    flags RAW
-    include "build/bin/assets/sprites/effects/empty/emptyEffectTexture.bin.o"
-endseg
-
-beginseg
     name "splashTexture"
     flags RAW
     include "build/assets/sprites/effects/splash/splashTexture.bin.o"
