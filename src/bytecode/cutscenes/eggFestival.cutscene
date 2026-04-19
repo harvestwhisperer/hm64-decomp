@@ -3,21 +3,22 @@
 ; ============================================
 
 #include "entities.h"
-
-#define MAIN_MAP_INDEX 0
+#include "texts.h"
+#include "dialogues.h"
 
 .buffer 2
+
+#define MAIN_MAP_INDEX 0
 
 ; Local variables
 .local var0, u32, 0
 .local var1, u32, 0
 
 .array npcAffection, u8
+.array lifeEventBits, u32
 .array dailyEventBits, u32
 
-#define MARIA 0
-
-.entry
+.start:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 9, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 12, gCutsceneCompletionFlags
@@ -31,39 +32,39 @@
     SET_AUDIO_SEQUENCE 0, _sportsFestival2SegmentRomStart, _sportsFestival2SegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_U16_VAR_WITHIN_RANGE 1250, 1250, gCutsceneIndex, .branch_13D55C
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U16_VAR_WITHIN_RANGE 1250, 1250, gCutsceneIndex, .festival_setup
 
-.sub_13D4EC:
+.exit:
     SET_U32_VALUE 0, var0
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_13D504:
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_13D50C:
+.setup_message_box:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_13D52C:
+.setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
-.executor_0_13D54C:
+.executor_0_exit:
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_1_13D554:
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_13D504
+.executor_1_post_hunt_idle:
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13D55C:
+.festival_setup:
     INIT_MAP_ADDITION 5, 0
     INIT_MAP_ADDITION 6, 0
     INIT_MAP_ADDITION 7, 0
@@ -75,245 +76,245 @@
     SET_SPECIAL_BIT 0, var0
     SET_U16_VALUE 0, D_801886D2
     SET_U16_VALUE 0, D_80180710
-    SPAWN_EXECUTOR 1, .executor_1_13D690
-    SPAWN_EXECUTOR 2, .executor_2_13DE24
-    SPAWN_EXECUTOR 3, .executor_3_13DEA4
-    SPAWN_EXECUTOR 4, .executor_4_13DF24
-    SPAWN_EXECUTOR 5, .executor_5_13DFA4
-    SPAWN_EXECUTOR 6, .executor_6_13E024
-    SPAWN_EXECUTOR 7, .executor_7_13E0A4
-    SPAWN_EXECUTOR 8, .executor_8_13E124
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_13D608
-    SPAWN_EXECUTOR 9, .executor_9_13E1A4
+    SPAWN_EXECUTOR 1, .executor_1_mayor
+    SPAWN_EXECUTOR 2, .executor_2_kent_pre
+    SPAWN_EXECUTOR 3, .executor_3_stu_pre
+    SPAWN_EXECUTOR 4, .executor_4_rick_pre
+    SPAWN_EXECUTOR 5, .executor_5_maria_pre
+    SPAWN_EXECUTOR 6, .executor_6_ann_pre
+    SPAWN_EXECUTOR 7, .executor_7_harris_pre
+    SPAWN_EXECUTOR 8, .executor_8_jeff_pre
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .after_maybe_karen
+    SPAWN_EXECUTOR 9, .executor_9_karen_pre
 
-.branch_13D608:
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_13D61C
-    SPAWN_EXECUTOR 10, .executor_10_13E224
+.after_maybe_karen:
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .after_maybe_kai
+    SPAWN_EXECUTOR 10, .executor_10_kai_pre
 
-.branch_13D61C:
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_13D630
-    SPAWN_EXECUTOR 11, .executor_11_13E2A4
+.after_maybe_kai:
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .after_maybe_cliff
+    SPAWN_EXECUTOR 11, .executor_11_cliff_pre
 
-.branch_13D630:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 100, npcAffection + 0x7, .branch_13D684
-    SPAWN_EXECUTOR 12, .executor_12_13E3A4
+.after_maybe_cliff:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 100, npcAffection[GRAY], .spawn_doug_instead_of_gray
+    SPAWN_EXECUTOR 12, .executor_12_gray_pre
 
-.sub_13D644:
-    EXECUTE_SUBROUTINE .sub_13D52C
+.player_intro:
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -384, 0, 32
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 0
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 0
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SPAWN_EXECUTOR 37, .executor_37_13E404
+    SPAWN_EXECUTOR 37, .executor_37_egg_dispatch
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.branch_13D684:
-    SPAWN_EXECUTOR 12, .executor_12_13E324
-    EXECUTE_SUBROUTINE .sub_13D644
+.spawn_doug_instead_of_gray:
+    SPAWN_EXECUTOR 12, .executor_12_doug_pre
+    EXECUTE_SUBROUTINE .player_intro
 
-.executor_1_13D690:
+.executor_1_mayor:
     SETUP_ENTITY 1, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -448, 0, 32
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
 
-.sub_13D6B8:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13D6C4
-    EXECUTE_SUBROUTINE .sub_13D504
+.mayor_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13D6C4:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 0, var1, .branch_13D6E8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xB
+.mayor_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 0, var1, .mayor_dispatch
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR]
     SET_SPECIAL_BIT 0, var1
 
-.branch_13D6E8:
+.mayor_dispatch:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 55, 1
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_EGG_FESTIVAL, 1
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_13D714
-    BRANCH_ON_DIALOGUE 0, 1, .branch_13D7AC
+    BRANCH_ON_DIALOGUE 0, 0, .mayor_start_hunt
+    BRANCH_ON_DIALOGUE 0, 1, .mayor_talk_explain
 
-.branch_13D714:
-    SET_ASSET_ROTATION 6
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 3
+.mayor_start_hunt:
+    SET_ASSET_ROTATION SOUTHEAST
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 3
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 22
     SET_WAIT_FRAMES 20
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SPAWN_EXECUTOR 32, .executor_32_13EC30
+    SPAWN_EXECUTOR 32, .executor_32_mayor_holds_egg
     TOGGLE_PAUSE_ENTITIES
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_13EEE4
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_13EF80
-    SET_OTHER_EXECUTOR_PTR 4, .executor_4_13F014
-    SET_OTHER_EXECUTOR_PTR 5, .executor_5_13F0A0
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_13F12C
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_13F1B8
-    SET_OTHER_EXECUTOR_PTR 8, .executor_8_13F23C
-    SET_OTHER_EXECUTOR_PTR 9, .executor_9_13F2D0
-    SET_OTHER_EXECUTOR_PTR 10, .executor_10_13F35C
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_13F3E8
-    SET_OTHER_EXECUTOR_PTR 12, .executor_12_13F474
+    SET_OTHER_EXECUTOR_PTR 2, .executor_2_kent_hunt
+    SET_OTHER_EXECUTOR_PTR 3, .executor_3_stu_hunt
+    SET_OTHER_EXECUTOR_PTR 4, .executor_4_rick_hunt
+    SET_OTHER_EXECUTOR_PTR 5, .executor_5_maria_hunt
+    SET_OTHER_EXECUTOR_PTR 6, .executor_6_ann_hunt
+    SET_OTHER_EXECUTOR_PTR 7, .executor_7_harris_hunt
+    SET_OTHER_EXECUTOR_PTR 8, .executor_8_jeff_hunt
+    SET_OTHER_EXECUTOR_PTR 9, .executor_9_karen_hunt
+    SET_OTHER_EXECUTOR_PTR 10, .executor_10_kai_hunt
+    SET_OTHER_EXECUTOR_PTR 11, .executor_11_cliff_hunt
+    SET_OTHER_EXECUTOR_PTR 12, .executor_12_gray_or_doug_hunt
     SET_U16_VALUE 0, D_80189824
-    SPAWN_EXECUTOR 41, .executor_41_13EDD0
-    EXECUTE_SUBROUTINE .sub_13D7C4
+    SPAWN_EXECUTOR 41, .executor_41_timer
+    EXECUTE_SUBROUTINE .mayor_show_egg_wait
 
-.branch_13D7AC:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 51
+.mayor_talk_explain:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 51
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13D6B8
+    EXECUTE_SUBROUTINE .mayor_wait
 
-.sub_13D7C4:
-    SET_ASSET_ROTATION 6
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13D7D4
-    EXECUTE_SUBROUTINE .sub_13D504
+.mayor_show_egg_wait:
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_eval_choice
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13D7D4:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .sub_13D7C4
-    EXECUTE_SUBROUTINE .sub_13D50C
+.mayor_eval_choice:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .mayor_show_egg_wait
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 9, var0
     SET_SPECIAL_BIT 8, var0
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT 20, var0, .branch_13D864
-    BRANCH_ON_SPECIAL_BIT 21, var0, .branch_13D874
-    BRANCH_ON_SPECIAL_BIT 22, var0, .branch_13D884
-    BRANCH_ON_SPECIAL_BIT 23, var0, .branch_13D894
-    BRANCH_ON_SPECIAL_BIT 24, var0, .branch_13D8A4
-    BRANCH_ON_SPECIAL_BIT 25, var0, .branch_13D8B4
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 53
+    BRANCH_ON_SPECIAL_BIT 20, var0, .mayor_check_color_0
+    BRANCH_ON_SPECIAL_BIT 21, var0, .mayor_check_color_1
+    BRANCH_ON_SPECIAL_BIT 22, var0, .mayor_check_color_2
+    BRANCH_ON_SPECIAL_BIT 23, var0, .mayor_check_color_3
+    BRANCH_ON_SPECIAL_BIT 24, var0, .mayor_check_color_4
+    BRANCH_ON_SPECIAL_BIT 25, var0, .mayor_check_color_5
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 53
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .sub_13D7C4
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .mayor_show_egg_wait
 
-.branch_13D864:
-    BRANCH_ON_SPECIAL_BIT 1, var0, .branch_13D8C4
-    EXECUTE_SUBROUTINE .sub_13D944
+.mayor_check_color_0:
+    BRANCH_ON_SPECIAL_BIT 1, var0, .mayor_correct_advance
+    EXECUTE_SUBROUTINE .mayor_wrong
 
-.branch_13D874:
-    BRANCH_ON_SPECIAL_BIT 2, var0, .branch_13D8C4
-    EXECUTE_SUBROUTINE .sub_13D944
+.mayor_check_color_1:
+    BRANCH_ON_SPECIAL_BIT 2, var0, .mayor_correct_advance
+    EXECUTE_SUBROUTINE .mayor_wrong
 
-.branch_13D884:
-    BRANCH_ON_SPECIAL_BIT 3, var0, .branch_13D8C4
-    EXECUTE_SUBROUTINE .sub_13D944
+.mayor_check_color_2:
+    BRANCH_ON_SPECIAL_BIT 3, var0, .mayor_correct_advance
+    EXECUTE_SUBROUTINE .mayor_wrong
 
-.branch_13D894:
-    BRANCH_ON_SPECIAL_BIT 4, var0, .branch_13D8C4
-    EXECUTE_SUBROUTINE .sub_13D944
+.mayor_check_color_3:
+    BRANCH_ON_SPECIAL_BIT 4, var0, .mayor_correct_advance
+    EXECUTE_SUBROUTINE .mayor_wrong
 
-.branch_13D8A4:
-    BRANCH_ON_SPECIAL_BIT 5, var0, .branch_13D8C4
-    EXECUTE_SUBROUTINE .sub_13D944
+.mayor_check_color_4:
+    BRANCH_ON_SPECIAL_BIT 5, var0, .mayor_correct_advance
+    EXECUTE_SUBROUTINE .mayor_wrong
 
-.branch_13D8B4:
-    BRANCH_ON_SPECIAL_BIT 6, var0, .branch_13D8C4
-    EXECUTE_SUBROUTINE .sub_13D944
+.mayor_check_color_5:
+    BRANCH_ON_SPECIAL_BIT 6, var0, .mayor_correct_advance
+    EXECUTE_SUBROUTINE .mayor_wrong
 
-.branch_13D8C4:
+.mayor_correct_advance:
     UPDATE_U16_VALUE 1, 999, D_801886D2
     DEACTIVATE_EXECUTOR 32
     DEACTIVATE_EXECUTOR 33
     DEACTIVATE_EXECUTOR 41
-    TOGGLE_SPECIAL_BIT 13, dailyEventBits
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 999, D_80180710, .branch_13DA94
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 4
+    CLEAR_SPECIAL_BIT 13, dailyEventBits
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 999, D_80180710, .mayor_zero_points_ending
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 4
 
-.sub_13D8FC:
+.mayor_correct_continue:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_13D9B0
+    EXECUTE_SUBROUTINE .reset_round_state
     SET_ENTITY_ANIMATION 22
     SET_WAIT_FRAMES 20
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SPAWN_EXECUTOR 32, .executor_32_13EC30
+    SPAWN_EXECUTOR 32, .executor_32_mayor_holds_egg
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    TOGGLE_SPECIAL_BIT 8, var0
+    CLEAR_SPECIAL_BIT 9, var0
+    CLEAR_SPECIAL_BIT 8, var0
     SET_U16_VALUE 0, D_80189824
-    SPAWN_EXECUTOR 41, .executor_41_13EDD0
-    EXECUTE_SUBROUTINE .sub_13D7C4
+    SPAWN_EXECUTOR 41, .executor_41_timer
+    EXECUTE_SUBROUTINE .mayor_show_egg_wait
 
-.sub_13D944:
+.mayor_wrong:
     DEACTIVATE_EXECUTOR 33
-    TOGGLE_SPECIAL_BIT 13, dailyEventBits
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 5
+    CLEAR_SPECIAL_BIT 13, dailyEventBits
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 5
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_13D97C
+    EXECUTE_SUBROUTINE .reset_correct_color_bits
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    TOGGLE_SPECIAL_BIT 8, var0
-    EXECUTE_SUBROUTINE .sub_13D7C4
+    CLEAR_SPECIAL_BIT 9, var0
+    CLEAR_SPECIAL_BIT 8, var0
+    EXECUTE_SUBROUTINE .mayor_show_egg_wait
 
-.sub_13D97C:
-    TOGGLE_SPECIAL_BIT 20, var0
-    TOGGLE_SPECIAL_BIT 21, var0
-    TOGGLE_SPECIAL_BIT 22, var0
-    TOGGLE_SPECIAL_BIT 23, var0
-    TOGGLE_SPECIAL_BIT 24, var0
-    TOGGLE_SPECIAL_BIT 25, var0
+.reset_correct_color_bits:
+    CLEAR_SPECIAL_BIT 20, var0
+    CLEAR_SPECIAL_BIT 21, var0
+    CLEAR_SPECIAL_BIT 22, var0
+    CLEAR_SPECIAL_BIT 23, var0
+    CLEAR_SPECIAL_BIT 24, var0
+    CLEAR_SPECIAL_BIT 25, var0
     RETURN_FROM_SUBROUTINE
 
-.sub_13D9B0:
-    TOGGLE_SPECIAL_BIT 1, var0
-    TOGGLE_SPECIAL_BIT 2, var0
-    TOGGLE_SPECIAL_BIT 3, var0
-    TOGGLE_SPECIAL_BIT 4, var0
-    TOGGLE_SPECIAL_BIT 5, var0
-    TOGGLE_SPECIAL_BIT 6, var0
-    TOGGLE_SPECIAL_BIT 10, var0
-    TOGGLE_SPECIAL_BIT 11, var0
-    TOGGLE_SPECIAL_BIT 12, var0
-    TOGGLE_SPECIAL_BIT 13, var0
-    TOGGLE_SPECIAL_BIT 14, var0
-    TOGGLE_SPECIAL_BIT 15, var0
-    TOGGLE_SPECIAL_BIT 16, var0
-    TOGGLE_SPECIAL_BIT 17, var0
-    TOGGLE_SPECIAL_BIT 18, var0
-    TOGGLE_SPECIAL_BIT 19, var0
-    TOGGLE_SPECIAL_BIT 20, var0
-    TOGGLE_SPECIAL_BIT 21, var0
-    TOGGLE_SPECIAL_BIT 22, var0
-    TOGGLE_SPECIAL_BIT 23, var0
-    TOGGLE_SPECIAL_BIT 24, var0
-    TOGGLE_SPECIAL_BIT 25, var0
+.reset_round_state:
+    CLEAR_SPECIAL_BIT 1, var0
+    CLEAR_SPECIAL_BIT 2, var0
+    CLEAR_SPECIAL_BIT 3, var0
+    CLEAR_SPECIAL_BIT 4, var0
+    CLEAR_SPECIAL_BIT 5, var0
+    CLEAR_SPECIAL_BIT 6, var0
+    CLEAR_SPECIAL_BIT 10, var0
+    CLEAR_SPECIAL_BIT 11, var0
+    CLEAR_SPECIAL_BIT 12, var0
+    CLEAR_SPECIAL_BIT 13, var0
+    CLEAR_SPECIAL_BIT 14, var0
+    CLEAR_SPECIAL_BIT 15, var0
+    CLEAR_SPECIAL_BIT 16, var0
+    CLEAR_SPECIAL_BIT 17, var0
+    CLEAR_SPECIAL_BIT 18, var0
+    CLEAR_SPECIAL_BIT 19, var0
+    CLEAR_SPECIAL_BIT 20, var0
+    CLEAR_SPECIAL_BIT 21, var0
+    CLEAR_SPECIAL_BIT 22, var0
+    CLEAR_SPECIAL_BIT 23, var0
+    CLEAR_SPECIAL_BIT 24, var0
+    CLEAR_SPECIAL_BIT 25, var0
     RETURN_FROM_SUBROUTINE
 
-.sub_13DA64:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13DA70
-    EXECUTE_SUBROUTINE .sub_13D504
+.mayor_post_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_post_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13DA70:
-    EXECUTE_SUBROUTINE .sub_13D50C
+.mayor_post_hunt_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 60
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 60
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13DA64
+    EXECUTE_SUBROUTINE .mayor_post_hunt_wait
 
-.branch_13DA94:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 7
+.mayor_zero_points_ending:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 7
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SPAWN_EXECUTOR 40, .executor_40_13DAB0
-    EXECUTE_SUBROUTINE .sub_13D504
+    SPAWN_EXECUTOR 40, .executor_40_post_hunt_fade
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_40_13DAB0:
+.executor_40_post_hunt_fade:
     SET_WAIT_FRAMES 10
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     SET_WAIT_FRAMES 32
@@ -332,77 +333,77 @@
     DEACTIVATE_EXECUTOR 12
     SET_WAIT_FRAMES 1
     TOGGLE_PAUSE_ENTITIES
-    SPAWN_EXECUTOR 0, .executor_0_13EEBC
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_13D554
-    SPAWN_EXECUTOR 2, .executor_2_13F530
-    SPAWN_EXECUTOR 3, .executor_3_13F590
-    SPAWN_EXECUTOR 4, .executor_4_13F5F0
-    SPAWN_EXECUTOR 5, .executor_5_13F650
-    SPAWN_EXECUTOR 6, .executor_6_13F6B0
-    SPAWN_EXECUTOR 7, .executor_7_13F710
-    SPAWN_EXECUTOR 8, .executor_8_13F788
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_13DB58
-    SPAWN_EXECUTOR 9, .executor_9_13F800
+    SPAWN_EXECUTOR 0, .executor_0_post_hunt_reset_player
+    SET_OTHER_EXECUTOR_PTR 1, .executor_1_post_hunt_idle
+    SPAWN_EXECUTOR 2, .executor_2_kent_post
+    SPAWN_EXECUTOR 3, .executor_3_stu_post
+    SPAWN_EXECUTOR 4, .executor_4_rick_post
+    SPAWN_EXECUTOR 5, .executor_5_maria_post
+    SPAWN_EXECUTOR 6, .executor_6_ann_post
+    SPAWN_EXECUTOR 7, .executor_7_harris_post
+    SPAWN_EXECUTOR 8, .executor_8_jeff_post
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .after_maybe_karen_post
+    SPAWN_EXECUTOR 9, .executor_9_karen_post
 
-.branch_13DB58:
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_13DB6C
-    SPAWN_EXECUTOR 10, .executor_10_13F860
+.after_maybe_karen_post:
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .after_maybe_kai_post
+    SPAWN_EXECUTOR 10, .executor_10_kai_post
 
-.branch_13DB6C:
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_13DB80
-    SPAWN_EXECUTOR 11, .executor_11_13F8D8
+.after_maybe_kai_post:
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .after_maybe_cliff_post
+    SPAWN_EXECUTOR 11, .executor_11_cliff_post
 
-.branch_13DB80:
-    SPAWN_EXECUTOR 12, .executor_12_13F958
+.after_maybe_cliff_post:
+    SPAWN_EXECUTOR 12, .executor_12_gray_or_doug_post
     DEACTIVATE_EXECUTOR 37
     SET_WAIT_FRAMES 1
-    SET_OTHER_EXECUTOR_PTR 1, .sub_13DA64
-    TOGGLE_SPECIAL_BIT 13, dailyEventBits
+    SET_OTHER_EXECUTOR_PTR 1, .mayor_post_hunt_wait
+    CLEAR_SPECIAL_BIT 13, dailyEventBits
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     SET_WAIT_FRAMES 32
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 8
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 8
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 30
-    SPAWN_EXECUTOR 37, .executor_37_13FA2C
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 99, D_801886D2, .branch_13DD70
-    BRANCH_ON_RANDOM 0, 20, .branch_13DD88
-    BRANCH_ON_RANDOM 21, 40, .branch_13DD9C
-    BRANCH_ON_RANDOM 41, 60, .branch_13DDB0
-    BRANCH_ON_RANDOM 61, 80, .branch_13DDC4
-    EXECUTE_SUBROUTINE .sub_13DDD8
+    SPAWN_EXECUTOR 37, .executor_37_post_hunt_exit
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 99, D_801886D2, .ending_player_wins
+    BRANCH_ON_RANDOM 0, 20, .ending_harris_wins
+    BRANCH_ON_RANDOM 21, 40, .ending_jeff_wins
+    BRANCH_ON_RANDOM 41, 60, .ending_kai_wins
+    BRANCH_ON_RANDOM 61, 80, .ending_cliff_wins
+    EXECUTE_SUBROUTINE .ending_gray_or_doug_wins
 
-.sub_13DBFC:
+.ending_common:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
     SET_SFX 84, 128
     SET_WAIT_FRAMES 60
-    BRANCH_U16_VAR_WITHIN_RANGE 0, 2, D_801886D2, .branch_13DCFC
-    BRANCH_ON_SPECIAL_BIT 8, acquiredPowerNutBits, .branch_13DCDC
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 56
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 2, D_801886D2, .prize_random_branch
+    BRANCH_ON_SPECIAL_BIT 8, acquiredPowerNutBits, .prize_check_turtle
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 56
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_13DC4C
+    SET_OTHER_EXECUTOR_PTR 0, .executor_0_grab_power_nut
     DEACTIVATE_SELF
 
-.executor_0_13DC4C:
-    SET_ASSET_ROTATION 0
-    SPAWN_EXECUTOR 32, .executor_32_13DC98
+.executor_0_grab_power_nut:
+    SET_ASSET_ROTATION SOUTHWEST
+    SPAWN_EXECUTOR 32, .executor_32_power_nut_prop
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
     SET_WAIT_FRAMES 30
     SET_ENTITY_ANIMATION 437
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_SPECIAL_BIT 8, acquiredPowerNutBits
     UPDATE_U8_VALUE 15, 250, gMaximumStamina
     UPDATE_U8_VALUE 2, 255, gHappiness
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_32_13DC98:
-    SETUP_ENTITY 28, 93, 1
+.executor_32_power_nut_prop:
+    SETUP_ENTITY 28, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 28, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_ANIMATION 210
@@ -412,709 +413,709 @@
     SET_WAIT_FRAMES 10
     DEACTIVATE_SELF
 
-.branch_13DCDC:
-    BRANCH_ON_SPECIAL_BIT 6, lifeEventBits + 0x8, .branch_13DCFC
-    SET_SPECIAL_BIT 6, lifeEventBits + 0x8
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 57
-    EXECUTE_SUBROUTINE .sub_13DD54
+.prize_check_turtle:
+    BRANCH_ON_SPECIAL_BIT 6, lifeEventBits[2], .prize_random_branch
+    SET_SPECIAL_BIT 6, lifeEventBits[2]
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 57
+    EXECUTE_SUBROUTINE .prize_message_close
 
-.branch_13DCFC:
-    BRANCH_ON_RANDOM 0, 50, .branch_13DD2C
-    BRANCH_U16_VAR_WITHIN_RANGE 0, 2, D_801886D2, .branch_13DD20
+.prize_random_branch:
+    BRANCH_ON_RANDOM 0, 50, .prize_lumber_path
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 2, D_801886D2, .prize_fodder_message
     UPDATE_U16_VALUE 150, 999, fodderQuantity
 
-.branch_13DD20:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 58
-    EXECUTE_SUBROUTINE .sub_13DD54
+.prize_fodder_message:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 58
+    EXECUTE_SUBROUTINE .prize_message_close
 
-.branch_13DD2C:
-    BRANCH_U16_VAR_WITHIN_RANGE 0, 2, D_801886D2, .branch_13DD48
+.prize_lumber_path:
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 2, D_801886D2, .prize_lumber_message
     UPDATE_U16_VALUE 150, 999, gLumber
 
-.branch_13DD48:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 59
-    EXECUTE_SUBROUTINE .sub_13DD54
+.prize_lumber_message:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 59
+    EXECUTE_SUBROUTINE .prize_message_close
 
-.sub_13DD54:
+.prize_message_close:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_13D54C
-    SET_OTHER_EXECUTOR_PTR 1, .sub_13DA64
+    SET_OTHER_EXECUTOR_PTR 0, .executor_0_exit
+    SET_OTHER_EXECUTOR_PTR 1, .mayor_post_hunt_wait
     DEACTIVATE_SELF
 
-.branch_13DD70:
+.ending_player_wins:
     UPDATE_U8_VALUE 5, 255, gHappiness
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 9
-    EXECUTE_SUBROUTINE .sub_13DBFC
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 9
+    EXECUTE_SUBROUTINE .ending_common
 
-.branch_13DD88:
+.ending_harris_wins:
     SET_SPECIAL_BIT 26, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 11
-    EXECUTE_SUBROUTINE .sub_13DBFC
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 11
+    EXECUTE_SUBROUTINE .ending_common
 
-.branch_13DD9C:
+.ending_jeff_wins:
     SET_SPECIAL_BIT 27, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 13
-    EXECUTE_SUBROUTINE .sub_13DBFC
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 13
+    EXECUTE_SUBROUTINE .ending_common
 
-.branch_13DDB0:
+.ending_kai_wins:
     SET_SPECIAL_BIT 28, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 15
-    EXECUTE_SUBROUTINE .sub_13DBFC
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 15
+    EXECUTE_SUBROUTINE .ending_common
 
-.branch_13DDC4:
+.ending_cliff_wins:
     SET_SPECIAL_BIT 29, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 14
-    EXECUTE_SUBROUTINE .sub_13DBFC
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 14
+    EXECUTE_SUBROUTINE .ending_common
 
-.sub_13DDD8:
+.ending_gray_or_doug_wins:
     SET_SPECIAL_BIT 30, var0
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 100, npcAffection + 0x7, .branch_13DDF8
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 12
-    EXECUTE_SUBROUTINE .sub_13DBFC
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 100, npcAffection[GRAY], .ending_doug_wins
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 12
+    EXECUTE_SUBROUTINE .ending_common
 
-.branch_13DDF8:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 10
-    EXECUTE_SUBROUTINE .sub_13DBFC
+.ending_doug_wins:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 10
+    EXECUTE_SUBROUTINE .ending_common
 
-.sub_13DE04:
-    SETUP_ENTITY 2, 21, 1
+.setup_kent:
+    SETUP_ENTITY 2, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_2_13DE24:
-    EXECUTE_SUBROUTINE .sub_13DE04
+.executor_2_kent_pre:
+    EXECUTE_SUBROUTINE .setup_kent
     SET_COORDINATES -352, 0, -64
 
-.sub_13DE30:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13DE40
-    EXECUTE_SUBROUTINE .sub_13D504
+.kent_pre_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .kent_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13DE40:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 1, var1, .branch_13DE64
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x14
+.kent_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 1, var1, .kent_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_KENT]
     SET_SPECIAL_BIT 1, var1
 
-.branch_13DE64:
+.kent_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 16
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 16
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13DE30
+    EXECUTE_SUBROUTINE .kent_pre_wait
 
-.sub_13DE84:
-    SETUP_ENTITY 3, 22, 1
+.setup_stu:
+    SETUP_ENTITY 3, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_3_13DEA4:
-    EXECUTE_SUBROUTINE .sub_13DE84
+.executor_3_stu_pre:
+    EXECUTE_SUBROUTINE .setup_stu
     SET_COORDINATES -320, 0, -32
 
-.sub_13DEB0:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13DEC0
-    EXECUTE_SUBROUTINE .sub_13D504
+.stu_pre_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .stu_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13DEC0:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 2, var1, .branch_13DEE4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x15
+.stu_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 2, var1, .stu_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_STU]
     SET_SPECIAL_BIT 2, var1
 
-.branch_13DEE4:
+.stu_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 19
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 19
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13DEB0
+    EXECUTE_SUBROUTINE .stu_pre_wait
 
-.sub_13DF04:
-    SETUP_ENTITY 4, 25, 1
+.setup_rick:
+    SETUP_ENTITY 4, ENTITY_ASSET_RICK, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_4_13DF24:
-    EXECUTE_SUBROUTINE .sub_13DF04
+.executor_4_rick_pre:
+    EXECUTE_SUBROUTINE .setup_rick
     SET_COORDINATES -96, 0, 0
 
-.sub_13DF30:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13DF40
-    EXECUTE_SUBROUTINE .sub_13D504
+.rick_pre_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .rick_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13DF40:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 3, var1, .branch_13DF64
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x18
+.rick_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 3, var1, .rick_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_RICK]
     SET_SPECIAL_BIT 3, var1
 
-.branch_13DF64:
+.rick_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 22
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 22
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13DF30
+    EXECUTE_SUBROUTINE .rick_pre_wait
 
-.sub_13DF84:
-    SETUP_ENTITY 5, 1, 1
+.setup_maria:
+    SETUP_ENTITY 5, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 5, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_5_13DFA4:
-    EXECUTE_SUBROUTINE .sub_13DF84
+.executor_5_maria_pre:
+    EXECUTE_SUBROUTINE .setup_maria
     SET_COORDINATES -380, 0, 160
 
-.sub_13DFB0:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13DFC0
-    EXECUTE_SUBROUTINE .sub_13D504
+.maria_pre_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .maria_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13DFC0:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 4, var1, .branch_13DFE4
+.maria_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 4, var1, .maria_pre_talk
     UPDATE_U8_VALUE 2, 255, npcAffection[MARIA]
     SET_SPECIAL_BIT 4, var1
 
-.branch_13DFE4:
+.maria_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 27
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 27
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13DFB0
+    EXECUTE_SUBROUTINE .maria_pre_wait
 
-.sub_13E004:
-    SETUP_ENTITY 6, 4, 1
+.setup_ann:
+    SETUP_ENTITY 6, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 6, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_6_13E024:
-    EXECUTE_SUBROUTINE .sub_13E004
+.executor_6_ann_pre:
+    EXECUTE_SUBROUTINE .setup_ann
     SET_COORDINATES -412, 0, 192
 
-.sub_13E030:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13E040
-    EXECUTE_SUBROUTINE .sub_13D504
+.ann_pre_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13E040:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 5, var1, .branch_13E064
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x3
+.ann_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 5, var1, .ann_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[ANN]
     SET_SPECIAL_BIT 5, var1
 
-.branch_13E064:
+.ann_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 30
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 30
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13E030
+    EXECUTE_SUBROUTINE .ann_pre_wait
 
-.sub_13E084:
-    SETUP_ENTITY 7, 7, 1
+.setup_harris:
+    SETUP_ENTITY 7, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 7, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_7_13E0A4:
-    EXECUTE_SUBROUTINE .sub_13E084
+.executor_7_harris_pre:
+    EXECUTE_SUBROUTINE .setup_harris
     SET_COORDINATES -256, 0, -96
 
-.sub_13E0B0:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13E0C0
-    EXECUTE_SUBROUTINE .sub_13D504
+.harris_pre_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .harris_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13E0C0:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 6, var1, .branch_13E0E4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x6
+.harris_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 6, var1, .harris_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[HARRIS]
     SET_SPECIAL_BIT 6, var1
 
-.branch_13E0E4:
+.harris_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 33
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 33
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13E0B0
+    EXECUTE_SUBROUTINE .harris_pre_wait
 
-.sub_13E104:
-    SETUP_ENTITY 8, 9, 1
+.setup_jeff:
+    SETUP_ENTITY 8, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 8, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_8_13E124:
-    EXECUTE_SUBROUTINE .sub_13E104
+.executor_8_jeff_pre:
+    EXECUTE_SUBROUTINE .setup_jeff
     SET_COORDINATES -184, 0, 0
 
-.sub_13E130:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13E140
-    EXECUTE_SUBROUTINE .sub_13D504
+.jeff_pre_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .jeff_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13E140:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 7, var1, .branch_13E164
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x8
+.jeff_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 7, var1, .jeff_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[JEFF]
     SET_SPECIAL_BIT 7, var1
 
-.branch_13E164:
+.jeff_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 38
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 38
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13E130
+    EXECUTE_SUBROUTINE .jeff_pre_wait
 
-.sub_13E184:
-    SETUP_ENTITY 9, 5, 1
+.setup_karen:
+    SETUP_ENTITY 9, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 9, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_9_13E1A4:
-    EXECUTE_SUBROUTINE .sub_13E184
+.executor_9_karen_pre:
+    EXECUTE_SUBROUTINE .setup_karen
     SET_COORDINATES -160, 0, 32
 
-.sub_13E1B0:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13E1C0
-    EXECUTE_SUBROUTINE .sub_13D504
+.karen_pre_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13E1C0:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 8, var1, .branch_13E1E4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x4
+.karen_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 8, var1, .karen_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAREN]
     SET_SPECIAL_BIT 8, var1
 
-.branch_13E1E4:
+.karen_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 41
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 41
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13E1B0
+    EXECUTE_SUBROUTINE .karen_pre_wait
 
-.sub_13E204:
-    SETUP_ENTITY 10, 11, 1
+.setup_kai:
+    SETUP_ENTITY 10, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 10, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_10_13E224:
-    EXECUTE_SUBROUTINE .sub_13E204
+.executor_10_kai_pre:
+    EXECUTE_SUBROUTINE .setup_kai
     SET_COORDINATES -384, 0, 256
 
-.sub_13E230:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13E240
-    EXECUTE_SUBROUTINE .sub_13D504
+.kai_pre_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .kai_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13E240:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 9, var1, .branch_13E264
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xA
+.kai_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 9, var1, .kai_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAI]
     SET_SPECIAL_BIT 9, var1
 
-.branch_13E264:
+.kai_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 44
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 44
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13E230
+    EXECUTE_SUBROUTINE .kai_pre_wait
 
-.sub_13E284:
-    SETUP_ENTITY 11, 10, 1
+.setup_cliff:
+    SETUP_ENTITY 11, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 11, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_11_13E2A4:
-    EXECUTE_SUBROUTINE .sub_13E284
+.executor_11_cliff_pre:
+    EXECUTE_SUBROUTINE .setup_cliff
     SET_COORDINATES -168, 0, -56
 
-.sub_13E2B0:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13E2C0
-    EXECUTE_SUBROUTINE .sub_13D504
+.cliff_pre_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cliff_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13E2C0:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 10, var1, .branch_13E2E4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x9
+.cliff_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 10, var1, .cliff_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[CLIFF]
     SET_SPECIAL_BIT 10, var1
 
-.branch_13E2E4:
+.cliff_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 47
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 47
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13E2B0
+    EXECUTE_SUBROUTINE .cliff_pre_wait
 
-.sub_13E304:
-    SETUP_ENTITY 12, 17, 1
+.setup_doug:
+    SETUP_ENTITY 12, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 12, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_12_13E324:
-    EXECUTE_SUBROUTINE .sub_13E304
+.executor_12_doug_pre:
+    EXECUTE_SUBROUTINE .setup_doug
     SET_COORDINATES -320, 0, 32
 
-.sub_13E330:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13E340
-    EXECUTE_SUBROUTINE .sub_13D504
+.doug_pre_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .doug_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13E340:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 11, var1, .branch_13E364
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x10
+.doug_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 11, var1, .doug_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_DOUG]
     SET_SPECIAL_BIT 11, var1
 
-.branch_13E364:
+.doug_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 24
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 24
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13E330
+    EXECUTE_SUBROUTINE .doug_pre_wait
 
-.sub_13E384:
-    SETUP_ENTITY 12, 8, 1
+.setup_gray:
+    SETUP_ENTITY 12, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 12, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_12_13E3A4:
-    EXECUTE_SUBROUTINE .sub_13E384
+.executor_12_gray_pre:
+    EXECUTE_SUBROUTINE .setup_gray
     SET_COORDINATES -320, 0, 32
 
-.sub_13E3B0:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13E3C0
-    EXECUTE_SUBROUTINE .sub_13D504
+.gray_pre_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .gray_pre_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13E3C0:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 12, var1, .branch_13E3E4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x7
+.gray_pre_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 12, var1, .gray_pre_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[GRAY]
     SET_SPECIAL_BIT 12, var1
 
-.branch_13E3E4:
+.gray_pre_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 35
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 35
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13E3B0
+    EXECUTE_SUBROUTINE .gray_pre_wait
 
-.executor_37_13E404:
+.executor_37_egg_dispatch:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_SPECIAL_BIT 9, var0, .executor_37_13E404
-    BRANCH_ON_BUTTON_PRESSED 0, 32768, .branch_13E5A8
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, cutsceneLevelInteractionIndex, .branch_13E454
-    BRANCH_U8_VAR_WITHIN_RANGE 9, 10, cutsceneLevelInteractionIndex, .branch_13E4AC
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, cutsceneLevelInteractionIndex, .branch_13E480
-    BRANCH_U8_VAR_WITHIN_RANGE 11, 11, cutsceneLevelInteractionIndex, .branch_13E480
-    EXECUTE_SUBROUTINE .executor_37_13E404
+    BRANCH_ON_SPECIAL_BIT 9, var0, .executor_37_egg_dispatch
+    BRANCH_ON_BUTTON_PRESSED 0, 32768, .on_egg_picked_up
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, cutsceneLevelInteractionIndex, .egg_interaction_1
+    BRANCH_U8_VAR_WITHIN_RANGE 9, 10, cutsceneLevelInteractionIndex, .egg_interaction_9_or_10
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, cutsceneLevelInteractionIndex, .egg_interaction_2_or_11
+    BRANCH_U8_VAR_WITHIN_RANGE 11, 11, cutsceneLevelInteractionIndex, .egg_interaction_2_or_11
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13E454:
+.egg_interaction_1:
     PAUSE_ENTITIES
     SET_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .sub_13D50C
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 61
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 61
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SPAWN_EXECUTOR 0, .executor_0_13E4E8
+    SPAWN_EXECUTOR 0, .executor_0_walk_nw_grab
     DEACTIVATE_SELF
 
-.branch_13E480:
+.egg_interaction_2_or_11:
     PAUSE_ENTITIES
     SET_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .sub_13D50C
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 61
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 61
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SPAWN_EXECUTOR 0, .executor_0_13E528
+    SPAWN_EXECUTOR 0, .executor_0_walk_ne_grab
     DEACTIVATE_SELF
 
-.branch_13E4AC:
+.egg_interaction_9_or_10:
     PAUSE_ENTITIES
     SET_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .sub_13D50C
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 61
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 61
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SPAWN_EXECUTOR 0, .executor_0_13E568
+    SPAWN_EXECUTOR 0, .executor_0_walk_se_grab
     DEACTIVATE_SELF
 
-.branch_13E4D8:
+.set_holding_flag_true:
     SET_HOLDING_ANIMATION_FLAG TRUE
     RETURN_FROM_SUBROUTINE
 
-.branch_13E4E0:
+.set_holding_flag_false:
     SET_HOLDING_ANIMATION_FLAG FALSE
     RETURN_FROM_SUBROUTINE
 
-.executor_0_13E4E8:
+.executor_0_walk_nw_grab:
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13D52C
-    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .branch_13E4D8
-    ENTITY_WALK 16, 2, 2
-    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .branch_13E4E0
-    SPAWN_EXECUTOR 37, .executor_37_13E404
-    TOGGLE_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .setup_player
+    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_true
+    ENTITY_WALK 16, NORTHWEST, 2
+    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_false
+    SPAWN_EXECUTOR 37, .executor_37_egg_dispatch
+    CLEAR_SPECIAL_BIT 9, var0
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_0_13E528:
+.executor_0_walk_ne_grab:
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13D52C
-    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .branch_13E4D8
-    ENTITY_WALK 16, 4, 2
-    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .branch_13E4E0
-    SPAWN_EXECUTOR 37, .executor_37_13E404
-    TOGGLE_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .setup_player
+    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_true
+    ENTITY_WALK 16, NORTHEAST, 2
+    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_false
+    SPAWN_EXECUTOR 37, .executor_37_egg_dispatch
+    CLEAR_SPECIAL_BIT 9, var0
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_0_13E568:
+.executor_0_walk_se_grab:
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13D52C
-    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .branch_13E4D8
-    ENTITY_WALK 16, 6, 2
-    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .branch_13E4E0
-    SPAWN_EXECUTOR 37, .executor_37_13E404
-    TOGGLE_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .setup_player
+    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_true
+    ENTITY_WALK 16, SOUTHEAST, 2
+    BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_false
+    SPAWN_EXECUTOR 37, .executor_37_egg_dispatch
+    CLEAR_SPECIAL_BIT 9, var0
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.branch_13E5A8:
-    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, interactedWithLevelInteractionIndex, .branch_13E634
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 18, interactedWithLevelInteractionIndex, .branch_13E6BC
-    BRANCH_U8_VAR_WITHIN_RANGE 19, 19, interactedWithLevelInteractionIndex, .branch_13E744
-    BRANCH_U8_VAR_WITHIN_RANGE 20, 20, interactedWithLevelInteractionIndex, .branch_13E7CC
-    BRANCH_U8_VAR_WITHIN_RANGE 21, 21, interactedWithLevelInteractionIndex, .branch_13E854
-    BRANCH_U8_VAR_WITHIN_RANGE 22, 22, interactedWithLevelInteractionIndex, .branch_13E8DC
-    BRANCH_U8_VAR_WITHIN_RANGE 23, 23, interactedWithLevelInteractionIndex, .branch_13E964
-    BRANCH_U8_VAR_WITHIN_RANGE 24, 24, interactedWithLevelInteractionIndex, .branch_13E9EC
-    BRANCH_ON_SPECIAL_BIT 8, var0, .branch_13E620
-    BRANCH_ON_SPECIAL_BIT 9, var0, .executor_37_13E404
+.on_egg_picked_up:
+    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, interactedWithLevelInteractionIndex, .egg_basket_17
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 18, interactedWithLevelInteractionIndex, .egg_basket_18
+    BRANCH_U8_VAR_WITHIN_RANGE 19, 19, interactedWithLevelInteractionIndex, .egg_basket_19
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 20, interactedWithLevelInteractionIndex, .egg_basket_20
+    BRANCH_U8_VAR_WITHIN_RANGE 21, 21, interactedWithLevelInteractionIndex, .egg_basket_21
+    BRANCH_U8_VAR_WITHIN_RANGE 22, 22, interactedWithLevelInteractionIndex, .egg_basket_22
+    BRANCH_U8_VAR_WITHIN_RANGE 23, 23, interactedWithLevelInteractionIndex, .egg_basket_23
+    BRANCH_U8_VAR_WITHIN_RANGE 24, 24, interactedWithLevelInteractionIndex, .egg_basket_24
+    BRANCH_ON_SPECIAL_BIT 8, var0, .egg_basket_clear_round
+    BRANCH_ON_SPECIAL_BIT 9, var0, .executor_37_egg_dispatch
 
-.branch_13E620:
+.egg_basket_clear_round:
     DEACTIVATE_EXECUTOR 33
-    EXECUTE_SUBROUTINE .sub_13D97C
-    TOGGLE_SPECIAL_BIT 13, dailyEventBits
-    EXECUTE_SUBROUTINE .executor_37_13E404
+    EXECUTE_SUBROUTINE .reset_correct_color_bits
+    CLEAR_SPECIAL_BIT 13, dailyEventBits
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13E634:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 10, var0, .branch_13EAD8
-    BRANCH_ON_SPECIAL_BIT 11, var0, .branch_13EAFC
-    BRANCH_ON_SPECIAL_BIT 12, var0, .branch_13EB20
-    BRANCH_ON_SPECIAL_BIT 13, var0, .branch_13EB44
-    BRANCH_ON_SPECIAL_BIT 14, var0, .branch_13EB68
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 16, var0, .branch_13EB8C
-    BRANCH_ON_SPECIAL_BIT 17, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 18, var0, .branch_13EB44
-    BRANCH_ON_SPECIAL_BIT 19, var0, .branch_13EB20
-    EXECUTE_SUBROUTINE .executor_37_13E404
+.egg_basket_17:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 10, var0, .egg_picked_pal_42
+    BRANCH_ON_SPECIAL_BIT 11, var0, .egg_picked_pal_44
+    BRANCH_ON_SPECIAL_BIT 12, var0, .egg_picked_pal_45
+    BRANCH_ON_SPECIAL_BIT 13, var0, .egg_picked_pal_46
+    BRANCH_ON_SPECIAL_BIT 14, var0, .egg_picked_pal_47
+    BRANCH_ON_SPECIAL_BIT 15, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 16, var0, .egg_picked_pal_48
+    BRANCH_ON_SPECIAL_BIT 17, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 18, var0, .egg_picked_pal_46
+    BRANCH_ON_SPECIAL_BIT 19, var0, .egg_picked_pal_45
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13E6BC:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 10, var0, .branch_13EAFC
-    BRANCH_ON_SPECIAL_BIT 11, var0, .branch_13EB20
-    BRANCH_ON_SPECIAL_BIT 12, var0, .branch_13EB44
-    BRANCH_ON_SPECIAL_BIT 13, var0, .branch_13EB68
-    BRANCH_ON_SPECIAL_BIT 14, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_13EAD8
-    BRANCH_ON_SPECIAL_BIT 16, var0, .branch_13EB68
-    BRANCH_ON_SPECIAL_BIT 17, var0, .branch_13EB44
-    BRANCH_ON_SPECIAL_BIT 18, var0, .branch_13EB8C
-    BRANCH_ON_SPECIAL_BIT 19, var0, .branch_13EAD8
-    EXECUTE_SUBROUTINE .executor_37_13E404
+.egg_basket_18:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 10, var0, .egg_picked_pal_44
+    BRANCH_ON_SPECIAL_BIT 11, var0, .egg_picked_pal_45
+    BRANCH_ON_SPECIAL_BIT 12, var0, .egg_picked_pal_46
+    BRANCH_ON_SPECIAL_BIT 13, var0, .egg_picked_pal_47
+    BRANCH_ON_SPECIAL_BIT 14, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 15, var0, .egg_picked_pal_42
+    BRANCH_ON_SPECIAL_BIT 16, var0, .egg_picked_pal_47
+    BRANCH_ON_SPECIAL_BIT 17, var0, .egg_picked_pal_46
+    BRANCH_ON_SPECIAL_BIT 18, var0, .egg_picked_pal_48
+    BRANCH_ON_SPECIAL_BIT 19, var0, .egg_picked_pal_42
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13E744:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 10, var0, .branch_13EB20
-    BRANCH_ON_SPECIAL_BIT 11, var0, .branch_13EB44
-    BRANCH_ON_SPECIAL_BIT 12, var0, .branch_13EB68
-    BRANCH_ON_SPECIAL_BIT 13, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 14, var0, .branch_13EB8C
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_13EAFC
-    BRANCH_ON_SPECIAL_BIT 16, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 17, var0, .branch_13EAD8
-    BRANCH_ON_SPECIAL_BIT 18, var0, .branch_13EB68
-    BRANCH_ON_SPECIAL_BIT 19, var0, .branch_13EAFC
-    EXECUTE_SUBROUTINE .executor_37_13E404
+.egg_basket_19:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 10, var0, .egg_picked_pal_45
+    BRANCH_ON_SPECIAL_BIT 11, var0, .egg_picked_pal_46
+    BRANCH_ON_SPECIAL_BIT 12, var0, .egg_picked_pal_47
+    BRANCH_ON_SPECIAL_BIT 13, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 14, var0, .egg_picked_pal_48
+    BRANCH_ON_SPECIAL_BIT 15, var0, .egg_picked_pal_44
+    BRANCH_ON_SPECIAL_BIT 16, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 17, var0, .egg_picked_pal_42
+    BRANCH_ON_SPECIAL_BIT 18, var0, .egg_picked_pal_47
+    BRANCH_ON_SPECIAL_BIT 19, var0, .egg_picked_pal_44
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13E7CC:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 10, var0, .branch_13EB44
-    BRANCH_ON_SPECIAL_BIT 11, var0, .branch_13EB68
-    BRANCH_ON_SPECIAL_BIT 12, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 13, var0, .branch_13EB8C
-    BRANCH_ON_SPECIAL_BIT 14, var0, .branch_13EAD8
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 16, var0, .branch_13EB44
-    BRANCH_ON_SPECIAL_BIT 17, var0, .branch_13EB20
-    BRANCH_ON_SPECIAL_BIT 18, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 19, var0, .branch_13EA74
-    EXECUTE_SUBROUTINE .executor_37_13E404
+.egg_basket_20:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 10, var0, .egg_picked_pal_46
+    BRANCH_ON_SPECIAL_BIT 11, var0, .egg_picked_pal_47
+    BRANCH_ON_SPECIAL_BIT 12, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 13, var0, .egg_picked_pal_48
+    BRANCH_ON_SPECIAL_BIT 14, var0, .egg_picked_pal_42
+    BRANCH_ON_SPECIAL_BIT 15, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 16, var0, .egg_picked_pal_46
+    BRANCH_ON_SPECIAL_BIT 17, var0, .egg_picked_pal_45
+    BRANCH_ON_SPECIAL_BIT 18, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 19, var0, .egg_wrong_color_message
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13E854:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 10, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 11, var0, .branch_13EB8C
-    BRANCH_ON_SPECIAL_BIT 12, var0, .branch_13EB8C
-    BRANCH_ON_SPECIAL_BIT 13, var0, .branch_13EAD8
-    BRANCH_ON_SPECIAL_BIT 14, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_13EB20
-    BRANCH_ON_SPECIAL_BIT 16, var0, .branch_13EB20
-    BRANCH_ON_SPECIAL_BIT 17, var0, .branch_13EAFC
-    BRANCH_ON_SPECIAL_BIT 18, var0, .branch_13EAD8
-    BRANCH_ON_SPECIAL_BIT 19, var0, .branch_13EA74
-    EXECUTE_SUBROUTINE .executor_37_13E404
+.egg_basket_21:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 10, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 11, var0, .egg_picked_pal_48
+    BRANCH_ON_SPECIAL_BIT 12, var0, .egg_picked_pal_48
+    BRANCH_ON_SPECIAL_BIT 13, var0, .egg_picked_pal_42
+    BRANCH_ON_SPECIAL_BIT 14, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 15, var0, .egg_picked_pal_45
+    BRANCH_ON_SPECIAL_BIT 16, var0, .egg_picked_pal_45
+    BRANCH_ON_SPECIAL_BIT 17, var0, .egg_picked_pal_44
+    BRANCH_ON_SPECIAL_BIT 18, var0, .egg_picked_pal_42
+    BRANCH_ON_SPECIAL_BIT 19, var0, .egg_wrong_color_message
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13E8DC:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 10, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 11, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 12, var0, .branch_13EAD8
-    BRANCH_ON_SPECIAL_BIT 13, var0, .branch_13EAFC
-    BRANCH_ON_SPECIAL_BIT 14, var0, .branch_13EAFC
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_13EB44
-    BRANCH_ON_SPECIAL_BIT 16, var0, .branch_13EAFC
-    BRANCH_ON_SPECIAL_BIT 17, var0, .branch_13EB68
-    BRANCH_ON_SPECIAL_BIT 18, var0, .branch_13EB20
-    BRANCH_ON_SPECIAL_BIT 19, var0, .branch_13EB44
-    EXECUTE_SUBROUTINE .executor_37_13E404
+.egg_basket_22:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 10, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 11, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 12, var0, .egg_picked_pal_42
+    BRANCH_ON_SPECIAL_BIT 13, var0, .egg_picked_pal_44
+    BRANCH_ON_SPECIAL_BIT 14, var0, .egg_picked_pal_44
+    BRANCH_ON_SPECIAL_BIT 15, var0, .egg_picked_pal_46
+    BRANCH_ON_SPECIAL_BIT 16, var0, .egg_picked_pal_44
+    BRANCH_ON_SPECIAL_BIT 17, var0, .egg_picked_pal_47
+    BRANCH_ON_SPECIAL_BIT 18, var0, .egg_picked_pal_45
+    BRANCH_ON_SPECIAL_BIT 19, var0, .egg_picked_pal_46
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13E964:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 10, var0, .branch_13EB8C
-    BRANCH_ON_SPECIAL_BIT 11, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 12, var0, .branch_13EAFC
-    BRANCH_ON_SPECIAL_BIT 13, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 14, var0, .branch_13EB20
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_13EB68
-    BRANCH_ON_SPECIAL_BIT 16, var0, .branch_13EAD8
-    BRANCH_ON_SPECIAL_BIT 17, var0, .branch_13EB8C
-    BRANCH_ON_SPECIAL_BIT 18, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 19, var0, .branch_13EB68
-    EXECUTE_SUBROUTINE .executor_37_13E404
+.egg_basket_23:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 10, var0, .egg_picked_pal_48
+    BRANCH_ON_SPECIAL_BIT 11, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 12, var0, .egg_picked_pal_44
+    BRANCH_ON_SPECIAL_BIT 13, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 14, var0, .egg_picked_pal_45
+    BRANCH_ON_SPECIAL_BIT 15, var0, .egg_picked_pal_47
+    BRANCH_ON_SPECIAL_BIT 16, var0, .egg_picked_pal_42
+    BRANCH_ON_SPECIAL_BIT 17, var0, .egg_picked_pal_48
+    BRANCH_ON_SPECIAL_BIT 18, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 19, var0, .egg_picked_pal_47
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13E9EC:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 10, var0, .branch_13EB68
-    BRANCH_ON_SPECIAL_BIT 11, var0, .branch_13EAD8
-    BRANCH_ON_SPECIAL_BIT 12, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 13, var0, .branch_13EB20
-    BRANCH_ON_SPECIAL_BIT 14, var0, .branch_13EB44
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_13EB8C
-    BRANCH_ON_SPECIAL_BIT 16, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 17, var0, .branch_13EA74
-    BRANCH_ON_SPECIAL_BIT 18, var0, .branch_13EAFC
-    BRANCH_ON_SPECIAL_BIT 19, var0, .branch_13EB8C
-    EXECUTE_SUBROUTINE .executor_37_13E404
+.egg_basket_24:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 10, var0, .egg_picked_pal_47
+    BRANCH_ON_SPECIAL_BIT 11, var0, .egg_picked_pal_42
+    BRANCH_ON_SPECIAL_BIT 12, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 13, var0, .egg_picked_pal_45
+    BRANCH_ON_SPECIAL_BIT 14, var0, .egg_picked_pal_46
+    BRANCH_ON_SPECIAL_BIT 15, var0, .egg_picked_pal_48
+    BRANCH_ON_SPECIAL_BIT 16, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 17, var0, .egg_wrong_color_message
+    BRANCH_ON_SPECIAL_BIT 18, var0, .egg_picked_pal_44
+    BRANCH_ON_SPECIAL_BIT 19, var0, .egg_picked_pal_48
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13EA74:
+.egg_wrong_color_message:
     PAUSE_ALL_CHILD_EXECUTORS
     PAUSE_ENTITIES
     SET_SPECIAL_BIT 9, var0
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 352
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 50
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 50
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     TOGGLE_PAUSE_ALL_CHILDREN
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .executor_37_13E404
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13EAD8:
+.egg_picked_pal_42:
     SET_SPECIAL_BIT 13, dailyEventBits
-    EXECUTE_SUBROUTINE .sub_13D97C
+    EXECUTE_SUBROUTINE .reset_correct_color_bits
     SET_SPECIAL_BIT 20, var0
     DEACTIVATE_EXECUTOR 33
-    SPAWN_EXECUTOR 33, .executor_33_13EBE8
-    EXECUTE_SUBROUTINE .executor_37_13E404
+    SPAWN_EXECUTOR 33, .executor_33_held_egg_pal_42
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13EAFC:
+.egg_picked_pal_44:
     SET_SPECIAL_BIT 13, dailyEventBits
-    EXECUTE_SUBROUTINE .sub_13D97C
+    EXECUTE_SUBROUTINE .reset_correct_color_bits
     SET_SPECIAL_BIT 21, var0
     DEACTIVATE_EXECUTOR 33
-    SPAWN_EXECUTOR 33, .executor_33_13EBF4
-    EXECUTE_SUBROUTINE .executor_37_13E404
+    SPAWN_EXECUTOR 33, .executor_33_held_egg_pal_44
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13EB20:
+.egg_picked_pal_45:
     SET_SPECIAL_BIT 13, dailyEventBits
-    EXECUTE_SUBROUTINE .sub_13D97C
+    EXECUTE_SUBROUTINE .reset_correct_color_bits
     SET_SPECIAL_BIT 22, var0
     DEACTIVATE_EXECUTOR 33
-    SPAWN_EXECUTOR 33, .executor_33_13EC00
-    EXECUTE_SUBROUTINE .executor_37_13E404
+    SPAWN_EXECUTOR 33, .executor_33_held_egg_pal_45
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13EB44:
+.egg_picked_pal_46:
     SET_SPECIAL_BIT 13, dailyEventBits
-    EXECUTE_SUBROUTINE .sub_13D97C
+    EXECUTE_SUBROUTINE .reset_correct_color_bits
     SET_SPECIAL_BIT 23, var0
     DEACTIVATE_EXECUTOR 33
-    SPAWN_EXECUTOR 33, .executor_33_13EC0C
-    EXECUTE_SUBROUTINE .executor_37_13E404
+    SPAWN_EXECUTOR 33, .executor_33_held_egg_pal_46
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13EB68:
+.egg_picked_pal_47:
     SET_SPECIAL_BIT 13, dailyEventBits
-    EXECUTE_SUBROUTINE .sub_13D97C
+    EXECUTE_SUBROUTINE .reset_correct_color_bits
     SET_SPECIAL_BIT 24, var0
     DEACTIVATE_EXECUTOR 33
-    SPAWN_EXECUTOR 33, .executor_33_13EC18
-    EXECUTE_SUBROUTINE .executor_37_13E404
+    SPAWN_EXECUTOR 33, .executor_33_held_egg_pal_47
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.branch_13EB8C:
+.egg_picked_pal_48:
     SET_SPECIAL_BIT 13, dailyEventBits
-    EXECUTE_SUBROUTINE .sub_13D97C
+    EXECUTE_SUBROUTINE .reset_correct_color_bits
     SET_SPECIAL_BIT 25, var0
     DEACTIVATE_EXECUTOR 33
-    SPAWN_EXECUTOR 33, .executor_33_13EC24
-    EXECUTE_SUBROUTINE .executor_37_13E404
+    SPAWN_EXECUTOR 33, .executor_33_held_egg_pal_48
+    EXECUTE_SUBROUTINE .executor_37_egg_dispatch
 
-.sub_13EBB0:
-    SETUP_ENTITY 23, 93, 1
+.setup_held_egg:
+    SETUP_ENTITY 23, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 23, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
@@ -1122,844 +1123,844 @@
     SET_ENTITY_ANIMATION 19
     RETURN_FROM_SUBROUTINE
 
-.executor_33_13EBE8:
-    EXECUTE_SUBROUTINE .sub_13EBB0
+.executor_33_held_egg_pal_42:
+    EXECUTE_SUBROUTINE .setup_held_egg
     SET_ENTITY_PALETTE 42
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_33_13EBF4:
-    EXECUTE_SUBROUTINE .sub_13EBB0
+.executor_33_held_egg_pal_44:
+    EXECUTE_SUBROUTINE .setup_held_egg
     SET_ENTITY_PALETTE 44
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_33_13EC00:
-    EXECUTE_SUBROUTINE .sub_13EBB0
+.executor_33_held_egg_pal_45:
+    EXECUTE_SUBROUTINE .setup_held_egg
     SET_ENTITY_PALETTE 45
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_33_13EC0C:
-    EXECUTE_SUBROUTINE .sub_13EBB0
+.executor_33_held_egg_pal_46:
+    EXECUTE_SUBROUTINE .setup_held_egg
     SET_ENTITY_PALETTE 46
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_33_13EC18:
-    EXECUTE_SUBROUTINE .sub_13EBB0
+.executor_33_held_egg_pal_47:
+    EXECUTE_SUBROUTINE .setup_held_egg
     SET_ENTITY_PALETTE 47
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_33_13EC24:
-    EXECUTE_SUBROUTINE .sub_13EBB0
+.executor_33_held_egg_pal_48:
+    EXECUTE_SUBROUTINE .setup_held_egg
     SET_ENTITY_PALETTE 48
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_32_13EC30:
+.executor_32_mayor_holds_egg:
     UPDATE_U16_VALUE 1, 999, D_80180710
-    SETUP_ENTITY 22, 93, 1
+    SETUP_ENTITY 22, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 22, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 1, 0, 14, 20, 255
     SET_RGBA 255, 255, 255, 255
     SET_ENTITY_ANIMATION 19
 
-.sub_13EC70:
-    BRANCH_ON_RANDOM 0, 16, .branch_13ECA4
-    BRANCH_ON_RANDOM 17, 32, .branch_13ECB4
-    BRANCH_ON_RANDOM 33, 48, .branch_13ECC4
-    BRANCH_ON_RANDOM 49, 64, .branch_13ECD4
-    BRANCH_ON_RANDOM 65, 80, .branch_13ECE4
-    BRANCH_ON_RANDOM 81, 96, .branch_13ECF4
-    EXECUTE_SUBROUTINE .sub_13EC70
+.pick_mayor_egg_color:
+    BRANCH_ON_RANDOM 0, 16, .mayor_egg_pal_42
+    BRANCH_ON_RANDOM 17, 32, .mayor_egg_pal_44
+    BRANCH_ON_RANDOM 33, 48, .mayor_egg_pal_45
+    BRANCH_ON_RANDOM 49, 64, .mayor_egg_pal_46
+    BRANCH_ON_RANDOM 65, 80, .mayor_egg_pal_47
+    BRANCH_ON_RANDOM 81, 96, .mayor_egg_pal_48
+    EXECUTE_SUBROUTINE .pick_mayor_egg_color
 
-.branch_13ECA4:
+.mayor_egg_pal_42:
     SET_ENTITY_PALETTE 42
     SET_SPECIAL_BIT 1, var0
-    EXECUTE_SUBROUTINE .sub_13ED04
+    EXECUTE_SUBROUTINE .pick_hurry_variant
 
-.branch_13ECB4:
+.mayor_egg_pal_44:
     SET_ENTITY_PALETTE 44
     SET_SPECIAL_BIT 2, var0
-    EXECUTE_SUBROUTINE .sub_13ED04
+    EXECUTE_SUBROUTINE .pick_hurry_variant
 
-.branch_13ECC4:
+.mayor_egg_pal_45:
     SET_ENTITY_PALETTE 45
     SET_SPECIAL_BIT 3, var0
-    EXECUTE_SUBROUTINE .sub_13ED04
+    EXECUTE_SUBROUTINE .pick_hurry_variant
 
-.branch_13ECD4:
+.mayor_egg_pal_46:
     SET_ENTITY_PALETTE 46
     SET_SPECIAL_BIT 4, var0
-    EXECUTE_SUBROUTINE .sub_13ED04
+    EXECUTE_SUBROUTINE .pick_hurry_variant
 
-.branch_13ECE4:
+.mayor_egg_pal_47:
     SET_ENTITY_PALETTE 47
     SET_SPECIAL_BIT 5, var0
-    EXECUTE_SUBROUTINE .sub_13ED04
+    EXECUTE_SUBROUTINE .pick_hurry_variant
 
-.branch_13ECF4:
+.mayor_egg_pal_48:
     SET_ENTITY_PALETTE 48
     SET_SPECIAL_BIT 6, var0
-    EXECUTE_SUBROUTINE .sub_13ED04
+    EXECUTE_SUBROUTINE .pick_hurry_variant
 
-.sub_13ED04:
-    TOGGLE_SPECIAL_BIT 0, var0
-    BRANCH_ON_RANDOM 0, 10, .branch_13ED58
-    BRANCH_ON_RANDOM 11, 20, .branch_13ED64
-    BRANCH_ON_RANDOM 21, 30, .branch_13ED70
-    BRANCH_ON_RANDOM 31, 40, .branch_13ED7C
-    BRANCH_ON_RANDOM 41, 50, .branch_13ED88
-    BRANCH_ON_RANDOM 51, 60, .branch_13ED94
-    BRANCH_ON_RANDOM 61, 70, .branch_13EDA0
-    BRANCH_ON_RANDOM 71, 80, .branch_13EDAC
-    BRANCH_ON_RANDOM 81, 90, .branch_13EDB8
-    EXECUTE_SUBROUTINE .sub_13EDC4
+.pick_hurry_variant:
+    CLEAR_SPECIAL_BIT 0, var0
+    BRANCH_ON_RANDOM 0, 10, .hurry_variant_0
+    BRANCH_ON_RANDOM 11, 20, .hurry_variant_1
+    BRANCH_ON_RANDOM 21, 30, .hurry_variant_2
+    BRANCH_ON_RANDOM 31, 40, .hurry_variant_3
+    BRANCH_ON_RANDOM 41, 50, .hurry_variant_4
+    BRANCH_ON_RANDOM 51, 60, .hurry_variant_5
+    BRANCH_ON_RANDOM 61, 70, .hurry_variant_6
+    BRANCH_ON_RANDOM 71, 80, .hurry_variant_7
+    BRANCH_ON_RANDOM 81, 90, .hurry_variant_8
+    EXECUTE_SUBROUTINE .hurry_variant_9
 
-.branch_13ED58:
+.hurry_variant_0:
     SET_SPECIAL_BIT 10, var0
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13ED64:
+.hurry_variant_1:
     SET_SPECIAL_BIT 11, var0
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13ED70:
+.hurry_variant_2:
     SET_SPECIAL_BIT 12, var0
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13ED7C:
+.hurry_variant_3:
     SET_SPECIAL_BIT 13, var0
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13ED88:
+.hurry_variant_4:
     SET_SPECIAL_BIT 14, var0
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13ED94:
+.hurry_variant_5:
     SET_SPECIAL_BIT 15, var0
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13EDA0:
+.hurry_variant_6:
     SET_SPECIAL_BIT 16, var0
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13EDAC:
+.hurry_variant_7:
     SET_SPECIAL_BIT 17, var0
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13EDB8:
+.hurry_variant_8:
     SET_SPECIAL_BIT 18, var0
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_13EDC4:
+.hurry_variant_9:
     SET_SPECIAL_BIT 19, var0
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_13EDD0:
+.executor_41_timer:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_SPECIAL_BIT 9, var0, .executor_41_13EDD0
-    BRANCH_U16_VAR_WITHIN_RANGE 900, 9999, D_80189824, .branch_13EE00
+    BRANCH_ON_SPECIAL_BIT 9, var0, .executor_41_timer
+    BRANCH_U16_VAR_WITHIN_RANGE 900, 9999, D_80189824, .timer_expired
     UPDATE_U16_VALUE 1, 9999, D_80189824
-    EXECUTE_SUBROUTINE .executor_41_13EDD0
+    EXECUTE_SUBROUTINE .executor_41_timer
 
-.branch_13EE00:
+.timer_expired:
     SET_SPECIAL_BIT 31, var0
     PAUSE_ENTITIES
     SET_SPECIAL_BIT 9, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 6
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 6
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    TOGGLE_SPECIAL_BIT 31, var0
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 999, D_80180710, .branch_13EE68
+    CLEAR_SPECIAL_BIT 31, var0
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 999, D_80180710, .timer_restart_round
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     SET_WAIT_FRAMES 32
     TOGGLE_PAUSE_ENTITIES
     DEACTIVATE_EXECUTOR 32
     DEACTIVATE_EXECUTOR 33
-    SPAWN_EXECUTOR 0, .executor_0_13EE74
-    TOGGLE_SPECIAL_BIT 9, var0
+    SPAWN_EXECUTOR 0, .executor_0_post_hunt_player_warp
+    CLEAR_SPECIAL_BIT 9, var0
     DEACTIVATE_SELF
 
-.branch_13EE68:
-    SPAWN_EXECUTOR 40, .executor_40_13DAB0
+.timer_restart_round:
+    SPAWN_EXECUTOR 40, .executor_40_post_hunt_fade
     DEACTIVATE_SELF
 
-.executor_0_13EE74:
+.executor_0_post_hunt_player_warp:
     TOGGLE_PAUSE_ENTITIES
     SET_U16_VALUE 0, playerIdleCounter
-    EXECUTE_SUBROUTINE .sub_13D52C
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -384, 0, 32
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_13EEAC
+    SET_OTHER_EXECUTOR_PTR 1, .executor_1_mayor_final
     DEACTIVATE_SELF
 
-.executor_1_13EEAC:
+.executor_1_mayor_final:
     PAUSE_ENTITIES
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 52
-    EXECUTE_SUBROUTINE .sub_13D8FC
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 52
+    EXECUTE_SUBROUTINE .mayor_correct_continue
 
-.executor_0_13EEBC:
+.executor_0_post_hunt_reset_player:
     SET_U16_VALUE 0, playerIdleCounter
-    EXECUTE_SUBROUTINE .sub_13D52C
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -384, 0, 32
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
-    EXECUTE_SUBROUTINE .sub_13D504
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_13EEE4:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13EF20
-    ENTITY_RUN 24, 4, 4
-    ENTITY_RUN 16, 6, 4
-    ENTITY_RUN 56, 4, 4
-    ENTITY_RUN 80, 6, 4
+.executor_2_kent_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .kent_hunt_on_interact
+    ENTITY_RUN 24, NORTHEAST, 4
+    ENTITY_RUN 16, SOUTHEAST, 4
+    ENTITY_RUN 56, NORTHEAST, 4
+    ENTITY_RUN 80, SOUTHEAST, 4
     SET_ENTITY_WANDER 2, 48, 48
 
-.branch_13EF14:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13EF20
-    EXECUTE_SUBROUTINE .sub_13D504
+.kent_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .kent_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13EF20:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13EF14
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 1, var1, .branch_13EF50
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x14
+.kent_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .kent_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 1, var1, .kent_hunt_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_KENT]
     SET_SPECIAL_BIT 1, var1
 
-.branch_13EF50:
+.kent_hunt_talk:
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 17
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 17
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13EF14
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .kent_hunt_wait
 
-.executor_3_13EF80:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13EFB4
-    ENTITY_WALK 32, 6, 2
-    ENTITY_WALK 32, 4, 2
-    ENTITY_WALK 32, 6, 2
+.executor_3_stu_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .stu_hunt_on_interact
+    ENTITY_WALK 32, SOUTHEAST, 2
+    ENTITY_WALK 32, NORTHEAST, 2
+    ENTITY_WALK 32, SOUTHEAST, 2
     SET_ENTITY_WANDER 2, 48, 48
 
-.branch_13EFA8:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13EFB4
-    EXECUTE_SUBROUTINE .sub_13D504
+.stu_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .stu_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13EFB4:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13EFA8
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 2, var1, .branch_13EFE4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x15
+.stu_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .stu_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 2, var1, .stu_hunt_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_STU]
     SET_SPECIAL_BIT 2, var1
 
-.branch_13EFE4:
+.stu_hunt_talk:
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 20
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 20
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13EFA8
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .stu_hunt_wait
 
-.executor_4_13F014:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13F040
-    ENTITY_WALK 112, 6, 2
-    ENTITY_WALK 16, 4, 2
+.executor_4_rick_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .rick_hunt_on_interact
+    ENTITY_WALK 112, SOUTHEAST, 2
+    ENTITY_WALK 16, NORTHEAST, 2
     SET_ENTITY_WANDER 2, 48, 48
 
-.branch_13F034:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F040
-    EXECUTE_SUBROUTINE .sub_13D504
+.rick_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .rick_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F040:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13F034
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 3, var1, .branch_13F070
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x18
+.rick_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .rick_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 3, var1, .rick_hunt_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_RICK]
     SET_SPECIAL_BIT 3, var1
 
-.branch_13F070:
+.rick_hunt_talk:
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 22
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 22
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13F034
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .rick_hunt_wait
 
-.executor_5_13F0A0:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13F0CC
-    ENTITY_WALK 48, 0, 2
-    ENTITY_WALK 80, 6, 2
+.executor_5_maria_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .maria_hunt_on_interact
+    ENTITY_WALK 48, SOUTHWEST, 2
+    ENTITY_WALK 80, SOUTHEAST, 2
     SET_ENTITY_WANDER 2, 48, 48
 
-.branch_13F0C0:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F0CC
-    EXECUTE_SUBROUTINE .sub_13D504
+.maria_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .maria_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F0CC:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13F0C0
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 4, var1, .branch_13F0FC
+.maria_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .maria_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 4, var1, .maria_hunt_talk
     UPDATE_U8_VALUE 2, 255, npcAffection[MARIA]
     SET_SPECIAL_BIT 4, var1
 
-.branch_13F0FC:
+.maria_hunt_talk:
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 28
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 28
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13F0C0
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .maria_hunt_wait
 
-.executor_6_13F12C:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13F158
-    ENTITY_WALK 48, 0, 2
-    ENTITY_WALK 16, 2, 2
+.executor_6_ann_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .ann_hunt_on_interact
+    ENTITY_WALK 48, SOUTHWEST, 2
+    ENTITY_WALK 16, NORTHWEST, 2
     SET_ENTITY_WANDER 2, 48, 48
 
-.branch_13F14C:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F158
-    EXECUTE_SUBROUTINE .sub_13D504
+.ann_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F158:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13F14C
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 5, var1, .branch_13F188
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x3
+.ann_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .ann_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 5, var1, .ann_hunt_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[ANN]
     SET_SPECIAL_BIT 5, var1
 
-.branch_13F188:
+.ann_hunt_talk:
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 31
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 31
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13F14C
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .ann_hunt_wait
 
-.executor_7_13F1B8:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13F1DC
-    ENTITY_WALK 112, 4, 2
+.executor_7_harris_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .harris_hunt_on_interact
+    ENTITY_WALK 112, NORTHEAST, 2
     SET_ENTITY_WANDER 2, 48, 48
 
-.branch_13F1D0:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F1DC
-    EXECUTE_SUBROUTINE .sub_13D504
+.harris_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .harris_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F1DC:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13F1D0
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 6, var1, .branch_13F20C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x6
+.harris_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .harris_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 6, var1, .harris_hunt_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[HARRIS]
     SET_SPECIAL_BIT 6, var1
 
-.branch_13F20C:
+.harris_hunt_talk:
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 33
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 33
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13F1D0
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .harris_hunt_wait
 
-.executor_8_13F23C:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13F270
-    ENTITY_WALK 80, 6, 2
-    ENTITY_WALK 16, 4, 2
-    ENTITY_WALK 112, 6, 2
+.executor_8_jeff_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .jeff_hunt_on_interact
+    ENTITY_WALK 80, SOUTHEAST, 2
+    ENTITY_WALK 16, NORTHEAST, 2
+    ENTITY_WALK 112, SOUTHEAST, 2
     SET_ENTITY_WANDER 2, 48, 48
 
-.branch_13F264:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F270
-    EXECUTE_SUBROUTINE .sub_13D504
+.jeff_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .jeff_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F270:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13F264
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 7, var1, .branch_13F2A0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x8
+.jeff_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .jeff_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 7, var1, .jeff_hunt_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[JEFF]
     SET_SPECIAL_BIT 7, var1
 
-.branch_13F2A0:
+.jeff_hunt_talk:
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 39
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 39
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13F264
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .jeff_hunt_wait
 
-.executor_9_13F2D0:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13F2FC
-    ENTITY_WALK 80, 6, 2
-    ENTITY_WALK 72, 0, 2
+.executor_9_karen_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .karen_hunt_on_interact
+    ENTITY_WALK 80, SOUTHEAST, 2
+    ENTITY_WALK 72, SOUTHWEST, 2
     SET_ENTITY_WANDER 2, 48, 48
 
-.branch_13F2F0:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F2FC
-    EXECUTE_SUBROUTINE .sub_13D504
+.karen_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F2FC:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13F2F0
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 8, var1, .branch_13F32C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x4
+.karen_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .karen_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 8, var1, .karen_hunt_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAREN]
     SET_SPECIAL_BIT 8, var1
 
-.branch_13F32C:
+.karen_hunt_talk:
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 42
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 42
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13F2F0
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .karen_hunt_wait
 
-.executor_10_13F35C:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13F388
-    ENTITY_WALK 32, 0, 2
-    ENTITY_WALK 288, 6, 2
+.executor_10_kai_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .kai_hunt_on_interact
+    ENTITY_WALK 32, SOUTHWEST, 2
+    ENTITY_WALK 288, SOUTHEAST, 2
     SET_ENTITY_WANDER 2, 48, 48
 
-.branch_13F37C:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F388
-    EXECUTE_SUBROUTINE .sub_13D504
+.kai_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .kai_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F388:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13F37C
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 9, var1, .branch_13F3B8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xA
+.kai_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .kai_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 9, var1, .kai_hunt_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAI]
     SET_SPECIAL_BIT 9, var1
 
-.branch_13F3B8:
+.kai_hunt_talk:
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 44
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 44
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13F37C
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .kai_hunt_wait
 
-.executor_11_13F3E8:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13F414
-    ENTITY_WALK 96, 6, 2
-    ENTITY_WALK 64, 4, 2
+.executor_11_cliff_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .cliff_hunt_on_interact
+    ENTITY_WALK 96, SOUTHEAST, 2
+    ENTITY_WALK 64, NORTHEAST, 2
     SET_ENTITY_WANDER 2, 48, 48
 
-.branch_13F408:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F414
-    EXECUTE_SUBROUTINE .sub_13D504
+.cliff_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cliff_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F414:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13F408
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 10, var1, .branch_13F444
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x9
+.cliff_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .cliff_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 10, var1, .cliff_hunt_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[CLIFF]
     SET_SPECIAL_BIT 10, var1
 
-.branch_13F444:
+.cliff_hunt_talk:
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 48
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 48
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13F408
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .cliff_hunt_wait
 
-.executor_12_13F474:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_13F498
-    ENTITY_WALK 128, 6, 2
+.executor_12_gray_or_doug_hunt:
+    SET_CALLBACK_ROUTINE 65535, 32768, .gray_or_doug_hunt_on_interact
+    ENTITY_WALK 128, SOUTHEAST, 2
     SET_ENTITY_WANDER 2, 64, 64
 
-.branch_13F48C:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F498
-    EXECUTE_SUBROUTINE .sub_13D504
+.gray_or_doug_hunt_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .gray_or_doug_hunt_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F498:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_13F48C
-    EXECUTE_SUBROUTINE .sub_13D50C
+.gray_or_doug_hunt_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .gray_or_doug_hunt_wait
+    EXECUTE_SUBROUTINE .setup_message_box
     SET_SPECIAL_BIT 9, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 100, npcAffection + 0x7, .branch_13F504
-    BRANCH_ON_SPECIAL_BIT 12, var1, .branch_13F4E4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x7
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 100, npcAffection[GRAY], .doug_hunt_talk
+    BRANCH_ON_SPECIAL_BIT 12, var1, .gray_hunt_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[GRAY]
     SET_SPECIAL_BIT 12, var1
 
-.branch_13F4E4:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 35
+.gray_hunt_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 35
 
-.sub_13F4EC:
+.gray_or_doug_hunt_close:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 9, var0
-    EXECUTE_SUBROUTINE .branch_13F48C
+    CLEAR_SPECIAL_BIT 9, var0
+    EXECUTE_SUBROUTINE .gray_or_doug_hunt_wait
 
-.branch_13F504:
-    BRANCH_ON_SPECIAL_BIT 11, var1, .branch_13F524
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x10
+.doug_hunt_talk:
+    BRANCH_ON_SPECIAL_BIT 11, var1, .doug_hunt_message
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_DOUG]
     SET_SPECIAL_BIT 11, var1
 
-.branch_13F524:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 24
-    EXECUTE_SUBROUTINE .sub_13F4EC
+.doug_hunt_message:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 24
+    EXECUTE_SUBROUTINE .gray_or_doug_hunt_close
 
-.executor_2_13F530:
-    EXECUTE_SUBROUTINE .sub_13DE04
+.executor_2_kent_post:
+    EXECUTE_SUBROUTINE .setup_kent
     SET_COORDINATES -352, 0, -64
 
-.sub_13F53C:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F54C
-    EXECUTE_SUBROUTINE .sub_13D504
+.kent_post_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .kent_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F54C:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 1, var1, .branch_13F570
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x14
+.kent_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 1, var1, .kent_post_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_KENT]
     SET_SPECIAL_BIT 1, var1
 
-.branch_13F570:
+.kent_post_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 18
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 18
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F53C
+    EXECUTE_SUBROUTINE .kent_post_wait
 
-.executor_3_13F590:
-    EXECUTE_SUBROUTINE .sub_13DE84
+.executor_3_stu_post:
+    EXECUTE_SUBROUTINE .setup_stu
     SET_COORDINATES -320, 0, -32
 
-.sub_13F59C:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F5AC
-    EXECUTE_SUBROUTINE .sub_13D504
+.stu_post_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .stu_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F5AC:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 2, var1, .branch_13F5D0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x15
+.stu_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 2, var1, .stu_post_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_STU]
     SET_SPECIAL_BIT 2, var1
 
-.branch_13F5D0:
+.stu_post_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 21
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 21
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F59C
+    EXECUTE_SUBROUTINE .stu_post_wait
 
-.executor_4_13F5F0:
-    EXECUTE_SUBROUTINE .sub_13DF04
+.executor_4_rick_post:
+    EXECUTE_SUBROUTINE .setup_rick
     SET_COORDINATES -96, 0, 0
 
-.sub_13F5FC:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F60C
-    EXECUTE_SUBROUTINE .sub_13D504
+.rick_post_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .rick_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F60C:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 3, var1, .branch_13F630
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x18
+.rick_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 3, var1, .rick_post_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_RICK]
     SET_SPECIAL_BIT 3, var1
 
-.branch_13F630:
+.rick_post_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 23
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 23
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F5FC
+    EXECUTE_SUBROUTINE .rick_post_wait
 
-.executor_5_13F650:
-    EXECUTE_SUBROUTINE .sub_13DF84
+.executor_5_maria_post:
+    EXECUTE_SUBROUTINE .setup_maria
     SET_COORDINATES -380, 0, 160
 
-.sub_13F65C:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F66C
-    EXECUTE_SUBROUTINE .sub_13D504
+.maria_post_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .maria_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F66C:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 4, var1, .branch_13F690
+.maria_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 4, var1, .maria_post_talk
     UPDATE_U8_VALUE 2, 255, npcAffection[MARIA]
     SET_SPECIAL_BIT 4, var1
 
-.branch_13F690:
+.maria_post_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 29
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 29
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F65C
+    EXECUTE_SUBROUTINE .maria_post_wait
 
-.executor_6_13F6B0:
-    EXECUTE_SUBROUTINE .sub_13E004
+.executor_6_ann_post:
+    EXECUTE_SUBROUTINE .setup_ann
     SET_COORDINATES -412, 0, 192
 
-.sub_13F6BC:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F6CC
-    EXECUTE_SUBROUTINE .sub_13D504
+.ann_post_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F6CC:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 5, var1, .branch_13F6F0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x3
+.ann_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 5, var1, .ann_post_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[ANN]
     SET_SPECIAL_BIT 5, var1
 
-.branch_13F6F0:
+.ann_post_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 32
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 32
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F6BC
+    EXECUTE_SUBROUTINE .ann_post_wait
 
-.executor_7_13F710:
-    EXECUTE_SUBROUTINE .sub_13E084
+.executor_7_harris_post:
+    EXECUTE_SUBROUTINE .setup_harris
     SET_COORDINATES -256, 0, -96
 
-.sub_13F71C:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F72C
-    EXECUTE_SUBROUTINE .sub_13D504
+.harris_post_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .harris_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F72C:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 6, var1, .branch_13F750
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x6
+.harris_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 6, var1, .harris_post_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[HARRIS]
     SET_SPECIAL_BIT 6, var1
 
-.branch_13F750:
+.harris_post_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT 26, var0, .branch_13F77C
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 34
+    BRANCH_ON_SPECIAL_BIT 26, var0, .harris_post_talk_winner
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 34
 
-.sub_13F76C:
+.harris_post_talk_close:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F71C
+    EXECUTE_SUBROUTINE .harris_post_wait
 
-.branch_13F77C:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 54
-    EXECUTE_SUBROUTINE .sub_13F76C
+.harris_post_talk_winner:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 54
+    EXECUTE_SUBROUTINE .harris_post_talk_close
 
-.executor_8_13F788:
-    EXECUTE_SUBROUTINE .sub_13E104
+.executor_8_jeff_post:
+    EXECUTE_SUBROUTINE .setup_jeff
     SET_COORDINATES -184, 0, 0
 
-.sub_13F794:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F7A4
-    EXECUTE_SUBROUTINE .sub_13D504
+.jeff_post_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .jeff_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F7A4:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 7, var1, .branch_13F7C8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x8
+.jeff_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 7, var1, .jeff_post_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[JEFF]
     SET_SPECIAL_BIT 7, var1
 
-.branch_13F7C8:
+.jeff_post_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT 27, var0, .branch_13F7F4
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 40
+    BRANCH_ON_SPECIAL_BIT 27, var0, .jeff_post_talk_winner
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 40
 
-.sub_13F7E4:
+.jeff_post_talk_close:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F794
+    EXECUTE_SUBROUTINE .jeff_post_wait
 
-.branch_13F7F4:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 39
-    EXECUTE_SUBROUTINE .sub_13F7E4
+.jeff_post_talk_winner:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 39
+    EXECUTE_SUBROUTINE .jeff_post_talk_close
 
-.executor_9_13F800:
-    EXECUTE_SUBROUTINE .sub_13E184
+.executor_9_karen_post:
+    EXECUTE_SUBROUTINE .setup_karen
     SET_COORDINATES -160, 0, 32
 
-.sub_13F80C:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F81C
-    EXECUTE_SUBROUTINE .sub_13D504
+.karen_post_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F81C:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 8, var1, .branch_13F840
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x4
+.karen_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 8, var1, .karen_post_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAREN]
     SET_SPECIAL_BIT 8, var1
 
-.branch_13F840:
+.karen_post_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 43
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 43
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F80C
+    EXECUTE_SUBROUTINE .karen_post_wait
 
-.executor_10_13F860:
-    EXECUTE_SUBROUTINE .sub_13E204
+.executor_10_kai_post:
+    EXECUTE_SUBROUTINE .setup_kai
     SET_COORDINATES -384, 0, 256
 
-.sub_13F86C:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F87C
-    EXECUTE_SUBROUTINE .sub_13D504
+.kai_post_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .kai_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F87C:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 9, var1, .branch_13F8A0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xA
+.kai_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 9, var1, .kai_post_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAI]
     SET_SPECIAL_BIT 9, var1
 
-.branch_13F8A0:
+.kai_post_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT 28, var0, .branch_13F8CC
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 46
+    BRANCH_ON_SPECIAL_BIT 28, var0, .kai_post_talk_winner
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 46
 
-.sub_13F8BC:
+.kai_post_talk_close:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F86C
+    EXECUTE_SUBROUTINE .kai_post_wait
 
-.branch_13F8CC:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 45
-    EXECUTE_SUBROUTINE .sub_13F8BC
+.kai_post_talk_winner:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 45
+    EXECUTE_SUBROUTINE .kai_post_talk_close
 
-.executor_11_13F8D8:
-    EXECUTE_SUBROUTINE .sub_13E284
+.executor_11_cliff_post:
+    EXECUTE_SUBROUTINE .setup_cliff
     SET_COORDINATES -168, 0, -56
 
-.sub_13F8E4:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F8F4
-    EXECUTE_SUBROUTINE .sub_13D504
+.cliff_post_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cliff_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F8F4:
-    EXECUTE_SUBROUTINE .sub_13D50C
-    BRANCH_ON_SPECIAL_BIT 10, var1, .branch_13F918
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x9
+.cliff_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 10, var1, .cliff_post_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[CLIFF]
     SET_SPECIAL_BIT 10, var1
 
-.branch_13F918:
+.cliff_post_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT 29, var0, .branch_13F944
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 49
+    BRANCH_ON_SPECIAL_BIT 29, var0, .cliff_post_talk_winner
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 49
 
-.sub_13F934:
+.cliff_post_talk_close:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F8E4
+    EXECUTE_SUBROUTINE .cliff_post_wait
 
-.branch_13F944:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 48
-    EXECUTE_SUBROUTINE .sub_13F934
+.cliff_post_talk_winner:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 48
+    EXECUTE_SUBROUTINE .cliff_post_talk_close
 
-.branch_13F950:
-    EXECUTE_SUBROUTINE .sub_13E304
-    EXECUTE_SUBROUTINE .sub_13F968
+.executor_12_doug_post_entry:
+    EXECUTE_SUBROUTINE .setup_doug
+    EXECUTE_SUBROUTINE .doug_post_body
 
-.executor_12_13F958:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 100, npcAffection + 0x7, .branch_13F950
-    EXECUTE_SUBROUTINE .sub_13E384
+.executor_12_gray_or_doug_post:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 100, npcAffection[GRAY], .executor_12_doug_post_entry
+    EXECUTE_SUBROUTINE .setup_gray
 
-.sub_13F968:
+.doug_post_body:
     SET_COORDINATES -320, 0, 32
 
-.sub_13F970:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13F980
-    EXECUTE_SUBROUTINE .sub_13D504
+.gray_or_doug_post_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .gray_or_doug_post_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13F980:
-    EXECUTE_SUBROUTINE .sub_13D50C
+.gray_or_doug_post_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 100, npcAffection + 0x7, .branch_13F9DC
-    BRANCH_ON_SPECIAL_BIT 12, var1, .branch_13F9B8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x7
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 100, npcAffection[GRAY], .doug_post_talk
+    BRANCH_ON_SPECIAL_BIT 12, var1, .gray_post_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[GRAY]
     SET_SPECIAL_BIT 12, var1
 
-.branch_13F9B8:
-    BRANCH_ON_SPECIAL_BIT 30, var0, .branch_13FA14
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 36
+.gray_post_talk:
+    BRANCH_ON_SPECIAL_BIT 30, var0, .gray_post_talk_winner
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 36
 
-.sub_13F9CC:
+.gray_or_doug_post_talk_close:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13F970
+    EXECUTE_SUBROUTINE .gray_or_doug_post_wait
 
-.branch_13F9DC:
-    BRANCH_ON_SPECIAL_BIT 11, var1, .branch_13F9FC
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x10
+.doug_post_talk:
+    BRANCH_ON_SPECIAL_BIT 11, var1, .doug_post_talk_message
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_DOUG]
     SET_SPECIAL_BIT 11, var1
 
-.branch_13F9FC:
-    BRANCH_ON_SPECIAL_BIT 30, var0, .branch_13FA20
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 26
-    EXECUTE_SUBROUTINE .sub_13F9CC
+.doug_post_talk_message:
+    BRANCH_ON_SPECIAL_BIT 30, var0, .doug_post_talk_winner
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 26
+    EXECUTE_SUBROUTINE .gray_or_doug_post_talk_close
 
-.branch_13FA14:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 37
-    EXECUTE_SUBROUTINE .sub_13F9CC
+.gray_post_talk_winner:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 37
+    EXECUTE_SUBROUTINE .gray_or_doug_post_talk_close
 
-.branch_13FA20:
-    INIT_MESSAGE_BOX_TYPE1 0, 65, 25
-    EXECUTE_SUBROUTINE .sub_13F9CC
+.doug_post_talk_winner:
+    INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 25
+    EXECUTE_SUBROUTINE .gray_or_doug_post_talk_close
 
-.executor_37_13FA2C:
+.executor_37_post_hunt_exit:
     SET_WAIT_FRAMES 1
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, cutsceneLevelInteractionIndex, .branch_13FA64
-    BRANCH_U8_VAR_WITHIN_RANGE 9, 10, cutsceneLevelInteractionIndex, .branch_13FA64
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, cutsceneLevelInteractionIndex, .branch_13FA64
-    BRANCH_U8_VAR_WITHIN_RANGE 11, 11, cutsceneLevelInteractionIndex, .branch_13FA64
-    EXECUTE_SUBROUTINE .executor_37_13FA2C
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, cutsceneLevelInteractionIndex, .post_hunt_fade_out
+    BRANCH_U8_VAR_WITHIN_RANGE 9, 10, cutsceneLevelInteractionIndex, .post_hunt_fade_out
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, cutsceneLevelInteractionIndex, .post_hunt_fade_out
+    BRANCH_U8_VAR_WITHIN_RANGE 11, 11, cutsceneLevelInteractionIndex, .post_hunt_fade_out
+    EXECUTE_SUBROUTINE .executor_37_post_hunt_exit
 
-.branch_13FA64:
+.post_hunt_fade_out:
     PAUSE_ENTITIES
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 8
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -1978,4 +1979,4 @@
     DEACTIVATE_EXECUTOR 10
     DEACTIVATE_EXECUTOR 11
     DEACTIVATE_EXECUTOR 12
-    EXECUTE_SUBROUTINE .sub_13D4EC
+    EXECUTE_SUBROUTINE .exit

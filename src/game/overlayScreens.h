@@ -133,8 +133,8 @@ extern void updateDogRaceContext(void);
 extern void initializeRaceContext(void); 
 extern void addRecipe(u16 bitIndex);
 extern u32 checkRecipe(u16 bitIndex);
-extern bool func_800CE714(bool);
-extern bool func_800CE828(bool); 
+extern bool checkAlreadyHaveHorseRacePrize(bool);
+extern bool checkAlreadyHaveDogRacePrize(bool); 
 
 // main loop callback functions
 extern void loadEstimateScreenCallback();

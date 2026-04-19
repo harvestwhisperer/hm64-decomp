@@ -812,7 +812,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
             setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 6, -160.0f, 32.0f, -112.0f, 0xFF, 0xFF, 0, 0);
 
-            if (checkLifeEventBit(0x46)) {
+            if (checkLifeEventBit(HAVE_TURTLE_FIGURINE)) {
 
                 dmaSprite(MAP_OBJECT_2, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_2, 1.0f, 1.0f, 1.0f);
@@ -823,7 +823,7 @@ void loadLevelMapObjects(u16 levelIndex) {
                 
             }
             
-            if (checkLifeEventBit(0x47)) {
+            if (checkLifeEventBit(HAVE_INVINCILE_KATORI)) {
 
                 dmaSprite(MAP_OBJECT_3, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_3_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_3_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_3, 1.0f, 1.0f, 1.0f);
@@ -834,8 +834,7 @@ void loadLevelMapObjects(u16 levelIndex) {
                 
             }
             
-            // clock
-            if (checkLifeEventBit(0x58)) {
+            if (checkLifeEventBit(HAVE_STUFFED_HORSE)) {
                 
                 dmaSprite(MAP_OBJECT_4, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_4_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_4_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
@@ -852,7 +851,7 @@ void loadLevelMapObjects(u16 levelIndex) {
 
             }
             
-            if (checkLifeEventBit(0x5A)) {
+            if (checkLifeEventBit(HAVE_CUSHION)) {
                 
                 dmaSprite(MAP_OBJECT_5, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_5_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_5_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_5, 1.0f, 1.0f, 1.0f);
@@ -863,8 +862,7 @@ void loadLevelMapObjects(u16 levelIndex) {
                 
             }
             
-            // vase
-            if (checkLifeEventBit(8)) {
+            if (checkLifeEventBit(HAVE_VASE)) {
                 
                 dmaSprite(MAP_OBJECT_6, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_6_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_6_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_6, 1.0f, 1.0f, 1.0f);
@@ -879,8 +877,7 @@ void loadLevelMapObjects(u16 levelIndex) {
 
         case KITCHEN:
             
-            // table cloth
-            if (checkLifeEventBit(0x5C)) {
+            if (checkLifeEventBit(HAVE_MUG)) {
                 
                 dmaSprite(MAP_OBJECT_1, &_homeItemsTextureSegmentRomStart, &_homeItemsTextureSegmentRomEnd, &_homeItemsAssetsIndexSegmentRomStart, &_homeItemsAssetsIndexSegmentRomEnd, &_homeItemsSpritesheetIndexSegmentRomStart, &_homeItemsSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_1, (u8*)MAP_OBJECT_HOME_ITEM_SLOT_2_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_A_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_A_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_A_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_A_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 1.0f, 1.0f, 1.0f);
@@ -922,7 +919,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteColor(MAP_OBJECT_3, 255, 255, 255, 255);
             setMapObject(MAIN_MAP_INDEX, 2, MAP_OBJECT_3, 1, 160.0f, 32.0f, -160.0f, 0, 0xFE, 0, 0);
 
-            if (!checkLifeEventBit(0x45)) {
+            if (!checkLifeEventBit(SMASHED_MOUNTAIN_BOULDER)) {
 
                 dmaSprite(MAP_OBJECT_4, &_boulderTextureSegmentRomStart, &_boulderTextureSegmentRomEnd, &_boulderAssetsIndexSegmentRomStart, &_boulderAssetsIndexSegmentRomEnd, &_boulderSpritesheetIndexSegmentRomStart, &_boulderSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_SLOT_4_TEXTURE_1, (u8*)MAP_OBJECT_SLOT_4_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_C_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_C_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_C_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_C_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_4, 1.0f, 1.0f, 1.0f);
@@ -961,7 +958,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             
             setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0, 192.0f, 0, 416.0f, 0, 0xFE, 0, 0);
         
-            if (checkLifeEventBit(0x48)) {
+            if (checkLifeEventBit(BRIDGE_COMPLETED)) {
 
                 if (gSeason != WINTER) {
                     dmaSprite(MAP_OBJECT_3, &_bridgeTextureSegmentRomStart, &_bridgeTextureSegmentRomEnd, &_bridgeAssetsIndexSegmentRomStart, &_bridgeAssetsIndexSegmentRomEnd, &_bridgeSpritesheetIndexSegmentRomStart, &_bridgeSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_BRIDGE_SLOT_3_TEXTURE_1, (u8*)MAP_OBJECT_BRIDGE_SLOT_3_TEXTURE_2, (u16*)MAP_OBJECT_METADATA_C_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_METADATA_C_ANIM_METADATA, (u32*)MAP_OBJECT_METADATA_C_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_METADATA_C_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
@@ -1018,7 +1015,7 @@ void loadLevelMapObjects(u16 levelIndex) {
 
         case TOP_OF_MOUNTAIN_1:
             
-            if (checkLifeEventBit(0x48)) {
+            if (checkLifeEventBit(BRIDGE_COMPLETED)) {
 
                 dmaSprite(MAP_OBJECT_1, &_mountainPathTilesTextureSegmentRomStart, &_mountainPathTilesTextureSegmentRomEnd, &_mountainPathTilesAssetsIndexSegmentRomStart, &_mountainPathTilesAssetsIndexSegmentRomEnd, &_mountainPathTilesSpritesheetIndexSegmentRomStart, &_mountainPathTilesSpritesheetIndexSegmentRomEnd, (u8*)MAP_OBJECT_MOUNTAIN_PATH_TEXTURE_1, (u8*)MAP_OBJECT_MOUNTAIN_PATH_TEXTURE_2, (u16*)MAP_OBJECT_MOUNTAIN_PATH_PALETTE, (AnimationFrameMetadata*)MAP_OBJECT_MOUNTAIN_PATH_ANIM_METADATA, (u32*)MAP_OBJECT_MOUNTAIN_PATH_SPRITESHEET_INDEX, (u32*)MAP_OBJECT_MOUNTAIN_PATH_TEXTURE_TO_PALETTE_LOOKUP, 1, 1);
                 setSpriteScale(MAP_OBJECT_1, 6.0f, 1.0f, 6.0f);
@@ -1163,7 +1160,7 @@ void loadLevelMapObjects(u16 levelIndex) {
                 }
 
                 // sowing festival
-                if ((0x351 < gCutsceneIndex && gCutsceneIndex < 0x355) || gCutsceneIndex == FLOWER_FESTIVAL) {
+                if ((849 < gCutsceneIndex && gCutsceneIndex < 853) || gCutsceneIndex == FLOWER_FESTIVAL) {
                     
                    for (j = 4; j < 12; j++) {
                     
@@ -1189,14 +1186,14 @@ void loadLevelMapObjects(u16 levelIndex) {
 
             }
             
-            if (checkShopItemShouldBeDisplayed(0x35)) {
-                loadShopItemSprite(0x35);
+            if (checkShopItemShouldBeDisplayed(FLOWER_FESTIVAL_PINK_CAT_MINT_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_FESTIVAL_PINK_CAT_MINT_SEEDS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x36)) {
-                loadShopItemSprite(0x36);
+            if (checkShopItemShouldBeDisplayed(FLOWER_FESTIVAL_EMPTY_BOTTLE_ITEM)) {
+                loadShopItemSprite(FLOWER_FESTIVAL_EMPTY_BOTTLE_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x37)) {
-                loadShopItemSprite(0x37);
+            if (checkShopItemShouldBeDisplayed(FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM)) {
+                loadShopItemSprite(FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM);
             }
             
             break;
@@ -1225,78 +1222,78 @@ void loadLevelMapObjects(u16 levelIndex) {
         
         case FLOWER_SHOP:
             
-            if (checkShopItemShouldBeDisplayed(0)) {
-                loadShopItemSprite(0);
+            if (checkShopItemShouldBeDisplayed(FLOWER_SHOP_TURNIP_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_SHOP_TURNIP_SEEDS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(1)) {
-                loadShopItemSprite(1);
+            if (checkShopItemShouldBeDisplayed(FLOWER_SHOP_POTATO_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_SHOP_POTATO_SEEDS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(2)) {
-                loadShopItemSprite(2);
+            if (checkShopItemShouldBeDisplayed(FLOWER_SHOP_CABBAGE_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_SHOP_CABBAGE_SEEDS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(4)) {
-                loadShopItemSprite(4);
+            if (checkShopItemShouldBeDisplayed(FLOWER_SHOP_TOMATO_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_SHOP_TOMATO_SEEDS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(5)) {
-                loadShopItemSprite(5);
+            if (checkShopItemShouldBeDisplayed(FLOWER_SHOP_CORN_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_SHOP_CORN_SEEDS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(6)) {
-                loadShopItemSprite(6);
+            if (checkShopItemShouldBeDisplayed(FLOWER_SHOP_EGGPLANT_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_SHOP_EGGPLANT_SEEDS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(7)) {
-                loadShopItemSprite(7);
+            if (checkShopItemShouldBeDisplayed(FLOWER_SHOP_STRAWBERRY_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_SHOP_STRAWBERRY_SEEDS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(3)) {
-                loadShopItemSprite(3);
+            if (checkShopItemShouldBeDisplayed(FLOWER_SHOP_GRASS_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_SHOP_GRASS_SEEDS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(8)) {
-                loadShopItemSprite(8);
+            if (checkShopItemShouldBeDisplayed(FLOWER_SHOP_MOON_DROP_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_SHOP_MOON_DROP_SEEDS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0xA)) {
-                loadShopItemSprite(0xA);
+            if (checkShopItemShouldBeDisplayed(FLOWER_SHOP_BLUE_MIST_SEEDS_ITEM)) {
+                loadShopItemSprite(FLOWER_SHOP_BLUE_MIST_SEEDS_ITEM);
             }
 
             break;
 
        case RANCH_STORE:
            
-            if (checkShopItemShouldBeDisplayed(0x1A)) {
-                loadShopItemSprite(0x1A);
+            if (checkShopItemShouldBeDisplayed(RANCH_STORE_CHICKEN_FEED_ITEM)) {
+                loadShopItemSprite(RANCH_STORE_CHICKEN_FEED_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x1D)) {
-                loadShopItemSprite(0x1D);
+            if (checkShopItemShouldBeDisplayed(RANCH_STORE_FODDER_ITEM)) {
+                loadShopItemSprite(RANCH_STORE_FODDER_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x1B)) {
-                loadShopItemSprite(0x1B);
+            if (checkShopItemShouldBeDisplayed(RANCH_STORE_MIRACLE_POTION_ITEM)) {
+                loadShopItemSprite(RANCH_STORE_MIRACLE_POTION_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x1C)) {
-                loadShopItemSprite(0x1C);
+            if (checkShopItemShouldBeDisplayed(RANCH_STORE_COW_MEDICINE_ITEM)) {
+                loadShopItemSprite(RANCH_STORE_COW_MEDICINE_ITEM);
                 return;
             }
             break;
         
         case RICK_STORE:
             
-            if (checkShopItemShouldBeDisplayed(0x15)) {
-                loadShopItemSprite(0x15);
+            if (checkShopItemShouldBeDisplayed(RICK_STORE_CLIPPERS_ITEM)) {
+                loadShopItemSprite(RICK_STORE_CLIPPERS_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x14)) {
-                loadShopItemSprite(0x14);
+            if (checkShopItemShouldBeDisplayed(RICK_STORE_BRUSH_ITEM)) {
+                loadShopItemSprite(RICK_STORE_BRUSH_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x13)) {
-                loadShopItemSprite(0x13);
+            if (checkShopItemShouldBeDisplayed(RICK_STORE_MILKER_ITEM)) {
+                loadShopItemSprite(RICK_STORE_MILKER_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x16)) {
-                loadShopItemSprite(0x16);
+            if (checkShopItemShouldBeDisplayed(RICK_STORE_BLUE_FEATHER_ITEM)) {
+                loadShopItemSprite(RICK_STORE_BLUE_FEATHER_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x18)) {
-                loadShopItemSprite(0x18);
+            if (checkShopItemShouldBeDisplayed(RICK_STORE_CABINET_ITEM)) {
+                loadShopItemSprite(RICK_STORE_CABINET_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x19)) {
-                loadShopItemSprite(0x19);
+            if (checkShopItemShouldBeDisplayed(RICK_STORE_ICE_CREAM_MAKER_ITEM)) {
+                loadShopItemSprite(RICK_STORE_ICE_CREAM_MAKER_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x17)) {
-                loadShopItemSprite(0x17);
+            if (checkShopItemShouldBeDisplayed(RICK_STORE_RUG_ITEM)) {
+                loadShopItemSprite(RICK_STORE_RUG_ITEM);
                 setStaticMapAddition(0, 0);
             }
             
@@ -1304,21 +1301,21 @@ void loadLevelMapObjects(u16 levelIndex) {
 
         case SOUVENIR_SHOP:
             
-            if (checkShopItemShouldBeDisplayed(0x25)) {
-                loadShopItemSprite(0x25);
+            if (checkShopItemShouldBeDisplayed(SOUVENIR_SHOP_OCARINA_ITEM)) {
+                loadShopItemSprite(SOUVENIR_SHOP_OCARINA_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x26)) {
-                loadShopItemSprite(0x26);
+            if (checkShopItemShouldBeDisplayed(SOUVENIR_SHOP_VASE_EARLY_ITEM)) {
+                loadShopItemSprite(SOUVENIR_SHOP_VASE_EARLY_ITEM);
             }
-            if (checkShopItemShouldBeDisplayed(0x27)) {
-                loadShopItemSprite(0x27);
+            if (checkShopItemShouldBeDisplayed(SOUVENIR_SHOP_BLUE_VASE_ITEM)) {
+                loadShopItemSprite(SOUVENIR_SHOP_BLUE_VASE_ITEM);
             }
             
             break;
 
         case COOP:
 
-            for (i = 0; i < 6; i++) {
+            for (i = 0; i < TOTAL_CHICKEN_STALLS; i++) {
                 if (gChickens[i].flags & CHICKEN_FED) {
                     setChickenFeedSprite(i);
                 }
@@ -1349,7 +1346,7 @@ void loadLevelMapObjects(u16 levelIndex) {
             setSpriteBaseRGBA(MAP_OBJECT_1, 255, 255, 255, 255);
             setSpriteColor(MAP_OBJECT_1, 255, 255, 255, 255);
             
-            if (checkSpecialDialogueBit(331)) {
+            if (checkSpecialDialogueBit(GRAPEVINE_SPIRIT_AWAKENED_DIALOGUE)) {
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 1, -416.0f, 144.0f, -352.0f, 0xFF, 0, 0, 0);
             } else {
                 setMapObject(MAIN_MAP_INDEX, 0, MAP_OBJECT_1, 0, -416.0f, 144.0f, -352.0f, 0xFF, 0, 0, 0);
@@ -1724,13 +1721,14 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
             if (checkLifeEventBit(HAVE_STAIRS)) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 0x1A);
             }
-            if (checkLifeEventBit(0x57)) {
+            if (checkLifeEventBit(HAVE_NEW_DOG_HOUSE)) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 0x1C);
             }
-            if (checkLifeEventBit(0x56)) {
+            if (checkLifeEventBit(HAVE_STABLE)) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 0x1D);
             }
-            if (checkLifeEventBit(0xD7)) {
+            if (checkLifeEventBit(GREENHOUSE_DESTROYED)) {
+                // patch of dirt where greenhouse was
                 setStaticMapAddition(MAIN_MAP_INDEX, 0x1E);
             }
             break;
@@ -1746,10 +1744,10 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
             }
             if (checkLifeEventBit(HAVE_CABINET)) {
                  setStaticMapAddition(MAIN_MAP_INDEX, 1);
-            } else if (checkLifeEventBit(0x58)) {
-                setStaticMapAddition(MAIN_MAP_INDEX, 0xC);
+            } else if (checkLifeEventBit(HAVE_STUFFED_HORSE)) {
+                setStaticMapAddition(MAIN_MAP_INDEX, 12);
             }
-            if (checkLifeEventBit(0x3F)) {
+            if (checkLifeEventBit(PAINTING_FROM_MARIA)) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 9);
             }
             if (checkLifeEventBit(HAVE_TABLECLOTH)) {
@@ -1761,15 +1759,15 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
             } else if (checkLifeEventBit(HAVE_RUG)) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 5);
             }
-            if (checkLifeEventBit(0x47)) {
-                setStaticMapAddition(MAIN_MAP_INDEX, 0xB);
+            if (checkLifeEventBit(HAVE_INVINCILE_KATORI)) {
+                setStaticMapAddition(MAIN_MAP_INDEX, 11);
             }
             break;
         case KITCHEN:
             if (checkLifeEventBit(HAVE_BATHROOM)) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 1);
             }
-            if (checkLifeEventBit(0x5D)) {
+            if (checkLifeEventBit(HAVE_LUNCHEON_MAT)) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 3);
             }
             break;
@@ -1779,7 +1777,7 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
             }
             break;
         case MOUNTAIN_1:
-            if (checkLifeEventBit(0x45) && gSeason == WINTER) {
+            if (checkLifeEventBit(SMASHED_MOUNTAIN_BOULDER) && gSeason == WINTER) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 0);
             }
             break;
@@ -1825,16 +1823,16 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 2);
             }
             if (gSeason == SPRING) {
-                if (gDayOfMonth == 17 && (7 < gHour && gHour < 18) && gCutsceneFlags & 1) {
+                if (gDayOfMonth == 17 && (7 < gHour && gHour < 18) && gCutsceneFlags & CUTSCENE_ACTIVE) {
                     setStaticMapAddition(MAIN_MAP_INDEX, 3);
                     setStaticMapAddition(MAIN_MAP_INDEX, 5);
                 }
             }
-            if (gSeason == AUTUMN && gDayOfMonth == 28 && (7 < gHour && gHour < 18) && gCutsceneFlags & 1) {
+            if (gSeason == AUTUMN && gDayOfMonth == 28 && (7 < gHour && gHour < 18) && gCutsceneFlags & CUTSCENE_ACTIVE) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 1);
                 setStaticMapAddition(MAIN_MAP_INDEX, 6);
             }
-            if (gSeason == WINTER && gDayOfMonth == 19 && (7 < gHour && gHour < 18) && gCutsceneFlags & 1) {
+            if (gSeason == WINTER && gDayOfMonth == 19 && (7 < gHour && gHour < 18) && gCutsceneFlags & CUTSCENE_ACTIVE) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 1);
             }
             break;
@@ -1931,7 +1929,7 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
             
             if (gDayOfWeek != TUESDAY) {
                 
-                if (!checkLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION) && !checkDailyEventBit(9)) {
+                if (!checkLifeEventBit(HOUSE_EXTENSION_CONSTRUCTION) && !checkDailyEventBit(CARPENTER_ESTIMATE)) {
 
                     if (gYear != 1 || ((gSeason != AUTUMN || !(20 <= gDayOfMonth && gDayOfMonth < 28)) && (gSeason != WINTER || !(8 < gDayOfMonth && gDayOfMonth < 17)))) {
                         if (7 < gHour && gHour < 18) {
@@ -1951,7 +1949,7 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
         case ELLI_ROOM:
 
             if (!checkLifeEventBit(MARRIED) || gWife != ELLI) {
-                if (!checkLifeEventBit(0x1C)) {
+                if (!checkLifeEventBit(ELLI_JEFF_MARRIED)) {
                     index = 0xE1;
                     break;
                 }
@@ -2063,7 +2061,7 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
             
             if (!checkLifeEventBit(MARRIED) || gWife != 0) {
               
-                if (!checkLifeEventBit(0x1A)) {
+                if (!checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
                     index = 0xDF;
                     break;
                 }

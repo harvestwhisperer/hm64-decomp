@@ -6,6 +6,10 @@
 #include "game/game.h"
 
 #define CUTSCENE_ACTIVE 1
+#define CUTSCENE_SUPPRESS_NPC_SETUP                  0x02
+#define CUTSCENE_SUPPRESS_FARM_ANIMALS               0x04
+#define CUTSCENE_REINIT_ANIMALS_ON_COMPLETION        0x08
+#define CUTSCENE_DEACTIVATE_ANIMALS_ON_COMPLETION    0x10
 
 typedef union {
     u16 displayOddsBottom[3];
@@ -29,7 +33,7 @@ typedef struct {
 
 extern u16 setLevelCutscene(u16 mapIndex);
 extern u16 handleTimedDailyCutscenes(u8);  
-extern u16 handleEndOfDayCutscenes();        
+extern u16 handleStartOfDayCutscenes();        
 extern u16 setDreamCutscenes();   
 extern void handleCutsceneCompletion();   
 extern void loadCutscene(bool morningVisit);  

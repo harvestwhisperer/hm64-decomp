@@ -129,8 +129,8 @@ bool setDialogueVariable(u16 index, void *value, u8 type, s32 max) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/dialogue", setSpecialDialogueBitsPointer);
 
-bool setSpecialDialogueBitsPointer(u32* arg0) {
-    specialDialogueBitsPointer = arg0;
+bool setSpecialDialogueBitsPointer(u32* dialogueBitsPointer) {
+    specialDialogueBitsPointer = dialogueBitsPointer;
     return 0;
 }
 
@@ -548,9 +548,9 @@ inline void setSpecialDialogueBitFromPointer(u16 bitIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", toggleSpecialDialogueBitFromPointer);
+//INCLUDE_ASM("asm/nonmatchings/system/dialogue", clearSpecialDialogueBitFromPointer);
 
-inline void toggleSpecialDialogueBitFromPointer(u16 bitIndex) {
+inline void clearSpecialDialogueBitFromPointer(u16 bitIndex) {
 
     u32 temp = bitIndex;
     specialDialogueBitsPointer[temp >> 5] &= ~(1 << (temp & 0x1F));
@@ -662,7 +662,7 @@ void parseDialogueBytecode(u16 index) {
             
             break;
 
-        case DIALOGUE_OPCODE_TOGGLE_SPECIAL_DIALOGUE_BIT:
+        case DIALOGUE_OPCODE_CLEAR_SPECIAL_DIALOGUE_BIT:
                     
             byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
             byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
@@ -1085,8 +1085,8 @@ void updateCurrentDialogue(u16 index) {
                 dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 break;
 
-            case DIALOGUE_OPCODE_TOGGLE_SPECIAL_DIALOGUE_BIT:
-                toggleSpecialDialogueBitFromPointer(dialogues[index].bytecodeExecutor.specialDialogueBit);
+            case DIALOGUE_OPCODE_CLEAR_SPECIAL_DIALOGUE_BIT:
+                clearSpecialDialogueBitFromPointer(dialogues[index].bytecodeExecutor.specialDialogueBit);
                 dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
                 break;
 

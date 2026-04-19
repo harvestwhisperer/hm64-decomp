@@ -14,6 +14,7 @@
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStart.h"
+#include "game/gameStatus.h"
 #include "game/level.h"
 #include "game/npc.h"
 #include "game/player.h"
@@ -306,23 +307,23 @@ void namingScreenCallback(void) {
                     switch (gWife) {
                         case MARIA:
                             gCutsceneIndex = 5;
-                            toggleSpecialDialogueBit(0x37);
+                            clearSpecialDialogueBit(MARIA_PREGNANT_DIALOGUE);
                             break;
                         case POPURI:                            
                             gCutsceneIndex = 12;
-                            toggleSpecialDialogueBit(0x38);
+                            clearSpecialDialogueBit(POPURI_PREGNANT_DIALOGUE);
                             break;
                         case ELLI:                            
                             gCutsceneIndex = 19;
-                            toggleSpecialDialogueBit(0x39);
+                            clearSpecialDialogueBit(ELLI_PREGNANT_DIALOGUE);
                             break;
                         case ANN:                            
                             gCutsceneIndex = 26;
-                            toggleSpecialDialogueBit(0x3A);
+                            clearSpecialDialogueBit(ANN_PREGNANT_DIALOGUE);
                             break;
                         case KAREN:                            
                             gCutsceneIndex = 33;
-                            toggleSpecialDialogueBit(0x3B);
+                            clearSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
                             break;
                         }
 

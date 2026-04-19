@@ -121,8 +121,8 @@ void loadLevel(u8 arg0) {
     gCutsceneIndex = 0;
     gCutsceneFlags = 0;    
     
-    toggleDailyEventBit(0x28);
-    toggleDailyEventBit(0x4B);
+    clearDailyEventBit(DAY_CONSUMING_CUTSCENE);
+    clearDailyEventBit(CUTSCENE_AUDIO_OVERRIDE);
 
     // update misc. game state
     func_8005CDCC();
@@ -136,11 +136,11 @@ void loadLevel(u8 arg0) {
     deactivateAnimalEntities();
     clearAllItemContextSlots();
     
-    if (!checkDailyEventBit(0x2F)) {
-        handleEndOfDayCutscenes();
+    if (!checkDailyEventBit(END_OF_DAY_CUTSCENES_HANDLED)) {
+        handleStartOfDayCutscenes();
     }
 
-    setDailyEventBit(0x2F);
+    setDailyEventBit(END_OF_DAY_CUTSCENES_HANDLED);
     
     mapIndex = getMapForSpawnPoint(gSpawnPointIndex);
     loadMapAtSpawnPoint(gSpawnPointIndex);
@@ -150,7 +150,7 @@ void loadLevel(u8 arg0) {
         switch (gCutsceneIndex) {
 
             case FIREWORKS_FESTIVAL:
-            case SOWING_FESTIVAL_POTION_SHOP_DEALER ... SOWING_FESTIVAL_HARRIS:
+            case SOWING_FESTIVAL_POTION_SHOP_DEALER ... SOWING_FESTIVAL_BACHELOR:
             case HORSE_RACE_SQUARE ... HORSE_RACE_STARTING_ANNOUNCEMENT:
             case FLOWER_FESTIVAL:
             case VEGETABLE_FESTIVAL_SQUARE:
@@ -188,24 +188,24 @@ void loadLevel(u8 arg0) {
         initializeEntityInstances(0);
     }
 
-   if (checkDailyEventBit(0x54)) {
+   if (checkDailyEventBit(DEFAULT_MORNING)) {
 
-        if (checkDailyEventBit(0x53)) {
+        if (checkDailyEventBit(EAT_BREAKFAST)) {
             setPlayerAction(EATING, ANIM_EATING);
-            gPlayer.heldItem = RICE_CAKE;
+            gPlayer.heldItem = RICE_CAKE_HELD_ITEM;
         } else {
             setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
             gPlayer.heldItem = 0;
         }
 
-        if (!(gCutsceneFlags & 1) && getHealthyChickenCount()) {
+        if (!(gCutsceneFlags & CUTSCENE_ACTIVE) && getHealthyChickenCount()) {
             playSfx(63);
         }
 
     }
     
-    toggleDailyEventBit(0x53);
-    toggleDailyEventBit(0x54);
+    clearDailyEventBit(EAT_BREAKFAST);
+    clearDailyEventBit(DEFAULT_MORNING);
     
     setupPlayerEntity(gSpawnPointIndex, arg0);
     
@@ -214,21 +214,23 @@ void loadLevel(u8 arg0) {
 
     if (arg0 != 2) {
 
+        // FIXME
         ptr = &gCutsceneFlags;
         
-        if (!(*ptr & (2 | 4))) {
+        if (!(*ptr & (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS))) {
             
-            if (!checkDailyEventBit(0x4D)) {
+            if (!checkDailyEventBit(FESTIVAL)) {
                 spawnWildAnimals();
             }
 
-            if (!(*ptr & (2 | 4))) {
-                clearTempSpecialDialogueBits();
+            if (!(*ptr & (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS))) {
+                clearNPCAlternateLocationDialogueBits();
                 setupActiveNPCs();
             }
+
         }
 
-        if (!(gCutsceneFlags & 4)) {
+        if (!(gCutsceneFlags & CUTSCENE_SUPPRESS_FARM_ANIMALS)) {
             initializeAnimalEntities();
         }
 
@@ -590,7 +592,7 @@ void startNewDay(void) {
     
     if (gSeason == WINTER && gDayOfMonth == 17) {
         setLifeEventBit(HOT_SPRINGS_COMPLETED);
-        setDailyEventBit(0x38);
+        setDailyEventBit(HOT_SPRINGS_COMPLETED_DAILY);
     }
     
     if (gDayOfMonth == 1) {
@@ -619,14 +621,15 @@ void startNewDay(void) {
             }
         }
 
-        if (gSeason == AUTUMN && gDayOfMonth == 13 && !checkDailyEventBit(0x5D) && gHarvestCoinFinder == PLAYER) {
+        if (gSeason == AUTUMN && gDayOfMonth == 13 && !checkDailyEventBit(HARVEST_FESTIVAL_DAILY) && gHarvestCoinFinder == PLAYER) {
             gHarvestCoinFinder = 3;
         }
+
     }
     
     if (checkLifeEventBit(ELLEN_DIED)) {
         if (gElliGrievingCounter >= 31) {
-            toggleSpecialDialogueBit(ELLI_FINISH_GRIEVING);
+            clearSpecialDialogueBit(ELLEN_DIED_DIALOGUE);
         } else {
             gElliGrievingCounter++;
         }
@@ -650,19 +653,17 @@ void startNewDay(void) {
 
     }
     
-    // dog/horse race
-    if (checkLifeEventBit(0x51) && checkDailyEventBit(0x41)) {
-        toggleLifeEventBit(0x51);
+    if (checkLifeEventBit(ENTERED_HORSE_RACE) && checkDailyEventBit(HORSE_RACE)) {
+        clearLifeEventBit(ENTERED_HORSE_RACE);
     }
     
-    if (checkLifeEventBit(0x52) && checkDailyEventBit(0x42)) {
-        toggleLifeEventBit(0x52);
+    if (checkLifeEventBit(ENTERED_DOG_RACE) && checkDailyEventBit(DOG_RACE)) {
+        clearLifeEventBit(ENTERED_DOG_RACE);
     }
     
-    // Mrs. Mana's cow
-    if (checkLifeEventBit(0x93)) {
-        toggleLifeEventBit(0x93);
-        setLifeEventBit(0x94);
+    if (checkLifeEventBit(MRS_MANA_COWS_ACCEPTED)) {
+        clearLifeEventBit(MRS_MANA_COWS_ACCEPTED);
+        setLifeEventBit(MRS_MANA_COWS_EVENT);
         setMrsManaCowsNames();
     }
     
@@ -673,17 +674,14 @@ void startNewDay(void) {
     npcAffection[HARVEST_SPRITE_3] = npcAffection[HARVEST_SPRITE_1];
     
     if (gWeather == RAIN) {
-        // update animal status based on rain
         updateFarmStatusRain();
     }
     
     if (gWeather == SNOW) {
-        // update animal status based on snow
         updateFarmStatusSnow();
     }
     
     if (gWeather == TYPHOON) {
-        // update animal status based on typhoon
         updateFarmStatusTyphoon();
     }
     
@@ -692,9 +690,8 @@ void startNewDay(void) {
     incrementVarietyShowCounter();
     setForecast();
     
-    if (checkLifeEventBit(0x7E)) {
-        // dead code
-        checkLifeEventBit(0x7F);
+    // dead code
+    if (checkLifeEventBit(KAREN_KEIFU_FAIRIES_INVITE) && checkLifeEventBit(FIRST_VINEYARD_WINE_GIFT)) {
     }
     
     updateFieldObjectsOvernight();
@@ -709,8 +706,7 @@ void startNewDay(void) {
         handleWifeMorningHelp();
     }
     
-    if (checkDailyEventBit(7)) {
-        // save game
+    if (checkDailyEventBit(WROTE_IN_DIARY)) {
         saveGameToSram(gCurrentGameIndex);
     }
     

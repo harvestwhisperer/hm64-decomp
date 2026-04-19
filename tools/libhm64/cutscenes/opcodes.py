@@ -34,7 +34,7 @@ class CutsceneOpcode(IntEnum):
     BRANCH_U16_VAR_WITHIN_RANGE = 21
     BRANCH_U32_VAR_WITHIN_RANGE = 22
     SET_SPECIAL_BIT = 23
-    TOGGLE_SPECIAL_BIT = 24
+    CLEAR_SPECIAL_BIT = 24
     BRANCH_ON_SPECIAL_BIT = 25
     SET_ENTITY_OR_MAP_ROTATION = 26
     SETUP_MAP_ASSET = 27
@@ -148,7 +148,7 @@ COMMAND_SPECS: Dict[int, Tuple[str, int, List[Tuple[str, str]]]] = {
     21: ("CMD_BRANCH_U16_VAR_WITHIN_RANGE", 16, [('min', 'u16'), ('max', 'u16'), ('pad', 'pad16'), ('address', 'addr32'), ('target', 'rel16'), ('pad2', 'pad16')]),
     22: ("CMD_BRANCH_U32_VAR_WITHIN_RANGE", 20, [('pad', 'pad16'), ('min', 'u32'), ('max', 'u32'), ('address', 'addr32'), ('target', 'rel16'), ('pad2', 'pad16')]),
     23: ("CMD_SET_SPECIAL_BIT", 8, [('bit', 'u16'), ('address', 'addr32')]),
-    24: ("CMD_TOGGLE_SPECIAL_BIT", 8, [('bit', 'u16'), ('address', 'addr32')]),
+    24: ("CMD_CLEAR_SPECIAL_BIT", 8, [('bit', 'u16'), ('address', 'addr32')]),
     25: ("CMD_BRANCH_ON_SPECIAL_BIT", 12, [('bit', 'u16'), ('address', 'addr32'), ('target', 'rel16'), ('pad', 'pad16')]),
     26: ("CMD_SET_ASSET_ROTATION", 4, [('direction', 'u8'), ('pad', 'pad8')]),
     27: ("CMD_SETUP_MAP_ASSET", 4, [('mapIndex', 'u16')]),

@@ -1,95 +1,110 @@
 ; ============================================
 ; Bank 25 - Evaluation
 ; ============================================
+; Cutscene indices 1550 - 1553: evaluation/credits sequence.
+;   1550 = EVALUATION (current map, then loads map 0)
+;   1551 = transitions to MOUNTAIN_1_SPAWN_POINT_1
+;   1552 = transitions to HOUSE_SPAWN_POINT_1 (loads map 78)
+;   1553 = credits sequence
 
 #include "entities.h"
+#include "maps.h"
+#include "texts.h"
+#include "dialogues.h"
 
 #define MAIN_MAP_INDEX 0
 
+; lifeEventBits[0] bit indices referenced here.
+#define MARRIED 0
+#define HAVE_BABY 1
+
 .buffer 2
 
-; Local variables
 .local var0, u32, 0
 
 .array npcAffection, u8
 .array lifeEventBits, u32
 
-#define MARRIED 0
-#define HAVE_BABY 1
-
-#define MARIA 0
-
-.entry
+.main:
     SET_SPECIAL_BIT 12, gCutsceneCompletionFlags
     SET_U8_VALUE 12, gHour
     SET_U8_VALUE 0, gMinutes
-    EXECUTE_SUBROUTINE .sub_14B968
+    EXECUTE_SUBROUTINE .setup_message_box_default
     TOGGLE_PAUSE_ENTITIES
-    BRANCH_U16_VAR_WITHIN_RANGE 1550, 1550, gCutsceneIndex, .branch_14BA44
-    BRANCH_U16_VAR_WITHIN_RANGE 1551, 1551, gCutsceneIndex, .branch_14BF80
-    BRANCH_U16_VAR_WITHIN_RANGE 1552, 1552, gCutsceneIndex, .branch_14C32C
-    BRANCH_U16_VAR_WITHIN_RANGE 1553, 1553, gCutsceneIndex, .branch_14C3BC
+    BRANCH_U16_VAR_WITHIN_RANGE 1550, 1550, gCutsceneIndex, .cutscene_1550
+    BRANCH_U16_VAR_WITHIN_RANGE 1551, 1551, gCutsceneIndex, .cutscene_1551
+    BRANCH_U16_VAR_WITHIN_RANGE 1552, 1552, gCutsceneIndex, .cutscene_1552
+    BRANCH_U16_VAR_WITHIN_RANGE 1553, 1553, gCutsceneIndex, .cutscene_1553
 
-.sub_14B954:
+; ============================================================
+; Common helpers
+; ============================================================
+.exit_demo:
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_14B960:
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
  
-.sub_14B968:
+.setup_message_box_default:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_14B988:
+.setup_message_box_alt:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_14B9A8:
+.setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
-.executor_1_14B9C8:
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_14B960
+; ----- Direction-only executor stubs -----
+; Each one sets the active asset rotation, then idles via
+; .wait_loop. Used as SET_OTHER_EXECUTOR_PTR targets to point
+; another executor at a fixed facing.
+.face_northeast:
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_14B9D0:
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_14B960
+.face_northwest:
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_14B9D8:
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+.face_southwest:
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14B9E0:
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_14B960
+.face_southeast:
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14B9E8:
-    SET_ASSET_ROTATION 1
-    EXECUTE_SUBROUTINE .sub_14B960
+.face_west:
+    SET_ASSET_ROTATION WEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14B9F0:
-    SET_ASSET_ROTATION 7
-    EXECUTE_SUBROUTINE .sub_14B960
+.face_south:
+    SET_ASSET_ROTATION SOUTH
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14B9F8:
-    SET_ASSET_ROTATION 3
-    EXECUTE_SUBROUTINE .sub_14B960
+.face_north:
+    SET_ASSET_ROTATION NORTH
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14BA00:
-    SET_ASSET_ROTATION 5
-    EXECUTE_SUBROUTINE .sub_14B960
+.face_east:
+    SET_ASSET_ROTATION EAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_16_14BA08:
-    SETUP_ENTITY 39, 91, 1
+; Held item that tracks the mayor (slot 23); spawned from the
+; low-tier branch of .mayor_evaluation_intro.
+.mayor_held_item:
+    SETUP_ENTITY 39, ENTITY_ASSET_EXPRESSION_BUBBLES, 1
     SET_ENTITY_ANIMATIONS 39, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_RGBA 255, 255, 255, 255
@@ -98,101 +113,109 @@
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
-.branch_14BA44:
+; ============================================================
+; Cutscene 1550 - Evaluation panel on the players current map
+; ============================================================
+; Four villager NPCs (DAD, MAYOR, MIDWIFE, POTION_SHOP_DEALER)
+; surround the player and judge their stats one after another.
+; Each NPC intro routine BRANCHes on a stat to pick a high /
+; mid / fallthrough-low message. After all four finish, the map
+; transitions to map 0 for a second NPC pair (DOUG, SHIPPER).
+.cutscene_1550:
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    BRANCH_U32_VAR_WITHIN_RANGE 0, 1000, gGold, .branch_14C430
+    BRANCH_U32_VAR_WITHIN_RANGE 0, 1000, gGold, .cutscene_1550_gate_check
 
-.branch_14BA64:
+.cutscene_1550_start:
     SET_AUDIO_SEQUENCE 0, _sportsFestival1SegmentRomStart, _sportsFestival1SegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
 
-.sub_14BA78:
-    SPAWN_EXECUTOR 1, .executor_1_14BAEC
-    SPAWN_EXECUTOR 2, .executor_2_14BB00
-    SPAWN_EXECUTOR 3, .executor_3_14BBCC
-    SPAWN_EXECUTOR 4, .executor_4_14BC78
-    SPAWN_EXECUTOR 41, .executor_41_14BAA8
-    EXECUTE_SUBROUTINE .sub_14B9A8
+.cutscene_1550_spawn_npcs:
+    SPAWN_EXECUTOR 1, .cutscene_1550_dad_setup
+    SPAWN_EXECUTOR 2, .cutscene_1550_mayor_setup
+    SPAWN_EXECUTOR 3, .cutscene_1550_midwife_setup
+    SPAWN_EXECUTOR 4, .cutscene_1550_potion_dealer_setup
+    SPAWN_EXECUTOR 41, .cutscene_1550_scene_controller
+    EXECUTE_SUBROUTINE .setup_player
     DEACTIVATE_SELF
 
-.executor_41_14BAA8:
+.cutscene_1550_scene_controller:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES -16, 96, 64
     SET_WAIT_FRAMES 40
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_14BB30
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 2, .mayor_evaluation_intro
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_14BAC8:
-    SETUP_ENTITY 22, 86, 1
+.setup_dad_slot22:
+    SETUP_ENTITY 22, ENTITY_ASSET_DAD, 1
     SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_1_14BAEC:
-    EXECUTE_SUBROUTINE .sub_14BAC8
+.cutscene_1550_dad_setup:
+    EXECUTE_SUBROUTINE .setup_dad_slot22
     SET_COORDINATES 8, 0, 64
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14BB00:
-    SETUP_ENTITY 23, 12, 1
+.cutscene_1550_mayor_setup:
+    SETUP_ENTITY 23, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -48, 0, 64
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14BB30:
-    SET_ASSET_ROTATION 7
+.mayor_evaluation_intro:
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 20
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 20
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 10
-    BRANCH_U16_VAR_WITHIN_RANGE 4001, 65535, D_801C3B62, .branch_14BB98
-    BRANCH_U16_VAR_WITHIN_RANGE 1001, 4000, D_801C3B62, .branch_14BBB4
-    SPAWN_EXECUTOR 16, .executor_16_14BA08
+    BRANCH_U16_VAR_WITHIN_RANGE 4001, 65535, D_801C3B62, .mayor_talk_high
+    BRANCH_U16_VAR_WITHIN_RANGE 1001, 4000, D_801C3B62, .mayor_talk_mid
+    SPAWN_EXECUTOR 16, .mayor_held_item
     SET_ENTITY_ANIMATION 18
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 80
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 80
 
-.sub_14BB84:
+.mayor_post_talk:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_14BBFC
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 3, .midwife_evaluation_intro
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14BB98:
+.mayor_talk_high:
     SET_ENTITY_ANIMATION 17
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 20
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 78
-    EXECUTE_SUBROUTINE .sub_14BB84
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 78
+    EXECUTE_SUBROUTINE .mayor_post_talk
 
-.branch_14BBB4:
+.mayor_talk_mid:
     SET_ENTITY_ANIMATION 22
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 79
-    EXECUTE_SUBROUTINE .sub_14BB84
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 79
+    EXECUTE_SUBROUTINE .mayor_post_talk
 
-.executor_3_14BBCC:
-    SETUP_ENTITY 24, 23, 1
+.cutscene_1550_midwife_setup:
+    SETUP_ENTITY 24, ENTITY_ASSET_MIDWIFE, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -16, 0, 32
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_14BBFC:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9F8
+.midwife_evaluation_intro:
+    SET_OTHER_EXECUTOR_PTR 1, .face_north
     SET_WAIT_FRAMES 20
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 18
     WAIT_ENTITY_ANIMATION
@@ -201,58 +224,59 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 18
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    BRANCH_U16_VAR_WITHIN_RANGE 1001, 65535, D_80215DF0, .branch_14BC60
-    BRANCH_U16_VAR_WITHIN_RANGE 251, 1000, D_80215DF0, .branch_14BC6C
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 83
+    BRANCH_U16_VAR_WITHIN_RANGE 1001, 65535, D_80215DF0, .midwife_talk_high
+    BRANCH_U16_VAR_WITHIN_RANGE 251, 1000, D_80215DF0, .midwife_talk_mid
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 83
 
-.sub_14BC4C:
+.midwife_post_talk:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 4, .executor_4_14BCA8
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 4, .potion_dealer_evaluation_intro
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14BC60:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 81
-    EXECUTE_SUBROUTINE .sub_14BC4C
+.midwife_talk_high:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 81
+    EXECUTE_SUBROUTINE .midwife_post_talk
 
-.branch_14BC6C:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 82
-    EXECUTE_SUBROUTINE .sub_14BC4C
+.midwife_talk_mid:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 82
+    EXECUTE_SUBROUTINE .midwife_post_talk
 
-.executor_4_14BC78:
-    SETUP_ENTITY 25, 20, 1
+.cutscene_1550_potion_dealer_setup:
+    SETUP_ENTITY 25, ENTITY_ASSET_POTION_SHOP_DEALER, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -16, 0, 96
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_14BCA8:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9E8
+.potion_dealer_evaluation_intro:
+    SET_OTHER_EXECUTOR_PTR 1, .face_west
     SET_WAIT_FRAMES 20
     SET_ENTITY_ANIMATION 20
     WAIT_ENTITY_ANIMATION
-    BRANCH_U16_VAR_WITHIN_RANGE 0, 2, D_801886E0, .branch_14BCFC
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 9, D_801886E0, .branch_14BD08
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 86
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 2, D_801886E0, .potion_dealer_talk_low
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 9, D_801886E0, .potion_dealer_talk_mid
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 86
 
-.sub_14BCE4:
+.potion_dealer_post_talk:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14BD14
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 41, .cutscene_1550_transition_to_ranch
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14BCFC:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 84
-    EXECUTE_SUBROUTINE .sub_14BCE4
+.potion_dealer_talk_low:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 84
+    EXECUTE_SUBROUTINE .potion_dealer_post_talk
 
-.branch_14BD08:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 85
-    EXECUTE_SUBROUTINE .sub_14BCE4
+.potion_dealer_talk_mid:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 85
+    EXECUTE_SUBROUTINE .potion_dealer_post_talk
 
-.executor_41_14BD14:
+; ----- Cutscene 1550 part 2: ranch (DOUG, SHIPPER) -----
+.cutscene_1550_transition_to_ranch:
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 2
@@ -261,78 +285,78 @@
     SET_WAIT_FRAMES 1
     DEACTIVATE_MAP_OBJECTS 0
     SET_SPECIAL_BIT 29, gCutsceneCompletionFlags
-    LOAD_MAP 0, 0
+    LOAD_MAP MAIN_MAP_INDEX, RANCH
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES 160, 96, -320
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14BD8C
-    SPAWN_EXECUTOR 2, .executor_2_14BD9C
-    SPAWN_EXECUTOR 3, .executor_3_14BE6C
+    SET_OTHER_EXECUTOR_PTR 1, .map0_player_position
+    SPAWN_EXECUTOR 2, .cutscene_1550_doug_setup
+    SPAWN_EXECUTOR 3, .cutscene_1550_shipper_setup
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_14BDCC
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 2, .doug_evaluation_intro
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14BD8C:
+.map0_player_position:
     SET_COORDINATES 160, 0, -320
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14BD9C:
-    SETUP_ENTITY 23, 17, 1
+.cutscene_1550_doug_setup:
+    SETUP_ENTITY 23, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 192, 0, -288
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14BDCC:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9F0
+.doug_evaluation_intro:
+    SET_OTHER_EXECUTOR_PTR 1, .face_south
     SET_WAIT_FRAMES 20
     SET_ENTITY_ANIMATION 17
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    BRANCH_U16_VAR_WITHIN_RANGE 0, 0, D_801886A8, .branch_14BE20
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 999, D_801886A8, .branch_14BE60
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 0, D_801886A8, .doug_high_tier_check
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 999, D_801886A8, .doug_talk_low
 
-.branch_14BE04:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 88
+.doug_talk_mid:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 88
 
-.sub_14BE0C:
+.doug_post_talk:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_14BE9C
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 3, .shipper_evaluation_intro
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14BE20:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 3, D_80205209, .branch_14BE04
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_801D62C6, .branch_14BE04
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_801886D0, .branch_14BE04
-    BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_14BE54
-    EXECUTE_SUBROUTINE .branch_14BE04
+.doug_high_tier_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 3, D_80205209, .doug_talk_mid
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_801D62C6, .doug_talk_mid
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_801886D0, .doug_talk_mid
+    BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .doug_talk_high_animal_care
+    EXECUTE_SUBROUTINE .doug_talk_mid
 
-.branch_14BE54:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 87
-    EXECUTE_SUBROUTINE .sub_14BE0C
+.doug_talk_high_animal_care:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 87
+    EXECUTE_SUBROUTINE .doug_post_talk
 
-.branch_14BE60:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 89
-    EXECUTE_SUBROUTINE .sub_14BE0C
+.doug_talk_low:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 89
+    EXECUTE_SUBROUTINE .doug_post_talk
 
-.executor_3_14BE6C:
-    SETUP_ENTITY 24, 27, 1
+.cutscene_1550_shipper_setup:
+    SETUP_ENTITY 24, ENTITY_ASSET_SHIPPER, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 128, 0, -288
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_14BE9C:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9E8
+.shipper_evaluation_intro:
+    SET_OTHER_EXECUTOR_PTR 1, .face_west
     SET_WAIT_FRAMES 20
     SET_ENTITY_ANIMATION 24
     WAIT_ENTITY_ANIMATION
@@ -341,10 +365,10 @@
     SET_ENTITY_ANIMATION 24
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    BRANCH_U32_VAR_WITHIN_RANGE 9000, 99999999, D_801C3E1C, .branch_14BF10
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 94
+    BRANCH_U32_VAR_WITHIN_RANGE 9000, 99999999, D_801C3E1C, .shipper_talk_high_followup
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 94
 
-.sub_14BEE0:
+.shipper_post_talk:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
@@ -354,10 +378,10 @@
     DEACTIVATE_EXECUTOR 2
     DEACTIVATE_EXECUTOR 41
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_14B954
+    EXECUTE_SUBROUTINE .exit_demo
 
-.branch_14BF10:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 90
+.shipper_talk_high_followup:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 90
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 24
@@ -367,113 +391,120 @@
     SET_ENTITY_ANIMATION 24
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    BRANCH_U16_VAR_WITHIN_RANGE 0, 0, D_80189824, .branch_14BF68
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_80189824, .branch_14BF74
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 93
-    EXECUTE_SUBROUTINE .sub_14BEE0
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 0, D_80189824, .shipper_followup_low_milk
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_80189824, .shipper_followup_low_eggs
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 93
+    EXECUTE_SUBROUTINE .shipper_post_talk
 
-.branch_14BF68:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 91
-    EXECUTE_SUBROUTINE .sub_14BEE0
+.shipper_followup_low_milk:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 91
+    EXECUTE_SUBROUTINE .shipper_post_talk
 
-.branch_14BF74:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 92
-    EXECUTE_SUBROUTINE .sub_14BEE0
+.shipper_followup_low_eggs:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 92
+    EXECUTE_SUBROUTINE .shipper_post_talk
 
-.branch_14BF80:
-    SPAWN_EXECUTOR 1, .executor_1_14BFD0
-    SPAWN_EXECUTOR 2, .executor_2_14BFE4
-    SPAWN_EXECUTOR 3, .executor_3_14C06C
-    SPAWN_EXECUTOR 4, .executor_4_14C09C
-    SPAWN_EXECUTOR 41, .executor_41_14BFB0
-    EXECUTE_SUBROUTINE .sub_14B9A8
+; ============================================================
+; Cutscene 1551 - Evaluation on Mountain 1, then map 78
+; ============================================================
+; Same shape as 1550. NPCs on Mountain 1: DAD, MASTER_CARPENTER,
+; ASSISTANT_CARPENTER (silent), GREG. Map-78 NPCs: GOURMET_JUDGE,
+; BASIL.
+.cutscene_1551:
+    SPAWN_EXECUTOR 1, .cutscene_1551_dad_setup
+    SPAWN_EXECUTOR 2, .cutscene_1551_master_carpenter_setup
+    SPAWN_EXECUTOR 3, .cutscene_1551_assistant_carpenter_setup
+    SPAWN_EXECUTOR 4, .cutscene_1551_greg_setup
+    SPAWN_EXECUTOR 41, .cutscene_1551_scene_controller
+    EXECUTE_SUBROUTINE .setup_player
     DEACTIVATE_SELF
 
-.executor_41_14BFB0:
+.cutscene_1551_scene_controller:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES 96, 96, 32
     SET_WAIT_FRAMES 40
-    SET_OTHER_EXECUTOR_PTR 4, .executor_4_14C0CC
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 4, .greg_evaluation_intro
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14BFD0:
-    EXECUTE_SUBROUTINE .sub_14BAC8
+.cutscene_1551_dad_setup:
+    EXECUTE_SUBROUTINE .setup_dad_slot22
     SET_COORDINATES 64, 0, 32
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14BFE4:
-    SETUP_ENTITY 23, 32, 1
+.cutscene_1551_master_carpenter_setup:
+    SETUP_ENTITY 23, ENTITY_ASSET_MASTER_CARPENTER, 1
     SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 32, 0, 0
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14C014:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9F8
+.master_carpenter_evaluation_intro:
+    SET_OTHER_EXECUTOR_PTR 1, .face_north
     SET_WAIT_FRAMES 20
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 255, D_8017026E, .branch_14C054
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 5, D_8017026E, .branch_14C060
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 100
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 255, D_8017026E, .master_carpenter_talk_high
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 5, D_8017026E, .master_carpenter_talk_mid
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 100
 
-.sub_14C040:
+.master_carpenter_post_talk:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C130
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 41, .cutscene_1551_transition_to_road
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14C054:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 98
-    EXECUTE_SUBROUTINE .sub_14C040
+.master_carpenter_talk_high:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 98
+    EXECUTE_SUBROUTINE .master_carpenter_post_talk
 
-.branch_14C060:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 99
-    EXECUTE_SUBROUTINE .sub_14C040
+.master_carpenter_talk_mid:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 99
+    EXECUTE_SUBROUTINE .master_carpenter_post_talk
 
-.executor_3_14C06C:
-    SETUP_ENTITY 24, 31, 1
+.cutscene_1551_assistant_carpenter_setup:
+    SETUP_ENTITY 24, ENTITY_ASSET_ASSISTANT_CARPENTER, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 64, 0, -32
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_14C09C:
-    SETUP_ENTITY 25, 30, 1
+.cutscene_1551_greg_setup:
+    SETUP_ENTITY 25, ENTITY_ASSET_GREG, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 96, 0, 0
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_14C0CC:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14BA00
+.greg_evaluation_intro:
+    SET_OTHER_EXECUTOR_PTR 1, .face_east
     SET_WAIT_FRAMES 20
-    BRANCH_U16_VAR_WITHIN_RANGE 201, 999, D_801D62C4, .branch_14C118
-    BRANCH_U16_VAR_WITHIN_RANGE 31, 200, D_801D62C4, .branch_14C124
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 97
+    BRANCH_U16_VAR_WITHIN_RANGE 201, 999, D_801D62C4, .greg_talk_high
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 200, D_801D62C4, .greg_talk_mid
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 97
 
-.sub_14C100:
+.greg_post_talk:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_14C014
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 2, .master_carpenter_evaluation_intro
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14C118:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 95
-    EXECUTE_SUBROUTINE .sub_14C100
+.greg_talk_high:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 95
+    EXECUTE_SUBROUTINE .greg_post_talk
 
-.branch_14C124:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 96
-    EXECUTE_SUBROUTINE .sub_14C100
+.greg_talk_mid:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 96
+    EXECUTE_SUBROUTINE .greg_post_talk
 
-.executor_41_14C130:
+; ----- Cutscene 1551 part 2: Road (GOURMET_JUDGE, BASIL) -----
+.cutscene_1551_transition_to_road:
     SET_WAIT_FRAMES 10
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
@@ -483,44 +514,44 @@
     SET_WAIT_FRAMES 1
     SET_SPECIAL_BIT 29, gCutsceneCompletionFlags
     DEACTIVATE_MAP_OBJECTS 0
-    LOAD_MAP 0, 78
+    LOAD_MAP MAIN_MAP_INDEX, ROAD
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES -64, 96, -32
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14C1A8
-    SPAWN_EXECUTOR 2, .executor_2_14C1B8
-    SPAWN_EXECUTOR 3, .executor_3_14C268
+    SET_OTHER_EXECUTOR_PTR 1, .map78_player_position
+    SPAWN_EXECUTOR 2, .cutscene_1551_gourmet_judge_setup
+    SPAWN_EXECUTOR 3, .cutscene_1551_basil_setup
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_14C298
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 3, .basil_evaluation_intro
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14C1A8:
+.map78_player_position:
     SET_COORDINATES -32, 0, -32
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14C1B8:
-    SETUP_ENTITY 23, 37, 1
+.cutscene_1551_gourmet_judge_setup:
+    SETUP_ENTITY 23, ENTITY_ASSET_GOURMET_JUDGE, 1
     SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -64, 0, 0
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14C1E8:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9E8
+.gourmet_judge_evaluation_intro:
+    SET_OTHER_EXECUTOR_PTR 1, .face_west
     SET_WAIT_FRAMES 20
     SET_ENTITY_ANIMATION 16
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    BRANCH_U8_VAR_WITHIN_RANGE 35, 255, D_80188F68, .branch_14C250
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 34, D_80188F68, .branch_14C25C
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 106
+    BRANCH_U8_VAR_WITHIN_RANGE 35, 255, D_80188F68, .gourmet_judge_talk_high
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 34, D_80188F68, .gourmet_judge_talk_mid
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 106
 
-.sub_14C220:
+.gourmet_judge_post_talk:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
@@ -530,67 +561,70 @@
     DEACTIVATE_EXECUTOR 3
     DEACTIVATE_EXECUTOR 41
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_14B954
+    EXECUTE_SUBROUTINE .exit_demo
 
-.branch_14C250:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 104
-    EXECUTE_SUBROUTINE .sub_14C220
+.gourmet_judge_talk_high:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 104
+    EXECUTE_SUBROUTINE .gourmet_judge_post_talk
 
-.branch_14C25C:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 105
-    EXECUTE_SUBROUTINE .sub_14C220
+.gourmet_judge_talk_mid:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 105
+    EXECUTE_SUBROUTINE .gourmet_judge_post_talk
 
-.executor_3_14C268:
-    SETUP_ENTITY 24, 15, 1
+.cutscene_1551_basil_setup:
+    SETUP_ENTITY 24, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 0, 0, 0
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_14C298:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9F0
+.basil_evaluation_intro:
+    SET_OTHER_EXECUTOR_PTR 1, .face_south
     SET_WAIT_FRAMES 20
-    BRANCH_U16_VAR_WITHIN_RANGE 120, 999, D_80205638, .branch_14C2E4
-    BRANCH_U16_VAR_WITHIN_RANGE 51, 119, D_80205638, .branch_14C2F0
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 103
+    BRANCH_U16_VAR_WITHIN_RANGE 120, 999, D_80205638, .basil_talk_high
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 119, D_80205638, .basil_talk_mid
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 103
 
-.sub_14C2CC:
+.basil_post_talk:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_14C1E8
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 2, .gourmet_judge_evaluation_intro
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14C2E4:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 101
-    EXECUTE_SUBROUTINE .sub_14C2CC
+.basil_talk_high:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 101
+    EXECUTE_SUBROUTINE .basil_post_talk
 
-.branch_14C2F0:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 102
-    EXECUTE_SUBROUTINE .sub_14C2CC
+.basil_talk_mid:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 102
+    EXECUTE_SUBROUTINE .basil_post_talk
 
-.executor_16_14C2FC:
-    SETUP_ENTITY 39, 93, 1
+.cutscene_1552_dog_setup:
+    SETUP_ENTITY 39, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 39, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_ANIMATION 231
     SET_ENTITY_TRACKING_TARGET 0, 0, 14, 12, 255
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14C32C:
+; ============================================================
+; Cutscene 1552 - Brief house scene (DAD greeting + dog trick)
+; ============================================================
+.cutscene_1552:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
-    SPAWN_EXECUTOR 1, .executor_1_14C3A8
-    EXECUTE_SUBROUTINE .sub_14B9A8
+    SPAWN_EXECUTOR 1, .cutscene_1552_dad_setup
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -64, 0, -96
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 40
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 28
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 28
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
-    SPAWN_EXECUTOR 16, .executor_16_14C2FC
+    SPAWN_EXECUTOR 16, .cutscene_1552_dog_setup
     SET_ENTITY_ANIMATION 475
     SET_WAIT_FRAMES 60
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
@@ -601,374 +635,409 @@
     DEACTIVATE_EXECUTOR 16
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_14B954
+    EXECUTE_SUBROUTINE .exit_demo
 
-.executor_1_14C3A8:
-    EXECUTE_SUBROUTINE .sub_14BAC8
+.cutscene_1552_dad_setup:
+    EXECUTE_SUBROUTINE .setup_dad_slot22
     SET_COORDINATES -64, 0, -56
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14C3BC:
+; ============================================================
+; Cutscene 1553 - Credits sequence
+; ============================================================
+; If the player flunks the gate (low gold + low everything),
+; .cutscene_1553_gate_check skips most of the festival and
+; routes to a short bad-ending body via .cutscene_1553_start +
+; var0 bit 0. Otherwise the long path runs:
+;
+;   1. DAD walks in, optional gold/affection/happiness prompts.
+;   2. .cutscene_1553_dispatch_on_wife (if married) selects the
+;      wife and runs her greeting/tribute scene; unmarried path
+;      goes straight to .tribute_dispatch_start.
+;   3. Tribute chain spawns one .tribute_<npc> executor for
+;      every villager whose npcAffection >= 160; D_801886D2
+;      tracks how many tributes have been placed.
+;   4. Once dispatch finishes, DAD reacts to the crowd size,
+;      then .cutscene_1553_ending_frame_fade tears everything
+;      down and chains to .credits_roll_player.
+;
+; gWife mapping: 0 = Maria, 1 = Popuri, 2 = Elli, 3 = Ann,
+;                4 = Karen.
+.cutscene_1553:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
-    BRANCH_U32_VAR_WITHIN_RANGE 0, 1000, gGold, .branch_14FFFC
+    BRANCH_U32_VAR_WITHIN_RANGE 0, 1000, gGold, .cutscene_1553_gate_check
 
-.branch_14C3D8:
+.cutscene_1553_start:
     SET_WAIT_FRAMES 5
     SET_AUDIO_SEQUENCE 0, _starryNightFestivalSegmentRomStart, _starryNightFestivalSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
-    SPAWN_EXECUTOR 37, .executor_37_14C424
-    SPAWN_EXECUTOR 1, .executor_1_14C4E0
-    EXECUTE_SUBROUTINE .sub_14B9A8
+    SPAWN_EXECUTOR 37, .cutscene_1553_map_asset
+    SPAWN_EXECUTOR 1, .cutscene_1553_dad_entry
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -352, 0, -16
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
-    ENTITY_WALK 68, 6, 2
-    EXECUTE_SUBROUTINE .sub_14B960
+    ENTITY_WALK 68, SOUTHEAST, 2
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_37_14C424:
+.cutscene_1553_map_asset:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_ASSET_ROTATION SOUTH
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14C430:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_80205209, .branch_14BA64
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_801D62C6, .branch_14BA64
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_801886D0, .branch_14BA64
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_14BA64
-    BRANCH_U16_VAR_WITHIN_RANGE 301, 65535, D_801C3B62, .branch_14BA64
+.cutscene_1550_gate_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_80205209, .cutscene_1550_start
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_801D62C6, .cutscene_1550_start
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_801886D0, .cutscene_1550_start
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cutscene_1550_start
+    BRANCH_U16_VAR_WITHIN_RANGE 301, 65535, D_801C3B62, .cutscene_1550_start
     SET_SPECIAL_BIT 0, var0
     SET_AUDIO_SEQUENCE 0, _goodbyeSegmentRomStart, _goodbyeSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
-    EXECUTE_SUBROUTINE .sub_14BA78
+    EXECUTE_SUBROUTINE .cutscene_1550_spawn_npcs
 
-.executor_0_14C490:
-    ENTITY_WALK 80, 0, 2
-    ENTITY_WALK 16, 2, 2
+.cutscene_1553_bad_ending_exit:
+    ENTITY_WALK 80, SOUTHWEST, 2
+    ENTITY_WALK 16, NORTHWEST, 2
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
-    ENTITY_WALK 56, 2, 2
+    ENTITY_WALK 56, NORTHWEST, 2
     WAIT_RGBA_FINISHED
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     DEACTIVATE_EXECUTOR 1
     DEACTIVATE_EXECUTOR 2
     DEACTIVATE_EXECUTOR 37
-    SPAWN_EXECUTOR 32, .executor_32_14FE74
+    SPAWN_EXECUTOR 32, .credits_roll_player
     DEACTIVATE_SELF
 
-.executor_1_14C4E0:
-    EXECUTE_SUBROUTINE .sub_14BAC8
+.cutscene_1553_dad_entry:
+    EXECUTE_SUBROUTINE .setup_dad_slot22
     SET_COORDINATES -352, 0, 16
-    SET_ASSET_ROTATION 6
-    ENTITY_WALK 68, 6, 2
+    SET_ASSET_ROTATION SOUTHEAST
+    ENTITY_WALK 68, SOUTHEAST, 2
     SET_WAIT_FRAMES 30
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 30
-    SPAWN_EXECUTOR 2, .executor_2_14FDEC
-    SET_ASSET_ROTATION 6
+    SPAWN_EXECUTOR 2, .cutscene_1553_dog_entry_walk
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 30
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 60
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_14FD80
-    SET_ASSET_ROTATION 4
-    SPAWN_EXECUTOR 41, .executor_41_14C538
-    EXECUTE_SUBROUTINE .sub_14B960
+    BRANCH_ON_SPECIAL_BIT 0, var0, .cutscene_1553_bad_ending_line
+    SET_ASSET_ROTATION NORTHEAST
+    SPAWN_EXECUTOR 41, .cutscene_1553_gold_prompt
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_14C538:
+.cutscene_1553_gold_prompt:
     SET_U16_VALUE 0, D_80180710
-    BRANCH_U32_VAR_WITHIN_RANGE 0, 99999, gGold, .branch_14C5B0
+    BRANCH_U32_VAR_WITHIN_RANGE 0, 99999, gGold, .cutscene_1553_affection_dispatch
     UPDATE_U16_VALUE 1, 255, D_80180710
-    INIT_DIALOGUE_SESSION 0, 42, 3
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 3
     WAIT_FOR_DIALOGUE_INPUT 0
-    EXECUTE_SUBROUTINE .branch_14C5B0
+    EXECUTE_SUBROUTINE .cutscene_1553_affection_dispatch
 
-.branch_14C570:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_801D62C6, .branch_14C654
-    EXECUTE_SUBROUTINE .sub_14C5F4
+.cutscene_1553_extras_check_d3:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_801D62C6, .cutscene_1553_happiness_conditional
+    EXECUTE_SUBROUTINE .cutscene_1553_check_all_good_stats
 
-.branch_14C580:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 1, D_801D62C6, .branch_14C654
-    EXECUTE_SUBROUTINE .sub_14C5F4
+.cutscene_1553_extras_check_d2:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 1, D_801D62C6, .cutscene_1553_happiness_conditional
+    EXECUTE_SUBROUTINE .cutscene_1553_check_all_good_stats
 
-.branch_14C590:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 2, D_801D62C6, .branch_14C654
-    EXECUTE_SUBROUTINE .sub_14C5F4
+.cutscene_1553_extras_check_d1:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 2, D_801D62C6, .cutscene_1553_happiness_conditional
+    EXECUTE_SUBROUTINE .cutscene_1553_check_all_good_stats
 
-.branch_14C5A0:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 3, D_801D62C6, .branch_14C654
-    EXECUTE_SUBROUTINE .sub_14C5F4
+.cutscene_1553_extras_check_d0:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 3, D_801D62C6, .cutscene_1553_happiness_conditional
+    EXECUTE_SUBROUTINE .cutscene_1553_check_all_good_stats
 
-.branch_14C5B0:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14FCFC
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14FD08
+.cutscene_1553_affection_dispatch:
+    SET_OTHER_EXECUTOR_PTR 0, .player_walk_NE_64
+    SET_OTHER_EXECUTOR_PTR 1, .wife_walk_NE_64
     SET_WAIT_FRAMES 64
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_80205209, .branch_14C5A0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_80205209, .branch_14C590
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_80205209, .branch_14C580
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_80205209, .branch_14C570
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, D_80205209, .cutscene_1553_extras_check_d0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_80205209, .cutscene_1553_extras_check_d1
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_80205209, .cutscene_1553_extras_check_d2
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_80205209, .cutscene_1553_extras_check_d3
 
-.sub_14C5F4:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 3, D_801886D0, .branch_14C654
-    BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_14C610
-    EXECUTE_SUBROUTINE .branch_14C654
+.cutscene_1553_check_all_good_stats:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 3, D_801886D0, .cutscene_1553_happiness_conditional
+    BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .cutscene_1553_extra_dialogue_session_4
+    EXECUTE_SUBROUTINE .cutscene_1553_happiness_conditional
 
-.branch_14C610:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D8
+.cutscene_1553_extra_dialogue_session_4:
+    SET_OTHER_EXECUTOR_PTR 0, .face_southwest
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9E0
+    SET_OTHER_EXECUTOR_PTR 1, .face_southeast
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9C8
+    SET_OTHER_EXECUTOR_PTR 1, .face_northeast
     SET_WAIT_FRAMES 20
     SET_SPECIAL_BIT 1, var0
     UPDATE_U16_VALUE 1, 255, D_80180710
-    INIT_DIALOGUE_SESSION 0, 42, 4
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 4
     WAIT_FOR_DIALOGUE_INPUT 0
 
-.branch_14C654:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14FCFC
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14FD08
+.cutscene_1553_happiness_conditional:
+    SET_OTHER_EXECUTOR_PTR 0, .player_walk_NE_64
+    SET_OTHER_EXECUTOR_PTR 1, .wife_walk_NE_64
     SET_WAIT_FRAMES 64
-    BRANCH_U16_VAR_WITHIN_RANGE 0, 3599, D_801C3B62, .branch_14C6B4
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D8
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 3599, D_801C3B62, .cutscene_1553_high_happiness_sequence
+    SET_OTHER_EXECUTOR_PTR 0, .face_southwest
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9E0
+    SET_OTHER_EXECUTOR_PTR 1, .face_southeast
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14B9C8
+    SET_OTHER_EXECUTOR_PTR 1, .face_northeast
     SET_WAIT_FRAMES 20
     UPDATE_U16_VALUE 1, 255, D_80180710
-    INIT_DIALOGUE_SESSION 0, 42, 5
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 5
     WAIT_FOR_DIALOGUE_INPUT 0
 
-.branch_14C6B4:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 219, gHappiness, .branch_14FCE4
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14FD14
+.cutscene_1553_high_happiness_sequence:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 219, gHappiness, .cutscene_1553_low_happiness_sequence
+    SET_OTHER_EXECUTOR_PTR 0, .player_walk_high_happiness_path
     SET_WAIT_FRAMES 16
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14FD2C
+    SET_OTHER_EXECUTOR_PTR 1, .wife_walk_high_happiness_path
     SET_WAIT_FRAMES 144
     UPDATE_U16_VALUE 1, 255, D_80180710
-    INIT_DIALOGUE_SESSION 0, 42, 7
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 7
     WAIT_FOR_DIALOGUE_INPUT 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14FD44
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14FD54
+    SET_OTHER_EXECUTOR_PTR 0, .player_walk_NW_112
+    SET_OTHER_EXECUTOR_PTR 1, .wife_walk_NW_112
     SET_WAIT_FRAMES 128
 
-.sub_14C704:
-    BRANCH_ON_SPECIAL_BIT 1, var0, .branch_14C72C
-    BRANCH_U16_VAR_WITHIN_RANGE 0, 0, D_80189824, .branch_14C764
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 47
-    EXECUTE_SUBROUTINE .sub_14C7B0
+.dad_final_line_dispatch:
+    BRANCH_ON_SPECIAL_BIT 1, var0, .dad_final_after_extras
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 0, D_80189824, .dad_talk_needs_more_animals
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 47
+    EXECUTE_SUBROUTINE .cutscene_1553_after_dad_final
 
-.branch_14C72C:
-    BRANCH_U16_VAR_WITHIN_RANGE 0, 0, D_80189824, .branch_14C764
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_80189824, .branch_14C758
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 48
-    EXECUTE_SUBROUTINE .sub_14C7B0
+.dad_final_after_extras:
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 0, D_80189824, .dad_talk_needs_more_animals
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_80189824, .dad_talk_proud_high
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 48
+    EXECUTE_SUBROUTINE .cutscene_1553_after_dad_final
 
-.branch_14C758:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 49
-    EXECUTE_SUBROUTINE .sub_14C7B0
+.dad_talk_proud_high:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 49
+    EXECUTE_SUBROUTINE .cutscene_1553_after_dad_final
 
-.branch_14C764:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 46
-    EXECUTE_SUBROUTINE .sub_14C7B0
+.dad_talk_needs_more_animals:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 46
+    EXECUTE_SUBROUTINE .cutscene_1553_after_dad_final
 
-.branch_14C770:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .branch_14D5E0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .branch_14D5FC
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .branch_14D618
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .branch_14D634
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .branch_14D650
+.cutscene_1553_dispatch_on_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .wife_greet_maria_start
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .wife_greet_popuri_start
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .wife_greet_elli_start
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .wife_greet_ann_start
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .wife_greet_karen_start
     RETURN_FROM_SUBROUTINE
 
-.sub_14C7B0:
+.cutscene_1553_after_dad_final:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     DEACTIVATE_EXECUTOR 2
     SET_WAIT_FRAMES 5
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_14C770
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cutscene_1553_dispatch_on_wife
 
-.executor_41_14C7CC:
+; ----- Tribute dispatch chain ------------------------------
+; Each link checks one NPC affection (>= 160) and either
+; spawns the tribute executor (`.spawn_tribute_<npc>`) or
+; falls through to the next check. Wife-related skips guard
+; the eligible-romance NPCs from being tributed when they are
+; the active spouse. The whole chain bails out via the
+; D_801886D2 == 10 cap to avoid overflowing the tribute slots.
+.tribute_dispatch_start:
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D8
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D8
+    SET_OTHER_EXECUTOR_PTR 0, .face_southwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_southwest
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_14D66C
+    SET_OTHER_EXECUTOR_PTR 2, .wife_hostess_walk_NE_face_SW
     SET_U16_VALUE 0, D_801886D2
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x1A, .branch_14D4F0
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_SHIPPER], .spawn_tribute_shipper
 
-.executor_41_14C800:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x17, .branch_14D4D8
+.tribute_dispatch_after_shipper:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_MAY], .spawn_tribute_may
 
-.executor_41_14C80C:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x19, .branch_14D508
+.tribute_dispatch_after_may:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_PASTOR], .spawn_tribute_pastor
 
-.executor_41_14C818:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x18, .branch_14D520
+.tribute_dispatch_after_pastor:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_RICK], .spawn_tribute_rick
 
-.executor_41_14C824:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x11, .branch_14D538
+.tribute_dispatch_after_rick:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_GOTZ], .spawn_tribute_gotz
 
-.executor_41_14C830:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x12, .branch_14D550
+.tribute_dispatch_after_gotz:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_SASHA], .spawn_tribute_sasha
 
-.executor_41_14C83C:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0xD, .branch_14D568
+.tribute_dispatch_after_sasha:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_LILLIA], .spawn_tribute_lillia
 
-.executor_41_14C848:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0xE, .branch_14D580
+.tribute_dispatch_after_lillia:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_BASIL], .spawn_tribute_basil
 
-.executor_41_14C854:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0xB, .branch_14D598
+.tribute_dispatch_after_basil:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_MAYOR], .spawn_tribute_mayor
 
-.executor_41_14C860:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0xC, .branch_14D5B0
+.tribute_dispatch_after_mayor:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_MAYOR_WIFE], .spawn_tribute_mayor_wife
 
-.executor_41_14C86C:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x10, .branch_14D5C8
+.tribute_dispatch_after_mayor_wife:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_DOUG], .spawn_tribute_doug
 
-.executor_41_14C888:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x14, .branch_14D4A8
+.tribute_dispatch_after_doug:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_KENT], .spawn_tribute_kent
 
-.executor_41_14C8A4:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x15, .branch_14D4C0
+.tribute_dispatch_after_kent:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[NPC_STU], .spawn_tribute_stu
 
-.executor_41_14C8C0:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_14C904
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_14C8EC
-    EXECUTE_SUBROUTINE .sub_14C8F8
+.tribute_dispatch_after_stu:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .tribute_dispatch_after_karen
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .tribute_karen_wife_skip
+    EXECUTE_SUBROUTINE .tribute_karen_check
 
-.branch_14C8EC:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .branch_14C904
+.tribute_karen_wife_skip:
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .tribute_dispatch_after_karen
 
-.sub_14C8F8:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x4, .branch_14D418
+.tribute_karen_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[KAREN], .spawn_tribute_karen
 
-.branch_14C904:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_14C92C
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0xA, .branch_14D490
+.tribute_dispatch_after_karen:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .tribute_dispatch_after_kai
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[KAI], .spawn_tribute_kai
 
-.branch_14C92C:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_14C94C
-    EXECUTE_SUBROUTINE .sub_14C958
+.tribute_dispatch_after_kai:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .tribute_popuri_wife_skip
+    EXECUTE_SUBROUTINE .tribute_popuri_check
 
-.branch_14C94C:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .branch_14C964
+.tribute_popuri_wife_skip:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .tribute_dispatch_after_popuri
 
-.sub_14C958:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x1, .branch_14D3D0
+.tribute_popuri_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[POPURI], .spawn_tribute_popuri
 
-.branch_14C964:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x7, .branch_14D448
+.tribute_dispatch_after_popuri:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[GRAY], .spawn_tribute_gray
 
-.executor_41_14C980:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_14C9A0
-    EXECUTE_SUBROUTINE .sub_14C9AC
+.tribute_dispatch_after_gray:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .tribute_elli_wife_skip
+    EXECUTE_SUBROUTINE .tribute_elli_check
 
-.branch_14C9A0:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .branch_14C9B8
+.tribute_elli_wife_skip:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .tribute_dispatch_after_elli
 
-.sub_14C9AC:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x2, .branch_14D3E8
+.tribute_elli_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[ELLI], .spawn_tribute_elli
 
-.branch_14C9B8:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x8, .branch_14D460
+.tribute_dispatch_after_elli:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[JEFF], .spawn_tribute_jeff
 
-.executor_41_14C9D4:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_14C9F4
-    EXECUTE_SUBROUTINE .sub_14CA00
+.tribute_dispatch_after_jeff:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .tribute_ann_wife_skip
+    EXECUTE_SUBROUTINE .tribute_ann_check
 
-.branch_14C9F4:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .branch_14CA0C
+.tribute_ann_wife_skip:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .tribute_dispatch_after_ann
 
-.sub_14CA00:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x3, .branch_14D400
+.tribute_ann_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[ANN], .spawn_tribute_ann
 
-.branch_14CA0C:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_14CA34
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x9, .branch_14D478
+.tribute_dispatch_after_ann:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .tribute_dispatch_after_cliff
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[CLIFF], .spawn_tribute_cliff
 
-.branch_14CA34:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_14CA54
-    EXECUTE_SUBROUTINE .sub_14CA60
+.tribute_dispatch_after_cliff:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .tribute_maria_wife_skip
+    EXECUTE_SUBROUTINE .tribute_maria_check
 
-.branch_14CA54:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .branch_14CA6C
+.tribute_maria_wife_skip:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .tribute_dispatch_after_maria
 
-.sub_14CA60:
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[MARIA], .branch_14D3B8
+.tribute_maria_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[MARIA], .spawn_tribute_maria
 
-.branch_14CA6C:
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CA88
-    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection + 0x6, .branch_14D430
+.tribute_dispatch_after_maria:
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_dispatch_finalize
+    BRANCH_U8_VAR_WITHIN_RANGE 160, 255, npcAffection[HARRIS], .spawn_tribute_harris
 
-.branch_14CA88:
-    BRANCH_U16_VAR_WITHIN_RANGE 0, 3, D_801886D2, .branch_14CB18
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 7, D_801886D2, .branch_14CB24
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 66
+; ----- After all tributes placed -----
+; DAD picks one of three lines based on tribute count
+; (D_801886D2): low (0..3), mid (4..7), or fallthrough high.
+.tribute_dispatch_finalize:
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 3, D_801886D2, .dad_crowd_talk_low
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 7, D_801886D2, .dad_crowd_talk_mid
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 66
 
-.sub_14CAB0:
+.dad_crowd_aftermath:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_14CAD8
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cutscene_1553_dispatch_wife_credit
 
-.sub_14CAC4:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CB8C
-    SET_OTHER_EXECUTOR_PTR 37, .executor_37_14CB94
+.cutscene_1553_play_end_fade:
+    SET_OTHER_EXECUTOR_PTR 0, .cutscene_1553_player_idle_halt
+    SET_OTHER_EXECUTOR_PTR 37, .cutscene_1553_ending_frame_fade
     DEACTIVATE_SELF
 
-.branch_14CAD8:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .branch_14CB30
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .branch_14D2A8
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .branch_14D2EC
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .branch_14D330
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .branch_14D374
+.cutscene_1553_dispatch_wife_credit:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_greet_dad_intro
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .popuri_greet_dad_intro
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .elli_greet_dad_intro
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .ann_greet_dad_intro
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .karen_greet_dad_intro
     RETURN_FROM_SUBROUTINE
 
-.branch_14CB18:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 64
-    EXECUTE_SUBROUTINE .sub_14CAB0
+.dad_crowd_talk_low:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 64
+    EXECUTE_SUBROUTINE .dad_crowd_aftermath
 
-.branch_14CB24:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 65
-    EXECUTE_SUBROUTINE .sub_14CAB0
+.dad_crowd_talk_mid:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 65
+    EXECUTE_SUBROUTINE .dad_crowd_aftermath
 
-.branch_14CB30:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_1_14B9E0
+; ----- Pre-tribute wife greetings -----
+; Five variants (one per wife) for the wife calling DAD over
+; before the tribute walk-in starts. Each has an alternate
+; all-attended line when D_801886D2 hits 10.
+.maria_greet_dad_intro:
+    SET_OTHER_EXECUTOR_PTR 0, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 2, .face_southeast
     SET_WAIT_FRAMES 10
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14CB80
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 67
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .maria_greet_dad_all_attended
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 67
 
-.sub_14CB64:
+.wife_greet_dad_transition:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14D284
-    EXECUTE_SUBROUTINE .sub_14CAC4
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .dad_baby_age_gate
+    EXECUTE_SUBROUTINE .cutscene_1553_play_end_fade
 
-.branch_14CB80:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 154
-    EXECUTE_SUBROUTINE .sub_14CB64
+.maria_greet_dad_all_attended:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 154
+    EXECUTE_SUBROUTINE .wife_greet_dad_transition
 
-.executor_0_14CB8C:
+.cutscene_1553_player_idle_halt:
     SET_BEHAVIOR_FLAGS 0
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_37_14CB94:
+.cutscene_1553_ending_frame_fade:
     SET_FRAME_DELTA -2, 0, -1, 64
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -2, 0, -1, 32
@@ -999,20 +1068,20 @@
     DEACTIVATE_EXECUTOR 25
     DEACTIVATE_EXECUTOR 26
     SET_WAIT_FRAMES 10
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CCEC
-    SPAWN_EXECUTOR 1, .executor_1_14CD34
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_14CCAC
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_pose
+    SPAWN_EXECUTOR 1, .wife_credit_dog_setup
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .wife_credit_dispatch
     UPDATE_GLOBAL_RGBA 64, 64, 64, 64, 6
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 90
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD04
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_501
     SET_WAIT_FRAMES 80
-    EXECUTE_SUBROUTINE .sub_14B988
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 77
+    EXECUTE_SUBROUTINE .setup_message_box_alt
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 77
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14CD4C
+    SET_OTHER_EXECUTOR_PTR 1, .wife_credit_dog_animations
     SET_WAIT_FRAMES 80
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 1
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 2
@@ -1022,50 +1091,52 @@
     DEACTIVATE_EXECUTOR 0
     DEACTIVATE_EXECUTOR 1
     SET_WAIT_FRAMES 10
-    SPAWN_EXECUTOR 32, .executor_32_14FE74
+    SPAWN_EXECUTOR 32, .credits_roll_player
     DEACTIVATE_SELF
 
-.branch_14CCAC:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .branch_14CD6C
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .branch_14CD78
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .branch_14CD84
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .branch_14CD90
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .branch_14CD9C
+; ----- Married-path credit dispatch -----
+; Picks a per-wife credit body via gWife (see mapping above).
+.wife_credit_dispatch:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .wife_credit_wife_maria
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .wife_credit_wife_popuri
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .wife_credit_wife_elli
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .wife_credit_wife_ann
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .wife_credit_wife_karen
     RETURN_FROM_SUBROUTINE
 
-.executor_0_14CCEC:
+.wife_credit_player_pose:
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     SET_COORDINATES -352, 0, -320
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 507
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_14CD04:
+.wife_credit_player_anim_501:
     SET_ENTITY_ANIMATION 501
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_14CD14:
+.wife_credit_player_anim_495:
     SET_ENTITY_ANIMATION 495
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_14CD24:
+.wife_credit_player_anim_473_474:
     SET_ENTITY_ANIMATION 473
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 474
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14CD34:
-    EXECUTE_SUBROUTINE .sub_14FDC8
+.wife_credit_dog_setup:
+    EXECUTE_SUBROUTINE .setup_player_dog_slot1
     SET_COORDINATES -352, 0, -272
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 40
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14CD4C:
+.wife_credit_dog_animations:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 104
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 40
@@ -1073,79 +1144,84 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 120
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 40
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14CD6C:
-    SPAWN_EXECUTOR 2, .executor_2_14CDA8
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_credit_wife_maria:
+    SPAWN_EXECUTOR 2, .maria_credit_sequence
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14CD78:
-    SPAWN_EXECUTOR 2, .executor_2_14CED4
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_credit_wife_popuri:
+    SPAWN_EXECUTOR 2, .popuri_credit_sequence
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14CD84:
-    SPAWN_EXECUTOR 2, .executor_2_14CFC0
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_credit_wife_elli:
+    SPAWN_EXECUTOR 2, .elli_credit_sequence
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14CD90:
-    SPAWN_EXECUTOR 2, .executor_2_14D0AC
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_credit_wife_ann:
+    SPAWN_EXECUTOR 2, .ann_credit_sequence
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14CD9C:
-    SPAWN_EXECUTOR 2, .executor_2_14D198
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_credit_wife_karen:
+    SPAWN_EXECUTOR 2, .karen_credit_sequence
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14CDA8:
-    EXECUTE_SUBROUTINE .sub_14D67C
+; ----- Per-wife credit bodies -----
+; Each body: setup wife + (optional) baby, two opening lines,
+; a SELECTION dialogue session (different ID per wife), then a
+; baby-aware closing line. All five chain into
+; .wife_credit_fade_to_credits to roll credits.
+.maria_credit_sequence:
+    EXECUTE_SUBROUTINE .setup_maria_slot24
     SET_COORDINATES -368, 0, -300
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 55
     UPDATE_GLOBAL_RGBA 64, 64, 64, 64, 6
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 69
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 69
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD04
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_501
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD14
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_495
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 70
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 70
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 53
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 20
-    SET_ASSET_ROTATION 5
-    INIT_DIALOGUE_SESSION 0, 42, 16
+    SET_ASSET_ROTATION EAST
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 16
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_14CE3C
-    BRANCH_ON_DIALOGUE 0, 1, .branch_14CE60
+    BRANCH_ON_DIALOGUE 0, 0, .maria_credit_no_baby_yet
+    BRANCH_ON_DIALOGUE 0, 1, .maria_credit_no_final_word
 
-.branch_14CE3C:
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14CE54
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 74
-    EXECUTE_SUBROUTINE .sub_14CE68
+.maria_credit_no_baby_yet:
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .maria_credit_has_baby
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 74
+    EXECUTE_SUBROUTINE .maria_credit_final_line
 
-.branch_14CE54:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 73
-    EXECUTE_SUBROUTINE .sub_14CE68
+.maria_credit_has_baby:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 73
+    EXECUTE_SUBROUTINE .maria_credit_final_line
 
-.branch_14CE60:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 75
+.maria_credit_no_final_word:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 75
 
-.sub_14CE68:
+.maria_credit_final_line:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
     SET_ENTITY_ANIMATION 126
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD24
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 76
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_473_474
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 76
 
-.sub_14CE90:
+.wife_credit_fade_to_credits:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 45
@@ -1157,1967 +1233,1998 @@
     DEACTIVATE_EXECUTOR 0
     DEACTIVATE_EXECUTOR 1
     DEACTIVATE_EXECUTOR 37
-    SPAWN_EXECUTOR 32, .executor_32_14FE74
+    SPAWN_EXECUTOR 32, .credits_roll_player
     DEACTIVATE_SELF
 
-.executor_2_14CED4:
-    EXECUTE_SUBROUTINE .sub_14D6A0
+.popuri_credit_sequence:
+    EXECUTE_SUBROUTINE .setup_popuri_slot25
     SET_COORDINATES -368, 0, -300
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 55
     UPDATE_GLOBAL_RGBA 64, 64, 64, 64, 6
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 109
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 109
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD04
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_501
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD14
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_495
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 110
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 110
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 53
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 20
-    SET_ASSET_ROTATION 5
-    INIT_DIALOGUE_SESSION 0, 42, 17
+    SET_ASSET_ROTATION EAST
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 17
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_14CF68
-    BRANCH_ON_DIALOGUE 0, 1, .branch_14CF8C
+    BRANCH_ON_DIALOGUE 0, 0, .popuri_credit_no_baby_yet
+    BRANCH_ON_DIALOGUE 0, 1, .popuri_credit_no_final_word
 
-.branch_14CF68:
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14CF80
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 113
-    EXECUTE_SUBROUTINE .sub_14CF94
+.popuri_credit_no_baby_yet:
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .popuri_credit_has_baby
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 113
+    EXECUTE_SUBROUTINE .popuri_credit_final_line
 
-.branch_14CF80:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 112
-    EXECUTE_SUBROUTINE .sub_14CF94
+.popuri_credit_has_baby:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 112
+    EXECUTE_SUBROUTINE .popuri_credit_final_line
 
-.branch_14CF8C:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 114
+.popuri_credit_no_final_word:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 114
 
-.sub_14CF94:
+.popuri_credit_final_line:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
     SET_ENTITY_ANIMATION 142
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD24
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 115
-    EXECUTE_SUBROUTINE .sub_14CE90
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_473_474
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 115
+    EXECUTE_SUBROUTINE .wife_credit_fade_to_credits
 
-.executor_2_14CFC0:
-    EXECUTE_SUBROUTINE .sub_14D6C4
+.elli_credit_sequence:
+    EXECUTE_SUBROUTINE .setup_elli_slot26
     SET_COORDINATES -368, 0, -300
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 55
     UPDATE_GLOBAL_RGBA 64, 64, 64, 64, 6
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 118
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 118
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD04
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_501
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD14
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_495
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 119
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 119
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 53
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 20
-    SET_ASSET_ROTATION 5
-    INIT_DIALOGUE_SESSION 0, 42, 18
+    SET_ASSET_ROTATION EAST
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 18
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_14D054
-    BRANCH_ON_DIALOGUE 0, 1, .branch_14D078
+    BRANCH_ON_DIALOGUE 0, 0, .elli_credit_no_baby_yet
+    BRANCH_ON_DIALOGUE 0, 1, .elli_credit_no_final_word
 
-.branch_14D054:
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14D06C
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 122
-    EXECUTE_SUBROUTINE .sub_14D080
+.elli_credit_no_baby_yet:
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .elli_credit_has_baby
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 122
+    EXECUTE_SUBROUTINE .elli_credit_final_line
 
-.branch_14D06C:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 121
-    EXECUTE_SUBROUTINE .sub_14D080
+.elli_credit_has_baby:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 121
+    EXECUTE_SUBROUTINE .elli_credit_final_line
 
-.branch_14D078:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 123
+.elli_credit_no_final_word:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 123
 
-.sub_14D080:
+.elli_credit_final_line:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
     SET_ENTITY_ANIMATION 104
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD24
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 124
-    EXECUTE_SUBROUTINE .sub_14CE90
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_473_474
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 124
+    EXECUTE_SUBROUTINE .wife_credit_fade_to_credits
 
-.executor_2_14D0AC:
-    EXECUTE_SUBROUTINE .sub_14D6E8
+.ann_credit_sequence:
+    EXECUTE_SUBROUTINE .setup_ann_slot27
     SET_COORDINATES -368, 0, -300
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 55
     UPDATE_GLOBAL_RGBA 64, 64, 64, 64, 6
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 127
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 127
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD04
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_501
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD14
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_495
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 128
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 128
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 53
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 20
-    SET_ASSET_ROTATION 5
-    INIT_DIALOGUE_SESSION 0, 42, 19
+    SET_ASSET_ROTATION EAST
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 19
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_14D140
-    BRANCH_ON_DIALOGUE 0, 1, .branch_14D164
+    BRANCH_ON_DIALOGUE 0, 0, .ann_credit_no_baby_yet
+    BRANCH_ON_DIALOGUE 0, 1, .ann_credit_no_final_word
 
-.branch_14D140:
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14D158
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 131
-    EXECUTE_SUBROUTINE .sub_14D16C
+.ann_credit_no_baby_yet:
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .ann_credit_has_baby
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 131
+    EXECUTE_SUBROUTINE .ann_credit_final_line
 
-.branch_14D158:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 130
-    EXECUTE_SUBROUTINE .sub_14D16C
+.ann_credit_has_baby:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 130
+    EXECUTE_SUBROUTINE .ann_credit_final_line
 
-.branch_14D164:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 132
+.ann_credit_no_final_word:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 132
 
-.sub_14D16C:
+.ann_credit_final_line:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
     SET_ENTITY_ANIMATION 129
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD24
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 133
-    EXECUTE_SUBROUTINE .sub_14CE90
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_473_474
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 133
+    EXECUTE_SUBROUTINE .wife_credit_fade_to_credits
 
-.executor_2_14D198:
-    EXECUTE_SUBROUTINE .sub_14D70C
+.karen_credit_sequence:
+    EXECUTE_SUBROUTINE .setup_karen_slot28
     SET_COORDINATES -368, 0, -300
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 55
     UPDATE_GLOBAL_RGBA 64, 64, 64, 64, 6
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 136
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 136
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD04
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_501
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD14
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_495
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 137
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 137
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 53
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 20
-    SET_ASSET_ROTATION 5
-    INIT_DIALOGUE_SESSION 0, 42, 20
+    SET_ASSET_ROTATION EAST
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 20
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_14D22C
-    BRANCH_ON_DIALOGUE 0, 1, .branch_14D250
+    BRANCH_ON_DIALOGUE 0, 0, .karen_credit_no_baby_yet
+    BRANCH_ON_DIALOGUE 0, 1, .karen_credit_no_final_word
 
-.branch_14D22C:
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14D244
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 140
-    EXECUTE_SUBROUTINE .sub_14D258
+.karen_credit_no_baby_yet:
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .karen_credit_has_baby
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 140
+    EXECUTE_SUBROUTINE .karen_credit_final_line
 
-.branch_14D244:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 139
-    EXECUTE_SUBROUTINE .sub_14D258
+.karen_credit_has_baby:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 139
+    EXECUTE_SUBROUTINE .karen_credit_final_line
 
-.branch_14D250:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 141
+.karen_credit_no_final_word:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 141
 
-.sub_14D258:
+.karen_credit_final_line:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
     SET_ENTITY_ANIMATION 120
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14CD24
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 142
-    EXECUTE_SUBROUTINE .sub_14CE90
+    SET_OTHER_EXECUTOR_PTR 0, .wife_credit_player_anim_473_474
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 142
+    EXECUTE_SUBROUTINE .wife_credit_fade_to_credits
 
-.branch_14D284:
-    BRANCH_U8_VAR_WITHIN_RANGE 120, 255, gBabyAge, .branch_14D294
-    EXECUTE_SUBROUTINE .sub_14CAC4
+.dad_baby_age_gate:
+    BRANCH_U8_VAR_WITHIN_RANGE 120, 255, gBabyAge, .dad_crowd_baby_grandpa
+    EXECUTE_SUBROUTINE .cutscene_1553_play_end_fade
 
-.branch_14D294:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 68
+.dad_crowd_baby_grandpa:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 68
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_14CAC4
+    EXECUTE_SUBROUTINE .cutscene_1553_play_end_fade
 
-.branch_14D2A8:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_1_14B9E0
+.popuri_greet_dad_intro:
+    SET_OTHER_EXECUTOR_PTR 0, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 2, .face_southeast
     SET_WAIT_FRAMES 10
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14D2E0
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 108
-    EXECUTE_SUBROUTINE .sub_14CB64
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .popuri_greet_dad_all_attended
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 108
+    EXECUTE_SUBROUTINE .wife_greet_dad_transition
 
-.branch_14D2E0:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 155
-    EXECUTE_SUBROUTINE .sub_14CB64
+.popuri_greet_dad_all_attended:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 155
+    EXECUTE_SUBROUTINE .wife_greet_dad_transition
 
-.branch_14D2EC:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_1_14B9E0
+.elli_greet_dad_intro:
+    SET_OTHER_EXECUTOR_PTR 0, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 2, .face_southeast
     SET_WAIT_FRAMES 10
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14D324
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 117
-    EXECUTE_SUBROUTINE .sub_14CB64
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .elli_greet_dad_all_attended
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 117
+    EXECUTE_SUBROUTINE .wife_greet_dad_transition
 
-.branch_14D324:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 156
-    EXECUTE_SUBROUTINE .sub_14CB64
+.elli_greet_dad_all_attended:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 156
+    EXECUTE_SUBROUTINE .wife_greet_dad_transition
 
-.branch_14D330:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_1_14B9E0
+.ann_greet_dad_intro:
+    SET_OTHER_EXECUTOR_PTR 0, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 2, .face_southeast
     SET_WAIT_FRAMES 10
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14D368
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 126
-    EXECUTE_SUBROUTINE .sub_14CB64
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .ann_greet_dad_all_attended
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 126
+    EXECUTE_SUBROUTINE .wife_greet_dad_transition
 
-.branch_14D368:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 157
-    EXECUTE_SUBROUTINE .sub_14CB64
+.ann_greet_dad_all_attended:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 157
+    EXECUTE_SUBROUTINE .wife_greet_dad_transition
 
-.branch_14D374:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_1_14B9E0
+.karen_greet_dad_intro:
+    SET_OTHER_EXECUTOR_PTR 0, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 2, .face_southeast
     SET_WAIT_FRAMES 10
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14D3AC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 135
-    EXECUTE_SUBROUTINE .sub_14CB64
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .karen_greet_dad_all_attended
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 135
+    EXECUTE_SUBROUTINE .wife_greet_dad_transition
 
-.branch_14D3AC:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 158
-    EXECUTE_SUBROUTINE .sub_14CB64
+.karen_greet_dad_all_attended:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 158
+    EXECUTE_SUBROUTINE .wife_greet_dad_transition
 
-.branch_14D3B8:
+; ----- Spawn-tribute thunks -----
+; Each branch increments D_801886D2 (UPDATE_U16_VALUE 1, 255,
+; D_801886D2) and spawns the tribute executor at a unique slot.
+.spawn_tribute_maria:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 4, .executor_4_14DB88
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 4, .tribute_maria
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D3D0:
+.spawn_tribute_popuri:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 5, .executor_5_14DD5C
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 5, .tribute_popuri
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D3E8:
+.spawn_tribute_elli:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 6, .executor_6_14DF30
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 6, .tribute_elli
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D400:
+.spawn_tribute_ann:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 7, .executor_7_14E104
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 7, .tribute_ann
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D418:
+.spawn_tribute_karen:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 8, .executor_8_14E2D8
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 8, .tribute_karen
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D430:
+.spawn_tribute_harris:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 9, .executor_9_14E4AC
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 9, .tribute_harris
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D448:
+.spawn_tribute_gray:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 10, .executor_10_14E680
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 10, .tribute_gray
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D460:
+.spawn_tribute_jeff:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 11, .executor_11_14E854
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 11, .tribute_jeff
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D478:
+.spawn_tribute_cliff:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 12, .executor_12_14EA28
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 12, .tribute_cliff
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D490:
+.spawn_tribute_kai:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 13, .executor_13_14EBFC
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 13, .tribute_kai
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D4A8:
+.spawn_tribute_kent:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 14, .executor_14_14EDD0
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 14, .tribute_kent
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D4C0:
+.spawn_tribute_stu:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 15, .executor_15_14EFA4
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 15, .tribute_stu
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D4D8:
+.spawn_tribute_may:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 16, .executor_16_14F098
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 16, .tribute_may
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D4F0:
+.spawn_tribute_shipper:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 17, .executor_17_14F0D4
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 17, .tribute_shipper
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D508:
+.spawn_tribute_pastor:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 18, .executor_18_14F15C
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 18, .tribute_pastor
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D520:
+.spawn_tribute_rick:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 19, .executor_19_14F218
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 19, .tribute_rick
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D538:
+.spawn_tribute_gotz:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 20, .executor_20_14F300
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 20, .tribute_gotz
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D550:
+.spawn_tribute_sasha:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 21, .executor_21_14F414
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 21, .tribute_sasha
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D568:
+.spawn_tribute_lillia:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 22, .executor_22_14F554
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 22, .tribute_lillia
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D580:
+.spawn_tribute_basil:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 23, .executor_23_14F6C0
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 23, .tribute_basil
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D598:
+.spawn_tribute_mayor:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 24, .executor_24_14F858
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 24, .tribute_mayor
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D5B0:
+.spawn_tribute_mayor_wife:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 25, .executor_25_14FA1C
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 25, .tribute_mayor_wife
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D5C8:
+.spawn_tribute_doug:
     UPDATE_U16_VALUE 1, 255, D_801886D2
-    SPAWN_EXECUTOR 26, .executor_26_14FBF0
-    EXECUTE_SUBROUTINE .sub_14B960
+    SPAWN_EXECUTOR 26, .tribute_doug
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D5E0:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D0
-    SPAWN_EXECUTOR 2, .executor_2_14D730
-    EXECUTE_SUBROUTINE .sub_14B960
+; ----- Wife hostess greeting (married, pre-tribute) -----
+; Each variant sets up the wife at her assigned slot, walks her
+; in, and emits a ready greeting; HAVE_BABY branches
+; spawn .baby_entity_setup to put the baby in her arms.
+.wife_greet_maria_start:
+    SET_OTHER_EXECUTOR_PTR 0, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest
+    SPAWN_EXECUTOR 2, .maria_hostess_greet
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D5FC:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D0
-    SPAWN_EXECUTOR 2, .executor_2_14D78C
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_greet_popuri_start:
+    SET_OTHER_EXECUTOR_PTR 0, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest
+    SPAWN_EXECUTOR 2, .popuri_hostess_greet
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D618:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D0
-    SPAWN_EXECUTOR 2, .executor_2_14D7D8
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_greet_elli_start:
+    SET_OTHER_EXECUTOR_PTR 0, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest
+    SPAWN_EXECUTOR 2, .elli_hostess_greet
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D634:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D0
-    SPAWN_EXECUTOR 2, .executor_2_14D824
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_greet_ann_start:
+    SET_OTHER_EXECUTOR_PTR 0, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest
+    SPAWN_EXECUTOR 2, .ann_hostess_greet
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D650:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14B9D0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_0_14B9D0
-    SPAWN_EXECUTOR 2, .executor_2_14D870
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_greet_karen_start:
+    SET_OTHER_EXECUTOR_PTR 0, .face_northwest
+    SET_OTHER_EXECUTOR_PTR 1, .face_northwest
+    SPAWN_EXECUTOR 2, .karen_hostess_greet
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14D66C:
-    ENTITY_WALK 16, 4, 2
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_hostess_walk_NE_face_SW:
+    ENTITY_WALK 16, NORTHEAST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_14D67C:
+; ----- Wife entity setup helpers -----
+; Subroutines that SETUP_ENTITY each wife at the slot the wife
+; hostess scene expects, with the appropriate idle/animation
+; pair pre-loaded.
+.setup_maria_slot24:
     SETUP_ENTITY 24, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 108, 118, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.sub_14D6A0:
+.setup_popuri_slot25:
     SETUP_ENTITY 25, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 122, 132, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.sub_14D6C4:
-    SETUP_ENTITY 26, 3, 1
+.setup_elli_slot26:
+    SETUP_ENTITY 26, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 105, 115, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.sub_14D6E8:
-    SETUP_ENTITY 27, 4, 1
+.setup_ann_slot27:
+    SETUP_ENTITY 27, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 111, 121, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.sub_14D70C:
-    SETUP_ENTITY 28, 5, 1
+.setup_karen_slot28:
+    SETUP_ENTITY 28, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 102, 112, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_2_14D730:
-    SETUP_ENTITY 24, 1, 1
+; ----- Wife hostess greet bodies (per-wife) -----
+.maria_hostess_greet:
+    SETUP_ENTITY 24, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 108, 118, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -408, 0, -288
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14D8BC
-    SET_ASSET_ROTATION 6
-    ENTITY_WALK 64, 6, 2
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 50
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .wife_hostess_with_baby
+    SET_ASSET_ROTATION SOUTHEAST
+    ENTITY_WALK 64, SOUTHEAST, 2
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 50
 
-.sub_14D778:
+.wife_hostess_post_greet:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C7CC
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_start
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14D78C:
-    SETUP_ENTITY 24, 2, 1
+.popuri_hostess_greet:
+    SETUP_ENTITY 24, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 122, 132, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -408, 0, -288
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14D8BC
-    SET_ASSET_ROTATION 6
-    ENTITY_WALK 64, 6, 2
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 107
-    EXECUTE_SUBROUTINE .sub_14D778
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .wife_hostess_with_baby
+    SET_ASSET_ROTATION SOUTHEAST
+    ENTITY_WALK 64, SOUTHEAST, 2
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 107
+    EXECUTE_SUBROUTINE .wife_hostess_post_greet
 
-.executor_2_14D7D8:
-    SETUP_ENTITY 24, 3, 1
+.elli_hostess_greet:
+    SETUP_ENTITY 24, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 105, 115, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -408, 0, -288
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14D8BC
-    SET_ASSET_ROTATION 6
-    ENTITY_WALK 64, 6, 2
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 116
-    EXECUTE_SUBROUTINE .sub_14D778
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .wife_hostess_with_baby
+    SET_ASSET_ROTATION SOUTHEAST
+    ENTITY_WALK 64, SOUTHEAST, 2
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 116
+    EXECUTE_SUBROUTINE .wife_hostess_post_greet
 
-.executor_2_14D824:
-    SETUP_ENTITY 24, 4, 1
+.ann_hostess_greet:
+    SETUP_ENTITY 24, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 111, 121, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -408, 0, -288
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14D8BC
-    SET_ASSET_ROTATION 6
-    ENTITY_WALK 64, 6, 2
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 125
-    EXECUTE_SUBROUTINE .sub_14D778
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .wife_hostess_with_baby
+    SET_ASSET_ROTATION SOUTHEAST
+    ENTITY_WALK 64, SOUTHEAST, 2
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 125
+    EXECUTE_SUBROUTINE .wife_hostess_post_greet
 
-.executor_2_14D870:
-    SETUP_ENTITY 24, 5, 1
+.karen_hostess_greet:
+    SETUP_ENTITY 24, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 102, 112, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -408, 0, -288
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_14D8BC
-    SET_ASSET_ROTATION 6
-    ENTITY_WALK 64, 6, 2
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 134
-    EXECUTE_SUBROUTINE .sub_14D778
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .wife_hostess_with_baby
+    SET_ASSET_ROTATION SOUTHEAST
+    ENTITY_WALK 64, SOUTHEAST, 2
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 134
+    EXECUTE_SUBROUTINE .wife_hostess_post_greet
 
-.branch_14D8BC:
+.wife_hostess_with_baby:
     SET_HOLDING_ANIMATION_FLAG TRUE
-    SPAWN_EXECUTOR 3, .executor_3_14D8CC
+    SPAWN_EXECUTOR 3, .baby_entity_setup
     RETURN_FROM_SUBROUTINE
 
-.executor_3_14D8CC:
-    SETUP_ENTITY 39, 93, 1
+.baby_entity_setup:
+    SETUP_ENTITY 39, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 39, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    BRANCH_U8_VAR_WITHIN_RANGE 30, 255, gBabyAge, .branch_14D908
+    BRANCH_U8_VAR_WITHIN_RANGE 30, 255, gBabyAge, .baby_older_anim
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 213
 
-.sub_14D8F8:
+.baby_attach_to_wife:
     SET_ENTITY_TRACKING_TARGET 24, 0, 24, 20, 254
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D908:
+.baby_older_anim:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 221
-    EXECUTE_SUBROUTINE .sub_14D8F8
+    EXECUTE_SUBROUTINE .baby_attach_to_wife
 
-.sub_14D910:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14D9A4
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14D9BC
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14D9D4
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14D9EC
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14DA04
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14DA14
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14DA24
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14DA3C
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14DA54
-    EXECUTE_SUBROUTINE .sub_14DA6C
+; ----- Tribute walk paths -----
+; Each path takes the tribute from the entry point to its slot
+; in the crowd. Selected by D_801886D2 (1..9); tribute 10+
+; falls through to .tribute_walk_path_overflow.
+.tribute_walk_to_position:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_walk_path_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_walk_path_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_walk_path_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_walk_path_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_walk_path_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_walk_path_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_walk_path_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_walk_path_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_walk_path_9
+    EXECUTE_SUBROUTINE .tribute_walk_path_overflow
 
-.branch_14D9A4:
-    ENTITY_WALK 72, 4, 2
-    ENTITY_WALK 48, 2, 2
-    SET_ASSET_ROTATION 7
-    EXECUTE_SUBROUTINE .sub_14B960
+.tribute_walk_path_1:
+    ENTITY_WALK 72, NORTHEAST, 2
+    ENTITY_WALK 48, NORTHWEST, 2
+    SET_ASSET_ROTATION SOUTH
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D9BC:
-    ENTITY_WALK 48, 2, 2
-    ENTITY_WALK 48, 4, 2
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_14B960
+.tribute_walk_path_2:
+    ENTITY_WALK 48, NORTHWEST, 2
+    ENTITY_WALK 48, NORTHEAST, 2
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D9D4:
-    ENTITY_WALK 72, 4, 2
-    ENTITY_WALK 24, 2, 2
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+.tribute_walk_path_3:
+    ENTITY_WALK 72, NORTHEAST, 2
+    ENTITY_WALK 24, NORTHWEST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14D9EC:
-    ENTITY_WALK 24, 2, 2
-    ENTITY_WALK 24, 4, 2
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_14B960
+.tribute_walk_path_4:
+    ENTITY_WALK 24, NORTHWEST, 2
+    ENTITY_WALK 24, NORTHEAST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14DA04:
-    ENTITY_WALK 72, 4, 2
-    SET_ASSET_ROTATION 1
-    EXECUTE_SUBROUTINE .sub_14B960
+.tribute_walk_path_5:
+    ENTITY_WALK 72, NORTHEAST, 2
+    SET_ASSET_ROTATION WEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14DA14:
-    ENTITY_WALK 48, 4, 2
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_14B960
+.tribute_walk_path_6:
+    ENTITY_WALK 48, NORTHEAST, 2
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14DA24:
-    ENTITY_WALK 48, 2, 2
-    ENTITY_WALK 8, 0, 2
-    SET_ASSET_ROTATION 5
-    EXECUTE_SUBROUTINE .sub_14B960
+.tribute_walk_path_7:
+    ENTITY_WALK 48, NORTHWEST, 2
+    ENTITY_WALK 8, SOUTHWEST, 2
+    SET_ASSET_ROTATION EAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14DA3C:
-    ENTITY_WALK 48, 2, 2
-    ENTITY_WALK 24, 4, 2
-    SET_ASSET_ROTATION 5
-    EXECUTE_SUBROUTINE .sub_14B960
+.tribute_walk_path_8:
+    ENTITY_WALK 48, NORTHWEST, 2
+    ENTITY_WALK 24, NORTHEAST, 2
+    SET_ASSET_ROTATION EAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14DA54:
-    ENTITY_WALK 24, 2, 2
-    ENTITY_WALK 8, 0, 2
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_14B960
+.tribute_walk_path_9:
+    ENTITY_WALK 24, NORTHWEST, 2
+    ENTITY_WALK 8, SOUTHWEST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_14DA6C:
-    EXECUTE_SUBROUTINE .sub_14B960
+.tribute_walk_path_overflow:
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14DA70:
-    SETUP_ENTITY 25, 1, 1
+.tribute_maria_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DA8C:
-    SETUP_ENTITY 26, 1, 1
+.tribute_maria_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DAA8:
-    SETUP_ENTITY 27, 1, 1
+.tribute_maria_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DAC4:
-    SETUP_ENTITY 28, 1, 1
+.tribute_maria_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DAE0:
-    SETUP_ENTITY 29, 1, 1
+.tribute_maria_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DAFC:
-    SETUP_ENTITY 30, 1, 1
+.tribute_maria_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DB18:
-    SETUP_ENTITY 31, 1, 1
+.tribute_maria_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DB34:
-    SETUP_ENTITY 32, 1, 1
+.tribute_maria_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DB50:
-    SETUP_ENTITY 33, 1, 1
+.tribute_maria_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DB6C:
-    SETUP_ENTITY 34, 1, 1
+.tribute_maria_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_4_14DB88:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14DA70
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14DA8C
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14DAA8
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14DAC4
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14DAE0
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14DAFC
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14DB18
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14DB34
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14DB50
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14DB6C
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 51
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .branch_14CA6C
-    EXECUTE_SUBROUTINE .sub_14D910
+; ============================================================
+; Tribute executors - 23 villagers
+; ============================================================
+; Each .tribute_<npc> executor:
+;   1. dispatches on D_801886D2 (1..N) into a per-slot setup
+;      branch that calls SETUP_ENTITY at the matching slot
+;      (slot 25 = 1st tribute, 26 = 2nd, ... 34 = 10th);
+;   2. runs .tribute_walk_in_path to walk the NPC on-screen;
+;   3. emits the NPC tribute line (text 51..63 / 144..153);
+;   4. runs .tribute_walk_post_greet to finish positioning;
+;   5. chains executor 41 to the next link in the dispatch
+;      chain so the next tribute can be considered.
+.tribute_maria:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_maria_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_maria_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_maria_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_maria_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_maria_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_maria_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_maria_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_maria_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_maria_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_maria_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 51
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_maria
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14DC44:
-    SETUP_ENTITY 25, 2, 1
+.tribute_popuri_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DC60:
-    SETUP_ENTITY 26, 2, 1
+.tribute_popuri_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DC7C:
-    SETUP_ENTITY 27, 2, 1
+.tribute_popuri_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DC98:
-    SETUP_ENTITY 28, 2, 1
+.tribute_popuri_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DCB4:
-    SETUP_ENTITY 29, 2, 1
+.tribute_popuri_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DCD0:
-    SETUP_ENTITY 30, 2, 1
+.tribute_popuri_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DCEC:
-    SETUP_ENTITY 31, 2, 1
+.tribute_popuri_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DD08:
-    SETUP_ENTITY 32, 2, 1
+.tribute_popuri_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DD24:
-    SETUP_ENTITY 33, 2, 1
+.tribute_popuri_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DD40:
-    SETUP_ENTITY 34, 2, 1
+.tribute_popuri_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_5_14DD5C:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14DC44
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14DC60
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14DC7C
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14DC98
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14DCB4
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14DCD0
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14DCEC
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14DD08
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14DD24
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14DD40
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 52
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .branch_14C964
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_popuri:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_popuri_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_popuri_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_popuri_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_popuri_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_popuri_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_popuri_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_popuri_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_popuri_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_popuri_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_popuri_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 52
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_popuri
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14DE18:
-    SETUP_ENTITY 25, 3, 1
+.tribute_elli_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DE34:
-    SETUP_ENTITY 26, 3, 1
+.tribute_elli_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DE50:
-    SETUP_ENTITY 27, 3, 1
+.tribute_elli_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DE6C:
-    SETUP_ENTITY 28, 3, 1
+.tribute_elli_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DE88:
-    SETUP_ENTITY 29, 3, 1
+.tribute_elli_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DEA4:
-    SETUP_ENTITY 30, 3, 1
+.tribute_elli_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DEC0:
-    SETUP_ENTITY 31, 3, 1
+.tribute_elli_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DEDC:
-    SETUP_ENTITY 32, 3, 1
+.tribute_elli_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DEF8:
-    SETUP_ENTITY 33, 3, 1
+.tribute_elli_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14DF14:
-    SETUP_ENTITY 34, 3, 1
+.tribute_elli_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_6_14DF30:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14DE18
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14DE34
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14DE50
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14DE6C
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14DE88
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14DEA4
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14DEC0
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14DEDC
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14DEF8
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14DF14
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 53
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .branch_14C9B8
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_elli:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_elli_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_elli_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_elli_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_elli_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_elli_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_elli_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_elli_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_elli_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_elli_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_elli_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 53
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_elli
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14DFEC:
-    SETUP_ENTITY 25, 4, 1
+.tribute_ann_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E008:
-    SETUP_ENTITY 26, 4, 1
+.tribute_ann_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E024:
-    SETUP_ENTITY 27, 4, 1
+.tribute_ann_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E040:
-    SETUP_ENTITY 28, 4, 1
+.tribute_ann_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E05C:
-    SETUP_ENTITY 29, 4, 1
+.tribute_ann_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E078:
-    SETUP_ENTITY 30, 4, 1
+.tribute_ann_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E094:
+.tribute_ann_slot_7:
     SETUP_ENTITY 31, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E0B0:
-    SETUP_ENTITY 32, 4, 1
+.tribute_ann_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E0CC:
-    SETUP_ENTITY 33, 4, 1
+.tribute_ann_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E0E8:
-    SETUP_ENTITY 34, 4, 1
+.tribute_ann_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_7_14E104:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14DFEC
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14E008
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14E024
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14E040
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14E05C
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14E078
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14E094
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14E0B0
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14E0CC
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14E0E8
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 54
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .branch_14CA0C
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_ann:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_ann_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_ann_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_ann_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_ann_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_ann_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_ann_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_ann_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_ann_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_ann_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_ann_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 54
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_ann
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14E1C0:
-    SETUP_ENTITY 25, 5, 1
+.tribute_karen_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E1DC:
-    SETUP_ENTITY 26, 5, 1
+.tribute_karen_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E1F8:
-    SETUP_ENTITY 27, 5, 1
+.tribute_karen_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E214:
-    SETUP_ENTITY 28, 5, 1
+.tribute_karen_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E230:
-    SETUP_ENTITY 29, 5, 1
+.tribute_karen_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E24C:
-    SETUP_ENTITY 30, 5, 1
+.tribute_karen_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E268:
-    SETUP_ENTITY 31, 5, 1
+.tribute_karen_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E284:
-    SETUP_ENTITY 32, 5, 1
+.tribute_karen_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E2A0:
-    SETUP_ENTITY 33, 5, 1
+.tribute_karen_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E2BC:
-    SETUP_ENTITY 34, 5, 1
+.tribute_karen_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_8_14E2D8:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14E1C0
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14E1DC
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14E1F8
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14E214
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14E230
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14E24C
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14E268
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14E284
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14E2A0
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14E2BC
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 55
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .branch_14C904
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_karen:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_karen_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_karen_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_karen_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_karen_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_karen_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_karen_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_karen_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_karen_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_karen_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_karen_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 55
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_karen
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14E394:
-    SETUP_ENTITY 25, 7, 1
+.tribute_harris_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E3B0:
-    SETUP_ENTITY 26, 7, 1
+.tribute_harris_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E3CC:
-    SETUP_ENTITY 27, 7, 1
+.tribute_harris_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E3E8:
-    SETUP_ENTITY 28, 7, 1
+.tribute_harris_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E404:
-    SETUP_ENTITY 29, 7, 1
+.tribute_harris_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E420:
-    SETUP_ENTITY 30, 7, 1
+.tribute_harris_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E43C:
+.tribute_harris_slot_7:
     SETUP_ENTITY 31, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E458:
-    SETUP_ENTITY 32, 7, 1
+.tribute_harris_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E474:
-    SETUP_ENTITY 33, 7, 1
+.tribute_harris_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E490:
-    SETUP_ENTITY 34, 7, 1
+.tribute_harris_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_9_14E4AC:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14E394
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14E3B0
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14E3CC
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14E3E8
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14E404
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14E420
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14E43C
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14E458
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14E474
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14E490
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 56
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .branch_14CA88
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_harris:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_harris_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_harris_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_harris_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_harris_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_harris_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_harris_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_harris_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_harris_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_harris_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_harris_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 56
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_finalize
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14E568:
-    SETUP_ENTITY 25, 8, 1
+.tribute_gray_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E584:
-    SETUP_ENTITY 26, 8, 1
+.tribute_gray_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E5A0:
-    SETUP_ENTITY 27, 8, 1
+.tribute_gray_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E5BC:
-    SETUP_ENTITY 28, 8, 1
+.tribute_gray_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E5D8:
-    SETUP_ENTITY 29, 8, 1
+.tribute_gray_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E5F4:
-    SETUP_ENTITY 30, 8, 1
+.tribute_gray_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E610:
+.tribute_gray_slot_7:
     SETUP_ENTITY 31, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E62C:
-    SETUP_ENTITY 32, 8, 1
+.tribute_gray_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E648:
-    SETUP_ENTITY 33, 8, 1
+.tribute_gray_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E664:
-    SETUP_ENTITY 34, 8, 1
+.tribute_gray_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_10_14E680:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14E568
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14E584
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14E5A0
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14E5BC
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14E5D8
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14E5F4
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14E610
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14E62C
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14E648
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14E664
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 57
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C980
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_gray:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_gray_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_gray_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_gray_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_gray_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_gray_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_gray_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_gray_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_gray_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_gray_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_gray_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 57
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_gray
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14E73C:
-    SETUP_ENTITY 25, 9, 1
+.tribute_jeff_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E758:
-    SETUP_ENTITY 26, 9, 1
+.tribute_jeff_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E774:
-    SETUP_ENTITY 27, 9, 1
+.tribute_jeff_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E790:
-    SETUP_ENTITY 28, 9, 1
+.tribute_jeff_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E7AC:
-    SETUP_ENTITY 29, 9, 1
+.tribute_jeff_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E7C8:
-    SETUP_ENTITY 30, 9, 1
+.tribute_jeff_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E7E4:
+.tribute_jeff_slot_7:
     SETUP_ENTITY 31, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E800:
-    SETUP_ENTITY 32, 9, 1
+.tribute_jeff_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E81C:
-    SETUP_ENTITY 33, 9, 1
+.tribute_jeff_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E838:
-    SETUP_ENTITY 34, 9, 1
+.tribute_jeff_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_11_14E854:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14E73C
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14E758
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14E774
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14E790
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14E7AC
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14E7C8
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14E7E4
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14E800
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14E81C
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14E838
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 58
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C9D4
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_jeff:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_jeff_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_jeff_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_jeff_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_jeff_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_jeff_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_jeff_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_jeff_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_jeff_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_jeff_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_jeff_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 58
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_jeff
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14E910:
-    SETUP_ENTITY 25, 10, 1
+.tribute_cliff_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E92C:
-    SETUP_ENTITY 26, 10, 1
+.tribute_cliff_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E948:
-    SETUP_ENTITY 27, 10, 1
+.tribute_cliff_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E964:
-    SETUP_ENTITY 28, 10, 1
+.tribute_cliff_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E980:
-    SETUP_ENTITY 29, 10, 1
+.tribute_cliff_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E99C:
-    SETUP_ENTITY 30, 10, 1
+.tribute_cliff_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E9B8:
+.tribute_cliff_slot_7:
     SETUP_ENTITY 31, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E9D4:
-    SETUP_ENTITY 32, 10, 1
+.tribute_cliff_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14E9F0:
-    SETUP_ENTITY 33, 10, 1
+.tribute_cliff_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EA0C:
-    SETUP_ENTITY 34, 10, 1
+.tribute_cliff_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_12_14EA28:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14E910
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14E92C
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14E948
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14E964
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14E980
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14E99C
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14E9B8
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14E9D4
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14E9F0
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14EA0C
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 59
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .branch_14CA34
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_cliff:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_cliff_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_cliff_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_cliff_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_cliff_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_cliff_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_cliff_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_cliff_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_cliff_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_cliff_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_cliff_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 59
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_cliff
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14EAE4:
-    SETUP_ENTITY 25, 11, 1
+.tribute_kai_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EB00:
-    SETUP_ENTITY 26, 11, 1
+.tribute_kai_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EB1C:
-    SETUP_ENTITY 27, 11, 1
+.tribute_kai_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EB38:
-    SETUP_ENTITY 28, 11, 1
+.tribute_kai_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EB54:
-    SETUP_ENTITY 29, 11, 1
+.tribute_kai_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EB70:
-    SETUP_ENTITY 30, 11, 1
+.tribute_kai_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EB8C:
+.tribute_kai_slot_7:
     SETUP_ENTITY 31, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EBA8:
-    SETUP_ENTITY 32, 11, 1
+.tribute_kai_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EBC4:
-    SETUP_ENTITY 33, 11, 1
+.tribute_kai_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EBE0:
-    SETUP_ENTITY 34, 11, 1
+.tribute_kai_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_13_14EBFC:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14EAE4
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14EB00
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14EB1C
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14EB38
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14EB54
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14EB70
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14EB8C
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14EBA8
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14EBC4
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14EBE0
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 60
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .branch_14C92C
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_kai:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_kai_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_kai_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_kai_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_kai_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_kai_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_kai_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_kai_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_kai_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_kai_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_kai_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 60
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_kai
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14ECB8:
-    SETUP_ENTITY 25, 21, 1
+.tribute_kent_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14ECD4:
-    SETUP_ENTITY 26, 21, 1
+.tribute_kent_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14ECF0:
-    SETUP_ENTITY 27, 21, 1
+.tribute_kent_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14ED0C:
-    SETUP_ENTITY 28, 21, 1
+.tribute_kent_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14ED28:
-    SETUP_ENTITY 29, 21, 1
+.tribute_kent_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14ED44:
-    SETUP_ENTITY 30, 21, 1
+.tribute_kent_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14ED60:
-    SETUP_ENTITY 31, 21, 1
+.tribute_kent_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14ED7C:
-    SETUP_ENTITY 32, 21, 1
+.tribute_kent_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14ED98:
-    SETUP_ENTITY 33, 21, 1
+.tribute_kent_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EDB4:
-    SETUP_ENTITY 34, 21, 1
+.tribute_kent_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_14_14EDD0:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14ECB8
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14ECD4
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14ECF0
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14ED0C
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14ED28
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14ED44
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14ED60
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14ED7C
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14ED98
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14EDB4
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 61
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C8A4
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_kent:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_kent_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_kent_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_kent_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_kent_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_kent_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_kent_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_kent_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_kent_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_kent_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_kent_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 61
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_kent
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14EE8C:
-    SETUP_ENTITY 25, 22, 1
+.tribute_stu_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EEA8:
-    SETUP_ENTITY 26, 22, 1
+.tribute_stu_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EEC4:
-    SETUP_ENTITY 27, 22, 1
+.tribute_stu_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EEE0:
-    SETUP_ENTITY 28, 22, 1
+.tribute_stu_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EEFC:
-    SETUP_ENTITY 29, 22, 1
+.tribute_stu_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EF18:
-    SETUP_ENTITY 30, 22, 1
+.tribute_stu_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EF34:
-    SETUP_ENTITY 31, 22, 1
+.tribute_stu_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EF50:
-    SETUP_ENTITY 32, 22, 1
+.tribute_stu_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EF6C:
-    SETUP_ENTITY 33, 22, 1
+.tribute_stu_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14EF88:
-    SETUP_ENTITY 34, 22, 1
+.tribute_stu_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_15_14EFA4:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14EE8C
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14EEA8
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14EEC4
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14EEE0
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14EEFC
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14EF18
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14EF34
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14EF50
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14EF6C
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14EF88
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 62
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C8C0
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_stu:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_stu_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_stu_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_stu_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_stu_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_stu_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_stu_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_stu_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_stu_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_stu_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_stu_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 62
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_stu
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14F060:
-    SETUP_ENTITY 25, 24, 1
+.tribute_may_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_MAY, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F07C:
-    SETUP_ENTITY 26, 24, 1
+.tribute_may_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_MAY, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_16_14F098:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14F060
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14F07C
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 63
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C80C
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_may:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_may_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_may_slot_2
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 63
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_may
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.executor_17_14F0D4:
-    SETUP_ENTITY 25, 27, 1
+.tribute_shipper:
+    SETUP_ENTITY 25, ENTITY_ASSET_SHIPPER, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 144
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C800
-    EXECUTE_SUBROUTINE .sub_14D910
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 144
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_shipper
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14F108:
-    SETUP_ENTITY 25, 26, 1
+.tribute_pastor_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_PASTOR, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F124:
-    SETUP_ENTITY 26, 26, 1
+.tribute_pastor_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_PASTOR, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F140:
-    SETUP_ENTITY 27, 26, 1
+.tribute_pastor_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_PASTOR, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_18_14F15C:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14F108
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14F124
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14F140
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 145
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C818
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_pastor:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_pastor_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_pastor_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_pastor_slot_3
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 145
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_pastor
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14F1A8:
-    SETUP_ENTITY 25, 25, 1
+.tribute_rick_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_RICK, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F1C4:
-    SETUP_ENTITY 26, 25, 1
+.tribute_rick_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_RICK, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F1E0:
-    SETUP_ENTITY 27, 25, 1
+.tribute_rick_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_RICK, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F1FC:
-    SETUP_ENTITY 28, 25, 1
+.tribute_rick_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_RICK, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_19_14F218:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14F1A8
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14F1C4
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14F1E0
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14F1FC
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 146
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C824
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_rick:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_rick_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_rick_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_rick_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_rick_slot_4
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 146
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_rick
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14F274:
-    SETUP_ENTITY 25, 18, 1
+.tribute_gotz_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_GOTZ, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F290:
-    SETUP_ENTITY 26, 18, 1
+.tribute_gotz_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_GOTZ, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F2AC:
-    SETUP_ENTITY 27, 18, 1
+.tribute_gotz_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_GOTZ, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F2C8:
-    SETUP_ENTITY 28, 18, 1
+.tribute_gotz_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_GOTZ, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F2E4:
-    SETUP_ENTITY 29, 18, 1
+.tribute_gotz_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_GOTZ, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_20_14F300:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14F274
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14F290
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14F2AC
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14F2C8
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14F2E4
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 147
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C830
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_gotz:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_gotz_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_gotz_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_gotz_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_gotz_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_gotz_slot_5
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 147
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_gotz
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14F36C:
-    SETUP_ENTITY 25, 19, 1
+.tribute_sasha_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_SASHA, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F388:
-    SETUP_ENTITY 26, 19, 1
+.tribute_sasha_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_SASHA, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F3A4:
-    SETUP_ENTITY 27, 19, 1
+.tribute_sasha_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_SASHA, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F3C0:
-    SETUP_ENTITY 28, 19, 1
+.tribute_sasha_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_SASHA, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F3DC:
-    SETUP_ENTITY 29, 19, 1
+.tribute_sasha_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_SASHA, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F3F8:
-    SETUP_ENTITY 30, 19, 1
+.tribute_sasha_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_SASHA, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_21_14F414:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14F36C
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14F388
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14F3A4
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14F3C0
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14F3DC
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14F3F8
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 148
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C83C
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_sasha:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_sasha_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_sasha_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_sasha_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_sasha_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_sasha_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_sasha_slot_6
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 148
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_sasha
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14F490:
-    SETUP_ENTITY 25, 14, 1
+.tribute_lillia_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_LILLIA, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F4AC:
-    SETUP_ENTITY 26, 14, 1
+.tribute_lillia_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_LILLIA, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F4C8:
-    SETUP_ENTITY 27, 14, 1
+.tribute_lillia_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_LILLIA, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F4E4:
-    SETUP_ENTITY 28, 14, 1
+.tribute_lillia_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_LILLIA, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F500:
-    SETUP_ENTITY 29, 14, 1
+.tribute_lillia_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_LILLIA, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F51C:
-    SETUP_ENTITY 30, 14, 1
+.tribute_lillia_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_LILLIA, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F538:
-    SETUP_ENTITY 31, 14, 1
+.tribute_lillia_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_LILLIA, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_22_14F554:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14F490
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14F4AC
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14F4C8
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14F4E4
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14F500
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14F51C
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14F538
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 149
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C848
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_lillia:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_lillia_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_lillia_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_lillia_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_lillia_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_lillia_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_lillia_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_lillia_slot_7
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 149
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_lillia
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14F5E0:
-    SETUP_ENTITY 25, 15, 1
+.tribute_basil_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F5FC:
-    SETUP_ENTITY 26, 15, 1
+.tribute_basil_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F618:
-    SETUP_ENTITY 27, 15, 1
+.tribute_basil_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F634:
-    SETUP_ENTITY 28, 15, 1
+.tribute_basil_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F650:
-    SETUP_ENTITY 29, 15, 1
+.tribute_basil_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F66C:
-    SETUP_ENTITY 30, 15, 1
+.tribute_basil_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F688:
-    SETUP_ENTITY 31, 15, 1
+.tribute_basil_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F6A4:
-    SETUP_ENTITY 32, 15, 1
+.tribute_basil_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_23_14F6C0:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14F5E0
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14F5FC
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14F618
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14F634
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14F650
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14F66C
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14F688
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14F6A4
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 150
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C854
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_basil:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_basil_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_basil_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_basil_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_basil_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_basil_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_basil_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_basil_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_basil_slot_8
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 150
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_basil
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14F75C:
-    SETUP_ENTITY 25, 12, 1
+.tribute_mayor_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F778:
-    SETUP_ENTITY 26, 12, 1
+.tribute_mayor_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F794:
-    SETUP_ENTITY 27, 12, 1
+.tribute_mayor_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F7B0:
-    SETUP_ENTITY 28, 12, 1
+.tribute_mayor_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F7CC:
-    SETUP_ENTITY 29, 12, 1
+.tribute_mayor_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F7E8:
-    SETUP_ENTITY 30, 12, 1
+.tribute_mayor_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F804:
-    SETUP_ENTITY 31, 12, 1
+.tribute_mayor_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F820:
-    SETUP_ENTITY 32, 12, 1
+.tribute_mayor_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F83C:
-    SETUP_ENTITY 33, 12, 1
+.tribute_mayor_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_24_14F858:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14F75C
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14F778
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14F794
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14F7B0
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14F7CC
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14F7E8
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14F804
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14F820
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14F83C
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 151
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C860
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_mayor:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_mayor_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_mayor_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_mayor_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_mayor_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_mayor_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_mayor_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_mayor_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_mayor_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_mayor_slot_9
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 151
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_mayor
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14F904:
-    SETUP_ENTITY 25, 13, 1
+.tribute_mayor_wife_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F920:
-    SETUP_ENTITY 26, 13, 1
+.tribute_mayor_wife_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F93C:
-    SETUP_ENTITY 27, 13, 1
+.tribute_mayor_wife_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F958:
-    SETUP_ENTITY 28, 13, 1
+.tribute_mayor_wife_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F974:
-    SETUP_ENTITY 29, 13, 1
+.tribute_mayor_wife_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F990:
-    SETUP_ENTITY 30, 13, 1
+.tribute_mayor_wife_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F9AC:
-    SETUP_ENTITY 31, 13, 1
+.tribute_mayor_wife_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F9C8:
-    SETUP_ENTITY 32, 13, 1
+.tribute_mayor_wife_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14F9E4:
-    SETUP_ENTITY 33, 13, 1
+.tribute_mayor_wife_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14FA00:
-    SETUP_ENTITY 34, 13, 1
+.tribute_mayor_wife_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_25_14FA1C:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14F904
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14F920
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14F93C
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14F958
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14F974
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14F990
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14F9AC
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14F9C8
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14F9E4
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14FA00
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 152
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C86C
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_mayor_wife:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_mayor_wife_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_mayor_wife_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_mayor_wife_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_mayor_wife_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_mayor_wife_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_mayor_wife_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_mayor_wife_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_mayor_wife_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_mayor_wife_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_mayor_wife_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 152
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_mayor_wife
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.branch_14FAD8:
-    SETUP_ENTITY 25, 17, 1
+.tribute_doug_slot_1:
+    SETUP_ENTITY 25, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14FAF4:
-    SETUP_ENTITY 26, 17, 1
+.tribute_doug_slot_2:
+    SETUP_ENTITY 26, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 26, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14FB10:
-    SETUP_ENTITY 27, 17, 1
+.tribute_doug_slot_3:
+    SETUP_ENTITY 27, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 27, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14FB2C:
-    SETUP_ENTITY 28, 17, 1
+.tribute_doug_slot_4:
+    SETUP_ENTITY 28, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 28, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14FB48:
-    SETUP_ENTITY 29, 17, 1
+.tribute_doug_slot_5:
+    SETUP_ENTITY 29, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 29, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14FB64:
-    SETUP_ENTITY 30, 17, 1
+.tribute_doug_slot_6:
+    SETUP_ENTITY 30, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14FB80:
-    SETUP_ENTITY 31, 17, 1
+.tribute_doug_slot_7:
+    SETUP_ENTITY 31, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14FB9C:
-    SETUP_ENTITY 32, 17, 1
+.tribute_doug_slot_8:
+    SETUP_ENTITY 32, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14FBB8:
-    SETUP_ENTITY 33, 17, 1
+.tribute_doug_slot_9:
+    SETUP_ENTITY 33, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14FBD4:
-    SETUP_ENTITY 34, 17, 1
+.tribute_doug_slot_10:
+    SETUP_ENTITY 34, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 34, 0, 8, 0, 0, 0, 0
     RETURN_FROM_SUBROUTINE
 
-.executor_26_14FBF0:
-    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .branch_14FAD8
-    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .branch_14FAF4
-    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .branch_14FB10
-    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .branch_14FB2C
-    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .branch_14FB48
-    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .branch_14FB64
-    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .branch_14FB80
-    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .branch_14FB9C
-    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .branch_14FBB8
-    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .branch_14FBD4
-    EXECUTE_SUBROUTINE .sub_14FCAC
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 153
-    EXECUTE_SUBROUTINE .sub_14FCC8
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_14C888
-    EXECUTE_SUBROUTINE .sub_14D910
+.tribute_doug:
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, D_801886D2, .tribute_doug_slot_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, D_801886D2, .tribute_doug_slot_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, D_801886D2, .tribute_doug_slot_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, D_801886D2, .tribute_doug_slot_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, D_801886D2, .tribute_doug_slot_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, D_801886D2, .tribute_doug_slot_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, D_801886D2, .tribute_doug_slot_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, D_801886D2, .tribute_doug_slot_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, D_801886D2, .tribute_doug_slot_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, D_801886D2, .tribute_doug_slot_10
+    EXECUTE_SUBROUTINE .tribute_walk_in_path
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 153
+    EXECUTE_SUBROUTINE .tribute_walk_post_greet
+    SET_OTHER_EXECUTOR_PTR 41, .tribute_dispatch_after_doug
+    EXECUTE_SUBROUTINE .tribute_walk_to_position
 
-.sub_14FCAC:
+; ----- Shared tribute helpers -----
+.tribute_walk_in_path:
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -248, 0, -96
-    ENTITY_WALK 80, 4, 2
+    ENTITY_WALK 80, NORTHEAST, 2
     RETURN_FROM_SUBROUTINE
 
-.sub_14FCC8:
+.tribute_walk_post_greet:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 8, 4, 2
-    ENTITY_WALK 52, 2, 2
+    ENTITY_WALK 8, NORTHEAST, 2
+    ENTITY_WALK 52, NORTHWEST, 2
     RETURN_FROM_SUBROUTINE
 
-.branch_14FCE4:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14FD64
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_14FD74
+.cutscene_1553_low_happiness_sequence:
+    SET_OTHER_EXECUTOR_PTR 0, .player_walk_NE_24
+    SET_OTHER_EXECUTOR_PTR 1, .wife_walk_NE_24
     SET_WAIT_FRAMES 24
-    EXECUTE_SUBROUTINE .sub_14C704
+    EXECUTE_SUBROUTINE .dad_final_line_dispatch
 
-.executor_0_14FCFC:
-    ENTITY_WALK 64, 4, 2
-    EXECUTE_SUBROUTINE .sub_14B960
+; ----- Cutscene 1553 walk helpers (paired player + wife paths) -----
+.player_walk_NE_64:
+    ENTITY_WALK 64, NORTHEAST, 2
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14FD08:
-    ENTITY_WALK 64, 4, 2
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_walk_NE_64:
+    ENTITY_WALK 64, NORTHEAST, 2
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_14FD14:
-    ENTITY_WALK 16, 4, 2
-    ENTITY_WALK 128, 6, 2
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+.player_walk_high_happiness_path:
+    ENTITY_WALK 16, NORTHEAST, 2
+    ENTITY_WALK 128, SOUTHEAST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14FD2C:
-    ENTITY_WALK 32, 4, 2
-    ENTITY_WALK 112, 6, 2
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_walk_high_happiness_path:
+    ENTITY_WALK 32, NORTHEAST, 2
+    ENTITY_WALK 112, SOUTHEAST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_14FD44:
-    ENTITY_WALK 112, 2, 2
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+.player_walk_NW_112:
+    ENTITY_WALK 112, NORTHWEST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14FD54:
-    ENTITY_WALK 112, 2, 2
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_walk_NW_112:
+    ENTITY_WALK 112, NORTHWEST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_14FD64:
-    ENTITY_WALK 24, 4, 2
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_14B960
+.player_walk_NE_24:
+    ENTITY_WALK 24, NORTHEAST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_14FD74:
-    ENTITY_WALK 24, 4, 2
-    EXECUTE_SUBROUTINE .sub_14B960
+.wife_walk_NE_24:
+    ENTITY_WALK 24, NORTHEAST, 2
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_14FD80:
-    SET_ASSET_ROTATION 4
+; ----- Cutscene 1553 bad-ending body + dog trick -----
+.cutscene_1553_bad_ending_line:
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 20
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 29
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 29
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 10
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_14FE08
-    ENTITY_WALK 32, 0, 2
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_14C490
-    ENTITY_WALK 32, 0, 2
-    ENTITY_WALK 96, 2, 2
-    EXECUTE_SUBROUTINE .sub_14B960
+    SET_OTHER_EXECUTOR_PTR 2, .cutscene_1553_dog_trick_sequence
+    ENTITY_WALK 32, SOUTHWEST, 2
+    SET_OTHER_EXECUTOR_PTR 0, .cutscene_1553_bad_ending_exit
+    ENTITY_WALK 32, SOUTHWEST, 2
+    ENTITY_WALK 96, NORTHWEST, 2
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_14FDC8:
-    SETUP_ENTITY 1, 64, 1
+.setup_player_dog_slot1:
+    SETUP_ENTITY 1, ENTITY_ASSET_PLAYER_DOG, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_2_14FDEC:
-    EXECUTE_SUBROUTINE .sub_14FDC8
-    SET_ASSET_ROTATION 0
+.cutscene_1553_dog_entry_walk:
+    EXECUTE_SUBROUTINE .setup_player_dog_slot1
+    SET_ASSET_ROTATION SOUTHWEST
     SET_COORDINATES -248, 0, -240
-    ENTITY_WALK 80, 0, 2
-    EXECUTE_SUBROUTINE .sub_14B960
+    ENTITY_WALK 80, SOUTHWEST, 2
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_14FE08:
+.cutscene_1553_dog_trick_sequence:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 144
     SET_SFX 59, 128
     SET_WAIT_FRAMES 10
@@ -3132,9 +3239,12 @@
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 40
-    EXECUTE_SUBROUTINE .sub_14B960
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_14FE54:
+; ============================================================
+; Credits roll - shared fade cycle + main player
+; ============================================================
+.credits_slide_fade_cycle:
     UPDATE_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 142
@@ -3142,7 +3252,7 @@
     WAIT_RGBA_FINISHED
     RETURN_FROM_SUBROUTINE
 
-.executor_32_14FE74:
+.credits_roll_player:
     SET_AUDIO_SEQUENCE 0, _openingSegmentRomStart, _openingSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 128
     SET_SPECIAL_BIT 8, gCutsceneCompletionFlags
@@ -3151,41 +3261,41 @@
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_150048
     SET_RGBA 0, 0, 0, 0
     SET_COORDINATES 0, 0, 254
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_150054
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_150060
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_15006C
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_150078
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_150084
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_150090
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_15009C
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_1500A8
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_1500B4
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_1500C0
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_1500CC
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_150108
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_1500D8
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_1500E4
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_1500F0
-    EXECUTE_SUBROUTINE .sub_14FE54
+    EXECUTE_SUBROUTINE .credits_slide_fade_cycle
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 255, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -9, 352
-    INIT_MESSAGE_BOX_TYPE2 0, 49, 143
+    INIT_MESSAGE_BOX_TYPE2 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 143
     UPDATE_MESSAGE_BOX_RGBA 0, 0, 0, 0, 0, 255
     SET_WAIT_FRAMES 15
     UPDATE_MESSAGE_BOX_RGBA 0, 255, 255, 255, 255, 8
@@ -3201,22 +3311,25 @@
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_WAIT_FRAMES 30
     SET_U16_VALUE 0, D_80180710
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_14FFF0
-    EXECUTE_SUBROUTINE .sub_14B954
+    BRANCH_ON_SPECIAL_BIT 0, var0, .credits_bad_ending_flag_set
+    EXECUTE_SUBROUTINE .exit_demo
 
-.branch_14FFF0:
+.credits_bad_ending_flag_set:
     SET_U16_VALUE 65535, D_80180710
-    EXECUTE_SUBROUTINE .sub_14B954
+    EXECUTE_SUBROUTINE .exit_demo
 
-.branch_14FFFC:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_80205209, .branch_14C3D8
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_801D62C6, .branch_14C3D8
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_801886D0, .branch_14C3D8
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_14C3D8
-    BRANCH_U16_VAR_WITHIN_RANGE 301, 65535, D_801C3B62, .branch_14C3D8
+.cutscene_1553_gate_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_80205209, .cutscene_1553_start
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_801D62C6, .cutscene_1553_start
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_801886D0, .cutscene_1553_start
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cutscene_1553_start
+    BRANCH_U16_VAR_WITHIN_RANGE 301, 65535, D_801C3B62, .cutscene_1553_start
     SET_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_14C3D8
+    EXECUTE_SUBROUTINE .cutscene_1553_start
 
+; ----- Credits animation tables -----
+; Each .anim_* is one slide frame; .credits_roll_player walks
+; through them in display order via SET_ANIM_DATA_PTR_WITH_FLAG.
 .anim_150048:
     .anim_frame 0, 0xFE, (0, 0, 0), 255, 0
     .anim_end

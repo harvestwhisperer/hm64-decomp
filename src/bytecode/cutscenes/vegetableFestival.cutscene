@@ -1,110 +1,190 @@
-; ============================================
-; Bank 14 - Square Fireworks
-; ============================================
+; ============================================================
+; Bank 20 - Vegetable Festival
+; ============================================================
+;
+; Cutscene indices:
+;   1000 - entrance checkpoint: four NPCs (Mayor, Sasha, Shipper,
+;          May) gate the player. Talking to the Mayor triggers
+;          the submit vegetable or judge dialogue.
+;   1001 - festival proper: full square layout, free-roam
+;          mingling with all villagers, then automatic judging
+;          and results announcement.
+;
+; External variables used by the scene:
+;   D_801C3B60 (u8) - submitted vegetable slot (1..7)
+;                     1=turnip, 2=potato, 3=cabbage, 4=tomato,
+;                     5=corn, 6=eggplant, 7=strawberry.
+;                     Mapping is verified by the submission
+;                     branches in the Mayor 1000 dispatcher.
+;   D_80189824 (u16) - festival tick counter. Starts at 0 and
+;                      increments once per frame while no NPC
+;                      is talking (var0 bit 0 clear). When it
+;                      reaches exactly 1000, judging starts.
+;
+; var0 bits:
+;   BIT_DIALOGUE_ACTIVE (0)  - an NPC dialogue is active; pauses
+;                              the 1001 tick counter and suppresses
+;                              re-entry on interact.
+;   BIT_JUDGING_PHASE   (15) - judging phase active; NPC dispatchers
+;                              short-circuit back to their wait
+;                              state when set.
+;
+; var1 bits:
+;   BIT_GRANTED_<NPC> (0..13) - per-NPC first-interaction affection
+;                               already granted latches. Cleared
+;                               each boot.
+;
+; Executor slots (1001):
+;   0       - player
+;   1..5    - Maria, Popuri, Elli, Ann, Karen (5 skipped when
+;             lifeEventBits[1] bit 15 is set)
+;   6       - Mayor (spawned only at judging start)
+;   7..11   - Rick, Potion Shop Dealer, Kent, Stu, Gourmet Judge
+;   12..27  - crowd props (entity asset 93 = HOLDABLE_ITEMS_2)
+;   40      - festival poll loop (watches tick counter and level
+;             interaction index)
+;   41      - judging podium map asset
+; ============================================================
 
 #include "entities.h"
+#include "texts.h"
+#include "dialogues.h"
 
 #define MAIN_MAP_INDEX 0
+
+#define MARRIED 0
 
 .buffer 2
 
 ; Local variables
-.local var0, u32
-.local var1, u32
+.local var0, u32, 0
+.local var1, u32, 0
 
 .array npcAffection, u8
 .array lifeEventBits, u32
 .array dailyEventBits, u32
 
-#define MARIA 0
+; var0 bit flags
+#define BIT_DIALOGUE_ACTIVE  0
+#define BIT_JUDGING_PHASE    15
 
-#define MARRIED 0
+; var1 bit flags: per-NPC first-interaction affection-granted latches
+#define BIT_GRANTED_MAYOR    0
+#define BIT_GRANTED_SASHA    1
+#define BIT_GRANTED_SHIPPER  2
+#define BIT_GRANTED_MAY      3
+#define BIT_GRANTED_MARIA    4
+#define BIT_GRANTED_POPURI   5
+#define BIT_GRANTED_ELLI     6
+#define BIT_GRANTED_ANN      7
+#define BIT_GRANTED_KAREN    8
+#define BIT_GRANTED_RICK     9
+#define BIT_GRANTED_DEALER   10
+#define BIT_GRANTED_KENT     11
+#define BIT_GRANTED_STU      12
+#define BIT_GRANTED_JUDGE    13
 
-.entry
+; ============================================================
+; Entry dispatch
+; ============================================================
+
+.dispatch:
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_U16_VAR_WITHIN_RANGE 1000, 1000, gCutsceneIndex, .branch_1345C4
-    BRANCH_U16_VAR_WITHIN_RANGE 1001, 1001, gCutsceneIndex, .branch_134A24
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U16_VAR_WITHIN_RANGE 1000, 1000, gCutsceneIndex, .cutscene_1000_start
+    BRANCH_U16_VAR_WITHIN_RANGE 1001, 1001, gCutsceneIndex, .cutscene_1001_start
 
-.sub_134540:
-    TOGGLE_SPECIAL_BIT 0, var0
+; ============================================================
+; Shared helpers
+; ============================================================
+
+.finish_cutscene:
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
     SET_U32_VALUE 0, 2150584324
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_134560:
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_10_134568:
-    SET_CALLBACK_ROUTINE 65535, 32768, .branch_135C28
-    EXECUTE_SUBROUTINE .sub_134560
+.stu_route_to_kent_gossip:
+    SET_CALLBACK_ROUTINE 65535, 32768, .kent_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_134574:
+.setup_message_box:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_134594:
+.setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
-.executor_9_1345B4:
-    SET_ASSET_ROTATION 7
-    EXECUTE_SUBROUTINE .sub_134560
+; ----- Post-gossip idle stubs (swapped into Kent/Stu slots) -----
 
-.executor_10_1345BC:
-    SET_ASSET_ROTATION 3
-    EXECUTE_SUBROUTINE .sub_134560
+.kent_face_south:
+    SET_ASSET_ROTATION SOUTH
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1345C4:
+.stu_face_north:
+    SET_ASSET_ROTATION NORTH
+    EXECUTE_SUBROUTINE .wait_loop
+
+; ============================================================
+; Cutscene 1000 - entrance checkpoint
+; ============================================================
+
+.cutscene_1000_start:
     SET_U8_VALUE 0, D_801C3B60
-    SPAWN_EXECUTOR 1, .executor_1_1345F0
-    SPAWN_EXECUTOR 2, .executor_2_134838
-    SPAWN_EXECUTOR 3, .executor_3_1348DC
-    SPAWN_EXECUTOR 4, .executor_4_134980
+    SPAWN_EXECUTOR 1, .executor_1_mayor_gate
+    SPAWN_EXECUTOR 2, .executor_2_sasha_gate
+    SPAWN_EXECUTOR 3, .executor_3_shipper_gate
+    SPAWN_EXECUTOR 4, .executor_4_may_gate
     DEACTIVATE_SELF
 
-.executor_1_1345F0:
-    SETUP_ENTITY 30, 12, 1
+; ----- Mayor (slot 1) -----
+
+.executor_1_mayor_gate:
+    SETUP_ENTITY 30, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 30, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -424, 0, -64
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
 
-.sub_13461C:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_134628
-    EXECUTE_SUBROUTINE .sub_134560
+.mayor_gate_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .mayor_gate_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_134628:
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 0, var1, .branch_13464C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xB
-    SET_SPECIAL_BIT 0, var1
+.mayor_gate_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_MAYOR, var1, .mayor_gate_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR]
+    SET_SPECIAL_BIT BIT_GRANTED_MAYOR, var1
 
-.branch_13464C:
+.mayor_gate_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 24, gHour, .branch_134708
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .branch_134708
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_134714
-    INIT_DIALOGUE_SESSION 0, 46, 0
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 24, gHour, .mayor_gate_too_late
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .mayor_gate_too_late
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .mayor_gate_check_veg
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VEGETABLE_FESTIVAL, 0
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_1346A0
-    BRANCH_ON_DIALOGUE 0, 1, .branch_1346F0
+    BRANCH_ON_DIALOGUE 0, 0, .mayor_gate_option_judge
+    BRANCH_ON_DIALOGUE 0, 1, .mayor_gate_option_dismiss
 
-.branch_1346A0:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 2
+.mayor_gate_option_judge:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 2
 
-.sub_1346A8:
+.mayor_gate_transition_to_festival:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    TOGGLE_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    CLEAR_SPECIAL_BIT 15, gCutsceneCompletionFlags
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 8
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
@@ -114,183 +194,193 @@
     DEACTIVATE_EXECUTOR 4
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_134540
+    EXECUTE_SUBROUTINE .finish_cutscene
 
-.branch_1346F0:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 3
+.mayor_gate_option_dismiss:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 3
 
-.sub_1346F8:
+.mayor_gate_resume_wait:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_13461C
+    EXECUTE_SUBROUTINE .mayor_gate_wait
 
-.branch_134708:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 43
-    EXECUTE_SUBROUTINE .sub_1346F8
+.mayor_gate_too_late:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 43
+    EXECUTE_SUBROUTINE .mayor_gate_resume_wait
 
-.branch_134714:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gItemBeingHeld, .branch_134774
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gItemBeingHeld, .branch_134790
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gItemBeingHeld, .branch_1347AC
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gItemBeingHeld, .branch_1347C8
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gItemBeingHeld, .branch_1347E4
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gItemBeingHeld, .branch_134800
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, gItemBeingHeld, .branch_13481C
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 42
-    EXECUTE_SUBROUTINE .sub_1346F8
+.mayor_gate_check_veg:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gItemBeingHeld, .mayor_submit_turnip
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gItemBeingHeld, .mayor_submit_potato
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gItemBeingHeld, .mayor_submit_cabbage
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gItemBeingHeld, .mayor_submit_tomato
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gItemBeingHeld, .mayor_submit_corn
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gItemBeingHeld, .mayor_submit_eggplant
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, gItemBeingHeld, .mayor_submit_strawberry
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 42
+    EXECUTE_SUBROUTINE .mayor_gate_resume_wait
 
-.branch_134774:
+.mayor_submit_turnip:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     SET_U8_VALUE 1, D_801C3B60
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 4
-    EXECUTE_SUBROUTINE .sub_1346A8
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 4
+    EXECUTE_SUBROUTINE .mayor_gate_transition_to_festival
 
-.branch_134790:
+.mayor_submit_potato:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     SET_U8_VALUE 2, D_801C3B60
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 4
-    EXECUTE_SUBROUTINE .sub_1346A8
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 4
+    EXECUTE_SUBROUTINE .mayor_gate_transition_to_festival
 
-.branch_1347AC:
+.mayor_submit_cabbage:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     SET_U8_VALUE 3, D_801C3B60
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 4
-    EXECUTE_SUBROUTINE .sub_1346A8
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 4
+    EXECUTE_SUBROUTINE .mayor_gate_transition_to_festival
 
-.branch_1347C8:
+.mayor_submit_tomato:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     SET_U8_VALUE 4, D_801C3B60
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 4
-    EXECUTE_SUBROUTINE .sub_1346A8
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 4
+    EXECUTE_SUBROUTINE .mayor_gate_transition_to_festival
 
-.branch_1347E4:
+.mayor_submit_corn:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     SET_U8_VALUE 5, D_801C3B60
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 4
-    EXECUTE_SUBROUTINE .sub_1346A8
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 4
+    EXECUTE_SUBROUTINE .mayor_gate_transition_to_festival
 
-.branch_134800:
+.mayor_submit_eggplant:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     SET_U8_VALUE 6, D_801C3B60
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 4
-    EXECUTE_SUBROUTINE .sub_1346A8
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 4
+    EXECUTE_SUBROUTINE .mayor_gate_transition_to_festival
 
-.branch_13481C:
+.mayor_submit_strawberry:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     SET_U8_VALUE 7, D_801C3B60
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 4
-    EXECUTE_SUBROUTINE .sub_1346A8
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 4
+    EXECUTE_SUBROUTINE .mayor_gate_transition_to_festival
 
-.executor_2_134838:
-    SETUP_ENTITY 31, 13, 1
+; ----- Sasha (slot 2) -----
+
+.executor_2_sasha_gate:
+    SETUP_ENTITY 31, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -424, 0, -96
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
 
-.sub_134864:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_134870
-    EXECUTE_SUBROUTINE .sub_134560
+.sasha_gate_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .sasha_gate_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_134870:
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 1, var1, .branch_134894
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xC
-    SET_SPECIAL_BIT 1, var1
+.sasha_gate_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_SASHA, var1, .sasha_gate_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[0xC]
+    SET_SPECIAL_BIT BIT_GRANTED_SASHA, var1
 
-.branch_134894:
+.sasha_gate_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 24, gHour, .branch_1348D0
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .branch_1348D0
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 34
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 24, gHour, .sasha_gate_too_late
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .sasha_gate_too_late
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 34
 
-.sub_1348C0:
+.sasha_gate_resume_wait:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_134864
+    EXECUTE_SUBROUTINE .sasha_gate_wait
 
-.branch_1348D0:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 44
-    EXECUTE_SUBROUTINE .sub_1348C0
+.sasha_gate_too_late:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 44
+    EXECUTE_SUBROUTINE .sasha_gate_resume_wait
 
-.executor_3_1348DC:
-    SETUP_ENTITY 32, 27, 1
+; ----- Shipper (slot 3) -----
+
+.executor_3_shipper_gate:
+    SETUP_ENTITY 32, ENTITY_ASSET_SHIPPER, 1
     SET_ENTITY_ANIMATIONS 32, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -424, 0, 160
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
 
-.sub_134908:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_134914
-    EXECUTE_SUBROUTINE .sub_134560
+.shipper_gate_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .shipper_gate_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_134914:
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 2, var1, .branch_134938
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1A
-    SET_SPECIAL_BIT 2, var1
+.shipper_gate_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_SHIPPER, var1, .shipper_gate_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_SHIPPER]
+    SET_SPECIAL_BIT BIT_GRANTED_SHIPPER, var1
 
-.branch_134938:
+.shipper_gate_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 24, gHour, .branch_134974
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .branch_134974
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 35
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 24, gHour, .shipper_gate_too_late
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .shipper_gate_too_late
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 35
 
-.sub_134964:
+.shipper_gate_resume_wait:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_134908
+    EXECUTE_SUBROUTINE .shipper_gate_wait
 
-.branch_134974:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 45
-    EXECUTE_SUBROUTINE .sub_134964
+.shipper_gate_too_late:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 45
+    EXECUTE_SUBROUTINE .shipper_gate_resume_wait
 
-.executor_4_134980:
-    SETUP_ENTITY 33, 24, 1
+; ----- May (slot 4) -----
+
+.executor_4_may_gate:
+    SETUP_ENTITY 33, ENTITY_ASSET_MAY, 1
     SET_ENTITY_ANIMATIONS 33, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -424, 0, 192
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
 
-.sub_1349AC:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1349B8
-    EXECUTE_SUBROUTINE .sub_134560
+.may_gate_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .may_gate_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1349B8:
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 3, var1, .branch_1349DC
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x17
-    SET_SPECIAL_BIT 3, var1
+.may_gate_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_MAY, var1, .may_gate_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[0x17]
+    SET_SPECIAL_BIT BIT_GRANTED_MAY, var1
 
-.branch_1349DC:
+.may_gate_talk:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 24, gHour, .branch_134A18
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .branch_134A18
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 36
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 24, gHour, .may_gate_too_late
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .may_gate_too_late
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 36
 
-.sub_134A08:
+.may_gate_resume_wait:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_1349AC
+    EXECUTE_SUBROUTINE .may_gate_wait
 
-.branch_134A18:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 46
-    EXECUTE_SUBROUTINE .sub_134A08
+.may_gate_too_late:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 46
+    EXECUTE_SUBROUTINE .may_gate_resume_wait
 
-.branch_134A24:
+; ============================================================
+; Cutscene 1001 - festival proper
+; ============================================================
+
+.cutscene_1001_start:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 12, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 13, gCutsceneCompletionFlags
@@ -299,117 +389,119 @@
     SET_SPECIAL_BIT 13, dailyEventBits[1]
     SET_AUDIO_SEQUENCE 0, _festivalThemeSegmentRomStart, _festivalThemeSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
-    SPAWN_EXECUTOR 1, .executor_1_13563C
-    SPAWN_EXECUTOR 2, .executor_2_135718
-    SPAWN_EXECUTOR 3, .executor_3_1357F4
-    SPAWN_EXECUTOR 4, .executor_4_1358D0
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_134A9C
-    SPAWN_EXECUTOR 5, .executor_5_1359AC
+    SPAWN_EXECUTOR 1, .executor_1_maria
+    SPAWN_EXECUTOR 2, .executor_2_popuri
+    SPAWN_EXECUTOR 3, .executor_3_elli
+    SPAWN_EXECUTOR 4, .executor_4_ann
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .after_maybe_karen
+    SPAWN_EXECUTOR 5, .executor_5_karen
 
-.branch_134A9C:
-    SPAWN_EXECUTOR 7, .executor_7_135AB4
-    SPAWN_EXECUTOR 8, .executor_8_135B54
-    SPAWN_EXECUTOR 9, .executor_9_135BF4
-    SPAWN_EXECUTOR 10, .executor_10_135D00
-    SPAWN_EXECUTOR 11, .executor_11_135E78
-    SPAWN_EXECUTOR 12, .executor_12_1352DC
-    SPAWN_EXECUTOR 13, .executor_13_135308
-    SPAWN_EXECUTOR 14, .executor_14_135334
-    SPAWN_EXECUTOR 15, .executor_15_135360
-    SPAWN_EXECUTOR 17, .executor_17_1353B8
-    SPAWN_EXECUTOR 18, .executor_18_1353E4
-    SPAWN_EXECUTOR 19, .executor_19_135410
-    SPAWN_EXECUTOR 20, .executor_20_13543C
-    SPAWN_EXECUTOR 21, .executor_21_135468
-    SPAWN_EXECUTOR 22, .executor_22_135494
-    SPAWN_EXECUTOR 23, .executor_23_1354C0
-    SPAWN_EXECUTOR 24, .executor_24_1354EC
-    SPAWN_EXECUTOR 25, .executor_25_135518
-    SPAWN_EXECUTOR 26, .executor_26_135544
-    SPAWN_EXECUTOR 27, .executor_27_135570
+.after_maybe_karen:
+    SPAWN_EXECUTOR 7, .executor_7_rick
+    SPAWN_EXECUTOR 8, .executor_8_dealer
+    SPAWN_EXECUTOR 9, .executor_9_kent
+    SPAWN_EXECUTOR 10, .executor_10_stu
+    SPAWN_EXECUTOR 11, .executor_11_judge
+    SPAWN_EXECUTOR 12, .executor_12_prop
+    SPAWN_EXECUTOR 13, .executor_13_prop
+    SPAWN_EXECUTOR 14, .executor_14_prop
+    SPAWN_EXECUTOR 15, .executor_15_prop
+    SPAWN_EXECUTOR 17, .executor_17_prop
+    SPAWN_EXECUTOR 18, .executor_18_prop
+    SPAWN_EXECUTOR 19, .executor_19_prop
+    SPAWN_EXECUTOR 20, .executor_20_prop
+    SPAWN_EXECUTOR 21, .executor_21_prop
+    SPAWN_EXECUTOR 22, .executor_22_prop
+    SPAWN_EXECUTOR 23, .executor_23_prop
+    SPAWN_EXECUTOR 24, .executor_24_prop
+    SPAWN_EXECUTOR 25, .executor_25_prop
+    SPAWN_EXECUTOR 26, .executor_26_prop
+    SPAWN_EXECUTOR 27, .executor_27_winning_prop
     INIT_MAP_ADDITION 3, 0
     INIT_MAP_ADDITION 4, 0
     INIT_MAP_ADDITION 5, 0
     INIT_MAP_ADDITION 6, 0
-    EXECUTE_SUBROUTINE .sub_134594
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 0, 0, 0
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     SET_WAIT_FRAMES 32
     SET_U16_VALUE 0, D_80189824
-    SPAWN_EXECUTOR 40, .executor_40_134BA4
+    SPAWN_EXECUTOR 40, .executor_40_festival_poll
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_41_134B90:
+.executor_41_podium:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES -96, 96, -48
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_40_134BA4:
+.executor_40_festival_poll:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_SPECIAL_BIT 0, var0, .executor_40_134BA4
+    BRANCH_ON_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0, .executor_40_festival_poll
     UPDATE_U16_VALUE 1, 9999, D_80189824
-    BRANCH_U16_VAR_WITHIN_RANGE 1000, 1000, D_80189824, .branch_134C28
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, cutsceneLevelInteractionIndex, .branch_134BEC
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, cutsceneLevelInteractionIndex, .branch_134BEC
-    EXECUTE_SUBROUTINE .executor_40_134BA4
+    BRANCH_U16_VAR_WITHIN_RANGE 1000, 1000, D_80189824, .start_judging
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, cutsceneLevelInteractionIndex, .prompt_player_to_return
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, cutsceneLevelInteractionIndex, .prompt_player_to_return
+    EXECUTE_SUBROUTINE .executor_40_festival_poll
 
-.branch_134BEC:
-    SPAWN_EXECUTOR 0, .executor_0_134BF8
+.prompt_player_to_return:
+    SPAWN_EXECUTOR 0, .executor_0_judging_not_ready
     DEACTIVATE_SELF
 
-.executor_0_134BF8:
-    EXECUTE_SUBROUTINE .sub_134594
-    EXECUTE_SUBROUTINE .sub_134574
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 47
+.executor_0_judging_not_ready:
+    EXECUTE_SUBROUTINE .setup_player
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 47
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 8, 2, 2
-    SPAWN_EXECUTOR 40, .executor_40_134BA4
+    ENTITY_WALK 8, NORTHWEST, 2
+    SPAWN_EXECUTOR 40, .executor_40_festival_poll
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.branch_134C28:
-    SET_SPECIAL_BIT 15, var0
+; ----- Judging phase -----
+
+.start_judging:
+    SET_SPECIAL_BIT BIT_JUDGING_PHASE, var0
     PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_134574
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 27
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 27
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     SET_WAIT_FRAMES 32
     TOGGLE_PAUSE_ENTITIES
-    SPAWN_EXECUTOR 0, .executor_0_135624
+    SPAWN_EXECUTOR 0, .executor_0_judging_pos
     SET_WAIT_FRAMES 1
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_135708
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_1357E4
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_1358C0
-    SET_OTHER_EXECUTOR_PTR 4, .executor_4_13599C
-    SET_OTHER_EXECUTOR_PTR 5, .executor_5_135A78
-    SPAWN_EXECUTOR 6, .executor_6_135A88
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_135B44
-    SET_OTHER_EXECUTOR_PTR 8, .executor_8_135BE4
-    SET_OTHER_EXECUTOR_PTR 9, .executor_9_135CF0
-    SET_OTHER_EXECUTOR_PTR 10, .executor_10_135E00
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_135F14
-    SPAWN_EXECUTOR 41, .executor_41_134B90
-    TOGGLE_SPECIAL_BIT 15, var0
+    SET_OTHER_EXECUTOR_PTR 1, .maria_judging_pos
+    SET_OTHER_EXECUTOR_PTR 2, .popuri_judging_pos
+    SET_OTHER_EXECUTOR_PTR 3, .elli_judging_pos
+    SET_OTHER_EXECUTOR_PTR 4, .ann_judging_pos
+    SET_OTHER_EXECUTOR_PTR 5, .karen_judging_pos
+    SPAWN_EXECUTOR 6, .executor_6_mayor_judging
+    SET_OTHER_EXECUTOR_PTR 7, .rick_judging_pos
+    SET_OTHER_EXECUTOR_PTR 8, .dealer_judging_pos
+    SET_OTHER_EXECUTOR_PTR 9, .kent_judging_pos
+    SET_OTHER_EXECUTOR_PTR 10, .stu_judging_pos
+    SET_OTHER_EXECUTOR_PTR 11, .judge_judging_pos
+    SPAWN_EXECUTOR 41, .executor_41_podium
+    CLEAR_SPECIAL_BIT BIT_JUDGING_PHASE, var0
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     SET_WAIT_FRAMES 32
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_801C3B60, .branch_134EB8
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, D_801C3B60, .check_winner_by_year
 
-.sub_134CE8:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 30
+.announce_dealer_wins:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 30
     WAIT_MESSAGE_BOX_CLOSED 0
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_135F28
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 32
+    SET_OTHER_EXECUTOR_PTR 11, .judge_praise_anim
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 32
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 31
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 31
 
-.sub_134D10:
+.fade_out_and_exit:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 30
@@ -447,837 +539,886 @@
     SET_WAIT_FRAMES 1
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_134540
+    EXECUTE_SUBROUTINE .finish_cutscene
 
-.branch_134DB4:
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x1
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0xE
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x1A
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0xB
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0xC
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x17
+.announce_player_wins:
+    UPDATE_U8_VALUE 5, 255, npcAffection[POPURI]
+    UPDATE_U8_VALUE 5, 255, npcAffection[0xE]
+    UPDATE_U8_VALUE 5, 255, npcAffection[NPC_SHIPPER]
+    UPDATE_U8_VALUE 3, 255, npcAffection[NPC_MAYOR]
+    UPDATE_U8_VALUE 3, 255, npcAffection[0xC]
+    UPDATE_U8_VALUE 3, 255, npcAffection[0x17]
     UPDATE_U8_VALUE 3, 255, npcAffection[MARIA]
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x2
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x3
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_134E38
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x4
+    UPDATE_U8_VALUE 3, 255, npcAffection[ELLI]
+    UPDATE_U8_VALUE 3, 255, npcAffection[ANN]
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .after_karen_bump
+    UPDATE_U8_VALUE 3, 255, npcAffection[KAREN]
 
-.branch_134E38:
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x18
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x13
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x14
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x15
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x28
+.after_karen_bump:
+    UPDATE_U8_VALUE 3, 255, npcAffection[NPC_RICK]
+    UPDATE_U8_VALUE 3, 255, npcAffection[NPC_POTION_SHOP_DEALER]
+    UPDATE_U8_VALUE 3, 255, npcAffection[NPC_KENT]
+    UPDATE_U8_VALUE 3, 255, npcAffection[0x15]
+    UPDATE_U8_VALUE 3, 255, npcAffection[NPC_GOURMET_JUDGE]
     UPDATE_U8_VALUE 5, 255, gHappiness
-    SET_SPECIAL_BIT 18, lifeEventBits + 0x10
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 28
+    SET_SPECIAL_BIT 18, lifeEventBits[4]
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 28
     WAIT_MESSAGE_BOX_CLOSED 0
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_135F28
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 32
+    SET_OTHER_EXECUTOR_PTR 11, .judge_praise_anim
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 32
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 29
-    EXECUTE_SUBROUTINE .sub_134D10
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 29
+    EXECUTE_SUBROUTINE .fade_out_and_exit
 
-.branch_134EB8:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gYear, .branch_134F34
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gYear, .branch_134F8C
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gYear, .branch_134FE4
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_801C3B60, .branch_135234
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_801C3B60, .branch_13524C
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_801C3B60, .branch_135264
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_801C3B60, .branch_13527C
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_801C3B60, .branch_135294
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_801C3B60, .branch_1352AC
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, D_801C3B60, .branch_1352C4
-    EXECUTE_SUBROUTINE .sub_134CE8
+; ----- Year- and vegetable-specific winner thresholds -----
+;
+; Each combination of gYear and submitted vegetable (slot 1..7)
+; branches to a threshold test against the corresponding
+; totalXShipped counter. If the test passes, the player wins;
+; otherwise the Potion Shop Dealer wins.
+;
+;   Year 1:   100
+;   Year 2:   150
+;   Year 3:   200
+;   Year 4+:  255
 
-.branch_134F34:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_801C3B60, .branch_13503C
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_801C3B60, .branch_135054
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_801C3B60, .branch_13506C
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_801C3B60, .branch_135084
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_801C3B60, .branch_13509C
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_801C3B60, .branch_1350B4
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, D_801C3B60, .branch_1350CC
-    EXECUTE_SUBROUTINE .sub_134CE8
+.check_winner_by_year:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gYear, .check_y1
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gYear, .check_y2
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gYear, .check_y3
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_801C3B60, .y4_turnip
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_801C3B60, .y4_potato
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_801C3B60, .y4_cabbage
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_801C3B60, .y4_tomato
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_801C3B60, .y4_corn
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_801C3B60, .y4_eggplant
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, D_801C3B60, .y4_strawberry
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_134F8C:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_801C3B60, .branch_1350E4
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_801C3B60, .branch_1350FC
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_801C3B60, .branch_135114
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_801C3B60, .branch_13512C
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_801C3B60, .branch_135144
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_801C3B60, .branch_13515C
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, D_801C3B60, .branch_135174
-    EXECUTE_SUBROUTINE .sub_134CE8
+.check_y1:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_801C3B60, .y1_turnip
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_801C3B60, .y1_potato
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_801C3B60, .y1_cabbage
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_801C3B60, .y1_tomato
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_801C3B60, .y1_corn
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_801C3B60, .y1_eggplant
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, D_801C3B60, .y1_strawberry
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_134FE4:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_801C3B60, .branch_13518C
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_801C3B60, .branch_1351A4
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_801C3B60, .branch_1351BC
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_801C3B60, .branch_1351D4
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_801C3B60, .branch_1351EC
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_801C3B60, .branch_135204
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, D_801C3B60, .branch_13521C
-    EXECUTE_SUBROUTINE .sub_134CE8
+.check_y2:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_801C3B60, .y2_turnip
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_801C3B60, .y2_potato
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_801C3B60, .y2_cabbage
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_801C3B60, .y2_tomato
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_801C3B60, .y2_corn
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_801C3B60, .y2_eggplant
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, D_801C3B60, .y2_strawberry
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_13503C:
-    BRANCH_U32_VAR_WITHIN_RANGE 100, 99999, totalTurnipsShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.check_y3:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_801C3B60, .y3_turnip
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_801C3B60, .y3_potato
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_801C3B60, .y3_cabbage
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_801C3B60, .y3_tomato
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_801C3B60, .y3_corn
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_801C3B60, .y3_eggplant
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, D_801C3B60, .y3_strawberry
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_135054:
-    BRANCH_U32_VAR_WITHIN_RANGE 100, 99999, totalPotatoesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y1_turnip:
+    BRANCH_U32_VAR_WITHIN_RANGE 100, 99999, totalTurnipsShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_13506C:
-    BRANCH_U32_VAR_WITHIN_RANGE 100, 999999, totalCabbageShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y1_potato:
+    BRANCH_U32_VAR_WITHIN_RANGE 100, 99999, totalPotatoesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_135084:
-    BRANCH_U32_VAR_WITHIN_RANGE 100, 999999, totalTomatoesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y1_cabbage:
+    BRANCH_U32_VAR_WITHIN_RANGE 100, 999999, totalCabbageShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_13509C:
-    BRANCH_U32_VAR_WITHIN_RANGE 100, 999999, totalCornShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y1_tomato:
+    BRANCH_U32_VAR_WITHIN_RANGE 100, 999999, totalTomatoesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_1350B4:
-    BRANCH_U32_VAR_WITHIN_RANGE 100, 999999, totalEggplantsShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y1_corn:
+    BRANCH_U32_VAR_WITHIN_RANGE 100, 999999, totalCornShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_1350CC:
-    BRANCH_U32_VAR_WITHIN_RANGE 100, 999999, totalStrawberriesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y1_eggplant:
+    BRANCH_U32_VAR_WITHIN_RANGE 100, 999999, totalEggplantsShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_1350E4:
-    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalTurnipsShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y1_strawberry:
+    BRANCH_U32_VAR_WITHIN_RANGE 100, 999999, totalStrawberriesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_1350FC:
-    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalPotatoesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y2_turnip:
+    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalTurnipsShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_135114:
-    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalCabbageShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y2_potato:
+    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalPotatoesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_13512C:
-    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalTomatoesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y2_cabbage:
+    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalCabbageShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_135144:
-    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalCornShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y2_tomato:
+    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalTomatoesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_13515C:
-    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalEggplantsShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y2_corn:
+    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalCornShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_135174:
-    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalStrawberriesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y2_eggplant:
+    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalEggplantsShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_13518C:
-    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalTurnipsShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y2_strawberry:
+    BRANCH_U32_VAR_WITHIN_RANGE 150, 999999, totalStrawberriesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_1351A4:
-    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalPotatoesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y3_turnip:
+    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalTurnipsShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_1351BC:
-    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalCabbageShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y3_potato:
+    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalPotatoesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_1351D4:
-    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalTomatoesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y3_cabbage:
+    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalCabbageShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_1351EC:
-    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalCornShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y3_tomato:
+    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalTomatoesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_135204:
-    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalEggplantsShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y3_corn:
+    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalCornShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_13521C:
-    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalStrawberriesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y3_eggplant:
+    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalEggplantsShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_135234:
-    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalTurnipsShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y3_strawberry:
+    BRANCH_U32_VAR_WITHIN_RANGE 200, 999999, totalStrawberriesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_13524C:
-    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalPotatoesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y4_turnip:
+    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalTurnipsShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_135264:
-    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalCabbageShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y4_potato:
+    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalPotatoesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_13527C:
-    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalTomatoesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y4_cabbage:
+    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalCabbageShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_135294:
-    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalCornShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y4_tomato:
+    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalTomatoesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_1352AC:
-    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalEggplantsShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y4_corn:
+    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalCornShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.branch_1352C4:
-    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalStrawberriesShipped, .branch_134DB4
-    EXECUTE_SUBROUTINE .sub_134CE8
+.y4_eggplant:
+    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalEggplantsShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
 
-.executor_12_1352DC:
-    SETUP_ENTITY 22, 93, 1
+.y4_strawberry:
+    BRANCH_U32_VAR_WITHIN_RANGE 255, 999999, totalStrawberriesShipped, .announce_player_wins
+    EXECUTE_SUBROUTINE .announce_dealer_wins
+
+; ============================================================
+; Crowd props (executors 12..27)
+; ============================================================
+; Static entity-asset 93 (HOLDABLE_ITEMS_2) sprites arranged
+; around the podium with vegetable-specific animations
+; (12=turnip, 13=potato, 14=cabbage, 15=tomato, 16=corn,
+; 17=eggplant, 18=strawberry). Executor 27 picks its animation
+; from the submitted vegetable slot (D_801C3B60).
+
+.executor_12_prop:
+    SETUP_ENTITY 22, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 22, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -184, 0, 160
     SET_ENTITY_ANIMATION 12
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_13_135308:
-    SETUP_ENTITY 23, 93, 1
+.executor_13_prop:
+    SETUP_ENTITY 23, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 23, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -144, 0, 160
     SET_ENTITY_ANIMATION 12
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_14_135334:
-    SETUP_ENTITY 24, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+.executor_14_prop:
+    SETUP_ENTITY 24, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 24, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -184, 0, 190
     SET_ENTITY_ANIMATION 15
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_15_135360:
-    SETUP_ENTITY 25, 93, 1
+.executor_15_prop:
+    SETUP_ENTITY 25, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 25, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -144, 0, 190
     SET_ENTITY_ANIMATION 15
-    EXECUTE_SUBROUTINE .sub_134560
-    SETUP_ENTITY 26, 93, 1
+    EXECUTE_SUBROUTINE .wait_loop
+    SETUP_ENTITY 26, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 26, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -130, 0, 190
     SET_ENTITY_ANIMATION 15
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_17_1353B8:
-    SETUP_ENTITY 27, 93, 1
+.executor_17_prop:
+    SETUP_ENTITY 27, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 27, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 32, 0, 160
     SET_ENTITY_ANIMATION 34
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_18_1353E4:
-    SETUP_ENTITY 28, 93, 1
+.executor_18_prop:
+    SETUP_ENTITY 28, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 28, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 80, 0, 160
     SET_ENTITY_ANIMATION 13
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_19_135410:
-    SETUP_ENTITY 29, 93, 1
+.executor_19_prop:
+    SETUP_ENTITY 29, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 29, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 64, 0, 192
     SET_ENTITY_ANIMATION 13
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_13543C:
-    SETUP_ENTITY 30, 93, 1
+.executor_20_prop:
+    SETUP_ENTITY 30, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 30, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -168, 0, -224
     SET_ENTITY_ANIMATION 14
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_21_135468:
-    SETUP_ENTITY 31, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+.executor_21_prop:
+    SETUP_ENTITY 31, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 31, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -192, 0, -196
     SET_ENTITY_ANIMATION 16
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_22_135494:
-    SETUP_ENTITY 32, 93, 1
+.executor_22_prop:
+    SETUP_ENTITY 32, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 32, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -162, 0, -196
     SET_ENTITY_ANIMATION 16
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_23_1354C0:
-    SETUP_ENTITY 33, 93, 1
+.executor_23_prop:
+    SETUP_ENTITY 33, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 33, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -130, 0, -196
     SET_ENTITY_ANIMATION 16
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_24_1354EC:
-    SETUP_ENTITY 34, 93, 1
+.executor_24_prop:
+    SETUP_ENTITY 34, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 34, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 32, 0, -224
     SET_ENTITY_ANIMATION 17
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_25_135518:
-    SETUP_ENTITY 35, 93, 1
+.executor_25_prop:
+    SETUP_ENTITY 35, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 35, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 72, 0, -224
     SET_ENTITY_ANIMATION 17
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_26_135544:
-    SETUP_ENTITY 36, 93, 1
+.executor_26_prop:
+    SETUP_ENTITY 36, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 36, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 80, 0, -194
     SET_ENTITY_ANIMATION 18
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_27_135570:
-    SETUP_ENTITY 37, 93, 1
+.executor_27_winning_prop:
+    SETUP_ENTITY 37, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 37, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 32, 0, -194
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_801C3B60, .branch_1355EC
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_801C3B60, .branch_1355F4
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_801C3B60, .branch_1355FC
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_801C3B60, .branch_135604
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_801C3B60, .branch_13560C
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_801C3B60, .branch_135614
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, D_801C3B60, .branch_13561C
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, D_801C3B60, .winning_prop_turnip
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, D_801C3B60, .winning_prop_potato
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, D_801C3B60, .winning_prop_cabbage
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, D_801C3B60, .winning_prop_tomato
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, D_801C3B60, .winning_prop_corn
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, D_801C3B60, .winning_prop_eggplant
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, D_801C3B60, .winning_prop_strawberry
     DEACTIVATE_SELF
 
-.branch_1355EC:
+.winning_prop_turnip:
     SET_ENTITY_ANIMATION 12
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1355F4:
+.winning_prop_potato:
     SET_ENTITY_ANIMATION 13
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1355FC:
+.winning_prop_cabbage:
     SET_ENTITY_ANIMATION 14
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_135604:
+.winning_prop_tomato:
     SET_ENTITY_ANIMATION 15
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13560C:
+.winning_prop_corn:
     SET_ENTITY_ANIMATION 16
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_135614:
+.winning_prop_eggplant:
     SET_ENTITY_ANIMATION 17
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13561C:
+.winning_prop_strawberry:
     SET_ENTITY_ANIMATION 18
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_135624:
-    EXECUTE_SUBROUTINE .sub_134594
+; ============================================================
+; Player / NPC dispatchers (cutscene 1001)
+; ============================================================
+
+.executor_0_judging_pos:
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -64, 0, -64
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_13563C:
-    SETUP_ENTITY 1, 1, 1
+; ----- Maria -----
+
+.executor_1_maria:
+    SETUP_ENTITY 1, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -160, 0, 128
 
-.branch_135660:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_135670
-    EXECUTE_SUBROUTINE .sub_134560
+.maria_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .maria_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_135670:
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_135660
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 4, var1, .branch_1356A0
+.maria_on_interact:
+    BRANCH_ON_SPECIAL_BIT BIT_JUDGING_PHASE, var0, .maria_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_MARIA, var1, .maria_talk
     UPDATE_U8_VALUE 2, 255, npcAffection[MARIA]
-    SET_SPECIAL_BIT 4, var1
+    SET_SPECIAL_BIT BIT_GRANTED_MARIA, var1
 
-.branch_1356A0:
-    SET_SPECIAL_BIT 0, var0
+.maria_talk:
+    SET_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_1356D8
-    INIT_DIALOGUE_SESSION 0, 46, 2
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .maria_if_wife
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VEGETABLE_FESTIVAL, 2
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_135660
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .maria_wait
 
-.branch_1356D8:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .branch_1356E8
+.maria_if_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_wife_talk
     RETURN_FROM_SUBROUTINE
 
-.branch_1356E8:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 37
+.maria_wife_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 37
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_135660
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .maria_wait
 
-.executor_1_135708:
+.maria_judging_pos:
     SET_COORDINATES -56, 0, 0
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_135718:
-    SETUP_ENTITY 2, 2, 1
+; ----- Popuri -----
+
+.executor_2_popuri:
+    SETUP_ENTITY 2, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 0, 0, 160
 
-.branch_13573C:
-    SET_ASSET_ROTATION 6
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_13574C
-    EXECUTE_SUBROUTINE .sub_134560
+.popuri_wait:
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .popuri_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13574C:
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_13573C
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 5, var1, .branch_13577C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1
-    SET_SPECIAL_BIT 5, var1
+.popuri_on_interact:
+    BRANCH_ON_SPECIAL_BIT BIT_JUDGING_PHASE, var0, .popuri_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_POPURI, var1, .popuri_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[POPURI]
+    SET_SPECIAL_BIT BIT_GRANTED_POPURI, var1
 
-.branch_13577C:
-    SET_SPECIAL_BIT 0, var0
+.popuri_talk:
+    SET_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_1357B4
-    INIT_DIALOGUE_SESSION 0, 46, 3
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .popuri_if_wife
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VEGETABLE_FESTIVAL, 3
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_13573C
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .popuri_wait
 
-.branch_1357B4:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .branch_1357C4
+.popuri_if_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .popuri_wife_talk
     RETURN_FROM_SUBROUTINE
 
-.branch_1357C4:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 38
+.popuri_wife_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 38
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_13573C
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .popuri_wait
 
-.executor_2_1357E4:
+.popuri_judging_pos:
     SET_COORDINATES -32, 0, -32
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_1357F4:
-    SETUP_ENTITY 3, 3, 1
+; ----- Elli -----
+
+.executor_3_elli:
+    SETUP_ENTITY 3, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 64, 0, 128
 
-.branch_135818:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_135828
-    EXECUTE_SUBROUTINE .sub_134560
+.elli_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .elli_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_135828:
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_135818
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 6, var1, .branch_135858
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x2
-    SET_SPECIAL_BIT 6, var1
+.elli_on_interact:
+    BRANCH_ON_SPECIAL_BIT BIT_JUDGING_PHASE, var0, .elli_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_ELLI, var1, .elli_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[ELLI]
+    SET_SPECIAL_BIT BIT_GRANTED_ELLI, var1
 
-.branch_135858:
-    SET_SPECIAL_BIT 0, var0
+.elli_talk:
+    SET_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_135890
-    INIT_DIALOGUE_SESSION 0, 46, 4
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .elli_if_wife
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VEGETABLE_FESTIVAL, 4
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_135818
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .elli_wait
 
-.branch_135890:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .branch_1358A0
+.elli_if_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .elli_wife_talk
     RETURN_FROM_SUBROUTINE
 
-.branch_1358A0:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 39
+.elli_wife_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 39
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_135818
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .elli_wait
 
-.executor_3_1358C0:
+.elli_judging_pos:
     SET_COORDINATES -48, 0, 24
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_1358D0:
-    SETUP_ENTITY 4, 4, 1
+; ----- Ann -----
+
+.executor_4_ann:
+    SETUP_ENTITY 4, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -192, 0, -160
 
-.branch_1358F4:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_135904
-    EXECUTE_SUBROUTINE .sub_134560
+.ann_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .ann_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_135904:
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_1358F4
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 7, var1, .branch_135934
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x3
-    SET_SPECIAL_BIT 7, var1
+.ann_on_interact:
+    BRANCH_ON_SPECIAL_BIT BIT_JUDGING_PHASE, var0, .ann_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_ANN, var1, .ann_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[ANN]
+    SET_SPECIAL_BIT BIT_GRANTED_ANN, var1
 
-.branch_135934:
-    SET_SPECIAL_BIT 0, var0
+.ann_talk:
+    SET_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_13596C
-    INIT_DIALOGUE_SESSION 0, 46, 5
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .ann_if_wife
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VEGETABLE_FESTIVAL, 5
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_1358F4
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .ann_wait
 
-.branch_13596C:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .branch_13597C
+.ann_if_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .ann_wife_talk
     RETURN_FROM_SUBROUTINE
 
-.branch_13597C:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 40
+.ann_wife_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 40
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_1358F4
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .ann_wait
 
-.executor_4_13599C:
+.ann_judging_pos:
     SET_COORDINATES -40, 0, -96
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_1359AC:
-    SETUP_ENTITY 5, 5, 1
+; ----- Karen -----
+
+.executor_5_karen:
+    SETUP_ENTITY 5, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 5, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -224, 0, 192
 
-.branch_1359D0:
-    SET_ASSET_ROTATION 6
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1359E0
-    EXECUTE_SUBROUTINE .sub_134560
+.karen_wait:
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .karen_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1359E0:
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_1359D0
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 8, var1, .branch_135A10
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x4
-    SET_SPECIAL_BIT 8, var1
+.karen_on_interact:
+    BRANCH_ON_SPECIAL_BIT BIT_JUDGING_PHASE, var0, .karen_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_KAREN, var1, .karen_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAREN]
+    SET_SPECIAL_BIT BIT_GRANTED_KAREN, var1
 
-.branch_135A10:
-    SET_SPECIAL_BIT 0, var0
+.karen_talk:
+    SET_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_135A48
-    INIT_DIALOGUE_SESSION 0, 46, 6
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .karen_if_wife
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VEGETABLE_FESTIVAL, 6
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_1359D0
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .karen_wait
 
-.branch_135A48:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .branch_135A58
+.karen_if_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .karen_wife_talk
     RETURN_FROM_SUBROUTINE
 
-.branch_135A58:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 41
+.karen_wife_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 41
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_1359D0
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .karen_wait
 
-.executor_5_135A78:
+.karen_judging_pos:
     SET_COORDINATES -32, 0, -64
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_6_135A88:
-    SETUP_ENTITY 6, 12, 1
+; ----- Mayor (judging phase only) -----
+
+.executor_6_mayor_judging:
+    SETUP_ENTITY 6, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 6, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -160, 0, -64
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_135AB4:
-    SETUP_ENTITY 7, 25, 1
+; ----- Rick -----
+
+.executor_7_rick:
+    SETUP_ENTITY 7, ENTITY_ASSET_RICK, 1
     SET_ENTITY_ANIMATIONS 7, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -160, 0, -256
 
-.branch_135AD8:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_135AE8
-    EXECUTE_SUBROUTINE .sub_134560
+.rick_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .rick_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_135AE8:
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_135AD8
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 9, var1, .branch_135B18
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x18
-    SET_SPECIAL_BIT 9, var1
+.rick_on_interact:
+    BRANCH_ON_SPECIAL_BIT BIT_JUDGING_PHASE, var0, .rick_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_RICK, var1, .rick_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_RICK]
+    SET_SPECIAL_BIT BIT_GRANTED_RICK, var1
 
-.branch_135B18:
-    SET_SPECIAL_BIT 0, var0
+.rick_talk:
+    SET_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
     PAUSE_ENTITIES
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 5
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 5
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_135AD8
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .rick_wait
 
-.executor_7_135B44:
+.rick_judging_pos:
     SET_COORDINATES -48, 0, -128
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_8_135B54:
-    SETUP_ENTITY 8, 20, 1
+; ----- Potion Shop Dealer -----
+
+.executor_8_dealer:
+    SETUP_ENTITY 8, ENTITY_ASSET_POTION_SHOP_DEALER, 1
     SET_ENTITY_ANIMATIONS 8, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 0, 0, -192
 
-.branch_135B78:
-    SET_ASSET_ROTATION 6
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_135B88
-    EXECUTE_SUBROUTINE .sub_134560
+.dealer_wait:
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .dealer_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_135B88:
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_135B78
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 10, var1, .branch_135BB8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x13
-    SET_SPECIAL_BIT 10, var1
+.dealer_on_interact:
+    BRANCH_ON_SPECIAL_BIT BIT_JUDGING_PHASE, var0, .dealer_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_DEALER, var1, .dealer_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_POTION_SHOP_DEALER]
+    SET_SPECIAL_BIT BIT_GRANTED_DEALER, var1
 
-.branch_135BB8:
-    SET_SPECIAL_BIT 0, var0
+.dealer_talk:
+    SET_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
     PAUSE_ENTITIES
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 6
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 6
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_135B78
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .dealer_wait
 
-.executor_8_135BE4:
+.dealer_judging_pos:
     SET_COORDINATES -8, 0, -96
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_9_135BF4:
-    SETUP_ENTITY 9, 21, 1
+; ----- Kent (exec 9) - paired gossip with Stu -----
+
+.executor_9_kent:
+    SETUP_ENTITY 9, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 9, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 64, 0, -160
 
-.branch_135C18:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_135C28
-    EXECUTE_SUBROUTINE .sub_134560
+.kent_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .kent_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_135C28:
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_135C18
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 11, var1, .branch_135C58
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x14
-    SET_SPECIAL_BIT 11, var1
+.kent_on_interact:
+    BRANCH_ON_SPECIAL_BIT BIT_JUDGING_PHASE, var0, .kent_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_KENT, var1, .kent_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_KENT]
+    SET_SPECIAL_BIT BIT_GRANTED_KENT, var1
 
-.branch_135C58:
-    SET_SPECIAL_BIT 0, var0
-    SET_OTHER_EXECUTOR_PTR 10, .executor_10_134568
+.kent_talk:
+    SET_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    SET_OTHER_EXECUTOR_PTR 10, .stu_route_to_kent_gossip
     PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_135E10
-    SET_OTHER_EXECUTOR_PTR 10, .executor_10_1345BC
-    EXECUTE_SUBROUTINE .sub_135E20
-    SET_ASSET_ROTATION 7
-    EXECUTE_SUBROUTINE .sub_135E30
+    EXECUTE_SUBROUTINE .gossip_kent_dislikes
+    SET_OTHER_EXECUTOR_PTR 10, .stu_face_north
+    EXECUTE_SUBROUTINE .gossip_stu_rebuttal
+    SET_ASSET_ROTATION SOUTH
+    EXECUTE_SUBROUTINE .gossip_kent_boasts
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 46, 7
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VEGETABLE_FESTIVAL, 7
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_135CAC
-    BRANCH_ON_DIALOGUE 0, 1, .branch_135CD4
+    BRANCH_ON_DIALOGUE 0, 0, .kent_gossip_picky
+    BRANCH_ON_DIALOGUE 0, 1, .kent_gossip_convinced
 
-.branch_135CAC:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 22
+.kent_gossip_picky:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 22
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    SET_OTHER_EXECUTOR_PTR 10, .executor_10_135D24
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_135C18
+    SET_OTHER_EXECUTOR_PTR 10, .stu_wait
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .kent_wait
 
-.branch_135CD4:
-    EXECUTE_SUBROUTINE .sub_135E40
+.kent_gossip_convinced:
+    EXECUTE_SUBROUTINE .gossip_kent_convinced_seq
     TOGGLE_PAUSE_ENTITIES
-    SET_OTHER_EXECUTOR_PTR 10, .executor_10_135D24
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_135C18
+    SET_OTHER_EXECUTOR_PTR 10, .stu_wait
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .kent_wait
 
-.executor_9_135CF0:
+.kent_judging_pos:
     SET_COORDINATES -64, 0, -32
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_10_135D00:
-    SETUP_ENTITY 10, 22, 1
+; ----- Stu (exec 10) -----
+
+.executor_10_stu:
+    SETUP_ENTITY 10, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 10, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 96, 0, -128
 
-.executor_10_135D24:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_135D34
-    EXECUTE_SUBROUTINE .sub_134560
+.stu_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .stu_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_135D34:
-    BRANCH_ON_SPECIAL_BIT 15, var0, .executor_10_135D24
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 12, var1, .branch_135D64
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x15
-    SET_SPECIAL_BIT 12, var1
+.stu_on_interact:
+    BRANCH_ON_SPECIAL_BIT BIT_JUDGING_PHASE, var0, .stu_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_STU, var1, .stu_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[0x15]
+    SET_SPECIAL_BIT BIT_GRANTED_STU, var1
 
-.branch_135D64:
-    SET_SPECIAL_BIT 0, var0
-    SET_OTHER_EXECUTOR_PTR 9, .executor_10_134568
+.stu_talk:
+    SET_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    SET_OTHER_EXECUTOR_PTR 9, .stu_route_to_kent_gossip
     PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_135E10
-    SET_ASSET_ROTATION 3
-    EXECUTE_SUBROUTINE .sub_135E20
-    SET_OTHER_EXECUTOR_PTR 9, .executor_9_1345B4
-    EXECUTE_SUBROUTINE .sub_135E30
-    SET_OTHER_EXECUTOR_PTR 9, .executor_9_1345B4
-    INIT_DIALOGUE_SESSION 0, 46, 7
+    EXECUTE_SUBROUTINE .gossip_kent_dislikes
+    SET_ASSET_ROTATION NORTH
+    EXECUTE_SUBROUTINE .gossip_stu_rebuttal
+    SET_OTHER_EXECUTOR_PTR 9, .kent_face_south
+    EXECUTE_SUBROUTINE .gossip_kent_boasts
+    SET_OTHER_EXECUTOR_PTR 9, .kent_face_south
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VEGETABLE_FESTIVAL, 7
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_135DBC
-    BRANCH_ON_DIALOGUE 0, 1, .branch_135DE4
+    BRANCH_ON_DIALOGUE 0, 0, .stu_gossip_picky
+    BRANCH_ON_DIALOGUE 0, 1, .stu_gossip_convinced
 
-.branch_135DBC:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 22
+.stu_gossip_picky:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 22
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    SET_OTHER_EXECUTOR_PTR 9, .branch_135C18
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .executor_10_135D24
+    SET_OTHER_EXECUTOR_PTR 9, .kent_wait
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .stu_wait
 
-.branch_135DE4:
-    EXECUTE_SUBROUTINE .sub_135E40
+.stu_gossip_convinced:
+    EXECUTE_SUBROUTINE .gossip_kent_convinced_seq
     TOGGLE_PAUSE_ENTITIES
-    SET_OTHER_EXECUTOR_PTR 9, .branch_135C18
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .executor_10_135D24
+    SET_OTHER_EXECUTOR_PTR 9, .kent_wait
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .stu_wait
 
-.executor_10_135E00:
+.stu_judging_pos:
     SET_COORDINATES -8, 0, -128
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_135E10:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 17
+; ----- Kent/Stu gossip message-box helpers -----
+
+.gossip_kent_dislikes:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 17
     WAIT_MESSAGE_BOX_CLOSED 0
     RETURN_FROM_SUBROUTINE
 
-.sub_135E20:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 18
+.gossip_stu_rebuttal:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 18
     WAIT_MESSAGE_BOX_CLOSED 0
     RETURN_FROM_SUBROUTINE
 
-.sub_135E30:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 19
+.gossip_kent_boasts:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 19
     WAIT_MESSAGE_BOX_CLOSED 0
     RETURN_FROM_SUBROUTINE
 
-.sub_135E40:
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 23
+.gossip_kent_convinced_seq:
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 23
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 24
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 24
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 25
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 25
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 26
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 26
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     RETURN_FROM_SUBROUTINE
 
-.executor_11_135E78:
-    SETUP_ENTITY 11, 37, 1
+; ----- Gourmet Judge -----
+
+.executor_11_judge:
+    SETUP_ENTITY 11, ENTITY_ASSET_GOURMET_JUDGE, 1
     SET_ENTITY_ANIMATIONS 11, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -64, 0, -160
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_WANDER 2, 64, 64
 
-.branch_135EA8:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_135EB4
-    EXECUTE_SUBROUTINE .sub_134560
+.judge_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .judge_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_135EB4:
-    BRANCH_ON_SPECIAL_BIT 15, var0, .branch_135EA8
-    EXECUTE_SUBROUTINE .sub_134574
-    BRANCH_ON_SPECIAL_BIT 13, var1, .branch_135EE4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x28
-    SET_SPECIAL_BIT 13, var1
+.judge_on_interact:
+    BRANCH_ON_SPECIAL_BIT BIT_JUDGING_PHASE, var0, .judge_wait
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT BIT_GRANTED_JUDGE, var1, .judge_talk
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_GOURMET_JUDGE]
+    SET_SPECIAL_BIT BIT_GRANTED_JUDGE, var1
 
-.branch_135EE4:
-    SET_SPECIAL_BIT 0, var0
+.judge_talk:
+    SET_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 67, 33
+    INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 33
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_135EA8
+    CLEAR_SPECIAL_BIT BIT_DIALOGUE_ACTIVE, var0
+    EXECUTE_SUBROUTINE .judge_wait
 
-.executor_11_135F14:
+.judge_judging_pos:
     SET_COORDINATES -160, 0, 0
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_134560
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_11_135F28:
+.judge_praise_anim:
     SET_ENTITY_ANIMATION 16
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_134560
+    EXECUTE_SUBROUTINE .wait_loop

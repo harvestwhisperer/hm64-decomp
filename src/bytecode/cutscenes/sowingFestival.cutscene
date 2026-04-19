@@ -1,10 +1,63 @@
 ; ============================================
 ; Bank 11 - Sowing Festival
 ; ============================================
+;
+; Cutscene indices (dispatched by gCutsceneIndex):
+;   850 (SOWING_FESTIVAL_POTION_SHOP_DEALER) -> .cs_potion_shop_king
+;        King is the Potion Shop Dealer, asks Kent to be assistant.
+;   851 (SOWING_FESTIVAL_PLAYER)             -> .cs_player_king
+;        Player is the King and must pick an assistant via
+;        yes/no dialogue on each eligible NPC.
+;   852 (SOWING_FESTIVAL_BACHELOR)             -> .cs_bachelor_king
+;        King is a bachelor (Harris/Gray/Jeff/Cliff/Kai, selected
+;        via gHarvestKing 1..5). Can ask player to be assistant.
+;
+; gHarvestKing values (source: src/game/cutscenes.c):
+;   0 = PLAYER, 1 = HARRIS, 2 = GRAY, 3 = JEFF, 4 = CLIFF, 5 = KAI
+;   other (including default in cs 850) = Potion Shop Dealer
+;
+; var0 bits (cs 851 tracks which NPC accepted, drives balloon
+;            ascent dispatch at .king_balloon_anchor):
+;   0  - Maria accepted
+;   1  - Popuri accepted
+;   2  - Elli accepted
+;   3  - Ann accepted
+;   4  - Karen accepted
+;   5  - Harris accepted
+;   6  - Gray accepted
+;   7  - Jeff accepted
+;   8  - Cliff accepted
+;   9  - Kai accepted
+;   10 - Stu accepted
+;   11 - May accepted
+;
+; var1 bits: per-NPC "affection already bumped this festival"
+;            flags (set after the first interaction so repeat
+;            talks do not keep adding affection).
+;
+; Executor slot usage:
+;   0      - player
+;   1..20  - villager NPCs (slot layout varies per cutscene
+;            variant; see the SPAWN_EXECUTOR lists at each
+;            .cs_* entry point)
+;   21     - "King" avatar / balloon-lift controller
+;   22..40 - balloon / sparkle / misc static items
+;   41     - sequence-timing controller (announcer, fade-out)
 
 #include "entities.h"
+#include "texts.h"
+#include "dialogues.h"
 
 #define MAIN_MAP_INDEX 0
+#define MARRIED 0
+
+; gHarvestKing values (see cutscenes.c)
+#define KING_PLAYER 0
+#define KING_HARRIS 1
+#define KING_GRAY 2
+#define KING_JEFF 3
+#define KING_CLIFF 4
+#define KING_KAI 5
 
 .buffer 2
 
@@ -16,11 +69,7 @@
 .array lifeEventBits, u32
 .array dailyEventBits, u32
 
-#define MARIA 0
-
-#define MARRIED 0
-
-.entry
+.dispatch:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 12, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 13, gCutsceneCompletionFlags
@@ -33,452 +82,487 @@
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
     UPDATE_U8_VALUE 5, 255, gHappiness
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_1252C8
+    EXECUTE_SUBROUTINE .setup_message_box
     INIT_MAP_ADDITION 1, 0
     INIT_MAP_ADDITION 2, 0
-    BRANCH_U16_VAR_WITHIN_RANGE 850, 850, gCutsceneIndex, .branch_125350
-    BRANCH_U16_VAR_WITHIN_RANGE 851, 851, gCutsceneIndex, .branch_1270E4
-    BRANCH_U16_VAR_WITHIN_RANGE 852, 852, gCutsceneIndex, .branch_128A80
+    BRANCH_U16_VAR_WITHIN_RANGE 850, 850, gCutsceneIndex, .cs_potion_shop_king
+    BRANCH_U16_VAR_WITHIN_RANGE 851, 851, gCutsceneIndex, .cs_player_king
+    BRANCH_U16_VAR_WITHIN_RANGE 852, 852, gCutsceneIndex, .cs_bachelor_king
 
-.sub_1252A8:
+; ============================================================
+; SHARED HELPERS
+; ============================================================
+
+.exit_cutscene:
     SET_U32_VALUE 0, var0
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_1252C0:
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_1252C8:
+.setup_message_box:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_1252E8:
+.setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
-.executor_0_125308:
+.track_entity_done:
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     SET_WAIT_FRAMES 1
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_6_125318:
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_1252C0
+.face_northwest:
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_125320:
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_1252C0
+.face_southwest:
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_19_125328:
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_1252C0
+.face_southeast:
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_125330:
-    SET_ASSET_ROTATION 1
-    EXECUTE_SUBROUTINE .sub_1252C0
+.face_west:
+    SET_ASSET_ROTATION WEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_125338:
-    SET_ASSET_ROTATION 7
-    EXECUTE_SUBROUTINE .sub_1252C0
+.face_south:
+    SET_ASSET_ROTATION SOUTH
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_125340:
-    SET_ASSET_ROTATION 3
-    EXECUTE_SUBROUTINE .sub_1252C0
+.face_north:
+    SET_ASSET_ROTATION NORTH
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_6_125348:
-    SET_ASSET_ROTATION 5
-    EXECUTE_SUBROUTINE .sub_1252C0
+.face_east:
+    SET_ASSET_ROTATION EAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125350:
-    SPAWN_EXECUTOR 1, .executor_1_1257E4
-    SPAWN_EXECUTOR 2, .executor_2_125864
-    SPAWN_EXECUTOR 3, .executor_3_1258E4
-    SPAWN_EXECUTOR 4, .executor_4_125990
-    SPAWN_EXECUTOR 5, .executor_5_125A40
-    SPAWN_EXECUTOR 6, .executor_6_125B1C
-    SPAWN_EXECUTOR 7, .executor_7_125B50
-    SPAWN_EXECUTOR 8, .executor_8_125BD0
-    SPAWN_EXECUTOR 9, .executor_9_125C04
-    SPAWN_EXECUTOR 10, .executor_10_125C80
-    SPAWN_EXECUTOR 11, .executor_11_125D2C
-    SPAWN_EXECUTOR 12, .executor_12_125DD8
-    SPAWN_EXECUTOR 13, .executor_13_125E54
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_1253D0
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x9, .branch_12547C
+; ============================================================
+; Cutscene 850 - SOWING_FESTIVAL_POTION_SHOP_DEALER
+; King is the Potion Shop Dealer. He hands the task to Kent,
+; villagers gather and watch the balloons go up.
+; ============================================================
 
-.branch_1253D0:
-    SPAWN_EXECUTOR 22, .executor_22_1265D8
-    SPAWN_EXECUTOR 23, .executor_23_126614
-    SPAWN_EXECUTOR 24, .executor_24_126650
-    SPAWN_EXECUTOR 27, .executor_27_126704
-    SPAWN_EXECUTOR 29, .executor_29_12677C
-    SPAWN_EXECUTOR 30, .executor_30_1267B8
-    SPAWN_EXECUTOR 31, .executor_31_1267F4
-    SPAWN_EXECUTOR 32, .executor_32_126830
-    SPAWN_EXECUTOR 33, .executor_33_12686C
-    SPAWN_EXECUTOR 35, .executor_35_126A4C
-    SPAWN_EXECUTOR 36, .executor_36_126A84
-    SPAWN_EXECUTOR 21, .executor_21_1254D0
-    EXECUTE_SUBROUTINE .sub_1257AC
+.cs_potion_shop_king:
+    SPAWN_EXECUTOR 1, .cs850_mayor
+    SPAWN_EXECUTOR 2, .cs850_mayor_wife
+    SPAWN_EXECUTOR 3, .cs850_ann
+    SPAWN_EXECUTOR 4, .cs850_maria
+    SPAWN_EXECUTOR 5, .cs850_lillia
+    SPAWN_EXECUTOR 6, .cs850_potion_shop_dealer
+    SPAWN_EXECUTOR 7, .cs850_kent
+    SPAWN_EXECUTOR 8, .cs850_stu
+    SPAWN_EXECUTOR 9, .cs850_may
+    SPAWN_EXECUTOR 10, .cs850_popuri
+    SPAWN_EXECUTOR 11, .cs850_elli
+    SPAWN_EXECUTOR 12, .cs850_rick
+    SPAWN_EXECUTOR 13, .cs850_pastor
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .cs850_spawn_festival_items
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[CLIFF], .spawn_cliff_assistant
 
-.branch_125434:
-    SPAWN_EXECUTOR 14, .executor_14_125ED0
+; ----- Post-dispatch: festival items + king + player -----
+; Reached when either lifeEventBits[1].13 is set OR Cliff is low-affection
+; (cs850 only). Otherwise `.spawn_cliff_assistant` short-circuits and
+; returns before executor 21 (the King) is ever spawned.
+
+.cs850_spawn_festival_items:
+    SPAWN_EXECUTOR 22, .sparkle_static_22
+    SPAWN_EXECUTOR 23, .sparkle_static_23
+    SPAWN_EXECUTOR 24, .sparkle_static_24
+    SPAWN_EXECUTOR 27, .sparkle_static_27
+    SPAWN_EXECUTOR 29, .sparkle_static_29
+    SPAWN_EXECUTOR 30, .sparkle_static_30
+    SPAWN_EXECUTOR 31, .sparkle_static_31
+    SPAWN_EXECUTOR 32, .sparkle_static_32
+    SPAWN_EXECUTOR 33, .sparkle_static_33
+    SPAWN_EXECUTOR 35, .festival_item_overlay
+    SPAWN_EXECUTOR 36, .king_balloon_sprite
+    SPAWN_EXECUTOR 21, .cs850_king_intro
+    EXECUTE_SUBROUTINE .spawn_player_as_kingr
+
+; ----- Conditional assistant-spawn helpers (cs850 + cs852 shared) -----
+; Called when an NPC with affection >= 100 is eligible to be the King
+; helper. The second SPAWN_EXECUTOR attaches a tracked sparkle to the
+; NPC. Shared between the potion-shop-king dispatch, the bachelor-king
+; dispatch, and the King runtime `.cs850_king_dispatch_assistant`.
+
+.spawn_harris_assistant:
+    SPAWN_EXECUTOR 14, .cs850_harris
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 34, .executor_34_1268A8
+    SPAWN_EXECUTOR 34, .sparkle_static_34
     RETURN_FROM_SUBROUTINE
 
-.branch_12544C:
-    SPAWN_EXECUTOR 15, .executor_15_125F50
+.spawn_gray_assistant:
+    SPAWN_EXECUTOR 15, .cs850_gray
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 35, .executor_35_1268E4
+    SPAWN_EXECUTOR 35, .sparkle_static_35
     RETURN_FROM_SUBROUTINE
 
-.branch_125464:
-    SPAWN_EXECUTOR 16, .executor_16_125FD0
+.spawn_jeff_assistant:
+    SPAWN_EXECUTOR 16, .cs850_jeff
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 36, .executor_36_126920
+    SPAWN_EXECUTOR 36, .sparkle_static_36
     RETURN_FROM_SUBROUTINE
 
-.branch_12547C:
-    SPAWN_EXECUTOR 17, .executor_17_126050
-    SPAWN_EXECUTOR 37, .executor_37_12695C
+.spawn_cliff_assistant:
+    SPAWN_EXECUTOR 17, .cs850_cliff
+    SPAWN_EXECUTOR 37, .sparkle_static_37
     RETURN_FROM_SUBROUTINE
 
-.branch_125490:
-    SPAWN_EXECUTOR 18, .executor_18_1260D4
+.spawn_kai_assistant:
+    SPAWN_EXECUTOR 18, .cs850_kai
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 38, .executor_38_126998
+    SPAWN_EXECUTOR 38, .sparkle_static_38
     RETURN_FROM_SUBROUTINE
 
-.branch_1254A8:
-    SPAWN_EXECUTOR 19, .executor_19_12615C
+.spawn_karen_assistant:
+    SPAWN_EXECUTOR 19, .cs850_karen
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 39, .executor_39_1269D4
+    SPAWN_EXECUTOR 39, .sparkle_static_39
     RETURN_FROM_SUBROUTINE
 
-.branch_1254C0:
-    SPAWN_EXECUTOR 20, .executor_20_12620C
+.spawn_basil_assistant:
+    SPAWN_EXECUTOR 20, .cs850_basil
     SET_WAIT_FRAMES 1
     RETURN_FROM_SUBROUTINE
 
-.executor_21_1254D0:
+; ----- cs850 King (executor slot 21) -----
+; Potion Shop Dealer opens with texts 0..5, hands the job to Kent
+; (FLIP executors 6/8 to walk-west + helper spawns), then kicks off the
+; balloon lift. After lift, `.cs850_king_dispatch_assistant` runs its
+; affection fan-out to pick an NPC to ride along.
+
+.cs850_king_intro:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES -72, 96, -16
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 0
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 0
     WAIT_MESSAGE_BOX_CLOSED 0
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_125318
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 1
+    SET_OTHER_EXECUTOR_PTR 6, .face_northwest
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 1
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 2
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 2
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 3
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 3
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_125340
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_125348
+    SET_OTHER_EXECUTOR_PTR 0, .face_north
+    SET_OTHER_EXECUTOR_PTR 6, .face_east
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 8, .executor_0_125340
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 4
+    SET_OTHER_EXECUTOR_PTR 8, .face_north
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 4
     WAIT_MESSAGE_BOX_CLOSED 0
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_125338
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 5
+    SET_OTHER_EXECUTOR_PTR 7, .face_south
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 5
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_125330
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_125320
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_12562C
-    SET_OTHER_EXECUTOR_PTR 8, .executor_8_1256DC
+    SET_OTHER_EXECUTOR_PTR 0, .face_west
+    SET_OTHER_EXECUTOR_PTR 7, .face_southwest
+    SET_OTHER_EXECUTOR_PTR 6, .cs850_kent_walk_west
+    SET_OTHER_EXECUTOR_PTR 8, .cs850_stu_walk_west
     SET_FRAME_DELTA -1, 0, 1, 56
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_21_12559C:
+.cs850_king_dispatch_assistant:
     SET_WAIT_FRAMES 2
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x6, .branch_125434
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x7, .branch_12544C
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x8, .branch_125464
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_1255DC
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0xA, .branch_125490
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[HARRIS], .spawn_harris_assistant
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[GRAY], .spawn_gray_assistant
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[JEFF], .spawn_jeff_assistant
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .cs850_king_check_karen
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[KAI], .spawn_kai_assistant
 
-.branch_1255DC:
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_1255F4
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x4, .branch_1254A8
+.cs850_king_check_karen:
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .cs850_king_check_basil
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[KAREN], .spawn_karen_assistant
 
-.branch_1255F4:
-    BRANCH_ON_SPECIAL_BIT 12, lifeEventBits + 0x4, .branch_12560C
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0xE, .branch_1254C0
+.cs850_king_check_basil:
+    BRANCH_ON_SPECIAL_BIT 12, lifeEventBits[1], .cs850_king_no_assistant
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[NPC_BASIL], .spawn_basil_assistant
 
-.branch_12560C:
+.cs850_king_no_assistant:
     SET_WAIT_FRAMES 2
     SET_FRAME_DELTA 1, 0, -1, 48
     SET_FRAME_DELTA 1, 0, 0, 48
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_125308
-    EXECUTE_SUBROUTINE .sub_1252C0
+    SET_OTHER_EXECUTOR_PTR 0, .track_entity_done
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_6_12562C:
+.cs850_kent_walk_west:
     SET_ENTITY_PHYSICS_FLAGS 0
-    ENTITY_WALK 56, 1, 2
-    SPAWN_EXECUTOR 18, .executor_18_125644
+    ENTITY_WALK 56, WEST, 2
+    SPAWN_EXECUTOR 18, .cs850_entity18_helper_spawn
     DEACTIVATE_SELF
 
-.executor_18_125644:
+.cs850_entity18_helper_spawn:
     SET_SHADOW_FLAGS 20, 255
     SETUP_ENTITY 18, 20, 1
     SET_ENTITY_ANIMATIONS 18, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 0
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_COORDINATES -176, 96, 48
-    SET_OTHER_EXECUTOR_PTR 1, .executor_7_125320
+    SET_OTHER_EXECUTOR_PTR 1, .face_southwest
     SET_WAIT_FRAMES 30
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 19, .executor_0_125330
+    SET_OTHER_EXECUTOR_PTR 19, .face_west
     SET_WAIT_FRAMES 30
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 19, .executor_19_125328
+    SET_OTHER_EXECUTOR_PTR 19, .face_southeast
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 6
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 6
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 19, .executor_19_125740
-    SET_OTHER_EXECUTOR_PTR 35, .executor_35_12572C
-    SET_OTHER_EXECUTOR_PTR 36, .executor_35_12572C
-    EXECUTE_SUBROUTINE .executor_35_12572C
+    SET_OTHER_EXECUTOR_PTR 19, .cs850_king_trigger_lift
+    SET_OTHER_EXECUTOR_PTR 35, .cs850_helper_rise_delta
+    SET_OTHER_EXECUTOR_PTR 36, .cs850_helper_rise_delta
+    EXECUTE_SUBROUTINE .cs850_helper_rise_delta
 
-.executor_8_1256DC:
+.cs850_stu_walk_west:
     SET_ENTITY_PHYSICS_FLAGS 0
-    ENTITY_WALK 68, 1, 2
-    SPAWN_EXECUTOR 19, .executor_19_1256F4
+    ENTITY_WALK 68, WEST, 2
+    SPAWN_EXECUTOR 19, .cs850_entity19_helper_spawn
     DEACTIVATE_SELF
 
-.executor_19_1256F4:
+.cs850_entity19_helper_spawn:
     SET_SHADOW_FLAGS 22, 255
     SETUP_ENTITY 19, 22, 1
     SET_ENTITY_ANIMATIONS 19, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -160, 96, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_1252C0
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_35_12572C:
+.cs850_helper_rise_delta:
     SET_FRAME_DELTA 0, 1, 1, 40
     SET_FRAME_DELTA 0, 2, 1, 200
     DEACTIVATE_SELF
 
-.executor_19_125740:
+.cs850_king_trigger_lift:
     SET_FRAME_DELTA 0, 1, 1, 40
     SET_ENTITY_ANIMATION 35
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_125788
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_12579C
+    SET_OTHER_EXECUTOR_PTR 0, .cs850_player_lift_anim
+    SET_OTHER_EXECUTOR_PTR 7, .cs850_kent_lift_anim
     SET_FRAME_DELTA 0, 2, 1, 22
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_FRAME_DELTA 0, 2, 1, 1
     SET_ENTITY_ANIMATION 35
     SET_FRAME_DELTA 0, 2, 1, 177
-    SET_OTHER_EXECUTOR_PTR 21, .executor_21_12559C
+    SET_OTHER_EXECUTOR_PTR 21, .cs850_king_dispatch_assistant
     DEACTIVATE_SELF
 
-.executor_0_125788:
-    SET_ASSET_ROTATION 0
+.cs850_player_lift_anim:
+    SET_ASSET_ROTATION SOUTHWEST
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 456
     SET_WAIT_FRAMES 32
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_12579C:
+.cs850_kent_lift_anim:
     SET_ENTITY_ANIMATION 24
     SET_WAIT_FRAMES 40
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_1257AC:
-    EXECUTE_SUBROUTINE .sub_1252E8
+.spawn_player_as_kingr:
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -32, 0, -8
-    SET_ASSET_ROTATION 2
-    EXECUTE_SUBROUTINE .sub_1252C0
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_1257C4:
+; ----- cs850 Villagers (executor slots 1..20) -----
+; Each villager executor follows the same shape:
+;   `<npc>_wait`          - idle + callback registration
+;   `<npc>_on_interact`   - paused message box + affection bump
+; NPCs whose bytecode has a dialogue branch (Ann, Maria, Popuri, Elli,
+; Karen) get additional `_married_guard` / `_spouse_talk` labels for
+; the post-marriage spouse-specific line.
+
+.setup_mayor:
     SETUP_ENTITY 1, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_1_1257E4:
-    EXECUTE_SUBROUTINE .sub_1257C4
+.cs850_mayor:
+    EXECUTE_SUBROUTINE .setup_mayor
     SET_COORDINATES -144, 0, -48
 
-.branch_1257F0:
-    SET_ASSET_ROTATION 7
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125800
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_mayor_wait:
+    SET_ASSET_ROTATION SOUTH
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_mayor_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125800:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_mayor_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 7
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 7
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 0, var1, .branch_1257F0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xB
+    BRANCH_ON_SPECIAL_BIT 0, var1, .cs850_mayor_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR]
     SET_SPECIAL_BIT 0, var1
-    EXECUTE_SUBROUTINE .branch_1257F0
+    EXECUTE_SUBROUTINE .cs850_mayor_wait
 
-.sub_125844:
-    SETUP_ENTITY 2, 13, 1
+.setup_mayor_wife:
+    SETUP_ENTITY 2, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_2_125864:
-    EXECUTE_SUBROUTINE .sub_125844
+.cs850_mayor_wife:
+    EXECUTE_SUBROUTINE .setup_mayor_wife
     SET_COORDINATES -192, 0, -128
 
-.branch_125870:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125880
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_mayor_wife_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_mayor_wife_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125880:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_mayor_wife_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 10
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 10
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 1, var1, .branch_125870
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xC
+    BRANCH_ON_SPECIAL_BIT 1, var1, .cs850_mayor_wife_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR_WIFE]
     SET_SPECIAL_BIT 1, var1
-    EXECUTE_SUBROUTINE .branch_125870
+    EXECUTE_SUBROUTINE .cs850_mayor_wife_wait
 
-.sub_1258C4:
-    SETUP_ENTITY 3, 4, 1
+.setup_ann:
+    SETUP_ENTITY 3, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_3_1258E4:
-    EXECUTE_SUBROUTINE .sub_1258C4
+.cs850_ann:
+    EXECUTE_SUBROUTINE .setup_ann
     SET_COORDINATES -96, 0, -160
 
-.branch_1258F0:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125900
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_ann_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_ann_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125900:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_ann_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12594C
-    INIT_DIALOGUE_SESSION 0, 48, 1
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs850_ann_married_guard
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 1
     WAIT_FOR_DIALOGUE_INPUT 0
 
-.sub_125924:
+.cs850_ann_talk_end:
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 2, var1, .branch_1258F0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x3
+    BRANCH_ON_SPECIAL_BIT 2, var1, .cs850_ann_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[ANN]
     SET_SPECIAL_BIT 2, var1
-    EXECUTE_SUBROUTINE .branch_1258F0
+    EXECUTE_SUBROUTINE .cs850_ann_wait
 
-.branch_12594C:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .branch_12595C
+.cs850_ann_married_guard:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs850_ann_spouse_talk
     RETURN_FROM_SUBROUTINE
 
-.branch_12595C:
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 47
+.cs850_ann_spouse_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 47
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_125924
+    EXECUTE_SUBROUTINE .cs850_ann_talk_end
 
-.sub_125970:
-    SETUP_ENTITY 4, 1, 1
+.setup_maria:
+    SETUP_ENTITY 4, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_4_125990:
-    EXECUTE_SUBROUTINE .sub_125970
+.cs850_maria:
+    EXECUTE_SUBROUTINE .setup_maria
     SET_COORDINATES -64, 0, -128
 
-.branch_12599C:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1259AC
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_maria_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_maria_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1259AC:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_maria_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_1259FC
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 31
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs850_maria_married_guard
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 31
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
 
-.sub_1259D4:
+.cs850_maria_talk_end:
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 3, var1, .branch_12599C
+    BRANCH_ON_SPECIAL_BIT 3, var1, .cs850_maria_wait
     UPDATE_U8_VALUE 2, 255, npcAffection[MARIA]
     SET_SPECIAL_BIT 3, var1
-    EXECUTE_SUBROUTINE .branch_12599C
+    EXECUTE_SUBROUTINE .cs850_maria_wait
 
-.branch_1259FC:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .branch_125A0C
+.cs850_maria_married_guard:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs850_maria_spouse_talk
     RETURN_FROM_SUBROUTINE
 
-.branch_125A0C:
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 33
+.cs850_maria_spouse_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 33
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_1259D4
+    EXECUTE_SUBROUTINE .cs850_maria_talk_end
 
-.sub_125A20:
-    SETUP_ENTITY 5, 14, 1
+.setup_lillia:
+    SETUP_ENTITY 5, ENTITY_ASSET_LILLIA, 1
     SET_ENTITY_ANIMATIONS 5, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_5_125A40:
-    EXECUTE_SUBROUTINE .sub_125A20
+.cs850_lillia:
+    EXECUTE_SUBROUTINE .setup_lillia
     SET_COORDINATES -96, 0, -288
 
-.sub_125A4C:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125A5C
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_lillia_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_lillia_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125A5C:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 4, var1, .branch_125A80
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xD
+.cs850_lillia_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 4, var1, .cs850_lillia_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_LILLIA]
     SET_SPECIAL_BIT 4, var1
 
-.branch_125A80:
+.cs850_lillia_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 2
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 2
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_125AAC
-    BRANCH_ON_DIALOGUE 0, 1, .branch_125AE4
+    BRANCH_ON_DIALOGUE 0, 0, .cs850_lillia_accept_start_cutscene
+    BRANCH_ON_DIALOGUE 0, 1, .cs850_lillia_decline
 
-.branch_125AAC:
+.cs850_lillia_accept_start_cutscene:
     DEACTIVATE_EXECUTOR 12
     DEACTIVATE_EXECUTOR 13
     DEACTIVATE_EXECUTOR 15
@@ -490,472 +574,478 @@
     DEACTIVATE_EXECUTOR 36
     DEACTIVATE_EXECUTOR 37
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 0, .executor_0_12626C
-    EXECUTE_SUBROUTINE .sub_1252C0
+    SPAWN_EXECUTOR 0, .cs850_player_ascent_start
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125AE4:
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 53
+.cs850_lillia_decline:
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 53
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_125A4C
+    EXECUTE_SUBROUTINE .cs850_lillia_wait
 
-.sub_125AFC:
-    SETUP_ENTITY 6, 20, 1
+.setup_potion_shop_dealer:
+    SETUP_ENTITY 6, ENTITY_ASSET_POTION_SHOP_DEALER, 1
     SET_ENTITY_ANIMATIONS 6, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_6_125B1C:
-    EXECUTE_SUBROUTINE .sub_125AFC
-    SET_ASSET_ROTATION 1
+.cs850_potion_shop_dealer:
+    EXECUTE_SUBROUTINE .setup_potion_shop_dealer
+    SET_ASSET_ROTATION WEST
     SET_COORDINATES -96, 0, -32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_125B30:
-    SETUP_ENTITY 7, 21, 1
+.setup_kent:
+    SETUP_ENTITY 7, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 7, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_7_125B50:
-    EXECUTE_SUBROUTINE .sub_125B30
+.cs850_kent:
+    EXECUTE_SUBROUTINE .setup_kent
     SET_COORDINATES -88, 0, -96
 
-.branch_125B5C:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125B6C
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_kent_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_kent_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125B6C:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_kent_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 20
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 20
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 5, var1, .branch_125B5C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x14
+    BRANCH_ON_SPECIAL_BIT 5, var1, .cs850_kent_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_KENT]
     SET_SPECIAL_BIT 5, var1
-    EXECUTE_SUBROUTINE .branch_125B5C
+    EXECUTE_SUBROUTINE .cs850_kent_wait
 
-.sub_125BB0:
-    SETUP_ENTITY 8, 22, 1
+.setup_stu:
+    SETUP_ENTITY 8, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 8, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_8_125BD0:
-    EXECUTE_SUBROUTINE .sub_125BB0
-    SET_ASSET_ROTATION 1
+.cs850_stu:
+    EXECUTE_SUBROUTINE .setup_stu
+    SET_ASSET_ROTATION WEST
     SET_COORDINATES -64, 0, -64
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_125BE4:
-    SETUP_ENTITY 9, 24, 1
+.setup_may:
+    SETUP_ENTITY 9, ENTITY_ASSET_MAY, 1
     SET_ENTITY_ANIMATIONS 9, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_9_125C04:
-    EXECUTE_SUBROUTINE .sub_125BE4
+.cs850_may:
+    EXECUTE_SUBROUTINE .setup_may
     SET_COORDINATES 32, 0, -64
 
-.branch_125C10:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125C20
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_may_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_may_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125C20:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_may_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 6
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 6
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 6, var1, .branch_125C10
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x17
+    BRANCH_ON_SPECIAL_BIT 6, var1, .cs850_may_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAY]
     SET_SPECIAL_BIT 6, var1
-    EXECUTE_SUBROUTINE .branch_125C10
+    EXECUTE_SUBROUTINE .cs850_may_wait
 
-.sub_125C60:
-    SETUP_ENTITY 10, 2, 1
+.setup_popuri:
+    SETUP_ENTITY 10, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 10, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_10_125C80:
-    EXECUTE_SUBROUTINE .sub_125C60
+.cs850_popuri:
+    EXECUTE_SUBROUTINE .setup_popuri
     SET_COORDINATES 0, 0, -192
 
-.branch_125C8C:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125C9C
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_popuri_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_popuri_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125C9C:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_popuri_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_125CE8
-    INIT_DIALOGUE_SESSION 0, 48, 7
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs850_popuri_married_guard
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 7
     WAIT_FOR_DIALOGUE_INPUT 0
 
-.sub_125CC0:
+.cs850_popuri_talk_end:
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 7, var1, .branch_125C8C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1
+    BRANCH_ON_SPECIAL_BIT 7, var1, .cs850_popuri_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[POPURI]
     SET_SPECIAL_BIT 7, var1
-    EXECUTE_SUBROUTINE .branch_125C8C
+    EXECUTE_SUBROUTINE .cs850_popuri_wait
 
-.branch_125CE8:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .branch_125CF8
+.cs850_popuri_married_guard:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs850_popuri_spouse_talk
     RETURN_FROM_SUBROUTINE
 
-.branch_125CF8:
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 38
+.cs850_popuri_spouse_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 38
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_125CC0
+    EXECUTE_SUBROUTINE .cs850_popuri_talk_end
 
-.sub_125D0C:
-    SETUP_ENTITY 11, 3, 1
+.setup_elli:
+    SETUP_ENTITY 11, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 11, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_11_125D2C:
-    EXECUTE_SUBROUTINE .sub_125D0C
+.cs850_elli:
+    EXECUTE_SUBROUTINE .setup_elli
     SET_COORDINATES 32, 0, -160
 
-.branch_125D38:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125D48
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_elli_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_elli_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125D48:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_elli_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_125D94
-    INIT_DIALOGUE_SESSION 0, 48, 8
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs850_elli_married_guard
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 8
     WAIT_FOR_DIALOGUE_INPUT 0
 
-.sub_125D6C:
+.cs850_elli_talk_end:
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 8, var1, .branch_125D38
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x2
+    BRANCH_ON_SPECIAL_BIT 8, var1, .cs850_elli_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[ELLI]
     SET_SPECIAL_BIT 8, var1
-    EXECUTE_SUBROUTINE .branch_125D38
+    EXECUTE_SUBROUTINE .cs850_elli_wait
 
-.branch_125D94:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .branch_125DA4
+.cs850_elli_married_guard:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs850_elli_spouse_talk
     RETURN_FROM_SUBROUTINE
 
-.branch_125DA4:
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 42
+.cs850_elli_spouse_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 42
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_125D6C
+    EXECUTE_SUBROUTINE .cs850_elli_talk_end
 
-.sub_125DB8:
-    SETUP_ENTITY 12, 25, 1
+.setup_rick:
+    SETUP_ENTITY 12, ENTITY_ASSET_RICK, 1
     SET_ENTITY_ANIMATIONS 12, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_12_125DD8:
-    EXECUTE_SUBROUTINE .sub_125DB8
+.cs850_rick:
+    EXECUTE_SUBROUTINE .setup_rick
     SET_COORDINATES -96, 0, 160
 
-.branch_125DE4:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125DF4
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_rick_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_rick_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125DF4:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_rick_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 4
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 4
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 9, var1, .branch_125DE4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x18
+    BRANCH_ON_SPECIAL_BIT 9, var1, .cs850_rick_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_RICK]
     SET_SPECIAL_BIT 9, var1
-    EXECUTE_SUBROUTINE .branch_125DE4
+    EXECUTE_SUBROUTINE .cs850_rick_wait
 
-.sub_125E34:
-    SETUP_ENTITY 13, 26, 1
+.setup_pastor:
+    SETUP_ENTITY 13, ENTITY_ASSET_PASTOR, 1
     SET_ENTITY_ANIMATIONS 13, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_13_125E54:
-    EXECUTE_SUBROUTINE .sub_125E34
+.cs850_pastor:
+    EXECUTE_SUBROUTINE .setup_pastor
     SET_COORDINATES -16, 0, 128
 
-.branch_125E60:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125E70
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_pastor_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_pastor_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125E70:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_pastor_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 3
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 3
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 10, var1, .branch_125E60
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x19
+    BRANCH_ON_SPECIAL_BIT 10, var1, .cs850_pastor_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_PASTOR]
     SET_SPECIAL_BIT 10, var1
-    EXECUTE_SUBROUTINE .branch_125E60
+    EXECUTE_SUBROUTINE .cs850_pastor_wait
 
-.sub_125EB0:
-    SETUP_ENTITY 14, 7, 1
+.setup_harris:
+    SETUP_ENTITY 14, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 14, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_14_125ED0:
-    EXECUTE_SUBROUTINE .sub_125EB0
+.cs850_harris:
+    EXECUTE_SUBROUTINE .setup_harris
     SET_COORDINATES 0, 0, -272
 
-.branch_125EDC:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125EEC
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_harris_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_harris_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125EEC:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_harris_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 60
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 60
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 11, var1, .branch_125EDC
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x6
+    BRANCH_ON_SPECIAL_BIT 11, var1, .cs850_harris_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[HARRIS]
     SET_SPECIAL_BIT 11, var1
-    EXECUTE_SUBROUTINE .branch_125EDC
+    EXECUTE_SUBROUTINE .cs850_harris_wait
 
-.sub_125F30:
-    SETUP_ENTITY 15, 8, 1
+.setup_gray:
+    SETUP_ENTITY 15, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 15, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_15_125F50:
-    EXECUTE_SUBROUTINE .sub_125F30
+.cs850_gray:
+    EXECUTE_SUBROUTINE .setup_gray
     SET_COORDINATES 128, 0, 160
 
-.branch_125F5C:
-    SET_ASSET_ROTATION 3
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125F6C
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_gray_wait:
+    SET_ASSET_ROTATION NORTH
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_gray_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125F6C:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_gray_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 64
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 64
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 12, var1, .branch_125F5C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x7
+    BRANCH_ON_SPECIAL_BIT 12, var1, .cs850_gray_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[GRAY]
     SET_SPECIAL_BIT 12, var1
-    EXECUTE_SUBROUTINE .branch_125F5C
+    EXECUTE_SUBROUTINE .cs850_gray_wait
 
-.sub_125FB0:
-    SETUP_ENTITY 16, 9, 1
+.setup_jeff:
+    SETUP_ENTITY 16, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 16, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_16_125FD0:
-    EXECUTE_SUBROUTINE .sub_125FB0
+.cs850_jeff:
+    EXECUTE_SUBROUTINE .setup_jeff
     SET_COORDINATES 64, 0, 224
 
-.branch_125FDC:
-    SET_ASSET_ROTATION 3
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_125FEC
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_jeff_wait:
+    SET_ASSET_ROTATION NORTH
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_jeff_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_125FEC:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_jeff_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 68
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 68
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 13, var1, .branch_125FDC
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x8
+    BRANCH_ON_SPECIAL_BIT 13, var1, .cs850_jeff_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[JEFF]
     SET_SPECIAL_BIT 13, var1
-    EXECUTE_SUBROUTINE .branch_125FDC
+    EXECUTE_SUBROUTINE .cs850_jeff_wait
 
-.sub_126030:
-    SETUP_ENTITY 17, 10, 1
+.setup_cliff:
+    SETUP_ENTITY 17, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 17, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_17_126050:
-    EXECUTE_SUBROUTINE .sub_126030
+.cs850_cliff:
+    EXECUTE_SUBROUTINE .setup_cliff
     SET_COORDINATES -96, 0, 256
 
-.branch_12605C:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_12606C
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_cliff_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_cliff_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_12606C:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_cliff_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 72
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 72
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 14, var1, .branch_12605C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x9
+    BRANCH_ON_SPECIAL_BIT 14, var1, .cs850_cliff_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[CLIFF]
     SET_SPECIAL_BIT 14, var1
-    EXECUTE_SUBROUTINE .branch_12605C
+    EXECUTE_SUBROUTINE .cs850_cliff_wait
 
-.sub_1260B0:
-    SETUP_ENTITY 18, 11, 1
+.setup_kai:
+    SETUP_ENTITY 18, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 18, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 1
     RETURN_FROM_SUBROUTINE
 
-.executor_18_1260D4:
-    EXECUTE_SUBROUTINE .sub_1260B0
+.cs850_kai:
+    EXECUTE_SUBROUTINE .setup_kai
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 96, 0, -224
 
-.branch_1260E4:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1260F4
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_kai_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_kai_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1260F4:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_kai_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 76
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 76
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 15, var1, .branch_1260E4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xA
+    BRANCH_ON_SPECIAL_BIT 15, var1, .cs850_kai_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAI]
     SET_SPECIAL_BIT 15, var1
-    EXECUTE_SUBROUTINE .branch_1260E4
+    EXECUTE_SUBROUTINE .cs850_kai_wait
 
-.sub_126138:
-    SETUP_ENTITY 19, 5, 1
+.setup_karen:
+    SETUP_ENTITY 19, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 19, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 1
     RETURN_FROM_SUBROUTINE
 
-.executor_19_12615C:
-    EXECUTE_SUBROUTINE .sub_126138
+.cs850_karen:
+    EXECUTE_SUBROUTINE .setup_karen
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 128, 0, -288
 
-.branch_12616C:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_12617C
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_karen_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_karen_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_12617C:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_karen_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_1261C8
-    INIT_DIALOGUE_SESSION 0, 48, 9
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs850_karen_married_guard
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 9
     WAIT_FOR_DIALOGUE_INPUT 0
 
-.sub_1261A0:
+.cs850_karen_talk_end:
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 16, var1, .branch_12616C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x4
+    BRANCH_ON_SPECIAL_BIT 16, var1, .cs850_karen_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAREN]
     SET_SPECIAL_BIT 16, var1
-    EXECUTE_SUBROUTINE .branch_12616C
+    EXECUTE_SUBROUTINE .cs850_karen_wait
 
-.branch_1261C8:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .branch_1261D8
+.cs850_karen_married_guard:
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs850_karen_spouse_talk
     RETURN_FROM_SUBROUTINE
 
-.branch_1261D8:
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 58
+.cs850_karen_spouse_talk:
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 58
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_1261A0
+    EXECUTE_SUBROUTINE .cs850_karen_talk_end
 
-.sub_1261EC:
-    SETUP_ENTITY 20, 15, 1
+.setup_basil:
+    SETUP_ENTITY 20, ENTITY_ASSET_BASIL, 1
     SET_ENTITY_ANIMATIONS 20, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_20_12620C:
-    EXECUTE_SUBROUTINE .sub_1261EC
+.cs850_basil:
+    EXECUTE_SUBROUTINE .setup_basil
     SET_COORDINATES -128, 0, -288
 
-.branch_126218:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_126228
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs850_basil_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs850_basil_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_126228:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs850_basil_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 81
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 81
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 17, var1, .branch_126218
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xE
+    BRANCH_ON_SPECIAL_BIT 17, var1, .cs850_basil_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_BASIL]
     SET_SPECIAL_BIT 17, var1
-    EXECUTE_SUBROUTINE .branch_126218
+    EXECUTE_SUBROUTINE .cs850_basil_wait
 
-.executor_0_12626C:
-    EXECUTE_SUBROUTINE .sub_1252E8
+; ----- cs850 Balloon ascent (main sequence) -----
+; Spawned when Lillia accepts (.cs850_lillia_accept_start_cutscene)
+; or when the King dispatch finds no assistant. Fades to black,
+; deactivates all villager / sparkle executors, then spawns the
+; in-balloon sprites (asc_bg_plate + asc_sprite_a..h) and exits.
+
+.cs850_player_ascent_start:
+    EXECUTE_SUBROUTINE .setup_player
     TOGGLE_PAUSE_ENTITY 0
     SET_WAIT_FRAMES 15
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
     SET_WAIT_FRAMES 15
-    SPAWN_EXECUTOR 32, .executor_32_126560
+    SPAWN_EXECUTOR 32, .cs850_king_side_tracker
     SET_WAIT_FRAMES 15
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 30
-    SET_ASSET_ROTATION 0
-    SET_OTHER_EXECUTOR_PTR 5, .executor_7_125320
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 52
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_OTHER_EXECUTOR_PTR 5, .face_southwest
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 52
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_126458
-    SET_OTHER_EXECUTOR_PTR 4, .executor_3_126458
-    SET_OTHER_EXECUTOR_PTR 10, .executor_3_126458
-    SET_OTHER_EXECUTOR_PTR 11, .executor_3_126458
-    SET_OTHER_EXECUTOR_PTR 19, .executor_3_126458
-    SET_OTHER_EXECUTOR_PTR 22, .executor_22_126500
-    SET_OTHER_EXECUTOR_PTR 23, .executor_23_126524
-    SET_OTHER_EXECUTOR_PTR 24, .executor_24_1264AC
-    SET_OTHER_EXECUTOR_PTR 27, .executor_23_126524
-    SET_OTHER_EXECUTOR_PTR 29, .executor_24_1264AC
-    SET_OTHER_EXECUTOR_PTR 30, .executor_22_126500
-    SET_OTHER_EXECUTOR_PTR 31, .executor_23_126524
-    SET_OTHER_EXECUTOR_PTR 34, .executor_23_126524
-    SET_OTHER_EXECUTOR_PTR 38, .executor_24_1264AC
-    SET_OTHER_EXECUTOR_PTR 39, .executor_22_126500
-    SET_OTHER_EXECUTOR_PTR 32, .executor_32_126468
+    SET_OTHER_EXECUTOR_PTR 3, .cs850_villager_cheer_anim
+    SET_OTHER_EXECUTOR_PTR 4, .cs850_villager_cheer_anim
+    SET_OTHER_EXECUTOR_PTR 10, .cs850_villager_cheer_anim
+    SET_OTHER_EXECUTOR_PTR 11, .cs850_villager_cheer_anim
+    SET_OTHER_EXECUTOR_PTR 19, .cs850_villager_cheer_anim
+    SET_OTHER_EXECUTOR_PTR 22, .cs850_rise_fast
+    SET_OTHER_EXECUTOR_PTR 23, .cs850_rise_mixed
+    SET_OTHER_EXECUTOR_PTR 24, .cs850_rise_medium
+    SET_OTHER_EXECUTOR_PTR 27, .cs850_rise_mixed
+    SET_OTHER_EXECUTOR_PTR 29, .cs850_rise_medium
+    SET_OTHER_EXECUTOR_PTR 30, .cs850_rise_fast
+    SET_OTHER_EXECUTOR_PTR 31, .cs850_rise_mixed
+    SET_OTHER_EXECUTOR_PTR 34, .cs850_rise_mixed
+    SET_OTHER_EXECUTOR_PTR 38, .cs850_rise_medium
+    SET_OTHER_EXECUTOR_PTR 39, .cs850_rise_fast
+    SET_OTHER_EXECUTOR_PTR 32, .cs850_rise_slow
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 456
     WAIT_ENTITY_ANIMATION
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -1002,30 +1092,30 @@
     DEACTIVATE_EXECUTOR 40
     DEACTIVATE_EXECUTOR 41
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_126AEC
-    SPAWN_EXECUTOR 2, .executor_2_126B64
-    SPAWN_EXECUTOR 3, .executor_3_126BDC
-    SPAWN_EXECUTOR 4, .executor_4_126C54
-    SPAWN_EXECUTOR 5, .executor_5_126CCC
-    SPAWN_EXECUTOR 6, .executor_6_126D44
-    SPAWN_EXECUTOR 7, .executor_7_126DBC
-    SPAWN_EXECUTOR 8, .executor_8_126E44
+    SPAWN_EXECUTOR 1, .asc_bg_plate
+    SPAWN_EXECUTOR 2, .asc_sprite_a
+    SPAWN_EXECUTOR 3, .asc_sprite_b
+    SPAWN_EXECUTOR 4, .asc_sprite_c
+    SPAWN_EXECUTOR 5, .asc_sprite_d
+    SPAWN_EXECUTOR 6, .asc_sprite_e
+    SPAWN_EXECUTOR 7, .asc_sprite_f
+    SPAWN_EXECUTOR 8, .asc_sprite_g
     SET_WAIT_FRAMES 92
-    SPAWN_EXECUTOR 9, .executor_9_126EDC
+    SPAWN_EXECUTOR 9, .asc_sprite_h
     SET_WAIT_FRAMES 120
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 2
     SET_WAIT_FRAMES 40
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_1252A8
+    EXECUTE_SUBROUTINE .exit_cutscene
 
-.executor_3_126458:
+.cs850_villager_cheer_anim:
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 39
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_32_126468:
+.cs850_rise_slow:
     SET_ENTITY_TRACKING_TARGET 65535, -16, 64, 4, 255
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_FRAME_DELTA 0, 1, 0, 1
@@ -1036,7 +1126,7 @@
     SET_FRAME_DELTA -1, 2, 1, 80
     DEACTIVATE_SELF
 
-.executor_24_1264AC:
+.cs850_rise_medium:
     SET_ENTITY_TRACKING_TARGET 65535, -16, 64, 4, 255
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_FRAME_DELTA 0, 1, 0, 1
@@ -1049,14 +1139,14 @@
     SET_FRAME_DELTA -1, 2, 1, 80
     DEACTIVATE_SELF
 
-.executor_22_126500:
+.cs850_rise_fast:
     SET_ENTITY_TRACKING_TARGET 65535, -16, 64, 4, 255
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_FRAME_DELTA 0, 1, 0, 16
     SET_FRAME_DELTA -1, 2, 0, 96
     DEACTIVATE_SELF
 
-.executor_23_126524:
+.cs850_rise_mixed:
     SET_ENTITY_TRACKING_TARGET 65535, -16, 64, 4, 255
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_FRAME_DELTA 0, 1, 0, 16
@@ -1066,240 +1156,256 @@
     SET_FRAME_DELTA -1, 2, 0, 46
     DEACTIVATE_SELF
 
-.executor_32_126560:
+.cs850_king_side_tracker:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 22, 93, 1
+    SETUP_ENTITY 22, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 22, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 99
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 0, 16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 23, 93, 1
+    SETUP_ENTITY 23, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 23, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 99
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 1, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_22_1265D8:
+; ----- Shared sparkle / static items (slots 22..39) -----
+; Each sets up a STATIC_ITEM entity with palette 99..103 and anim 108,
+; tracking one of the villager entities via SET_ENTITY_TRACKING_TARGET.
+; Spawned by both cs850 and cs851. Executor slot != entity index; the
+; entity index is the first operand of SETUP_ENTITY.
+
+.sparkle_static_22:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 24, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+    SETUP_ENTITY 24, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 24, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 100
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 2, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_23_126614:
+.sparkle_static_23:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 25, 93, 1
+    SETUP_ENTITY 25, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 25, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 101
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 3, 16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_24_126650:
+.sparkle_static_24:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 26, 93, 1
+    SETUP_ENTITY 26, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 26, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 102
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 4, 16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 27, 93, 1
+    SETUP_ENTITY 27, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 27, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 103
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 5, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_26_1266C8:
+.sparkle_static_26:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 28, 93, 1
+    SETUP_ENTITY 28, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 28, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 99
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 6, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_27_126704:
+.sparkle_static_27:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 29, 93, 1
+    SETUP_ENTITY 29, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 29, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 100
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 7, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_28_126740:
+.sparkle_static_28:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 30, 93, 1
+    SETUP_ENTITY 30, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 30, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 101
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 8, 16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_29_12677C:
+.sparkle_static_29:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 31, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+    SETUP_ENTITY 31, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 31, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 102
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 9, 16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_30_1267B8:
+.sparkle_static_30:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 32, 93, 1
+    SETUP_ENTITY 32, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 32, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 103
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 10, 16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_31_1267F4:
+.sparkle_static_31:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 33, 93, 1
+    SETUP_ENTITY 33, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 33, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 99
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 11, 16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_32_126830:
+.sparkle_static_32:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 34, 93, 1
+    SETUP_ENTITY 34, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 34, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 100
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 12, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_33_12686C:
+.sparkle_static_33:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 35, 93, 1
+    SETUP_ENTITY 35, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 35, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 101
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 13, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_34_1268A8:
+.sparkle_static_34:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 36, 93, 1
+    SETUP_ENTITY 36, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 36, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 102
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 14, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_35_1268E4:
+.sparkle_static_35:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 37, 93, 1
+    SETUP_ENTITY 37, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 37, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 103
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 15, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_36_126920:
+.sparkle_static_36:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 39, 93, 1
+    SETUP_ENTITY 39, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 39, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 99
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 16, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_37_12695C:
+.sparkle_static_37:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 40, 93, 1
+    SETUP_ENTITY 40, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 40, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 100
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 17, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_38_126998:
+.sparkle_static_38:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 41, 93, 1
+    SETUP_ENTITY 41, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 41, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 101
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 18, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_39_1269D4:
+.sparkle_static_39:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 42, 93, 1
+    SETUP_ENTITY 42, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 42, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 102
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 19, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 43, 93, 1
+    SETUP_ENTITY 43, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 43, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PALETTE 103
     SET_ENTITY_ANIMATION 108
     SET_ENTITY_TRACKING_TARGET 20, -16, 64, 4, 255
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_35_126A4C:
+; ----- Festival / King-balloon props -----
+; Three fixed-position props: the festival-items overlay (entity 44),
+; a static item anchored near the king at anim 107, and the same anim
+; spawned in slot 41 for cs850 lift tracking.
+
+.festival_item_overlay:
     SET_SHADOW_FLAGS 92, 1
-    SETUP_ENTITY 44, 92, 1
+    SETUP_ENTITY 44, ENTITY_ASSET_EXTRA_FESTIVAL_ITEMS, 1
     SET_ENTITY_ANIMATIONS 44, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -160, 192, 48
     SET_ENTITY_ANIMATION 0
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_36_126A84:
+.king_balloon_sprite:
     SET_SHADOW_FLAGS 93, 255
-    SETUP_ENTITY 43, 93, 1
+    SETUP_ENTITY 43, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 43, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -168, 85, 40
     SET_ENTITY_ANIMATION 107
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_126ABC:
-    SETUP_ENTITY 43, 93, 1
+.king_balloon_anchor:
+    SETUP_ENTITY 43, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 43, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -160, 0, 48
     SET_ENTITY_DIMENSIONS 32, 32
     SET_ENTITY_ANIMATION 107
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_126AEC:
+; ----- cs850 In-balloon sprites (DMA + RGBA fade cycle) -----
+; Drawn after the ascent fade completes. The background plate
+; (moonMountainBackgroundTextureSegment) draws first, then eight
+; holdableItems sprites fade in/out on timers with palettes 99..103.
+
+.asc_bg_plate:
     DMA_SPRITE 96, 0, _moonMountainBackgroundTextureSegmentRomStart, _moonMountainBackgroundTextureSegmentRomEnd, _moonMountainBackgroundAssetsIndexSegmentRomStart, _moonMountainBackgroundAssetsIndexSegmentRomEnd, 0, 0, 0x80261000, 0, 0x80266000, 0x80266100, 0x80266300, 0x80266400
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126F48
     SET_COORDINATES 0, -120, 254
@@ -1311,9 +1417,9 @@
     SET_WAIT_FRAMES 180
     UPDATE_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_126B64:
+.asc_sprite_a:
     DMA_SPRITE 97, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BBE50, 0x802BC250, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126F54
     SET_COORDINATES 160, -160, 255
@@ -1324,9 +1430,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_126BDC:
+.asc_sprite_b:
     DMA_SPRITE 98, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BC650, 0x802BCA50, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126FB8
     SET_COORDINATES 96, -100, 255
@@ -1337,9 +1443,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_126C54:
+.asc_sprite_c:
     DMA_SPRITE 99, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BCE50, 0x802BD250, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_12701C
     SET_COORDINATES 128, -48, 255
@@ -1350,9 +1456,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_126CCC:
+.asc_sprite_d:
     DMA_SPRITE 100, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BD650, 0x802BDA50, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_127080
     SET_COORDINATES 128, 32, 255
@@ -1363,9 +1469,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_6_126D44:
+.asc_sprite_e:
     DMA_SPRITE 101, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BDE50, 0x802BE250, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_12701C
     SET_COORDINATES 40, -80, 255
@@ -1376,9 +1482,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_126DBC:
+.asc_sprite_f:
     DMA_SPRITE 102, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BE650, 0x802BEA50, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126FB8
     SET_COORDINATES 0, -120, 255
@@ -1391,9 +1497,9 @@
     SET_FRAME_DELTA -1, 1, 0, 52
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_8_126E44:
+.asc_sprite_g:
     DMA_SPRITE 103, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BEE50, 0x802BF250, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126F54
     SET_COORDINATES -60, 48, 255
@@ -1408,9 +1514,9 @@
     SET_FRAME_DELTA -1, 1, 0, 32
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_9_126EDC:
+.asc_sprite_h:
     DMA_SPRITE 104, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BF650, 0x802BFA50, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126FB8
     SET_COORDINATES 100, -160, 255
@@ -1419,7 +1525,7 @@
     SET_FRAME_DELTA -1, 1, 0, 120
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
 .anim_126F48:
     .anim_frame 0, 0xFE, (0, 0, 0), 255, 0
@@ -1485,221 +1591,245 @@
     .anim_frame 139, 0xFF, (3, 0, 0), 5, 0
     .anim_loop .anim_127080
 
-.branch_1270E4:
+; ============================================================
+; Cutscene 851 - SOWING_FESTIVAL_PLAYER
+; Player is the King and must choose an assistant. Each NPC
+; gets a yes/no dialogue; pick-0 accepts, pick-1 re-enters
+; the wait loop. Once an NPC accepts, var0 bit is set and the
+; balloon-ascent sequence (executor_41_126ABC) dispatches the
+; matching overlay line.
+; ============================================================
+
+; ----- Dispatch and conditional-spawn branches -----
+; Same affection / lifeEventBits gating as cs850 but each NPC is its
+; own cs851 executor (positions and dialogue lines differ from cs850).
+
+.cs_player_king:
     UPDATE_U8_VALUE 10, 255, gHappiness
-    SPAWN_EXECUTOR 1, .executor_1_127310
-    SPAWN_EXECUTOR 2, .executor_2_127370
-    SPAWN_EXECUTOR 3, .executor_3_1273D0
-    SPAWN_EXECUTOR 4, .executor_4_12749C
-    SPAWN_EXECUTOR 5, .executor_5_127568
-    SPAWN_EXECUTOR 6, .executor_6_1275C8
-    SPAWN_EXECUTOR 7, .executor_7_127628
-    SPAWN_EXECUTOR 8, .executor_8_1276F4
-    SPAWN_EXECUTOR 9, .executor_9_127754
-    SPAWN_EXECUTOR 10, .executor_10_127820
-    SPAWN_EXECUTOR 11, .executor_11_1278EC
-    SPAWN_EXECUTOR 12, .executor_12_1279B8
-    SPAWN_EXECUTOR 13, .executor_13_127A14
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_127170
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x9, .branch_127218
+    SPAWN_EXECUTOR 1, .cs851_mayor
+    SPAWN_EXECUTOR 2, .cs851_mayor_wife
+    SPAWN_EXECUTOR 3, .cs851_ann
+    SPAWN_EXECUTOR 4, .cs851_maria
+    SPAWN_EXECUTOR 5, .cs851_lillia
+    SPAWN_EXECUTOR 6, .cs851_potion_shop_dealer
+    SPAWN_EXECUTOR 7, .cs851_kent
+    SPAWN_EXECUTOR 8, .cs851_stu
+    SPAWN_EXECUTOR 9, .cs851_may
+    SPAWN_EXECUTOR 10, .cs851_popuri
+    SPAWN_EXECUTOR 11, .cs851_elli
+    SPAWN_EXECUTOR 12, .cs851_rick
+    SPAWN_EXECUTOR 13, .cs851_pastor
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .cs851_spawn_festival_items
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[CLIFF], .cs851_spawn_cliff_pair
 
-.branch_127170:
-    SPAWN_EXECUTOR 22, .executor_22_1265D8
-    SPAWN_EXECUTOR 23, .executor_23_126614
-    SPAWN_EXECUTOR 24, .executor_24_126650
-    SPAWN_EXECUTOR 26, .executor_26_1266C8
-    SPAWN_EXECUTOR 27, .executor_27_126704
-    SPAWN_EXECUTOR 28, .executor_28_126740
-    SPAWN_EXECUTOR 29, .executor_29_12677C
-    SPAWN_EXECUTOR 30, .executor_30_1267B8
-    SPAWN_EXECUTOR 31, .executor_31_1267F4
-    SPAWN_EXECUTOR 32, .executor_32_126830
-    SPAWN_EXECUTOR 33, .executor_33_12686C
-    SPAWN_EXECUTOR 40, .executor_35_126A4C
-    SPAWN_EXECUTOR 41, .executor_41_126ABC
-    EXECUTE_SUBROUTINE .sub_127264
+.cs851_spawn_festival_items:
+    SPAWN_EXECUTOR 22, .sparkle_static_22
+    SPAWN_EXECUTOR 23, .sparkle_static_23
+    SPAWN_EXECUTOR 24, .sparkle_static_24
+    SPAWN_EXECUTOR 26, .sparkle_static_26
+    SPAWN_EXECUTOR 27, .sparkle_static_27
+    SPAWN_EXECUTOR 28, .sparkle_static_28
+    SPAWN_EXECUTOR 29, .sparkle_static_29
+    SPAWN_EXECUTOR 30, .sparkle_static_30
+    SPAWN_EXECUTOR 31, .sparkle_static_31
+    SPAWN_EXECUTOR 32, .sparkle_static_32
+    SPAWN_EXECUTOR 33, .sparkle_static_33
+    SPAWN_EXECUTOR 40, .festival_item_overlay
+    SPAWN_EXECUTOR 41, .king_balloon_anchor
+    EXECUTE_SUBROUTINE .cs851_player_king_dispatch
 
-.branch_1271DC:
-    SPAWN_EXECUTOR 14, .executor_14_127A74
-    SPAWN_EXECUTOR 34, .executor_34_1268A8
+.cs851_spawn_harris_pair:
+    SPAWN_EXECUTOR 14, .cs851_harris
+    SPAWN_EXECUTOR 34, .sparkle_static_34
     RETURN_FROM_SUBROUTINE
 
-.branch_1271F0:
-    SPAWN_EXECUTOR 15, .executor_15_127B40
-    SPAWN_EXECUTOR 35, .executor_35_1268E4
+.cs851_spawn_gray_pair:
+    SPAWN_EXECUTOR 15, .cs851_gray
+    SPAWN_EXECUTOR 35, .sparkle_static_35
     RETURN_FROM_SUBROUTINE
 
-.branch_127204:
-    SPAWN_EXECUTOR 16, .executor_16_127C0C
-    SPAWN_EXECUTOR 36, .executor_36_126920
+.cs851_spawn_jeff_pair:
+    SPAWN_EXECUTOR 16, .cs851_jeff
+    SPAWN_EXECUTOR 36, .sparkle_static_36
     RETURN_FROM_SUBROUTINE
 
-.branch_127218:
-    SPAWN_EXECUTOR 17, .executor_17_127CD8
-    SPAWN_EXECUTOR 37, .executor_37_12695C
+.cs851_spawn_cliff_pair:
+    SPAWN_EXECUTOR 17, .cs851_cliff
+    SPAWN_EXECUTOR 37, .sparkle_static_37
     RETURN_FROM_SUBROUTINE
 
-.branch_12722C:
-    SPAWN_EXECUTOR 18, .executor_18_127DA4
-    SPAWN_EXECUTOR 38, .executor_38_126998
+.cs851_spawn_kai_pair:
+    SPAWN_EXECUTOR 18, .cs851_kai
+    SPAWN_EXECUTOR 38, .sparkle_static_38
     RETURN_FROM_SUBROUTINE
 
-.branch_127240:
-    SPAWN_EXECUTOR 19, .executor_19_127E74
+.cs851_spawn_karen_pair:
+    SPAWN_EXECUTOR 19, .cs851_karen
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 39, .executor_39_1269D4
+    SPAWN_EXECUTOR 39, .sparkle_static_39
     RETURN_FROM_SUBROUTINE
 
-.branch_127258:
-    SPAWN_EXECUTOR 20, .executor_20_127F44
+.cs851_spawn_basil_solo:
+    SPAWN_EXECUTOR 20, .cs851_basil
     RETURN_FROM_SUBROUTINE
 
-.sub_127264:
-    EXECUTE_SUBROUTINE .sub_1252E8
+.cs851_player_king_dispatch:
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -80, 0, -32
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 5
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x6, .branch_1271DC
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x7, .branch_1271F0
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x8, .branch_127204
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_1272B4
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0xA, .branch_12722C
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[HARRIS], .cs851_spawn_harris_pair
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[GRAY], .cs851_spawn_gray_pair
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[JEFF], .cs851_spawn_jeff_pair
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .cs851_check_karen
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[KAI], .cs851_spawn_kai_pair
 
-.branch_1272B4:
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_1272CC
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x4, .branch_127240
+.cs851_check_karen:
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .cs851_check_basil
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[KAREN], .cs851_spawn_karen_pair
 
-.branch_1272CC:
-    BRANCH_ON_SPECIAL_BIT 12, lifeEventBits + 0x4, .branch_1272E4
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0xE, .branch_127258
+.cs851_check_basil:
+    BRANCH_ON_SPECIAL_BIT 12, lifeEventBits[1], .cs851_no_assistant_ending
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[NPC_BASIL], .cs851_spawn_basil_solo
 
-.branch_1272E4:
+.cs851_no_assistant_ending:
     SET_WAIT_FRAMES 5
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     SET_WAIT_FRAMES 32
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 8
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 8
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     WAIT_RGBA_FINISHED
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_1_127310:
-    EXECUTE_SUBROUTINE .sub_1257C4
+; ----- cs851 Villager Executors (slots 1..20) -----
+; NPCs eligible to be asked as assistant use a 3-state dialogue shape:
+;   `<npc>_wait`          - idle
+;   `<npc>_on_interact`   - affection bump (guarded by var1 bit)
+;   `<npc>_dialogue`      - yes/no prompt
+;   `<npc>_accept`        - yes path: set var0 bit N, fade, respawn
+;                           the NPC as `<npc>_in_balloon` (slot 23..39)
+;   `<npc>_decline`       - no path: return to wait state
+; NPCs without an accept option (Mayor, Mayor-wife, Lillia, Potion
+; Shop Dealer, Stu, Rick, Pastor, Basil) keep just `_wait` / `_on_interact`.
+
+.cs851_mayor:
+    EXECUTE_SUBROUTINE .setup_mayor
     SET_COORDINATES -144, 0, -48
 
-.branch_12731C:
-    SET_ASSET_ROTATION 6
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_12732C
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_mayor_wait:
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_mayor_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_12732C:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs851_mayor_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 86
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 86
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 0, var1, .branch_12731C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xB
+    BRANCH_ON_SPECIAL_BIT 0, var1, .cs851_mayor_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR]
     SET_SPECIAL_BIT 0, var1
-    EXECUTE_SUBROUTINE .branch_12731C
+    EXECUTE_SUBROUTINE .cs851_mayor_wait
 
-.executor_2_127370:
-    EXECUTE_SUBROUTINE .sub_125844
+.cs851_mayor_wife:
+    EXECUTE_SUBROUTINE .setup_mayor_wife
     SET_COORDINATES -192, 0, -128
 
-.branch_12737C:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_12738C
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_mayor_wife_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_mayor_wife_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_12738C:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs851_mayor_wife_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 11
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 11
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 1, var1, .branch_12737C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xC
+    BRANCH_ON_SPECIAL_BIT 1, var1, .cs851_mayor_wife_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR_WIFE]
     SET_SPECIAL_BIT 1, var1
-    EXECUTE_SUBROUTINE .branch_12737C
+    EXECUTE_SUBROUTINE .cs851_mayor_wife_wait
 
-.executor_3_1273D0:
-    EXECUTE_SUBROUTINE .sub_1258C4
+.cs851_ann:
+    EXECUTE_SUBROUTINE .setup_ann
     SET_COORDINATES -96, 0, -160
 
-.sub_1273DC:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1273EC
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_ann_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_ann_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1273EC:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 2, var1, .branch_127410
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x3
+.cs851_ann_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 2, var1, .cs851_ann_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[ANN]
     SET_SPECIAL_BIT 2, var1
 
-.branch_127410:
+.cs851_ann_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_12743C
-    BRANCH_ON_DIALOGUE 0, 1, .branch_127480
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_ann_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_ann_decline
 
-.branch_12743C:
+.cs851_ann_accept:
     SET_SPECIAL_BIT 3, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 48
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 48
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x3
+    UPDATE_U8_VALUE 8, 255, npcAffection[ANN]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 23
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 23, .executor_23_127488
+    SPAWN_EXECUTOR 23, .cs851_ann_in_balloon
     DEACTIVATE_SELF
 
-.branch_127480:
+.cs851_ann_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_1273DC
+    EXECUTE_SUBROUTINE .cs851_ann_wait
 
-.executor_23_127488:
+.cs851_ann_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 4, 255
-    EXECUTE_SUBROUTINE .sub_1258C4
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_ann
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_4_12749C:
-    EXECUTE_SUBROUTINE .sub_125970
+.cs851_maria:
+    EXECUTE_SUBROUTINE .setup_maria
     SET_COORDINATES -64, 0, -128
 
-.sub_1274A8:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1274B8
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_maria_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_maria_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1274B8:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 3, var1, .branch_1274DC
+.cs851_maria_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 3, var1, .cs851_maria_dialogue
     UPDATE_U8_VALUE 2, 255, npcAffection[MARIA]
     SET_SPECIAL_BIT 3, var1
 
-.branch_1274DC:
+.cs851_maria_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_127508
-    BRANCH_ON_DIALOGUE 0, 1, .branch_12754C
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_maria_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_maria_decline
 
-.branch_127508:
+.cs851_maria_accept:
     SET_SPECIAL_BIT 0, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 32
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 32
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     UPDATE_U8_VALUE 8, 255, npcAffection[MARIA]
@@ -1707,651 +1837,657 @@
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 24
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 24, .executor_24_127554
+    SPAWN_EXECUTOR 24, .cs851_maria_in_balloon
     DEACTIVATE_SELF
 
-.branch_12754C:
+.cs851_maria_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_1274A8
+    EXECUTE_SUBROUTINE .cs851_maria_wait
 
-.executor_24_127554:
+.cs851_maria_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 1, 255
-    EXECUTE_SUBROUTINE .sub_125970
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_maria
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_5_127568:
-    EXECUTE_SUBROUTINE .sub_125A20
+.cs851_lillia:
+    EXECUTE_SUBROUTINE .setup_lillia
     SET_COORDINATES -96, 0, -288
 
-.branch_127574:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127584
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_lillia_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_lillia_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127584:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs851_lillia_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 54
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 54
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 4, var1, .branch_127574
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xD
+    BRANCH_ON_SPECIAL_BIT 4, var1, .cs851_lillia_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_LILLIA]
     SET_SPECIAL_BIT 4, var1
-    EXECUTE_SUBROUTINE .branch_127574
+    EXECUTE_SUBROUTINE .cs851_lillia_wait
 
-.executor_6_1275C8:
-    EXECUTE_SUBROUTINE .sub_125AFC
+.cs851_potion_shop_dealer:
+    EXECUTE_SUBROUTINE .setup_potion_shop_dealer
     SET_COORDINATES 64, 0, 32
 
-.branch_1275D4:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1275E4
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_potion_shop_dealer_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_potion_shop_dealer_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1275E4:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs851_potion_shop_dealer_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 84
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 84
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 5, var1, .branch_1275D4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x13
+    BRANCH_ON_SPECIAL_BIT 5, var1, .cs851_potion_shop_dealer_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_POTION_SHOP_DEALER]
     SET_SPECIAL_BIT 5, var1
-    EXECUTE_SUBROUTINE .branch_1275D4
+    EXECUTE_SUBROUTINE .cs851_potion_shop_dealer_wait
 
-.executor_7_127628:
-    EXECUTE_SUBROUTINE .sub_125B30
+.cs851_kent:
+    EXECUTE_SUBROUTINE .setup_kent
     SET_COORDINATES -88, 0, -96
 
-.sub_127634:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127644
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_kent_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_kent_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127644:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 6, var1, .branch_127668
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x14
+.cs851_kent_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 6, var1, .cs851_kent_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_KENT]
     SET_SPECIAL_BIT 6, var1
 
-.branch_127668:
+.cs851_kent_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_127694
-    BRANCH_ON_DIALOGUE 0, 1, .branch_1276D8
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_kent_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_kent_decline
 
-.branch_127694:
+.cs851_kent_accept:
     SET_SPECIAL_BIT 10, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 22
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 22
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x14
+    UPDATE_U8_VALUE 8, 255, npcAffection[NPC_KENT]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 27
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 27, .executor_27_1276E0
+    SPAWN_EXECUTOR 27, .cs851_kent_in_balloon
     DEACTIVATE_SELF
 
-.branch_1276D8:
+.cs851_kent_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_127634
+    EXECUTE_SUBROUTINE .cs851_kent_wait
 
-.executor_27_1276E0:
+.cs851_kent_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 21, 255
-    EXECUTE_SUBROUTINE .sub_125B30
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_kent
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_8_1276F4:
-    EXECUTE_SUBROUTINE .sub_125BB0
+.cs851_stu:
+    EXECUTE_SUBROUTINE .setup_stu
     SET_COORDINATES -8, 0, 0
 
-.branch_127700:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127710
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_stu_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_stu_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127710:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs851_stu_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 26
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 26
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 7, var1, .branch_127700
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x15
+    BRANCH_ON_SPECIAL_BIT 7, var1, .cs851_stu_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_STU]
     SET_SPECIAL_BIT 7, var1
-    EXECUTE_SUBROUTINE .branch_127700
+    EXECUTE_SUBROUTINE .cs851_stu_wait
 
-.executor_9_127754:
-    EXECUTE_SUBROUTINE .sub_125BE4
+.cs851_may:
+    EXECUTE_SUBROUTINE .setup_may
     SET_COORDINATES 32, 0, -64
 
-.sub_127760:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127770
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_may_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_may_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127770:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 8, var1, .branch_127794
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x17
+.cs851_may_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 8, var1, .cs851_may_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAY]
     SET_SPECIAL_BIT 8, var1
 
-.branch_127794:
+.cs851_may_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_1277C0
-    BRANCH_ON_DIALOGUE 0, 1, .branch_127804
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_may_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_may_decline
 
-.branch_1277C0:
+.cs851_may_accept:
     SET_SPECIAL_BIT 11, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 29
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 29
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x17
+    UPDATE_U8_VALUE 8, 255, npcAffection[NPC_MAY]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 29
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 29, .executor_29_12780C
+    SPAWN_EXECUTOR 29, .cs851_may_in_balloon
     DEACTIVATE_SELF
 
-.branch_127804:
+.cs851_may_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_127760
+    EXECUTE_SUBROUTINE .cs851_may_wait
 
-.executor_29_12780C:
+.cs851_may_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 24, 255
-    EXECUTE_SUBROUTINE .sub_125BE4
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_may
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_10_127820:
-    EXECUTE_SUBROUTINE .sub_125C60
+.cs851_popuri:
+    EXECUTE_SUBROUTINE .setup_popuri
     SET_COORDINATES 0, 0, -192
 
-.sub_12782C:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_12783C
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_popuri_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_popuri_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_12783C:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 9, var1, .branch_127860
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1
+.cs851_popuri_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 9, var1, .cs851_popuri_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[POPURI]
     SET_SPECIAL_BIT 9, var1
 
-.branch_127860:
+.cs851_popuri_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_12788C
-    BRANCH_ON_DIALOGUE 0, 1, .branch_1278D0
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_popuri_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_popuri_decline
 
-.branch_12788C:
+.cs851_popuri_accept:
     SET_SPECIAL_BIT 1, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 37
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 37
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x1
+    UPDATE_U8_VALUE 8, 255, npcAffection[POPURI]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 30
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 30, .executor_30_1278D8
+    SPAWN_EXECUTOR 30, .cs851_popuri_in_balloon
     DEACTIVATE_SELF
 
-.branch_1278D0:
+.cs851_popuri_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_12782C
+    EXECUTE_SUBROUTINE .cs851_popuri_wait
 
-.executor_30_1278D8:
+.cs851_popuri_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 2, 255
-    EXECUTE_SUBROUTINE .sub_125C60
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_popuri
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_11_1278EC:
-    EXECUTE_SUBROUTINE .sub_125D0C
+.cs851_elli:
+    EXECUTE_SUBROUTINE .setup_elli
     SET_COORDINATES 32, 0, -160
 
-.sub_1278F8:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127908
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_elli_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_elli_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127908:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 10, var1, .branch_12792C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x2
+.cs851_elli_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 10, var1, .cs851_elli_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[ELLI]
     SET_SPECIAL_BIT 10, var1
 
-.branch_12792C:
+.cs851_elli_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_127958
-    BRANCH_ON_DIALOGUE 0, 1, .branch_12799C
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_elli_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_elli_decline
 
-.branch_127958:
+.cs851_elli_accept:
     SET_SPECIAL_BIT 2, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 43
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 43
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x2
+    UPDATE_U8_VALUE 8, 255, npcAffection[ELLI]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 31
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 31, .executor_31_1279A4
+    SPAWN_EXECUTOR 31, .cs851_elli_in_balloon
     DEACTIVATE_SELF
 
-.branch_12799C:
+.cs851_elli_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_1278F8
+    EXECUTE_SUBROUTINE .cs851_elli_wait
 
-.executor_31_1279A4:
+.cs851_elli_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 3, 255
-    EXECUTE_SUBROUTINE .sub_125D0C
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_elli
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_12_1279B8:
-    EXECUTE_SUBROUTINE .sub_125DB8
+.cs851_rick:
+    EXECUTE_SUBROUTINE .setup_rick
     SET_COORDINATES -96, 0, 160
 
-.branch_1279C4:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1279D4
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_rick_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_rick_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1279D4:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs851_rick_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 10
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 10
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 11, var1, .branch_1279C4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x18
+    BRANCH_ON_SPECIAL_BIT 11, var1, .cs851_rick_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_RICK]
     SET_SPECIAL_BIT 11, var1
-    EXECUTE_SUBROUTINE .branch_1279C4
+    EXECUTE_SUBROUTINE .cs851_rick_wait
 
-.executor_13_127A14:
-    EXECUTE_SUBROUTINE .sub_125E34
+.cs851_pastor:
+    EXECUTE_SUBROUTINE .setup_pastor
     SET_COORDINATES -16, 0, 128
 
-.branch_127A20:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127A30
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_pastor_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_pastor_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127A30:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs851_pastor_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 15
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 15
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 12, var1, .branch_127A20
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x19
+    BRANCH_ON_SPECIAL_BIT 12, var1, .cs851_pastor_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_PASTOR]
     SET_SPECIAL_BIT 12, var1
-    EXECUTE_SUBROUTINE .branch_127A20
+    EXECUTE_SUBROUTINE .cs851_pastor_wait
 
-.executor_14_127A74:
-    EXECUTE_SUBROUTINE .sub_125EB0
+.cs851_harris:
+    EXECUTE_SUBROUTINE .setup_harris
     SET_COORDINATES 0, 0, -272
 
-.sub_127A80:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127A90
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_harris_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_harris_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127A90:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 13, var1, .branch_127AB4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x6
+.cs851_harris_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 13, var1, .cs851_harris_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[HARRIS]
     SET_SPECIAL_BIT 13, var1
 
-.branch_127AB4:
+.cs851_harris_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_127AE0
-    BRANCH_ON_DIALOGUE 0, 1, .branch_127B24
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_harris_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_harris_decline
 
-.branch_127AE0:
+.cs851_harris_accept:
     SET_SPECIAL_BIT 5, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 61
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 61
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x6
+    UPDATE_U8_VALUE 8, 255, npcAffection[HARRIS]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 34
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 34, .executor_34_127B2C
+    SPAWN_EXECUTOR 34, .cs851_harris_in_balloon
     DEACTIVATE_SELF
 
-.branch_127B24:
+.cs851_harris_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_127A80
+    EXECUTE_SUBROUTINE .cs851_harris_wait
 
-.executor_34_127B2C:
+.cs851_harris_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 7, 255
-    EXECUTE_SUBROUTINE .sub_125EB0
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_harris
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_15_127B40:
-    EXECUTE_SUBROUTINE .sub_125F30
+.cs851_gray:
+    EXECUTE_SUBROUTINE .setup_gray
     SET_COORDINATES 128, 0, 160
 
-.sub_127B4C:
-    SET_ASSET_ROTATION 3
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127B5C
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_gray_wait:
+    SET_ASSET_ROTATION NORTH
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_gray_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127B5C:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 14, var1, .branch_127B80
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x7
+.cs851_gray_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 14, var1, .cs851_gray_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[GRAY]
     SET_SPECIAL_BIT 14, var1
 
-.branch_127B80:
+.cs851_gray_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_127BAC
-    BRANCH_ON_DIALOGUE 0, 1, .branch_127BF0
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_gray_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_gray_decline
 
-.branch_127BAC:
+.cs851_gray_accept:
     SET_SPECIAL_BIT 6, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 65
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 65
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x7
+    UPDATE_U8_VALUE 8, 255, npcAffection[GRAY]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 35
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 35, .executor_35_127BF8
+    SPAWN_EXECUTOR 35, .cs851_gray_in_balloon
     DEACTIVATE_SELF
 
-.branch_127BF0:
+.cs851_gray_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_127B4C
+    EXECUTE_SUBROUTINE .cs851_gray_wait
 
-.executor_35_127BF8:
+.cs851_gray_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 8, 255
-    EXECUTE_SUBROUTINE .sub_125F30
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_gray
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_16_127C0C:
-    EXECUTE_SUBROUTINE .sub_125FB0
+.cs851_jeff:
+    EXECUTE_SUBROUTINE .setup_jeff
     SET_COORDINATES 64, 0, 224
 
-.sub_127C18:
-    SET_ASSET_ROTATION 3
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127C28
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_jeff_wait:
+    SET_ASSET_ROTATION NORTH
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_jeff_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127C28:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 15, var1, .branch_127C4C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x8
+.cs851_jeff_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 15, var1, .cs851_jeff_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[JEFF]
     SET_SPECIAL_BIT 15, var1
 
-.branch_127C4C:
+.cs851_jeff_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_127C78
-    BRANCH_ON_DIALOGUE 0, 1, .branch_127CBC
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_jeff_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_jeff_decline
 
-.branch_127C78:
+.cs851_jeff_accept:
     SET_SPECIAL_BIT 7, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 69
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 69
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x8
+    UPDATE_U8_VALUE 8, 255, npcAffection[JEFF]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 36
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 36, .executor_36_127CC4
+    SPAWN_EXECUTOR 36, .cs851_jeff_in_balloon
     DEACTIVATE_SELF
 
-.branch_127CBC:
+.cs851_jeff_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_127C18
+    EXECUTE_SUBROUTINE .cs851_jeff_wait
 
-.executor_36_127CC4:
+.cs851_jeff_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 9, 255
-    EXECUTE_SUBROUTINE .sub_125FB0
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_jeff
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_17_127CD8:
-    EXECUTE_SUBROUTINE .sub_126030
+.cs851_cliff:
+    EXECUTE_SUBROUTINE .setup_cliff
     SET_COORDINATES -96, 0, 256
 
-.sub_127CE4:
-    SET_ASSET_ROTATION 4
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127CF4
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_cliff_wait:
+    SET_ASSET_ROTATION NORTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_cliff_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127CF4:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 16, var1, .branch_127D18
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x9
+.cs851_cliff_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 16, var1, .cs851_cliff_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[CLIFF]
     SET_SPECIAL_BIT 16, var1
 
-.branch_127D18:
+.cs851_cliff_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_127D44
-    BRANCH_ON_DIALOGUE 0, 1, .branch_127D88
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_cliff_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_cliff_decline
 
-.branch_127D44:
+.cs851_cliff_accept:
     SET_SPECIAL_BIT 8, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 73
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 73
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x9
+    UPDATE_U8_VALUE 8, 255, npcAffection[CLIFF]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 37
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 37, .executor_37_127D90
+    SPAWN_EXECUTOR 37, .cs851_cliff_in_balloon
     DEACTIVATE_SELF
 
-.branch_127D88:
+.cs851_cliff_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_127CE4
+    EXECUTE_SUBROUTINE .cs851_cliff_wait
 
-.executor_37_127D90:
+.cs851_cliff_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 10, 255
-    EXECUTE_SUBROUTINE .sub_126030
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_cliff
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_18_127DA4:
-    EXECUTE_SUBROUTINE .sub_1260B0
+.cs851_kai:
+    EXECUTE_SUBROUTINE .setup_kai
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 96, 0, -224
 
-.sub_127DB4:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127DC4
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_kai_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_kai_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127DC4:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 17, var1, .branch_127DE8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xA
+.cs851_kai_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 17, var1, .cs851_kai_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAI]
     SET_SPECIAL_BIT 17, var1
 
-.branch_127DE8:
+.cs851_kai_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_127E14
-    BRANCH_ON_DIALOGUE 0, 1, .branch_127E58
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_kai_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_kai_decline
 
-.branch_127E14:
+.cs851_kai_accept:
     SET_SPECIAL_BIT 9, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 77
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 77
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0xA
+    UPDATE_U8_VALUE 8, 255, npcAffection[KAI]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 38
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 38, .executor_38_127E60
+    SPAWN_EXECUTOR 38, .cs851_kai_in_balloon
     DEACTIVATE_SELF
 
-.branch_127E58:
+.cs851_kai_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_127DB4
+    EXECUTE_SUBROUTINE .cs851_kai_wait
 
-.executor_38_127E60:
+.cs851_kai_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 11, 255
-    EXECUTE_SUBROUTINE .sub_1260B0
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_kai
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_19_127E74:
-    EXECUTE_SUBROUTINE .sub_126138
+.cs851_karen:
+    EXECUTE_SUBROUTINE .setup_karen
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 128, 0, -288
 
-.sub_127E84:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127E94
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_karen_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_karen_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127E94:
-    EXECUTE_SUBROUTINE .sub_1252C8
-    BRANCH_ON_SPECIAL_BIT 18, var1, .branch_127EB8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x4
+.cs851_karen_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_ON_SPECIAL_BIT 18, var1, .cs851_karen_dialogue
+    UPDATE_U8_VALUE 2, 255, npcAffection[KAREN]
     SET_SPECIAL_BIT 18, var1
 
-.branch_127EB8:
+.cs851_karen_dialogue:
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 11
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 11
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_127EE4
-    BRANCH_ON_DIALOGUE 0, 1, .branch_127F28
+    BRANCH_ON_DIALOGUE 0, 0, .cs851_karen_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cs851_karen_decline
 
-.branch_127EE4:
+.cs851_karen_accept:
     SET_SPECIAL_BIT 4, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 57
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 57
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x4
+    UPDATE_U8_VALUE 8, 255, npcAffection[KAREN]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 39
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 39, .executor_39_127F30
+    SPAWN_EXECUTOR 39, .cs851_karen_in_balloon
     DEACTIVATE_SELF
 
-.branch_127F28:
+.cs851_karen_decline:
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_127E84
+    EXECUTE_SUBROUTINE .cs851_karen_wait
 
-.executor_39_127F30:
+.cs851_karen_in_balloon:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 5, 255
-    EXECUTE_SUBROUTINE .sub_126138
-    EXECUTE_SUBROUTINE .sub_127FD8
+    EXECUTE_SUBROUTINE .setup_karen
+    EXECUTE_SUBROUTINE .cs851_ascent_start
 
-.executor_20_127F44:
-    EXECUTE_SUBROUTINE .sub_1261EC
+.cs851_basil:
+    EXECUTE_SUBROUTINE .setup_basil
     SET_COORDINATES -128, 0, -288
 
-.branch_127F50:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_127F60
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs851_basil_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs851_basil_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_127F60:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs851_basil_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 85
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 85
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 19, var1, .branch_127F50
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xE
+    BRANCH_ON_SPECIAL_BIT 19, var1, .cs851_basil_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_BASIL]
     SET_SPECIAL_BIT 19, var1
-    EXECUTE_SUBROUTINE .branch_127F50
+    EXECUTE_SUBROUTINE .cs851_basil_wait
 
-.executor_0_127FA4:
-    EXECUTE_SUBROUTINE .sub_1252E8
+.cs851_player_reattach:
+    EXECUTE_SUBROUTINE .setup_player
     TOGGLE_PAUSE_ENTITY 0
     DEACTIVATE_SELF
 
-.executor_0_127FB0:
+.cs851_player_balloon_pos:
     SET_SHADOW_FLAGS 0, 255
-    EXECUTE_SUBROUTINE .sub_1252E8
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 0
     TOGGLE_PAUSE_ENTITY 0
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_COORDINATES -176, 96, 48
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_127FD8:
+; ----- cs851 Ascent transition -----
+; Called by every NPC accept-path. Deactivates the ground-scene
+; executors, fades, then keeps only the accepting-NPC in-balloon
+; executor alive via the `.cs851_keep_*_in` chain (one per var0 bit).
+; Finally spawns the balloon scene (`.cs851_balloon_scene_begin`).
+
+.cs851_ascent_start:
     DEACTIVATE_EXECUTOR 20
     DEACTIVATE_EXECUTOR 41
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 41, .executor_36_126A84
-    SPAWN_EXECUTOR 0, .executor_0_127FA4
+    SPAWN_EXECUTOR 41, .king_balloon_sprite
+    SPAWN_EXECUTOR 0, .cs851_player_reattach
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 0, .executor_0_127FB0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_7_125320
-    SPAWN_EXECUTOR 20, .executor_20_128234
+    SPAWN_EXECUTOR 0, .cs851_player_balloon_pos
+    SET_OTHER_EXECUTOR_PTR 1, .face_southwest
+    SPAWN_EXECUTOR 20, .cs851_balloon_map_anchor
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -160, 96, 32
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 9
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 9
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_128220
+    SET_OTHER_EXECUTOR_PTR 0, .cs851_balloon_drift_delta
     SET_WAIT_FRAMES 1
-    SET_OTHER_EXECUTOR_PTR 40, .executor_0_128220
-    SET_OTHER_EXECUTOR_PTR 41, .executor_0_128220
+    SET_OTHER_EXECUTOR_PTR 40, .cs851_balloon_drift_delta
+    SET_OTHER_EXECUTOR_PTR 41, .cs851_balloon_drift_delta
     SET_FRAME_DELTA 0, 1, 1, 40
     SET_FRAME_DELTA 0, 2, 1, 200
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -2378,94 +2514,94 @@
     DEACTIVATE_EXECUTOR 20
     DEACTIVATE_EXECUTOR 21
     DEACTIVATE_EXECUTOR 22
-    BRANCH_ON_SPECIAL_BIT 3, var0, .branch_1280E4
+    BRANCH_ON_SPECIAL_BIT 3, var0, .cs851_keep_ann_in
     DEACTIVATE_EXECUTOR 23
 
-.branch_1280E4:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_1280F4
+.cs851_keep_ann_in:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .cs851_keep_maria_in
     DEACTIVATE_EXECUTOR 24
 
-.branch_1280F4:
+.cs851_keep_maria_in:
     DEACTIVATE_EXECUTOR 25
     DEACTIVATE_EXECUTOR 26
-    BRANCH_ON_SPECIAL_BIT 10, var0, .branch_12810C
+    BRANCH_ON_SPECIAL_BIT 10, var0, .cs851_keep_kent_in
     DEACTIVATE_EXECUTOR 27
 
-.branch_12810C:
+.cs851_keep_kent_in:
     DEACTIVATE_EXECUTOR 28
-    BRANCH_ON_SPECIAL_BIT 11, var0, .branch_128120
+    BRANCH_ON_SPECIAL_BIT 11, var0, .cs851_keep_popuri_in
     DEACTIVATE_EXECUTOR 29
 
-.branch_128120:
-    BRANCH_ON_SPECIAL_BIT 1, var0, .branch_128130
+.cs851_keep_popuri_in:
+    BRANCH_ON_SPECIAL_BIT 1, var0, .cs851_keep_elli_in
     DEACTIVATE_EXECUTOR 30
 
-.branch_128130:
-    BRANCH_ON_SPECIAL_BIT 2, var0, .branch_128140
+.cs851_keep_elli_in:
+    BRANCH_ON_SPECIAL_BIT 2, var0, .cs851_keep_harris_in
     DEACTIVATE_EXECUTOR 31
 
-.branch_128140:
+.cs851_keep_harris_in:
     DEACTIVATE_EXECUTOR 32
     DEACTIVATE_EXECUTOR 33
-    BRANCH_ON_SPECIAL_BIT 5, var0, .branch_128158
+    BRANCH_ON_SPECIAL_BIT 5, var0, .cs851_keep_gray_in
     DEACTIVATE_EXECUTOR 34
 
-.branch_128158:
-    BRANCH_ON_SPECIAL_BIT 6, var0, .branch_128168
+.cs851_keep_gray_in:
+    BRANCH_ON_SPECIAL_BIT 6, var0, .cs851_keep_jeff_in
     DEACTIVATE_EXECUTOR 35
 
-.branch_128168:
-    BRANCH_ON_SPECIAL_BIT 7, var0, .branch_128178
+.cs851_keep_jeff_in:
+    BRANCH_ON_SPECIAL_BIT 7, var0, .cs851_keep_cliff_in
     DEACTIVATE_EXECUTOR 36
 
-.branch_128178:
-    BRANCH_ON_SPECIAL_BIT 8, var0, .branch_128188
+.cs851_keep_cliff_in:
+    BRANCH_ON_SPECIAL_BIT 8, var0, .cs851_keep_kai_in
     DEACTIVATE_EXECUTOR 37
 
-.branch_128188:
-    BRANCH_ON_SPECIAL_BIT 9, var0, .branch_128198
+.cs851_keep_kai_in:
+    BRANCH_ON_SPECIAL_BIT 9, var0, .cs851_keep_karen_in
     DEACTIVATE_EXECUTOR 38
 
-.branch_128198:
-    BRANCH_ON_SPECIAL_BIT 4, var0, .branch_1281A8
+.cs851_keep_karen_in:
+    BRANCH_ON_SPECIAL_BIT 4, var0, .cs851_balloon_scene_begin
     DEACTIVATE_EXECUTOR 39
 
-.branch_1281A8:
+.cs851_balloon_scene_begin:
     DEACTIVATE_EXECUTOR 40
     DEACTIVATE_EXECUTOR 41
     SET_WAIT_FRAMES 1
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_128248
-    SPAWN_EXECUTOR 1, .executor_1_128570
-    SPAWN_EXECUTOR 2, .executor_2_128640
-    SPAWN_EXECUTOR 3, .executor_35_126A4C
-    SPAWN_EXECUTOR 4, .executor_36_126A84
-    SPAWN_EXECUTOR 41, .executor_41_1282E8
+    SET_OTHER_EXECUTOR_PTR 0, .cs851_player_reposition
+    SPAWN_EXECUTOR 1, .cs851_bg_left_scroll
+    SPAWN_EXECUTOR 2, .cs851_bg_right_scroll
+    SPAWN_EXECUTOR 3, .festival_item_overlay
+    SPAWN_EXECUTOR 4, .king_balloon_sprite
+    SPAWN_EXECUTOR 41, .cs851_balloon_announcer
     SET_SPECIAL_BIT 20, dailyEventBits[1]
     SET_COORDINATES -160, 96, 32
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_128254
-    SET_OTHER_EXECUTOR_PTR 3, .executor_0_128254
-    SET_OTHER_EXECUTOR_PTR 4, .executor_0_128254
+    SET_OTHER_EXECUTOR_PTR 0, .cs851_balloon_bob_loop
+    SET_OTHER_EXECUTOR_PTR 3, .cs851_balloon_bob_loop
+    SET_OTHER_EXECUTOR_PTR 4, .cs851_balloon_bob_loop
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .executor_0_128254
+    EXECUTE_SUBROUTINE .cs851_balloon_bob_loop
 
-.executor_0_128220:
+.cs851_balloon_drift_delta:
     SET_FRAME_DELTA 0, 1, 1, 40
     SET_FRAME_DELTA 0, 2, 1, 200
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_20_128234:
+.cs851_balloon_map_anchor:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES -160, 96, 40
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_128248:
+.cs851_player_reposition:
     SET_COORDINATES -176, 96, 48
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_128254:
+.cs851_balloon_bob_loop:
     SET_FRAME_DELTA 1, 0, 1, 1
     SET_WAIT_FRAMES 2
     SET_FRAME_DELTA 1, 0, 1, 1
@@ -2490,36 +2626,43 @@
     SET_WAIT_FRAMES 2
     SET_FRAME_DELTA -1, 0, -1, 1
     SET_WAIT_FRAMES 15
-    EXECUTE_SUBROUTINE .executor_0_128254
+    EXECUTE_SUBROUTINE .cs851_balloon_bob_loop
 
-.executor_41_1282E8:
+; ----- cs851 Balloon-scene announcer (executor slot 41) -----
+; Inspects var0 bits to emit the NPC-specific "in the balloon" overlay
+; line. Exactly one bit is set (whichever NPC accepted earlier), so the
+; fan-out always falls through to one announce branch. After the line,
+; spawns the holdableItems sprites, scrolls the backgrounds, fades,
+; and exits the cutscene.
+
+.cs851_balloon_announcer:
     SET_WAIT_FRAMES 120
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_128468
-    BRANCH_ON_SPECIAL_BIT 1, var0, .branch_12847C
-    BRANCH_ON_SPECIAL_BIT 2, var0, .branch_128490
-    BRANCH_ON_SPECIAL_BIT 3, var0, .branch_1284A4
-    BRANCH_ON_SPECIAL_BIT 4, var0, .branch_1284B8
-    BRANCH_ON_SPECIAL_BIT 5, var0, .branch_1284CC
-    BRANCH_ON_SPECIAL_BIT 6, var0, .branch_1284E0
-    BRANCH_ON_SPECIAL_BIT 7, var0, .branch_1284F4
-    BRANCH_ON_SPECIAL_BIT 8, var0, .branch_128508
-    BRANCH_ON_SPECIAL_BIT 9, var0, .branch_12851C
-    BRANCH_ON_SPECIAL_BIT 10, var0, .branch_128530
-    BRANCH_ON_SPECIAL_BIT 11, var0, .branch_128544
+    BRANCH_ON_SPECIAL_BIT 0, var0, .cs851_announce_maria
+    BRANCH_ON_SPECIAL_BIT 1, var0, .cs851_announce_popuri
+    BRANCH_ON_SPECIAL_BIT 2, var0, .cs851_announce_elli
+    BRANCH_ON_SPECIAL_BIT 3, var0, .cs851_announce_ann
+    BRANCH_ON_SPECIAL_BIT 4, var0, .cs851_announce_karen
+    BRANCH_ON_SPECIAL_BIT 5, var0, .cs851_announce_harris
+    BRANCH_ON_SPECIAL_BIT 6, var0, .cs851_announce_gray
+    BRANCH_ON_SPECIAL_BIT 7, var0, .cs851_announce_jeff
+    BRANCH_ON_SPECIAL_BIT 8, var0, .cs851_announce_cliff
+    BRANCH_ON_SPECIAL_BIT 9, var0, .cs851_announce_kai
+    BRANCH_ON_SPECIAL_BIT 10, var0, .cs851_announce_kent
+    BRANCH_ON_SPECIAL_BIT 11, var0, .cs851_announce_may
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 30
-    SPAWN_EXECUTOR 5, .executor_5_128710
-    SPAWN_EXECUTOR 6, .executor_6_12877C
-    SPAWN_EXECUTOR 7, .executor_7_1287E8
-    SPAWN_EXECUTOR 8, .executor_8_128854
-    SPAWN_EXECUTOR 9, .executor_9_1288C0
-    SPAWN_EXECUTOR 10, .executor_10_12892C
-    SPAWN_EXECUTOR 11, .executor_11_1289A8
-    SPAWN_EXECUTOR 12, .executor_12_128A14
+    SPAWN_EXECUTOR 5, .cs851_asc_sprite_5
+    SPAWN_EXECUTOR 6, .cs851_asc_sprite_6
+    SPAWN_EXECUTOR 7, .cs851_asc_sprite_7
+    SPAWN_EXECUTOR 8, .cs851_asc_sprite_8
+    SPAWN_EXECUTOR 9, .cs851_asc_sprite_9
+    SPAWN_EXECUTOR 10, .cs851_asc_sprite_10
+    SPAWN_EXECUTOR 11, .cs851_asc_sprite_11
+    SPAWN_EXECUTOR 12, .cs851_asc_sprite_12
     SET_WAIT_FRAMES 211
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_128558
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_128564
+    SET_OTHER_EXECUTOR_PTR 1, .cs851_bg_left_fade_out
+    SET_OTHER_EXECUTOR_PTR 2, .cs851_bg_right_fade_out
     SET_WAIT_FRAMES 1
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -2551,77 +2694,77 @@
     DEACTIVATE_EXECUTOR 39
     DEACTIVATE_EXECUTOR 0
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_1252A8
+    EXECUTE_SUBROUTINE .exit_cutscene
 
-.branch_128468:
-    TOGGLE_SPECIAL_BIT 0, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 34
+.cs851_announce_maria:
+    CLEAR_SPECIAL_BIT 0, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 34
     RETURN_FROM_SUBROUTINE
 
-.branch_12847C:
-    TOGGLE_SPECIAL_BIT 1, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 39
+.cs851_announce_popuri:
+    CLEAR_SPECIAL_BIT 1, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 39
     RETURN_FROM_SUBROUTINE
 
-.branch_128490:
-    TOGGLE_SPECIAL_BIT 2, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 44
+.cs851_announce_elli:
+    CLEAR_SPECIAL_BIT 2, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 44
     RETURN_FROM_SUBROUTINE
 
-.branch_1284A4:
-    TOGGLE_SPECIAL_BIT 3, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 49
+.cs851_announce_ann:
+    CLEAR_SPECIAL_BIT 3, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 49
     RETURN_FROM_SUBROUTINE
 
-.branch_1284B8:
-    TOGGLE_SPECIAL_BIT 4, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 59
+.cs851_announce_karen:
+    CLEAR_SPECIAL_BIT 4, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 59
     RETURN_FROM_SUBROUTINE
 
-.branch_1284CC:
-    TOGGLE_SPECIAL_BIT 5, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 63
+.cs851_announce_harris:
+    CLEAR_SPECIAL_BIT 5, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 63
     RETURN_FROM_SUBROUTINE
 
-.branch_1284E0:
-    TOGGLE_SPECIAL_BIT 6, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 67
+.cs851_announce_gray:
+    CLEAR_SPECIAL_BIT 6, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 67
     RETURN_FROM_SUBROUTINE
 
-.branch_1284F4:
-    TOGGLE_SPECIAL_BIT 7, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 71
+.cs851_announce_jeff:
+    CLEAR_SPECIAL_BIT 7, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 71
     RETURN_FROM_SUBROUTINE
 
-.branch_128508:
-    TOGGLE_SPECIAL_BIT 8, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 75
+.cs851_announce_cliff:
+    CLEAR_SPECIAL_BIT 8, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 75
     RETURN_FROM_SUBROUTINE
 
-.branch_12851C:
-    TOGGLE_SPECIAL_BIT 9, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 79
+.cs851_announce_kai:
+    CLEAR_SPECIAL_BIT 9, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 79
     RETURN_FROM_SUBROUTINE
 
-.branch_128530:
-    TOGGLE_SPECIAL_BIT 10, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 23
+.cs851_announce_kent:
+    CLEAR_SPECIAL_BIT 10, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 23
     RETURN_FROM_SUBROUTINE
 
-.branch_128544:
-    TOGGLE_SPECIAL_BIT 11, var0
-    INIT_MESSAGE_BOX_TYPE2 0, 54, 30
+.cs851_announce_may:
+    CLEAR_SPECIAL_BIT 11, var0
+    INIT_MESSAGE_BOX_TYPE2 0, SOWING_FESTIVAL_TEXT_INDEX, 30
     RETURN_FROM_SUBROUTINE
 
-.executor_1_128558:
+.cs851_bg_left_fade_out:
     UPDATE_RGBA 0, 0, 0, 0, 8
-    EXECUTE_SUBROUTINE .sub_128614
+    EXECUTE_SUBROUTINE .cs851_bg_left_scroll_step_b
 
-.executor_2_128564:
+.cs851_bg_right_fade_out:
     UPDATE_RGBA 0, 0, 0, 0, 8
-    EXECUTE_SUBROUTINE .sub_1286E4
+    EXECUTE_SUBROUTINE .cs851_bg_right_scroll_step_b
 
-.executor_1_128570:
+.cs851_bg_left_scroll:
     DMA_SPRITE 150, 0, _moonMountainBackgroundTextureSegmentRomStart, _moonMountainBackgroundTextureSegmentRomEnd, _moonMountainBackgroundAssetsIndexSegmentRomStart, _moonMountainBackgroundAssetsIndexSegmentRomEnd, 0, 0, 0x80261000, 0, 0x80266000, 0x80266100, 0x80266300, 0x80266400
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126F48
     SET_COORDINATES 160, -120, -15
@@ -2631,25 +2774,25 @@
     UPDATE_RGBA 255, 255, 255, 255, 8
     SET_U16_VALUE 0, D_80189824
 
-.sub_1285D8:
+.cs851_bg_left_scroll_step_a:
     SET_FRAME_DELTA 1, 0, 0, 1
     SET_WAIT_FRAMES 2
     UPDATE_U16_VALUE 1, 9999, D_80189824
-    BRANCH_U16_VAR_WITHIN_RANGE 160, 160, D_80189824, .branch_128604
-    EXECUTE_SUBROUTINE .sub_1285D8
+    BRANCH_U16_VAR_WITHIN_RANGE 160, 160, D_80189824, .cs851_bg_left_wrap
+    EXECUTE_SUBROUTINE .cs851_bg_left_scroll_step_a
 
-.branch_128604:
+.cs851_bg_left_wrap:
     SET_COORDINATES -320, -120, -15
     SET_U16_VALUE 0, D_80189824
 
-.sub_128614:
+.cs851_bg_left_scroll_step_b:
     SET_FRAME_DELTA 1, 0, 0, 1
     SET_WAIT_FRAMES 2
     UPDATE_U16_VALUE 1, 9999, D_80189824
-    BRANCH_U16_VAR_WITHIN_RANGE 640, 640, D_80189824, .branch_128604
-    EXECUTE_SUBROUTINE .sub_128614
+    BRANCH_U16_VAR_WITHIN_RANGE 640, 640, D_80189824, .cs851_bg_left_wrap
+    EXECUTE_SUBROUTINE .cs851_bg_left_scroll_step_b
 
-.executor_2_128640:
+.cs851_bg_right_scroll:
     DMA_SPRITE 151, 0, _moonMountainBackgroundTextureSegmentRomStart, _moonMountainBackgroundTextureSegmentRomEnd, _moonMountainBackgroundAssetsIndexSegmentRomStart, _moonMountainBackgroundAssetsIndexSegmentRomEnd, 0, 0, 0x80261000, 0, 0x80266000, 0x80266100, 0x80266300, 0x80266400
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126F48
     SET_COORDINATES -160, -120, -15
@@ -2659,25 +2802,25 @@
     UPDATE_RGBA 255, 255, 255, 255, 8
     SET_U16_VALUE 0, D_801886D2
 
-.sub_1286A8:
+.cs851_bg_right_scroll_step_a:
     SET_FRAME_DELTA 1, 0, 0, 1
     SET_WAIT_FRAMES 2
     UPDATE_U16_VALUE 1, 9999, D_801886D2
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 480, D_801886D2, .branch_1286D4
-    EXECUTE_SUBROUTINE .sub_1286A8
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 480, D_801886D2, .cs851_bg_right_wrap
+    EXECUTE_SUBROUTINE .cs851_bg_right_scroll_step_a
 
-.branch_1286D4:
+.cs851_bg_right_wrap:
     SET_COORDINATES -320, -120, -15
     SET_U16_VALUE 0, D_801886D2
 
-.sub_1286E4:
+.cs851_bg_right_scroll_step_b:
     SET_FRAME_DELTA 1, 0, 0, 1
     SET_WAIT_FRAMES 2
     UPDATE_U16_VALUE 1, 9999, D_801886D2
-    BRANCH_U16_VAR_WITHIN_RANGE 640, 640, D_801886D2, .branch_1286D4
-    EXECUTE_SUBROUTINE .sub_1286E4
+    BRANCH_U16_VAR_WITHIN_RANGE 640, 640, D_801886D2, .cs851_bg_right_wrap
+    EXECUTE_SUBROUTINE .cs851_bg_right_scroll_step_b
 
-.executor_5_128710:
+.cs851_asc_sprite_5:
     DMA_SPRITE 157, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BBE50, 0x802BC250, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126F54
     SET_COORDINATES 250, -250, 255
@@ -2686,9 +2829,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_6_12877C:
+.cs851_asc_sprite_6:
     DMA_SPRITE 158, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BC650, 0x802BCA50, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126FB8
     SET_COORDINATES 170, -64, 255
@@ -2697,9 +2840,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_1287E8:
+.cs851_asc_sprite_7:
     DMA_SPRITE 159, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BCE50, 0x802BD250, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_12701C
     SET_COORDINATES 232, -180, 255
@@ -2708,9 +2851,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_8_128854:
+.cs851_asc_sprite_8:
     DMA_SPRITE 160, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BD650, 0x802BDA50, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_127080
     SET_COORDINATES 144, -140, 255
@@ -2719,9 +2862,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_9_1288C0:
+.cs851_asc_sprite_9:
     DMA_SPRITE 161, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BDE50, 0x802BE250, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_127080
     SET_COORDINATES 240, -290, 255
@@ -2730,9 +2873,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_10_12892C:
+.cs851_asc_sprite_10:
     DMA_SPRITE 162, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BE650, 0x802BEA50, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_12701C
     SET_COORDINATES 0, -220, 255
@@ -2743,9 +2886,9 @@
     SET_FRAME_DELTA -1, 1, 0, 52
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_11_1289A8:
+.cs851_asc_sprite_11:
     DMA_SPRITE 163, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BEE50, 0x802BF250, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126FB8
     SET_COORDINATES 120, -200, 255
@@ -2754,9 +2897,9 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_12_128A14:
+.cs851_asc_sprite_12:
     DMA_SPRITE 164, 1, _holdableItemsTextureSegmentRomStart, _holdableItemsTextureSegmentRomEnd, _holdableItemsAssetsIndexSegmentRomStart, _holdableItemsAssetsIndexSegmentRomEnd, _holdableItemsSpritesheetIndexSegmentRomStart, _holdableItemsSpritesheetIndexSegmentRomEnd, 0x802BF650, 0x802BFA50, 0x802C8650, 0x802CAE50, 0x802CE350, 0x802CE550
     SET_ANIM_DATA_PTR_WITH_FLAG .anim_126F54
     SET_COORDINATES -16, -144, 255
@@ -2765,565 +2908,601 @@
     SET_FRAME_DELTA -1, 1, 0, 212
     UPDATE_RGBA 0, 0, 0, 0, 8
     SET_FRAME_DELTA -1, 1, 0, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_128A80:
-    SPAWN_EXECUTOR 1, .executor_1_1257E4
-    SPAWN_EXECUTOR 2, .executor_2_125864
-    SPAWN_EXECUTOR 3, .executor_3_1258E4
-    SPAWN_EXECUTOR 4, .executor_4_125990
-    SPAWN_EXECUTOR 5, .executor_5_125A40
-    SPAWN_EXECUTOR 6, .executor_6_12938C
-    SPAWN_EXECUTOR 7, .executor_7_128BBC
-    SPAWN_EXECUTOR 8, .executor_8_1293EC
-    SPAWN_EXECUTOR 9, .executor_9_125C04
-    SPAWN_EXECUTOR 10, .executor_10_125C80
-    SPAWN_EXECUTOR 11, .executor_11_125D2C
-    SPAWN_EXECUTOR 12, .executor_12_125DD8
-    SPAWN_EXECUTOR 13, .executor_13_125E54
-    SPAWN_EXECUTOR 22, .executor_22_1265D8
-    SPAWN_EXECUTOR 23, .executor_23_126614
-    SPAWN_EXECUTOR 24, .executor_24_126650
-    SPAWN_EXECUTOR 26, .executor_26_1266C8
-    SPAWN_EXECUTOR 27, .executor_27_126704
-    SPAWN_EXECUTOR 28, .executor_28_126740
-    SPAWN_EXECUTOR 29, .executor_29_12677C
-    SPAWN_EXECUTOR 30, .executor_30_1267B8
-    SPAWN_EXECUTOR 31, .executor_31_1267F4
-    SPAWN_EXECUTOR 32, .executor_32_126830
-    SPAWN_EXECUTOR 33, .executor_33_12686C
-    SPAWN_EXECUTOR 35, .executor_35_126A4C
-    SPAWN_EXECUTOR 36, .executor_36_126A84
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .branch_128D08
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .branch_128D14
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .branch_128D20
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .branch_128D2C
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x9, .branch_12547C
+; ============================================================
+; Cutscene 852 - SOWING_FESTIVAL_BACHELOR (and other bachelors)
+; A bachelor (gHarvestKing 1..5 -> Harris/Gray/Jeff/Cliff/Kai)
+; is the King. Executor 14..18 is re-bound to the bachelor
+; king role (see .cs852_king_is_harris..D38 fan-out). He may ask the
+; player or a high-affection village woman to ride along, then
+; the balloon sequence plays.
+; ============================================================
 
-.sub_128B8C:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .branch_128D38
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_128BB0
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x4, .branch_128CF0
+; ----- cs852 Dispatch -----
+; Reuses cs850 villager executors for slots 1..5, 9..13 (ground scene
+; is identical apart from the King). Slot 6 (potion-shop-dealer), 7
+; (Kent), and 8 (Stu) get their own cs852 executors with different
+; positions and dialogue. `gHarvestKing` (1..5) selects which bachelor
+; occupies slot 14..18 and runs `.cs852_bachelor_king_main`.
 
-.branch_128BB0:
-    SPAWN_EXECUTOR 21, .executor_21_128C1C
-    EXECUTE_SUBROUTINE .sub_1257AC
+.cs_bachelor_king:
+    SPAWN_EXECUTOR 1, .cs850_mayor
+    SPAWN_EXECUTOR 2, .cs850_mayor_wife
+    SPAWN_EXECUTOR 3, .cs850_ann
+    SPAWN_EXECUTOR 4, .cs850_maria
+    SPAWN_EXECUTOR 5, .cs850_lillia
+    SPAWN_EXECUTOR 6, .cs852_potion_shop_dealer
+    SPAWN_EXECUTOR 7, .cs852_kent
+    SPAWN_EXECUTOR 8, .cs852_stu
+    SPAWN_EXECUTOR 9, .cs850_may
+    SPAWN_EXECUTOR 10, .cs850_popuri
+    SPAWN_EXECUTOR 11, .cs850_elli
+    SPAWN_EXECUTOR 12, .cs850_rick
+    SPAWN_EXECUTOR 13, .cs850_pastor
+    SPAWN_EXECUTOR 22, .sparkle_static_22
+    SPAWN_EXECUTOR 23, .sparkle_static_23
+    SPAWN_EXECUTOR 24, .sparkle_static_24
+    SPAWN_EXECUTOR 26, .sparkle_static_26
+    SPAWN_EXECUTOR 27, .sparkle_static_27
+    SPAWN_EXECUTOR 28, .sparkle_static_28
+    SPAWN_EXECUTOR 29, .sparkle_static_29
+    SPAWN_EXECUTOR 30, .sparkle_static_30
+    SPAWN_EXECUTOR 31, .sparkle_static_31
+    SPAWN_EXECUTOR 32, .sparkle_static_32
+    SPAWN_EXECUTOR 33, .sparkle_static_33
+    SPAWN_EXECUTOR 35, .festival_item_overlay
+    SPAWN_EXECUTOR 36, .king_balloon_sprite
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .cs852_king_is_harris
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .cs852_king_is_gray
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .cs852_king_is_jeff
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .cs852_king_is_cliff
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[CLIFF], .spawn_cliff_assistant
 
-.executor_7_128BBC:
-    EXECUTE_SUBROUTINE .sub_125B30
+.cs852_king_post_select:
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .cs852_king_is_kai
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .cs852_king_player_as_assistant
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[KAREN], .cs852_spawn_karen_assistant
+
+.cs852_king_player_as_assistant:
+    SPAWN_EXECUTOR 21, .cs852_king_intro
+    EXECUTE_SUBROUTINE .spawn_player_as_kingr
+
+.cs852_kent:
+    EXECUTE_SUBROUTINE .setup_kent
     SET_COORDINATES -88, 0, -96
 
-.branch_128BC8:
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_128BD8
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs852_kent_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs852_kent_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_128BD8:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs852_kent_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 21
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 21
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 5, var1, .branch_128BC8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x14
+    BRANCH_ON_SPECIAL_BIT 5, var1, .cs852_kent_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_KENT]
     SET_SPECIAL_BIT 5, var1
-    EXECUTE_SUBROUTINE .branch_128BC8
+    EXECUTE_SUBROUTINE .cs852_kent_wait
 
-.executor_21_128C1C:
+.cs852_king_intro:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES -72, 96, -16
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_21_128C30:
+.cs852_king_ascent_pos:
     SET_COORDINATES -160, 96, 40
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_21_128C3C:
+.cs852_king_wife_pos:
     SET_COORDINATES -128, 96, 40
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_21_128C48:
+.cs852_king_dispatch_assistant:
     SET_WAIT_FRAMES 2
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .branch_128C64
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x6, .branch_125434
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .cs852_king_check_gray
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[HARRIS], .spawn_harris_assistant
 
-.branch_128C64:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .branch_128C7C
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x7, .branch_12544C
+.cs852_king_check_gray:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .cs852_king_check_jeff
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[GRAY], .spawn_gray_assistant
 
-.branch_128C7C:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .branch_128C94
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x8, .branch_125464
+.cs852_king_check_jeff:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .cs852_king_check_kai
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[JEFF], .spawn_jeff_assistant
 
-.branch_128C94:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .branch_128CB8
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_128CB8
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0xA, .branch_125490
+.cs852_king_check_kai:
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .cs852_king_check_basil
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .cs852_king_check_basil
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[KAI], .spawn_kai_assistant
 
-.branch_128CB8:
-    BRANCH_ON_SPECIAL_BIT 12, lifeEventBits + 0x4, .branch_128CD0
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0xE, .branch_1254C0
+.cs852_king_check_basil:
+    BRANCH_ON_SPECIAL_BIT 12, lifeEventBits[1], .cs852_king_no_assistant
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[NPC_BASIL], .spawn_basil_assistant
 
-.branch_128CD0:
+.cs852_king_no_assistant:
     SET_WAIT_FRAMES 2
     SET_FRAME_DELTA 1, 0, -1, 48
     SET_FRAME_DELTA 1, 0, 0, 48
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_125308
-    EXECUTE_SUBROUTINE .sub_1252C0
+    SET_OTHER_EXECUTOR_PTR 0, .track_entity_done
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_128CF0:
-    SPAWN_EXECUTOR 19, .executor_19_12615C
+.cs852_spawn_karen_assistant:
+    SPAWN_EXECUTOR 19, .cs850_karen
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 39, .executor_39_1269D4
+    SPAWN_EXECUTOR 39, .sparkle_static_39
     RETURN_FROM_SUBROUTINE
 
-.branch_128D08:
-    SPAWN_EXECUTOR 14, .executor_14_128D44
+.cs852_king_is_harris:
+    SPAWN_EXECUTOR 14, .cs852_king_harris_setup
     RETURN_FROM_SUBROUTINE
 
-.branch_128D14:
-    SPAWN_EXECUTOR 15, .executor_15_128D4C
+.cs852_king_is_gray:
+    SPAWN_EXECUTOR 15, .cs852_king_gray_setup
     RETURN_FROM_SUBROUTINE
 
-.branch_128D20:
-    SPAWN_EXECUTOR 16, .executor_16_128D54
+.cs852_king_is_jeff:
+    SPAWN_EXECUTOR 16, .cs852_king_jeff_setup
     RETURN_FROM_SUBROUTINE
 
-.branch_128D2C:
-    SPAWN_EXECUTOR 17, .executor_17_128D5C
-    EXECUTE_SUBROUTINE .sub_128B8C
+.cs852_king_is_cliff:
+    SPAWN_EXECUTOR 17, .cs852_king_cliff_setup
+    EXECUTE_SUBROUTINE .cs852_king_post_select
 
-.branch_128D38:
-    SPAWN_EXECUTOR 18, .executor_18_128D64
+.cs852_king_is_kai:
+    SPAWN_EXECUTOR 18, .cs852_king_kai_setup
     RETURN_FROM_SUBROUTINE
 
-.executor_14_128D44:
-    EXECUTE_SUBROUTINE .sub_125EB0
-    EXECUTE_SUBROUTINE .sub_128D6C
+.cs852_king_harris_setup:
+    EXECUTE_SUBROUTINE .setup_harris
+    EXECUTE_SUBROUTINE .cs852_bachelor_king_main
 
-.executor_15_128D4C:
-    EXECUTE_SUBROUTINE .sub_125F30
-    EXECUTE_SUBROUTINE .sub_128D6C
+.cs852_king_gray_setup:
+    EXECUTE_SUBROUTINE .setup_gray
+    EXECUTE_SUBROUTINE .cs852_bachelor_king_main
 
-.executor_16_128D54:
-    EXECUTE_SUBROUTINE .sub_125FB0
-    EXECUTE_SUBROUTINE .sub_128D6C
+.cs852_king_jeff_setup:
+    EXECUTE_SUBROUTINE .setup_jeff
+    EXECUTE_SUBROUTINE .cs852_bachelor_king_main
 
-.executor_17_128D5C:
-    EXECUTE_SUBROUTINE .sub_126030
-    EXECUTE_SUBROUTINE .sub_128D6C
+.cs852_king_cliff_setup:
+    EXECUTE_SUBROUTINE .setup_cliff
+    EXECUTE_SUBROUTINE .cs852_bachelor_king_main
 
-.executor_18_128D64:
-    EXECUTE_SUBROUTINE .sub_1260B0
-    EXECUTE_SUBROUTINE .sub_128D6C
+.cs852_king_kai_setup:
+    EXECUTE_SUBROUTINE .setup_kai
+    EXECUTE_SUBROUTINE .cs852_bachelor_king_main
 
-.sub_128D6C:
-    SET_ASSET_ROTATION 1
+; ----- cs852 Bachelor-king main body (shared by all 5 bachelors) -----
+; Rotates through six facing directions as a warm-up, then dispatches
+; on gHarvestKing. Each `cs852_<bachelor>_open` branch leads to:
+;   - `<bachelor>_ask_player`         if high affection on the bachelor
+;   - `<bachelor>_if_<wife>_wife`     if the player is married to the
+;                                     canonical wife candidate
+;   - `<bachelor>_player_declines`    fallback (bachelor + wife in balloon)
+; The yes/no choice in `_ask_player` picks between:
+;   - `_player_accepts`  -> bachelor rides with player (setup + .cs852_ascent_with_player)
+;   - `_player_declines` -> bachelor rides with canonical wife (.cs852_ascent_with_wife)
+
+.cs852_bachelor_king_main:
+    SET_ASSET_ROTATION WEST
     SET_COORDINATES -96, 0, -32
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 1, .executor_19_125328
-    SET_ASSET_ROTATION 2
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 8
+    SET_OTHER_EXECUTOR_PTR 1, .face_southeast
+    SET_ASSET_ROTATION NORTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 8
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_WAIT_FRAMES 30
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 30
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 30
-    SET_ASSET_ROTATION 5
+    SET_ASSET_ROTATION EAST
     SET_WAIT_FRAMES 30
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 30
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .branch_128E14
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .branch_128E40
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .branch_128E6C
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .branch_128E98
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .branch_128EC4
-    EXECUTE_SUBROUTINE .sub_1252C0
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .cs852_harris_open
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .cs852_gray_open
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .cs852_jeff_open
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .cs852_cliff_open
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .cs852_kai_open
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_128E14:
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_128E30
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x6, .branch_128EF0
-    EXECUTE_SUBROUTINE .sub_128F84
+.cs852_harris_open:
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_harris_if_maria_wife
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[HARRIS], .cs852_harris_ask_player
+    EXECUTE_SUBROUTINE .cs852_harris_player_declines
 
-.branch_128E30:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .branch_128EF0
+.cs852_harris_if_maria_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs852_harris_ask_player
     RETURN_FROM_SUBROUTINE
 
-.branch_128E40:
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_128E5C
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x7, .branch_128FD4
-    EXECUTE_SUBROUTINE .sub_129068
+.cs852_gray_open:
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_gray_if_popuri_wife
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[GRAY], .cs852_gray_ask_player
+    EXECUTE_SUBROUTINE .cs852_gray_player_declines
 
-.branch_128E5C:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .branch_128FD4
+.cs852_gray_if_popuri_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs852_gray_ask_player
     RETURN_FROM_SUBROUTINE
 
-.branch_128E6C:
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_128E88
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x8, .branch_1290B8
-    EXECUTE_SUBROUTINE .sub_12914C
+.cs852_jeff_open:
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_jeff_if_elli_wife
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[JEFF], .cs852_jeff_ask_player
+    EXECUTE_SUBROUTINE .cs852_jeff_player_declines
 
-.branch_128E88:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .branch_1290B8
+.cs852_jeff_if_elli_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs852_jeff_ask_player
     RETURN_FROM_SUBROUTINE
 
-.branch_128E98:
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_128EB4
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0x9, .branch_12919C
-    EXECUTE_SUBROUTINE .sub_129230
+.cs852_cliff_open:
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_cliff_if_ann_wife
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[CLIFF], .cs852_cliff_ask_player
+    EXECUTE_SUBROUTINE .cs852_cliff_player_declines
 
-.branch_128EB4:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .branch_12919C
+.cs852_cliff_if_ann_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs852_cliff_ask_player
     RETURN_FROM_SUBROUTINE
 
-.branch_128EC4:
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_128EE0
-    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection + 0xA, .branch_129280
-    EXECUTE_SUBROUTINE .sub_129314
+.cs852_kai_open:
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_kai_if_karen_wife
+    BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[KAI], .cs852_kai_ask_player
+    EXECUTE_SUBROUTINE .cs852_kai_player_declines
 
-.branch_128EE0:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .branch_129280
+.cs852_kai_if_karen_wife:
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs852_kai_ask_player
     RETURN_FROM_SUBROUTINE
 
-.branch_128EF0:
-    SET_ASSET_ROTATION 6
+.cs852_harris_ask_player:
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 62
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 62
     WAIT_MESSAGE_BOX_CLOSED 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_128F60
-    INIT_DIALOGUE_SESSION 0, 48, 12
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_harris_married_wife_check
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 12
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_128F34
-    BRANCH_ON_DIALOGUE 0, 1, .sub_128F84
+    BRANCH_ON_DIALOGUE 0, 0, .cs852_harris_player_accepts
+    BRANCH_ON_DIALOGUE 0, 1, .cs852_harris_player_declines
 
-.branch_128F34:
+.cs852_harris_player_accepts:
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x6
+    UPDATE_U8_VALUE 8, 255, npcAffection[HARRIS]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    SPAWN_EXECUTOR 25, .executor_25_128F70
+    SPAWN_EXECUTOR 25, .cs852_harris_balloon_with_player
     DEACTIVATE_SELF
 
-.branch_128F60:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .branch_128F34
+.cs852_harris_married_wife_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs852_harris_player_accepts
     RETURN_FROM_SUBROUTINE
 
-.executor_25_128F70:
+.cs852_harris_balloon_with_player:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 7, 255
-    EXECUTE_SUBROUTINE .sub_125EB0
-    EXECUTE_SUBROUTINE .sub_129448
+    EXECUTE_SUBROUTINE .setup_harris
+    EXECUTE_SUBROUTINE .cs852_ascent_with_player
 
-.sub_128F84:
+.cs852_harris_player_declines:
     SET_WAIT_FRAMES 15
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 4
     DEACTIVATE_EXECUTOR 24
-    SPAWN_EXECUTOR 25, .executor_25_128FA8
+    SPAWN_EXECUTOR 25, .cs852_harris_balloon_with_maria
     DEACTIVATE_SELF
 
-.executor_25_128FA8:
+.cs852_harris_balloon_with_maria:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 40, .executor_40_128FC4
+    SPAWN_EXECUTOR 40, .cs852_maria_balloon_passenger
     SET_SHADOW_FLAGS 7, 255
-    EXECUTE_SUBROUTINE .sub_125EB0
-    EXECUTE_SUBROUTINE .sub_1296DC
+    EXECUTE_SUBROUTINE .setup_harris
+    EXECUTE_SUBROUTINE .cs852_ascent_with_wife
 
-.executor_40_128FC4:
+.cs852_maria_balloon_passenger:
     SET_SHADOW_FLAGS 1, 255
-    EXECUTE_SUBROUTINE .sub_125970
-    EXECUTE_SUBROUTINE .sub_1295E8
+    EXECUTE_SUBROUTINE .setup_maria
+    EXECUTE_SUBROUTINE .cs852_balloon_rest_pos
 
-.branch_128FD4:
-    SET_ASSET_ROTATION 6
+.cs852_gray_ask_player:
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 66
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 66
     WAIT_MESSAGE_BOX_CLOSED 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_129044
-    INIT_DIALOGUE_SESSION 0, 48, 12
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_gray_married_wife_check
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 12
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_129018
-    BRANCH_ON_DIALOGUE 0, 1, .sub_129068
+    BRANCH_ON_DIALOGUE 0, 0, .cs852_gray_player_accepts
+    BRANCH_ON_DIALOGUE 0, 1, .cs852_gray_player_declines
 
-.branch_129018:
+.cs852_gray_player_accepts:
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x7
+    UPDATE_U8_VALUE 8, 255, npcAffection[GRAY]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    SPAWN_EXECUTOR 25, .executor_25_129054
+    SPAWN_EXECUTOR 25, .cs852_gray_balloon_with_player
     DEACTIVATE_SELF
 
-.branch_129044:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .branch_129018
+.cs852_gray_married_wife_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs852_gray_player_accepts
     RETURN_FROM_SUBROUTINE
 
-.executor_25_129054:
+.cs852_gray_balloon_with_player:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 8, 255
-    EXECUTE_SUBROUTINE .sub_125F30
-    EXECUTE_SUBROUTINE .sub_129448
+    EXECUTE_SUBROUTINE .setup_gray
+    EXECUTE_SUBROUTINE .cs852_ascent_with_player
 
-.sub_129068:
+.cs852_gray_player_declines:
     SET_WAIT_FRAMES 15
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 10
     DEACTIVATE_EXECUTOR 30
-    SPAWN_EXECUTOR 25, .executor_25_12908C
+    SPAWN_EXECUTOR 25, .cs852_gray_balloon_with_popuri
     DEACTIVATE_SELF
 
-.executor_25_12908C:
+.cs852_gray_balloon_with_popuri:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 40, .executor_40_1290A8
+    SPAWN_EXECUTOR 40, .cs852_popuri_balloon_passenger
     SET_SHADOW_FLAGS 8, 255
-    EXECUTE_SUBROUTINE .sub_125F30
-    EXECUTE_SUBROUTINE .sub_1296DC
+    EXECUTE_SUBROUTINE .setup_gray
+    EXECUTE_SUBROUTINE .cs852_ascent_with_wife
 
-.executor_40_1290A8:
+.cs852_popuri_balloon_passenger:
     SET_SHADOW_FLAGS 2, 255
-    EXECUTE_SUBROUTINE .sub_125C60
-    EXECUTE_SUBROUTINE .sub_1295E8
+    EXECUTE_SUBROUTINE .setup_popuri
+    EXECUTE_SUBROUTINE .cs852_balloon_rest_pos
 
-.branch_1290B8:
-    SET_ASSET_ROTATION 6
+.cs852_jeff_ask_player:
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 70
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 70
     WAIT_MESSAGE_BOX_CLOSED 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_129128
-    INIT_DIALOGUE_SESSION 0, 48, 12
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_jeff_married_wife_check
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 12
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_1290FC
-    BRANCH_ON_DIALOGUE 0, 1, .sub_12914C
+    BRANCH_ON_DIALOGUE 0, 0, .cs852_jeff_player_accepts
+    BRANCH_ON_DIALOGUE 0, 1, .cs852_jeff_player_declines
 
-.branch_1290FC:
+.cs852_jeff_player_accepts:
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x8
+    UPDATE_U8_VALUE 8, 255, npcAffection[JEFF]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    SPAWN_EXECUTOR 25, .executor_25_129138
+    SPAWN_EXECUTOR 25, .cs852_jeff_balloon_with_player
     DEACTIVATE_SELF
 
-.branch_129128:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .branch_1290FC
+.cs852_jeff_married_wife_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs852_jeff_player_accepts
     RETURN_FROM_SUBROUTINE
 
-.executor_25_129138:
+.cs852_jeff_balloon_with_player:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 9, 255
-    EXECUTE_SUBROUTINE .sub_125FB0
-    EXECUTE_SUBROUTINE .sub_129448
+    EXECUTE_SUBROUTINE .setup_jeff
+    EXECUTE_SUBROUTINE .cs852_ascent_with_player
 
-.sub_12914C:
+.cs852_jeff_player_declines:
     SET_WAIT_FRAMES 15
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 11
     DEACTIVATE_EXECUTOR 31
-    SPAWN_EXECUTOR 25, .executor_25_129170
+    SPAWN_EXECUTOR 25, .cs852_jeff_balloon_with_elli
     DEACTIVATE_SELF
 
-.executor_25_129170:
+.cs852_jeff_balloon_with_elli:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 40, .executor_40_12918C
+    SPAWN_EXECUTOR 40, .cs852_elli_balloon_passenger
     SET_SHADOW_FLAGS 9, 255
-    EXECUTE_SUBROUTINE .sub_125FB0
-    EXECUTE_SUBROUTINE .sub_1296DC
+    EXECUTE_SUBROUTINE .setup_jeff
+    EXECUTE_SUBROUTINE .cs852_ascent_with_wife
 
-.executor_40_12918C:
+.cs852_elli_balloon_passenger:
     SET_SHADOW_FLAGS 3, 255
-    EXECUTE_SUBROUTINE .sub_125D0C
-    EXECUTE_SUBROUTINE .sub_1295E8
+    EXECUTE_SUBROUTINE .setup_elli
+    EXECUTE_SUBROUTINE .cs852_balloon_rest_pos
 
-.branch_12919C:
-    SET_ASSET_ROTATION 6
+.cs852_cliff_ask_player:
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 74
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 74
     WAIT_MESSAGE_BOX_CLOSED 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12920C
-    INIT_DIALOGUE_SESSION 0, 48, 12
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_cliff_married_wife_check
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 12
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_1291E0
-    BRANCH_ON_DIALOGUE 0, 1, .sub_129230
+    BRANCH_ON_DIALOGUE 0, 0, .cs852_cliff_player_accepts
+    BRANCH_ON_DIALOGUE 0, 1, .cs852_cliff_player_declines
 
-.branch_1291E0:
+.cs852_cliff_player_accepts:
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x9
+    UPDATE_U8_VALUE 8, 255, npcAffection[CLIFF]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    SPAWN_EXECUTOR 25, .executor_25_12921C
+    SPAWN_EXECUTOR 25, .cs852_cliff_balloon_with_player
     DEACTIVATE_SELF
 
-.branch_12920C:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .branch_1291E0
+.cs852_cliff_married_wife_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs852_cliff_player_accepts
     RETURN_FROM_SUBROUTINE
 
-.executor_25_12921C:
+.cs852_cliff_balloon_with_player:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 10, 255
-    EXECUTE_SUBROUTINE .sub_126030
-    EXECUTE_SUBROUTINE .sub_129448
+    EXECUTE_SUBROUTINE .setup_cliff
+    EXECUTE_SUBROUTINE .cs852_ascent_with_player
 
-.sub_129230:
+.cs852_cliff_player_declines:
     SET_WAIT_FRAMES 15
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 3
     DEACTIVATE_EXECUTOR 23
-    SPAWN_EXECUTOR 25, .executor_25_129254
+    SPAWN_EXECUTOR 25, .cs852_cliff_balloon_with_ann
     DEACTIVATE_SELF
 
-.executor_25_129254:
+.cs852_cliff_balloon_with_ann:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 40, .executor_40_129270
+    SPAWN_EXECUTOR 40, .cs852_ann_balloon_passenger
     SET_SHADOW_FLAGS 10, 255
-    EXECUTE_SUBROUTINE .sub_126030
-    EXECUTE_SUBROUTINE .sub_1296DC
+    EXECUTE_SUBROUTINE .setup_cliff
+    EXECUTE_SUBROUTINE .cs852_ascent_with_wife
 
-.executor_40_129270:
+.cs852_ann_balloon_passenger:
     SET_SHADOW_FLAGS 4, 255
-    EXECUTE_SUBROUTINE .sub_1258C4
-    EXECUTE_SUBROUTINE .sub_1295E8
+    EXECUTE_SUBROUTINE .setup_ann
+    EXECUTE_SUBROUTINE .cs852_balloon_rest_pos
 
-.branch_129280:
-    SET_ASSET_ROTATION 6
+.cs852_kai_ask_player:
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 78
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 78
     WAIT_MESSAGE_BOX_CLOSED 0
-    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_1292F0
-    INIT_DIALOGUE_SESSION 0, 48, 12
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_kai_married_wife_check
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 12
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_1292C4
-    BRANCH_ON_DIALOGUE 0, 1, .sub_129314
+    BRANCH_ON_DIALOGUE 0, 0, .cs852_kai_player_accepts
+    BRANCH_ON_DIALOGUE 0, 1, .cs852_kai_player_declines
 
-.branch_1292C4:
+.cs852_kai_player_accepts:
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0xA
+    UPDATE_U8_VALUE 8, 255, npcAffection[KAI]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    SPAWN_EXECUTOR 25, .executor_25_129300
+    SPAWN_EXECUTOR 25, .cs852_kai_balloon_with_player
     DEACTIVATE_SELF
 
-.branch_1292F0:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .branch_1292C4
+.cs852_kai_married_wife_check:
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs852_kai_player_accepts
     RETURN_FROM_SUBROUTINE
 
-.executor_25_129300:
+.cs852_kai_balloon_with_player:
     SET_WAIT_FRAMES 1
     SET_SHADOW_FLAGS 11, 255
-    EXECUTE_SUBROUTINE .sub_1260B0
-    EXECUTE_SUBROUTINE .sub_129448
+    EXECUTE_SUBROUTINE .setup_kai
+    EXECUTE_SUBROUTINE .cs852_ascent_with_player
 
-.sub_129314:
+.cs852_kai_player_declines:
     SET_WAIT_FRAMES 15
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     DEACTIVATE_EXECUTOR 19
     DEACTIVATE_EXECUTOR 39
-    SPAWN_EXECUTOR 25, .executor_25_129338
+    SPAWN_EXECUTOR 25, .cs852_kai_balloon_with_karen
     DEACTIVATE_SELF
 
-.executor_25_129338:
+.cs852_kai_balloon_with_karen:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 40, .executor_40_129354
+    SPAWN_EXECUTOR 40, .cs852_karen_balloon_passenger
     SET_SHADOW_FLAGS 11, 255
-    EXECUTE_SUBROUTINE .sub_1260B0
-    EXECUTE_SUBROUTINE .sub_1296DC
+    EXECUTE_SUBROUTINE .setup_kai
+    EXECUTE_SUBROUTINE .cs852_ascent_with_wife
 
-.executor_40_129354:
+.cs852_karen_balloon_passenger:
     SET_SHADOW_FLAGS 5, 255
-    EXECUTE_SUBROUTINE .sub_126138
-    EXECUTE_SUBROUTINE .sub_1295E8
+    EXECUTE_SUBROUTINE .setup_karen
+    EXECUTE_SUBROUTINE .cs852_balloon_rest_pos
 
-.executor_0_129364:
+.cs852_player_balloon_pos:
     SET_SHADOW_FLAGS 0, 255
-    EXECUTE_SUBROUTINE .sub_1252E8
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 0
     TOGGLE_PAUSE_ENTITY 0
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_COORDINATES -160, 96, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_6_12938C:
-    EXECUTE_SUBROUTINE .sub_125AFC
+.cs852_potion_shop_dealer:
+    EXECUTE_SUBROUTINE .setup_potion_shop_dealer
     SET_COORDINATES 64, 0, 32
 
-.branch_129398:
-    SET_ASSET_ROTATION 2
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1293A8
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs852_potion_shop_dealer_wait:
+    SET_ASSET_ROTATION NORTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs852_potion_shop_dealer_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1293A8:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs852_potion_shop_dealer_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 83
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 83
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 20, var1, .branch_129398
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x13
+    BRANCH_ON_SPECIAL_BIT 20, var1, .cs852_potion_shop_dealer_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_POTION_SHOP_DEALER]
     SET_SPECIAL_BIT 20, var1
-    EXECUTE_SUBROUTINE .branch_129398
+    EXECUTE_SUBROUTINE .cs852_potion_shop_dealer_wait
 
-.executor_8_1293EC:
-    EXECUTE_SUBROUTINE .sub_125BB0
+.cs852_stu:
+    EXECUTE_SUBROUTINE .setup_stu
     SET_COORDINATES 32, 0, -32
 
-.branch_1293F8:
-    SET_ASSET_ROTATION 1
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_129408
-    EXECUTE_SUBROUTINE .sub_1252C0
+.cs852_stu_wait:
+    SET_ASSET_ROTATION WEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs852_stu_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_129408:
-    EXECUTE_SUBROUTINE .sub_1252C8
+.cs852_stu_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_DIALOGUE_SESSION 0, 48, 5
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 5
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITY 0
-    BRANCH_ON_SPECIAL_BIT 21, var1, .branch_1293F8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x15
+    BRANCH_ON_SPECIAL_BIT 21, var1, .cs852_stu_wait
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_STU]
     SET_SPECIAL_BIT 21, var1
-    EXECUTE_SUBROUTINE .branch_1293F8
+    EXECUTE_SUBROUTINE .cs852_stu_wait
 
-.sub_129448:
+; ----- cs852 Ascent transitions and balloon-scene controller -----
+; `.cs852_ascent_with_player` - called when the bachelor rides with the
+;                               player (player_accepts paths). Reuses
+;                               the cs851 balloon-scene sprites.
+; `.cs852_ascent_with_wife`   - called when the bachelor rides with his
+;                               canonical wife (player_declines paths).
+; `.cs852_balloon_announcer`   - analogous to cs851 announcer but keyed
+;                               off gHarvestKing (1..5 -> harris..kai).
+
+.cs852_ascent_with_player:
     DEACTIVATE_EXECUTOR 0
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 0, .executor_0_129364
-    SET_OTHER_EXECUTOR_PTR 1, .executor_7_125320
-    SET_OTHER_EXECUTOR_PTR 21, .executor_21_128C30
+    SPAWN_EXECUTOR 0, .cs852_player_balloon_pos
+    SET_OTHER_EXECUTOR_PTR 1, .face_southwest
+    SET_OTHER_EXECUTOR_PTR 21, .cs852_king_ascent_pos
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -176, 96, 48
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     UPDATE_U8_VALUE 10, 255, gHappiness
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 9
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 9
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_128220
+    SET_OTHER_EXECUTOR_PTR 0, .cs851_balloon_drift_delta
     SET_WAIT_FRAMES 1
-    SET_OTHER_EXECUTOR_PTR 35, .executor_0_128220
-    SET_OTHER_EXECUTOR_PTR 36, .executor_0_128220
+    SET_OTHER_EXECUTOR_PTR 35, .cs851_balloon_drift_delta
+    SET_OTHER_EXECUTOR_PTR 36, .cs851_balloon_drift_delta
     SET_FRAME_DELTA 0, 1, 1, 40
     SET_FRAME_DELTA 0, 2, 1, 200
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -3369,48 +3548,48 @@
     DEACTIVATE_EXECUTOR 40
     DEACTIVATE_EXECUTOR 41
     SET_WAIT_FRAMES 1
-    SET_OTHER_EXECUTOR_PTR 0, .sub_1295E8
-    SPAWN_EXECUTOR 1, .executor_1_128570
-    SPAWN_EXECUTOR 2, .executor_2_128640
-    SPAWN_EXECUTOR 3, .executor_35_126A4C
-    SPAWN_EXECUTOR 4, .executor_36_126A84
-    SPAWN_EXECUTOR 41, .executor_41_1295FC
+    SET_OTHER_EXECUTOR_PTR 0, .cs852_balloon_rest_pos
+    SPAWN_EXECUTOR 1, .cs851_bg_left_scroll
+    SPAWN_EXECUTOR 2, .cs851_bg_right_scroll
+    SPAWN_EXECUTOR 3, .festival_item_overlay
+    SPAWN_EXECUTOR 4, .king_balloon_sprite
+    SPAWN_EXECUTOR 41, .cs852_balloon_announcer
     SET_COORDINATES -176, 96, 48
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_128254
-    SET_OTHER_EXECUTOR_PTR 3, .executor_0_128254
-    SET_OTHER_EXECUTOR_PTR 4, .executor_0_128254
+    SET_OTHER_EXECUTOR_PTR 0, .cs851_balloon_bob_loop
+    SET_OTHER_EXECUTOR_PTR 3, .cs851_balloon_bob_loop
+    SET_OTHER_EXECUTOR_PTR 4, .cs851_balloon_bob_loop
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .executor_0_128254
+    EXECUTE_SUBROUTINE .cs851_balloon_bob_loop
 
-.sub_1295E8:
+.cs852_balloon_rest_pos:
     SET_ENTITY_PHYSICS_FLAGS 0
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_COORDINATES -160, 96, 32
-    EXECUTE_SUBROUTINE .sub_1252C0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_1295FC:
+.cs852_balloon_announcer:
     SET_WAIT_FRAMES 120
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .branch_1284CC
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .branch_1284E0
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .branch_1284F4
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .branch_128508
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .branch_12851C
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .cs851_announce_harris
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .cs851_announce_gray
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .cs851_announce_jeff
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .cs851_announce_cliff
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .cs851_announce_kai
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 30
-    SPAWN_EXECUTOR 5, .executor_5_128710
-    SPAWN_EXECUTOR 6, .executor_6_12877C
-    SPAWN_EXECUTOR 7, .executor_7_1287E8
-    SPAWN_EXECUTOR 8, .executor_8_128854
-    SPAWN_EXECUTOR 9, .executor_9_1288C0
-    SPAWN_EXECUTOR 10, .executor_10_12892C
-    SPAWN_EXECUTOR 11, .executor_11_1289A8
-    SPAWN_EXECUTOR 12, .executor_12_128A14
+    SPAWN_EXECUTOR 5, .cs851_asc_sprite_5
+    SPAWN_EXECUTOR 6, .cs851_asc_sprite_6
+    SPAWN_EXECUTOR 7, .cs851_asc_sprite_7
+    SPAWN_EXECUTOR 8, .cs851_asc_sprite_8
+    SPAWN_EXECUTOR 9, .cs851_asc_sprite_9
+    SPAWN_EXECUTOR 10, .cs851_asc_sprite_10
+    SPAWN_EXECUTOR 11, .cs851_asc_sprite_11
+    SPAWN_EXECUTOR 12, .cs851_asc_sprite_12
     SET_WAIT_FRAMES 211
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_128558
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_128564
+    SET_OTHER_EXECUTOR_PTR 1, .cs851_bg_left_fade_out
+    SET_OTHER_EXECUTOR_PTR 2, .cs851_bg_right_fade_out
     SET_WAIT_FRAMES 1
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -3423,26 +3602,26 @@
     DEACTIVATE_EXECUTOR 3
     DEACTIVATE_EXECUTOR 4
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_1252A8
+    EXECUTE_SUBROUTINE .exit_cutscene
 
-.sub_1296DC:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_125330
-    SET_OTHER_EXECUTOR_PTR 1, .executor_7_125320
-    SET_OTHER_EXECUTOR_PTR 21, .executor_21_128C3C
+.cs852_ascent_with_wife:
+    SET_OTHER_EXECUTOR_PTR 0, .face_west
+    SET_OTHER_EXECUTOR_PTR 1, .face_southwest
+    SET_OTHER_EXECUTOR_PTR 21, .cs852_king_wife_pos
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -176, 96, 48
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, 54, 9
+    INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 9
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 35, .executor_35_12572C
-    SET_OTHER_EXECUTOR_PTR 36, .executor_35_12572C
-    SET_OTHER_EXECUTOR_PTR 40, .executor_35_12572C
+    SET_OTHER_EXECUTOR_PTR 35, .cs850_helper_rise_delta
+    SET_OTHER_EXECUTOR_PTR 36, .cs850_helper_rise_delta
+    SET_OTHER_EXECUTOR_PTR 40, .cs850_helper_rise_delta
     SET_FRAME_DELTA 0, 1, 1, 40
     SET_FRAME_DELTA 0, 2, 1, 200
-    SET_OTHER_EXECUTOR_PTR 21, .executor_21_128C48
+    SET_OTHER_EXECUTOR_PTR 21, .cs852_king_dispatch_assistant
     DEACTIVATE_SELF

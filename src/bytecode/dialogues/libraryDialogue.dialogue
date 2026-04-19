@@ -2,126 +2,165 @@
 ; Index Start: 0xE92F90
 ; Bytecode Start: 0xE92EF0
 ; Segments: 21
+;
+; Each of the 20 non-empty segments is an entry point invoked from
+; showDialogueTextBox() in src/game/game.c (cases 13-22). For library
+; menu index N (N = 13..22), spring/winter starts the dialogue at
+; segment (N-13) and summer/autumn at segment (N-13+10). Each segment
+; shows text 92 as the prompt then opens a SHOW_SELECTION_MENU listing
+; the chapter choices for that season's variant of the menu, after
+; which control returns to the surrounding selection callback.
+; Segment 20 is the trailing zero-length marker at Index Start.
+
+; aliases for segments names
+.define .spring_winter_1   0
+.define .spring_winter_2   1
+.define .spring_winter_3   2
+.define .spring_winter_4   3
+.define .spring_winter_5   4
+.define .spring_winter_6   5
+.define .spring_winter_7   6
+.define .spring_winter_8   7
+.define .spring_winter_9   8
+.define .spring_winter_10  9
+.define .summer_autumn_1  10
+.define .summer_autumn_2  11
+.define .summer_autumn_3  12
+.define .summer_autumn_4  13
+.define .summer_autumn_5  14
+.define .summer_autumn_6  15
+.define .summer_autumn_7  16
+.define .summer_autumn_8  17
+.define .summer_autumn_9  18
+.define .summer_autumn_10 19
+.define .end_section      20
+
+
+; spring/winter library menus (showDialogueTextBox cases 13-22, true branch)
 
 ; 0xE92EF0
-.segment_0:
+.spring_winter_1:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 72, 4
     END_DIALOGUE
 
 ; 0xE92EF8
-.segment_1:
+.spring_winter_2:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 75, 4
     END_DIALOGUE
 
 ; 0xE92F00
-.segment_2:
+.spring_winter_3:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 76, 4
     END_DIALOGUE
 
 ; 0xE92F08
-.segment_3:
+.spring_winter_4:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 78, 4
     END_DIALOGUE
 
 ; 0xE92F10
-.segment_4:
+.spring_winter_5:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 80, 5
     END_DIALOGUE
 
 ; 0xE92F18
-.segment_5:
+.spring_winter_6:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 82, 5
     END_DIALOGUE
 
 ; 0xE92F20
-.segment_6:
+.spring_winter_7:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 84, 5
     END_DIALOGUE
 
 ; 0xE92F28
-.segment_7:
+.spring_winter_8:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 86, 5
     END_DIALOGUE
 
 ; 0xE92F30
-.segment_8:
+.spring_winter_9:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 88, 5
     END_DIALOGUE
 
 ; 0xE92F38
-.segment_9:
+.spring_winter_10:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 90, 5
     END_DIALOGUE
 
+
+; summer/autumn library menus (showDialogueTextBox cases 13-22, false branch)
+
 ; 0xE92F40
-.segment_10:
+.summer_autumn_1:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 73, 4
     END_DIALOGUE
 
 ; 0xE92F48
-.segment_11:
+.summer_autumn_2:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 74, 4
     END_DIALOGUE
 
 ; 0xE92F50
-.segment_12:
+.summer_autumn_3:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 77, 4
     END_DIALOGUE
 
 ; 0xE92F58
-.segment_13:
+.summer_autumn_4:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 79, 4
     END_DIALOGUE
 
 ; 0xE92F60
-.segment_14:
+.summer_autumn_5:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 81, 5
     END_DIALOGUE
 
 ; 0xE92F68
-.segment_15:
+.summer_autumn_6:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 83, 5
     END_DIALOGUE
 
 ; 0xE92F70
-.segment_16:
+.summer_autumn_7:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 85, 5
     END_DIALOGUE
 
 ; 0xE92F78
-.segment_17:
+.summer_autumn_8:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 87, 5
     END_DIALOGUE
 
 ; 0xE92F80
-.segment_18:
+.summer_autumn_9:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 89, 5
     END_DIALOGUE
 
 ; 0xE92F88
-.segment_19:
+.summer_autumn_10:
     SHOW_TEXT 92
     SHOW_SELECTION_MENU 91, 5
     END_DIALOGUE
 
+
 ; 0xE92F90
-.segment_20:
+.end_section:

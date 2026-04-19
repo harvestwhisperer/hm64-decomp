@@ -1,8 +1,34 @@
-; ============================================
+; ============================================================
 ; Bank 22 - Spirit Festival
-; ============================================
+; ============================================================
+;
+;   1350 - player is the Harvest King (spiritFestivalAssistant3
+;          is forced to 11, the player, via sub_147C24).
+;   1351 - regular spirit festival (three random assistants).
+;   1352 - repeat viewing after it has already been watched.
+;
+; Assistant slot values used by spiritFestivalAssistant1/2/3:
+;   1 Maria, 2 Popuri, 3 Elli, 4 Ann, 5 Karen,
+;   6 Harris, 7 Gray, 8 Jeff, 9 Cliff, 10 Kai, 11 Player
+;
+; Executor slot layout (1351 path):
+;   0       - player
+;   1       - stage backdrop entity
+;   2, 3, 4 - the three selected assistants (per spawn pass)
+;   5..17   - the fixed audience NPCs
+;   40      - map camera / frame delta controller
+;   41      - orchestrator: triggers song segments and timing
+;
+; var0 bit usage (music / dispatch state in executor 41):
+;   bit 0   - first assistant has started a song
+;   bit 1   - second assistant has started a song
+;   bit 2   - third assistant has started a song
+;   bit 3   - all three assistants have started
+;   bit 4   - final ensemble performance triggered
+; ============================================================
 
 #include "entities.h"
+#include "texts.h"
 
 #define MAIN_MAP_INDEX 0
 
@@ -12,8 +38,9 @@
 .local var0, u32, 0
 
 .array npcAffection, u8
+.array lifeEventBits, u32
 
-.entry
+.start:
     SET_SPECIAL_BIT 12, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     PAUSE_ENTITIES
@@ -23,52 +50,66 @@
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
-    BRANCH_U16_VAR_WITHIN_RANGE 1350, 1350, gCutsceneIndex, .branch_145048
-    BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479A0
-    BRANCH_U16_VAR_WITHIN_RANGE 1352, 1352, gCutsceneIndex, .branch_147BCC
+    BRANCH_U16_VAR_WITHIN_RANGE 1350, 1350, gCutsceneIndex, .dispatch_harvest_king
+    BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .dispatch_festival
+    BRANCH_U16_VAR_WITHIN_RANGE 1352, 1352, gCutsceneIndex, .dispatch_repeat
 
-.sub_144FD4:
+; ============================================================
+; Shared helpers
+; ============================================================
+
+.exit:
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     SET_U8_VALUE 0, spiritFestivalAssistant1
     SET_U8_VALUE 0, spiritFestivalAssistant2
     SET_U8_VALUE 0, spiritFestivalAssistant3
     DEACTIVATE_SELF
 
-.sub_144FF8:
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_145000:
+.setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
+; ----- Direction-only executor stubs (handed out via SET_OTHER_EXECUTOR_PTR) -----
 .executor_4_145020:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_145028:
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_145030:
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_145038:
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_145040:
-    SET_ASSET_ROTATION 1
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION WEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_145048:
-    SPAWN_EXECUTOR 1, .executor_1_146590
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant1, .branch_1452F4
+; ============================================================
+; Cutscene 1350 - player is the Harvest King
+; ============================================================
+; Same spawn/roll tables as cutscene 1351 below, but entered via
+; a separate branch because the caller uses a different camera /
+; transition setup for the player-is-king variant.
+; ============================================================
 
-.sub_14505C:
+.dispatch_harvest_king:
+    SPAWN_EXECUTOR 1, .executor_1_ocarina_backdrop
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant1, .roll_assistant1
+
+; ----- Assistant 1 spawn table (routes by assistant1 value 1..10) -----
+.assistant1_table:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant1, .branch_1454C0
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant1, .branch_1454E8
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant1, .branch_145510
@@ -79,9 +120,9 @@
     BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant1, .branch_1455D8
     BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant1, .branch_145600
     BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant1, .branch_145628
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant2, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant2, .roll_assistant2
 
-.sub_1450E0:
+.assistant2_table:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant2, .branch_145894
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant2, .branch_1458BC
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant2, .branch_1458E4
@@ -92,9 +133,9 @@
     BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant2, .branch_1459AC
     BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant2, .branch_1459D4
     BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant2, .branch_1459FC
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant3, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant3, .roll_assistant3
 
-.sub_145164:
+.assistant3_table:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant3, .branch_145CE0
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant3, .branch_145D08
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant3, .branch_145D30
@@ -106,40 +147,40 @@
     BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant3, .branch_145E20
     BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant3, .branch_145E48
     SPAWN_EXECUTOR 5, .executor_5_14778C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xB
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR]
     SPAWN_EXECUTOR 6, .executor_6_1477B8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xC
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR_WIFE]
     SPAWN_EXECUTOR 8, .executor_8_1477E4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x13
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_POTION_SHOP_DEALER]
     SPAWN_EXECUTOR 9, .executor_9_147810
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x14
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_KENT]
     SPAWN_EXECUTOR 10, .executor_10_14783C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x15
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_STU]
     SPAWN_EXECUTOR 11, .executor_11_147868
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x16
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MIDWIFE]
     SPAWN_EXECUTOR 12, .executor_12_147894
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x10
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_DOUG]
     SPAWN_EXECUTOR 13, .executor_13_1478C0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1A
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_SHIPPER]
     SPAWN_EXECUTOR 14, .executor_14_1478F0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x11
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_GOTZ]
     SPAWN_EXECUTOR 15, .executor_15_14791C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x12
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_SASHA]
     SPAWN_EXECUTOR 16, .executor_16_147948
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x18
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_RICK]
     SPAWN_EXECUTOR 17, .executor_17_147974
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xD
-    SPAWN_EXECUTOR 40, .executor_40_1452E0
-    SPAWN_EXECUTOR 41, .executor_41_14704C
-    EXECUTE_SUBROUTINE .sub_146588
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_LILLIA]
+    SPAWN_EXECUTOR 40, .executor_40_map_init
+    SPAWN_EXECUTOR 41, .executor_41_orchestrator
+    EXECUTE_SUBROUTINE .setup_player_then_exit
 
-.executor_40_1452E0:
+.executor_40_map_init:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES -72, 96, 24
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1452F4:
+.roll_assistant1:
     BRANCH_ON_RANDOM 0, 9, .branch_145348
     BRANCH_ON_RANDOM 10, 19, .branch_145364
     BRANCH_ON_RANDOM 20, 29, .branch_145380
@@ -150,65 +191,65 @@
     BRANCH_ON_RANDOM 70, 79, .branch_145430
     BRANCH_ON_RANDOM 80, 89, .branch_145458
     BRANCH_ON_RANDOM 90, 99, .branch_14548C
-    EXECUTE_SUBROUTINE .branch_1452F4
+    EXECUTE_SUBROUTINE .roll_assistant1
 
 .branch_145348:
     SET_U8_VALUE 1, spiritFestivalAssistant1
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479B4
-    EXECUTE_SUBROUTINE .sub_14505C
+    EXECUTE_SUBROUTINE .assistant1_table
 
 .branch_145364:
     SET_U8_VALUE 2, spiritFestivalAssistant1
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479B4
-    EXECUTE_SUBROUTINE .sub_14505C
+    EXECUTE_SUBROUTINE .assistant1_table
 
 .branch_145380:
     SET_U8_VALUE 3, spiritFestivalAssistant1
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479B4
-    EXECUTE_SUBROUTINE .sub_14505C
+    EXECUTE_SUBROUTINE .assistant1_table
 
 .branch_14539C:
     SET_U8_VALUE 4, spiritFestivalAssistant1
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479B4
-    EXECUTE_SUBROUTINE .sub_14505C
+    EXECUTE_SUBROUTINE .assistant1_table
 
 .branch_1453B8:
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_1452F4
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .roll_assistant1
     SET_U8_VALUE 5, spiritFestivalAssistant1
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479B4
-    EXECUTE_SUBROUTINE .sub_14505C
+    EXECUTE_SUBROUTINE .assistant1_table
 
 .branch_1453E0:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .branch_1452F4
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .roll_assistant1
     SET_U8_VALUE 6, spiritFestivalAssistant1
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479B4
-    EXECUTE_SUBROUTINE .sub_14505C
+    EXECUTE_SUBROUTINE .assistant1_table
 
 .branch_145408:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .branch_1452F4
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .roll_assistant1
     SET_U8_VALUE 7, spiritFestivalAssistant1
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479B4
-    EXECUTE_SUBROUTINE .sub_14505C
+    EXECUTE_SUBROUTINE .assistant1_table
 
 .branch_145430:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .branch_1452F4
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .roll_assistant1
     SET_U8_VALUE 8, spiritFestivalAssistant1
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479B4
-    EXECUTE_SUBROUTINE .sub_14505C
+    EXECUTE_SUBROUTINE .assistant1_table
 
 .branch_145458:
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_1452F4
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .branch_1452F4
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .roll_assistant1
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .roll_assistant1
     SET_U8_VALUE 9, spiritFestivalAssistant1
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479B4
-    EXECUTE_SUBROUTINE .sub_14505C
+    EXECUTE_SUBROUTINE .assistant1_table
 
 .branch_14548C:
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_1452F4
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .branch_1452F4
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .roll_assistant1
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .roll_assistant1
     SET_U8_VALUE 10, spiritFestivalAssistant1
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_1479B4
-    EXECUTE_SUBROUTINE .sub_14505C
+    EXECUTE_SUBROUTINE .assistant1_table
 
 .branch_1454C0:
     SPAWN_EXECUTOR 2, .executor_2_1465E8
@@ -219,58 +260,58 @@
 .branch_1454E8:
     SPAWN_EXECUTOR 2, .executor_2_146620
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A2C
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x1
+    UPDATE_U8_VALUE 5, 255, npcAffection[POPURI]
     RETURN_FROM_SUBROUTINE
 
 .branch_145510:
     SPAWN_EXECUTOR 2, .executor_2_146658
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A2C
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x2
+    UPDATE_U8_VALUE 5, 255, npcAffection[ELLI]
     RETURN_FROM_SUBROUTINE
 
 .branch_145538:
     SPAWN_EXECUTOR 2, .executor_2_146690
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A2C
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x3
+    UPDATE_U8_VALUE 5, 255, npcAffection[ANN]
     RETURN_FROM_SUBROUTINE
 
 .branch_145560:
     SPAWN_EXECUTOR 2, .executor_2_1466C8
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A2C
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x4
+    UPDATE_U8_VALUE 5, 255, npcAffection[KAREN]
     RETURN_FROM_SUBROUTINE
 
 .branch_145588:
     SPAWN_EXECUTOR 2, .executor_2_146700
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A2C
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x6
+    UPDATE_U8_VALUE 5, 255, npcAffection[HARRIS]
     RETURN_FROM_SUBROUTINE
 
 .branch_1455B0:
     SPAWN_EXECUTOR 2, .executor_2_146738
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A2C
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x7
+    UPDATE_U8_VALUE 5, 255, npcAffection[GRAY]
     RETURN_FROM_SUBROUTINE
 
 .branch_1455D8:
     SPAWN_EXECUTOR 2, .executor_2_146770
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A2C
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x8
+    UPDATE_U8_VALUE 5, 255, npcAffection[JEFF]
     RETURN_FROM_SUBROUTINE
 
 .branch_145600:
     SPAWN_EXECUTOR 2, .executor_2_1467A8
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A2C
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x9
+    UPDATE_U8_VALUE 5, 255, npcAffection[CLIFF]
     RETURN_FROM_SUBROUTINE
 
 .branch_145628:
     SPAWN_EXECUTOR 2, .executor_2_1467E0
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A2C
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0xA
+    UPDATE_U8_VALUE 5, 255, npcAffection[KAI]
     RETURN_FROM_SUBROUTINE
 
-.branch_145650:
+.roll_assistant2:
     BRANCH_ON_RANDOM 0, 9, .branch_1456A4
     BRANCH_ON_RANDOM 10, 19, .branch_1456CC
     BRANCH_ON_RANDOM 20, 29, .branch_1456F4
@@ -281,75 +322,75 @@
     BRANCH_ON_RANDOM 70, 79, .branch_1457E0
     BRANCH_ON_RANDOM 80, 89, .branch_145814
     BRANCH_ON_RANDOM 90, 99, .branch_145854
-    EXECUTE_SUBROUTINE .branch_145650
+    EXECUTE_SUBROUTINE .roll_assistant2
 
 .branch_1456A4:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant1, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant1, .roll_assistant2
     SET_U8_VALUE 1, spiritFestivalAssistant2
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A38
-    EXECUTE_SUBROUTINE .sub_1450E0
+    EXECUTE_SUBROUTINE .assistant2_table
 
 .branch_1456CC:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant1, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant1, .roll_assistant2
     SET_U8_VALUE 2, spiritFestivalAssistant2
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A38
-    EXECUTE_SUBROUTINE .sub_1450E0
+    EXECUTE_SUBROUTINE .assistant2_table
 
 .branch_1456F4:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant1, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant1, .roll_assistant2
     SET_U8_VALUE 3, spiritFestivalAssistant2
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A38
-    EXECUTE_SUBROUTINE .sub_1450E0
+    EXECUTE_SUBROUTINE .assistant2_table
 
 .branch_14571C:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant1, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant1, .roll_assistant2
     SET_U8_VALUE 4, spiritFestivalAssistant2
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A38
-    EXECUTE_SUBROUTINE .sub_1450E0
+    EXECUTE_SUBROUTINE .assistant2_table
 
 .branch_145744:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant1, .branch_145650
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant1, .roll_assistant2
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .roll_assistant2
     SET_U8_VALUE 5, spiritFestivalAssistant2
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A38
-    EXECUTE_SUBROUTINE .sub_1450E0
+    EXECUTE_SUBROUTINE .assistant2_table
 
 .branch_145778:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .branch_145650
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant1, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .roll_assistant2
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant1, .roll_assistant2
     SET_U8_VALUE 6, spiritFestivalAssistant2
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A38
-    EXECUTE_SUBROUTINE .sub_1450E0
+    EXECUTE_SUBROUTINE .assistant2_table
 
 .branch_1457AC:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .branch_145650
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant1, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .roll_assistant2
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant1, .roll_assistant2
     SET_U8_VALUE 7, spiritFestivalAssistant2
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A38
-    EXECUTE_SUBROUTINE .sub_1450E0
+    EXECUTE_SUBROUTINE .assistant2_table
 
 .branch_1457E0:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .branch_145650
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant1, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .roll_assistant2
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant1, .roll_assistant2
     SET_U8_VALUE 8, spiritFestivalAssistant2
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A38
-    EXECUTE_SUBROUTINE .sub_1450E0
+    EXECUTE_SUBROUTINE .assistant2_table
 
 .branch_145814:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .branch_145650
-    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant1, .branch_145650
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .roll_assistant2
+    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant1, .roll_assistant2
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .roll_assistant2
     SET_U8_VALUE 9, spiritFestivalAssistant2
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A38
-    EXECUTE_SUBROUTINE .sub_1450E0
+    EXECUTE_SUBROUTINE .assistant2_table
 
 .branch_145854:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .branch_145650
-    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant1, .branch_145650
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .roll_assistant2
+    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant1, .roll_assistant2
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .roll_assistant2
     SET_U8_VALUE 10, spiritFestivalAssistant2
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147A38
-    EXECUTE_SUBROUTINE .sub_1450E0
+    EXECUTE_SUBROUTINE .assistant2_table
 
 .branch_145894:
     SPAWN_EXECUTOR 3, .executor_3_146818
@@ -360,58 +401,58 @@
 .branch_1458BC:
     SPAWN_EXECUTOR 3, .executor_3_146850
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147AB0
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x1
+    UPDATE_U8_VALUE 5, 255, npcAffection[POPURI]
     RETURN_FROM_SUBROUTINE
 
 .branch_1458E4:
     SPAWN_EXECUTOR 3, .executor_3_146888
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147AB0
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x2
+    UPDATE_U8_VALUE 5, 255, npcAffection[ELLI]
     RETURN_FROM_SUBROUTINE
 
 .branch_14590C:
     SPAWN_EXECUTOR 3, .executor_3_1468C0
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147AB0
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x3
+    UPDATE_U8_VALUE 5, 255, npcAffection[ANN]
     RETURN_FROM_SUBROUTINE
 
 .branch_145934:
     SPAWN_EXECUTOR 3, .executor_3_1468F8
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147AB0
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x4
+    UPDATE_U8_VALUE 5, 255, npcAffection[KAREN]
     RETURN_FROM_SUBROUTINE
 
 .branch_14595C:
     SPAWN_EXECUTOR 3, .executor_3_146930
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147AB0
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x6
+    UPDATE_U8_VALUE 5, 255, npcAffection[HARRIS]
     RETURN_FROM_SUBROUTINE
 
 .branch_145984:
     SPAWN_EXECUTOR 3, .executor_3_146968
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147AB0
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x7
+    UPDATE_U8_VALUE 5, 255, npcAffection[GRAY]
     RETURN_FROM_SUBROUTINE
 
 .branch_1459AC:
     SPAWN_EXECUTOR 3, .executor_3_1469A0
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147AB0
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x8
+    UPDATE_U8_VALUE 5, 255, npcAffection[JEFF]
     RETURN_FROM_SUBROUTINE
 
 .branch_1459D4:
     SPAWN_EXECUTOR 3, .executor_3_1469D8
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147AB0
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x9
+    UPDATE_U8_VALUE 5, 255, npcAffection[CLIFF]
     RETURN_FROM_SUBROUTINE
 
 .branch_1459FC:
     SPAWN_EXECUTOR 3, .executor_3_146A10
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147AB0
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0xA
+    UPDATE_U8_VALUE 5, 255, npcAffection[KAI]
     RETURN_FROM_SUBROUTINE
 
-.branch_145A24:
+.roll_assistant3:
     BRANCH_ON_RANDOM 0, 9, .branch_145A78
     BRANCH_ON_RANDOM 10, 19, .branch_145AAC
     BRANCH_ON_RANDOM 20, 29, .branch_145AE0
@@ -422,144 +463,144 @@
     BRANCH_ON_RANDOM 70, 79, .branch_145C08
     BRANCH_ON_RANDOM 80, 89, .branch_145C48
     BRANCH_ON_RANDOM 90, 99, .branch_145C94
-    EXECUTE_SUBROUTINE .branch_145A24
+    EXECUTE_SUBROUTINE .roll_assistant3
 
 .branch_145A78:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant1, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant2, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant1, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant2, .roll_assistant3
     SET_U8_VALUE 1, spiritFestivalAssistant3
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147ABC
-    EXECUTE_SUBROUTINE .sub_145164
+    EXECUTE_SUBROUTINE .assistant3_table
 
 .branch_145AAC:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant1, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant2, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant1, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant2, .roll_assistant3
     SET_U8_VALUE 2, spiritFestivalAssistant3
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147ABC
-    EXECUTE_SUBROUTINE .sub_145164
+    EXECUTE_SUBROUTINE .assistant3_table
 
 .branch_145AE0:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant1, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant2, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant1, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant2, .roll_assistant3
     SET_U8_VALUE 3, spiritFestivalAssistant3
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147ABC
-    EXECUTE_SUBROUTINE .sub_145164
+    EXECUTE_SUBROUTINE .assistant3_table
 
 .branch_145B14:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant1, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant2, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant1, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant2, .roll_assistant3
     SET_U8_VALUE 4, spiritFestivalAssistant3
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147ABC
-    EXECUTE_SUBROUTINE .sub_145164
+    EXECUTE_SUBROUTINE .assistant3_table
 
 .branch_145B48:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant1, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant2, .branch_145A24
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant1, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant2, .roll_assistant3
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .roll_assistant3
     SET_U8_VALUE 5, spiritFestivalAssistant3
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147ABC
-    EXECUTE_SUBROUTINE .sub_145164
+    EXECUTE_SUBROUTINE .assistant3_table
 
 .branch_145B88:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant1, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant2, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant1, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant2, .roll_assistant3
     SET_U8_VALUE 6, spiritFestivalAssistant3
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147ABC
-    EXECUTE_SUBROUTINE .sub_145164
+    EXECUTE_SUBROUTINE .assistant3_table
 
 .branch_145BC8:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant1, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant2, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant1, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant2, .roll_assistant3
     SET_U8_VALUE 7, spiritFestivalAssistant3
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147ABC
-    EXECUTE_SUBROUTINE .sub_145164
+    EXECUTE_SUBROUTINE .assistant3_table
 
 .branch_145C08:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant1, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant2, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant1, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant2, .roll_assistant3
     SET_U8_VALUE 8, spiritFestivalAssistant3
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147ABC
-    EXECUTE_SUBROUTINE .sub_145164
+    EXECUTE_SUBROUTINE .assistant3_table
 
 .branch_145C48:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant1, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant2, .branch_145A24
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant1, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant2, .roll_assistant3
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .roll_assistant3
     SET_U8_VALUE 9, spiritFestivalAssistant3
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147ABC
-    EXECUTE_SUBROUTINE .sub_145164
+    EXECUTE_SUBROUTINE .assistant3_table
 
 .branch_145C94:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant1, .branch_145A24
-    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant2, .branch_145A24
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant1, .roll_assistant3
+    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant2, .roll_assistant3
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .roll_assistant3
     SET_U8_VALUE 10, spiritFestivalAssistant3
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147ABC
-    EXECUTE_SUBROUTINE .sub_145164
+    EXECUTE_SUBROUTINE .assistant3_table
 
 .branch_145CE0:
     SPAWN_EXECUTOR 4, .executor_4_146A24
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147B34
-    UPDATE_U8_VALUE 5, 255, npcAffection
+    UPDATE_U8_VALUE 5, 255, npcAffection[MARIA]
     RETURN_FROM_SUBROUTINE
 
 .branch_145D08:
     SPAWN_EXECUTOR 4, .executor_4_146A54
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147B34
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x1
+    UPDATE_U8_VALUE 5, 255, npcAffection[POPURI]
     RETURN_FROM_SUBROUTINE
 
 .branch_145D30:
     SPAWN_EXECUTOR 4, .executor_4_146A84
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147B34
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x2
+    UPDATE_U8_VALUE 5, 255, npcAffection[ELLI]
     RETURN_FROM_SUBROUTINE
 
 .branch_145D58:
     SPAWN_EXECUTOR 4, .executor_4_146AB4
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147B34
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x3
+    UPDATE_U8_VALUE 5, 255, npcAffection[ANN]
     RETURN_FROM_SUBROUTINE
 
 .branch_145D80:
     SPAWN_EXECUTOR 4, .executor_4_146AE4
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147B34
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x4
+    UPDATE_U8_VALUE 5, 255, npcAffection[KAREN]
     RETURN_FROM_SUBROUTINE
 
 .branch_145DA8:
     SPAWN_EXECUTOR 4, .executor_4_146B14
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147B34
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x6
+    UPDATE_U8_VALUE 5, 255, npcAffection[HARRIS]
     RETURN_FROM_SUBROUTINE
 
 .branch_145DD0:
     SPAWN_EXECUTOR 4, .executor_4_146B44
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147B34
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x7
+    UPDATE_U8_VALUE 5, 255, npcAffection[GRAY]
     RETURN_FROM_SUBROUTINE
 
 .branch_145DF8:
     SPAWN_EXECUTOR 4, .executor_4_146B74
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147B34
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x8
+    UPDATE_U8_VALUE 5, 255, npcAffection[JEFF]
     RETURN_FROM_SUBROUTINE
 
 .branch_145E20:
     SPAWN_EXECUTOR 4, .executor_4_146BA4
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147B34
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x9
+    UPDATE_U8_VALUE 5, 255, npcAffection[CLIFF]
     RETURN_FROM_SUBROUTINE
 
 .branch_145E48:
     SPAWN_EXECUTOR 4, .executor_4_146BD4
     BRANCH_U16_VAR_WITHIN_RANGE 1351, 1351, gCutsceneIndex, .branch_147B34
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0xA
+    UPDATE_U8_VALUE 5, 255, npcAffection[KAI]
     RETURN_FROM_SUBROUTINE
 
 .branch_145E70:
@@ -837,15 +878,15 @@
     RETURN_FROM_SUBROUTINE
 
 .branch_14623C:
-    BRANCH_ON_SPECIAL_BIT 3, lifeEventBits + 0x8, .branch_14625C
+    BRANCH_ON_SPECIAL_BIT 3, lifeEventBits[2], .branch_14625C
     SET_SPECIAL_BIT 2, var0
     SET_OTHER_EXECUTOR_PTR 4, .executor_4_146D3C
-    EXECUTE_SUBROUTINE .sub_1473A4
+    EXECUTE_SUBROUTINE .orchestrator_song1_kickoff
 
 .branch_14625C:
     SET_SPECIAL_BIT 3, var0
     SET_OTHER_EXECUTOR_PTR 4, .executor_4_146D3C
-    EXECUTE_SUBROUTINE .sub_1473A4
+    EXECUTE_SUBROUTINE .orchestrator_song1_kickoff
 
 .branch_146270:
     SET_OTHER_EXECUTOR_PTR 2, .executor_2_146E2C
@@ -968,13 +1009,13 @@
     RETURN_FROM_SUBROUTINE
 
 .branch_1463D8:
-    BRANCH_ON_SPECIAL_BIT 3, lifeEventBits + 0x8, .branch_1463F0
+    BRANCH_ON_SPECIAL_BIT 3, lifeEventBits[2], .branch_1463F0
     SET_OTHER_EXECUTOR_PTR 4, .executor_4_145020
-    EXECUTE_SUBROUTINE .sub_147570
+    EXECUTE_SUBROUTINE .orchestrator_stage3
 
 .branch_1463F0:
     SET_OTHER_EXECUTOR_PTR 4, .executor_4_146E24
-    EXECUTE_SUBROUTINE .sub_147570
+    EXECUTE_SUBROUTINE .orchestrator_stage3
 
 .branch_1463FC:
     SET_OTHER_EXECUTOR_PTR 2, .executor_2_146EFC
@@ -1097,30 +1138,42 @@
     RETURN_FROM_SUBROUTINE
 
 .branch_146564:
-    BRANCH_ON_SPECIAL_BIT 3, lifeEventBits + 0x8, .branch_14657C
+    BRANCH_ON_SPECIAL_BIT 3, lifeEventBits[2], .branch_14657C
     SET_OTHER_EXECUTOR_PTR 4, .executor_4_145020
-    EXECUTE_SUBROUTINE .sub_1476FC
+    EXECUTE_SUBROUTINE .orchestrator_spawn_finale
 
 .branch_14657C:
     SET_OTHER_EXECUTOR_PTR 4, .executor_4_146EEC
-    EXECUTE_SUBROUTINE .sub_1476FC
+    EXECUTE_SUBROUTINE .orchestrator_spawn_finale
 
-.sub_146588:
-    EXECUTE_SUBROUTINE .sub_145000
+; ============================================================
+; Stage entity setup (ocarina backdrop + assistant spawn stubs)
+; ============================================================
+; Each assistant is spawned via one of three executor families:
+;   - slot 2 stubs at .executor_2_1465E8..1467E0 (assistant 1)
+;   - slot 3 stubs at .executor_3_146818..146A10 (assistant 2)
+;   - slot 4 stubs at .executor_4_146A24..146BD4 (assistant 3)
+; Stubs differ only in the SETUP_ENTITY asset id and spawn coords,
+; then drop into the shared wait loop.
+; ============================================================
+
+.setup_player_then_exit:
+    EXECUTE_SUBROUTINE .setup_player
     DEACTIVATE_SELF
 
-.executor_1_146590:
-    SETUP_ENTITY 1, 50, 1
+; ----- Stage backdrop (ocarina performer) -----
+.executor_1_ocarina_backdrop:
+    SETUP_ENTITY 1, ENTITY_ASSET_SPIRIT_FESTIVAL_OCARINA_PERFORMER, 1
     SET_ENTITY_ANIMATIONS 1, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -128, 0, 0
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_1465C4:
-    SETUP_ENTITY 2, 1, 1
+    SETUP_ENTITY 2, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1129,11 +1182,11 @@
 .executor_2_1465E8:
     EXECUTE_SUBROUTINE .sub_1465C4
     SET_COORDINATES -128, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_1465FC:
-    SETUP_ENTITY 2, 2, 1
+    SETUP_ENTITY 2, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1142,11 +1195,11 @@
 .executor_2_146620:
     EXECUTE_SUBROUTINE .sub_1465FC
     SET_COORDINATES -128, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_146634:
-    SETUP_ENTITY 2, 3, 1
+    SETUP_ENTITY 2, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1155,11 +1208,11 @@
 .executor_2_146658:
     EXECUTE_SUBROUTINE .sub_146634
     SET_COORDINATES -128, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_14666C:
-    SETUP_ENTITY 2, 4, 1
+    SETUP_ENTITY 2, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1168,11 +1221,11 @@
 .executor_2_146690:
     EXECUTE_SUBROUTINE .sub_14666C
     SET_COORDINATES -128, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_1466A4:
-    SETUP_ENTITY 2, 5, 1
+    SETUP_ENTITY 2, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1181,11 +1234,11 @@
 .executor_2_1466C8:
     EXECUTE_SUBROUTINE .sub_1466A4
     SET_COORDINATES -128, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_1466DC:
-    SETUP_ENTITY 2, 7, 1
+    SETUP_ENTITY 2, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1194,11 +1247,11 @@
 .executor_2_146700:
     EXECUTE_SUBROUTINE .sub_1466DC
     SET_COORDINATES -128, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_146714:
-    SETUP_ENTITY 2, 8, 1
+    SETUP_ENTITY 2, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1207,11 +1260,11 @@
 .executor_2_146738:
     EXECUTE_SUBROUTINE .sub_146714
     SET_COORDINATES -128, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_14674C:
-    SETUP_ENTITY 2, 9, 1
+    SETUP_ENTITY 2, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1220,11 +1273,11 @@
 .executor_2_146770:
     EXECUTE_SUBROUTINE .sub_14674C
     SET_COORDINATES -128, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_146784:
-    SETUP_ENTITY 2, 10, 1
+    SETUP_ENTITY 2, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1233,11 +1286,11 @@
 .executor_2_1467A8:
     EXECUTE_SUBROUTINE .sub_146784
     SET_COORDINATES -128, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_1467BC:
-    SETUP_ENTITY 2, 11, 1
+    SETUP_ENTITY 2, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1246,11 +1299,11 @@
 .executor_2_1467E0:
     EXECUTE_SUBROUTINE .sub_1467BC
     SET_COORDINATES -128, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_1467F4:
-    SETUP_ENTITY 3, 1, 1
+    SETUP_ENTITY 3, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1259,11 +1312,11 @@
 .executor_3_146818:
     EXECUTE_SUBROUTINE .sub_1467F4
     SET_COORDINATES -104, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_14682C:
-    SETUP_ENTITY 3, 2, 1
+    SETUP_ENTITY 3, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1272,11 +1325,11 @@
 .executor_3_146850:
     EXECUTE_SUBROUTINE .sub_14682C
     SET_COORDINATES -104, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_146864:
-    SETUP_ENTITY 3, 3, 1
+    SETUP_ENTITY 3, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1285,11 +1338,11 @@
 .executor_3_146888:
     EXECUTE_SUBROUTINE .sub_146864
     SET_COORDINATES -104, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_14689C:
-    SETUP_ENTITY 3, 4, 1
+    SETUP_ENTITY 3, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1298,11 +1351,11 @@
 .executor_3_1468C0:
     EXECUTE_SUBROUTINE .sub_14689C
     SET_COORDINATES -104, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_1468D4:
-    SETUP_ENTITY 3, 5, 1
+    SETUP_ENTITY 3, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1311,11 +1364,11 @@
 .executor_3_1468F8:
     EXECUTE_SUBROUTINE .sub_1468D4
     SET_COORDINATES -104, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_14690C:
-    SETUP_ENTITY 3, 7, 1
+    SETUP_ENTITY 3, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1324,11 +1377,11 @@
 .executor_3_146930:
     EXECUTE_SUBROUTINE .sub_14690C
     SET_COORDINATES -104, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_146944:
-    SETUP_ENTITY 3, 8, 1
+    SETUP_ENTITY 3, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1337,11 +1390,11 @@
 .executor_3_146968:
     EXECUTE_SUBROUTINE .sub_146944
     SET_COORDINATES -104, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_14697C:
-    SETUP_ENTITY 3, 9, 1
+    SETUP_ENTITY 3, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1350,11 +1403,11 @@
 .executor_3_1469A0:
     EXECUTE_SUBROUTINE .sub_14697C
     SET_COORDINATES -104, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_1469B4:
-    SETUP_ENTITY 3, 10, 1
+    SETUP_ENTITY 3, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1363,11 +1416,11 @@
 .executor_3_1469D8:
     EXECUTE_SUBROUTINE .sub_1469B4
     SET_COORDINATES -104, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .sub_1469EC:
-    SETUP_ENTITY 3, 11, 1
+    SETUP_ENTITY 3, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
@@ -1376,225 +1429,236 @@
 .executor_3_146A10:
     EXECUTE_SUBROUTINE .sub_1469EC
     SET_COORDINATES -104, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146A24:
-    SETUP_ENTITY 4, 1, 1
+    SETUP_ENTITY 4, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -72, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146A54:
-    SETUP_ENTITY 4, 2, 1
+    SETUP_ENTITY 4, ENTITY_ASSET_POPURI, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -72, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146A84:
-    SETUP_ENTITY 4, 3, 1
+    SETUP_ENTITY 4, ENTITY_ASSET_ELLI, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -72, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146AB4:
-    SETUP_ENTITY 4, 4, 1
+    SETUP_ENTITY 4, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -72, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146AE4:
-    SETUP_ENTITY 4, 5, 1
+    SETUP_ENTITY 4, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -72, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146B14:
-    SETUP_ENTITY 4, 7, 1
+    SETUP_ENTITY 4, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -72, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146B44:
-    SETUP_ENTITY 4, 8, 1
+    SETUP_ENTITY 4, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -72, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146B74:
-    SETUP_ENTITY 4, 9, 1
+    SETUP_ENTITY 4, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -72, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146BA4:
-    SETUP_ENTITY 4, 10, 1
+    SETUP_ENTITY 4, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -72, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146BD4:
-    SETUP_ENTITY 4, 11, 1
+    SETUP_ENTITY 4, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -72, 0, -24
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
+; ============================================================
+; Per-assistant animation handoffs (played from executor 41)
+; ============================================================
+; The orchestrator sets slot 2 / 3 / 4 pointers to one of these
+; short animation scripts, then waits. Each script plays one or
+; two animations and drops into the wait loop. There are three
+; waves of assignments corresponding to the three musical stages,
+; plus a final fade-in wave with SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE.
+; ============================================================
+
+; ----- Stage 1: lead-in animations -----
 .executor_1_146C04:
     SET_ENTITY_ANIMATION 2
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 3
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146C14:
-    BRANCH_ON_SPECIAL_BIT 3, lifeEventBits + 0x8, .branch_146C24
-    EXECUTE_SUBROUTINE .sub_144FF8
+    BRANCH_ON_SPECIAL_BIT 3, lifeEventBits[2], .branch_146C24
+    EXECUTE_SUBROUTINE .wait_loop
 
 .branch_146C24:
     SET_ENTITY_ANIMATION 471
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 411
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146C34:
     SET_ENTITY_ANIMATION 60
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 61
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146C44:
     SET_ENTITY_ANIMATION 69
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 70
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146C54:
     SET_ENTITY_ANIMATION 61
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 63
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146C64:
     SET_ENTITY_ANIMATION 60
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 62
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146C74:
     SET_ENTITY_ANIMATION 59
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 61
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146C84:
     SET_ENTITY_ANIMATION 58
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 60
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146C94:
     SET_ENTITY_ANIMATION 68
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 70
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146CA4:
     SET_ENTITY_ANIMATION 67
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 69
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146CB4:
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146CB8:
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146CBC:
     SET_ENTITY_ANIMATION 29
     WAIT_ENTITY_ANIMATION
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146CC8:
     SET_ENTITY_ANIMATION 28
     WAIT_ENTITY_ANIMATION
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146CD4:
     SET_ENTITY_ANIMATION 44
     WAIT_ENTITY_ANIMATION
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146CE0:
     SET_ENTITY_ANIMATION 43
     WAIT_ENTITY_ANIMATION
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146CEC:
     SET_ENTITY_ANIMATION 41
     WAIT_ENTITY_ANIMATION
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146CF8:
     SET_ENTITY_ANIMATION 40
     WAIT_ENTITY_ANIMATION
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146D04:
     SET_ENTITY_ANIMATION 28
     WAIT_ENTITY_ANIMATION
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146D10:
     SET_ENTITY_ANIMATION 27
     WAIT_ENTITY_ANIMATION
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146D1C:
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146D28:
     SET_ENTITY_ANIMATION 34
     WAIT_ENTITY_ANIMATION
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_1_146D34:
     SET_ENTITY_ANIMATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146D3C:
-    BRANCH_ON_SPECIAL_BIT 3, lifeEventBits + 0x8, .branch_146D5C
+    BRANCH_ON_SPECIAL_BIT 3, lifeEventBits[2], .branch_146D5C
 
 .sub_146D48:
     SET_ENTITY_ANIMATION 338
@@ -1605,39 +1669,39 @@
 
 .branch_146D5C:
     SET_ENTITY_ANIMATION 412
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146D64:
     SET_ENTITY_ANIMATION 62
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146D6C:
     SET_ENTITY_ANIMATION 71
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146D74:
     SET_ENTITY_ANIMATION 65
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146D7C:
     SET_ENTITY_ANIMATION 64
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146D84:
     SET_ENTITY_ANIMATION 63
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146D8C:
     SET_ENTITY_ANIMATION 62
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146D94:
     SET_ENTITY_ANIMATION 72
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146D9C:
     SET_ENTITY_ANIMATION 71
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146DA4:
     SET_ENTITY_ANIMATION 71
@@ -1655,225 +1719,233 @@
 
 .executor_2_146DCC:
     SET_ENTITY_ANIMATION 31
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146DD4:
     SET_ENTITY_ANIMATION 30
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146DDC:
     SET_ENTITY_ANIMATION 46
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146DE4:
     SET_ENTITY_ANIMATION 45
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146DEC:
     SET_ENTITY_ANIMATION 43
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146DF4:
     SET_ENTITY_ANIMATION 42
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146DFC:
     SET_ENTITY_ANIMATION 30
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146E04:
     SET_ENTITY_ANIMATION 29
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146E0C:
     SET_ENTITY_ANIMATION 37
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146E14:
     SET_ENTITY_ANIMATION 36
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_1_146E1C:
     SET_ENTITY_ANIMATION 3
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146E24:
     SET_ENTITY_ANIMATION 411
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146E2C:
     SET_ENTITY_ANIMATION 61
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146E34:
     SET_ENTITY_ANIMATION 70
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146E3C:
     SET_ENTITY_ANIMATION 63
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146E44:
     SET_ENTITY_ANIMATION 62
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146E4C:
     SET_ENTITY_ANIMATION 61
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146E54:
     SET_ENTITY_ANIMATION 60
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146E5C:
     SET_ENTITY_ANIMATION 70
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146E64:
     SET_ENTITY_ANIMATION 69
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146E6C:
     SET_ENTITY_ANIMATION 73
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 75
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146E7C:
     SET_ENTITY_ANIMATION 72
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 74
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146E8C:
     SET_ENTITY_ANIMATION 29
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146E94:
     SET_ENTITY_ANIMATION 28
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146E9C:
     SET_ENTITY_ANIMATION 44
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146EA4:
     SET_ENTITY_ANIMATION 43
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146EAC:
     SET_ENTITY_ANIMATION 41
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146EB4:
     SET_ENTITY_ANIMATION 40
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146EBC:
     SET_ENTITY_ANIMATION 28
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146EC4:
     SET_ENTITY_ANIMATION 27
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146ECC:
     SET_ENTITY_ANIMATION 35
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146ED4:
     SET_ENTITY_ANIMATION 34
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_1_146EDC:
     SET_ENTITY_ANIMATION 2
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_146EEC:
     SET_ENTITY_ANIMATION 471
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146EFC:
     SET_ENTITY_ANIMATION 60
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146F0C:
     SET_ENTITY_ANIMATION 69
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146F1C:
     SET_ENTITY_ANIMATION 61
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146F2C:
     SET_ENTITY_ANIMATION 60
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146F3C:
     SET_ENTITY_ANIMATION 59
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146F4C:
     SET_ENTITY_ANIMATION 58
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146F5C:
     SET_ENTITY_ANIMATION 68
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146F6C:
     SET_ENTITY_ANIMATION 67
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_146F7C:
     SET_ENTITY_ANIMATION 73
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_146F8C:
     SET_ENTITY_ANIMATION 72
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
+
+; ============================================================
+; Orchestrator helpers (music sequence + stage dispatch)
+; ============================================================
+; var0 bits 0..3 record which song each assistant chose; the
+; orchestrator branches on those bits to start the matching
+; sequence, and uses bit 4 to gate the final ensemble song.
+; ============================================================
 
 .branch_146F9C:
     BRANCH_ON_SPECIAL_BIT 1, var0, .branch_146FAC
-    EXECUTE_SUBROUTINE .sub_1473B0
+    EXECUTE_SUBROUTINE .orchestrator_play_song_by_var0
 
 .branch_146FAC:
     BRANCH_ON_SPECIAL_BIT 2, var0, .branch_146FBC
-    EXECUTE_SUBROUTINE .sub_1473B0
+    EXECUTE_SUBROUTINE .orchestrator_play_song_by_var0
 
 .branch_146FBC:
     BRANCH_ON_SPECIAL_BIT 3, var0, .branch_146FCC
-    EXECUTE_SUBROUTINE .sub_1473B0
+    EXECUTE_SUBROUTINE .orchestrator_play_song_by_var0
 
 .branch_146FCC:
     SET_AUDIO_SEQUENCE 0, _ensemblePerformanceSegmentRomStart, _ensemblePerformanceSegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 128
     SET_SPECIAL_BIT 4, var0
-    EXECUTE_SUBROUTINE .sub_1473EC
+    EXECUTE_SUBROUTINE .orchestrator_stage2
 
 .branch_146FEC:
     SET_AUDIO_SEQUENCE 1, _vocalPerformanceSegmentRomStart, _vocalPerformanceSegmentRomEnd
@@ -1895,7 +1967,18 @@
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 128
     RETURN_FROM_SUBROUTINE
 
-.executor_41_14704C:
+; ============================================================
+; Main orchestrator (executor 41) - cutscenes 1350 / 1351
+; ============================================================
+; Drives the three-song performance by:
+;   1. Handing animation scripts to slots 2/3/4 per assistant.
+;   2. Setting one of var0 bits 0..3 to remember which song each
+;      assistant plays (ensemble / vocal / flute / sleigh bells
+;      / ocarina), then waiting through each sequence.
+;   3. Spawning the finale (executor 5) once all songs finish.
+; ============================================================
+
+.executor_41_orchestrator:
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
 
@@ -1979,10 +2062,10 @@
     BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant3, .branch_146228
     BRANCH_U8_VAR_WITHIN_RANGE 11, 11, spiritFestivalAssistant3, .branch_14623C
 
-.sub_1473A4:
+.orchestrator_song1_kickoff:
     BRANCH_ON_SPECIAL_BIT 0, var0, .branch_146F9C
 
-.sub_1473B0:
+.orchestrator_play_song_by_var0:
     BRANCH_ON_SPECIAL_BIT 0, var0, .branch_146FEC
     BRANCH_ON_SPECIAL_BIT 1, var0, .branch_147004
     BRANCH_ON_SPECIAL_BIT 2, var0, .branch_14701C
@@ -1991,7 +2074,7 @@
     IDLE_WHILE_SEQUENCE_PLAYING 2
     IDLE_WHILE_SEQUENCE_PLAYING 3
 
-.sub_1473EC:
+.orchestrator_stage2:
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_WAIT_FRAMES 30
     SET_OTHER_EXECUTOR_PTR 1, .executor_1_146E1C
@@ -2027,7 +2110,7 @@
     BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant3, .branch_1463CC
     BRANCH_U8_VAR_WITHIN_RANGE 11, 11, spiritFestivalAssistant3, .branch_1463D8
 
-.sub_147570:
+.orchestrator_stage3:
     SET_WAIT_FRAMES 30
     SET_SFX 84, 128
     SET_WAIT_FRAMES 30
@@ -2064,18 +2147,26 @@
     BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant3, .branch_146558
     BRANCH_U8_VAR_WITHIN_RANGE 11, 11, spiritFestivalAssistant3, .branch_146564
 
-.sub_1476FC:
+.orchestrator_spawn_finale:
     SET_WAIT_FRAMES 30
-    SET_OTHER_EXECUTOR_PTR 5, .executor_5_14770C
+    SET_OTHER_EXECUTOR_PTR 5, .executor_5_finale
     DEACTIVATE_SELF
 
-.executor_5_14770C:
-    ENTITY_WALK 16, 5, 2
-    SET_ASSET_ROTATION 6
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 10
+; ============================================================
+; Finale (mayor closing speech + fade to black + teardown)
+; ============================================================
+; Executor 5 walks east, faces the stage, shows the mayors
+; closing speech (text 10), plays SFX 84, fades to black and
+; deactivates every executor that was spawned.
+; ============================================================
+
+.executor_5_finale:
+    ENTITY_WALK 16, EAST, 2
+    SET_ASSET_ROTATION SOUTHEAST
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 10
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_SFX 84, 128
     SET_WAIT_FRAMES 60
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -2097,108 +2188,123 @@
     DEACTIVATE_EXECUTOR 16
     DEACTIVATE_EXECUTOR 17
     DEACTIVATE_EXECUTOR 40
-    EXECUTE_SUBROUTINE .sub_144FD4
+    EXECUTE_SUBROUTINE .exit
+
+; ============================================================
+; Audience NPC setup (fixed attendees, slots 5..17)
+; ============================================================
+; These 11 NPCs stand in fixed positions around the stage during
+; the performance. They are spawned once per cutscene path and
+; just sit in the wait loop; no animations are triggered.
+; ============================================================
 
 .executor_5_14778C:
-    SETUP_ENTITY 5, 12, 1
+    SETUP_ENTITY 5, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 5, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_COORDINATES -128, 0, 112
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_6_1477B8:
-    SETUP_ENTITY 6, 13, 1
+    SETUP_ENTITY 6, ENTITY_ASSET_MAYOR_WIFE, 1
     SET_ENTITY_ANIMATIONS 6, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_COORDINATES -88, 0, 144
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_8_1477E4:
-    SETUP_ENTITY 8, 20, 1
+    SETUP_ENTITY 8, ENTITY_ASSET_POTION_SHOP_DEALER, 1
     SET_ENTITY_ANIMATIONS 8, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_COORDINATES -16, 0, 112
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_9_147810:
-    SETUP_ENTITY 9, 21, 1
+    SETUP_ENTITY 9, ENTITY_ASSET_KENT, 1
     SET_ENTITY_ANIMATIONS 9, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_COORDINATES 8, 0, 72
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_10_14783C:
-    SETUP_ENTITY 10, 22, 1
+    SETUP_ENTITY 10, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 10, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_COORDINATES 0, 0, 96
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_11_147868:
-    SETUP_ENTITY 11, 23, 1
+    SETUP_ENTITY 11, ENTITY_ASSET_MIDWIFE, 1
     SET_ENTITY_ANIMATIONS 11, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_COORDINATES 24, 0, 56
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_12_147894:
-    SETUP_ENTITY 12, 17, 1
+    SETUP_ENTITY 12, ENTITY_ASSET_DOUG, 1
     SET_ENTITY_ANIMATIONS 12, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_COORDINATES 48, 0, 24
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_13_1478C0:
-    SETUP_ENTITY 13, 27, 1
+    SETUP_ENTITY 13, ENTITY_ASSET_SHIPPER, 1
     SET_ENTITY_ANIMATIONS 13, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_COORDINATES 40, 0, -8
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_14_1478F0:
-    SETUP_ENTITY 14, 18, 1
+    SETUP_ENTITY 14, ENTITY_ASSET_GOTZ, 1
     SET_ENTITY_ANIMATIONS 14, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_COORDINATES 88, 0, 32
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_15_14791C:
-    SETUP_ENTITY 15, 19, 1
+    SETUP_ENTITY 15, ENTITY_ASSET_SASHA, 1
     SET_ENTITY_ANIMATIONS 15, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_COORDINATES 72, 0, 56
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_16_147948:
-    SETUP_ENTITY 16, 25, 1
+    SETUP_ENTITY 16, ENTITY_ASSET_RICK, 1
     SET_ENTITY_ANIMATIONS 16, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 3
+    SET_ASSET_ROTATION NORTH
     SET_COORDINATES 32, 0, 112
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_17_147974:
-    SETUP_ENTITY 17, 14, 1
+    SETUP_ENTITY 17, ENTITY_ASSET_LILLIA, 1
     SET_ENTITY_ANIMATIONS 17, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_COORDINATES -30, 0, 144
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1479A0:
-    SPAWN_EXECUTOR 1, .executor_1_146590
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant1, .branch_1452F4
+; ============================================================
+; Cutscene 1351 - default spirit festival entry
+; ============================================================
+; Reuses the same spawn tables as 1350 but always routes to the
+; regular dispatch (no harvest-king override).
+; ============================================================
+
+.dispatch_festival:
+    SPAWN_EXECUTOR 1, .executor_1_ocarina_backdrop
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant1, .roll_assistant1
 
 .branch_1479B4:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant1, .branch_1454C0
@@ -2213,7 +2319,7 @@
     BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant1, .branch_145628
 
 .branch_147A2C:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant2, .branch_145650
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant2, .roll_assistant2
 
 .branch_147A38:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant2, .branch_145894
@@ -2228,7 +2334,7 @@
     BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant2, .branch_1459FC
 
 .branch_147AB0:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant3, .branch_145A24
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, spiritFestivalAssistant3, .roll_assistant3
 
 .branch_147ABC:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant3, .branch_145CE0
@@ -2258,90 +2364,99 @@
     SPAWN_EXECUTOR 15, .executor_15_14791C
     SPAWN_EXECUTOR 16, .executor_16_147948
     SPAWN_EXECUTOR 17, .executor_17_147974
-    SPAWN_EXECUTOR 40, .executor_40_1452E0
-    SPAWN_EXECUTOR 41, .executor_41_14704C
-    EXECUTE_SUBROUTINE .sub_147BB4
+    SPAWN_EXECUTOR 40, .executor_40_map_init
+    SPAWN_EXECUTOR 41, .executor_41_orchestrator
+    EXECUTE_SUBROUTINE .setup_player_at_stage
 
-.sub_147BB4:
-    EXECUTE_SUBROUTINE .sub_145000
+.setup_player_at_stage:
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_COORDINATES -80, 0, 184
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_147BCC:
-    SPAWN_EXECUTOR 1, .executor_1_146590
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .branch_147D3C
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .branch_147D4C
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .branch_147D5C
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .branch_147D6C
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .branch_147D7C
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHarvestKing, .branch_147D8C
+; ============================================================
+; Cutscene 1352 - repeat spirit festival
+; ============================================================
+; Used after the festival has already been watched once. Gives
+; last years Harvest King a +3 affection bump, re-rolls a new
+; pair of assistants at random, and forces the player into the
+; third assistant slot so the scene closes on the player.
+; ============================================================
 
-.sub_147C1C:
-    EXECUTE_SUBROUTINE .sub_147D9C
+.dispatch_repeat:
+    SPAWN_EXECUTOR 1, .executor_1_ocarina_backdrop
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .last_king_harris
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .last_king_gray
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .last_king_jeff
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .last_king_cliff
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .last_king_kai
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHarvestKing, .last_king_potion_shop_dealer
 
-.sub_147C20:
-    EXECUTE_SUBROUTINE .sub_147F90
+.repeat_roll_assistant1:
+    EXECUTE_SUBROUTINE .repeat_roll_assistant1_table
 
-.sub_147C24:
+.repeat_roll_assistant2:
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2_table
+
+.repeat_spawn_audience_as_player:
     SET_U8_VALUE 11, spiritFestivalAssistant3
-    SPAWN_EXECUTOR 4, .executor_4_148210
+    SPAWN_EXECUTOR 4, .executor_4_repeat_player
     SPAWN_EXECUTOR 5, .executor_5_14778C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xB
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR]
     SPAWN_EXECUTOR 6, .executor_6_1477B8
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xC
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MAYOR_WIFE]
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gYear, .branch_147C7C
     SPAWN_EXECUTOR 8, .executor_8_1477E4
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x13
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_POTION_SHOP_DEALER]
 
 .branch_147C7C:
     SPAWN_EXECUTOR 9, .executor_9_147810
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x14
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_KENT]
     SPAWN_EXECUTOR 10, .executor_10_14783C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x15
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_STU]
     SPAWN_EXECUTOR 11, .executor_11_147868
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x16
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_MIDWIFE]
     SPAWN_EXECUTOR 12, .executor_12_147894
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x10
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_DOUG]
     SPAWN_EXECUTOR 13, .executor_13_1478C0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x1A
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_SHIPPER]
     SPAWN_EXECUTOR 14, .executor_14_1478F0
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x11
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_GOTZ]
     SPAWN_EXECUTOR 15, .executor_15_14791C
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x12
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_SASHA]
     SPAWN_EXECUTOR 16, .executor_16_147948
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0x18
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_RICK]
     SPAWN_EXECUTOR 17, .executor_17_147974
-    UPDATE_U8_VALUE 2, 255, npcAffection + 0xD
-    SPAWN_EXECUTOR 41, .executor_41_1483B4
+    UPDATE_U8_VALUE 2, 255, npcAffection[NPC_LILLIA]
+    SPAWN_EXECUTOR 41, .executor_41_repeat_orchestrator
     DEACTIVATE_SELF
 
-.branch_147D3C:
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x6
-    EXECUTE_SUBROUTINE .sub_147C1C
+.last_king_harris:
+    UPDATE_U8_VALUE 3, 255, npcAffection[HARRIS]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant1
 
-.branch_147D4C:
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x7
-    EXECUTE_SUBROUTINE .sub_147C1C
+.last_king_gray:
+    UPDATE_U8_VALUE 3, 255, npcAffection[GRAY]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant1
 
-.branch_147D5C:
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x8
-    EXECUTE_SUBROUTINE .sub_147C1C
+.last_king_jeff:
+    UPDATE_U8_VALUE 3, 255, npcAffection[JEFF]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant1
 
-.branch_147D6C:
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x9
-    EXECUTE_SUBROUTINE .sub_147C1C
+.last_king_cliff:
+    UPDATE_U8_VALUE 3, 255, npcAffection[CLIFF]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant1
 
-.branch_147D7C:
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0xA
-    EXECUTE_SUBROUTINE .sub_147C1C
+.last_king_kai:
+    UPDATE_U8_VALUE 3, 255, npcAffection[KAI]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant1
 
-.branch_147D8C:
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x13
-    EXECUTE_SUBROUTINE .sub_147C1C
+.last_king_potion_shop_dealer:
+    UPDATE_U8_VALUE 3, 255, npcAffection[NPC_POTION_SHOP_DEALER]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant1
 
-.sub_147D9C:
+.repeat_roll_assistant1_table:
     BRANCH_ON_RANDOM 0, 9, .branch_147DF0
     BRANCH_ON_RANDOM 10, 19, .branch_147E10
     BRANCH_ON_RANDOM 20, 29, .branch_147E30
@@ -2352,77 +2467,77 @@
     BRANCH_ON_RANDOM 70, 79, .branch_147EF4
     BRANCH_ON_RANDOM 80, 89, .branch_147F20
     BRANCH_ON_RANDOM 90, 99, .branch_147F58
-    EXECUTE_SUBROUTINE .sub_147D9C
+    EXECUTE_SUBROUTINE .repeat_roll_assistant1_table
 
 .branch_147DF0:
     SET_U8_VALUE 1, spiritFestivalAssistant1
     SPAWN_EXECUTOR 2, .executor_2_148224
     UPDATE_U8_VALUE 3, 255, npcAffection[MARIA]
-    EXECUTE_SUBROUTINE .sub_147C20
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2
 
 .branch_147E10:
     SET_U8_VALUE 2, spiritFestivalAssistant1
     SPAWN_EXECUTOR 2, .executor_2_148238
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x1
-    EXECUTE_SUBROUTINE .sub_147C20
+    UPDATE_U8_VALUE 3, 255, npcAffection[POPURI]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2
 
 .branch_147E30:
     SET_U8_VALUE 3, spiritFestivalAssistant1
     SPAWN_EXECUTOR 2, .executor_2_14824C
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x2
-    EXECUTE_SUBROUTINE .sub_147C20
+    UPDATE_U8_VALUE 3, 255, npcAffection[ELLI]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2
 
 .branch_147E50:
     SET_U8_VALUE 4, spiritFestivalAssistant1
     SPAWN_EXECUTOR 2, .executor_2_148260
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x3
-    EXECUTE_SUBROUTINE .sub_147C20
+    UPDATE_U8_VALUE 3, 255, npcAffection[ANN]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2
 
 .branch_147E70:
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .sub_147D9C
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .repeat_roll_assistant1_table
     SET_U8_VALUE 5, spiritFestivalAssistant1
     SPAWN_EXECUTOR 2, .executor_2_148274
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x4
-    EXECUTE_SUBROUTINE .sub_147C20
+    UPDATE_U8_VALUE 3, 255, npcAffection[KAREN]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2
 
 .branch_147E9C:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .sub_147D9C
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .repeat_roll_assistant1_table
     SET_U8_VALUE 6, spiritFestivalAssistant1
     SPAWN_EXECUTOR 2, .executor_2_148288
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x6
-    EXECUTE_SUBROUTINE .sub_147C20
+    UPDATE_U8_VALUE 3, 255, npcAffection[HARRIS]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2
 
 .branch_147EC8:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .sub_147D9C
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .repeat_roll_assistant1_table
     SET_U8_VALUE 7, spiritFestivalAssistant1
     SPAWN_EXECUTOR 2, .executor_2_14829C
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x7
-    EXECUTE_SUBROUTINE .sub_147C20
+    UPDATE_U8_VALUE 3, 255, npcAffection[GRAY]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2
 
 .branch_147EF4:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .sub_147D9C
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .repeat_roll_assistant1_table
     SET_U8_VALUE 8, spiritFestivalAssistant1
     SPAWN_EXECUTOR 2, .executor_2_1482B0
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x8
-    EXECUTE_SUBROUTINE .sub_147C20
+    UPDATE_U8_VALUE 3, 255, npcAffection[JEFF]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2
 
 .branch_147F20:
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .sub_147D9C
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .sub_147D9C
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .repeat_roll_assistant1_table
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .repeat_roll_assistant1_table
     SET_U8_VALUE 9, spiritFestivalAssistant1
     SPAWN_EXECUTOR 2, .executor_2_1482C4
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x9
-    EXECUTE_SUBROUTINE .sub_147C20
+    UPDATE_U8_VALUE 3, 255, npcAffection[CLIFF]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2
 
 .branch_147F58:
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .sub_147D9C
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .sub_147D9C
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .repeat_roll_assistant1_table
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .repeat_roll_assistant1_table
     SET_U8_VALUE 10, spiritFestivalAssistant1
     SPAWN_EXECUTOR 2, .executor_2_1482D8
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0xA
-    EXECUTE_SUBROUTINE .sub_147C20
+    UPDATE_U8_VALUE 3, 255, npcAffection[KAI]
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2
 
-.sub_147F90:
+.repeat_roll_assistant2_table:
     BRANCH_ON_RANDOM 0, 9, .branch_147FE4
     BRANCH_ON_RANDOM 10, 19, .branch_148010
     BRANCH_ON_RANDOM 20, 29, .branch_14803C
@@ -2433,307 +2548,316 @@
     BRANCH_ON_RANDOM 70, 79, .branch_14813C
     BRANCH_ON_RANDOM 80, 89, .branch_148174
     BRANCH_ON_RANDOM 90, 99, .branch_1481B8
-    EXECUTE_SUBROUTINE .sub_147F90
+    EXECUTE_SUBROUTINE .repeat_roll_assistant2_table
 
 .branch_147FE4:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant1, .sub_147F90
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant1, .repeat_roll_assistant2_table
     SET_U8_VALUE 1, spiritFestivalAssistant2
     SPAWN_EXECUTOR 3, .executor_3_1482EC
     UPDATE_U8_VALUE 3, 255, npcAffection[MARIA]
-    EXECUTE_SUBROUTINE .sub_147C24
+    EXECUTE_SUBROUTINE .repeat_spawn_audience_as_player
 
 .branch_148010:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant1, .sub_147F90
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant1, .repeat_roll_assistant2_table
     SET_U8_VALUE 2, spiritFestivalAssistant2
     SPAWN_EXECUTOR 3, .executor_3_148300
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x1
-    EXECUTE_SUBROUTINE .sub_147C24
+    UPDATE_U8_VALUE 3, 255, npcAffection[POPURI]
+    EXECUTE_SUBROUTINE .repeat_spawn_audience_as_player
 
 .branch_14803C:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant1, .sub_147F90
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant1, .repeat_roll_assistant2_table
     SET_U8_VALUE 3, spiritFestivalAssistant2
     SPAWN_EXECUTOR 3, .executor_3_148314
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x2
-    EXECUTE_SUBROUTINE .sub_147C24
+    UPDATE_U8_VALUE 3, 255, npcAffection[ELLI]
+    EXECUTE_SUBROUTINE .repeat_spawn_audience_as_player
 
 .branch_148068:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant1, .sub_147F90
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant1, .repeat_roll_assistant2_table
     SET_U8_VALUE 4, spiritFestivalAssistant2
     SPAWN_EXECUTOR 3, .executor_3_148328
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x3
-    EXECUTE_SUBROUTINE .sub_147C24
+    UPDATE_U8_VALUE 3, 255, npcAffection[ANN]
+    EXECUTE_SUBROUTINE .repeat_spawn_audience_as_player
 
 .branch_148094:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant1, .sub_147F90
-    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits + 0x4, .sub_147F90
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant1, .repeat_roll_assistant2_table
+    BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .repeat_roll_assistant2_table
     SET_U8_VALUE 5, spiritFestivalAssistant2
     SPAWN_EXECUTOR 3, .executor_3_14833C
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x4
-    EXECUTE_SUBROUTINE .sub_147C24
+    UPDATE_U8_VALUE 3, 255, npcAffection[KAREN]
+    EXECUTE_SUBROUTINE .repeat_spawn_audience_as_player
 
 .branch_1480CC:
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .sub_147F90
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant1, .sub_147F90
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gHarvestKing, .repeat_roll_assistant2_table
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant1, .repeat_roll_assistant2_table
     SET_U8_VALUE 6, spiritFestivalAssistant2
     SPAWN_EXECUTOR 3, .executor_3_148350
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x6
-    EXECUTE_SUBROUTINE .sub_147C24
+    UPDATE_U8_VALUE 3, 255, npcAffection[HARRIS]
+    EXECUTE_SUBROUTINE .repeat_spawn_audience_as_player
 
 .branch_148104:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .sub_147F90
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant1, .sub_147F90
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gHarvestKing, .repeat_roll_assistant2_table
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant1, .repeat_roll_assistant2_table
     SET_U8_VALUE 7, spiritFestivalAssistant2
     SPAWN_EXECUTOR 3, .executor_3_148364
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x7
-    EXECUTE_SUBROUTINE .sub_147C24
+    UPDATE_U8_VALUE 3, 255, npcAffection[GRAY]
+    EXECUTE_SUBROUTINE .repeat_spawn_audience_as_player
 
 .branch_14813C:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .sub_147F90
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant1, .sub_147F90
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gHarvestKing, .repeat_roll_assistant2_table
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant1, .repeat_roll_assistant2_table
     SET_U8_VALUE 8, spiritFestivalAssistant2
     SPAWN_EXECUTOR 3, .executor_3_148378
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x8
-    EXECUTE_SUBROUTINE .sub_147C24
+    UPDATE_U8_VALUE 3, 255, npcAffection[JEFF]
+    EXECUTE_SUBROUTINE .repeat_spawn_audience_as_player
 
 .branch_148174:
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .sub_147F90
-    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant1, .sub_147F90
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .sub_147F90
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gHarvestKing, .repeat_roll_assistant2_table
+    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant1, .repeat_roll_assistant2_table
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .repeat_roll_assistant2_table
     SET_U8_VALUE 9, spiritFestivalAssistant2
     SPAWN_EXECUTOR 3, .executor_3_14838C
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x9
-    EXECUTE_SUBROUTINE .sub_147C24
+    UPDATE_U8_VALUE 3, 255, npcAffection[CLIFF]
+    EXECUTE_SUBROUTINE .repeat_spawn_audience_as_player
 
 .branch_1481B8:
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .sub_147F90
-    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant1, .sub_147F90
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .sub_147F90
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHarvestKing, .repeat_roll_assistant2_table
+    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant1, .repeat_roll_assistant2_table
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .repeat_roll_assistant2_table
     SET_U8_VALUE 10, spiritFestivalAssistant2
     SPAWN_EXECUTOR 3, .executor_3_1483A0
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0xA
-    EXECUTE_SUBROUTINE .sub_147C24
+    UPDATE_U8_VALUE 3, 255, npcAffection[KAI]
+    EXECUTE_SUBROUTINE .repeat_spawn_audience_as_player
 
-.executor_40_1481FC:
+.executor_40_map_pan:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_FRAME_DELTA -2, 0, 2, 90
-    EXECUTE_SUBROUTINE .sub_144FF8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_148210:
-    EXECUTE_SUBROUTINE .sub_145000
+.executor_4_repeat_player:
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 96, 0, -160
-    SET_ASSET_ROTATION 1
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION WEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_148224:
     EXECUTE_SUBROUTINE .sub_1465C4
     SET_COORDINATES 80, 0, -112
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_148238:
     EXECUTE_SUBROUTINE .sub_1465FC
     SET_COORDINATES 80, 0, -112
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_14824C:
     EXECUTE_SUBROUTINE .sub_146634
     SET_COORDINATES 80, 0, -112
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_148260:
     EXECUTE_SUBROUTINE .sub_14666C
     SET_COORDINATES 80, 0, -112
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_148274:
     EXECUTE_SUBROUTINE .sub_1466A4
     SET_COORDINATES 80, 0, -112
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_148288:
     EXECUTE_SUBROUTINE .sub_1466DC
     SET_COORDINATES 80, 0, -112
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_14829C:
     EXECUTE_SUBROUTINE .sub_146714
     SET_COORDINATES 80, 0, -112
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_1482B0:
     EXECUTE_SUBROUTINE .sub_14674C
     SET_COORDINATES 80, 0, -112
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_1482C4:
     EXECUTE_SUBROUTINE .sub_146784
     SET_COORDINATES 80, 0, -112
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_1482D8:
     EXECUTE_SUBROUTINE .sub_1467BC
     SET_COORDINATES 80, 0, -112
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_1482EC:
     EXECUTE_SUBROUTINE .sub_1467F4
     SET_COORDINATES 32, 0, -160
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_148300:
     EXECUTE_SUBROUTINE .sub_14682C
     SET_COORDINATES 32, 0, -160
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_148314:
     EXECUTE_SUBROUTINE .sub_146864
     SET_COORDINATES 32, 0, -160
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_148328:
     EXECUTE_SUBROUTINE .sub_14689C
     SET_COORDINATES 32, 0, -160
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_14833C:
     EXECUTE_SUBROUTINE .sub_1468D4
     SET_COORDINATES 32, 0, -160
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_148350:
     EXECUTE_SUBROUTINE .sub_14690C
     SET_COORDINATES 32, 0, -160
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_148364:
     EXECUTE_SUBROUTINE .sub_146944
     SET_COORDINATES 32, 0, -160
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_148378:
     EXECUTE_SUBROUTINE .sub_14697C
     SET_COORDINATES 32, 0, -160
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_14838C:
     EXECUTE_SUBROUTINE .sub_1469B4
     SET_COORDINATES 32, 0, -160
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_1483A0:
     EXECUTE_SUBROUTINE .sub_1469EC
     SET_COORDINATES 32, 0, -160
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_1483B4:
+; ============================================================
+; Repeat orchestrator (executor 41) - cutscene 1352
+; ============================================================
+; Simplified flow used when the festival is re-watched. Picks
+; the two random assistants pre-show dialogue (text 0..9 in
+; SPIRIT_FESTIVAL_TEXT_INDEX), walks them onto the stage, then
+; runs the same three-song orchestrator at .sub_147058.
+; ============================================================
+
+.executor_41_repeat_orchestrator:
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
     SET_WAIT_FRAMES 32
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant1, .branch_148530
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant1, .branch_14853C
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant1, .branch_148548
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant1, .branch_148554
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant1, .branch_148560
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant1, .branch_14856C
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant1, .branch_148578
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant1, .branch_148584
-    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant1, .branch_148590
-    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant1, .branch_14859C
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant1, .assistant_line_maria
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant1, .assistant_line_popuri
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant1, .assistant_line_elli
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant1, .assistant_line_ann
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant1, .assistant_line_karen
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant1, .assistant_line_harris
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant1, .assistant_line_gray
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant1, .assistant_line_jeff
+    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant1, .assistant_line_cliff
+    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant1, .assistant_line_kai
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant2, .branch_148530
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant2, .branch_14853C
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant2, .branch_148548
-    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant2, .branch_148554
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant2, .branch_148560
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant2, .branch_14856C
-    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant2, .branch_148578
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant2, .branch_148584
-    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant2, .branch_148590
-    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant2, .branch_14859C
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, spiritFestivalAssistant2, .assistant_line_maria
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, spiritFestivalAssistant2, .assistant_line_popuri
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, spiritFestivalAssistant2, .assistant_line_elli
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, spiritFestivalAssistant2, .assistant_line_ann
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, spiritFestivalAssistant2, .assistant_line_karen
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, spiritFestivalAssistant2, .assistant_line_harris
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 7, spiritFestivalAssistant2, .assistant_line_gray
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 8, spiritFestivalAssistant2, .assistant_line_jeff
+    BRANCH_U8_VAR_WITHIN_RANGE 9, 9, spiritFestivalAssistant2, .assistant_line_cliff
+    BRANCH_U8_VAR_WITHIN_RANGE 10, 10, spiritFestivalAssistant2, .assistant_line_kai
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_OTHER_EXECUTOR_PTR 2, .executor_2_1484EC
     SET_OTHER_EXECUTOR_PTR 3, .executor_3_148504
     SET_OTHER_EXECUTOR_PTR 4, .executor_4_148514
-    SPAWN_EXECUTOR 40, .executor_40_1481FC
+    SPAWN_EXECUTOR 40, .executor_40_map_pan
     SET_WAIT_FRAMES 110
     EXECUTE_SUBROUTINE .sub_147058
 
 .executor_2_1484EC:
-    ENTITY_WALK 102, 1, 2
-    ENTITY_WALK 32, 2, 2
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_144FF8
+    ENTITY_WALK 102, WEST, 2
+    ENTITY_WALK 32, NORTHWEST, 2
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_3_148504:
-    ENTITY_WALK 96, 1, 2
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    ENTITY_WALK 96, WEST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_4_148514:
     SET_BEHAVIOR_FLAGS 0
-    ENTITY_WALK 96, 1, 2
-    ENTITY_WALK 16, 2, 2
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_144FF8
+    ENTITY_WALK 96, WEST, 2
+    ENTITY_WALK 16, NORTHWEST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_148530:
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 0
+.assistant_line_maria:
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 0
     RETURN_FROM_SUBROUTINE
 
-.branch_14853C:
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 1
+.assistant_line_popuri:
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 1
     RETURN_FROM_SUBROUTINE
 
-.branch_148548:
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 2
+.assistant_line_elli:
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 2
     RETURN_FROM_SUBROUTINE
 
-.branch_148554:
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 3
+.assistant_line_ann:
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 3
     RETURN_FROM_SUBROUTINE
 
-.branch_148560:
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 4
+.assistant_line_karen:
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 4
     RETURN_FROM_SUBROUTINE
 
-.branch_14856C:
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 5
+.assistant_line_harris:
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 5
     RETURN_FROM_SUBROUTINE
 
-.branch_148578:
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 6
+.assistant_line_gray:
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 6
     RETURN_FROM_SUBROUTINE
 
-.branch_148584:
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 7
+.assistant_line_jeff:
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 7
     RETURN_FROM_SUBROUTINE
 
-.branch_148590:
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 8
+.assistant_line_cliff:
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 8
     RETURN_FROM_SUBROUTINE
 
-.branch_14859C:
-    INIT_MESSAGE_BOX_TYPE1 0, 57, 9
+.assistant_line_kai:
+    INIT_MESSAGE_BOX_TYPE1 0, SPIRIT_FESTIVAL_TEXT_INDEX, 9
     RETURN_FROM_SUBROUTINE

@@ -26,6 +26,9 @@
 #define ENTITY_COLLISION_EXEMPT 0x4000
 #define ENTITY_SINGLE_COLLISION_CHECK 0x8000
 
+#define ENTITY_ASSET_ACTIVE 1
+#define ENTITY_ASSET_IS_TYPE_1_SPRITE 2
+
 typedef struct {
 	u16 animationIndex;
 	u16 nextAnimationIndex;
@@ -95,12 +98,12 @@ typedef struct {
 } ShadowSpriteDescriptor;
 
 extern void initializeEntities(void);
-extern bool initializeEntityAsset(u16 entityAssetIndex, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32 arg5, u32 arg6, u8 arg7, u8 arg8, u16* arg9);
+extern bool initializeEntityAsset(u16 entityAssetIndex, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8 isType1Sprite, u8 shadowSpriteIndex, u16* animationScripts);
 extern bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex, u8* vaddrTexture1, u8* vaddrTexture2, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationMetadata, u32* vaddrTextureToPaletteLookup, u32* vaddrSpritesheetIndex);
-extern bool initializeAnimalEntity(u16 index, u16* arg1, AnimationFrameMetadata* arg2, u32* arg3, u32* arg4);
+extern bool initializeAnimalEntity(u16 index, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationMetadata, u32* vaddrTextureToPaletteLookup, u32* vaddrSpritesheetIndex);
 extern bool loadEntity(u16, u16, u8);      
 extern void loadAllPendingEntities(void);
-extern bool initializeShadowSprite(u16 index, u32 arg1, u32 arg2, u32 arg3, u32 arg4, u32* arg5, u16* arg6, u16* arg7, u16* arg8, u16 arg9, u8 argA);           
+extern bool initializeShadowSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32* vaddrSpritesheet, u16* vaddrPalette, u16* vaddrUnknownAssetSheet, u16* vaddrAnimationMetadata, u16 animationIndex, u8 frameIndex);           
 extern bool setEntityAttachmentOffset(u16 entityIndex, s16, s16, s16);
 extern bool setMainMapIndex(u16 arg0);     
 extern bool setEntityColor(u16, u8, u8, u8, u8);        

@@ -100,6 +100,10 @@ Compared to the dialogue bytecode, the cutscene bytecode is much more sophistica
 
 See the `dev` branch for more information.
 
+### Music
+
+See the README at `tools/modding/music` for more details for converting and inserting MIDI into existing song slots.
+
 ## Contributing
 
 Contributions are much welcome. There are a few areas of work still do in the project:

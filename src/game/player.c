@@ -566,7 +566,6 @@ inline u8 addItemToRucksack(u8 item) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", storeTool);
 
-// store tool
 u8 storeTool(u8 tool) {
 
     u8 i;
@@ -854,7 +853,6 @@ void updatePlayerAction(void) {
         case (EATING - 1):
             handleEatAction();
             break;
-
         case (GETTING_INTO_BED - 1):
             handleGetIntoBedAction();
             break;
@@ -1032,9 +1030,9 @@ void handlePlayerInput(void) {
 
             if ((getAnalogStickMagnitude(CONTROLLER_1) / 1.2f) > 4.6) {
                 
-                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
+                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 52, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
 
-                    vec3 = projectEntityPosition(ENTITY_PLAYER, 0x34, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+                    vec3 = projectEntityPosition(ENTITY_PLAYER, 52, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
                     groundObjectIndex = getGroundObjectIndexFromCoordinates(vec3.x, vec3.z);
 
@@ -1062,7 +1060,7 @@ void handlePlayerInput(void) {
         }
     }
 
-    if (!checkDailyEventBit(0xD)) {
+    if (!checkDailyEventBit(EGG_FESTIVAL_HOLDING_EGG)) {
 
         if (!set) {
         
@@ -1094,7 +1092,7 @@ void handlePlayerInput(void) {
 
     if (!set) {
 
-        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(BLOCK_BUTTON_USAGE)) {
         
             if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
                 
@@ -1132,7 +1130,7 @@ void handlePlayerInput(void) {
 
     if (!set) {
         // show text for item being held
-        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(18)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(BLOCK_BUTTON_USAGE)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_Z)) {
                 if (gPlayer.heldItem != 0) {
                     set = TRUE;
@@ -1180,7 +1178,7 @@ void handlePlayerInput(void) {
     }
 
     if (!set) {
-        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(0x13)) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE) && !checkDailyEventBit(BLOCK_PAUSE_SCREEN)) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
                 set = TRUE;
                 pauseGameplay();
@@ -1307,7 +1305,7 @@ inline void mountHorse(void) {
     horseInfo.flags |= 8;
     gPlayer.flags |= PLAYER_RIDING_HORSE;
 
-    setDailyEventBit(0x5C);
+    setDailyEventBit(RIDING_HORSE);
  
     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
     
@@ -1327,9 +1325,9 @@ void dismountHorse(void) {
     
         if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 8, convertWorldToSpriteDirection(direction, gMainMapIndex))) {
 
-            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(direction, gMainMapIndex))) {
+            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(direction, gMainMapIndex))) {
 
-                vec1 = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(direction, MAIN_MAP_INDEX));
+                vec1 = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(direction, MAIN_MAP_INDEX));
                 
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec1.x, vec1.z);
                 
@@ -1358,7 +1356,7 @@ void dismountHorse(void) {
 
         gPlayer.flags &= ~PLAYER_RIDING_HORSE;
         
-        toggleDailyEventBit(0x5C);
+        clearDailyEventBit(RIDING_HORSE);
         
         initializeHorseEntity();
         
@@ -1441,9 +1439,9 @@ void handleItemLevelInteraction(u8 arg0) {
 
         if ((getItemFlags(gPlayer.heldItem) & 0x80) && !set) {
 
-            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
+            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
 
-                vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+                vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
     
@@ -1479,9 +1477,9 @@ void handleItemLevelInteraction(u8 arg0) {
 
         if ((getItemFlags(gPlayer.heldItem) & 0x800) && !set) {
 
-            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
+            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
 
-                vec = projectEntityPosition(ENTITY_PLAYER, 0x20, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+                vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
     
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
     
@@ -1623,7 +1621,7 @@ void handleToolAction(void) {
             if (gPlayer.actionPhaseFrameCounter == 0) {
                 gPlayer.toolHeldCounter = 0;
                 gPlayer.currentToolLevel = 0;
-                toggleDailyEventBit(0x14);
+                clearDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL);
                 gPlayer.actionPhaseFrameCounter++;
             }
 
@@ -1634,8 +1632,7 @@ void handleToolAction(void) {
 
                 if (((SUNNY < gWeather && gWeather < 4) || !(5 < gHour && gHour < 18)) && gBaseMapIndex != GREENHOUSE) {
 
-                    // kappa power nut
-                    if (checkLifeEventBit(0x5F)) {
+                    if (checkLifeEventBit(KAPPA_POWER_NUT_GIFT)) {
                         gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, toolToFatigueScore[gPlayer.currentTool][gPlayer.currentToolLevel] / 2, MAX_FATIGUE_POINTS);
                     } else {
                         
@@ -1945,7 +1942,7 @@ void handleJumpAction(void) {
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
             gPlayer.actionPhase++;
             gPlayer.actionPhaseFrameCounter = 0;
-            toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
+            clearDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
             
         }
 
@@ -2002,7 +1999,7 @@ void handleJumpDownAction(void) {
             setEntityMovementVector(ENTITY_PLAYER, 0.0f, 0.0f, 0.0f, 0.0f);
             gPlayer.actionPhase++;
             gPlayer.actionPhaseFrameCounter = 0;
-            toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
+            clearDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
             
         }
 
@@ -2300,13 +2297,13 @@ void handleToiletAction(void) {
     
                 resetAction();
     
-                toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
+                clearDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
     
-                if (!checkDailyEventBit(0x31)) {
+                if (!checkDailyEventBit(USED_BATHROOM_DAILY)) {
                     gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -10, MAX_FATIGUE_POINTS);
                 } 
                 
-                setDailyEventBit(0x31);
+                setDailyEventBit(USED_BATHROOM_DAILY);
                 
             } else {
                 gPlayer.actionTimer--;
@@ -2456,9 +2453,9 @@ void handleBathingAction(void) {
     
                 resetAction();
     
-                toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
+                clearDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
     
-                if (!checkDailyEventBit(0x32)) {
+                if (!checkDailyEventBit(TAKEN_BATH_DAILY)) {
     
                     if (checkHaveKeyItem(FLOWER_BATH_CRYSTALS)) {
                         gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -20, MAX_FATIGUE_POINTS);
@@ -2468,7 +2465,7 @@ void handleBathingAction(void) {
                     
                 } 
                 
-                setDailyEventBit(0x32);
+                setDailyEventBit(TAKEN_BATH_DAILY);
                 
             } else {
                 gPlayer.actionTimer--;
@@ -2580,13 +2577,13 @@ void handleHotSpringAction(void) {
 
                 resetAction();
 
-                toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
+                clearDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
 
-                if (!checkDailyEventBit(0x33)) {
+                if (!checkDailyEventBit(USED_HOT_SPRINGS_DAILY)) {
                     gPlayer.fatigueCounter += adjustValue(gPlayer.fatigueCounter, -10, MAX_FATIGUE_POINTS);
                 }
 
-                setDailyEventBit(0x33);
+                setDailyEventBit(USED_HOT_SPRINGS_DAILY);
 
             } else {
                 gPlayer.actionTimer--;
@@ -2811,7 +2808,7 @@ void handleTreeClimbingAction(void) {
         setEntityTracksCollisions(ENTITY_PLAYER, TRUE);
         enableEntityMovement(ENTITY_PLAYER, TRUE);
         setEntityShadow(ENTITY_PLAYER, 0);
-        toggleDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
+        clearDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
         
     }
     
@@ -2832,7 +2829,7 @@ void handlePlayerAnimation(void) {
     switch (gPlayer.animationHandler) {
 
         case ANIM_DEFAULT:
-            if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
+            if (!gPlayer.heldItem && !checkDailyEventBit(EGG_FESTIVAL_HOLDING_EGG)) {
                 if ((gPlayer.flags & PLAYER_RIDING_HORSE)) {
                     setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 516);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_2) {
@@ -2858,7 +2855,7 @@ void handlePlayerAnimation(void) {
             break;
 
         case ANIM_WALKING:
-            if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
+            if (!gPlayer.heldItem && !checkDailyEventBit(EGG_FESTIVAL_HOLDING_EGG)) {
                 if (gPlayer.flags & PLAYER_RIDING_HORSE) {
                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 524);
                 } else {
@@ -2871,7 +2868,7 @@ void handlePlayerAnimation(void) {
             break;
 
         case ANIM_RUNNING:
-            if (!gPlayer.heldItem && !checkDailyEventBit(0xD)) {
+            if (!gPlayer.heldItem && !checkDailyEventBit(EGG_FESTIVAL_HOLDING_EGG)) {
                 if (gPlayer.flags & PLAYER_RIDING_HORSE) {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         playSfx(9);
@@ -3553,7 +3550,7 @@ void handleDropItemInWaterAnimation(void) {
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
             gItemBeingHeld = 0xFF;
 
-            if (!checkDailyEventBit(HARVEST_GODDESS_OFFERING) && !checkDailyEventBit(0x47) && !checkDailyEventBit(0x48)) {
+            if (!checkDailyEventBit(HARVEST_GODDESS_OFFERING) && !checkDailyEventBit(KAPPA_FISH_OFFERING_DAILY) && !checkDailyEventBit(KAPPA_LARGE_FISH_OFFERING_DAILY)) {
                 resetAction();
             }
 
@@ -3833,13 +3830,13 @@ void handleFishingRodAnimation(void) {
                 // randomize fish type
                 switch (getRandomNumberInRange(0, temp)) {
                     case 0:
-                        gPlayer.heldItem = SMALL_FISH;
+                        gPlayer.heldItem = SMALL_FISH_HELD_ITEM;
                         break;
                     case 1:
-                        gPlayer.heldItem = MEDIUM_FISH;
+                        gPlayer.heldItem = MEDIUM_FISH_HELD_ITEM;
                         break;
                     case 2:
-                        gPlayer.heldItem = LARGE_FISH;
+                        gPlayer.heldItem = LARGE_FISH_HELD_ITEM;
                         break;                    
                 }
 
@@ -3850,9 +3847,8 @@ void handleFishingRodAnimation(void) {
                 // get power nut 
                 if (gPlayer.fishingSpotType == 3 && !(acquiredPowerNutBits & FISHING_POWER_NUT) && !getRandomNumberInRange(0, 50)) {
                     
-                    gPlayer.heldItem = POWER_NUT;
+                    gPlayer.heldItem = POWER_NUT_HELD_ITEM;
 
-                    // eating
                     startAction(EATING, ANIM_EATING);
                     
                     acquiredPowerNutBits |= FISHING_POWER_NUT;
@@ -4118,7 +4114,7 @@ void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex
         // charge/prepare tool
         case 0:
 
-            toggleDailyEventBit(0x29);
+            clearDailyEventBit(POWER_NUT_ELIGIBLE_TOOL_USE);
             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, chargedAnimationIndex);
 
             switch (gPlayer.currentTool) {
@@ -4154,7 +4150,7 @@ void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex
 
                     case SICKLE:
                         
-                        if (!(gCutsceneFlags & 1)) {
+                        if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
                             
                             if (gPlayer.toolUseCounters[0] != 400) {
                                 
@@ -4188,7 +4184,7 @@ void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex
 
                     case HOE:
                         
-                        if (!(gCutsceneFlags & 1)) {
+                        if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
 
                             if (gPlayer.toolUseCounters[1] != 500) {
                                 
@@ -4225,24 +4221,24 @@ void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex
                                 
                                 toolUse.musicBoxTileDigCounter = 0;
 
-                            } else if (checkDailyEventBit(0x29) && !(acquiredPowerNutBits & 1) && !(getRandomNumberInRange(0, 479))) {
+                            } else if (checkDailyEventBit(POWER_NUT_ELIGIBLE_TOOL_USE ) && !(acquiredPowerNutBits & FARM_POWER_NUT) && !(getRandomNumberInRange(0, 479))) {
                             
-                                gPlayer.heldItem = POWER_NUT;
+                                gPlayer.heldItem = POWER_NUT_HELD_ITEM;
                                 startAction(EATING, ANIM_EATING);
                                 initializePlayerHeldItem();
-                                acquiredPowerNutBits |= 1;
+                                acquiredPowerNutBits |= FARM_POWER_NUT;
                                 gMaximumStamina += adjustValue(gMaximumStamina, 15, MAX_STAMINA);
                                 
                             }
 
                         }
     
-                        toggleDailyEventBit(0x29);
+                        clearDailyEventBit(POWER_NUT_ELIGIBLE_TOOL_USE );
                         break;
 
                     case AX:
 
-                        if (!(gCutsceneFlags & 1)) {
+                        if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
                             
                             if (gPlayer.toolUseCounters[2] != 900) {
 
@@ -4276,7 +4272,7 @@ void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex
 
                     case HAMMER:
 
-                        if (!(gCutsceneFlags & 1)) {
+                        if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
                             
                             if (gPlayer.toolUseCounters[3] != 200) {
 
@@ -4304,27 +4300,26 @@ void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex
                             
                             }
                             
-                            if (checkDailyEventBit(0x29) && !(acquiredPowerNutBits & 0x10)) {
+                            if (checkDailyEventBit(POWER_NUT_ELIGIBLE_TOOL_USE) && !(acquiredPowerNutBits & MOUNTAIN_BOULDER_POWER_NUT)) {
                                 
-                                gPlayer.heldItem = 0x57;
-                                // eating
+                                gPlayer.heldItem = POWER_NUT_HELD_ITEM;
                                 startAction(EATING, ANIM_EATING);
                                 initializePlayerHeldItem();
-                                acquiredPowerNutBits |= 0x10;
+                                acquiredPowerNutBits |= MOUNTAIN_BOULDER_POWER_NUT;
                                 
                                 gMaximumStamina += adjustValue(gMaximumStamina, 15, 250);
-                                setLifeEventBit(0x45);
+                                setLifeEventBit(SMASHED_MOUNTAIN_BOULDER);
                                 
                             }
                         
                         }
                         
-                        toggleDailyEventBit(0x29);
+                        clearDailyEventBit(POWER_NUT_ELIGIBLE_TOOL_USE);
                         break;
                     
                     case WATERING_CAN:
 
-                        if (!(gCutsceneFlags & 1)) {
+                        if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
 
                             if (gPlayer.toolUseCounters[4] != 1200) {
 
@@ -5174,7 +5169,7 @@ void handleMiraclePotionAnimation(void) {
                 if (!checkAndTriggerStaminaExhaustion(0)) {
                     resetAction();
                 }
-                if (checkDailyEventBit(0x14)) {
+                if (checkDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL)) {
                     gPlayer.currentTool = 0;
                 }
             }
@@ -5213,7 +5208,7 @@ void handleCowMedicineAnimation(void) {
                     resetAction();
                 }
 
-                if (checkDailyEventBit(0x14)) {
+                if (checkDailyEventBit(SUCCESSFULLY_USED_CONSUMABLE_TOOL)) {
                     gPlayer.currentTool = 0;
                 }
                 
@@ -5303,7 +5298,7 @@ void handleEmptyBottleAnimation(void) {
         // handle start fill up or drink
         case 0:
 
-            if (gPlayer.bottleContents == 0) {
+            if (gPlayer.bottleContents == BOTTLE_CONTENTS_EMPTY) {
                 
                 setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
                 handleFarmAnimalPlayerCollision();
@@ -5322,19 +5317,19 @@ void handleEmptyBottleAnimation(void) {
                         gPlayer.heldItem = BOTTLE_WITH_WINE_HELD_ITEM;
                         break;
                     case 3:
-                        gPlayer.heldItem = 0x73;
+                        gPlayer.heldItem = 115;
                         break;
                     case 4:
-                        gPlayer.heldItem = 0x74;
+                        gPlayer.heldItem = 116;
                         break;
                     case 5:
-                        gPlayer.heldItem = 0x75;
+                        gPlayer.heldItem = 117;
                         break;
                     case 6:
-                        gPlayer.heldItem = 0x76;
+                        gPlayer.heldItem = 118;
                         break;
                     case 7:
-                        gPlayer.heldItem = 0x77;
+                        gPlayer.heldItem = 119;
                         break;
                     case 0:
                     default:
@@ -5344,7 +5339,7 @@ void handleEmptyBottleAnimation(void) {
                 
                 initializePlayerHeldItem();
 
-                gPlayer.bottleContents = 0;       
+                gPlayer.bottleContents = BOTTLE_CONTENTS_EMPTY;       
 
             }
             

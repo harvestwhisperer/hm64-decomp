@@ -1,22 +1,25 @@
-; ============================================
-; Bank 4 - Road Cutscenes
-; ============================================
+; ============================================================
+; Bank 4 - Road
+; ============================================================
+;
+; Cutscene indices (from src/assetIndices/cutscenes.h):
+;   800 - CLIFF_LEAVING_2           (leaving FARM, winter, Cliff affection >= 200)
+;   801 - (unnamed)                 (leaving RANCH, bakery card pts >= 6)
+;   802 - SHADY_SALESMAN_AND_MARIA_1 (leaving VILLAGE_1)
+;   803 - SHADY_SALESMAN_AND_MARIA_2 (leaving VILLAGE_2)
+;   804 - ANN_SPRAINED_ANKLE         (leaving FARM)
+;
+; Executor slots in use:
+;   0  - player
+;   1  - NPC in entity slot 37 (Ann or Maria)
+;   2  - NPC in entity slot 36 (Cliff or Shady Salesman)
+;   32 - held/dropped item asset (entity slot 47)
+;   41 - camera / map-asset controller
+; ============================================================
 
 #include "entities.h"
 #include "texts.h"
-
-; Direction macros
-#define SOUTHWEST 0
-#define WEST 1
-#define NORTHWEST 2
-#define NORTH 3
-#define NORTHEAST 4
-#define EAST 5
-#define SOUTHEAST 6
-#define SOUTH 7
-
-#define ANN 3
-#define CLIFF 9
+#include "dialogues.h"
 
 #define MAIN_MAP_INDEX 0
 
@@ -26,45 +29,54 @@
 
 .array npcAffection, u8
 
-.entry
+
+; ============================================================
+; Shared dispatcher and helpers
+; ============================================================
+
+.dispatch:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_10EAF8
-    BRANCH_U16_VAR_WITHIN_RANGE 800, 800, gCutsceneIndex, .branch_10EC80
-    BRANCH_U16_VAR_WITHIN_RANGE 801, 801, gCutsceneIndex, .branch_10EEAC
-    BRANCH_U16_VAR_WITHIN_RANGE 802, 802, gCutsceneIndex, .branch_10EFF8
-    BRANCH_U16_VAR_WITHIN_RANGE 803, 803, gCutsceneIndex, .branch_10F5AC
-    BRANCH_U16_VAR_WITHIN_RANGE 804, 804, gCutsceneIndex, .branch_10F610
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U16_VAR_WITHIN_RANGE 800, 800, gCutsceneIndex, .cutscene_800_dispatch
+    BRANCH_U16_VAR_WITHIN_RANGE 801, 801, gCutsceneIndex, .cutscene_801_dispatch
+    BRANCH_U16_VAR_WITHIN_RANGE 802, 802, gCutsceneIndex, .cutscene_802_dispatch
+    BRANCH_U16_VAR_WITHIN_RANGE 803, 803, gCutsceneIndex, .cutscene_803_dispatch
+    BRANCH_U16_VAR_WITHIN_RANGE 804, 804, gCutsceneIndex, .cutscene_804_dispatch
 
-.executor_32_10EAE4:
+.cutscene_exit:
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_10EAF0:
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_10EAF8:
+.setup_message_box:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_10EB18:
-    SETUP_ENTITY 47, ENTITY_ASSET_HOLDABLE_ITEMS_2, 1
+; ----- Holdable-item executors (entity slot 47) -----
+
+.setup_holdable_item_2:
+    SETUP_ENTITY 47, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
-    EXECUTE_SUBROUTINE .sub_10EB18
+    ; Unreachable fall-through after RETURN; appears to be dead padding emitted by
+    ; the extractor but preserved here to keep the bytecode byte-identical.
+    EXECUTE_SUBROUTINE .setup_holdable_item_2
     SET_ENTITY_TRACKING_TARGET 37, 0, 14, 16, 255
     SET_ENTITY_ANIMATION 6
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_32_10EB50:
-    EXECUTE_SUBROUTINE .sub_10EB18
+    EXECUTE_SUBROUTINE .setup_holdable_item_2
     SET_ENTITY_TRACKING_TARGET 37, 0, 14, 24, 255
     SET_ENTITY_ANIMATION 115
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
 .executor_32_10EB68:
     SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
@@ -73,39 +85,41 @@
     SET_WAIT_FRAMES 10
     DEACTIVATE_SELF
 
-.sub_10EB8C:
-    SETUP_ENTITY 47, ENTITY_ASSET_HOLDABLE_ITEMS_1, 1
+.setup_holdable_item_1:
+    SETUP_ENTITY 47, ENTITY_ASSET_EXPRESSION_BUBBLES, 1
     SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
 .executor_32_10EBAC:
-    EXECUTE_SUBROUTINE .sub_10EB8C
+    EXECUTE_SUBROUTINE .setup_holdable_item_1
     SET_ENTITY_TRACKING_TARGET 0, 24, 32, 8, 0
     SET_ENTITY_ANIMATION 6
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
 .executor_32_10EBC8:
-    EXECUTE_SUBROUTINE .sub_10EB8C
+    EXECUTE_SUBROUTINE .setup_holdable_item_1
     SET_ENTITY_TRACKING_TARGET 37, -24, 32, 8, 0
     SET_ENTITY_ANIMATION 5
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
 .executor_32_10EBE4:
-    EXECUTE_SUBROUTINE .sub_10EB8C
+    EXECUTE_SUBROUTINE .setup_holdable_item_1
     SET_ENTITY_TRACKING_TARGET 36, 0, 64, 8, 0
     SET_ENTITY_ANIMATION 1
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
+; ----- Player + generic entity executor stubs -----
 ; 0x10EC00
 .setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
+    ; Unreachable fall-through after RETURN; see note on .setup_holdable_item_2.
     SET_ASSET_ROTATION SOUTHWEST
     SET_OTHER_EXECUTOR_PTR 32, .executor_32_10EB68
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
@@ -114,140 +128,150 @@
     WAIT_ENTITY_ANIMATION
     RETURN_FROM_SUBROUTINE
 
-.executor_0_10EC40:
+.player_map_space_cleanup:
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_0_10EC48:
+.player_restore_tracking_cleanup:
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     SET_WAIT_FRAMES 1
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_1_10EC58:
+.entity_1_idle:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_10EC60:
+.face_west_stub:
     SET_ASSET_ROTATION WEST
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_10EC68:
+.face_ne_stub:
     SET_ASSET_ROTATION NORTHEAST
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_10EC70:
+.face_sw_stub:
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_10EC78:
+.face_se_stub:
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_10EC80:
+
+; ============================================================
+; Cutscene 800 - CLIFF_LEAVING_2
+; ============================================================
+; Cliff announces he is leaving; Ann catches up and scolds him,
+; then departs. Player drops something and picks it up, scene
+; fades out.
+; Trigger: winter, daytime, leaving FARM, npcAffection[CLIFF] >= 200.
+; ============================================================
+
+.cutscene_800_dispatch:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 96, 0, -24
     SET_ASSET_ROTATION NORTHWEST
-    SPAWN_EXECUTOR 2, .executor_2_10ED60
-    SPAWN_EXECUTOR 41, .executor_41_10ECCC
+    SPAWN_EXECUTOR 2, .cutscene_800_cliff_intro
+    SPAWN_EXECUTOR 41, .cutscene_800_camera_setup
     SET_WAIT_FRAMES 52
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 0
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 0   ; Cliff: text 0
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10ED74
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SET_OTHER_EXECUTOR_PTR 2, .cutscene_800_cliff_walk_sw
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_10ECCC:
+.cutscene_800_camera_setup:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_ASSET_ROTATION SOUTH
     SET_COORDINATES 24, 128, -24
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_10ECE0:
+.cutscene_800_camera_fadeout:
     SET_FRAME_DELTA 2, 0, 0, 20
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_10EC48
-    SPAWN_EXECUTOR 32, .executor_32_10EAE4
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SET_OTHER_EXECUTOR_PTR 0, .player_restore_tracking_cleanup
+    SPAWN_EXECUTOR 32, .cutscene_exit
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_10ECFC:
+.cutscene_800_player_pickup:
     ENTITY_WALK 16, NORTHWEST, 2
     SET_ENTITY_ANIMATION 442
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 450
     SET_WAIT_FRAMES 10
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 3
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 3   ; Cliff: text 3
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 442
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_10ECE0
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SET_OTHER_EXECUTOR_PTR 41, .cutscene_800_camera_fadeout
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_10ED3C:
+.setup_cliff:
     SETUP_ENTITY 36, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 36, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_2_10ED60:
-    EXECUTE_SUBROUTINE .sub_10ED3C
+.cutscene_800_cliff_intro:
+    EXECUTE_SUBROUTINE .setup_cliff
     SET_COORDINATES 32, 0, -24
     SET_ASSET_ROTATION SOUTHEAST
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_10ED74:
+.cutscene_800_cliff_walk_sw:
     SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 20
     ENTITY_WALK 16, SOUTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_10EC70
+    SET_OTHER_EXECUTOR_PTR 0, .face_sw_stub
     SPAWN_EXECUTOR 32, .executor_32_10EBE4
-    SPAWN_EXECUTOR 1, .executor_1_10EE08
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SPAWN_EXECUTOR 1, .cutscene_800_ann_enters
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_10EDA0:
+.cutscene_800_cliff_recoil:
     SET_ENTITY_ANIMATION 24
     SET_FRAME_DELTA 0, 0, -8, 2
     SET_FRAME_DELTA 0, 0, -4, 2
     SET_FRAME_DELTA 0, 0, -2, 2
 
-.sub_10EDBC:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_10EDC8
-    EXECUTE_SUBROUTINE .sub_10EAF0
+.cliff_interact_loop:
+    SET_CALLBACK_ROUTINE 0, 32768, .cliff_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_10EDC8:
-    EXECUTE_SUBROUTINE .sub_10EAF8
+.cliff_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 3
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 3   ; Cliff: text 3
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_10EDBC
+    EXECUTE_SUBROUTINE .cliff_interact_loop
 
-.sub_10EDE8:
+.setup_ann:
     SETUP_ENTITY 37, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 37, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_1_10EE08:
-    EXECUTE_SUBROUTINE .sub_10EDE8
+.cutscene_800_ann_enters:
+    EXECUTE_SUBROUTINE .setup_ann
     SET_COORDINATES 32, 0, 224
     SET_ASSET_ROTATION NORTHEAST
     SET_ENTITY_ANIMATION 99
     SET_FRAME_DELTA 0, 0, -4, 46
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_10EC60
+    SET_OTHER_EXECUTOR_PTR 0, .face_west_stub
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 1
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 1   ; Ann: text 1
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 102
     SET_WAIT_FRAMES 10
     SET_SFX 37, 128
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10EDA0
+    SET_OTHER_EXECUTOR_PTR 2, .cutscene_800_cliff_recoil
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SPAWN_EXECUTOR 32, .executor_32_10EBAC
@@ -256,115 +280,135 @@
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 50
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 2
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 2   ; Ann: text 2
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     ENTITY_WALK 92, SOUTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_10ECFC
+    SET_OTHER_EXECUTOR_PTR 0, .cutscene_800_player_pickup
     DEACTIVATE_SELF
 
-.branch_10EEAC:
+
+; ============================================================
+; Cutscene 801 - Ann returns the bakery card
+; ============================================================
+; Ann runs up to the player with a dropped bakery card, then
+; asks a yes/no dialogue about Elli.
+; Trigger: leaving RANCH, daytime, bakeryCardPoints >= 6,
+; npcAffection[ANN] >= 150, unmarried.
+; ============================================================
+
+.cutscene_801_dispatch:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     EXECUTE_SUBROUTINE .setup_player
     SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 32
     ENTITY_WALK 32, NORTHEAST, 2
     SET_ASSET_ROTATION SOUTHWEST
-    SPAWN_EXECUTOR 1, .executor_1_10EED8
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SPAWN_EXECUTOR 1, .cutscene_801_ann_arrives
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_10EED8:
-    EXECUTE_SUBROUTINE .sub_10EDE8
+.cutscene_801_ann_arrives:
+    EXECUTE_SUBROUTINE .setup_ann
     SET_ASSET_ROTATION NORTHEAST
     SET_COORDINATES 64, 0, 296
     ENTITY_WALK 48, NORTHEAST, 2
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 4
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 4   ; Ann: text 4
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
     WAIT_ENTITY_ANIMATION
     SPAWN_EXECUTOR 32, .executor_32_10EB50
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_10EF20
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SET_OTHER_EXECUTOR_PTR 0, .cutscene_801_player_receives
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_10EF20:
+.cutscene_801_player_receives:
     SET_ENTITY_ANIMATION 484
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     DEACTIVATE_EXECUTOR 32
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_10EC58
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 5
+    SET_OTHER_EXECUTOR_PTR 1, .entity_1_idle
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 5   ; Ann: text 5
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_10EF54
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_801_ann_asks_elli
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_10EF54:
+.cutscene_801_ann_asks_elli:
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 20
     SET_ENTITY_ANIMATION 49
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 51
     SET_WAIT_FRAMES 20
-    INIT_DIALOGUE_SESSION 0, 52, 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_63, 0
     WAIT_FOR_DIALOGUE_INPUT 0
     SET_ENTITY_ANIMATION 49
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_10EF9C
-    BRANCH_ON_DIALOGUE 0, 1, .branch_10EFC8
+    BRANCH_ON_DIALOGUE 0, 0, .cutscene_801_deny_elli
+    BRANCH_ON_DIALOGUE 0, 1, .cutscene_801_admit_elli
 
-.branch_10EF9C:
+.cutscene_801_deny_elli:
     SET_WAIT_FRAMES 10
     SET_ASSET_ROTATION NORTHEAST
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 8
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 8   ; Ann: text 8
 
-.sub_10EFAC:
+.cutscene_801_exit:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     ENTITY_WALK 40, SOUTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_10EC40
-    EXECUTE_SUBROUTINE .executor_32_10EAE4
+    SET_OTHER_EXECUTOR_PTR 0, .player_map_space_cleanup
+    EXECUTE_SUBROUTINE .cutscene_exit
 
-.branch_10EFC8:
+.cutscene_801_admit_elli:
     SET_WAIT_FRAMES 10
     SET_ASSET_ROTATION SOUTHWEST
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 9
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 9   ; Ann: text 9
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 63
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 10
-    EXECUTE_SUBROUTINE .sub_10EFAC
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 10  ; Ann: text 10
+    EXECUTE_SUBROUTINE .cutscene_801_exit
 
-.branch_10EFF8:
+
+; ============================================================
+; Cutscene 802 - SHADY_SALESMAN_AND_MARIA_1
+; ============================================================
+; Maria confronts the shady salesman on the road after the
+; player leaves Village 1. After a long exchange the screen
+; fades out and returns to a dialogue with the player about
+; what Maria should do (3-way choice).
+; ============================================================
+
+.cutscene_802_dispatch:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     EXECUTE_SUBROUTINE .setup_player
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 32
-    SPAWN_EXECUTOR 2, .executor_2_10F0D8
+    SPAWN_EXECUTOR 2, .setup_shady_salesman
     SET_BEHAVIOR_FLAGS 0
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 41, .executor_41_10F028
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SPAWN_EXECUTOR 41, .cutscene_802_camera_setup
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_10F028:
+.cutscene_802_camera_setup:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_ASSET_ROTATION SOUTH
     SET_FRAME_DELTA 2, 0, 0, 64
     SET_FRAME_DELTA 2, 0, 2, 64
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 11
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 11  ; Shady Salesman: text 11
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SPAWN_EXECUTOR 1, .executor_1_10F05C
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SPAWN_EXECUTOR 1, .cutscene_802_maria_approaches
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_10F05C:
+.cutscene_802_maria_approaches:
     SETUP_ENTITY 37, ENTITY_ASSET_MARIA, 1
     SET_ENTITY_ANIMATIONS 37, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
@@ -374,118 +418,118 @@
     ENTITY_WALK 44, SOUTHWEST, 2
     ENTITY_WALK 32, WEST, 2
     SET_ASSET_ROTATION SOUTHWEST
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 24
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 24  ; Maria: text 24
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10EC68
+    SET_OTHER_EXECUTOR_PTR 2, .face_ne_stub
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 13
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 13  ; Maria: text 13
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10F108
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SET_OTHER_EXECUTOR_PTR 2, .cutscene_802_shady_replies
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_10F0D8:
+.setup_shady_salesman:
     SETUP_ENTITY 36, ENTITY_ASSET_SHADY_SALESMAN, 1
     SET_ENTITY_ANIMATIONS 36, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES 48, 0, -24
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_10F108:
+.cutscene_802_shady_replies:
     SET_WAIT_FRAMES 15
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 15
     SET_ENTITY_ANIMATION 17
     WAIT_ENTITY_ANIMATION
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 14
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 14  ; Shady: text 14 
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_10F13C
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_802_maria_debate
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_10F13C:
+.cutscene_802_maria_debate:
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 50
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 15
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 15  ; Maria: text 15
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10EC68
+    SET_OTHER_EXECUTOR_PTR 2, .face_ne_stub
     SET_WAIT_FRAMES 15
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 16
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 16  ; Shady: text 16
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10EC78
+    SET_OTHER_EXECUTOR_PTR 2, .face_se_stub
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 17
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 17  ; Shady: text 17 
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 58
     WAIT_ENTITY_ANIMATION
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 18
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 18  ; Maria: text 18
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10EC68
+    SET_OTHER_EXECUTOR_PTR 2, .face_ne_stub
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 19
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 19  ; Shady: text 19
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 98
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 20
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 20  ; Maria: text 20
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10EC78
+    SET_OTHER_EXECUTOR_PTR 2, .face_se_stub
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 21
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 21  ; Shady: text 21
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 58
     WAIT_ENTITY_ANIMATION
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 22
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 22  ; Maria: text 22
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_0_10EC70
+    SET_OTHER_EXECUTOR_PTR 2, .face_sw_stub
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 23
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 23  ; Shady: text 23
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10F25C
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SET_OTHER_EXECUTOR_PTR 2, .cutscene_802_shady_walks_off
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_10F25C:
+.cutscene_802_shady_walks_off:
     ENTITY_WALK 16, SOUTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_10EC58
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 24
+    SET_OTHER_EXECUTOR_PTR 1, .entity_1_idle
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 24  ; Maria: text 24
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_10F288
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_802_maria_pendant
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_10F288:
+.cutscene_802_maria_pendant:
     ENTITY_WALK 16, SOUTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10EC68
+    SET_OTHER_EXECUTOR_PTR 2, .face_ne_stub
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 25
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 25  ; Shady: text 25
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     ENTITY_WALK 4, SOUTHWEST, 2
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 26
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 26  ; Maria: text 26
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
@@ -493,205 +537,229 @@
     SET_WAIT_FRAMES 30
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10EC78
+    SET_OTHER_EXECUTOR_PTR 2, .face_se_stub
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 27
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 27  ; Shady: text 27
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_0_10EC70
+    SET_OTHER_EXECUTOR_PTR 2, .face_sw_stub
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 28
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 28  ; Shady: text 28
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10F324
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SET_OTHER_EXECUTOR_PTR 2, .cutscene_802_fade_out
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_10F324:
+.cutscene_802_fade_out:
     ENTITY_WALK 128, SOUTHWEST, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_10F34C
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_10F4D0
+    SET_OTHER_EXECUTOR_PTR 0, .cutscene_802_player_reposition
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_802_maria_reposition
     DEACTIVATE_SELF
 
-.executor_0_10F34C:
+.cutscene_802_player_reposition:
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     SET_COORDINATES -64, 0, -32
     SET_ASSET_ROTATION SOUTHWEST
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_10F360:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWeather, .branch_10F448
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .branch_10F3DC
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHour, .branch_10F3E8
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 7, gHour, .branch_10F3F4
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .branch_10F400
-    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .branch_10F40C
-    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, gHour, .branch_10F418
-    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, gHour, .branch_10F424
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .branch_10F3E8
-    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .branch_10F3DC
-    EXECUTE_SUBROUTINE .sub_10F4E4
+; ----- Road lighting lookup for cutscene 802 post-fade -----
+; Bucket gHour (after gWeather == RAINY check) into preset RGBA values
+; used to tint the road scene where Maria confronts the player.
 
-.branch_10F3DC:
+.road_lighting_802:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWeather, .rgba_rainy_802
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .rgba_hour_80
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHour, .rgba_hour_128
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 7, gHour, .rgba_hour_192
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .rgba_hour_224
+    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .rgba_hour_255
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, gHour, .rgba_hour_255_224
+    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, gHour, .rgba_hour_check_stormy
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .rgba_hour_128
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .rgba_hour_80
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
+
+.rgba_hour_80:
     UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F3E8:
+.rgba_hour_128:
     UPDATE_GLOBAL_RGBA 128, 128, 128, 128, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F3F4:
+.rgba_hour_192:
     UPDATE_GLOBAL_RGBA 192, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F400:
+.rgba_hour_224:
     UPDATE_GLOBAL_RGBA 224, 224, 224, 224, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F40C:
+.rgba_hour_255:
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F418:
+.rgba_hour_255_224:
     UPDATE_GLOBAL_RGBA 255, 224, 224, 224, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F424:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWeather, .branch_10F43C
+.rgba_hour_check_stormy:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWeather, .rgba_hour_192_stormy
     UPDATE_GLOBAL_RGBA 255, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F43C:
+.rgba_hour_192_stormy:
     UPDATE_GLOBAL_RGBA 192, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F448:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .branch_10F4A0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 7, gHour, .branch_10F4AC
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .branch_10F4B8
-    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .branch_10F4C4
-    BRANCH_U8_VAR_WITHIN_RANGE 16, 17, gHour, .branch_10F4B8
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .branch_10F4AC
-    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .branch_10F4A0
-    EXECUTE_SUBROUTINE .sub_10F4E4
+.rgba_rainy_802:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .rgba_rain_80
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 7, gHour, .rgba_rain_112
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .rgba_rain_128
+    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .rgba_rain_144
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 17, gHour, .rgba_rain_128
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .rgba_rain_112
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .rgba_rain_80
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F4A0:
+.rgba_rain_80:
     UPDATE_GLOBAL_RGBA 80, 80, 128, 80, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F4AC:
+.rgba_rain_112:
     UPDATE_GLOBAL_RGBA 112, 112, 192, 112, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F4B8:
+.rgba_rain_128:
     UPDATE_GLOBAL_RGBA 128, 128, 208, 128, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.branch_10F4C4:
+.rgba_rain_144:
     UPDATE_GLOBAL_RGBA 144, 144, 255, 144, 8
-    EXECUTE_SUBROUTINE .sub_10F4E4
+    EXECUTE_SUBROUTINE .cutscene_802_final_choice
 
-.executor_1_10F4D0:
+.cutscene_802_maria_reposition:
     SET_COORDINATES -64, 0, 0
     SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_10F360
+    EXECUTE_SUBROUTINE .road_lighting_802
 
-.sub_10F4E4:
+.cutscene_802_final_choice:
     WAIT_RGBA_FINISHED
-    INIT_DIALOGUE_SESSION 0, 52, 1
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_63, 1
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_10F518
-    BRANCH_ON_DIALOGUE 0, 1, .branch_10F548
-    BRANCH_ON_DIALOGUE 0, 2, .branch_10F578
+    BRANCH_ON_DIALOGUE 0, 0, .cutscene_802_choice_0
+    BRANCH_ON_DIALOGUE 0, 1, .cutscene_802_choice_1
+    BRANCH_ON_DIALOGUE 0, 2, .cutscene_802_maria_excuse
 
-.branch_10F518:
+.cutscene_802_choice_0:
     SET_WAIT_FRAMES 15
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 50
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 31
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 31  ; Maria: text 31
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 48
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .branch_10F578
+    EXECUTE_SUBROUTINE .cutscene_802_maria_excuse
 
-.branch_10F548:
+.cutscene_802_choice_1:
     SET_WAIT_FRAMES 15
     SET_ENTITY_ANIMATION 52
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 54
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 32
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 32  ; Maria: text 32
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 52
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    EXECUTE_SUBROUTINE .branch_10F578
+    EXECUTE_SUBROUTINE .cutscene_802_maria_excuse
 
-.branch_10F578:
+.cutscene_802_maria_excuse:
     SET_WAIT_FRAMES 15
     SET_ASSET_ROTATION NORTHEAST
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 33
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 33  ; Maria: text 33 
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     ENTITY_WALK 24, WEST, 2
     ENTITY_WALK 96, NORTHWEST, 2
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_10EC40
-    EXECUTE_SUBROUTINE .executor_32_10EAE4
+    SET_OTHER_EXECUTOR_PTR 0, .player_map_space_cleanup
+    EXECUTE_SUBROUTINE .cutscene_exit
 
-.branch_10F5AC:
+
+; ============================================================
+; Cutscene 803 - SHADY_SALESMAN_AND_MARIA_2
+; ============================================================
+; Same bodies as cutscene 802; only the dispatcher and the
+; camera-setup executor differ (different FRAME_DELTA values).
+; Trigger: leaving VILLAGE_2 instead of VILLAGE_1.
+; ============================================================
+
+.cutscene_803_dispatch:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     EXECUTE_SUBROUTINE .setup_player
     SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 32
-    SPAWN_EXECUTOR 2, .executor_2_10F0D8
+    SPAWN_EXECUTOR 2, .setup_shady_salesman
     SET_BEHAVIOR_FLAGS 0
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 41, .executor_41_10F5DC
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SPAWN_EXECUTOR 41, .cutscene_803_camera_setup
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_10F5DC:
+.cutscene_803_camera_setup:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
     SET_ASSET_ROTATION SOUTH
     SET_FRAME_DELTA 2, 0, 0, 80
     SET_FRAME_DELTA 2, 0, -2, 48
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 11
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 11  ; Shady Salesman: text 11
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SPAWN_EXECUTOR 1, .executor_1_10F05C
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SPAWN_EXECUTOR 1, .cutscene_802_maria_approaches
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_10F610:
+
+; ============================================================
+; Cutscene 804 - ANN_SPRAINED_ANKLE
+; ============================================================
+; Ann is incapacitated near the road. The player picks via
+; dialogue whether to help; choice 0 has the player carry her
+; (+npcAffection[ANN]); choice 1 hands her off to Cliff
+; (-npcAffection[ANN], +npcAffection[CLIFF]).
+; Trigger: leaving FARM, daytime, npcAffection[ANN] >= 180, unmarried.
+; ============================================================
+
+.cutscene_804_dispatch:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
-    SPAWN_EXECUTOR 1, .executor_1_10F914
+    SPAWN_EXECUTOR 1, .cutscene_804_ann_setup
     EXECUTE_SUBROUTINE .setup_player
     SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
     WAIT_RGBA_FINISHED
     ENTITY_WALK 32, NORTHWEST, 2
-    INIT_DIALOGUE_SESSION 0, 52, 2
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_63, 2
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_10F664
-    BRANCH_ON_DIALOGUE 0, 1, .branch_10F894
+    BRANCH_ON_DIALOGUE 0, 0, .cutscene_804_player_helps
+    BRANCH_ON_DIALOGUE 0, 1, .cutscene_804_player_refuses
 
-.branch_10F664:
+.cutscene_804_player_helps:
     UPDATE_U8_VALUE 10, 255, npcAffection[ANN]
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 429
     WAIT_ENTITY_ANIMATION
     SET_HOLDING_ANIMATION_FLAG TRUE
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_10F6E8
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_804_ann_carried_player_anim_33
     SET_WAIT_FRAMES 20
     SPAWN_EXECUTOR 32, .executor_32_10EBC8
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 36
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 36  ; Ann: text 36
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_10F6FC
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_804_ann_carried_player_anim_34
     ENTITY_WALK 32, SOUTHWEST, 2
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -701,138 +769,141 @@
     DEACTIVATE_EXECUTOR 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_SPECIAL_BIT 30, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .executor_32_10EAE4
+    EXECUTE_SUBROUTINE .cutscene_exit
 
-.executor_1_10F6E8:
+.cutscene_804_ann_carried_player_anim_33:
     SET_ENTITY_TRACKING_TARGET 0, 0, 12, 20, 255
     SET_ENTITY_ANIMATION 33
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_10F6FC:
+.cutscene_804_ann_carried_player_anim_34:
     SET_ENTITY_TRACKING_TARGET 0, 0, 12, 20, 255
     SET_ENTITY_ANIMATION 34
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_10F710:
+.cutscene_804_ann_carried_cliff_anim_34:
     SET_ENTITY_TRACKING_TARGET 36, 0, 12, 20, 255
     SET_ENTITY_ANIMATION 34
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_10F724:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWeather, .branch_10F80C
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .branch_10F7A0
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHour, .branch_10F7AC
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 7, gHour, .branch_10F7B8
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .branch_10F7C4
-    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .branch_10F7D0
-    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, gHour, .branch_10F7DC
-    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, gHour, .branch_10F7E8
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .branch_10F7AC
-    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .branch_10F7A0
-    EXECUTE_SUBROUTINE .sub_10F8DC
+; ----- Road lighting lookup for cutscene 804 refuse path -----
+; Same structure as .road_lighting_802 but jumps to the 804 tail.
 
-.branch_10F7A0:
+.road_lighting_804:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWeather, .rgba_rainy_804
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .rgba_hour_80_804
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHour, .rgba_hour_128_804
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 7, gHour, .rgba_hour_192_804
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .rgba_hour_224_804
+    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .rgba_hour_255_804
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, gHour, .rgba_hour_255_224_804
+    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, gHour, .rgba_hour_check_stormy_804
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .rgba_hour_128_804
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .rgba_hour_80_804
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
+
+.rgba_hour_80_804:
     UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F7AC:
+.rgba_hour_128_804:
     UPDATE_GLOBAL_RGBA 128, 128, 128, 128, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F7B8:
+.rgba_hour_192_804:
     UPDATE_GLOBAL_RGBA 192, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F7C4:
+.rgba_hour_224_804:
     UPDATE_GLOBAL_RGBA 224, 224, 224, 224, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F7D0:
+.rgba_hour_255_804:
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F7DC:
+.rgba_hour_255_224_804:
     UPDATE_GLOBAL_RGBA 255, 224, 224, 224, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F7E8:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWeather, .branch_10F800
+.rgba_hour_check_stormy_804:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWeather, .rgba_hour_192_stormy_804
     UPDATE_GLOBAL_RGBA 255, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F800:
+.rgba_hour_192_stormy_804:
     UPDATE_GLOBAL_RGBA 192, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F80C:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .branch_10F864
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 7, gHour, .branch_10F870
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .branch_10F87C
-    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .branch_10F888
-    BRANCH_U8_VAR_WITHIN_RANGE 16, 17, gHour, .branch_10F87C
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .branch_10F870
-    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .branch_10F864
-    EXECUTE_SUBROUTINE .sub_10F8DC
+.rgba_rainy_804:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .rgba_rain_80_804
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 7, gHour, .rgba_rain_112_804
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .rgba_rain_128_804
+    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .rgba_rain_144_804
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 17, gHour, .rgba_rain_128_804
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .rgba_rain_112_804
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .rgba_rain_80_804
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F864:
+.rgba_rain_80_804:
     UPDATE_GLOBAL_RGBA 80, 80, 128, 80, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F870:
+.rgba_rain_112_804:
     UPDATE_GLOBAL_RGBA 112, 112, 192, 112, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F87C:
+.rgba_rain_128_804:
     UPDATE_GLOBAL_RGBA 128, 128, 208, 128, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F888:
+.rgba_rain_144_804:
     UPDATE_GLOBAL_RGBA 144, 144, 255, 144, 8
-    EXECUTE_SUBROUTINE .sub_10F8DC
+    EXECUTE_SUBROUTINE .cutscene_804_cliff_carries_tail
 
-.branch_10F894:
+.cutscene_804_player_refuses:
     UPDATE_U8_VALUE -30, 255, npcAffection[ANN]
     UPDATE_U8_VALUE 20, 255, npcAffection[CLIFF]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     SET_COORDINATES 80, 0, -56
     SET_ASSET_ROTATION WEST
-    SPAWN_EXECUTOR 2, .executor_2_10F928
+    SPAWN_EXECUTOR 2, .cutscene_804_cliff_setup
     SET_WAIT_FRAMES 1
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_10F710
-    EXECUTE_SUBROUTINE .sub_10F724
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_804_ann_carried_cliff_anim_34
+    EXECUTE_SUBROUTINE .road_lighting_804
 
-.sub_10F8DC:
+.cutscene_804_cliff_carries_tail:
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 20
     SPAWN_EXECUTOR 32, .executor_32_10EBC8
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 37
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 37  ; Ann: text 37 
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, TEXT_63_TEXT_INDEX, 38
+    INIT_MESSAGE_BOX_TYPE1 0, ROAD_CUTSCENES_TEXT_INDEX, 38  ; Cliff: text 38
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_10F940
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    SET_OTHER_EXECUTOR_PTR 2, .cutscene_804_cliff_walks_off
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_10F914:
-    EXECUTE_SUBROUTINE .sub_10EDE8
+.cutscene_804_ann_setup:
+    EXECUTE_SUBROUTINE .setup_ann
     SET_COORDINATES 32, 0, -24
     SET_ENTITY_ANIMATION 33
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_10F928:
-    EXECUTE_SUBROUTINE .sub_10ED3C
+.cutscene_804_cliff_setup:
+    EXECUTE_SUBROUTINE .setup_cliff
     SET_COORDINATES 48, 0, -24
     SET_ASSET_ROTATION SOUTHWEST
     SET_ENTITY_ANIMATION 31
-    EXECUTE_SUBROUTINE .sub_10EAF0
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_10F940:
+.cutscene_804_cliff_walks_off:
     SET_ENTITY_ANIMATION 32
     SET_FRAME_DELTA 0, 0, 2, 32
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_10EC70
+    SET_OTHER_EXECUTOR_PTR 0, .face_sw_stub
     SET_FRAME_DELTA 0, 0, 2, 64
-    TOGGLE_SPECIAL_BIT 30, gCutsceneCompletionFlags
+    CLEAR_SPECIAL_BIT 30, gCutsceneCompletionFlags
     DEACTIVATE_EXECUTOR 1
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_10EC40
-    EXECUTE_SUBROUTINE .executor_32_10EAE4
+    SET_OTHER_EXECUTOR_PTR 0, .player_map_space_cleanup
+    EXECUTE_SUBROUTINE .cutscene_exit

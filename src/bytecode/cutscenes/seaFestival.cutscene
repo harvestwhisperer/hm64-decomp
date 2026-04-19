@@ -1,8 +1,42 @@
 ; ============================================
 ; Bank 17 - Sea Festival
 ; ============================================
+;
+; Summer 24 swimming race. Triggered when SEA_FESTIVAL (cutscene 1100)
+; loads. The player mash-presses A to advance D_80189824 (player
+; progress counter); NPC racers advance per-NPC u16 counters via a
+; random-speed picker. First racer past 480 takes the win.
+;
+; Executor slots:
+;   0     - player
+;   1..5  - Harris, Gray, Jeff, Cliff, Kai (Cliff skipped if CLIFF_GONE,
+;           Kai skipped if KAI_GONE -- bits 13/14 of lifeEventBits[1])
+;   6     - Mayor (race caller)
+;   7     - Rick (ceremony presenter)
+;   8     - Photographer (final scene)
+;   16    - Finish-line flag
+;   32-37 - Per-racer auxiliary sprites (tracking slot 0..5 respectively);
+;           slot 32 is reused during the Rick ceremony to hold a different
+;           prop anim tracking Rick himself.
+;   41    - Race coordinator (announcer + A-button poll + post-race reset)
+;
+; var0 race-state bits (observed from sets/toggles):
+;   bit 0  - someone has finished
+;   bit 1  - player finished first
+;   bit 2  - Harris finished first
+;   bit 3  - Gray finished first
+;   bit 4  - Jeff finished first
+;   bit 5  - Cliff finished first
+;   bit 6  - Kai finished first
+;   bit 22 - Rick already announced the lumber prize this ceremony
+;
+; Per-NPC progress counters: harrisProgress..kaiProgress (var1..var5).
+; Winner message indices in TEXT_50: 23=Player, 18=Harris, 19=Gray,
+; 20=Jeff, 21=Cliff, 22=Kai.
 
 #include "entities.h"
+#include "texts.h"
+#include "dialogues.h"
 
 #define MAIN_MAP_INDEX 0
 
@@ -12,20 +46,21 @@
 ; 0x802F5000
 .local var0, u32, 0
 ; 0x802F5004
-.local var1, u16, 0
+.local harrisProgress, u16, 0
 ; 0x802F5006
-.local var2, u16, 0
+.local grayProgress, u16, 0
 ; 0x802F5008
-.local var3, u16, 0
+.local jeffProgress, u16, 0
 ; 0x802F500A
-.local var4, u16, 0
+.local cliffProgress, u16, 0
 ; 0x802F500C
-.local var5, u16, 0
+.local kaiProgress, u16, 0
 
 .array npcAffection, u8
+.array lifeEventBits, u32
 .array dailyEventBits, u32
 
-.entry
+.main:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 12, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 13, gCutsceneCompletionFlags
@@ -37,108 +72,117 @@
     SET_AUDIO_SEQUENCE 0, _sportsFestival2SegmentRomStart, _sportsFestival2SegmentRomEnd
     SET_AUDIO_SEQUENCE_VOLUME 0, 128, 8
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_1386A0
-    BRANCH_U16_VAR_WITHIN_RANGE 1100, 1100, gCutsceneIndex, .branch_1388C4
+    EXECUTE_SUBROUTINE .setup_message_box
+    BRANCH_U16_VAR_WITHIN_RANGE 1100, 1100, gCutsceneIndex, .cs_sea_festival
 
-.sub_138654:
-    TOGGLE_SPECIAL_BIT 0, var0
-    TOGGLE_SPECIAL_BIT 1, var0
-    TOGGLE_SPECIAL_BIT 2, var0
-    TOGGLE_SPECIAL_BIT 3, var0
-    TOGGLE_SPECIAL_BIT 4, var0
-    TOGGLE_SPECIAL_BIT 5, var0
-    TOGGLE_SPECIAL_BIT 6, var0
+; ============================================================
+; SHARED HELPERS
+; ============================================================
+
+.exit_cutscene:
+    CLEAR_SPECIAL_BIT 0, var0
+    CLEAR_SPECIAL_BIT 1, var0
+    CLEAR_SPECIAL_BIT 2, var0
+    CLEAR_SPECIAL_BIT 3, var0
+    CLEAR_SPECIAL_BIT 4, var0
+    CLEAR_SPECIAL_BIT 5, var0
+    CLEAR_SPECIAL_BIT 6, var0
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_138698:
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_1386A0:
+.setup_message_box:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_1386C0:
+.setup_message_box_centered:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 352
     RETURN_FROM_SUBROUTINE
-    SETUP_ENTITY 22, 93, 1
+    ; Unreachable dead code preserved for byte-identical output:
+    SETUP_ENTITY 22, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 22, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
     RETURN_FROM_SUBROUTINE
 
-.executor_32_13870C:
-    SETUP_ENTITY 22, 93, 1
+; Per-racer auxiliary sprite executors (tracking trail/prop over each
+; racer slot). Slot 32 has two variants: one spawned by Rick during
+; the ceremony and one spawned for the player at race start.
+.aux32_rick_prop:
+    SETUP_ENTITY 22, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 22, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 7, 0, 14, 16, 255
     SET_ENTITY_ANIMATION 160
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_32_13873C:
+.aux32_player:
     SET_SHADOW_FLAGS 92, 255
-    SETUP_ENTITY 22, 92, 1
+    SETUP_ENTITY 22, ENTITY_ASSET_EXTRA_FESTIVAL_ITEMS, 1
     SET_ENTITY_ANIMATIONS 22, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 0, 0, 8, 32, 1
     SET_ENTITY_ANIMATION 1
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_33_138774:
+.aux33_harris:
     SET_SHADOW_FLAGS 92, 255
-    SETUP_ENTITY 23, 92, 1
+    SETUP_ENTITY 23, ENTITY_ASSET_EXTRA_FESTIVAL_ITEMS, 1
     SET_ENTITY_ANIMATIONS 23, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 1, 0, 8, 32, 1
     SET_ENTITY_ANIMATION 1
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_34_1387AC:
+.aux34_gray:
     SET_SHADOW_FLAGS 92, 255
-    SETUP_ENTITY 24, 92, 1
+    SETUP_ENTITY 24, ENTITY_ASSET_EXTRA_FESTIVAL_ITEMS, 1
     SET_ENTITY_ANIMATIONS 24, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 2, 0, 8, 32, 1
     SET_ENTITY_ANIMATION 1
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_35_1387E4:
+.aux35_jeff:
     SET_SHADOW_FLAGS 92, 255
-    SETUP_ENTITY 25, 92, 1
+    SETUP_ENTITY 25, ENTITY_ASSET_EXTRA_FESTIVAL_ITEMS, 1
     SET_ENTITY_ANIMATIONS 25, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 3, 0, 8, 32, 1
     SET_ENTITY_ANIMATION 1
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_36_13881C:
+.aux36_cliff:
     SET_SHADOW_FLAGS 92, 255
-    SETUP_ENTITY 26, 92, 1
+    SETUP_ENTITY 26, ENTITY_ASSET_EXTRA_FESTIVAL_ITEMS, 1
     SET_ENTITY_ANIMATIONS 26, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 4, 0, 8, 32, 1
     SET_ENTITY_ANIMATION 1
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_37_138854:
+.aux37_kai:
     SET_SHADOW_FLAGS 92, 255
-    SETUP_ENTITY 27, 92, 1
+    SETUP_ENTITY 27, ENTITY_ASSET_EXTRA_FESTIVAL_ITEMS, 1
     SET_ENTITY_ANIMATIONS 27, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_TRACKING_TARGET 5, 0, 8, 32, 1
     SET_ENTITY_ANIMATION 1
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_13888C:
+.setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
+    ; Unreachable dead code preserved for byte-identical output:
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
@@ -146,43 +190,51 @@
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.branch_1388C4:
-    SPAWN_EXECUTOR 1, .executor_1_138C64
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x6
-    SPAWN_EXECUTOR 2, .executor_2_138DF4
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x7
-    SPAWN_EXECUTOR 3, .executor_3_138F80
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x8
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_138920
-    SPAWN_EXECUTOR 4, .executor_4_139134
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0x9
+; ============================================================
+; CS_SEA_FESTIVAL - main entry (cutscene 1100)
+; ============================================================
 
-.branch_138920:
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_138940
-    SPAWN_EXECUTOR 5, .executor_5_1392CC
-    UPDATE_U8_VALUE 3, 255, npcAffection + 0xA
+.cs_sea_festival:
+    SPAWN_EXECUTOR 1, .harris_intro_pose
+    UPDATE_U8_VALUE 3, 255, npcAffection[HARRIS]
+    SPAWN_EXECUTOR 2, .gray_intro_pose
+    UPDATE_U8_VALUE 3, 255, npcAffection[GRAY]
+    SPAWN_EXECUTOR 3, .jeff_intro_pose
+    UPDATE_U8_VALUE 3, 255, npcAffection[JEFF]
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .skip_cliff_spawn
+    SPAWN_EXECUTOR 4, .cliff_intro_pose
+    UPDATE_U8_VALUE 3, 255, npcAffection[CLIFF]
 
-.branch_138940:
-    SPAWN_EXECUTOR 6, .executor_6_139438
-    SPAWN_EXECUTOR 7, .executor_7_139488
+.skip_cliff_spawn:
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .skip_kai_spawn
+    SPAWN_EXECUTOR 5, .kai_intro_pose
+    UPDATE_U8_VALUE 3, 255, npcAffection[KAI]
+
+.skip_kai_spawn:
+    SPAWN_EXECUTOR 6, .mayor_intro_pose
+    SPAWN_EXECUTOR 7, .rick_intro_pose
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_13888C
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -256, 0, 0
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 612
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 0
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 0          ; Mayor intro: Sea Festival explanation
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1394DC
-    EXECUTE_SUBROUTINE .sub_138698
+    SET_OTHER_EXECUTOR_PTR 7, .rick_award
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_138998:
+; ============================================================
+; SLOT 41 - race announcer / A-button poll / post-race reset
+; ============================================================
+
+.announcer_start_race:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 1
+    SET_ASSET_ROTATION WEST
     SET_COORDINATES -160, 96, -32
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
@@ -194,33 +246,33 @@
     SET_FRAME_DELTA -2, 0, 0, 80
     SET_FRAME_DELTA -2, 0, 0, 128
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_1386C0
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 27
+    EXECUTE_SUBROUTINE .setup_message_box_centered
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 27         ; swim instructions
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_1386A0
-    INIT_MESSAGE_BOX_TYPE2 0, 49, 1
+    EXECUTE_SUBROUTINE .setup_message_box
+    INIT_MESSAGE_BOX_TYPE2 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 1          ; Mayor: on your marks, get set...
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 30
-    INIT_MESSAGE_BOX_TYPE2 0, 49, 2
+    INIT_MESSAGE_BOX_TYPE2 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 2          ; Mayor: GO!
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_138CA0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_138E30
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_138FBC
-    SET_OTHER_EXECUTOR_PTR 4, .executor_4_139170
-    SET_OTHER_EXECUTOR_PTR 5, .executor_5_139308
+    SET_OTHER_EXECUTOR_PTR 1, .harris_race_start
+    SET_OTHER_EXECUTOR_PTR 2, .gray_race_start
+    SET_OTHER_EXECUTOR_PTR 3, .jeff_race_start
+    SET_OTHER_EXECUTOR_PTR 4, .cliff_race_start
+    SET_OTHER_EXECUTOR_PTR 5, .kai_race_start
     SET_U16_VALUE 0, D_80189824
 
-.sub_138A54:
-    BRANCH_ON_BUTTON_PRESSED 0, 32768, .branch_138B58
+.poll_player_a:
+    BRANCH_ON_BUTTON_PRESSED 0, 32768, .player_on_a_press
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_138A54
+    EXECUTE_SUBROUTINE .poll_player_a
 
-.executor_41_138A68:
-    SET_ASSET_ROTATION 7
+.announcer_post_race:
+    SET_ASSET_ROTATION SOUTH
     SET_COORDINATES -256, 160, 0
     SET_WAIT_FRAMES 1
     DEACTIVATE_EXECUTOR 0
@@ -230,20 +282,20 @@
     DEACTIVATE_EXECUTOR 4
     DEACTIVATE_EXECUTOR 5
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 0, .executor_0_138BF0
-    SPAWN_EXECUTOR 1, .executor_1_138CE0
-    SPAWN_EXECUTOR 2, .executor_2_138E70
-    SPAWN_EXECUTOR 3, .executor_3_138FFC
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_138AC8
-    SPAWN_EXECUTOR 4, .executor_4_1391B0
+    SPAWN_EXECUTOR 0, .player_postrace_pose
+    SPAWN_EXECUTOR 1, .harris_postrace_pose
+    SPAWN_EXECUTOR 2, .gray_postrace_pose
+    SPAWN_EXECUTOR 3, .jeff_postrace_pose
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .postrace_skip_cliff
+    SPAWN_EXECUTOR 4, .cliff_postrace_pose
 
-.branch_138AC8:
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_138ADC
-    SPAWN_EXECUTOR 5, .executor_5_139348
+.postrace_skip_cliff:
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .postrace_skip_kai
+    SPAWN_EXECUTOR 5, .kai_postrace_pose
 
-.branch_138ADC:
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_139478
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1394B8
+.postrace_skip_kai:
+    SET_OTHER_EXECUTOR_PTR 6, .mayor_postrace_pose
+    SET_OTHER_EXECUTOR_PTR 7, .rick_postrace_pose
     DEACTIVATE_EXECUTOR 16
     DEACTIVATE_EXECUTOR 32
     DEACTIVATE_EXECUTOR 33
@@ -255,560 +307,596 @@
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_138CFC
-    EXECUTE_SUBROUTINE .sub_138698
+    SET_OTHER_EXECUTOR_PTR 1, .harris_postrace_talk
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_16_138B28:
-    SETUP_ENTITY 30, 93, 1
+; ============================================================
+; SLOT 16 - finish-line flag
+; ============================================================
+
+.finish_flag_setup:
+    SETUP_ENTITY 30, ENTITY_ASSET_STATIC_ITEM, 1
     SET_ENTITY_ANIMATIONS 30, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES 320, 112, 0
     SET_ENTITY_ANIMATION 159
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_138B58:
-    SET_OTHER_EXECUTOR_PTR 0, .executor_0_138B74
-    SPAWN_EXECUTOR 32, .executor_32_13873C
+; ============================================================
+; SLOT 0 - player
+; ============================================================
+
+.player_on_a_press:
+    SET_OTHER_EXECUTOR_PTR 0, .player_race_tick
+    SPAWN_EXECUTOR 32, .aux32_player
     SET_FRAME_DELTA 3, 0, 0, 3
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_138B74:
+.player_race_tick:
     SET_ENTITY_ANIMATION 616
     SET_FRAME_DELTA 3, 0, 0, 3
     UPDATE_U16_VALUE 9, 9999, D_80189824
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, D_80189824, .branch_138BA8
-    SET_OTHER_EXECUTOR_PTR 41, .sub_138A54
-    EXECUTE_SUBROUTINE .sub_138698
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, D_80189824, .player_finished
+    SET_OTHER_EXECUTOR_PTR 41, .poll_player_a
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_138BA8:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_138BCC
+.player_finished:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .player_finish_cleanup
     SET_SFX 85, 128
     SET_SPECIAL_BIT 0, var0
     SET_SPECIAL_BIT 1, var0
 
-.branch_138BCC:
+.player_finish_cleanup:
     SET_ENTITY_ANIMATION 613
     DEACTIVATE_EXECUTOR 32
     SET_WAIT_FRAMES 30
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_138A68
-    EXECUTE_SUBROUTINE .sub_138698
+    SET_OTHER_EXECUTOR_PTR 41, .announcer_post_race
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_138BF0:
-    EXECUTE_SUBROUTINE .sub_13888C
+.player_postrace_pose:
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 612
     SET_COORDINATES -256, 144, 0
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_138C10:
+.player_prerace_pose:
     SET_SHADOW_FLAGS 0, 255
-    EXECUTE_SUBROUTINE .sub_13888C
+    EXECUTE_SUBROUTINE .setup_player
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_WAIT_FRAMES 1
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -192, 112, 0
     SET_ENTITY_ANIMATION 613
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 41, .executor_41_138998
-    EXECUTE_SUBROUTINE .sub_138698
+    SPAWN_EXECUTOR 41, .announcer_start_race
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_138C44:
-    SETUP_ENTITY 1, 7, 1
+; ============================================================
+; SLOT 1 - Harris
+; ============================================================
+
+.harris_setup:
+    SETUP_ENTITY 1, ENTITY_ASSET_HARRIS, 1
     SET_ENTITY_ANIMATIONS 1, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_1_138C64:
-    EXECUTE_SUBROUTINE .sub_138C44
+.harris_intro_pose:
+    EXECUTE_SUBROUTINE .harris_setup
     SET_COORDINATES -256, 0, -32
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 35
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_138C7C:
+.harris_prerace_pose:
     SET_SHADOW_FLAGS 7, 255
-    EXECUTE_SUBROUTINE .sub_138C44
+    EXECUTE_SUBROUTINE .harris_setup
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -192, 112, -32
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 36
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_138CA0:
+.harris_race_start:
     SET_ENTITY_ANIMATION 38
-    SPAWN_EXECUTOR 33, .executor_33_138774
-    EXECUTE_SUBROUTINE .sub_138D40
+    SPAWN_EXECUTOR 33, .aux33_harris
+    EXECUTE_SUBROUTINE .harris_speed_selector
 
-.branch_138CB0:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_138CD4
+.harris_finished:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .harris_finish_cleanup
     SET_SFX 85, 128
     SET_SPECIAL_BIT 0, var0
     SET_SPECIAL_BIT 2, var0
 
-.branch_138CD4:
+.harris_finish_cleanup:
     SET_ENTITY_ANIMATION 36
     DEACTIVATE_EXECUTOR 33
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_138CE0:
-    EXECUTE_SUBROUTINE .sub_138C44
+.harris_postrace_pose:
+    EXECUTE_SUBROUTINE .harris_setup
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -254, 144, -36
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 35
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_138CFC:
+.harris_postrace_talk:
     SET_ENTITY_ANIMATION 34
-    BRANCH_ON_SPECIAL_BIT 2, var0, .branch_138D2C
-    INIT_DIALOGUE_SESSION 0, 42, 1
+    BRANCH_ON_SPECIAL_BIT 2, var0, .harris_talk_won
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 1            ; Harris lost: random text 7 or 8
     WAIT_FOR_DIALOGUE_INPUT 0
 
-.sub_138D18:
+.harris_talk_done:
     SET_ENTITY_ANIMATION 35
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_138E8C
-    EXECUTE_SUBROUTINE .sub_138698
+    SET_OTHER_EXECUTOR_PTR 2, .gray_postrace_talk
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_138D2C:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 6
+.harris_talk_won:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 6         ; Harris
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_138D18
+    EXECUTE_SUBROUTINE .harris_talk_done
 
-.sub_138D40:
-    BRANCH_ON_RANDOM 0, 39, .branch_138D5C
-    BRANCH_ON_RANDOM 40, 80, .branch_138D84
-    BRANCH_ON_RANDOM 81, 100, .branch_138DAC
-    EXECUTE_SUBROUTINE .branch_138D5C
+.harris_speed_selector:
+    BRANCH_ON_RANDOM 0, 39, .harris_speed_slow
+    BRANCH_ON_RANDOM 40, 80, .harris_speed_medium
+    BRANCH_ON_RANDOM 81, 100, .harris_speed_fast
+    EXECUTE_SUBROUTINE .harris_speed_slow
 
-.branch_138D5C:
+.harris_speed_slow:
     SET_FRAME_DELTA 1, 0, 0, 3
-    UPDATE_U16_VALUE 3, 9999, var1
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var1, .branch_138CB0
-    EXECUTE_SUBROUTINE .sub_138D40
+    UPDATE_U16_VALUE 3, 9999, harrisProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, harrisProgress, .harris_finished
+    EXECUTE_SUBROUTINE .harris_speed_selector
 
-.branch_138D84:
+.harris_speed_medium:
     SET_FRAME_DELTA 2, 0, 0, 3
-    UPDATE_U16_VALUE 6, 9999, var1
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var1, .branch_138CB0
-    EXECUTE_SUBROUTINE .sub_138D40
+    UPDATE_U16_VALUE 6, 9999, harrisProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, harrisProgress, .harris_finished
+    EXECUTE_SUBROUTINE .harris_speed_selector
 
-.branch_138DAC:
+.harris_speed_fast:
     SET_FRAME_DELTA 3, 0, 0, 3
-    UPDATE_U16_VALUE 9, 9999, var1
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var1, .branch_138CB0
-    EXECUTE_SUBROUTINE .sub_138D40
+    UPDATE_U16_VALUE 9, 9999, harrisProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, harrisProgress, .harris_finished
+    EXECUTE_SUBROUTINE .harris_speed_selector
 
-.sub_138DD4:
-    SETUP_ENTITY 2, 8, 1
+; ============================================================
+; SLOT 2 - Gray
+; ============================================================
+
+.gray_setup:
+    SETUP_ENTITY 2, ENTITY_ASSET_GRAY, 1
     SET_ENTITY_ANIMATIONS 2, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_2_138DF4:
-    EXECUTE_SUBROUTINE .sub_138DD4
+.gray_intro_pose:
+    EXECUTE_SUBROUTINE .gray_setup
     SET_COORDINATES -256, 0, 32
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 48
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_138E0C:
+.gray_prerace_pose:
     SET_SHADOW_FLAGS 8, 255
-    EXECUTE_SUBROUTINE .sub_138DD4
+    EXECUTE_SUBROUTINE .gray_setup
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -192, 112, 32
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 49
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_138E30:
+.gray_race_start:
     SET_ENTITY_ANIMATION 51
-    SPAWN_EXECUTOR 34, .executor_34_1387AC
-    EXECUTE_SUBROUTINE .sub_138ECC
+    SPAWN_EXECUTOR 34, .aux34_gray
+    EXECUTE_SUBROUTINE .gray_speed_selector
 
-.branch_138E40:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_138E64
+.gray_finished:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .gray_finish_cleanup
     SET_SFX 85, 128
     SET_SPECIAL_BIT 0, var0
     SET_SPECIAL_BIT 3, var0
 
-.branch_138E64:
+.gray_finish_cleanup:
     SET_ENTITY_ANIMATION 49
     DEACTIVATE_EXECUTOR 34
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_138E70:
-    EXECUTE_SUBROUTINE .sub_138DD4
+.gray_postrace_pose:
+    EXECUTE_SUBROUTINE .gray_setup
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -256, 144, 38
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 48
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_138E8C:
+.gray_postrace_talk:
     SET_ENTITY_ANIMATION 49
-    BRANCH_ON_SPECIAL_BIT 3, var0, .branch_138EC0
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 9
+    BRANCH_ON_SPECIAL_BIT 3, var0, .gray_talk_won
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 9         ; Gray lost
 
-.sub_138EA4:
+.gray_talk_done:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 48
     SET_WAIT_FRAMES 20
-    SET_OTHER_EXECUTOR_PTR 3, .executor_3_139018
-    EXECUTE_SUBROUTINE .sub_138698
+    SET_OTHER_EXECUTOR_PTR 3, .jeff_postrace_talk
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_138EC0:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 10
-    EXECUTE_SUBROUTINE .sub_138EA4
+.gray_talk_won:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 10        ; Gray won
+    EXECUTE_SUBROUTINE .gray_talk_done
 
-.sub_138ECC:
-    BRANCH_ON_RANDOM 0, 29, .branch_138EE8
-    BRANCH_ON_RANDOM 30, 69, .branch_138F10
-    BRANCH_ON_RANDOM 70, 100, .branch_138F38
-    EXECUTE_SUBROUTINE .branch_138EE8
+.gray_speed_selector:
+    BRANCH_ON_RANDOM 0, 29, .gray_speed_slow
+    BRANCH_ON_RANDOM 30, 69, .gray_speed_medium
+    BRANCH_ON_RANDOM 70, 100, .gray_speed_fast
+    EXECUTE_SUBROUTINE .gray_speed_slow
 
-.branch_138EE8:
+.gray_speed_slow:
     SET_FRAME_DELTA 1, 0, 0, 3
-    UPDATE_U16_VALUE 3, 9999, var2
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var2, .branch_138E40
-    EXECUTE_SUBROUTINE .sub_138ECC
+    UPDATE_U16_VALUE 3, 9999, grayProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, grayProgress, .gray_finished
+    EXECUTE_SUBROUTINE .gray_speed_selector
 
-.branch_138F10:
+.gray_speed_medium:
     SET_FRAME_DELTA 2, 0, 0, 3
-    UPDATE_U16_VALUE 6, 9999, var2
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var2, .branch_138E40
-    EXECUTE_SUBROUTINE .sub_138ECC
+    UPDATE_U16_VALUE 6, 9999, grayProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, grayProgress, .gray_finished
+    EXECUTE_SUBROUTINE .gray_speed_selector
 
-.branch_138F38:
+.gray_speed_fast:
     SET_FRAME_DELTA 3, 0, 0, 3
-    UPDATE_U16_VALUE 9, 9999, var2
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var2, .branch_138E40
-    EXECUTE_SUBROUTINE .sub_138ECC
+    UPDATE_U16_VALUE 9, 9999, grayProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, grayProgress, .gray_finished
+    EXECUTE_SUBROUTINE .gray_speed_selector
 
-.sub_138F60:
-    SETUP_ENTITY 3, 9, 1
+; ============================================================
+; SLOT 3 - Jeff
+; ============================================================
+
+.jeff_setup:
+    SETUP_ENTITY 3, ENTITY_ASSET_JEFF, 1
     SET_ENTITY_ANIMATIONS 3, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_3_138F80:
-    EXECUTE_SUBROUTINE .sub_138F60
+.jeff_intro_pose:
+    EXECUTE_SUBROUTINE .jeff_setup
     SET_COORDINATES -256, 0, -64
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 45
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_138F98:
+.jeff_prerace_pose:
     SET_SHADOW_FLAGS 9, 255
-    EXECUTE_SUBROUTINE .sub_138F60
+    EXECUTE_SUBROUTINE .jeff_setup
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -192, 112, -64
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 46
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_138FBC:
+.jeff_race_start:
     SET_ENTITY_ANIMATION 48
-    SPAWN_EXECUTOR 35, .executor_35_1387E4
-    EXECUTE_SUBROUTINE .sub_139080
+    SPAWN_EXECUTOR 35, .aux35_jeff
+    EXECUTE_SUBROUTINE .jeff_speed_selector
 
-.branch_138FCC:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_138FF0
+.jeff_finished:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .jeff_finish_cleanup
     SET_SFX 85, 128
     SET_SPECIAL_BIT 0, var0
     SET_SPECIAL_BIT 4, var0
 
-.branch_138FF0:
+.jeff_finish_cleanup:
     SET_ENTITY_ANIMATION 46
     DEACTIVATE_EXECUTOR 35
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_138FFC:
-    EXECUTE_SUBROUTINE .sub_138F60
+.jeff_postrace_pose:
+    EXECUTE_SUBROUTINE .jeff_setup
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -290, 160, -32
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 45
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_3_139018:
+.jeff_postrace_talk:
     SET_ENTITY_ANIMATION 47
-    BRANCH_ON_SPECIAL_BIT 4, var0, .branch_13906C
-    INIT_DIALOGUE_SESSION 0, 42, 2
+    BRANCH_ON_SPECIAL_BIT 4, var0, .jeff_talk_won
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_50, 2            ; Jeff lost: random text 12 or 13
     WAIT_FOR_DIALOGUE_INPUT 0
 
-.sub_139034:
+.jeff_talk_done:
     SET_ENTITY_ANIMATION 45
     SET_WAIT_FRAMES 20
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_139054
-    SET_OTHER_EXECUTOR_PTR 4, .executor_4_1391CC
-    EXECUTE_SUBROUTINE .sub_138698
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .jeff_after_skip_cliff
+    SET_OTHER_EXECUTOR_PTR 4, .cliff_postrace_talk
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_139054:
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_13938C
-    SET_OTHER_EXECUTOR_PTR 5, .executor_5_139364
-    EXECUTE_SUBROUTINE .sub_138698
+.jeff_after_skip_cliff:
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .spawn_winner_announcer
+    SET_OTHER_EXECUTOR_PTR 5, .kai_postrace_talk
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13906C:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 11
+.jeff_talk_won:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 11        ; Jeff won
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_139034
+    EXECUTE_SUBROUTINE .jeff_talk_done
 
-.sub_139080:
-    BRANCH_ON_RANDOM 0, 39, .branch_13909C
-    BRANCH_ON_RANDOM 40, 85, .branch_1390C4
-    BRANCH_ON_RANDOM 86, 100, .branch_1390EC
-    EXECUTE_SUBROUTINE .branch_13909C
+.jeff_speed_selector:
+    BRANCH_ON_RANDOM 0, 39, .jeff_speed_slow
+    BRANCH_ON_RANDOM 40, 85, .jeff_speed_medium
+    BRANCH_ON_RANDOM 86, 100, .jeff_speed_fast
+    EXECUTE_SUBROUTINE .jeff_speed_slow
 
-.branch_13909C:
+.jeff_speed_slow:
     SET_FRAME_DELTA 1, 0, 0, 3
-    UPDATE_U16_VALUE 3, 9999, var3
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var3, .branch_138FCC
-    EXECUTE_SUBROUTINE .sub_139080
+    UPDATE_U16_VALUE 3, 9999, jeffProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, jeffProgress, .jeff_finished
+    EXECUTE_SUBROUTINE .jeff_speed_selector
 
-.branch_1390C4:
+.jeff_speed_medium:
     SET_FRAME_DELTA 2, 0, 0, 3
-    UPDATE_U16_VALUE 6, 9999, var3
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var3, .branch_138FCC
-    EXECUTE_SUBROUTINE .sub_139080
+    UPDATE_U16_VALUE 6, 9999, jeffProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, jeffProgress, .jeff_finished
+    EXECUTE_SUBROUTINE .jeff_speed_selector
 
-.branch_1390EC:
+.jeff_speed_fast:
     SET_FRAME_DELTA 3, 0, 0, 3
-    UPDATE_U16_VALUE 9, 9999, var3
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var3, .branch_138FCC
-    EXECUTE_SUBROUTINE .sub_139080
+    UPDATE_U16_VALUE 9, 9999, jeffProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, jeffProgress, .jeff_finished
+    EXECUTE_SUBROUTINE .jeff_speed_selector
 
-.sub_139114:
-    SETUP_ENTITY 4, 10, 1
+; ============================================================
+; SLOT 4 - Cliff (skipped if CLIFF_GONE)
+; ============================================================
+
+.cliff_setup:
+    SETUP_ENTITY 4, ENTITY_ASSET_CLIFF, 1
     SET_ENTITY_ANIMATIONS 4, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_4_139134:
-    EXECUTE_SUBROUTINE .sub_139114
+.cliff_intro_pose:
+    EXECUTE_SUBROUTINE .cliff_setup
     SET_COORDINATES -256, 0, 64
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 34
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_13914C:
+.cliff_prerace_pose:
     SET_SHADOW_FLAGS 10, 255
-    EXECUTE_SUBROUTINE .sub_139114
+    EXECUTE_SUBROUTINE .cliff_setup
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -192, 112, 64
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 35
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_139170:
+.cliff_race_start:
     SET_ENTITY_ANIMATION 37
-    SPAWN_EXECUTOR 36, .executor_36_13881C
-    EXECUTE_SUBROUTINE .sub_139218
+    SPAWN_EXECUTOR 36, .aux36_cliff
+    EXECUTE_SUBROUTINE .cliff_speed_selector
 
-.branch_139180:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_1391A4
+.cliff_finished:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .cliff_finish_cleanup
     SET_SFX 85, 128
     SET_SPECIAL_BIT 0, var0
     SET_SPECIAL_BIT 5, var0
 
-.branch_1391A4:
+.cliff_finish_cleanup:
     SET_ENTITY_ANIMATION 35
     DEACTIVATE_EXECUTOR 36
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_1391B0:
-    EXECUTE_SUBROUTINE .sub_139114
+.cliff_postrace_pose:
+    EXECUTE_SUBROUTINE .cliff_setup
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -288, 160, 0
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 34
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_1391CC:
+.cliff_postrace_talk:
     SET_ENTITY_ANIMATION 36
-    BRANCH_ON_SPECIAL_BIT 5, var0, .branch_13920C
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 14
+    BRANCH_ON_SPECIAL_BIT 5, var0, .cliff_talk_won
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 14        ; Cliff lost
 
-.sub_1391E4:
+.cliff_talk_done:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 34
     SET_WAIT_FRAMES 20
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_13938C
-    SET_OTHER_EXECUTOR_PTR 5, .executor_5_139364
-    EXECUTE_SUBROUTINE .sub_138698
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .spawn_winner_announcer
+    SET_OTHER_EXECUTOR_PTR 5, .kai_postrace_talk
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13920C:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 15
-    EXECUTE_SUBROUTINE .sub_1391E4
+.cliff_talk_won:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 15        ; Cliff won
+    EXECUTE_SUBROUTINE .cliff_talk_done
 
-.sub_139218:
-    BRANCH_ON_RANDOM 0, 29, .branch_139234
-    BRANCH_ON_RANDOM 30, 75, .branch_13925C
-    BRANCH_ON_RANDOM 76, 100, .branch_139284
-    EXECUTE_SUBROUTINE .branch_139234
+.cliff_speed_selector:
+    BRANCH_ON_RANDOM 0, 29, .cliff_speed_slow
+    BRANCH_ON_RANDOM 30, 75, .cliff_speed_medium
+    BRANCH_ON_RANDOM 76, 100, .cliff_speed_fast
+    EXECUTE_SUBROUTINE .cliff_speed_slow
 
-.branch_139234:
+.cliff_speed_slow:
     SET_FRAME_DELTA 1, 0, 0, 3
-    UPDATE_U16_VALUE 3, 9999, var4
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var4, .branch_139180
-    EXECUTE_SUBROUTINE .sub_139218
+    UPDATE_U16_VALUE 3, 9999, cliffProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, cliffProgress, .cliff_finished
+    EXECUTE_SUBROUTINE .cliff_speed_selector
 
-.branch_13925C:
+.cliff_speed_medium:
     SET_FRAME_DELTA 2, 0, 0, 3
-    UPDATE_U16_VALUE 6, 9999, var4
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var4, .branch_139180
-    EXECUTE_SUBROUTINE .sub_139218
+    UPDATE_U16_VALUE 6, 9999, cliffProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, cliffProgress, .cliff_finished
+    EXECUTE_SUBROUTINE .cliff_speed_selector
 
-.branch_139284:
+.cliff_speed_fast:
     SET_FRAME_DELTA 3, 0, 0, 3
-    UPDATE_U16_VALUE 9, 9999, var4
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var4, .branch_139180
-    EXECUTE_SUBROUTINE .sub_139218
+    UPDATE_U16_VALUE 9, 9999, cliffProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, cliffProgress, .cliff_finished
+    EXECUTE_SUBROUTINE .cliff_speed_selector
 
-.sub_1392AC:
-    SETUP_ENTITY 5, 11, 1
+; ============================================================
+; SLOT 5 - Kai (skipped if KAI_GONE)
+; ============================================================
+
+.kai_setup:
+    SETUP_ENTITY 5, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 5, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_5_1392CC:
-    EXECUTE_SUBROUTINE .sub_1392AC
+.kai_intro_pose:
+    EXECUTE_SUBROUTINE .kai_setup
     SET_COORDINATES -256, 0, -96
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 41
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_1392E4:
+.kai_prerace_pose:
     SET_SHADOW_FLAGS 11, 255
-    EXECUTE_SUBROUTINE .sub_1392AC
+    EXECUTE_SUBROUTINE .kai_setup
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES -192, 112, -96
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 42
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_139308:
+.kai_race_start:
     SET_ENTITY_ANIMATION 44
-    SPAWN_EXECUTOR 37, .executor_37_138854
-    EXECUTE_SUBROUTINE .sub_1393A4
+    SPAWN_EXECUTOR 37, .aux37_kai
+    EXECUTE_SUBROUTINE .kai_speed_selector
 
-.branch_139318:
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_13933C
+.kai_finished:
+    BRANCH_ON_SPECIAL_BIT 0, var0, .kai_finish_cleanup
     SET_SFX 85, 128
     SET_SPECIAL_BIT 0, var0
     SET_SPECIAL_BIT 6, var0
 
-.branch_13933C:
+.kai_finish_cleanup:
     SET_ENTITY_ANIMATION 42
     DEACTIVATE_EXECUTOR 37
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_139348:
-    EXECUTE_SUBROUTINE .sub_1392AC
+.kai_postrace_pose:
+    EXECUTE_SUBROUTINE .kai_setup
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -290, 160, 34
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_ENTITY_ANIMATION 41
-    EXECUTE_SUBROUTINE .sub_138698
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_5_139364:
+.kai_postrace_talk:
     SET_ENTITY_ANIMATION 43
-    BRANCH_ON_SPECIAL_BIT 6, var0, .branch_139398
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 16
+    BRANCH_ON_SPECIAL_BIT 6, var0, .kai_talk_won
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 16        ; Kai lost
 
-.sub_13937C:
+.kai_talk_done:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 41
     SET_WAIT_FRAMES 20
 
-.branch_13938C:
-    SPAWN_EXECUTOR 8, .executor_8_139678
-    EXECUTE_SUBROUTINE .sub_138698
+.spawn_winner_announcer:
+    SPAWN_EXECUTOR 8, .winner_dispatch
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_139398:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 17
-    EXECUTE_SUBROUTINE .sub_13937C
+.kai_talk_won:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 17        ; Kai won
+    EXECUTE_SUBROUTINE .kai_talk_done
 
-.sub_1393A4:
-    BRANCH_ON_RANDOM 0, 19, .branch_1393C0
-    BRANCH_ON_RANDOM 20, 65, .branch_1393E8
-    BRANCH_ON_RANDOM 66, 100, .branch_139410
-    EXECUTE_SUBROUTINE .branch_1393C0
+.kai_speed_selector:
+    BRANCH_ON_RANDOM 0, 19, .kai_speed_slow
+    BRANCH_ON_RANDOM 20, 65, .kai_speed_medium
+    BRANCH_ON_RANDOM 66, 100, .kai_speed_fast
+    EXECUTE_SUBROUTINE .kai_speed_slow
 
-.branch_1393C0:
+.kai_speed_slow:
     SET_FRAME_DELTA 1, 0, 0, 3
-    UPDATE_U16_VALUE 3, 9999, var5
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var5, .branch_139318
-    EXECUTE_SUBROUTINE .sub_1393A4
+    UPDATE_U16_VALUE 3, 9999, kaiProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, kaiProgress, .kai_finished
+    EXECUTE_SUBROUTINE .kai_speed_selector
 
-.branch_1393E8:
+.kai_speed_medium:
     SET_FRAME_DELTA 2, 0, 0, 3
-    UPDATE_U16_VALUE 6, 9999, var5
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var5, .branch_139318
-    EXECUTE_SUBROUTINE .sub_1393A4
+    UPDATE_U16_VALUE 6, 9999, kaiProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, kaiProgress, .kai_finished
+    EXECUTE_SUBROUTINE .kai_speed_selector
 
-.branch_139410:
+.kai_speed_fast:
     SET_FRAME_DELTA 3, 0, 0, 3
-    UPDATE_U16_VALUE 9, 9999, var5
-    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, var5, .branch_139318
-    EXECUTE_SUBROUTINE .sub_1393A4
+    UPDATE_U16_VALUE 9, 9999, kaiProgress
+    BRANCH_U16_VAR_WITHIN_RANGE 480, 999, kaiProgress, .kai_finished
+    EXECUTE_SUBROUTINE .kai_speed_selector
 
-.executor_6_139438:
-    SETUP_ENTITY 6, 12, 1
+; ============================================================
+; SLOT 6 - Mayor (race caller)
+; ============================================================
+
+.mayor_intro_pose:
+    SETUP_ENTITY 6, ENTITY_ASSET_MAYOR, 1
     SET_ENTITY_ANIMATIONS 6, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -320, 0, -16
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_138698
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_6_139468:
+.mayor_prerace_pose:
     SET_COORDINATES -256, 0, -16
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_138698
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_6_139478:
+.mayor_postrace_pose:
     SET_COORDINATES -352, 0, -56
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_138698
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_139488:
-    SETUP_ENTITY 7, 25, 1
+; ============================================================
+; SLOT 7 - Rick (ceremony presenter)
+; ============================================================
+
+.rick_intro_pose:
+    SETUP_ENTITY 7, ENTITY_ASSET_RICK, 1
     SET_ENTITY_ANIMATIONS 7, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -320, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_138698
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_1394B8:
+.rick_postrace_pose:
     SET_COORDINATES -352, 0, 32
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_138698
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1394C8:
+.rick_award_lumber_variant:
     SET_SPECIAL_BIT 22, var0
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 26
-    EXECUTE_SUBROUTINE .sub_139500
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 26        ; Rick, lumber prize
+    EXECUTE_SUBROUTINE .rick_award_close
 
-.executor_7_1394DC:
+.rick_award:
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
     WAIT_ENTITY_ANIMATION
-    BRANCH_ON_SPECIAL_BIT 7, lifeEventBits + 0x8, .branch_1394C8
-    SPAWN_EXECUTOR 32, .executor_32_13870C
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 5
+    BRANCH_ON_SPECIAL_BIT 7, lifeEventBits[2], .rick_award_lumber_variant
+    SPAWN_EXECUTOR 32, .aux32_rick_prop
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 5         ; Rick, invincible katori prize
 
-.sub_139500:
+.rick_award_close:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
@@ -823,112 +911,119 @@
     DEACTIVATE_EXECUTOR 4
     DEACTIVATE_EXECUTOR 5
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 0, .executor_0_138C10
-    SPAWN_EXECUTOR 1, .executor_1_138C7C
-    SPAWN_EXECUTOR 2, .executor_2_138E0C
-    SPAWN_EXECUTOR 3, .executor_3_138F98
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_139570
-    SPAWN_EXECUTOR 4, .executor_4_13914C
+    SPAWN_EXECUTOR 0, .player_prerace_pose
+    SPAWN_EXECUTOR 1, .harris_prerace_pose
+    SPAWN_EXECUTOR 2, .gray_prerace_pose
+    SPAWN_EXECUTOR 3, .jeff_prerace_pose
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .prerace_skip_cliff
+    SPAWN_EXECUTOR 4, .cliff_prerace_pose
 
-.branch_139570:
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_139584
-    SPAWN_EXECUTOR 5, .executor_5_1392E4
+.prerace_skip_cliff:
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .prerace_skip_kai
+    SPAWN_EXECUTOR 5, .kai_prerace_pose
 
-.branch_139584:
-    SET_OTHER_EXECUTOR_PTR 6, .executor_6_139468
-    SET_ASSET_ROTATION 4
-    SPAWN_EXECUTOR 16, .executor_16_138B28
-    EXECUTE_SUBROUTINE .sub_138698
+.prerace_skip_kai:
+    SET_OTHER_EXECUTOR_PTR 6, .mayor_prerace_pose
+    SET_ASSET_ROTATION NORTHEAST
+    SPAWN_EXECUTOR 16, .finish_flag_setup
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_13959C:
-    BRANCH_ON_SPECIAL_BIT 20, lifeEventBits + 0x8, .branch_1395C0
+; ============================================================
+; SLOT 8 - Winner announcer + ceremony
+; ============================================================
+
+.winner_player:
+    ; check if WON_SEA_FESTIVAL
+    BRANCH_ON_SPECIAL_BIT 20, lifeEventBits[2], .winner_player_affection
     SET_SPECIAL_BIT 23, dailyEventBits[1]
-    SET_SPECIAL_BIT 20, lifeEventBits + 0x8
-    SET_SPECIAL_BIT 7, lifeEventBits + 0x8
+    ; set WON_SEA_FESTIVAL if winning for first time
+    SET_SPECIAL_BIT 20, lifeEventBits[2]
+    ; get Invincible Katori
+    SET_SPECIAL_BIT 7, lifeEventBits[2]
 
-.branch_1395C0:
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x6
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x7
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x8
-    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits + 0x4, .branch_1395FC
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0x9
+.winner_player_affection:
+    UPDATE_U8_VALUE 5, 255, npcAffection[HARRIS]
+    UPDATE_U8_VALUE 5, 255, npcAffection[GRAY]
+    UPDATE_U8_VALUE 5, 255, npcAffection[JEFF]
+    BRANCH_ON_SPECIAL_BIT 13, lifeEventBits[1], .winner_player_skip_cliff_affection
+    UPDATE_U8_VALUE 5, 255, npcAffection[CLIFF]
 
-.branch_1395FC:
-    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits + 0x4, .branch_139614
-    UPDATE_U8_VALUE 5, 255, npcAffection + 0xA
+.winner_player_skip_cliff_affection:
+    BRANCH_ON_SPECIAL_BIT 14, lifeEventBits[1], .winner_player_announce
+    UPDATE_U8_VALUE 5, 255, npcAffection[KAI]
 
-.branch_139614:
+.winner_player_announce:
     UPDATE_U8_VALUE 5, 255, gHappiness
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 23
-    EXECUTE_SUBROUTINE .sub_1396C0
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 23        
+    EXECUTE_SUBROUTINE .winner_announce_close
 
-.branch_13962C:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 18
-    EXECUTE_SUBROUTINE .sub_1396C0
+.winner_harris:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 18        
+    EXECUTE_SUBROUTINE .winner_announce_close
 
-.branch_139638:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 19
-    EXECUTE_SUBROUTINE .sub_1396C0
+.winner_gray:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 19       
+    EXECUTE_SUBROUTINE .winner_announce_close
 
-.branch_139644:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 20
-    EXECUTE_SUBROUTINE .sub_1396C0
+.winner_jeff:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 20       
+    EXECUTE_SUBROUTINE .winner_announce_close
 
-.branch_139650:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 21
-    EXECUTE_SUBROUTINE .sub_1396C0
+.winner_cliff:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 21       
+    EXECUTE_SUBROUTINE .winner_announce_close
 
-.branch_13965C:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 22
-    EXECUTE_SUBROUTINE .sub_1396C0
+.winner_kai:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 22       
+    EXECUTE_SUBROUTINE .winner_announce_close
 
-.branch_139668:
+.award_player_lumber:
     UPDATE_U16_VALUE 150, 999, gLumber
-    EXECUTE_SUBROUTINE .sub_1396F8
+    EXECUTE_SUBROUTINE .photo_ceremony
 
-.executor_8_139678:
-    BRANCH_ON_SPECIAL_BIT 1, var0, .branch_13959C
-    BRANCH_ON_SPECIAL_BIT 2, var0, .branch_13962C
-    BRANCH_ON_SPECIAL_BIT 3, var0, .branch_139638
-    BRANCH_ON_SPECIAL_BIT 4, var0, .branch_139644
-    BRANCH_ON_SPECIAL_BIT 5, var0, .branch_139650
-    BRANCH_ON_SPECIAL_BIT 6, var0, .branch_13965C
+.winner_dispatch:
+    BRANCH_ON_SPECIAL_BIT 1, var0, .winner_player
+    BRANCH_ON_SPECIAL_BIT 2, var0, .winner_harris
+    BRANCH_ON_SPECIAL_BIT 3, var0, .winner_gray
+    BRANCH_ON_SPECIAL_BIT 4, var0, .winner_jeff
+    BRANCH_ON_SPECIAL_BIT 5, var0, .winner_cliff
+    BRANCH_ON_SPECIAL_BIT 6, var0, .winner_kai
 
-.sub_1396C0:
+.winner_announce_close:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
     SET_SFX 84, 128
     SET_WAIT_FRAMES 60
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 24
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 24        ; Rick
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
-    BRANCH_ON_SPECIAL_BIT 22, var0, .branch_139668
+    BRANCH_ON_SPECIAL_BIT 22, var0, .award_player_lumber
 
-.sub_1396F8:
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 3
+.photo_ceremony:
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 3         ; Mayor
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SETUP_ENTITY 8, 38, 1
+    SETUP_ENTITY 8, ENTITY_ASSET_PHOTOGRAPHER, 1
     SET_ENTITY_ANIMATIONS 8, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -448, 0, 0
-    SET_ASSET_ROTATION 6
-    ENTITY_WALK 48, 6, 2
+    SET_ASSET_ROTATION SOUTHEAST
+    ENTITY_WALK 48, SOUTHEAST, 2
     SET_ENTITY_ANIMATION 19
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 30
     SET_ENTITY_ANIMATION 23
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 19
-    INIT_MESSAGE_BOX_TYPE1 0, 49, 4
+    INIT_MESSAGE_BOX_TYPE1 0, SEA_FESTIVAL_AND_EVALUATION_TEXT_INDEX, 4         ; Photographer
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 30
     SET_SFX 94, 128
-    SPAWN_EXECUTOR 33, .executor_33_1397C0
+    SPAWN_EXECUTOR 33, .photo_flash
     SET_WAIT_FRAMES 60
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -943,11 +1038,11 @@
     DEACTIVATE_EXECUTOR 7
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
-    EXECUTE_SUBROUTINE .sub_138654
+    EXECUTE_SUBROUTINE .exit_cutscene
 
-.executor_33_1397C0:
+.photo_flash:
     DMA_SPRITE 128, 0, _funeralIntroTextureSegmentRomStart, _funeralIntroTextureSegmentRomEnd, _funeralIntroAssetsIndexSegmentRomStart, _funeralIntroAssetsIndexSegmentRomEnd, 0, 0, 0x8028B930, 0, 0x8028DD50, 0x80290550, 0x80293A50, 0x80293C50
-    SET_ANIM_DATA_PTR_WITH_FLAG .anim_13982C
+    SET_ANIM_DATA_PTR_WITH_FLAG .photo_flash_anim
     SET_COORDINATES 0, 0, 330
     SET_SPRITE_SCALE 20, 20, 0
     SET_RGBA 255, 255, 255, 255
@@ -957,6 +1052,6 @@
     WAIT_RGBA_FINISHED
     DEACTIVATE_SELF
 
-.anim_13982C:
+.photo_flash_anim:
     .anim_frame 0, 0xFE, (0, 0, 0), 255, 0
     .anim_end

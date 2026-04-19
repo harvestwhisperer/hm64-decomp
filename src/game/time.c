@@ -50,7 +50,7 @@ void handleTimeUpdates(void) {
     
     if (gHour == 6) {
         
-        if (!checkDailyEventBit(0xE)) {
+        if (!checkDailyEventBit(DAY_START_6AM_GUARD)) {
 
             setPlayerAction(254, ANIM_DEFAULT);
             handleExitLevel(1, END_OF_DAY_2);
@@ -59,7 +59,7 @@ void handleTimeUpdates(void) {
 
     } else {
         
-        toggleDailyEventBit(0xE);
+        clearDailyEventBit(DAY_START_6AM_GUARD);
 
         if (gCutsceneCompletionFlags >= 0) {
             setLevelLighting(1, NO_OP);
@@ -69,25 +69,25 @@ void handleTimeUpdates(void) {
     
     if (NIGHTTIME) {
         
-        if (!checkDailyEventBit(0xF)) {
+        if (!checkDailyEventBit(NIGHTTIME_AUDIO_STOPPED)) {
 
             stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
-            setDailyEventBit(0xF);
+            setDailyEventBit(NIGHTTIME_AUDIO_STOPPED);
 
-        } else if (!checkDailyEventBit(0x10) && gCurrentAudioSequenceIndex != 0xFF && checkDefaultSequenceChannelOpen(gCurrentAudioSequenceIndex)) {
+        } else if (!checkDailyEventBit(NIGHTTIME_AUDIO_STARTED) && gCurrentAudioSequenceIndex != 0xFF && checkDefaultSequenceChannelOpen(gCurrentAudioSequenceIndex)) {
 
             setLevelAudio(gBaseMapIndex, gSeason, gHour);
             setAudioSequenceVolume(gCurrentAudioSequenceIndex, gAudioSequenceVolume);
  
-            setDailyEventBit(0x10);
+            setDailyEventBit(NIGHTTIME_AUDIO_STARTED);
 
         }
         
     }
     
-    if (gHour < 6 && gWeather != RAIN && gBaseMapIndex != BEACH && !checkDailyEventBit(0x11)) {
+    if (gHour < 6 && gWeather != RAIN && gBaseMapIndex != BEACH && !checkDailyEventBit(PREDAWN_AUDIO_STOPPED)) {
         stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
-        setDailyEventBit(0x11);
+        setDailyEventBit(PREDAWN_AUDIO_STOPPED);
     }
     
     handleTimedDailyCutscenes(gBaseMapIndex);
@@ -160,54 +160,55 @@ void setupNewYear(void) {
     gHarvestCoinFinder = 0xFF;
     gVoteForFlowerFestivalGoddess = 0xFF;
     
-    toggleLifeEventBit(0x44);
+    clearLifeEventBit(WEATHER_WISH);
 
-    toggleReadLetterBit(0);
-    toggleReadLetterBit(1);
-    toggleReadLetterBit(2);
-    toggleReadLetterBit(3);
-    toggleReadLetterBit(4);
-    toggleReadLetterBit(5);
-    toggleReadLetterBit(6);
-    toggleReadLetterBit(7);
-    toggleReadLetterBit(8);
-    toggleReadLetterBit(9);
-    toggleReadLetterBit(0xA);
-    toggleReadLetterBit(0xB);
-    toggleReadLetterBit(0xC);
-    toggleReadLetterBit(0xD);
-    toggleReadLetterBit(0xE);
-    toggleReadLetterBit(0xF);
-    toggleReadLetterBit(0x10);
-    toggleReadLetterBit(0x11);
-    toggleReadLetterBit(0x12);
-    toggleReadLetterBit(0x13);
-    toggleReadLetterBit(0x14);
-    toggleReadLetterBit(0x15);
-    toggleReadLetterBit(0x17);
-    toggleReadLetterBit(0x19);
-    toggleReadLetterBit(0x1D);
-    toggleReadLetterBit(0x20);
-    toggleReadLetterBit(0x21);
-    toggleReadLetterBit(0x22);
-    toggleReadLetterBit(0x3B);
-    toggleReadLetterBit(0x3D);
-    toggleReadLetterBit(0x3E);
-    toggleReadLetterBit(0x3F);
-    toggleReadLetterBit(0x41);
-    toggleReadLetterBit(0x42);
-    toggleReadLetterBit(0x43);
-    toggleReadLetterBit(0x45);
-    toggleReadLetterBit(0x46);
-    toggleReadLetterBit(0x49);
+    clearReadLetterBit(MAIL_MARIA_SPRING);
+    clearReadLetterBit(MAIL_MARIA_SUMMER);
+    clearReadLetterBit(MAIL_MARIA_AUTUMN);
+    clearReadLetterBit(MAIL_MARIA_WINTER);
+    clearReadLetterBit(MAIL_POPURI_SPRING);
+    clearReadLetterBit(MAIL_POPURI_SUMMER);
+    clearReadLetterBit(MAIL_POPURI_AUTUMN);
+    clearReadLetterBit(MAIL_POPURI_WINTER);
+    clearReadLetterBit(MAIL_ELLI_SPRING);
+    clearReadLetterBit(MAIL_ELLI_SUMMER);
+    clearReadLetterBit(MAIL_ELLI_AUTUMN);
+    clearReadLetterBit(MAIL_ELLI_WINTER);
+    clearReadLetterBit(MAIL_ANN_SPRING);
+    clearReadLetterBit(MAIL_ANN_SUMMER);
+    clearReadLetterBit(MAIL_ANN_AUTUMN);
+    clearReadLetterBit(MAIL_ANN_WINTER);
+    clearReadLetterBit(MAIL_KAREN_SPRING);
+    clearReadLetterBit(MAIL_KAREN_SUMMER);
+    clearReadLetterBit(MAIL_KAREN_AUTUMN);
+    clearReadLetterBit(MAIL_KAREN_WINTER);
+    clearReadLetterBit(MAIL_MAYOR_SPRING);
+    clearReadLetterBit(MAIL_HARRIS_SPRING);
+    clearReadLetterBit(MAIL_GRAY_SPRING);
+    clearReadLetterBit(MAIL_JEFF_SPRING);
+    clearReadLetterBit(MAIL_KAI_SPRING);
+    clearReadLetterBit(MAIL_KENT_STU_SPRING);
+    clearReadLetterBit(MAIL_RICK_SPRING);
+    clearReadLetterBit(MAIL_BASIL_WINTER);
+    clearReadLetterBit(MAIL_PINK_CAT_MINT_SEEDS);
+    clearReadLetterBit(MAIL_HORSE_RACE_NOTICE);
+    clearReadLetterBit(MAIL_GODDESS_VOTING);
+    clearReadLetterBit(MAIL_VEGETABLE_FESTIVAL_NOTICE);
+    clearReadLetterBit(MAIL_LIBRARY_CLOSURE_SPRING);
+    clearReadLetterBit(MAIL_LIBRARY_CLOSURE_AUTUMN);
+    clearReadLetterBit(MAIL_HARVEST_FESTIVAL_NOTICE);
+    clearReadLetterBit(MAIL_ORE_MINE_OPENS);
+    clearReadLetterBit(MAIL_DOG_RACE_NOTICE);
+    clearReadLetterBit(MAIL_BLUE_MIST_SEEDS);
 
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/time", toggleMonthlyLetterBits);
 
 void toggleMonthlyLetterBits(void) {
-    toggleReadLetterBit(0x3C);
-    toggleReadLetterBit(0x40);
+    // unused
+    clearReadLetterBit(60);
+    clearReadLetterBit(MAIL_MOUNTAIN_CARPENTERS_AD);
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/time", setClockNewDay);

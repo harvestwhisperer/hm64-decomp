@@ -1,8 +1,10 @@
 ; ============================================
-; Bank 7 - Karen
+; Bank 7 - Vineyard
 ; ============================================
 
 #include "entities.h"
+#include "dialogues.h"
+#include "maps.h"
 
 #define MAIN_MAP_INDEX 0
 
@@ -16,265 +18,282 @@
 
 #define HAVE_BABY 1
 
-.entry
+.dispatch:
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_1176E0
-    BRANCH_U16_VAR_WITHIN_RANGE 700, 700, gCutsceneIndex, .branch_117834
-    BRANCH_U16_VAR_WITHIN_RANGE 701, 701, gCutsceneIndex, .branch_1179CC
-    BRANCH_U16_VAR_WITHIN_RANGE 702, 702, gCutsceneIndex, .branch_117DEC
-    BRANCH_U16_VAR_WITHIN_RANGE 703, 703, gCutsceneIndex, .branch_117FE4
-    BRANCH_U16_VAR_WITHIN_RANGE 704, 704, gCutsceneIndex, .branch_11814C
-    BRANCH_U16_VAR_WITHIN_RANGE 705, 705, gCutsceneIndex, .branch_118334
-    BRANCH_U16_VAR_WITHIN_RANGE 706, 706, gCutsceneIndex, .branch_118444
-    BRANCH_U16_VAR_WITHIN_RANGE 707, 707, gCutsceneIndex, .branch_118520
-    BRANCH_U16_VAR_WITHIN_RANGE 708, 708, gCutsceneIndex, .branch_118768
-    BRANCH_U16_VAR_WITHIN_RANGE 709, 709, gCutsceneIndex, .branch_118798
-    BRANCH_U16_VAR_WITHIN_RANGE 710, 710, gCutsceneIndex, .branch_118964
-    BRANCH_U16_VAR_WITHIN_RANGE 711, 711, gCutsceneIndex, .branch_118BD4
-    BRANCH_U16_VAR_WITHIN_RANGE 712, 712, gCutsceneIndex, .branch_118CCC
+    EXECUTE_SUBROUTINE .setup_message_box_default
+    BRANCH_U16_VAR_WITHIN_RANGE 700, 700, gCutsceneIndex, .cutscene_700
+    BRANCH_U16_VAR_WITHIN_RANGE 701, 701, gCutsceneIndex, .cutscene_701
+    BRANCH_U16_VAR_WITHIN_RANGE 702, 702, gCutsceneIndex, .cutscene_702
+    BRANCH_U16_VAR_WITHIN_RANGE 703, 703, gCutsceneIndex, .cutscene_703
+    BRANCH_U16_VAR_WITHIN_RANGE 704, 704, gCutsceneIndex, .cutscene_704
+    BRANCH_U16_VAR_WITHIN_RANGE 705, 705, gCutsceneIndex, .cutscene_705
+    BRANCH_U16_VAR_WITHIN_RANGE 706, 706, gCutsceneIndex, .cutscene_706
+    BRANCH_U16_VAR_WITHIN_RANGE 707, 707, gCutsceneIndex, .cutscene_707
+    BRANCH_U16_VAR_WITHIN_RANGE 708, 708, gCutsceneIndex, .cutscene_708
+    BRANCH_U16_VAR_WITHIN_RANGE 709, 709, gCutsceneIndex, .cutscene_709
+    BRANCH_U16_VAR_WITHIN_RANGE 710, 710, gCutsceneIndex, .cutscene_710
+    BRANCH_U16_VAR_WITHIN_RANGE 711, 711, gCutsceneIndex, .cutscene_711
+    BRANCH_U16_VAR_WITHIN_RANGE 712, 712, gCutsceneIndex, .cutscene_712
 
-.sub_1176CC:
+; ============================================
+; Shared helpers
+; ============================================
+
+.complete_cutscene:
     SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
     DEACTIVATE_SELF
 
-.sub_1176D8:
+.wait_loop:
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_1176D8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_1176E0:
+.setup_message_box_default:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_117700:
+.setup_message_box_narrow:
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 352
     RETURN_FROM_SUBROUTINE
 
-.sub_117720:
-    SETUP_ENTITY 47, 91, 1
+.setup_holdable_item_slot_47:
+    SETUP_ENTITY 47, ENTITY_ASSET_EXPRESSION_BUBBLES, 1
     SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.sub_117740:
-    SETUP_ENTITY 40, 91, 1
+.setup_holdable_item_slot_40:
+    SETUP_ENTITY 40, ENTITY_ASSET_EXPRESSION_BUBBLES, 1
     SET_ENTITY_ANIMATIONS 40, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     RETURN_FROM_SUBROUTINE
 
-.executor_32_117760:
-    EXECUTE_SUBROUTINE .sub_117720
+.held_item_track_37_a0:
+    EXECUTE_SUBROUTINE .setup_holdable_item_slot_47
     SET_ENTITY_TRACKING_TARGET 37, 0, 72, 8, 0
     SET_ENTITY_ANIMATION 0
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 15
     DEACTIVATE_SELF
 
-.executor_32_117780:
-    EXECUTE_SUBROUTINE .sub_117720
+.held_item_track_36_a5:
+    EXECUTE_SUBROUTINE .setup_holdable_item_slot_47
     SET_ENTITY_TRACKING_TARGET 36, -24, 32, 8, 0
     SET_ENTITY_ANIMATION 5
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
-.executor_16_11779C:
-    EXECUTE_SUBROUTINE .sub_117740
+.held_item_track_player_a1:
+    EXECUTE_SUBROUTINE .setup_holdable_item_slot_40
     SET_ENTITY_TRACKING_TARGET 0, 0, 64, 4, 0
     SET_ENTITY_ANIMATION 1
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
-.executor_16_1177B8:
-    EXECUTE_SUBROUTINE .sub_117740
+.held_item_track_37_a1:
+    EXECUTE_SUBROUTINE .setup_holdable_item_slot_40
     SET_ENTITY_TRACKING_TARGET 37, 0, 64, 4, 0
     SET_ENTITY_ANIMATION 1
     WAIT_ENTITY_ANIMATION
     DEACTIVATE_SELF
 
-.sub_1177D4:
+.setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
     SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
-.executor_7_1177F4:
+.clear_map_indep_and_deactivate:
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_7_1177FC:
+.reset_tracking_and_deactivate:
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     SET_WAIT_FRAMES 1
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_7_11780C:
-    SET_ASSET_ROTATION 5
-    EXECUTE_SUBROUTINE .sub_1176D8
+.face_east_idle:
+    SET_ASSET_ROTATION EAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_117814:
-    SET_ASSET_ROTATION 3
-    EXECUTE_SUBROUTINE .sub_1176D8
+.face_north_idle:
+    SET_ASSET_ROTATION NORTH
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_11781C:
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_1176D8
+.face_northeast_idle:
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_117824:
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_1176D8
+.face_southwest_idle:
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_11782C:
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_1176D8
+.face_southeast_idle:
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_117834:
-    SPAWN_EXECUTOR 7, .executor_7_117840
+; ============================================
+; Cutscene 700 - Opening: Karen and Gotz quarrel
+;   Karen storms out. Gotz scolds her. Kai explains to the player.
+;   Texts 0 (Karen), 1 (Gotz), 2 (Kai).
+; ============================================
+
+.cutscene_700:
+    SPAWN_EXECUTOR 7, .cutscene_700_player
     DEACTIVATE_SELF
 
-.executor_7_117840:
-    EXECUTE_SUBROUTINE .sub_1177D4
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
+.cutscene_700_player:
+    EXECUTE_SUBROUTINE .setup_player
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
     WAIT_RGBA_FINISHED
-    ENTITY_WALK 64, 4, 2
-    SET_ASSET_ROTATION 2
-    SPAWN_EXECUTOR 1, .executor_1_1178A0
-    EXECUTE_SUBROUTINE .sub_1176D8
+    ENTITY_WALK 64, NORTHEAST, 2
+    SET_ASSET_ROTATION NORTHWEST
+    SPAWN_EXECUTOR 1, .cutscene_700_karen
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_117874:
+.hold_item_and_return:
     SET_HOLDING_ANIMATION_FLAG TRUE
     RETURN_FROM_SUBROUTINE
 
-.sub_11787C:
-    SETUP_ENTITY 37, 5, 1
+.setup_karen_slot_37:
+    SETUP_ENTITY 37, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 37, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_1_1178A0:
-    EXECUTE_SUBROUTINE .sub_11787C
+.cutscene_700_karen:
+    EXECUTE_SUBROUTINE .setup_karen_slot_37
     SET_COORDINATES 128, 0, -32
-    SET_ASSET_ROTATION 6
-    ENTITY_WALK 56, 6, 3
-    SET_ASSET_ROTATION 2
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 0
+    SET_ASSET_ROTATION SOUTHEAST
+    ENTITY_WALK 56, SOUTHEAST, 3
+    SET_ASSET_ROTATION NORTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 0    ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 16, 0, 3
-    SPAWN_EXECUTOR 2, .executor_2_117914
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_117824
-    ENTITY_WALK 72, 0, 3
+    ENTITY_WALK 16, SOUTHWEST, 3
+    SPAWN_EXECUTOR 2, .cutscene_700_gotz
+    SET_OTHER_EXECUTOR_PTR 7, .face_southwest_idle
+    ENTITY_WALK 72, SOUTHWEST, 3
     DEACTIVATE_SELF
 
-.sub_1178F0:
-    SETUP_ENTITY 36, 18, 1
+.setup_gotz_slot_36:
+    SETUP_ENTITY 36, ENTITY_ASSET_GOTZ, 1
     SET_ENTITY_ANIMATIONS 36, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_2_117914:
-    EXECUTE_SUBROUTINE .sub_1178F0
+.cutscene_700_gotz:
+    EXECUTE_SUBROUTINE .setup_gotz_slot_36
     SET_COORDINATES 128, 0, -32
-    SET_ASSET_ROTATION 6
-    ENTITY_WALK 48, 6, 3
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_117814
+    SET_ASSET_ROTATION SOUTHEAST
+    ENTITY_WALK 48, SOUTHEAST, 3
+    SET_OTHER_EXECUTOR_PTR 7, .face_north_idle
     SET_ENTITY_ANIMATION 17
     WAIT_ENTITY_ANIMATION
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 1
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 1    ; Gotz
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 48, 2, 3
-    SPAWN_EXECUTOR 3, .executor_3_11798C
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1177F4
-    EXECUTE_SUBROUTINE .sub_1176CC
+    ENTITY_WALK 48, NORTHWEST, 3
+    SPAWN_EXECUTOR 3, .cutscene_700_kai
+    SET_OTHER_EXECUTOR_PTR 7, .clear_map_indep_and_deactivate
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.sub_117968:
-    SETUP_ENTITY 24, 11, 1
+.setup_kai_slot_24:
+    SETUP_ENTITY 24, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_3_11798C:
-    EXECUTE_SUBROUTINE .sub_117968
+.cutscene_700_kai:
+    EXECUTE_SUBROUTINE .setup_kai_slot_24
     SET_COORDINATES 32, 0, -128
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
 
-.sub_11799C:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1179A8
-    EXECUTE_SUBROUTINE .sub_1176D8
+.cutscene_700_kai_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cutscene_700_kai_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1179A8:
-    EXECUTE_SUBROUTINE .sub_1176E0
+.cutscene_700_kai_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box_default
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 2
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 2    ; Kai explains who Karen is
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_11799C
+    EXECUTE_SUBROUTINE .cutscene_700_kai_wait
 
-.branch_1179CC:
-    SPAWN_EXECUTOR 1, .executor_1_1179D8
+; ============================================
+; Cutscene 701 - Karen falls; player or Kai helps her up
+;   Dialogue 0 asks player whether to help.
+;   Branch 0 (player helps): affection +10 for Karen. Texts 4, 7, 8.
+;   Branch 1 (Kai helps): affection -30 Karen, +20 Kai. Texts 5, 6, 7, 8.
+; ============================================
+
+.cutscene_701:
+    SPAWN_EXECUTOR 1, .cutscene_701_karen_fallen
     DEACTIVATE_SELF
 
-.executor_1_1179D8:
-    EXECUTE_SUBROUTINE .sub_11787C
+.cutscene_701_karen_fallen:
+    EXECUTE_SUBROUTINE .setup_karen_slot_37
     SET_COORDINATES -352, 0, -304
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
     WAIT_RGBA_FINISHED
     SET_ENTITY_ANIMATION 34
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_117A04
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_CALLBACK_ROUTINE 0, 32768, .cutscene_701_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_117A04:
-    EXECUTE_SUBROUTINE .sub_1176E0
+.cutscene_701_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box_default
     PAUSE_ENTITY 0
-    INIT_DIALOGUE_SESSION 0, 51, 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VINEYARD_CUTSCENES, 0
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_117A34
-    BRANCH_ON_DIALOGUE 0, 1, .branch_117C7C
-    EXECUTE_SUBROUTINE .sub_1176D8
+    BRANCH_ON_DIALOGUE 0, 0, .cutscene_701_player_helps
+    BRANCH_ON_DIALOGUE 0, 1, .cutscene_701_kai_helps
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_117A34:
-    UPDATE_U8_VALUE 10, 255, npcAffection + 0x4
-    SPAWN_EXECUTOR 7, .executor_7_117A74
-    EXECUTE_SUBROUTINE .sub_1176D8
+.cutscene_701_player_helps:
+    UPDATE_U8_VALUE 10, 255, npcAffection[KAREN]
+    SPAWN_EXECUTOR 7, .cutscene_701_player_carries_karen
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_117A4C:
+.cutscene_701_karen_tracking_player:
     SET_ENTITY_TRACKING_TARGET 0, 0, 19, 17, 255
     SET_ENTITY_ANIMATION 46
-    EXECUTE_SUBROUTINE .sub_1176D8
+    EXECUTE_SUBROUTINE .wait_loop
     SET_ENTITY_TRACKING_TARGET 0, 0, 19, 17, 255
     SET_ENTITY_ANIMATION 47
-    EXECUTE_SUBROUTINE .sub_1176D8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_117A74:
-    EXECUTE_SUBROUTINE .sub_1177D4
+.cutscene_701_player_carries_karen:
+    EXECUTE_SUBROUTINE .setup_player
     TOGGLE_PAUSE_ENTITIES
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 429
     WAIT_ENTITY_ANIMATION
     SET_HOLDING_ANIMATION_FLAG TRUE
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_117A4C
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_701_karen_tracking_player
     SET_WAIT_FRAMES 1
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 4
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 4    ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 112, 6, 2
+    ENTITY_WALK 112, SOUTHEAST, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
-    ENTITY_WALK 48, 0, 2
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 7
+    ENTITY_WALK 48, SOUTHWEST, 2
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 7    ; Sasha
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 8
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 8    ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 8
@@ -283,445 +302,465 @@
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_SPECIAL_BIT 30, gCutsceneCompletionFlags
     DEACTIVATE_EXECUTOR 1
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.sub_117B0C:
-    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWeather, .branch_117BF4
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .branch_117B88
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHour, .branch_117B94
-    BRANCH_U8_VAR_WITHIN_RANGE 6, 7, gHour, .branch_117BA0
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .branch_117BAC
-    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .branch_117BB8
-    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, gHour, .branch_117BC4
-    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, gHour, .branch_117BD0
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .branch_117B94
-    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .branch_117B88
-    EXECUTE_SUBROUTINE .sub_117CB8
+; Lighting dispatcher by hour / weather.
+.apply_lighting_by_time:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWeather, .lighting_weather_2
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .lighting_hour_0_4
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHour, .lighting_hour_5
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 7, gHour, .lighting_hour_6_7
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .lighting_hour_8_11
+    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .lighting_hour_12_15
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, gHour, .lighting_hour_16
+    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, gHour, .lighting_hour_17
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .lighting_hour_5
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .lighting_hour_0_4
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117B88:
+.lighting_hour_0_4:
     UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117B94:
+.lighting_hour_5:
     UPDATE_GLOBAL_RGBA 128, 128, 128, 128, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117BA0:
+.lighting_hour_6_7:
     UPDATE_GLOBAL_RGBA 192, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117BAC:
+.lighting_hour_8_11:
     UPDATE_GLOBAL_RGBA 224, 224, 224, 224, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117BB8:
+.lighting_hour_12_15:
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117BC4:
+.lighting_hour_16:
     UPDATE_GLOBAL_RGBA 255, 224, 224, 224, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117BD0:
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWeather, .branch_117BE8
+.lighting_hour_17:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWeather, .lighting_hour_17_weather_3
     UPDATE_GLOBAL_RGBA 255, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117BE8:
+.lighting_hour_17_weather_3:
     UPDATE_GLOBAL_RGBA 192, 192, 192, 192, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117BF4:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .branch_117C4C
-    BRANCH_U8_VAR_WITHIN_RANGE 5, 7, gHour, .branch_117C58
-    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .branch_117C64
-    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .branch_117C70
-    BRANCH_U8_VAR_WITHIN_RANGE 16, 17, gHour, .branch_117C64
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .branch_117C58
-    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .branch_117C4C
-    EXECUTE_SUBROUTINE .sub_117CB8
+.lighting_weather_2:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .lighting_w2_hour_0_4
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 7, gHour, .lighting_w2_hour_5_7
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .lighting_w2_hour_8_11
+    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .lighting_w2_hour_12_15
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 17, gHour, .lighting_w2_hour_8_11
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .lighting_w2_hour_5_7
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .lighting_w2_hour_0_4
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117C4C:
+.lighting_w2_hour_0_4:
     UPDATE_GLOBAL_RGBA 80, 80, 128, 80, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117C58:
+.lighting_w2_hour_5_7:
     UPDATE_GLOBAL_RGBA 112, 112, 192, 112, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117C64:
+.lighting_w2_hour_8_11:
     UPDATE_GLOBAL_RGBA 128, 128, 208, 128, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117C70:
+.lighting_w2_hour_12_15:
     UPDATE_GLOBAL_RGBA 144, 144, 255, 144, 8
-    EXECUTE_SUBROUTINE .sub_117CB8
+    EXECUTE_SUBROUTINE .lighting_apply_tail
 
-.branch_117C7C:
-    UPDATE_U8_VALUE -30, 255, npcAffection + 0x4
-    UPDATE_U8_VALUE 20, 255, npcAffection + 0xA
+.cutscene_701_kai_helps:
+    UPDATE_U8_VALUE -30, 255, npcAffection[KAREN]
+    UPDATE_U8_VALUE 20, 255, npcAffection[KAI]
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    SPAWN_EXECUTOR 2, .executor_2_117CF0
-    SPAWN_EXECUTOR 7, .executor_7_117DD4
+    SPAWN_EXECUTOR 2, .cutscene_701_kai_entry
+    SPAWN_EXECUTOR 7, .cutscene_701_player_watches
     SET_WAIT_FRAMES 15
-    EXECUTE_SUBROUTINE .sub_117B0C
+    EXECUTE_SUBROUTINE .apply_lighting_by_time
 
-.sub_117CB8:
+.lighting_apply_tail:
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_117D04
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_OTHER_EXECUTOR_PTR 2, .cutscene_701_kai_pickup
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_117CCC:
-    SETUP_ENTITY 36, 11, 1
+.setup_kai_slot_36:
+    SETUP_ENTITY 36, ENTITY_ASSET_KAI, 1
     SET_ENTITY_ANIMATIONS 36, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_2_117CF0:
-    EXECUTE_SUBROUTINE .sub_117CCC
+.cutscene_701_kai_entry:
+    EXECUTE_SUBROUTINE .setup_kai_slot_36
     SET_COORDINATES -352, 0, -328
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_117D04:
+.cutscene_701_kai_pickup:
     SET_ENTITY_ANIMATION 28
     SET_WAIT_FRAMES 15
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_117DC0
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_701_karen_tracking_kai_b
     SET_WAIT_FRAMES 1
     SET_ENTITY_ANIMATION 30
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 5
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 5    ; narration
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 6
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 6    ; Kai barrel joke + Karen reaction
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_117DAC
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_701_karen_tracking_kai_a
     SET_WAIT_FRAMES 1
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     SET_ENTITY_ANIMATION 33
     SET_FRAME_DELTA 2, 0, 0, 32
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_11780C
+    SET_OTHER_EXECUTOR_PTR 7, .face_east_idle
     SET_FRAME_DELTA 2, 0, 0, 32
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_11782C
+    SET_OTHER_EXECUTOR_PTR 7, .face_southeast_idle
     SET_FRAME_DELTA 2, 0, 0, 32
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 7
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 7    ; Sasha
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 8
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 8    ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    TOGGLE_SPECIAL_BIT 30, gCutsceneCompletionFlags
+    CLEAR_SPECIAL_BIT 30, gCutsceneCompletionFlags
     DEACTIVATE_EXECUTOR 1
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1177F4
-    EXECUTE_SUBROUTINE .sub_1176CC
+    SET_OTHER_EXECUTOR_PTR 7, .clear_map_indep_and_deactivate
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_1_117DAC:
+.cutscene_701_karen_tracking_kai_a:
     SET_ENTITY_TRACKING_TARGET 36, 0, 19, 17, 255
     SET_ENTITY_ANIMATION 46
-    EXECUTE_SUBROUTINE .sub_1176D8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_117DC0:
+.cutscene_701_karen_tracking_kai_b:
     SET_ENTITY_TRACKING_TARGET 36, 0, 19, 17, 255
     SET_ENTITY_ANIMATION 47
-    EXECUTE_SUBROUTINE .sub_1176D8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_7_117DD4:
-    EXECUTE_SUBROUTINE .sub_1177D4
+.cutscene_701_player_watches:
+    EXECUTE_SUBROUTINE .setup_player
     TOGGLE_PAUSE_ENTITY 0
     SET_COORDINATES -352, 0, -256
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_117DEC:
+; ============================================
+; Cutscene 702 - Karen and Ann chat about Cliff
+;   Camera scrolls in, then Karen/Ann dialogue.
+;   Texts 10-16 (Ann/Karen about "troubles" and Cliff).
+; ============================================
+
+.cutscene_702:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_117F98
-    SPAWN_EXECUTOR 2, .executor_2_117FD0
-    SPAWN_EXECUTOR 7, .executor_7_117F80
-    SPAWN_EXECUTOR 11, .executor_11_117E14
+    SPAWN_EXECUTOR 1, .cutscene_702_karen_spawn
+    SPAWN_EXECUTOR 2, .cutscene_702_ann_spawn
+    SPAWN_EXECUTOR 7, .cutscene_702_player_setup
+    SPAWN_EXECUTOR 11, .cutscene_702_camera_pan
     DEACTIVATE_SELF
 
-.executor_11_117E14:
+.cutscene_702_camera_pan:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
     WAIT_RGBA_FINISHED
     SET_FRAME_DELTA -2, 0, -4, 86
     SET_WAIT_FRAMES 15
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 10
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 10   ; Ann
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_117E70
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_702_karen_anim
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_11_117E54:
+.cutscene_702_camera_pan_back:
     SET_FRAME_DELTA 2, 0, 4, 86
-    SET_OTHER_EXECUTOR_PTR 7, .executor_7_1177FC
-    SPAWN_EXECUTOR 32, .sub_1176CC
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_OTHER_EXECUTOR_PTR 7, .reset_tracking_and_deactivate
+    SPAWN_EXECUTOR 32, .complete_cutscene
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_117E70:
+.cutscene_702_karen_anim:
     SET_ENTITY_ANIMATION 65
     WAIT_ENTITY_ANIMATION
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 11
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 11   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    SET_OTHER_EXECUTOR_PTR 2, .executor_2_117E98
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_OTHER_EXECUTOR_PTR 2, .cutscene_702_ann_dialogue
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_117E98:
-    SET_ASSET_ROTATION 0
+.cutscene_702_ann_dialogue:
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 8
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 39
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 12
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 12   ; Ann
     WAIT_MESSAGE_BOX_CLOSED 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_11781C
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 13
+    SET_OTHER_EXECUTOR_PTR 1, .face_northeast_idle
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 13   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 15
-    SET_ASSET_ROTATION 6
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 14
+    SET_ASSET_ROTATION SOUTHEAST
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 14   ; Ann
     WAIT_MESSAGE_BOX_CLOSED 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_7_11782C
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 15
+    SET_OTHER_EXECUTOR_PTR 1, .face_southeast_idle
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 15   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 8
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 39
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 16
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 16   ; Ann
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_117F64
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_702_karen_exit_walk
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    ENTITY_WALK 19, 0, 3
-    ENTITY_WALK 34, 2, 3
-    SET_ASSET_ROTATION 4
+    ENTITY_WALK 19, SOUTHWEST, 3
+    ENTITY_WALK 34, NORTHWEST, 3
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 4
-    SET_OTHER_EXECUTOR_PTR 11, .executor_11_117E54
+    SET_OTHER_EXECUTOR_PTR 11, .cutscene_702_camera_pan_back
     DEACTIVATE_SELF
 
-.executor_1_117F64:
-    ENTITY_WALK 8, 0, 3
-    ENTITY_WALK 34, 2, 3
-    SET_ASSET_ROTATION 4
+.cutscene_702_karen_exit_walk:
+    ENTITY_WALK 8, SOUTHWEST, 3
+    ENTITY_WALK 34, NORTHWEST, 3
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 4
     DEACTIVATE_SELF
 
-.executor_7_117F80:
-    EXECUTE_SUBROUTINE .sub_1177D4
+.cutscene_702_player_setup:
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
-    EXECUTE_SUBROUTINE .sub_1176D8
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_117F98:
-    EXECUTE_SUBROUTINE .sub_11787C
+.cutscene_702_karen_spawn:
+    EXECUTE_SUBROUTINE .setup_karen_slot_37
     SET_COORDINATES 192, 0, -176
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.sub_117FAC:
-    SETUP_ENTITY 36, 4, 1
+.setup_ann_slot_36:
+    SETUP_ENTITY 36, ENTITY_ASSET_ANN, 1
     SET_ENTITY_ANIMATIONS 36, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     RETURN_FROM_SUBROUTINE
 
-.executor_2_117FD0:
-    EXECUTE_SUBROUTINE .sub_117FAC
+.cutscene_702_ann_spawn:
+    EXECUTE_SUBROUTINE .setup_ann_slot_36
     SET_COORDINATES 192, 0, -208
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_117FE4:
+; ============================================
+; Cutscene 703 - Kai asks the player to help mend Karen and her father
+;   Camera scrolls in, Karen plays her speech anim, then a dialogue.
+;   Kai follows up when interacted with. Texts 17-21.
+; ============================================
+
+.cutscene_703:
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_11807C
-    SPAWN_EXECUTOR 2, .executor_2_118110
-    EXECUTE_SUBROUTINE .sub_1177D4
+    SPAWN_EXECUTOR 1, .cutscene_703_karen_spawn
+    SPAWN_EXECUTOR 2, .cutscene_703_kai_spawn
+    EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION 3
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
+    SET_ASSET_ROTATION NORTH
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
     WAIT_RGBA_FINISHED
-    SPAWN_EXECUTOR 41, .executor_41_11802C
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SPAWN_EXECUTOR 41, .cutscene_703_camera_pan
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_11802C:
+.cutscene_703_camera_pan:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
+    SET_ASSET_ROTATION SOUTH
     SET_FRAME_DELTA -2, 0, -2, 98
     SET_WAIT_FRAMES 10
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 17
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 17   ; Kai
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_118090
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_703_karen_speech
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_11805C:
+.cutscene_703_camera_pan_back:
     SET_WAIT_FRAMES 15
     SET_FRAME_DELTA 2, 0, 2, 98
-    SET_OTHER_EXECUTOR_PTR 0, .executor_7_1177FC
-    SPAWN_EXECUTOR 32, .sub_1176CC
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_OTHER_EXECUTOR_PTR 0, .reset_tracking_and_deactivate
+    SPAWN_EXECUTOR 32, .complete_cutscene
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_11807C:
-    EXECUTE_SUBROUTINE .sub_11787C
+.cutscene_703_karen_spawn:
+    EXECUTE_SUBROUTINE .setup_karen_slot_37
     SET_COORDINATES 92, 0, -64
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_118090:
-    SPAWN_EXECUTOR 32, .executor_32_117760
+.cutscene_703_karen_speech:
+    SPAWN_EXECUTOR 32, .held_item_track_37_a0
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 39
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 18
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 18   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 10
-    SET_ASSET_ROTATION 4
-    SPAWN_EXECUTOR 32, .executor_32_117780
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 19
+    SET_ASSET_ROTATION NORTHEAST
+    SPAWN_EXECUTOR 32, .held_item_track_36_a5
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 19   ; Kai
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 16, 4, 2
-    SET_ASSET_ROTATION 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 20
+    ENTITY_WALK 16, NORTHEAST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 20   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 28, 4, 2
-    SET_OTHER_EXECUTOR_PTR 41, .executor_41_11805C
+    ENTITY_WALK 28, NORTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 41, .cutscene_703_camera_pan_back
     DEACTIVATE_SELF
 
-.executor_2_118110:
-    EXECUTE_SUBROUTINE .sub_117CCC
+.cutscene_703_kai_spawn:
+    EXECUTE_SUBROUTINE .setup_kai_slot_36
     SET_COORDINATES 92, 0, -32
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
 
-.sub_118120:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_11812C
-    EXECUTE_SUBROUTINE .sub_1176D8
+.cutscene_703_kai_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cutscene_703_kai_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_11812C:
-    EXECUTE_SUBROUTINE .sub_1176E0
+.cutscene_703_kai_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box_default
     PAUSE_ENTITY 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 21
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 21   ; Kai
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITY 0
-    EXECUTE_SUBROUTINE .sub_118120
+    EXECUTE_SUBROUTINE .cutscene_703_kai_wait
 
-.branch_11814C:
+; ============================================
+; Cutscene 704 - Visit Karen in her room
+;   Player interacts with Karen or items. Level interaction 32 = Karen
+;   (texts 22/23/24 via state bits), 16 = locked door (texts 26/27),
+;   17 = chest (text 28), 18 = another item (text 29), 33 = exit (text 25).
+; ============================================
+
+.cutscene_704:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
-    SPAWN_EXECUTOR 1, .executor_1_118194
-    EXECUTE_SUBROUTINE .sub_1177D4
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
+    SPAWN_EXECUTOR 1, .cutscene_704_karen_spawn
+    EXECUTE_SUBROUTINE .setup_player
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
     SET_COORDINATES -8, 0, -68
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
-    SPAWN_EXECUTOR 41, .executor_41_1181BC
+    SPAWN_EXECUTOR 41, .cutscene_704_interact_watcher
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_1_118194:
+.cutscene_704_karen_spawn:
     SET_SHADOW_FLAGS 5, 255
-    EXECUTE_SUBROUTINE .sub_11787C
+    EXECUTE_SUBROUTINE .setup_karen_slot_37
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES 100, 160, -56
 
-.executor_1_1181AC:
+.cutscene_704_karen_anim_chest:
     SET_ENTITY_ANIMATION 110
-    EXECUTE_SUBROUTINE .sub_1176D8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_1181B4:
+.cutscene_704_karen_anim_default:
     SET_ENTITY_ANIMATION 111
-    EXECUTE_SUBROUTINE .sub_1176D8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_41_1181BC:
+.cutscene_704_interact_watcher:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_BUTTON_PRESSED 0, 32768, .branch_1181DC
-    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, cutsceneLevelInteractionIndex, .branch_1182E8
-    EXECUTE_SUBROUTINE .executor_41_1181BC
+    BRANCH_ON_BUTTON_PRESSED 0, 32768, .cutscene_704_interact_dispatch
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, cutsceneLevelInteractionIndex, .cutscene_704_exit
+    EXECUTE_SUBROUTINE .cutscene_704_interact_watcher
 
-.branch_1181DC:
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_41_1181BC
-    EXECUTE_SUBROUTINE .sub_1176E0
-    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, interactedWithLevelInteractionIndex, .branch_118220
-    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, interactedWithLevelInteractionIndex, .branch_118284
-    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, interactedWithLevelInteractionIndex, .branch_1182B8
-    BRANCH_U8_VAR_WITHIN_RANGE 18, 18, interactedWithLevelInteractionIndex, .branch_1182D0
-    EXECUTE_SUBROUTINE .executor_41_1181BC
+.cutscene_704_interact_dispatch:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .cutscene_704_interact_watcher
+    EXECUTE_SUBROUTINE .setup_message_box_default
+    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, interactedWithLevelInteractionIndex, .cutscene_704_karen_interact_1
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, interactedWithLevelInteractionIndex, .cutscene_704_bottle_interact
+    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, interactedWithLevelInteractionIndex, .cutscene_704_chest_interact
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 18, interactedWithLevelInteractionIndex, .cutscene_704_item_18_interact
+    EXECUTE_SUBROUTINE .cutscene_704_interact_watcher
 
-.branch_118220:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_1181B4
+.cutscene_704_karen_interact_1:
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_704_karen_anim_default
     PAUSE_ENTITIES
-    BRANCH_ON_SPECIAL_BIT 1, var0, .branch_118278
-    BRANCH_ON_SPECIAL_BIT 0, var0, .branch_118264
+    BRANCH_ON_SPECIAL_BIT 1, var0, .cutscene_704_karen_interact_3
+    BRANCH_ON_SPECIAL_BIT 0, var0, .cutscene_704_karen_interact_2
     SET_SPECIAL_BIT 0, var0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 22
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 22   ; Karen
 
-.sub_118254:
+.cutscene_704_interact_close:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .executor_41_1181BC
+    EXECUTE_SUBROUTINE .cutscene_704_interact_watcher
 
-.branch_118264:
+.cutscene_704_karen_interact_2:
     SET_SPECIAL_BIT 1, var0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 23
-    EXECUTE_SUBROUTINE .sub_118254
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 23   ; Karen
+    EXECUTE_SUBROUTINE .cutscene_704_interact_close
 
-.branch_118278:
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 24
-    EXECUTE_SUBROUTINE .sub_118254
+.cutscene_704_karen_interact_3:
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 24   ; Karen
+    EXECUTE_SUBROUTINE .cutscene_704_interact_close
 
-.branch_118284:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_1181B4
+.cutscene_704_bottle_interact:
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_704_karen_anim_default
     PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_117700
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 26
+    EXECUTE_SUBROUTINE .setup_message_box_narrow
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 26   ; narration: bottle with shells
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
-    EXECUTE_SUBROUTINE .sub_1176E0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 27
-    EXECUTE_SUBROUTINE .sub_118254
+    EXECUTE_SUBROUTINE .setup_message_box_default
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 27   ; Karen
+    EXECUTE_SUBROUTINE .cutscene_704_interact_close
 
-.branch_1182B8:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_1181AC
+.cutscene_704_chest_interact:
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_704_karen_anim_chest
     PAUSE_ENTITIES
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 28
-    EXECUTE_SUBROUTINE .sub_118254
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 28   ; Karen
+    EXECUTE_SUBROUTINE .cutscene_704_interact_close
 
-.branch_1182D0:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_1181B4
+.cutscene_704_item_18_interact:
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_704_karen_anim_default
     PAUSE_ENTITIES
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 29
-    EXECUTE_SUBROUTINE .sub_118254
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 29   ; Karen
+    EXECUTE_SUBROUTINE .cutscene_704_interact_close
 
-.branch_1182E8:
-    UPDATE_U8_VALUE 10, 255, npcAffection + 0x4
+.cutscene_704_exit:
+    UPDATE_U8_VALUE 10, 255, npcAffection[KAREN]
     PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_1176E0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 25
+    EXECUTE_SUBROUTINE .setup_message_box_default
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 25   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
@@ -730,52 +769,58 @@
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     DEACTIVATE_EXECUTOR 1
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_118334:
-    SPAWN_EXECUTOR 1, .executor_1_11835C
+; ============================================
+; Cutscene 705 - Karen offers a trip to the cellar
+;   Dialogue 1 asks yes/no. Accept: walks off with Karen (bit 1).
+;   Decline: Karen "See you later" text 33, bit 30.
+; ============================================
+
+.cutscene_705:
+    SPAWN_EXECUTOR 1, .cutscene_705_karen_entry
     DEACTIVATE_SELF
 
-.executor_0_118340:
-    EXECUTE_SUBROUTINE .sub_1177D4
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
-    ENTITY_WALK 48, 2, 2
-    EXECUTE_SUBROUTINE .sub_1176D8
+.cutscene_705_player_follow:
+    EXECUTE_SUBROUTINE .setup_player
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
+    ENTITY_WALK 48, NORTHWEST, 2
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_11835C:
-    EXECUTE_SUBROUTINE .sub_11787C
+.cutscene_705_karen_entry:
+    EXECUTE_SUBROUTINE .setup_karen_slot_37
     SET_COORDINATES -32, 0, -16
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 32
     PAUSE_ENTITY 0
-    SPAWN_EXECUTOR 16, .executor_16_11779C
+    SPAWN_EXECUTOR 16, .held_item_track_player_a1
     SET_WAIT_FRAMES 20
-    ENTITY_WALK 16, 6, 2
+    ENTITY_WALK 16, SOUTHEAST, 2
     SET_ENTITY_ANIMATION 38
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 42
-    INIT_DIALOGUE_SESSION 0, 51, 1
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VINEYARD_CUTSCENES, 1
     WAIT_FOR_DIALOGUE_INPUT 0
     SET_ENTITY_ANIMATION 38
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_1183C4
-    BRANCH_ON_DIALOGUE 0, 1, .branch_118400
+    BRANCH_ON_DIALOGUE 0, 0, .cutscene_705_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cutscene_705_decline
 
-.branch_1183C4:
+.cutscene_705_accept:
     TOGGLE_PAUSE_ENTITY 0
-    SPAWN_EXECUTOR 0, .executor_0_118340
+    SPAWN_EXECUTOR 0, .cutscene_705_player_follow
     SET_WAIT_FRAMES 1
-    ENTITY_WALK 16, 2, 2
+    ENTITY_WALK 16, NORTHWEST, 2
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
-    ENTITY_WALK 32, 2, 2
+    ENTITY_WALK 32, NORTHWEST, 2
     SET_WAIT_FRAMES 1
     DEACTIVATE_EXECUTOR 0
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_118400:
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 33
+.cutscene_705_decline:
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 33   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
@@ -786,41 +831,47 @@
     IDLE_WHILE_SEQUENCE_PLAYING 0
     TOGGLE_PAUSE_ENTITY 0
     SET_SPECIAL_BIT 30, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_118444:
+; ============================================
+; Cutscene 706 - In the cellar with Karen
+;   Karen introduces wine barrels (text 32), player can interact for
+;   the "shall we go back?" line (text 34), then fade out.
+; ============================================
+
+.cutscene_706:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     SET_WAIT_FRAMES 1
-    SPAWN_EXECUTOR 1, .executor_1_1184A8
-    EXECUTE_SUBROUTINE .sub_1177D4
+    SPAWN_EXECUTOR 1, .cutscene_706_karen_spawn
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -24, 0, -64
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
-    SET_ASSET_ROTATION 4
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_WAIT_FRAMES 10
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 32
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 32   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SPAWN_EXECUTOR 41, .executor_41_118500
+    SPAWN_EXECUTOR 41, .cutscene_706_exit_watcher
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_1_1184A8:
-    EXECUTE_SUBROUTINE .sub_11787C
+.cutscene_706_karen_spawn:
+    EXECUTE_SUBROUTINE .setup_karen_slot_37
     SET_COORDINATES -24, 0, -96
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1184C4
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cutscene_706_karen_on_interact_cb
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1184C4:
+.cutscene_706_karen_on_interact_cb:
     FLIP_ENTITY_DIRECTION 0
 
-.executor_1_1184C8:
+.cutscene_706_karen_on_interact:
     PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_1176E0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 34
+    EXECUTE_SUBROUTINE .setup_message_box_default
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 34   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -828,80 +879,88 @@
     TOGGLE_PAUSE_ENTITIES
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
     DEACTIVATE_EXECUTOR 41
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_41_118500:
+.cutscene_706_exit_watcher:
     SET_WAIT_FRAMES 1
-    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, cutsceneLevelInteractionIndex, .branch_118514
-    EXECUTE_SUBROUTINE .executor_41_118500
+    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, cutsceneLevelInteractionIndex, .cutscene_706_exit_trigger
+    EXECUTE_SUBROUTINE .cutscene_706_exit_watcher
 
-.branch_118514:
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_1184C8
+.cutscene_706_exit_trigger:
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_706_karen_on_interact
     DEACTIVATE_SELF
 
-.branch_118520:
+; ============================================
+; Cutscene 707 - Cellar hidden area
+;   Karen wanders. Player interacts (dialogue 2). Waiting long enough
+;   (D_80189824 reaches 900) triggers Gotz (text 43). Exit via
+;   interaction index 3 (text 35 is the initial "will not open"). Level
+;   interaction 32 = locked door (text 46).
+; ============================================
+
+.cutscene_707:
     SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
     INIT_MAP_ADDITION 0, 0
-    SPAWN_EXECUTOR 1, .executor_1_1185A0
-    EXECUTE_SUBROUTINE .sub_1177D4
+    SPAWN_EXECUTOR 1, .cutscene_707_karen_spawn
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 0, 0, -16
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
-    SET_ASSET_ROTATION 6
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
+    SET_ASSET_ROTATION SOUTHEAST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
-    SPAWN_EXECUTOR 16, .executor_16_1177B8
+    SPAWN_EXECUTOR 16, .held_item_track_37_a1
     SET_WAIT_FRAMES 10
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 35
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 35   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_1185CC
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_707_karen_wander
     SET_U16_VALUE 0, D_80189824
-    SPAWN_EXECUTOR 41, .executor_41_11869C
+    SPAWN_EXECUTOR 41, .cutscene_707_exit_watcher
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.executor_1_1185A0:
-    SETUP_ENTITY 37, 5, 1
+.cutscene_707_karen_spawn:
+    SETUP_ENTITY 37, ENTITY_ASSET_KAREN, 1
     SET_ENTITY_ANIMATIONS 37, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 64, 0, -16
-    SET_ASSET_ROTATION 6
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_1185CC:
+.cutscene_707_karen_wander:
     SET_ENTITY_WANDER 2, 32, 32
 
-.branch_1185D4:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_1185E0
-    EXECUTE_SUBROUTINE .sub_1176D8
+.cutscene_707_karen_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cutscene_707_karen_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1185E0:
-    BRANCH_ON_SPECIAL_BIT 31, var0, .branch_1185D4
+.cutscene_707_karen_on_interact:
+    BRANCH_ON_SPECIAL_BIT 31, var0, .cutscene_707_karen_wait
     SET_SPECIAL_BIT 0, var0
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_1176E0
-    INIT_DIALOGUE_SESSION 0, 51, 2
+    EXECUTE_SUBROUTINE .setup_message_box_default
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VINEYARD_CUTSCENES, 2
     WAIT_FOR_DIALOGUE_INPUT 0
     TOGGLE_PAUSE_ENTITIES
-    TOGGLE_SPECIAL_BIT 0, var0
-    EXECUTE_SUBROUTINE .branch_1185D4
+    CLEAR_SPECIAL_BIT 0, var0
+    EXECUTE_SUBROUTINE .cutscene_707_karen_wait
 
-.executor_3_11861C:
-    SETUP_ENTITY 36, 18, 1
+.cutscene_707_gotz_intrusion:
+    SETUP_ENTITY 36, ENTITY_ASSET_GOTZ, 1
     SET_ENTITY_ANIMATIONS 36, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 0
     SET_COORDINATES 96, 64, -16
-    SET_ASSET_ROTATION 2
+    SET_ASSET_ROTATION NORTHWEST
     SET_WAIT_FRAMES 1
     PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_1176E0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 43
+    EXECUTE_SUBROUTINE .setup_message_box_default
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 43   ; Gotz
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    TOGGLE_SPECIAL_BIT 31, var0
+    CLEAR_SPECIAL_BIT 31, var0
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     TOGGLE_PAUSE_ENTITIES
@@ -909,37 +968,37 @@
     SET_U8_VALUE 21, gHour
     SET_U8_VALUE 0, gMinutes
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_41_11869C:
+.cutscene_707_exit_watcher:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_SPECIAL_BIT 0, var0, .executor_41_11869C
-    BRANCH_ON_BUTTON_PRESSED 0, 32768, .branch_1186EC
+    BRANCH_ON_SPECIAL_BIT 0, var0, .cutscene_707_exit_watcher
+    BRANCH_ON_BUTTON_PRESSED 0, 32768, .cutscene_707_button_dispatch
     UPDATE_U16_VALUE 1, 9999, D_80189824
-    BRANCH_U16_VAR_WITHIN_RANGE 900, 9999, D_80189824, .branch_1186D8
-    EXECUTE_SUBROUTINE .executor_41_11869C
+    BRANCH_U16_VAR_WITHIN_RANGE 900, 9999, D_80189824, .cutscene_707_timeout
+    EXECUTE_SUBROUTINE .cutscene_707_exit_watcher
 
-.branch_1186D8:
+.cutscene_707_timeout:
     SET_SPECIAL_BIT 31, var0
-    SPAWN_EXECUTOR 3, .executor_3_11861C
+    SPAWN_EXECUTOR 3, .cutscene_707_gotz_intrusion
     DEACTIVATE_SELF
 
-.branch_1186EC:
-    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, interactedWithLevelInteractionIndex, .branch_118708
-    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, interactedWithLevelInteractionIndex, .branch_11872C
-    EXECUTE_SUBROUTINE .executor_41_11869C
+.cutscene_707_button_dispatch:
+    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, interactedWithLevelInteractionIndex, .cutscene_707_door_locked
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, interactedWithLevelInteractionIndex, .cutscene_707_secret_exit
+    EXECUTE_SUBROUTINE .cutscene_707_exit_watcher
 
-.branch_118708:
+.cutscene_707_door_locked:
     PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_117700
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 46
+    EXECUTE_SUBROUTINE .setup_message_box_narrow
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 46   ; narration
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    EXECUTE_SUBROUTINE .sub_1176E0
+    EXECUTE_SUBROUTINE .setup_message_box_default
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .executor_41_11869C
+    EXECUTE_SUBROUTINE .cutscene_707_exit_watcher
 
-.branch_11872C:
+.cutscene_707_secret_exit:
     PAUSE_ENTITIES
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     SET_WAIT_FRAMES 32
@@ -949,208 +1008,228 @@
     SET_U8_VALUE 0, gMinutes
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 10, D_80237A00
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_118768:
+; ============================================
+; Cutscene 708 - Re-entry into cellar hidden area
+;   Reuses the 707 Karen spawn / interactive wait / watcher with a
+;   pre-loaded timer value (150).
+; ============================================
+
+.cutscene_708:
     INIT_MAP_ADDITION 0, 0
-    SPAWN_EXECUTOR 1, .executor_1_1185A0
+    SPAWN_EXECUTOR 1, .cutscene_707_karen_spawn
     SET_WAIT_FRAMES 32
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_1185CC
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_707_karen_wander
     SET_U16_VALUE 150, D_80189824
-    SPAWN_EXECUTOR 41, .executor_41_11869C
+    SPAWN_EXECUTOR 41, .cutscene_707_exit_watcher
     DEACTIVATE_SELF
 
-.branch_118798:
+; ============================================
+; Cutscene 709 - Karen back in the vineyard
+;   If D_80237A00 bit 10 is set (secret exit was taken in 707) take
+;   the remembrance path with dialogue 4 (texts 38/41/42).
+;   Otherwise, text 44/45.
+; ============================================
+
+.cutscene_709:
     SET_WAIT_FRAMES 1
-    BRANCH_ON_SPECIAL_BIT 10, D_80237A00, .branch_118804
-    SPAWN_EXECUTOR 1, .executor_1_11884C
-    EXECUTE_SUBROUTINE .sub_1177D4
+    BRANCH_ON_SPECIAL_BIT 10, D_80237A00, .cutscene_709_remembrance_path
+    SPAWN_EXECUTOR 1, .cutscene_709_karen_spawn_default
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 176, 0, 144
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
-    SET_ASSET_ROTATION 4
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 1
     PAUSE_ENTITIES
-    SET_OTHER_EXECUTOR_PTR 1, .executor_7_117824
+    SET_OTHER_EXECUTOR_PTR 1, .face_southwest_idle
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
     WAIT_RGBA_FINISHED
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 44
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 44   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_118860
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_709_default_tail
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_118804:
-    SPAWN_EXECUTOR 1, .executor_1_1188A4
-    EXECUTE_SUBROUTINE .sub_1177D4
+.cutscene_709_remembrance_path:
+    SPAWN_EXECUTOR 1, .cutscene_709_karen_spawn_remembrance
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 16, 0, 112
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
-    SET_ASSET_ROTATION 4
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
-    ENTITY_WALK 48, 4, 2
-    ENTITY_WALK 32, 6, 2
-    SET_ASSET_ROTATION 4
-    EXECUTE_SUBROUTINE .sub_1176D8
+    ENTITY_WALK 48, NORTHEAST, 2
+    ENTITY_WALK 32, SOUTHEAST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_11884C:
-    EXECUTE_SUBROUTINE .sub_11787C
+.cutscene_709_karen_spawn_default:
+    EXECUTE_SUBROUTINE .setup_karen_slot_37
     SET_COORDINATES 176, 0, 112
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_118860:
+.cutscene_709_default_tail:
     TOGGLE_PAUSE_ENTITIES
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION 39
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 45
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 45   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_ANIMATION 35
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
     SET_WAIT_FRAMES 5
-    ENTITY_WALK 96, 4, 2
-    SET_OTHER_EXECUTOR_PTR 0, .executor_7_1177F4
-    EXECUTE_SUBROUTINE .sub_1176CC
+    ENTITY_WALK 96, NORTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 0, .clear_map_indep_and_deactivate
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_1_1188A4:
-    EXECUTE_SUBROUTINE .sub_11787C
+.cutscene_709_karen_spawn_remembrance:
+    EXECUTE_SUBROUTINE .setup_karen_slot_37
     SET_COORDINATES 16, 0, 80
-    SET_ASSET_ROTATION 0
-    ENTITY_WALK 48, 4, 2
-    ENTITY_WALK 32, 6, 2
-    SET_ASSET_ROTATION 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 38
+    SET_ASSET_ROTATION SOUTHWEST
+    ENTITY_WALK 48, NORTHEAST, 2
+    ENTITY_WALK 32, SOUTHEAST, 2
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 38   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    INIT_DIALOGUE_SESSION 0, 51, 4
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VINEYARD_CUTSCENES, 4
     WAIT_FOR_DIALOGUE_INPUT 0
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 20
-    BRANCH_ON_DIALOGUE 0, 0, .branch_118904
-    BRANCH_ON_DIALOGUE 0, 1, .branch_11894C
+    BRANCH_ON_DIALOGUE 0, 0, .cutscene_709_remember_yes
+    BRANCH_ON_DIALOGUE 0, 1, .cutscene_709_remember_no
 
-.branch_118904:
-    UPDATE_U8_VALUE 8, 255, npcAffection + 0x4
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 41
+.cutscene_709_remember_yes:
+    UPDATE_U8_VALUE 8, 255, npcAffection[KAREN]
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 41   ; Karen
 
-.sub_118918:
+.cutscene_709_remember_tail:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    SET_ASSET_ROTATION 0
+    SET_ASSET_ROTATION SOUTHWEST
     SET_WAIT_FRAMES 20
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 45
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 45   ; Karen 
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 68, 4, 2
-    SET_OTHER_EXECUTOR_PTR 0, .executor_7_1177F4
-    EXECUTE_SUBROUTINE .sub_1176CC
+    ENTITY_WALK 68, NORTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 0, .clear_map_indep_and_deactivate
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_11894C:
-    UPDATE_U8_VALUE -2, 255, npcAffection + 0x4
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 42
-    EXECUTE_SUBROUTINE .sub_118918
+.cutscene_709_remember_no:
+    UPDATE_U8_VALUE -2, 255, npcAffection[KAREN]
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 42   ; Karen 
+    EXECUTE_SUBROUTINE .cutscene_709_remember_tail
 
-.branch_118964:
+; ============================================
+; Cutscene 710 - Karen runs away (with baby if HAVE_BABY is set)
+;   No baby: texts 47 / 48 (leave alone / admit wrong).
+;   Baby: texts 49 / 50 / 51 (taking care of baby / "you are silly" / reunion).
+;   Ends loading the vineyard house, spawning Gotz and Sasha (texts 52/53/54).
+; ============================================
+
+.cutscene_710:
     SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
     SET_SPECIAL_BIT 30, gCutsceneCompletionFlags
-    SPAWN_EXECUTOR 1, .executor_1_1189B4
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_1189A8
-    EXECUTE_SUBROUTINE .sub_1177D4
+    SPAWN_EXECUTOR 1, .cutscene_710_karen_spawn
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cutscene_710_with_baby
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 0, 0, -32
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 40
-    SET_OTHER_EXECUTOR_PTR 1, .executor_1_1189D0
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_710_karen_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_1189A8:
-    SPAWN_EXECUTOR 2, .executor_2_118AB0
+.cutscene_710_with_baby:
+    SPAWN_EXECUTOR 2, .cutscene_710_baby_spawn
     RETURN_FROM_SUBROUTINE
 
-.executor_1_1189B4:
-    EXECUTE_SUBROUTINE .sub_11787C
+.cutscene_710_karen_spawn:
+    EXECUTE_SUBROUTINE .setup_karen_slot_37
     SET_COORDINATES 0, 0, -64
-    SET_ASSET_ROTATION 0
-    SET_CALLBACK_ROUTINE 0, 32768, .executor_1_1189D0
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_CALLBACK_ROUTINE 0, 32768, .cutscene_710_karen_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_1_1189D0:
-    EXECUTE_SUBROUTINE .sub_1176E0
+.cutscene_710_karen_on_interact:
+    EXECUTE_SUBROUTINE .setup_message_box_default
     PAUSE_ENTITIES
-    SET_ASSET_ROTATION 4
-    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .branch_118A0C
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 47
+    SET_ASSET_ROTATION NORTHEAST
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cutscene_710_baby_dialogue
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 47   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
-    SET_ASSET_ROTATION 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 48
-    EXECUTE_SUBROUTINE .sub_118A40
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 48   ; Karen
+    EXECUTE_SUBROUTINE .cutscene_710_resolution
 
-.branch_118A0C:
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 49
+.cutscene_710_baby_dialogue:
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 49   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 50
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 50   ; Karen
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_WAIT_FRAMES 20
-    SET_ASSET_ROTATION 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 51
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 51   ; Karen
 
-.sub_118A40:
+.cutscene_710_resolution:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
-    UPDATE_U8_VALUE 30, 255, npcAffection + 0x4
+    UPDATE_U8_VALUE 30, 255, npcAffection[KAREN]
     SET_SPECIAL_BIT 29, gCutsceneCompletionFlags
     TOGGLE_PAUSE_ENTITIES
     DEACTIVATE_EXECUTOR 2
     DEACTIVATE_EXECUTOR 0
-    SPAWN_EXECUTOR 41, .executor_41_118A80
+    SPAWN_EXECUTOR 41, .cutscene_710_vineyard_house_load
     DEACTIVATE_SELF
 
-.executor_41_118A80:
+.cutscene_710_vineyard_house_load:
     DEACTIVATE_MAP_OBJECTS 0
-    LOAD_MAP 0, 75
+    LOAD_MAP MAIN_MAP_INDEX, VINEYARD_HOUSE
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION 7
-    SPAWN_EXECUTOR 0, .executor_0_118B04
-    SPAWN_EXECUTOR 3, .executor_3_118B7C
-    SPAWN_EXECUTOR 4, .executor_4_118BA8
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTH
+    SPAWN_EXECUTOR 0, .cutscene_710_player_enters_house
+    SPAWN_EXECUTOR 3, .cutscene_710_gotz_spawn
+    SPAWN_EXECUTOR 4, .cutscene_710_sasha_spawn
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_2_118AB0:
+.cutscene_710_baby_spawn:
     SET_SHADOW_FLAGS 6, 255
-    SETUP_ENTITY 23, 6, 1
+    SETUP_ENTITY 23, ENTITY_ASSET_BABY, 1
     SET_ENTITY_ANIMATIONS 23, 0, 0, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_PHYSICS_FLAGS 0
-    BRANCH_U8_VAR_WITHIN_RANGE 30, 255, gBabyAge, .branch_118AF4
+    BRANCH_U8_VAR_WITHIN_RANGE 30, 255, gBabyAge, .cutscene_710_baby_older
     SET_COORDINATES 96, 128, -64
     SET_ENTITY_ANIMATION 13
-    EXECUTE_SUBROUTINE .sub_1176D8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_118AF4:
+.cutscene_710_baby_older:
     SET_COORDINATES 88, 128, -68
     SET_ENTITY_ANIMATION 54
-    EXECUTE_SUBROUTINE .sub_1176D8
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_0_118B04:
-    EXECUTE_SUBROUTINE .sub_1177D4
+.cutscene_710_player_enters_house:
+    EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -16, 0, 128
-    SET_ASSET_ROTATION 4
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 52
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 52   ; Gotz 
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 53
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 53   ; Sasha 
     WAIT_MESSAGE_BOX_CLOSED 0
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 54
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 54   ; Sasha
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
@@ -1161,38 +1240,46 @@
     DEACTIVATE_EXECUTOR 3
     DEACTIVATE_EXECUTOR 4
     DEACTIVATE_EXECUTOR 41
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_3_118B7C:
-    SETUP_ENTITY 24, 18, 1
+.cutscene_710_gotz_spawn:
+    SETUP_ENTITY 24, ENTITY_ASSET_GOTZ, 1
     SET_ENTITY_ANIMATIONS 24, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -32, 0, 64
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.executor_4_118BA8:
-    SETUP_ENTITY 25, 19, 1
+.cutscene_710_sasha_spawn:
+    SETUP_ENTITY 25, ENTITY_ASSET_SASHA, 1
     SET_ENTITY_ANIMATIONS 25, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES 0, 0, 64
-    SET_ASSET_ROTATION 0
-    EXECUTE_SUBROUTINE .sub_1176D8
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_118BD4:
-    SPAWN_EXECUTOR 1, .executor_1_118C64
+; ============================================
+; Cutscene 711 / 712 - Karen has left home, Sasha at the vineyard house
+;   Dialogue 5 (711): yes/no. Accept: text 57
+;                                 Decline: text 58
+;   Dialogue 6 (712): yes/no. Accept: text 61. Decline: text 62.
+;   Sasha remains interactable via a shared wait callback.
+; ============================================
+
+.cutscene_711:
+    SPAWN_EXECUTOR 1, .sasha_spawn
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_1177D4
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
-    SET_ASSET_ROTATION 4
+    EXECUTE_SUBROUTINE .setup_player
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 40
-    INIT_DIALOGUE_SESSION 0, 51, 5
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VINEYARD_CUTSCENES, 5
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_118C1C
-    BRANCH_ON_DIALOGUE 0, 1, .branch_118C4C
+    BRANCH_ON_DIALOGUE 0, 0, .cutscene_711_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cutscene_711_decline
 
-.branch_118C1C:
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 57
+.cutscene_711_accept:
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 57   ; Sasha
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
@@ -1200,67 +1287,67 @@
     DEACTIVATE_EXECUTOR 1
     SET_WAIT_FRAMES 1
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_118C4C:
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 58
+.cutscene_711_decline:
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 58   ; Sasha
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.executor_1_118C64:
-    SETUP_ENTITY 37, 19, 1
+.sasha_spawn:
+    SETUP_ENTITY 37, ENTITY_ASSET_SASHA, 1
     SET_ENTITY_ANIMATIONS 37, 0, 8, 16, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -128, 0, 96
-    SET_ASSET_ROTATION 6
+    SET_ASSET_ROTATION SOUTHEAST
 
-.sub_118C8C:
-    SET_CALLBACK_ROUTINE 0, 32768, .branch_118C98
-    EXECUTE_SUBROUTINE .sub_1176D8
+.sasha_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .sasha_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
 
-.branch_118C98:
+.sasha_on_interact:
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
-    EXECUTE_SUBROUTINE .sub_1176E0
-    BRANCH_U16_VAR_WITHIN_RANGE 712, 712, gCutsceneIndex, .branch_118D04
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 58
+    EXECUTE_SUBROUTINE .setup_message_box_default
+    BRANCH_U16_VAR_WITHIN_RANGE 712, 712, gCutsceneIndex, .cutscene_712_dialogue
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 58   ; Sasha
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_118C8C
+    EXECUTE_SUBROUTINE .sasha_wait
 
-.branch_118CCC:
-    SPAWN_EXECUTOR 1, .executor_1_118C64
+.cutscene_712:
+    SPAWN_EXECUTOR 1, .sasha_spawn
     SET_WAIT_FRAMES 1
-    EXECUTE_SUBROUTINE .sub_1177D4
-    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .branch_117874
-    SET_ASSET_ROTATION 4
+    EXECUTE_SUBROUTINE .setup_player
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .hold_item_and_return
+    SET_ASSET_ROTATION NORTHEAST
     SET_WAIT_FRAMES 40
     PAUSE_ENTITIES
-    SET_OTHER_EXECUTOR_PTR 1, .branch_118D04
+    SET_OTHER_EXECUTOR_PTR 1, .cutscene_712_dialogue
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
 
-.branch_118D04:
-    INIT_DIALOGUE_SESSION 0, 51, 6
+.cutscene_712_dialogue:
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_VINEYARD_CUTSCENES, 6
     WAIT_FOR_DIALOGUE_INPUT 0
-    BRANCH_ON_DIALOGUE 0, 0, .branch_118D28
-    BRANCH_ON_DIALOGUE 0, 1, .branch_118D50
+    BRANCH_ON_DIALOGUE 0, 0, .cutscene_712_accept
+    BRANCH_ON_DIALOGUE 0, 1, .cutscene_712_decline
 
-.branch_118D28:
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 61
+.cutscene_712_accept:
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 61   ; Sasha 
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
-    EXECUTE_SUBROUTINE .sub_1176CC
+    EXECUTE_SUBROUTINE .complete_cutscene
 
-.branch_118D50:
-    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 62
+.cutscene_712_decline:
+    INIT_MESSAGE_BOX_TYPE1 0, VINEYARD_CUTSCENES_TEXT_INDEX, 62   ; Sasha
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
     TOGGLE_PAUSE_ENTITIES
-    EXECUTE_SUBROUTINE .sub_118C8C
+    EXECUTE_SUBROUTINE .sasha_wait

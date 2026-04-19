@@ -1,0 +1,4692 @@
+; ============================================================
+; Bank 9 - House Cutscenes
+; ============================================================
+
+#include "entities.h"
+#include "texts.h"
+#include "dialogues.h"
+#include "maps.h"
+
+#define MAIN_MAP_INDEX 0
+
+#define MAYOR_WIFE 12
+#define LILLIA 13
+#define SASHA 18
+#define POTION_SHOP_DEALER 19
+#define KENT 20
+#define MIDWIFE 22
+#define PASTOR 25
+
+.buffer 2
+
+; Local variables
+.local var0, u32, 0
+
+.array npcAffection, u8
+.array lifeEventBits, u32
+
+; lifeEventBits[0] bit positions
+#define MARRIED 0
+#define HAVE_BABY 1
+
+.dispatch:
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U16_VAR_WITHIN_RANGE 0, 0, gCutsceneIndex, .cs_0
+    BRANCH_U16_VAR_WITHIN_RANGE 1, 1, gCutsceneIndex, .cs_1
+    BRANCH_U16_VAR_WITHIN_RANGE 2, 2, gCutsceneIndex, .cs_2
+    BRANCH_U16_VAR_WITHIN_RANGE 3, 3, gCutsceneIndex, .cs_3
+    BRANCH_U16_VAR_WITHIN_RANGE 4, 4, gCutsceneIndex, .cs_4
+    BRANCH_U16_VAR_WITHIN_RANGE 5, 5, gCutsceneIndex, .cs_5
+    BRANCH_U16_VAR_WITHIN_RANGE 6, 6, gCutsceneIndex, .cs_6
+    BRANCH_U16_VAR_WITHIN_RANGE 7, 7, gCutsceneIndex, .cs_7
+    BRANCH_U16_VAR_WITHIN_RANGE 8, 8, gCutsceneIndex, .cs_8
+    BRANCH_U16_VAR_WITHIN_RANGE 9, 9, gCutsceneIndex, .cs_9
+    BRANCH_U16_VAR_WITHIN_RANGE 10, 10, gCutsceneIndex, .cs_10
+    BRANCH_U16_VAR_WITHIN_RANGE 11, 11, gCutsceneIndex, .cs_11
+    BRANCH_U16_VAR_WITHIN_RANGE 12, 12, gCutsceneIndex, .cs_12
+    BRANCH_U16_VAR_WITHIN_RANGE 13, 13, gCutsceneIndex, .cs_13
+    BRANCH_U16_VAR_WITHIN_RANGE 14, 14, gCutsceneIndex, .cs_14
+    BRANCH_U16_VAR_WITHIN_RANGE 15, 15, gCutsceneIndex, .cs_15
+    BRANCH_U16_VAR_WITHIN_RANGE 16, 16, gCutsceneIndex, .cs_16
+    BRANCH_U16_VAR_WITHIN_RANGE 17, 17, gCutsceneIndex, .cs_17
+    BRANCH_U16_VAR_WITHIN_RANGE 18, 18, gCutsceneIndex, .cs_18
+    BRANCH_U16_VAR_WITHIN_RANGE 19, 19, gCutsceneIndex, .cs_19
+    BRANCH_U16_VAR_WITHIN_RANGE 20, 20, gCutsceneIndex, .cs_20
+    BRANCH_U16_VAR_WITHIN_RANGE 21, 21, gCutsceneIndex, .cs_21
+    BRANCH_U16_VAR_WITHIN_RANGE 22, 22, gCutsceneIndex, .cs_22
+    BRANCH_U16_VAR_WITHIN_RANGE 23, 23, gCutsceneIndex, .cs_23
+    BRANCH_U16_VAR_WITHIN_RANGE 24, 24, gCutsceneIndex, .cs_24
+    BRANCH_U16_VAR_WITHIN_RANGE 25, 25, gCutsceneIndex, .cs_25
+    BRANCH_U16_VAR_WITHIN_RANGE 26, 26, gCutsceneIndex, .cs_26
+    BRANCH_U16_VAR_WITHIN_RANGE 27, 27, gCutsceneIndex, .cs_27
+    BRANCH_U16_VAR_WITHIN_RANGE 28, 28, gCutsceneIndex, .cs_28
+    BRANCH_U16_VAR_WITHIN_RANGE 29, 29, gCutsceneIndex, .cs_29
+    BRANCH_U16_VAR_WITHIN_RANGE 30, 30, gCutsceneIndex, .cs_30
+    BRANCH_U16_VAR_WITHIN_RANGE 31, 31, gCutsceneIndex, .cs_31
+    BRANCH_U16_VAR_WITHIN_RANGE 32, 32, gCutsceneIndex, .cs_32
+    BRANCH_U16_VAR_WITHIN_RANGE 33, 33, gCutsceneIndex, .cs_33
+    BRANCH_U16_VAR_WITHIN_RANGE 34, 34, gCutsceneIndex, .cs_34
+    BRANCH_U16_VAR_WITHIN_RANGE 35, 35, gCutsceneIndex, .cs_35
+    BRANCH_U16_VAR_WITHIN_RANGE 36, 36, gCutsceneIndex, .cs_36
+    BRANCH_U16_VAR_WITHIN_RANGE 37, 37, gCutsceneIndex, .cs_37
+    BRANCH_U16_VAR_WITHIN_RANGE 38, 38, gCutsceneIndex, .cs_38
+    BRANCH_U16_VAR_WITHIN_RANGE 39, 39, gCutsceneIndex, .cs_39
+    BRANCH_U16_VAR_WITHIN_RANGE 40, 40, gCutsceneIndex, .cs_40
+    BRANCH_U16_VAR_WITHIN_RANGE 41, 41, gCutsceneIndex, .cs_41
+    BRANCH_U16_VAR_WITHIN_RANGE 42, 42, gCutsceneIndex, .cs_42
+    BRANCH_U16_VAR_WITHIN_RANGE 43, 43, gCutsceneIndex, .cs_43
+    BRANCH_U16_VAR_WITHIN_RANGE 44, 44, gCutsceneIndex, .cs_44
+    BRANCH_U16_VAR_WITHIN_RANGE 45, 45, gCutsceneIndex, .cs_45
+    BRANCH_U16_VAR_WITHIN_RANGE 46, 46, gCutsceneIndex, .cs_46
+    BRANCH_U16_VAR_WITHIN_RANGE 47, 47, gCutsceneIndex, .cs_47
+    BRANCH_U16_VAR_WITHIN_RANGE 48, 48, gCutsceneIndex, .cs_48
+    BRANCH_U16_VAR_WITHIN_RANGE 49, 49, gCutsceneIndex, .cs_49
+    BRANCH_U16_VAR_WITHIN_RANGE 50, 50, gCutsceneIndex, .cs_50
+    BRANCH_U16_VAR_WITHIN_RANGE 51, 51, gCutsceneIndex, .cs_51
+    BRANCH_U16_VAR_WITHIN_RANGE 52, 52, gCutsceneIndex, .cs_52
+    BRANCH_U16_VAR_WITHIN_RANGE 53, 53, gCutsceneIndex, .cs_53
+    BRANCH_U16_VAR_WITHIN_RANGE 54, 54, gCutsceneIndex, .cs_54
+    BRANCH_U16_VAR_WITHIN_RANGE 55, 55, gCutsceneIndex, .cs_55
+    BRANCH_U16_VAR_WITHIN_RANGE 56, 56, gCutsceneIndex, .cs_56
+
+.cutscene_exit:
+    SET_U32_VALUE 0, var0
+    SET_SPECIAL_BIT 0, gCutsceneCompletionFlags
+    DEACTIVATE_SELF
+
+.wait_loop:
+    SET_WAIT_FRAMES 1
+    EXECUTE_SUBROUTINE .wait_loop
+
+.setup_msgbox_default:
+    SET_MESSAGE_INTERPOLATION -4, 0, 0
+    SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
+    RETURN_FROM_SUBROUTINE
+
+.setup_msgbox_center_avatar:
+    SET_MESSAGE_INTERPOLATION -4, 0, 0
+    SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 352
+    RETURN_FROM_SUBROUTINE
+
+.sub_item_e39_track_e22:
+    SETUP_ENTITY 39, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 39, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_RGBA 255, 255, 255, 255
+    SET_ENTITY_TRACKING_TARGET 22, 0, 14, 22, 255
+    RETURN_FROM_SUBROUTINE
+
+.executor_10_item_e40_anim_57:
+    SETUP_ENTITY 40, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 40, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_RGBA 255, 255, 255, 255
+    SET_ENTITY_TRACKING_TARGET 23, 0, 14, 20, 255
+    SET_ENTITY_ANIMATION 57
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_11_item_anim_111:
+    EXECUTE_SUBROUTINE .sub_item_e39_track_e22
+    SET_ENTITY_ANIMATION 111
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_10_item_anim_110:
+    EXECUTE_SUBROUTINE .sub_item_e39_track_e22
+    SET_ENTITY_ANIMATION 110
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_10_item_e37_anim_37:
+    EXECUTE_SUBROUTINE .sub_item_e39_track_e22
+    SET_ENTITY_TRACKING_TARGET 37, 0, 14, 22, 255
+    SET_ENTITY_ANIMATION 37
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_10_item_anim_62:
+    EXECUTE_SUBROUTINE .sub_item_e39_track_e22
+    SET_ENTITY_ANIMATION 62
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_10_item_anim_34:
+    EXECUTE_SUBROUTINE .sub_item_e39_track_e22
+    SET_ENTITY_ANIMATION 34
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_10_tracking_finish:
+    SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
+    SET_WAIT_FRAMES 16
+    SET_ENTITY_TRACKING_TARGET 0, 0, 32, 16, 255
+    SET_WAIT_FRAMES 10
+    DEACTIVATE_SELF
+
+.setup_player_entity:
+    SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
+    SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
+    SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
+    RETURN_FROM_SUBROUTINE
+
+.executor_4_player_pos_nw:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_RGBA 255, 255, 255, 255
+    SET_ASSET_ROTATION NORTHWEST
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    PAUSE_ENTITIES
+    DEACTIVATE_SELF
+
+.sub_player_react_anim_437:
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_OTHER_EXECUTOR_PTR 10, .executor_10_tracking_finish
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
+    SET_WAIT_FRAMES 16
+    SET_ENTITY_ANIMATION 437
+    WAIT_ENTITY_ANIMATION
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    FLIP_ENTITY_DIRECTION 22
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    PAUSE_ENTITIES
+    RETURN_FROM_SUBROUTINE
+
+.executor_4_player_anim_455_pos:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_BEHAVIOR_FLAGS 0
+    SET_WAIT_FRAMES 1
+    SET_ENTITY_ANIMATION 455
+    SET_COORDINATES -180, 0, -164
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_7_release_deactivate:
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    DEACTIVATE_SELF
+
+.executor_4_release_deactivate:
+    SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
+    SET_WAIT_FRAMES 1
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    DEACTIVATE_SELF
+
+.executor_2_face_and_wait:
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_1_face_sw_wait:
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
+
+; ====================================================
+; Cutscene 0 - Kent and Stu deliver cold medicine
+; Kent enters with younger brother Stu, hands the
+; bedridden player a potion (texts 17 - 23), then the
+; two leave with a fade-out. Bumps gHappiness +8.
+; ====================================================
+.cs_0:
+    UPDATE_U8_VALUE 8, 255, gHappiness
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs0_main_kent_opening
+    DEACTIVATE_SELF
+
+.setup_kent_e22:
+    SETUP_ENTITY 22, ENTITY_ASSET_KENT, 1
+    SET_ENTITY_ANIMATIONS 22, 0, 8, 16, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    RETURN_FROM_SUBROUTINE
+
+.setup_stu_e23:
+    SETUP_ENTITY 23, ENTITY_ASSET_STU, 1
+    SET_ENTITY_ANIMATIONS 23, 0, 8, 16, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    RETURN_FROM_SUBROUTINE
+
+.executor_16_cs0_map_setup:
+    SETUP_MAP_ASSET MAIN_MAP_INDEX
+    SET_ASSET_ROTATION SOUTH
+    SET_COORDINATES -140, 0, -152
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs0_main_kent_opening:
+    SPAWN_EXECUTOR 2, .cs0_stu_initial_pos
+    SPAWN_EXECUTOR 4, .executor_4_player_anim_455_pos
+    SPAWN_EXECUTOR 16, .executor_16_cs0_map_setup
+    SET_WAIT_FRAMES 1
+    EXECUTE_SUBROUTINE .setup_kent_e22
+    SET_ASSET_ROTATION NORTHWEST
+    SET_COORDINATES -118, 0, -116
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 15
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 17
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_OTHER_EXECUTOR_PTR 2, .cs0_stu_rice_balls
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs0_stu_initial_pos:
+    EXECUTE_SUBROUTINE .setup_stu_e23
+    SET_COORDINATES -118, 0, -140
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs0_stu_rice_balls:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 18
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_item_e40_anim_57
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
+    WAIT_ENTITY_ANIMATION
+    SET_WAIT_FRAMES 15
+    SET_OTHER_EXECUTOR_PTR 1, .cs0_kent_medicine_speech
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs0_kent_medicine_speech:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 19
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 28
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 11, .executor_11_item_anim_111
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 36
+    WAIT_ENTITY_ANIMATION
+    SET_WAIT_FRAMES 30
+    DEACTIVATE_EXECUTOR 10
+    DEACTIVATE_EXECUTOR 11
+    SET_OTHER_EXECUTOR_PTR 2, .executor_2_face_and_wait
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 20
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 21
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 22
+    WAIT_MESSAGE_BOX_CLOSED 0
+    TOGGLE_PAUSE_ENTITY 22
+    SET_OTHER_EXECUTOR_PTR 2, .cs0_stu_goodbye
+    ENTITY_WALK 128, SOUTHWEST, 2
+    DEACTIVATE_SELF
+
+.cs0_stu_goodbye:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 23
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 23
+    ENTITY_WALK 64, SOUTHWEST, 2
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    ENTITY_WALK 64, SOUTHWEST, 2
+    WAIT_RGBA_FINISHED
+    TOGGLE_PAUSE_ENTITIES
+    SET_OTHER_EXECUTOR_PTR 4, .executor_4_release_deactivate
+    DEACTIVATE_EXECUTOR 16
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+; ====================================================
+; Cutscene 1 - Kent runaway and sick-grandpa flashback
+; Kent (younger) asks the player if he can stay the
+; night after fighting with his grandfather. Stu runs
+; in saying grandpa collapsed; the scene fades to the
+; potion-shop bedroom where the midwife reports grandpa
+; is resting. Texts 30, 34, 35, 39 - 53.
+; NOTE: labels in this block still reference "wedding"
+; / "ceremony" from an earlier guess and should be
+; revisited.
+; ====================================================
+.cs_1:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs1_kent_ask_marriage
+    DEACTIVATE_SELF
+
+.cs1_kent_ask_marriage:
+    SET_WAIT_FRAMES 32
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_kent_e22
+    SET_RGBA 255, 255, 255, 255
+    SET_COORDINATES -112, 0, 112
+    TOGGLE_PAUSE_ENTITY 22
+    ENTITY_WALK 80, NORTHEAST, 2
+    SET_ASSET_ROTATION SOUTHEAST
+    SPAWN_EXECUTOR 4, .executor_4_player_pos_nw
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 27
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 0, .cs1_kent_answered_yes
+    BRANCH_ON_DIALOGUE 0, 1, .cs1_kent_answered_no
+
+.cs1_kent_answered_no:
+    UPDATE_U8_VALUE -5, 255, npcAffection[KENT]
+    TOGGLE_PAUSE_ENTITY 22
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 35
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    ENTITY_RUN 56, SOUTHWEST, 4
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+.cs1_kent_answered_yes:
+    UPDATE_U8_VALUE 5, 255, npcAffection[KENT]
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 28
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 0, .cs1_ring_no
+    BRANCH_ON_DIALOGUE 0, 1, .cs1_ring_yes
+
+.cs1_ring_no:
+    UPDATE_U8_VALUE -3, 255, npcAffection[KENT]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 39
+    EXECUTE_SUBROUTINE .cs1_wedding_sequence
+
+.cs1_ring_yes:
+    UPDATE_U8_VALUE 3, 255, npcAffection[KENT]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 40
+
+.cs1_wedding_sequence:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 41
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    UPDATE_U8_VALUE 5, 255, gHappiness
+    SET_WAIT_FRAMES 30
+    SPAWN_EXECUTOR 2, .cs1_exec_wife_approach
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs1_exec_wife_approach:
+    EXECUTE_SUBROUTINE .setup_stu_e23
+    SET_RGBA 255, 255, 255, 255
+    TOGGLE_PAUSE_ENTITY 23
+    SET_COORDINATES -112, 0, 112
+    SET_ASSET_ROTATION NORTHEAST
+    ENTITY_WALK 32, NORTHEAST, 4
+    SET_OTHER_EXECUTOR_PTR 1, .executor_1_face_sw_wait
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 44
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 45
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SPAWN_EXECUTOR 4, .cs1_ceremony_arrive_church
+    EXECUTE_SUBROUTINE .wait_loop
+    ENTITY_RUN 26, SOUTHWEST, 4
+    DEACTIVATE_SELF
+
+.cs1_ceremony_arrive_church:
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_player_entity
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    SET_SPECIAL_BIT 29, gCutsceneCompletionFlags
+    SET_OTHER_EXECUTOR_PTR 1, .cs1_player_ceremony_walk
+    SET_OTHER_EXECUTOR_PTR 2, .cs1_wife_ceremony_walk
+    SPAWN_EXECUTOR 3, .cs1_exec_potion_dealer_pos
+    SPAWN_EXECUTOR 5, .cs1_exec_midwife_pos
+    SPAWN_EXECUTOR 8, .cs1_load_church_map
+    SET_COORDINATES 72, 0, 32
+    SET_ASSET_ROTATION NORTHWEST
+    SET_WAIT_FRAMES 1
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    SET_WAIT_FRAMES 4
+    ENTITY_RUN 22, NORTHWEST, 4
+    ENTITY_RUN 9, NORTHEAST, 4
+    ENTITY_RUN 12, NORTHWEST, 4
+    WAIT_RGBA_FINISHED
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 256
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 47
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_OTHER_EXECUTOR_PTR 5, .cs1_ceremony_vows
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs1_ceremony_vows:
+    ENTITY_WALK 24, NORTHWEST, 2
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 48
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 49
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 50
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    ENTITY_WALK 16, SOUTHWEST, 2
+    ENTITY_WALK 36, SOUTHEAST, 2
+    SET_OTHER_EXECUTOR_PTR 4, .cs1_ceremony_end
+    DEACTIVATE_SELF
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES -116, 0, -136
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
+    SET_COORDINATES -96, 0, 0
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs1_ceremony_end:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 52
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 53
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    DEACTIVATE_EXECUTOR 1
+    DEACTIVATE_EXECUTOR 2
+    DEACTIVATE_EXECUTOR 3
+    DEACTIVATE_EXECUTOR 8
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    TOGGLE_PAUSE_ENTITIES
+    SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+.setup_potion_dealer_e24:
+    SETUP_ENTITY 24, ENTITY_ASSET_POTION_SHOP_DEALER, 1
+    SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    RETURN_FROM_SUBROUTINE
+
+.cs1_exec_potion_dealer_pos:
+    EXECUTE_SUBROUTINE .setup_potion_dealer_e24
+    SET_COORDINATES -100, 0, 64
+    SET_ENTITY_ANIMATION 16
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs1_exec_midwife_pos:
+    SETUP_ENTITY 25, ENTITY_ASSET_MIDWIFE, 1
+    SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES 16, 0, 0
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_WAIT_FRAMES 30
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs1_player_ceremony_walk:
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES 0, 0, 32
+    ENTITY_RUN 8, NORTHWEST, 4
+    ENTITY_RUN 9, NORTHEAST, 4
+    ENTITY_RUN 20, NORTHWEST, 4
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs1_wife_ceremony_walk:
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES 32, 0, 32
+    ENTITY_WALK 16, NORTHWEST, 4
+    ENTITY_WALK 9, NORTHEAST, 4
+    ENTITY_WALK 16, NORTHWEST, 4
+    SET_ASSET_ROTATION SOUTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs1_load_church_map:
+    DEACTIVATE_MAP_OBJECTS 0
+    LOAD_MAP MAIN_MAP_INDEX, POTION_SHOP_BEDROOM
+    SETUP_MAP_ASSET MAIN_MAP_INDEX
+    SET_COORDINATES 0, 96, 0
+    SET_ASSET_ROTATION SOUTH
+    EXECUTE_SUBROUTINE .wait_loop
+
+; ====================================================
+; Cutscene 2 - Kent drops by to check in on the player
+; Kent stands SE of the player and, on interaction,
+; delivers text 55 (I am OK now, you are pretty busy
+; huh). The dispatch also tints the global RGBA by
+; time-of-day and weather (snow tiers at gWeather == 2)
+; via .sub_rgba_by_time_weather, then shows text 54.
+; ====================================================
+.cs_2:
+    SPAWN_EXECUTOR 1, .cs2_kent_setup_pos
+    SPAWN_EXECUTOR 7, .cs2_player_setup
+    DEACTIVATE_SELF
+
+.cs2_kent_setup_pos:
+    EXECUTE_SUBROUTINE .setup_kent_e22
+    SET_COORDINATES 352, 0, -64
+
+.cs2_kent_wait:
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs2_kent_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs2_kent_on_interact:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    FLIP_ENTITY_DIRECTION 0
+    PAUSE_ENTITIES
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 55
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .cs2_kent_wait
+
+.sub_rgba_by_time_weather:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWeather, .rgba_snow_dispatch
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .rgba_tier_20_23_or_0_4
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gHour, .rgba_tier_5_or_18_19
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 7, gHour, .rgba_tier_6_7
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .rgba_tier_8_11
+    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .rgba_tier_12_15
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 16, gHour, .rgba_tier_16
+    BRANCH_U8_VAR_WITHIN_RANGE 17, 17, gHour, .rgba_tier_17
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .rgba_tier_5_or_18_19
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .rgba_tier_20_23_or_0_4
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_tier_20_23_or_0_4:
+    UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_tier_5_or_18_19:
+    UPDATE_GLOBAL_RGBA 128, 128, 128, 128, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_tier_6_7:
+    UPDATE_GLOBAL_RGBA 192, 192, 192, 192, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_tier_8_11:
+    UPDATE_GLOBAL_RGBA 224, 224, 224, 224, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_tier_12_15:
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_tier_16:
+    UPDATE_GLOBAL_RGBA 255, 224, 224, 224, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_tier_17:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWeather, .rgba_tier_17_weather3
+    UPDATE_GLOBAL_RGBA 255, 192, 192, 192, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_tier_17_weather3:
+    UPDATE_GLOBAL_RGBA 255, 192, 192, 192, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_snow_dispatch:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 4, gHour, .rgba_snow_night
+    BRANCH_U8_VAR_WITHIN_RANGE 5, 7, gHour, .rgba_snow_dawn_dusk
+    BRANCH_U8_VAR_WITHIN_RANGE 8, 11, gHour, .rgba_snow_morning_afternoon
+    BRANCH_U8_VAR_WITHIN_RANGE 12, 15, gHour, .rgba_snow_midday
+    BRANCH_U8_VAR_WITHIN_RANGE 16, 17, gHour, .rgba_snow_morning_afternoon
+    BRANCH_U8_VAR_WITHIN_RANGE 18, 19, gHour, .rgba_snow_dawn_dusk
+    BRANCH_U8_VAR_WITHIN_RANGE 20, 23, gHour, .rgba_snow_night
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_snow_night:
+    UPDATE_GLOBAL_RGBA 80, 80, 128, 80, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_snow_dawn_dusk:
+    UPDATE_GLOBAL_RGBA 112, 112, 192, 112, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_snow_morning_afternoon:
+    UPDATE_GLOBAL_RGBA 128, 128, 208, 128, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.rgba_snow_midday:
+    UPDATE_GLOBAL_RGBA 144, 144, 255, 144, 8
+    EXECUTE_SUBROUTINE .cs2_finalize_msg_54
+
+.cs2_player_setup:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES 384, 0, -64
+    SET_ASSET_ROTATION NORTHWEST
+    SET_WAIT_FRAMES 1
+    EXECUTE_SUBROUTINE .sub_rgba_by_time_weather
+
+.cs2_finalize_msg_54:
+    WAIT_RGBA_FINISHED
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 54
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    TOGGLE_PAUSE_ENTITIES
+    DEACTIVATE_SELF
+
+; ====================================================
+; Cutscene 3 - Maria brings soup and medicine (cold)
+; If the player is not married, Maria visits as an NPC
+; with soup and potion-shop medicine (text 158, then
+; text 160 closing). If married to Maria (gWife == 0),
+; she speaks the wife variants text 1 and text 2
+; instead. Pairs with .cs_51 (player catches cold).
+; ====================================================
+.cs_3:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE 8, 255, gHappiness
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs3_maria_main
+    DEACTIVATE_SELF
+
+.setup_wife_maria_e22:
+    SETUP_ENTITY 22, ENTITY_ASSET_MARIA, 1
+    SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    RETURN_FROM_SUBROUTINE
+
+.cs3_maria_text1:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 1
+    EXECUTE_SUBROUTINE .cs3_maria_serve_food
+
+.cs3_maria_text2:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 2
+    EXECUTE_SUBROUTINE .sub_wife_leave_fade_exit
+
+.cs3_maria_main:
+    SPAWN_EXECUTOR 4, .executor_4_player_anim_455_pos
+    SPAWN_EXECUTOR 16, .executor_16_cs0_map_setup
+    SET_WAIT_FRAMES 1
+    EXECUTE_SUBROUTINE .setup_wife_maria_e22
+    SET_COORDINATES -116, 0, -136
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 15
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs3_maria_if_wife0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 158
+
+.cs3_maria_serve_food:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_item_anim_62
+    SET_WAIT_FRAMES 30
+    DEACTIVATE_EXECUTOR 10
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    SET_WAIT_FRAMES 1
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_11_item_anim_111
+    SET_WAIT_FRAMES 30
+    DEACTIVATE_EXECUTOR 10
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs3_maria_close_if_wife0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 160
+
+.sub_wife_leave_fade_exit:
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 22
+    ENTITY_WALK 64, SOUTHWEST, 2
+    SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    ENTITY_WALK 64, SOUTHWEST, 2
+    WAIT_RGBA_FINISHED
+    STOP_SEQUENCE_WITH_FADE 0, 1
+    IDLE_WHILE_SEQUENCE_PLAYING 0
+    DEACTIVATE_EXECUTOR 4
+    DEACTIVATE_EXECUTOR 16
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+.cs3_maria_if_wife0:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs3_maria_text1
+    RETURN_FROM_SUBROUTINE
+
+.cs3_maria_close_if_wife0:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs3_maria_text2
+    RETURN_FROM_SUBROUTINE
+
+; ====================================================
+; Cutscene 4 - Maria giving birth (wife)
+; Time-of-day routes to 6am / day / evening / night
+; variants. Midwife (e23) works on Maria (e22) while
+; Mayor Wife (e24) supports. Evening variant plays the
+; push-and-delivery cinematic (texts 168 - 176, then
+; 178 for Maria asking the player to name the baby).
+; Interacting with the bed drives texts 164 - 181 and
+; applies affection + happiness rewards on success.
+; ====================================================
+.cs_4:
+    SET_SPECIAL_BIT 10, gCutsceneCompletionFlags
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cs4_birth_night
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs4_birth_evening
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs4_birth_6am
+    SPAWN_EXECUTOR 1, .cs4_maria_exec_day
+    SPAWN_EXECUTOR 2, .executor_2_midwife_wander
+    SPAWN_EXECUTOR 3, .executor_3_mayor_wife_day
+    SPAWN_EXECUTOR 41, .executor_41_cs4_interact_watch
+    DEACTIVATE_SELF
+
+; ====================================================
+; Cutscene 5 - Maria post-birth bedroom scene
+; Maria sleeps in bed (anim 24), baby e25 in the
+; cradle. Player stands NW of bed; text 311 (Maria
+; thanking the player for the name, then saying
+; goodnight). Fade to black and exit.
+; ====================================================
+.cs_5:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs5_maria_sleep_e22
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES -128, 0, -144
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 10
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 311
+
+.sub_fade_out_exit:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_WAIT_FRAMES 10
+    SET_AUDIO_SEQUENCE_VOLUME 0, 0, 8
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    STOP_SEQUENCE_WITH_FADE 0, 1
+    IDLE_WHILE_SEQUENCE_PLAYING 0
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+.cs5_maria_sleep_e22:
+    EXECUTE_SUBROUTINE .setup_wife_maria_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs4_birth_6am:
+    SPAWN_EXECUTOR 41, .executor_41_cs4_interact_watch
+    SPAWN_EXECUTOR 1, .cs4_maria_exec_day
+    SPAWN_EXECUTOR 2, .executor_2_midwife_wander
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 99, gMinutes, .cs4_birth_6am_after_min
+    SPAWN_EXECUTOR 3, .executor_3_mayor_wife_6am
+    DEACTIVATE_SELF
+
+.cs4_birth_6am_after_min:
+    SPAWN_EXECUTOR 3, .executor_3_mayor_wife_day
+    DEACTIVATE_SELF
+
+.cs4_birth_evening:
+    SPAWN_EXECUTOR 1, .cs4_maria_exec_evening
+    SPAWN_EXECUTOR 2, .executor_2_midwife_fixed_pos
+    SPAWN_EXECUTOR 3, .executor_3_mayor_wife_evening
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    SPAWN_EXECUTOR 41, .executor_41_cs4_interact_watch
+    DEACTIVATE_SELF
+
+.cs4_birth_night:
+    SPAWN_EXECUTOR 1, .cs4_maria_exec_night
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    DEACTIVATE_SELF
+
+.cs4_maria_exec_day:
+    EXECUTE_SUBROUTINE .setup_wife_maria_e22
+    SET_COORDINATES -184, 0, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs4_maria_exec_evening:
+    EXECUTE_SUBROUTINE .setup_wife_maria_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    SET_WAIT_FRAMES 1
+    BRANCH_ON_SPECIAL_BIT 11, D_80237A00, .wait_loop
+    EXECUTE_SUBROUTINE .sub_birth_cinematic
+    SET_SPECIAL_BIT 11, D_80237A00
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs4_maria_exec_night:
+    EXECUTE_SUBROUTINE .setup_wife_maria_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    SET_WAIT_FRAMES 1
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    EXECUTE_SUBROUTINE .wait_loop
+
+.sub_birth_cinematic:
+    PAUSE_ENTITIES
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_MESSAGE_INTERPOLATION -4, 0, 0
+    SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 256
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 168
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 169
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 170
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 171
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 172
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 173
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 174
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 175
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 176
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 256
+    TOGGLE_PAUSE_ENTITIES
+    RETURN_FROM_SUBROUTINE
+
+.executor_41_cs4_interact_watch:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, interactedWithLevelInteractionIndex, .cs4_on_interact_trigger
+    EXECUTE_SUBROUTINE .executor_41_cs4_interact_watch
+
+.cs4_on_interact_trigger:
+    SET_OTHER_EXECUTOR_PTR 1, .cs4_on_interact_dispatch
+    DEACTIVATE_SELF
+
+.cs4_on_interact_dispatch:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_41_cs4_interact_watch
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs4_interact_6am
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 14, gHour, .cs4_interact_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs4_interact_evening_finale
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cs4_interact_night_finale
+    DEACTIVATE_SELF
+
+.cs4_interact_6am:
+    EXECUTE_SUBROUTINE .setup_msgbox_center_avatar
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 99, gMinutes, .cs4_interact_day
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 166
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_ON_SPECIAL_BIT 0, var0, .cs4_interact_check_var0
+    SET_SPECIAL_BIT 0, var0
+    SET_OTHER_EXECUTOR_PTR 3, .executor_3_mayor_wife_approach
+
+.cs4_interact_check_var0:
+    TOGGLE_PAUSE_ENTITIES
+    SPAWN_EXECUTOR 41, .executor_41_cs4_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs4_interact_day:
+    EXECUTE_SUBROUTINE .setup_msgbox_center_avatar
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 166
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    TOGGLE_PAUSE_ENTITIES
+    SPAWN_EXECUTOR 41, .executor_41_cs4_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs4_interact_evening_finale:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE 8, 255, npcAffection[MARIA]
+    UPDATE_U8_VALUE 5, 255, npcAffection[MAYOR_WIFE]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 178
+
+.sub_birth_finale_exit:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    UPDATE_U8_VALUE 30, 255, gHappiness
+    UPDATE_U8_VALUE 5, 255, npcAffection[MIDWIFE]
+    SET_WAIT_FRAMES 10
+    SET_AUDIO_SEQUENCE_VOLUME 0, 0, 8
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    STOP_SEQUENCE_WITH_FADE 0, 1
+    DEACTIVATE_EXECUTOR 2
+    DEACTIVATE_EXECUTOR 3
+    DEACTIVATE_EXECUTOR 4
+    IDLE_WHILE_SEQUENCE_PLAYING 0
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+.cs4_interact_night_finale:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE -5, 255, npcAffection[MARIA]
+    UPDATE_U8_VALUE 8, 255, npcAffection[MAYOR_WIFE]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 181
+    EXECUTE_SUBROUTINE .sub_birth_finale_exit
+
+.executor_4_baby_e25_anim_13:
+    SETUP_ENTITY 25, ENTITY_ASSET_BABY, 1
+    SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_COORDINATES -164, 0, -168
+    SET_ENTITY_ANIMATION 13
+    EXECUTE_SUBROUTINE .wait_loop
+
+.setup_midwife_e23:
+    SETUP_ENTITY 23, ENTITY_ASSET_MIDWIFE, 1
+    SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_COORDINATES -48, 0, -144
+    SET_ASSET_ROTATION NORTHWEST
+    RETURN_FROM_SUBROUTINE
+
+.executor_2_midwife_wander:
+    EXECUTE_SUBROUTINE .setup_midwife_e23
+    SET_ENTITY_WANDER 2, 48, 48
+
+.sub_midwife_wait_callback:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs4_midwife_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_2_midwife_fixed_pos:
+    EXECUTE_SUBROUTINE .setup_midwife_e23
+    SET_COORDINATES -80, 0, -144
+    EXECUTE_SUBROUTINE .sub_midwife_wait_callback
+
+.cs4_midwife_on_interact:
+    FLIP_ENTITY_DIRECTION 0
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 14, gHour, .cs4_midwife_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs4_midwife_evening
+    DEACTIVATE_SELF
+
+.cs4_midwife_day:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 164
+
+.sub_midwife_dialogue_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .sub_midwife_wait_callback
+
+.cs4_midwife_evening:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 177
+    EXECUTE_SUBROUTINE .sub_midwife_dialogue_return
+
+.setup_mayor_wife_e24:
+    SETUP_ENTITY 24, ENTITY_ASSET_MAYOR_WIFE, 1
+    SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    RETURN_FROM_SUBROUTINE
+
+.executor_3_mayor_wife_6am:
+    EXECUTE_SUBROUTINE .setup_mayor_wife_e24
+    SET_COORDINATES -48, 0, 112
+    SET_ASSET_ROTATION NORTHEAST
+    UPDATE_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+
+.sub_mayor_wife_wait_callback:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs4_mayor_wife_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_3_mayor_wife_evening:
+    EXECUTE_SUBROUTINE .setup_mayor_wife_e24
+    SET_COORDINATES -80, 0, -112
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .sub_mayor_wife_wait_callback
+
+.executor_3_mayor_wife_day:
+    EXECUTE_SUBROUTINE .setup_mayor_wife_e24
+    SET_COORDINATES -80, 0, 80
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .sub_mayor_wife_wait_callback
+
+.executor_3_mayor_wife_approach:
+    ENTITY_WALK 24, NORTHWEST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .sub_mayor_wife_wait_callback
+
+.cs4_mayor_wife_on_interact:
+    FLIP_ENTITY_DIRECTION 0
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs4_mayor_wife_6am
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 14, gHour, .cs4_mayor_wife_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs4_mayor_wife_evening
+    DEACTIVATE_SELF
+
+.cs4_mayor_wife_6am:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gMinutes, .cs4_mayor_wife_day
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 165
+
+.sub_mayor_wife_dialogue_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .sub_mayor_wife_wait_callback
+
+.cs4_mayor_wife_day:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 167
+    EXECUTE_SUBROUTINE .sub_mayor_wife_dialogue_return
+
+.cs4_mayor_wife_evening:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 180
+    EXECUTE_SUBROUTINE .sub_mayor_wife_dialogue_return
+
+; ====================================================
+; Cutscene 6 - Maria birthday
+; Four decoration items spawn around Maria. Dialogue
+; 0 asks the player which date it is; on the birthday
+; branch Maria speaks text 184 ("glad you remembered")
+; else text 201 (surprise). Reinteract shows text 200
+; ("cooked something special"). Baby-hold pose variant
+; triggers if HAVE_BABY is set.
+; ====================================================
+.cs_6:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs6_maria_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_59
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_maria_interact_watch
+    DEACTIVATE_SELF
+
+.executor_32_maria_interact_watch:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, interactedWithLevelInteractionIndex, .maria_interact_trigger_0
+    BRANCH_U8_VAR_WITHIN_RANGE 34, 34, interactedWithLevelInteractionIndex, .maria_interact_trigger_1
+    BRANCH_U8_VAR_WITHIN_RANGE 35, 35, interactedWithLevelInteractionIndex, .maria_interact_trigger_2
+    EXECUTE_SUBROUTINE .executor_32_maria_interact_watch
+
+.maria_interact_trigger_0:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_maria_interact_watch
+    BRANCH_ON_SPECIAL_BIT 0, var0, .executor_32_maria_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_player_gift_item_59
+    SET_SPECIAL_BIT 0, var0
+    EXECUTE_SUBROUTINE .executor_32_maria_interact_watch
+
+.maria_interact_trigger_1:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_maria_interact_watch
+    BRANCH_ON_SPECIAL_BIT 1, var0, .executor_32_maria_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_player_gift_item_6
+    SET_SPECIAL_BIT 1, var0
+    EXECUTE_SUBROUTINE .executor_32_maria_interact_watch
+
+.maria_interact_trigger_2:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_maria_interact_watch
+    BRANCH_ON_SPECIAL_BIT 2, var0, .executor_32_maria_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_player_gift_item_62
+    SET_SPECIAL_BIT 2, var0
+    EXECUTE_SUBROUTINE .executor_32_maria_interact_watch
+
+.executor_33_item_anim_59:
+    SETUP_ENTITY 47, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 59
+    SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_33_item_anim_6:
+    SETUP_ENTITY 47, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 6
+    SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_33_item_anim_62:
+    SETUP_ENTITY 47, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 62
+    SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_0_player_gift_item_59:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
+    DEACTIVATE_EXECUTOR 2
+    SPAWN_EXECUTOR 33, .executor_33_item_anim_59
+
+.sub_cleanup_tracking:
+    SET_WAIT_FRAMES 10
+    SET_OTHER_EXECUTOR_PTR 33, .executor_10_tracking_finish
+    SET_WAIT_FRAMES 16
+    SET_ENTITY_ANIMATION 437
+    WAIT_ENTITY_ANIMATION
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    DEACTIVATE_SELF
+
+.executor_0_player_gift_item_6:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
+    DEACTIVATE_EXECUTOR 5
+    SPAWN_EXECUTOR 33, .executor_33_item_anim_6
+    EXECUTE_SUBROUTINE .sub_cleanup_tracking
+
+.executor_0_player_gift_item_62:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
+    DEACTIVATE_EXECUTOR 4
+    SPAWN_EXECUTOR 33, .executor_33_item_anim_62
+    EXECUTE_SUBROUTINE .sub_cleanup_tracking
+
+.executor_2_dec_e43_anim_59:
+    SETUP_ENTITY 43, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 43, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 59
+    SET_COORDINATES -32, 0, -92
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_3_dec_e44_anim_61:
+    SETUP_ENTITY 44, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 44, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 61
+    SET_COORDINATES -60, 0, -60
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_4_dec_e45_anim_62:
+    SETUP_ENTITY 45, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 45, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 62
+    SET_COORDINATES -32, 0, -32
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_5_dec_e46_anim_6:
+    SETUP_ENTITY 46, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 46, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 6
+    SET_COORDINATES -32, 0, -64
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs6_maria_with_baby_pose:
+    SET_COORDINATES -112, 0, -64
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 108
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .cs6_maria_wait
+
+.cs6_maria_main:
+    EXECUTE_SUBROUTINE .setup_wife_maria_e22
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cs6_maria_with_baby_pose
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs6_maria_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs6_maria_birthday_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs6_maria_birthday_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE 10, 255, gHappiness
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 0
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 1, .cs6_maria_birthday_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 201
+
+.cs6_maria_birthday_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs6_maria_reinteract_wait
+
+.cs6_maria_birthday_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 184
+    EXECUTE_SUBROUTINE .cs6_maria_birthday_return
+
+.cs6_maria_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs6_maria_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs6_maria_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 200
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs6_maria_reinteract_wait
+
+; ====================================================
+; Cutscene 7 - Maria wedding anniversary
+; Same decoration / interact-watch setup as .cs_6.
+; Dialogue 0, option 3 branch shows text 184 (glad you
+; remembered) else text 185 (surprise). Reinteract
+; reveals text 186.
+; ====================================================
+.cs_7:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs7_maria_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_59
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_maria_interact_watch
+    DEACTIVATE_SELF
+
+.cs7_maria_with_baby_pose:
+    SET_COORDINATES -112, 0, -64
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 108
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .cs7_maria_wait
+
+.cs7_maria_main:
+    EXECUTE_SUBROUTINE .setup_wife_maria_e22
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cs7_maria_with_baby_pose
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs7_maria_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs7_maria_anniv_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs7_maria_anniv_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 0
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 3, .cs7_maria_anniv_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 185
+
+.cs7_maria_anniv_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs7_maria_reinteract_wait
+
+.cs7_maria_anniv_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 184
+    EXECUTE_SUBROUTINE .cs7_maria_anniv_return
+
+.cs7_maria_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs7_maria_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs7_maria_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 186
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs7_maria_reinteract_wait
+
+; ====================================================
+; Cutscene 8 - Maria child-health celebration
+; Similar to .cs_6 / .cs_7 but Maria is permanently
+; posed holding the baby. Dialogue 0 option 2 path
+; shows text 184; fallback text 185. Reinteract shows
+; text 203 (Let us celebrate the health of our
+; child).
+; ====================================================
+.cs_8:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs8_maria_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_59
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_maria_interact_watch
+    DEACTIVATE_SELF
+
+.cs8_maria_main:
+    EXECUTE_SUBROUTINE .setup_wife_maria_e22
+    SET_COORDINATES -112, 0, -64
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 108
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_CALLBACK_ROUTINE 0, 32768, .cs8_maria_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs8_maria_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 0
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 2, .cs8_maria_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 185
+
+.cs8_maria_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs8_maria_reinteract_wait
+
+.cs8_maria_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 184
+    EXECUTE_SUBROUTINE .cs8_maria_return
+
+.cs8_maria_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs8_maria_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs8_maria_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 203
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs8_maria_reinteract_wait
+
+.setup_baby_hold_e48:
+    SETUP_ENTITY 48, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 48, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    RETURN_FROM_SUBROUTINE
+
+.executor_16_wife_baby_hold_anim:
+    EXECUTE_SUBROUTINE .setup_baby_hold_e48
+    SET_ENTITY_TRACKING_TARGET 22, 0, 14, 20, 254
+    BRANCH_U8_VAR_WITHIN_RANGE 30, 255, gBabyAge, .wife_baby_hold_anim_221
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 213
+    EXECUTE_SUBROUTINE .wait_loop
+
+.wife_baby_hold_anim_221:
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 221
+    EXECUTE_SUBROUTINE .wait_loop
+
+; ====================================================
+; Cutscene 9 - Maria baby-name confirmation
+; Maria asks the player to pick who should confirm the
+; name via dialogue 29 (three choices). Midwife path
+; diagnoses measles (text 209) into text
+; 210 and 211. Potion dealer path uses text 212, 210,
+; 213. Mayor wife path uses text 214, 210, 215. Applies
+; a +8 affection bump to whichever NPC is chosen.
+; ====================================================
+.cs_9:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE -5, 255, gHappiness
+    UPDATE_U8_VALUE 8, 255, npcAffection[BABY]
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs9_maria_naming_setup
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_cradle
+    SPAWN_EXECUTOR 5, .executor_5_player_naming_pos
+    DEACTIVATE_SELF
+
+.cs9_maria_naming_setup:
+    EXECUTE_SUBROUTINE .setup_wife_maria_e22
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_WAIT_FRAMES 1
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 29
+    WAIT_FOR_DIALOGUE_INPUT 0
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    SET_OTHER_EXECUTOR_PTR 4, .executor_4_baby_anim_13
+    SET_OTHER_EXECUTOR_PTR 5, .executor_5_player_exit_naming
+    SET_COORDINATES -152, 0, -32
+    SET_ASSET_ROTATION NORTHEAST
+    BRANCH_ON_DIALOGUE 0, 0, .cs9_midwife_path
+    BRANCH_ON_DIALOGUE 0, 1, .cs9_potion_dealer_path
+    BRANCH_ON_DIALOGUE 0, 2, .cs9_mayor_wife_path
+
+.cs9_midwife_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[MIDWIFE]
+    SPAWN_EXECUTOR 3, .cs9_midwife_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs9_potion_dealer_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[POTION_SHOP_DEALER]
+    SPAWN_EXECUTOR 3, .cs9_potion_dealer_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs9_mayor_wife_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[MAYOR_WIFE]
+    SPAWN_EXECUTOR 3, .cs9_mayor_wife_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_4_baby_e25_cradle:
+    SETUP_ENTITY 25, ENTITY_ASSET_BABY, 1
+    SET_ENTITY_ANIMATIONS 25, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_COORDINATES -196, 0, -64
+    BRANCH_U8_VAR_WITHIN_RANGE 30, 255, gBabyAge, .baby_cradle_anim_47
+    SET_ENTITY_ANIMATION 11
+    EXECUTE_SUBROUTINE .wait_loop
+
+.baby_cradle_anim_47:
+    SET_ENTITY_ANIMATION 47
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_4_baby_anim_13:
+    BRANCH_U8_VAR_WITHIN_RANGE 30, 255, gBabyAge, .baby_anim_54
+    SET_ENTITY_ANIMATION 13
+    EXECUTE_SUBROUTINE .wait_loop
+
+.baby_anim_54:
+    SET_ENTITY_ANIMATION 54
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_5_player_naming_pos:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES -120, 0, -64
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_5_player_exit_naming:
+    SET_COORDINATES -120, 0, -32
+    SET_ASSET_ROTATION NORTH
+    EXECUTE_SUBROUTINE .wait_loop
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    PAUSE_ENTITIES
+    DEACTIVATE_SELF
+
+.setup_midwife_msg_209:
+    SETUP_ENTITY 23, ENTITY_ASSET_MIDWIFE, 1
+    SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 209
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RETURN_FROM_SUBROUTINE
+
+.cs9_midwife_naming:
+    EXECUTE_SUBROUTINE .setup_midwife_msg_209
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 210
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ENTITY_ANIMATION 16
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 211
+
+.sub_naming_exit:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    STOP_SEQUENCE_WITH_FADE 0, 1
+    IDLE_WHILE_SEQUENCE_PLAYING 0
+    DEACTIVATE_EXECUTOR 1
+    DEACTIVATE_EXECUTOR 4
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+.setup_potion_dealer_msg_212:
+    SETUP_ENTITY 23, ENTITY_ASSET_POTION_SHOP_DEALER, 1
+    SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 212
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RETURN_FROM_SUBROUTINE
+
+.cs9_potion_dealer_naming:
+    EXECUTE_SUBROUTINE .setup_potion_dealer_msg_212
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 210
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 213
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+.cs9_mayor_wife_naming:
+    EXECUTE_SUBROUTINE .setup_mayor_wife_e24
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 214
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 210
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 215
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+; ====================================================
+; Cutscene 10 - Popuri brings soup and medicine (cold)
+; Popuri visits the bedridden player. NPC fallback
+; uses text 246 / 248; if married to Popuri (gWife==1)
+; the wife variants text 3 and text 4 are spoken.
+; Parallel of .cs_3.
+; ====================================================
+.cs_10:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE 8, 255, gHappiness
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs10_popuri_main
+    DEACTIVATE_SELF
+
+.setup_wife_popuri_e22:
+    SETUP_ENTITY 22, ENTITY_ASSET_POPURI, 1
+    SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    RETURN_FROM_SUBROUTINE
+
+.cs10_popuri_text3:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 3
+    EXECUTE_SUBROUTINE .cs10_popuri_serve_food
+
+.cs10_popuri_text4:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 4
+    EXECUTE_SUBROUTINE .sub_wife_leave_fade_exit
+
+.cs10_popuri_main:
+    SPAWN_EXECUTOR 4, .executor_4_player_anim_455_pos
+    SPAWN_EXECUTOR 16, .executor_16_cs0_map_setup
+    SET_WAIT_FRAMES 1
+    EXECUTE_SUBROUTINE .setup_wife_popuri_e22
+    SET_COORDINATES -116, 0, -136
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 15
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs10_popuri_if_wife1
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 246
+
+.cs10_popuri_serve_food:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_item_anim_34
+    SET_WAIT_FRAMES 30
+    DEACTIVATE_EXECUTOR 10
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs10_popuri_close_if_wife1
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 248
+    EXECUTE_SUBROUTINE .sub_wife_leave_fade_exit
+
+.cs10_popuri_if_wife1:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs10_popuri_text3
+    RETURN_FROM_SUBROUTINE
+
+.cs10_popuri_close_if_wife1:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs10_popuri_text4
+    RETURN_FROM_SUBROUTINE
+
+; ====================================================
+; Cutscene 11 - Popuri giving birth
+; Parallel of .cs_4 with Lillia (e24) in the mayor-
+; wife role. Time-of-day branches pick day / evening /
+; night setups. Evening variant plays the push-and-
+; delivery cinematic (texts 168 - 176, Popuri asking
+; for a name via text 178). Interaction dispatch uses
+; texts 251 - 257.
+; ====================================================
+.cs_11:
+    SET_SPECIAL_BIT 10, gCutsceneCompletionFlags
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cs11_birth_night
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs11_birth_evening
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs11_birth_6am
+    SPAWN_EXECUTOR 1, .cs11_popuri_exec_day
+    SPAWN_EXECUTOR 2, .executor_2_midwife_wander
+    SPAWN_EXECUTOR 3, .executor_3_lillia_day
+    SPAWN_EXECUTOR 41, .executor_41_popuri_interact_watch
+    DEACTIVATE_SELF
+
+.audio_night_spring:
+    SET_AUDIO_SEQUENCE 0, _nightAmbienceSpringSegmentRomStart, _nightAmbienceSpringSegmentRomEnd
+    SET_AUDIO_SEQUENCE_VOLUME 0, 64, 4
+    RETURN_FROM_SUBROUTINE
+
+.audio_night_summer:
+    SET_AUDIO_SEQUENCE 0, _nightAmbienceSummerSegmentRomStart, _nightAmbienceSummerSegmentRomEnd
+    SET_AUDIO_SEQUENCE_VOLUME 0, 64, 4
+    RETURN_FROM_SUBROUTINE
+
+.audio_night_autumn:
+    SET_AUDIO_SEQUENCE 0, _nightAmbienceAutumnSegmentRomStart, _nightAmbienceAutumnSegmentRomEnd
+    SET_AUDIO_SEQUENCE_VOLUME 0, 64, 4
+    RETURN_FROM_SUBROUTINE
+
+.audio_starry_night:
+    SET_AUDIO_SEQUENCE 0, _starryNightFestivalSegmentRomStart, _starryNightFestivalSegmentRomEnd
+    SET_AUDIO_SEQUENCE_VOLUME 0, 64, 4
+    RETURN_FROM_SUBROUTINE
+
+; ====================================================
+; Cutscene 12 - Popuri post-birth bedroom scene
+; Parallel of .cs_5. Popuri sleeps, baby e25 lies
+; nearby. Plays a seasonal night-ambience sequence
+; (spring / summer / autumn / starry) then shows
+; text 312 (Popuri saying thank you and goodnight).
+; ====================================================
+.cs_12:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs12_popuri_sleep_e22
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES -128, 0, -144
+    SET_ASSET_ROTATION NORTHWEST
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gSeason, .audio_night_spring
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gSeason, .audio_night_summer
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gSeason, .audio_night_autumn
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gSeason, .audio_starry_night
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 10
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 312
+    EXECUTE_SUBROUTINE .sub_fade_out_exit
+
+.cs12_popuri_sleep_e22:
+    EXECUTE_SUBROUTINE .setup_wife_popuri_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs11_birth_6am:
+    SPAWN_EXECUTOR 41, .executor_41_popuri_interact_watch
+    SPAWN_EXECUTOR 1, .cs11_popuri_exec_day
+    SPAWN_EXECUTOR 2, .executor_2_midwife_wander
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 99, gMinutes, .cs11_birth_6am_after_min
+    SPAWN_EXECUTOR 3, .executor_3_lillia_6am
+    DEACTIVATE_SELF
+
+.cs11_birth_6am_after_min:
+    SPAWN_EXECUTOR 3, .executor_3_lillia_day
+    DEACTIVATE_SELF
+
+.cs11_birth_evening:
+    SPAWN_EXECUTOR 1, .cs11_popuri_exec_evening
+    SPAWN_EXECUTOR 2, .executor_2_midwife_fixed_pos
+    SPAWN_EXECUTOR 3, .executor_3_lillia_evening
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    SPAWN_EXECUTOR 41, .executor_41_popuri_interact_watch
+    DEACTIVATE_SELF
+
+.cs11_birth_night:
+    SPAWN_EXECUTOR 1, .cs11_popuri_exec_night
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    SPAWN_EXECUTOR 41, .executor_41_popuri_interact_watch
+    DEACTIVATE_SELF
+
+.executor_41_popuri_interact_watch:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, interactedWithLevelInteractionIndex, .cs11_on_interact_trigger
+    EXECUTE_SUBROUTINE .executor_41_popuri_interact_watch
+
+.cs11_on_interact_trigger:
+    SET_OTHER_EXECUTOR_PTR 1, .cs11_on_interact_dispatch
+    DEACTIVATE_SELF
+
+.cs11_popuri_exec_day:
+    EXECUTE_SUBROUTINE .setup_wife_popuri_e22
+    SET_COORDINATES -184, 0, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs11_popuri_exec_evening:
+    EXECUTE_SUBROUTINE .setup_wife_popuri_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    SET_WAIT_FRAMES 1
+    BRANCH_ON_SPECIAL_BIT 11, D_80237A00, .wait_loop
+    EXECUTE_SUBROUTINE .sub_birth_cinematic
+    SET_SPECIAL_BIT 11, D_80237A00
+
+.cs11_popuri_exec_night:
+    EXECUTE_SUBROUTINE .setup_wife_popuri_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.setup_lillia_e24:
+    SETUP_ENTITY 24, ENTITY_ASSET_LILLIA, 1
+    SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    RETURN_FROM_SUBROUTINE
+
+.executor_3_lillia_6am:
+    EXECUTE_SUBROUTINE .setup_lillia_e24
+    SET_COORDINATES -48, 0, 112
+    SET_ASSET_ROTATION NORTHEAST
+    UPDATE_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+
+.sub_lillia_wait_callback:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs11_lillia_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_3_lillia_evening:
+    EXECUTE_SUBROUTINE .setup_lillia_e24
+    SET_COORDINATES -80, 0, -112
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .sub_lillia_wait_callback
+
+.executor_3_lillia_day:
+    EXECUTE_SUBROUTINE .setup_lillia_e24
+    SET_COORDINATES -112, 0, 80
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .sub_lillia_wait_callback
+
+.executor_3_lillia_approach:
+    ENTITY_WALK 24, NORTHWEST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .sub_lillia_wait_callback
+
+.cs11_on_interact_dispatch:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_41_popuri_interact_watch
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs11_interact_6am
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 14, gHour, .cs11_interact_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs11_interact_evening_finale
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cs11_interact_night_finale
+    DEACTIVATE_SELF
+
+.cs11_interact_6am:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 99, gMinutes, .cs11_interact_day
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 251
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    BRANCH_ON_SPECIAL_BIT 1, var0, .cs11_interact_check_var1
+    SET_SPECIAL_BIT 1, var0
+    SET_OTHER_EXECUTOR_PTR 3, .executor_3_lillia_approach
+
+.cs11_interact_check_var1:
+    TOGGLE_PAUSE_ENTITIES
+    SPAWN_EXECUTOR 41, .executor_41_popuri_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs11_interact_day:
+    EXECUTE_SUBROUTINE .setup_msgbox_center_avatar
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 166
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    TOGGLE_PAUSE_ENTITIES
+    SPAWN_EXECUTOR 41, .executor_41_popuri_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs11_interact_evening_finale:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE 8, 255, npcAffection[POPURI]
+    UPDATE_U8_VALUE 5, 255, npcAffection[LILLIA]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 254
+    EXECUTE_SUBROUTINE .sub_birth_finale_exit
+
+.cs11_interact_night_finale:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE -5, 255, npcAffection[POPURI]
+    UPDATE_U8_VALUE 5, 255, npcAffection[LILLIA]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 257
+    EXECUTE_SUBROUTINE .sub_birth_finale_exit
+
+.cs11_lillia_on_interact:
+    FLIP_ENTITY_DIRECTION 0
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs11_lillia_6am
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 14, gHour, .cs11_lillia_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs11_lillia_evening
+    DEACTIVATE_SELF
+
+.cs11_lillia_6am:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gMinutes, .cs11_lillia_day
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 252
+
+.sub_lillia_dialogue_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .sub_lillia_wait_callback
+
+.cs11_lillia_day:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 253
+    EXECUTE_SUBROUTINE .sub_lillia_dialogue_return
+
+.cs11_lillia_evening:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 256
+    EXECUTE_SUBROUTINE .sub_lillia_dialogue_return
+
+; ====================================================
+; Cutscene 13 - Popuri birthday
+; Parallel of .cs_6. Dialogue 1 option 1 branch shows
+; text 260 (remembered) else text 261 (forgot).
+; Reinteract shows text 273.
+; ====================================================
+.cs_13:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs13_popuri_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_60
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_popuri_interact_watch
+    DEACTIVATE_SELF
+
+.executor_32_popuri_interact_watch:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, interactedWithLevelInteractionIndex, .popuri_interact_trigger_0
+    BRANCH_U8_VAR_WITHIN_RANGE 34, 34, interactedWithLevelInteractionIndex, .popuri_interact_trigger_1
+    BRANCH_U8_VAR_WITHIN_RANGE 35, 35, interactedWithLevelInteractionIndex, .popuri_interact_trigger_2
+    EXECUTE_SUBROUTINE .executor_32_popuri_interact_watch
+
+.popuri_interact_trigger_0:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_popuri_interact_watch
+    BRANCH_ON_SPECIAL_BIT 0, var0, .executor_32_popuri_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_popuri_gift_item_60
+    SET_SPECIAL_BIT 0, var0
+    EXECUTE_SUBROUTINE .executor_32_popuri_interact_watch
+
+.popuri_interact_trigger_1:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_popuri_interact_watch
+    BRANCH_ON_SPECIAL_BIT 1, var0, .executor_32_popuri_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_player_gift_item_6
+    SET_SPECIAL_BIT 1, var0
+    EXECUTE_SUBROUTINE .executor_32_popuri_interact_watch
+
+.popuri_interact_trigger_2:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_popuri_interact_watch
+    BRANCH_ON_SPECIAL_BIT 2, var0, .executor_32_popuri_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_player_gift_item_62
+    SET_SPECIAL_BIT 2, var0
+    EXECUTE_SUBROUTINE .executor_32_popuri_interact_watch
+
+.executor_33_item_anim_60:
+    SETUP_ENTITY 47, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 60
+    SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_0_popuri_gift_item_60:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
+    DEACTIVATE_EXECUTOR 2
+    SPAWN_EXECUTOR 33, .executor_33_item_anim_60
+    EXECUTE_SUBROUTINE .sub_cleanup_tracking
+
+.executor_2_dec_e43_anim_60:
+    SETUP_ENTITY 43, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 43, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 60
+    SET_COORDINATES -32, 0, -92
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs13_popuri_with_baby_pose:
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 122
+    EXECUTE_SUBROUTINE .cs13_popuri_wait
+
+.cs13_popuri_main:
+    EXECUTE_SUBROUTINE .setup_wife_popuri_e22
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cs13_popuri_with_baby_pose
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs13_popuri_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs13_popuri_birthday_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs13_popuri_birthday_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE 10, 255, gHappiness
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 1
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 1, .cs13_popuri_birthday_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 261
+
+.cs13_popuri_birthday_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs13_popuri_reinteract_wait
+
+.cs13_popuri_birthday_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 260
+    EXECUTE_SUBROUTINE .cs13_popuri_birthday_return
+
+.cs13_popuri_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs13_popuri_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs13_popuri_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 273
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs13_popuri_reinteract_wait
+
+; ====================================================
+; Cutscene 14 - Popuri wedding anniversary
+; Parallel of .cs_7. Dialogue 1 option 3 branch shows
+; text 260 else text 261. Reinteract shows text 262.
+; ====================================================
+.cs_14:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs14_popuri_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_60
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_popuri_interact_watch
+    DEACTIVATE_SELF
+
+.cs14_popuri_with_baby_pose:
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 122
+    EXECUTE_SUBROUTINE .cs14_popuri_wait
+
+.cs14_popuri_main:
+    EXECUTE_SUBROUTINE .setup_wife_popuri_e22
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cs14_popuri_with_baby_pose
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs14_popuri_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs14_popuri_anniv_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs14_popuri_anniv_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 1
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 3, .cs14_popuri_anniv_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 261
+
+.cs14_popuri_anniv_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs14_popuri_reinteract_wait
+
+.cs14_popuri_anniv_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 260
+    EXECUTE_SUBROUTINE .cs14_popuri_anniv_return
+
+.cs14_popuri_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs14_popuri_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs14_popuri_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 262
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs14_popuri_reinteract_wait
+
+; ====================================================
+; Cutscene 15 - Popuri child-health celebration
+; Parallel of .cs_8. Dialogue 1 option 2 branch shows
+; text 260 else text 261. Reinteract shows text 277.
+; ====================================================
+.cs_15:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs15_popuri_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_60
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_popuri_interact_watch
+    DEACTIVATE_SELF
+
+.cs15_popuri_main:
+    EXECUTE_SUBROUTINE .setup_wife_popuri_e22
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 122
+    SET_CALLBACK_ROUTINE 0, 32768, .cs15_popuri_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs15_popuri_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 1
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 2, .cs15_popuri_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 261
+
+.cs15_popuri_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs15_popuri_reinteract_wait
+
+.cs15_popuri_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 260
+    EXECUTE_SUBROUTINE .cs15_popuri_return
+
+.cs15_popuri_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs15_popuri_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs15_popuri_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 277
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs15_popuri_reinteract_wait
+
+; ====================================================
+; Cutscene 16 - Popuri baby-name confirmation
+; Parallel of .cs_9. Dialogue 30 picks midwife / potion
+; dealer / Lillia. Midwife text 280 - 211; potion
+; dealer text 280 - 213; Lillia text 281, 280, 282.
+; ====================================================
+.cs_16:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE -5, 255, gHappiness
+    UPDATE_U8_VALUE 8, 255, npcAffection[BABY]
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs16_popuri_naming_setup
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_cradle
+    SPAWN_EXECUTOR 5, .executor_5_player_naming_pos
+    DEACTIVATE_SELF
+
+.cs16_popuri_naming_setup:
+    EXECUTE_SUBROUTINE .setup_wife_popuri_e22
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_WAIT_FRAMES 1
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 30
+    WAIT_FOR_DIALOGUE_INPUT 0
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    SET_OTHER_EXECUTOR_PTR 4, .executor_4_baby_anim_13
+    SET_OTHER_EXECUTOR_PTR 5, .executor_5_player_exit_naming
+    SET_COORDINATES -152, 0, -32
+    SET_ASSET_ROTATION NORTHEAST
+    BRANCH_ON_DIALOGUE 0, 0, .cs16_midwife_path
+    BRANCH_ON_DIALOGUE 0, 1, .cs16_potion_dealer_path
+    BRANCH_ON_DIALOGUE 0, 2, .cs16_lillia_path
+
+.cs16_midwife_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[MIDWIFE]
+    SPAWN_EXECUTOR 3, .cs16_midwife_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs16_potion_dealer_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[POTION_SHOP_DEALER]
+    SPAWN_EXECUTOR 3, .cs16_potion_dealer_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs16_lillia_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[LILLIA]
+    SPAWN_EXECUTOR 3, .cs16_lillia_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs16_midwife_naming:
+    EXECUTE_SUBROUTINE .setup_midwife_msg_209
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 280
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ENTITY_ANIMATION 16
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 211
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+.cs16_potion_dealer_naming:
+    EXECUTE_SUBROUTINE .setup_potion_dealer_msg_212
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 280
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 213
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+.cs16_lillia_naming:
+    EXECUTE_SUBROUTINE .setup_lillia_e24
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 281
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 280
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 282
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+; ====================================================
+; Cutscene 17 - Elli brings soup and medicine (cold)
+; Elli visits the bedridden player. NPC fallback uses
+; text 308 / 310; if married to Elli (gWife==2) the
+; wife variants text 5 and text 6 are spoken.
+; Parallel of .cs_3.
+; ====================================================
+.cs_17:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE 8, 255, gHappiness
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs17_elli_main
+    DEACTIVATE_SELF
+
+.setup_wife_elli_e22:
+    SETUP_ENTITY 22, ENTITY_ASSET_ELLI, 1
+    SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    RETURN_FROM_SUBROUTINE
+
+.cs17_elli_text5:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 5
+    EXECUTE_SUBROUTINE .cs17_elli_serve_food
+
+.cs17_elli_text6:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 6
+    EXECUTE_SUBROUTINE .sub_wife_leave_fade_exit
+
+.cs17_elli_main:
+    SPAWN_EXECUTOR 4, .executor_4_player_anim_455_pos
+    SPAWN_EXECUTOR 16, .executor_16_cs0_map_setup
+    SET_WAIT_FRAMES 1
+    EXECUTE_SUBROUTINE .setup_wife_elli_e22
+    SET_COORDINATES -116, 0, -136
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 15
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs17_elli_if_wife2
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 308
+
+.cs17_elli_serve_food:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_item_anim_110
+    SET_WAIT_FRAMES 30
+    DEACTIVATE_EXECUTOR 10
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs17_elli_close_if_wife2
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 310
+    EXECUTE_SUBROUTINE .sub_wife_leave_fade_exit
+
+.cs17_elli_if_wife2:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs17_elli_text5
+    RETURN_FROM_SUBROUTINE
+
+.cs17_elli_close_if_wife2:
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs17_elli_text6
+    RETURN_FROM_SUBROUTINE
+
+; ====================================================
+; Cutscene 18 - Elli giving birth
+; Parallel of .cs_4 with the Pastor (e24) supporting
+; instead of Mayor Wife. Interaction dispatch uses
+; texts 328 - 333 for the evening / night finales.
+; ====================================================
+.cs_18:
+    SET_SPECIAL_BIT 10, gCutsceneCompletionFlags
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cs18_birth_night
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs18_birth_evening
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs18_birth_6am
+    SPAWN_EXECUTOR 1, .cs18_elli_exec_day
+    SPAWN_EXECUTOR 2, .executor_2_midwife_wander
+    SPAWN_EXECUTOR 3, .executor_3_pastor_day
+    SPAWN_EXECUTOR 41, .executor_41_elli_interact_watch
+    DEACTIVATE_SELF
+
+; ====================================================
+; Cutscene 19 - Elli post-birth bedroom scene
+; Parallel of .cs_5. Shows text 313 (Elli thanking the
+; player for the name, then saying goodnight).
+; ====================================================
+.cs_19:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs19_elli_sleep_e22
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES -128, 0, -144
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 10
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 313
+    EXECUTE_SUBROUTINE .sub_fade_out_exit
+
+.cs19_elli_sleep_e22:
+    EXECUTE_SUBROUTINE .setup_wife_elli_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    SPAWN_EXECUTOR 41, .executor_41_elli_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs18_birth_6am:
+    SPAWN_EXECUTOR 41, .executor_41_elli_interact_watch
+    SPAWN_EXECUTOR 1, .cs18_elli_exec_day
+    SPAWN_EXECUTOR 2, .executor_2_midwife_wander
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 99, gMinutes, .cs18_birth_6am_after_min
+    SPAWN_EXECUTOR 3, .executor_3_pastor_6am
+    DEACTIVATE_SELF
+
+.cs18_birth_6am_after_min:
+    SPAWN_EXECUTOR 3, .executor_3_pastor_day
+    DEACTIVATE_SELF
+
+.cs18_birth_evening:
+    SPAWN_EXECUTOR 1, .cs18_elli_exec_evening
+    SPAWN_EXECUTOR 2, .executor_2_midwife_fixed_pos
+    SPAWN_EXECUTOR 3, .executor_3_pastor_evening
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    SPAWN_EXECUTOR 41, .executor_41_elli_interact_watch
+    DEACTIVATE_SELF
+
+.cs18_birth_night:
+    SPAWN_EXECUTOR 1, .cs18_elli_exec_night
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    SPAWN_EXECUTOR 41, .executor_41_elli_interact_watch
+    DEACTIVATE_SELF
+
+.executor_41_elli_interact_watch:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, interactedWithLevelInteractionIndex, .cs18_on_interact_trigger
+    EXECUTE_SUBROUTINE .executor_41_elli_interact_watch
+
+.cs18_on_interact_trigger:
+    SET_OTHER_EXECUTOR_PTR 1, .cs18_on_interact_dispatch
+    DEACTIVATE_SELF
+
+.cs18_elli_exec_day:
+    EXECUTE_SUBROUTINE .setup_wife_elli_e22
+    SET_COORDINATES -184, 0, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs18_elli_exec_evening:
+    EXECUTE_SUBROUTINE .setup_wife_elli_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    SET_WAIT_FRAMES 1
+    BRANCH_ON_SPECIAL_BIT 11, D_80237A00, .wait_loop
+    EXECUTE_SUBROUTINE .sub_birth_cinematic
+    SET_SPECIAL_BIT 11, D_80237A00
+
+.cs18_elli_exec_night:
+    EXECUTE_SUBROUTINE .setup_wife_elli_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.setup_pastor_e24:
+    SETUP_ENTITY 24, ENTITY_ASSET_PASTOR, 1
+    SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    RETURN_FROM_SUBROUTINE
+
+.executor_3_pastor_6am:
+    EXECUTE_SUBROUTINE .setup_pastor_e24
+    SET_COORDINATES -48, 0, 112
+    SET_ASSET_ROTATION NORTHEAST
+    UPDATE_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+
+.sub_pastor_wait_callback:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs18_pastor_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_3_pastor_evening:
+    EXECUTE_SUBROUTINE .setup_pastor_e24
+    SET_COORDINATES -80, 0, -112
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .sub_pastor_wait_callback
+
+.executor_3_pastor_day:
+    EXECUTE_SUBROUTINE .setup_pastor_e24
+    SET_COORDINATES -112, 0, 80
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .sub_pastor_wait_callback
+
+.executor_3_pastor_approach:
+    ENTITY_WALK 24, NORTHWEST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .sub_pastor_wait_callback
+
+.cs18_on_interact_dispatch:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_41_elli_interact_watch
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs18_interact_6am
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 14, gHour, .cs18_interact_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs18_interact_evening_finale
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cs18_interact_night_finale
+    DEACTIVATE_SELF
+
+.cs18_interact_6am:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gMinutes, .cs18_interact_day
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 328
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    BRANCH_ON_SPECIAL_BIT 2, var0, .cs18_interact_check_var2
+    SET_SPECIAL_BIT 2, var0
+    SET_OTHER_EXECUTOR_PTR 3, .executor_3_pastor_approach
+
+.cs18_interact_check_var2:
+    TOGGLE_PAUSE_ENTITIES
+    SPAWN_EXECUTOR 41, .executor_41_elli_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs18_interact_day:
+    EXECUTE_SUBROUTINE .setup_msgbox_center_avatar
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 166
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    TOGGLE_PAUSE_ENTITIES
+    SPAWN_EXECUTOR 41, .executor_41_elli_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs18_interact_evening_finale:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE 8, 255, npcAffection[ELLI]
+    UPDATE_U8_VALUE 5, 255, npcAffection[PASTOR]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 330
+    EXECUTE_SUBROUTINE .sub_birth_finale_exit
+
+.cs18_interact_night_finale:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE -5, 255, npcAffection[ELLI]
+    UPDATE_U8_VALUE 5, 255, npcAffection[PASTOR]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 333
+    EXECUTE_SUBROUTINE .sub_birth_finale_exit
+
+.cs18_pastor_on_interact:
+    FLIP_ENTITY_DIRECTION 0
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs18_pastor_6am
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 14, gHour, .cs18_pastor_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs18_pastor_evening
+    DEACTIVATE_SELF
+
+.cs18_pastor_6am:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gMinutes, .cs18_pastor_day
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 329
+
+.sub_pastor_dialogue_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .sub_pastor_wait_callback
+
+.cs18_pastor_day:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 329
+    EXECUTE_SUBROUTINE .sub_pastor_dialogue_return
+
+.cs18_pastor_evening:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 332
+    EXECUTE_SUBROUTINE .sub_pastor_dialogue_return
+
+; ====================================================
+; Cutscene 20 - Elli birthday
+; Parallel of .cs_6. Dialogue 2 option 1 branch shows
+; text 336 else text 337. Reinteract shows text 347.
+; ====================================================
+.cs_20:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs20_elli_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_60
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_popuri_interact_watch
+    DEACTIVATE_SELF
+
+.cs20_elli_with_baby_pose:
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 105
+    EXECUTE_SUBROUTINE .cs20_elli_wait
+
+.cs20_elli_main:
+    EXECUTE_SUBROUTINE .setup_wife_elli_e22
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cs20_elli_with_baby_pose
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs20_elli_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs20_elli_birthday_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs20_elli_birthday_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE 10, 255, gHappiness
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 2
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 1, .cs20_elli_birthday_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 337
+
+.cs20_elli_birthday_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs20_elli_reinteract_wait
+
+.cs20_elli_birthday_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 336
+    EXECUTE_SUBROUTINE .cs20_elli_birthday_return
+
+.cs20_elli_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs20_elli_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs20_elli_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 347
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs20_elli_reinteract_wait
+
+; ====================================================
+; Cutscene 21 - Elli wedding anniversary
+; Parallel of .cs_7. Dialogue 2 option 3 branch shows
+; text 336 else text 337. Reinteract shows text 338.
+; ====================================================
+.cs_21:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs21_elli_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_60
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_popuri_interact_watch
+    DEACTIVATE_SELF
+
+.cs21_elli_with_baby_pose:
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 105
+    EXECUTE_SUBROUTINE .cs21_elli_wait
+
+.cs21_elli_main:
+    EXECUTE_SUBROUTINE .setup_wife_elli_e22
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cs21_elli_with_baby_pose
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs21_elli_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs21_elli_anniv_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs21_elli_anniv_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 2
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 3, .cs21_elli_anniv_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 337
+
+.cs21_elli_anniv_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs21_elli_reinteract_wait
+
+.cs21_elli_anniv_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 336
+    EXECUTE_SUBROUTINE .cs21_elli_anniv_return
+
+.cs21_elli_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs21_elli_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs21_elli_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 338
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs21_elli_reinteract_wait
+
+; ====================================================
+; Cutscene 22 - Elli child-health celebration
+; Parallel of .cs_8. Dialogue 2 option 2 branch shows
+; text 336 else text 337. Reinteract shows text 350.
+; ====================================================
+.cs_22:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs22_elli_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_60
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_popuri_interact_watch
+    DEACTIVATE_SELF
+
+.cs22_elli_main:
+    EXECUTE_SUBROUTINE .setup_wife_elli_e22
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 105
+    SET_CALLBACK_ROUTINE 0, 32768, .cs22_elli_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs22_elli_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 2
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 2, .cs22_elli_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 337
+
+.cs22_elli_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs22_elli_reinteract_wait
+
+.cs22_elli_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 336
+    EXECUTE_SUBROUTINE .cs22_elli_return
+
+.cs22_elli_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs22_elli_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs22_elli_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 350
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs22_elli_reinteract_wait
+
+; ====================================================
+; Cutscene 23 - Elli baby-name confirmation
+; Parallel of .cs_9. Dialogue 31 picks midwife / potion
+; dealer / Elli-self fallback. Elli-self path shows
+; text 353 and skips the +affection bump for a helper.
+; Midwife uses text 354 - 211; potion dealer 354 - 213.
+; ====================================================
+.cs_23:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE -5, 255, gHappiness
+    UPDATE_U8_VALUE 8, 255, npcAffection[BABY]
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs23_elli_naming_setup
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_cradle
+    SPAWN_EXECUTOR 5, .executor_5_player_naming_pos
+    DEACTIVATE_SELF
+
+.cs23_elli_naming_setup:
+    EXECUTE_SUBROUTINE .setup_wife_elli_e22
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_WAIT_FRAMES 1
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 31
+    WAIT_FOR_DIALOGUE_INPUT 0
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    SET_OTHER_EXECUTOR_PTR 4, .executor_4_baby_anim_13
+    SET_OTHER_EXECUTOR_PTR 5, .executor_5_player_exit_naming
+    SET_COORDINATES -152, 0, -32
+    SET_ASSET_ROTATION NORTHEAST
+    BRANCH_ON_DIALOGUE 0, 0, .cs23_midwife_path
+    BRANCH_ON_DIALOGUE 0, 1, .cs23_potion_dealer_path
+    BRANCH_ON_DIALOGUE 0, 2, .cs23_elli_fallback_path
+
+.cs23_midwife_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[MIDWIFE]
+    SPAWN_EXECUTOR 3, .cs23_midwife_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs23_potion_dealer_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[POTION_SHOP_DEALER]
+    SPAWN_EXECUTOR 3, .cs23_potion_dealer_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs23_elli_fallback_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[ELLI]
+    SPAWN_EXECUTOR 5, .cs23_executor_5_player_exit
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 353
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    STOP_SEQUENCE_WITH_FADE 0, 1
+    IDLE_WHILE_SEQUENCE_PLAYING 0
+    DEACTIVATE_EXECUTOR 4
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+.cs23_executor_5_player_exit:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES -152, 0, -32
+    SET_ASSET_ROTATION NORTHWEST
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    PAUSE_ENTITIES
+    DEACTIVATE_SELF
+
+.cs23_midwife_naming:
+    EXECUTE_SUBROUTINE .setup_midwife_msg_209
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 354
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ENTITY_ANIMATION 16
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 211
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+.cs23_potion_dealer_naming:
+    EXECUTE_SUBROUTINE .setup_potion_dealer_msg_212
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 354
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 213
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+; ====================================================
+; Cutscene 24 - Ann brings soup and medicine (cold)
+; Ann visits the bedridden player. NPC fallback uses
+; text 374 / 376; if married to Ann (gWife==3) the
+; wife variants text 7 and text 8 are spoken.
+; Parallel of .cs_3.
+; ====================================================
+.cs_24:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE 8, 255, gHappiness
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs24_ann_main
+    DEACTIVATE_SELF
+
+.setup_wife_ann_e22:
+    SETUP_ENTITY 22, ENTITY_ASSET_ANN, 1
+    SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    RETURN_FROM_SUBROUTINE
+
+.cs24_ann_text7:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 7
+    EXECUTE_SUBROUTINE .cs24_ann_serve_food
+
+.cs24_ann_text8:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 8
+    EXECUTE_SUBROUTINE .sub_wife_leave_fade_exit
+
+.cs24_ann_main:
+    SPAWN_EXECUTOR 4, .executor_4_player_anim_455_pos
+    SPAWN_EXECUTOR 16, .executor_16_cs0_map_setup
+    SET_WAIT_FRAMES 1
+    EXECUTE_SUBROUTINE .setup_wife_ann_e22
+    SET_COORDINATES -116, 0, -136
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 15
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs24_ann_if_wife3
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 374
+
+.cs24_ann_serve_food:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_item_anim_62
+    SET_WAIT_FRAMES 30
+    DEACTIVATE_EXECUTOR 10
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs24_ann_close_if_wife3
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 376
+    EXECUTE_SUBROUTINE .sub_wife_leave_fade_exit
+
+.cs24_ann_if_wife3:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs24_ann_text7
+    RETURN_FROM_SUBROUTINE
+
+.cs24_ann_close_if_wife3:
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs24_ann_text8
+    RETURN_FROM_SUBROUTINE
+
+; ====================================================
+; Cutscene 25 - Ann giving birth
+; Parallel of .cs_4 with Doug (e24) supporting. The
+; interact dispatch uses texts 379 - 385 for the day /
+; evening / night finale variants.
+; ====================================================
+.cs_25:
+    SET_SPECIAL_BIT 10, gCutsceneCompletionFlags
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cs25_birth_night
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs25_birth_evening
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs25_birth_6am
+    SPAWN_EXECUTOR 1, .cs25_ann_exec_day
+    SPAWN_EXECUTOR 2, .executor_2_midwife_wander
+    SPAWN_EXECUTOR 3, .executor_3_doug_day
+    SPAWN_EXECUTOR 41, .executor_41_ann_interact_watch
+    DEACTIVATE_SELF
+
+; ====================================================
+; Cutscene 26 - Ann post-birth bedroom scene
+; Parallel of .cs_5. Shows text 314 (Ann saying she
+; feels like she has finished a big job and then
+; saying goodnight).
+; ====================================================
+.cs_26:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs26_ann_sleep_e22
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES -128, 0, -144
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 10
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 314
+    EXECUTE_SUBROUTINE .sub_fade_out_exit
+
+.cs26_ann_sleep_e22:
+    EXECUTE_SUBROUTINE .setup_wife_ann_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    SPAWN_EXECUTOR 41, .executor_41_ann_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs25_birth_6am:
+    SPAWN_EXECUTOR 41, .executor_41_ann_interact_watch
+    SPAWN_EXECUTOR 1, .cs25_ann_exec_day
+    SPAWN_EXECUTOR 2, .executor_2_midwife_wander
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 99, gMinutes, .cs25_birth_6am_after_min
+    SPAWN_EXECUTOR 3, .executor_3_doug_6am
+    DEACTIVATE_SELF
+
+.cs25_birth_6am_after_min:
+    SPAWN_EXECUTOR 3, .executor_3_doug_day
+    DEACTIVATE_SELF
+
+.cs25_birth_evening:
+    SPAWN_EXECUTOR 1, .cs25_ann_exec_evening
+    SPAWN_EXECUTOR 2, .executor_2_midwife_fixed_pos
+    SPAWN_EXECUTOR 3, .executor_3_doug_evening
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    SPAWN_EXECUTOR 41, .executor_41_ann_interact_watch
+    DEACTIVATE_SELF
+
+.cs25_birth_night:
+    SPAWN_EXECUTOR 1, .cs25_ann_exec_night
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    SPAWN_EXECUTOR 41, .executor_41_ann_interact_watch
+    DEACTIVATE_SELF
+
+.executor_41_ann_interact_watch:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, interactedWithLevelInteractionIndex, .cs25_on_interact_trigger
+    EXECUTE_SUBROUTINE .executor_41_ann_interact_watch
+
+.cs25_on_interact_trigger:
+    SET_OTHER_EXECUTOR_PTR 1, .cs25_on_interact_dispatch
+    DEACTIVATE_SELF
+
+.cs25_ann_exec_day:
+    EXECUTE_SUBROUTINE .setup_wife_ann_e22
+    SET_COORDINATES -184, 0, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs25_ann_exec_evening:
+    EXECUTE_SUBROUTINE .setup_wife_ann_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    SET_WAIT_FRAMES 1
+    BRANCH_ON_SPECIAL_BIT 11, D_80237A00, .wait_loop
+    EXECUTE_SUBROUTINE .sub_birth_cinematic
+    SET_SPECIAL_BIT 11, D_80237A00
+
+.cs25_ann_exec_night:
+    EXECUTE_SUBROUTINE .setup_wife_ann_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.setup_doug_e24:
+    SETUP_ENTITY 24, ENTITY_ASSET_DOUG, 1
+    SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    RETURN_FROM_SUBROUTINE
+
+.executor_3_doug_6am:
+    EXECUTE_SUBROUTINE .setup_doug_e24
+    SET_COORDINATES -48, 0, 112
+    SET_ASSET_ROTATION NORTHEAST
+    UPDATE_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+
+.sub_doug_wait_callback:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs25_doug_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_3_doug_evening:
+    EXECUTE_SUBROUTINE .setup_doug_e24
+    SET_COORDINATES -80, 0, -112
+    SET_ASSET_ROTATION NORTHWEST
+    EXECUTE_SUBROUTINE .sub_doug_wait_callback
+
+.executor_3_doug_day:
+    EXECUTE_SUBROUTINE .setup_doug_e24
+    SET_COORDINATES -112, 0, 80
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .sub_doug_wait_callback
+
+.executor_3_doug_approach:
+    ENTITY_WALK 24, NORTHWEST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .sub_doug_wait_callback
+
+.cs25_on_interact_dispatch:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_41_ann_interact_watch
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs25_interact_6am
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 14, gHour, .cs25_interact_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs25_interact_evening_finale
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cs25_interact_night_finale
+    DEACTIVATE_SELF
+
+.cs25_interact_6am:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gMinutes, .cs25_interact_day
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 379
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    BRANCH_ON_SPECIAL_BIT 3, var0, .cs25_interact_check_var3
+    SET_SPECIAL_BIT 3, var0
+    SET_OTHER_EXECUTOR_PTR 3, .executor_3_doug_approach
+
+.cs25_interact_check_var3:
+    TOGGLE_PAUSE_ENTITIES
+    SPAWN_EXECUTOR 41, .executor_41_ann_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs25_interact_day:
+    EXECUTE_SUBROUTINE .setup_msgbox_center_avatar
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 166
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    TOGGLE_PAUSE_ENTITIES
+    SPAWN_EXECUTOR 41, .executor_41_ann_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs25_interact_evening_finale:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE 8, 255, npcAffection[ANN]
+    UPDATE_U8_VALUE 5, 255, npcAffection[PASTOR]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 382
+    EXECUTE_SUBROUTINE .sub_birth_finale_exit
+
+.cs25_interact_night_finale:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE -5, 255, npcAffection[ANN]
+    UPDATE_U8_VALUE 5, 255, npcAffection[PASTOR]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 385
+    EXECUTE_SUBROUTINE .sub_birth_finale_exit
+
+.cs25_doug_on_interact:
+    FLIP_ENTITY_DIRECTION 0
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 14, gHour, .cs25_doug_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs25_doug_evening
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gHour, .cs25_doug_evening
+    DEACTIVATE_SELF
+
+.cs25_doug_day:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 380
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 381
+
+.sub_doug_dialogue_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .sub_doug_wait_callback
+
+.cs25_doug_evening:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 384
+    EXECUTE_SUBROUTINE .sub_doug_dialogue_return
+
+; ====================================================
+; Cutscene 27 - Ann birthday
+; Parallel of .cs_6. Dialogue 3 option 1 branch shows
+; text 388 else text 389. Reinteract shows text 402.
+; ====================================================
+.cs_27:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs27_ann_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_59
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_212
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_ann_interact_watch
+    DEACTIVATE_SELF
+
+.executor_32_ann_interact_watch:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, interactedWithLevelInteractionIndex, .ann_interact_trigger_0
+    BRANCH_U8_VAR_WITHIN_RANGE 34, 34, interactedWithLevelInteractionIndex, .ann_interact_trigger_1
+    BRANCH_U8_VAR_WITHIN_RANGE 35, 35, interactedWithLevelInteractionIndex, .ann_interact_trigger_2
+    EXECUTE_SUBROUTINE .executor_32_ann_interact_watch
+
+.ann_interact_trigger_0:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_ann_interact_watch
+    BRANCH_ON_SPECIAL_BIT 0, var0, .executor_32_ann_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_player_gift_item_59
+    SET_SPECIAL_BIT 0, var0
+    EXECUTE_SUBROUTINE .executor_32_ann_interact_watch
+
+.ann_interact_trigger_1:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_ann_interact_watch
+    BRANCH_ON_SPECIAL_BIT 1, var0, .executor_32_ann_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_player_gift_item_6
+    SET_SPECIAL_BIT 1, var0
+    EXECUTE_SUBROUTINE .executor_32_ann_interact_watch
+
+.ann_interact_trigger_2:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_ann_interact_watch
+    BRANCH_ON_SPECIAL_BIT 2, var0, .executor_32_ann_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_ann_gift_item_212
+    SET_SPECIAL_BIT 2, var0
+    EXECUTE_SUBROUTINE .executor_32_ann_interact_watch
+
+.executor_33_item_anim_212:
+    SETUP_ENTITY 47, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 212
+    SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_0_ann_gift_item_212:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
+    DEACTIVATE_EXECUTOR 4
+    SPAWN_EXECUTOR 33, .executor_33_item_anim_212
+    SET_WAIT_FRAMES 10
+    SET_OTHER_EXECUTOR_PTR 33, .executor_10_tracking_finish
+    SET_WAIT_FRAMES 16
+    SET_ENTITY_ANIMATION 437
+    WAIT_ENTITY_ANIMATION
+    SET_ENTITY_ANIMATION 464
+    WAIT_ENTITY_ANIMATION
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    DEACTIVATE_SELF
+
+.executor_4_dec_e45_anim_212:
+    SETUP_ENTITY 45, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 45, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 212
+    SET_COORDINATES -32, 0, -32
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs27_ann_with_baby_pose:
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 111
+    EXECUTE_SUBROUTINE .cs27_ann_wait
+
+.cs27_ann_main:
+    EXECUTE_SUBROUTINE .setup_wife_ann_e22
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cs27_ann_with_baby_pose
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs27_ann_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs27_ann_birthday_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs27_ann_birthday_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE 10, 255, gHappiness
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 3
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 1, .cs27_ann_birthday_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 389
+
+.cs27_ann_birthday_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs27_ann_reinteract_wait
+
+.cs27_ann_birthday_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 388
+    EXECUTE_SUBROUTINE .cs27_ann_birthday_return
+
+.cs27_ann_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs27_ann_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs27_ann_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 402
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs27_ann_reinteract_wait
+
+; ====================================================
+; Cutscene 28 - Ann wedding anniversary
+; Parallel of .cs_7. Dialogue 3 option 3 branch shows
+; text 388 else text 389. Reinteract shows text 390.
+; ====================================================
+.cs_28:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs28_ann_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_59
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_212
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_ann_interact_watch
+    DEACTIVATE_SELF
+
+.cs28_ann_with_baby_pose:
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 111
+    EXECUTE_SUBROUTINE .cs28_ann_wait
+
+.cs28_ann_main:
+    EXECUTE_SUBROUTINE .setup_wife_ann_e22
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cs28_ann_with_baby_pose
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs28_ann_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs28_ann_anniv_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs28_ann_anniv_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 3
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 3, .cs28_ann_anniv_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 389
+
+.cs28_ann_anniv_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs28_ann_reinteract_wait
+
+.cs28_ann_anniv_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 388
+    EXECUTE_SUBROUTINE .cs28_ann_anniv_return
+
+.cs28_ann_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs28_ann_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs28_ann_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 390
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs28_ann_reinteract_wait
+
+; ====================================================
+; Cutscene 29 - Ann child-health celebration
+; Parallel of .cs_8. Dialogue 3 option 2 branch shows
+; text 388 else text 389. Reinteract shows text 405.
+; ====================================================
+.cs_29:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs29_ann_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_59
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_212
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_ann_interact_watch
+    DEACTIVATE_SELF
+
+.cs29_ann_main:
+    EXECUTE_SUBROUTINE .setup_wife_ann_e22
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 111
+    SET_CALLBACK_ROUTINE 0, 32768, .cs29_ann_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs29_ann_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 3
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 2, .cs29_ann_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 389
+
+.cs29_ann_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs29_ann_reinteract_wait
+
+.cs29_ann_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 388
+    EXECUTE_SUBROUTINE .cs29_ann_return
+
+.cs29_ann_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs29_ann_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs29_ann_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 405
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs29_ann_reinteract_wait
+
+; ====================================================
+; Cutscene 30 - Ann baby-name confirmation
+; Parallel of .cs_9. Dialogue 32 picks midwife / potion
+; dealer / Gray. Midwife uses text 408 - 211; potion
+; dealer uses text 408 - 213; Gray uses text 409, 408,
+; 410.
+; ====================================================
+.cs_30:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE -5, 255, gHappiness
+    UPDATE_U8_VALUE 8, 255, npcAffection[BABY]
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs30_ann_naming_setup
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_cradle
+    SPAWN_EXECUTOR 5, .executor_5_player_naming_pos
+    DEACTIVATE_SELF
+
+.cs30_ann_naming_setup:
+    EXECUTE_SUBROUTINE .setup_wife_ann_e22
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_WAIT_FRAMES 1
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 32
+    WAIT_FOR_DIALOGUE_INPUT 0
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    SET_OTHER_EXECUTOR_PTR 4, .executor_4_baby_anim_13
+    SET_OTHER_EXECUTOR_PTR 5, .executor_5_player_exit_naming
+    SET_COORDINATES -152, 0, -32
+    SET_ASSET_ROTATION NORTHEAST
+    BRANCH_ON_DIALOGUE 0, 0, .cs30_midwife_path
+    BRANCH_ON_DIALOGUE 0, 1, .cs30_potion_dealer_path
+    BRANCH_ON_DIALOGUE 0, 2, .cs30_gray_path
+
+.cs30_midwife_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[MIDWIFE]
+    SPAWN_EXECUTOR 3, .cs30_midwife_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs30_potion_dealer_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[POTION_SHOP_DEALER]
+    SPAWN_EXECUTOR 3, .cs30_potion_dealer_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs30_gray_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[GRAY]
+    SPAWN_EXECUTOR 3, .cs30_gray_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs30_midwife_naming:
+    EXECUTE_SUBROUTINE .setup_midwife_msg_209
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 408
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ENTITY_ANIMATION 16
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 211
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+.cs30_potion_dealer_naming:
+    EXECUTE_SUBROUTINE .setup_potion_dealer_msg_212
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 408
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 213
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+.cs30_gray_naming:
+    SETUP_ENTITY 23, ENTITY_ASSET_GRAY, 1
+    SET_ENTITY_ANIMATIONS 23, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 409
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 408
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 410
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+; ====================================================
+; Cutscene 31 - Karen brings soup and medicine (cold)
+; Karen visits the bedridden player. NPC fallback uses
+; text 445 / 447; if married to Karen (gWife==4) the
+; wife variants text 9 and text 10 are spoken.
+; Parallel of .cs_3.
+; ====================================================
+.cs_31:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE 8, 255, gHappiness
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs31_karen_main
+    DEACTIVATE_SELF
+
+.setup_wife_karen_e22:
+    SETUP_ENTITY 22, ENTITY_ASSET_KAREN, 1
+    SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    RETURN_FROM_SUBROUTINE
+
+.cs31_karen_text9:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 9
+    EXECUTE_SUBROUTINE .cs31_karen_serve_food
+
+.cs31_karen_text10:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 10
+    EXECUTE_SUBROUTINE .sub_wife_leave_fade_exit
+
+.cs31_karen_main:
+    SPAWN_EXECUTOR 4, .executor_4_player_anim_455_pos
+    SPAWN_EXECUTOR 16, .executor_16_cs0_map_setup
+    SET_WAIT_FRAMES 1
+    EXECUTE_SUBROUTINE .setup_wife_karen_e22
+    SET_COORDINATES -116, 0, -136
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 15
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs31_karen_if_wife4
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 445
+
+.cs31_karen_serve_food:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_item_anim_110
+    SET_WAIT_FRAMES 30
+    DEACTIVATE_EXECUTOR 10
+    BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs31_karen_close_if_wife4
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 447
+    EXECUTE_SUBROUTINE .sub_wife_leave_fade_exit
+
+.cs31_karen_if_wife4:
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs31_karen_text9
+    RETURN_FROM_SUBROUTINE
+
+.cs31_karen_close_if_wife4:
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs31_karen_text10
+    RETURN_FROM_SUBROUTINE
+
+; ====================================================
+; Cutscene 32 - Karen giving birth
+; Parallel of .cs_4 with Sasha (e24) supporting. The
+; interact dispatch uses texts 451 - 456 for the day /
+; evening / night finale variants.
+; ====================================================
+.cs_32:
+    SET_SPECIAL_BIT 10, gCutsceneCompletionFlags
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cs32_birth_night
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs32_birth_evening
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs32_birth_6am
+    SPAWN_EXECUTOR 1, .cs32_karen_exec_day
+    SPAWN_EXECUTOR 2, .executor_2_midwife_wander
+    SPAWN_EXECUTOR 3, .executor_3_sasha_day
+    SPAWN_EXECUTOR 41, .executor_41_karen_interact_watch
+    DEACTIVATE_SELF
+
+; ====================================================
+; Cutscene 33 - Karen post-birth bedroom scene
+; Parallel of .cs_5. Shows text 315 (Karen saying
+; there are three of us now, work hard daddy, then
+; saying goodnight).
+; ====================================================
+.cs_33:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs33_karen_sleep_e22
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES -128, 0, -144
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 10
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 315
+    EXECUTE_SUBROUTINE .sub_fade_out_exit
+
+.cs33_karen_sleep_e22:
+    EXECUTE_SUBROUTINE .setup_wife_karen_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    SPAWN_EXECUTOR 41, .executor_41_karen_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs32_birth_6am:
+    SPAWN_EXECUTOR 41, .executor_41_karen_interact_watch
+    SPAWN_EXECUTOR 1, .cs32_karen_exec_day
+    SPAWN_EXECUTOR 2, .executor_2_midwife_wander
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 99, gMinutes, .cs32_birth_6am_after_min
+    SPAWN_EXECUTOR 3, .executor_3_sasha_6am
+    DEACTIVATE_SELF
+
+.cs32_birth_6am_after_min:
+    SPAWN_EXECUTOR 3, .executor_3_sasha_day
+    DEACTIVATE_SELF
+
+.cs32_birth_evening:
+    SPAWN_EXECUTOR 1, .cs32_karen_exec_evening
+    SPAWN_EXECUTOR 2, .executor_2_midwife_fixed_pos
+    SPAWN_EXECUTOR 3, .executor_3_sasha_evening
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    SPAWN_EXECUTOR 41, .executor_41_karen_interact_watch
+    DEACTIVATE_SELF
+
+.cs32_birth_night:
+    SPAWN_EXECUTOR 1, .cs32_karen_exec_night
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_anim_13
+    SPAWN_EXECUTOR 41, .executor_41_karen_interact_watch
+    DEACTIVATE_SELF
+
+.executor_41_karen_interact_watch:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, interactedWithLevelInteractionIndex, .cs32_on_interact_trigger
+    EXECUTE_SUBROUTINE .executor_41_karen_interact_watch
+
+.cs32_on_interact_trigger:
+    SET_OTHER_EXECUTOR_PTR 1, .cs32_on_interact_dispatch
+    DEACTIVATE_SELF
+
+.cs32_karen_exec_day:
+    EXECUTE_SUBROUTINE .setup_wife_karen_e22
+    SET_COORDINATES -184, 0, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs32_karen_exec_evening:
+    EXECUTE_SUBROUTINE .setup_wife_karen_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    SET_WAIT_FRAMES 1
+    BRANCH_ON_SPECIAL_BIT 11, D_80237A00, .wait_loop
+    EXECUTE_SUBROUTINE .sub_birth_cinematic
+    SET_SPECIAL_BIT 11, D_80237A00
+
+.cs32_karen_exec_night:
+    EXECUTE_SUBROUTINE .setup_wife_karen_e22
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_COORDINATES -194, 32, -172
+    SET_ENTITY_ANIMATION 24
+    EXECUTE_SUBROUTINE .wait_loop
+
+.setup_sasha_e24:
+    SETUP_ENTITY 24, ENTITY_ASSET_SASHA, 1
+    SET_ENTITY_ANIMATIONS 24, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    RETURN_FROM_SUBROUTINE
+
+.executor_3_sasha_6am:
+    EXECUTE_SUBROUTINE .setup_sasha_e24
+    SET_COORDINATES -48, 0, 112
+    SET_ASSET_ROTATION NORTHEAST
+    UPDATE_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+
+.sub_sasha_wait_callback:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs32_sasha_on_interact
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_3_sasha_evening:
+    EXECUTE_SUBROUTINE .setup_sasha_e24
+    SET_COORDINATES -80, 0, -112
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    EXECUTE_SUBROUTINE .sub_sasha_wait_callback
+
+.executor_3_sasha_day:
+    EXECUTE_SUBROUTINE .setup_sasha_e24
+    SET_COORDINATES -112, 0, 80
+    SET_ASSET_ROTATION NORTHEAST
+    UPDATE_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    EXECUTE_SUBROUTINE .sub_sasha_wait_callback
+
+.executor_3_sasha_approach:
+    ENTITY_WALK 24, NORTHWEST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    EXECUTE_SUBROUTINE .sub_sasha_wait_callback
+
+.cs32_on_interact_dispatch:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_41_karen_interact_watch
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs32_interact_6am
+    BRANCH_U8_VAR_WITHIN_RANGE 7, 14, gHour, .cs32_interact_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs32_interact_evening_finale
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 5, gHour, .cs32_interact_night_finale
+    DEACTIVATE_SELF
+
+.cs32_interact_6am:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gMinutes, .cs32_interact_day
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 451
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    BRANCH_ON_SPECIAL_BIT 4, var0, .cs32_interact_check_var4
+    SET_SPECIAL_BIT 4, var0
+    SET_OTHER_EXECUTOR_PTR 3, .executor_3_sasha_approach
+
+.cs32_interact_check_var4:
+    TOGGLE_PAUSE_ENTITIES
+    SPAWN_EXECUTOR 41, .executor_41_karen_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs32_interact_day:
+    EXECUTE_SUBROUTINE .setup_msgbox_center_avatar
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 166
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    TOGGLE_PAUSE_ENTITIES
+    SPAWN_EXECUTOR 41, .executor_41_karen_interact_watch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs32_interact_evening_finale:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE 8, 255, npcAffection[KAREN]
+    UPDATE_U8_VALUE 5, 255, npcAffection[PASTOR]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 453
+    EXECUTE_SUBROUTINE .sub_birth_finale_exit
+
+.cs32_interact_night_finale:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE -5, 255, npcAffection[KAREN]
+    UPDATE_U8_VALUE 5, 255, npcAffection[PASTOR]
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 456
+    EXECUTE_SUBROUTINE .sub_birth_finale_exit
+
+.cs32_sasha_on_interact:
+    FLIP_ENTITY_DIRECTION 0
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    BRANCH_U8_VAR_WITHIN_RANGE 6, 6, gHour, .cs32_sasha_6am
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 14, gHour, .cs32_sasha_day
+    BRANCH_U8_VAR_WITHIN_RANGE 15, 23, gHour, .cs32_sasha_evening
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gHour, .cs32_sasha_evening
+    DEACTIVATE_SELF
+
+.cs32_sasha_6am:
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 255, gMinutes, .cs32_sasha_day
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 452
+
+.sub_sasha_dialogue_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .sub_sasha_wait_callback
+
+.cs32_sasha_day:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 452
+    EXECUTE_SUBROUTINE .sub_sasha_dialogue_return
+
+.cs32_sasha_evening:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 455
+    EXECUTE_SUBROUTINE .sub_sasha_dialogue_return
+
+; ====================================================
+; Cutscene 34 - Karen birthday
+; Parallel of .cs_6. Dialogue 4 option 1 branch shows
+; text 459 else text 460. Reinteract shows text 470.
+; ====================================================
+.cs_34:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs34_karen_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_10
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_karen_interact_watch
+    DEACTIVATE_SELF
+
+.executor_32_karen_interact_watch:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 33, 33, interactedWithLevelInteractionIndex, .karen_interact_trigger_0
+    BRANCH_U8_VAR_WITHIN_RANGE 34, 34, interactedWithLevelInteractionIndex, .karen_interact_trigger_1
+    BRANCH_U8_VAR_WITHIN_RANGE 35, 35, interactedWithLevelInteractionIndex, .karen_interact_trigger_2
+    EXECUTE_SUBROUTINE .executor_32_karen_interact_watch
+
+.karen_interact_trigger_0:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_karen_interact_watch
+    BRANCH_ON_SPECIAL_BIT 0, var0, .executor_32_karen_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_karen_gift_item_109
+    SET_SPECIAL_BIT 0, var0
+    EXECUTE_SUBROUTINE .executor_32_karen_interact_watch
+
+.karen_interact_trigger_1:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_karen_interact_watch
+    BRANCH_ON_SPECIAL_BIT 1, var0, .executor_32_karen_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_player_gift_item_6
+    SET_SPECIAL_BIT 1, var0
+    EXECUTE_SUBROUTINE .executor_32_karen_interact_watch
+
+.karen_interact_trigger_2:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .executor_32_karen_interact_watch
+    BRANCH_ON_SPECIAL_BIT 2, var0, .executor_32_karen_interact_watch
+    SPAWN_EXECUTOR 0, .executor_0_player_gift_item_62
+    SET_SPECIAL_BIT 2, var0
+    EXECUTE_SUBROUTINE .executor_32_karen_interact_watch
+
+.executor_33_item_anim_109:
+    SETUP_ENTITY 47, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 109
+    SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_33_tracking_finish_alt:
+    SET_ENTITY_TRACKING_TARGET 0, 0, 14, 20, 255
+    SET_WAIT_FRAMES 16
+    DEACTIVATE_SELF
+
+.executor_0_karen_gift_item_109:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
+    DEACTIVATE_EXECUTOR 2
+    SPAWN_EXECUTOR 33, .executor_33_item_anim_109
+    SET_WAIT_FRAMES 10
+    SET_OTHER_EXECUTOR_PTR 33, .executor_33_tracking_finish_alt
+    SET_WAIT_FRAMES 16
+    SET_ENTITY_ANIMATION 438
+    WAIT_ENTITY_ANIMATION
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    DEACTIVATE_SELF
+
+.executor_2_dec_e43_anim_10:
+    SETUP_ENTITY 43, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 43, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 10
+    SET_COORDINATES -32, 0, -92
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs34_karen_with_baby_pose:
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 102
+    EXECUTE_SUBROUTINE .cs34_karen_wait
+
+.cs34_karen_main:
+    EXECUTE_SUBROUTINE .setup_wife_karen_e22
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cs34_karen_with_baby_pose
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs34_karen_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs34_karen_birthday_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs34_karen_birthday_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    UPDATE_U8_VALUE 10, 255, gHappiness
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 4
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 1, .cs34_karen_birthday_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 460
+
+.cs34_karen_birthday_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs34_karen_reinteract_wait
+
+.cs34_karen_birthday_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 459
+    EXECUTE_SUBROUTINE .cs34_karen_birthday_return
+
+.cs34_karen_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs34_karen_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs34_karen_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 470
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs34_karen_reinteract_wait
+
+; ====================================================
+; Cutscene 35 - Karen wedding anniversary
+; Parallel of .cs_7. Dialogue 4 option 3 branch shows
+; text 459 else text 460. Reinteract shows text 461.
+; ====================================================
+.cs_35:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs35_karen_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_10
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_karen_interact_watch
+    DEACTIVATE_SELF
+
+.cs35_karen_with_baby_pose:
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 102
+    EXECUTE_SUBROUTINE .cs35_karen_wait
+
+.cs35_karen_main:
+    EXECUTE_SUBROUTINE .setup_wife_karen_e22
+    BRANCH_ON_SPECIAL_BIT HAVE_BABY, lifeEventBits[0], .cs35_karen_with_baby_pose
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs35_karen_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs35_karen_anniv_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs35_karen_anniv_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 4
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 3, .cs35_karen_anniv_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 460
+
+.cs35_karen_anniv_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs35_karen_reinteract_wait
+
+.cs35_karen_anniv_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 459
+    EXECUTE_SUBROUTINE .cs35_karen_anniv_return
+
+.cs35_karen_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs35_karen_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs35_karen_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 461
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs35_karen_reinteract_wait
+
+; ====================================================
+; Cutscene 36 - Karen child-health celebration
+; Parallel of .cs_8. Dialogue 4 option 2 branch shows
+; text 459 else text 460. Reinteract shows text 473.
+; ====================================================
+.cs_36:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs36_karen_main
+    SPAWN_EXECUTOR 2, .executor_2_dec_e43_anim_10
+    SPAWN_EXECUTOR 3, .executor_3_dec_e44_anim_61
+    SPAWN_EXECUTOR 4, .executor_4_dec_e45_anim_62
+    SPAWN_EXECUTOR 5, .executor_5_dec_e46_anim_6
+    SPAWN_EXECUTOR 32, .executor_32_karen_interact_watch
+    DEACTIVATE_SELF
+
+.cs36_karen_main:
+    EXECUTE_SUBROUTINE .setup_wife_karen_e22
+    SPAWN_EXECUTOR 16, .executor_16_wife_baby_hold_anim
+    SET_COORDINATES -112, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 102
+    SET_CALLBACK_ROUTINE 0, 32768, .cs36_karen_prompt
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs36_karen_prompt:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 4
+    WAIT_FOR_DIALOGUE_INPUT 0
+    BRANCH_ON_DIALOGUE 0, 2, .cs36_karen_remembered
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 460
+
+.cs36_karen_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs36_karen_reinteract_wait
+
+.cs36_karen_remembered:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 459
+    EXECUTE_SUBROUTINE .cs36_karen_return
+
+.cs36_karen_reinteract_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs36_karen_reinteract_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs36_karen_reinteract_msg:
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 473
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs36_karen_reinteract_wait
+
+; ====================================================
+; Cutscene 37 - Karen baby-name confirmation
+; Parallel of .cs_9. Dialogue 33 picks midwife / potion
+; dealer / Sasha. Midwife uses text 476 - 211; potion
+; dealer uses text 476 - 213; Sasha uses text 477, 476,
+; 478.
+; ====================================================
+.cs_37:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE -5, 255, gHappiness
+    UPDATE_U8_VALUE 8, 255, npcAffection[BABY]
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs37_karen_naming_setup
+    SPAWN_EXECUTOR 4, .executor_4_baby_e25_cradle
+    SPAWN_EXECUTOR 5, .executor_5_player_naming_pos
+    DEACTIVATE_SELF
+
+.cs37_karen_naming_setup:
+    EXECUTE_SUBROUTINE .setup_wife_karen_e22
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+    SET_WAIT_FRAMES 1
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_65, 33
+    WAIT_FOR_DIALOGUE_INPUT 0
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    SET_OTHER_EXECUTOR_PTR 4, .executor_4_baby_anim_13
+    SET_OTHER_EXECUTOR_PTR 5, .executor_5_player_exit_naming
+    SET_COORDINATES -152, 0, -32
+    SET_ASSET_ROTATION NORTHEAST
+    BRANCH_ON_DIALOGUE 0, 0, .cs37_midwife_path
+    BRANCH_ON_DIALOGUE 0, 1, .cs37_potion_dealer_path
+    BRANCH_ON_DIALOGUE 0, 2, .cs37_sasha_path
+
+.cs37_midwife_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[MIDWIFE]
+    SPAWN_EXECUTOR 3, .cs37_midwife_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs37_potion_dealer_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[POTION_SHOP_DEALER]
+    SPAWN_EXECUTOR 3, .cs37_potion_dealer_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs37_sasha_path:
+    UPDATE_U8_VALUE 8, 255, npcAffection[SASHA]
+    SPAWN_EXECUTOR 3, .cs37_sasha_naming
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs37_midwife_naming:
+    EXECUTE_SUBROUTINE .setup_midwife_msg_209
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 476
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ENTITY_ANIMATION 16
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 211
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+.cs37_potion_dealer_naming:
+    EXECUTE_SUBROUTINE .setup_potion_dealer_msg_212
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 476
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 213
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+.cs37_sasha_naming:
+    EXECUTE_SUBROUTINE .setup_sasha_e24
+    SET_COORDINATES -152, 0, -64
+    SET_ASSET_ROTATION NORTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 477
+    WAIT_MESSAGE_BOX_CLOSED 0
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 476
+    WAIT_MESSAGE_BOX_CLOSED 0
+    SET_ASSET_ROTATION SOUTHWEST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 478
+    EXECUTE_SUBROUTINE .sub_naming_exit
+
+; ====================================================
+; Cutscene 38 - Cliff delivers morning fish
+; Cliff walks up to the player, says he caught lots of
+; fish and came to share (text 521), hands something
+; over, apologises for the early hour (text 522), and
+; leaves. Text 523 plays afterward while the player
+; walks off. +5 affection for Cliff.
+; ====================================================
+.cs_38:
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    UPDATE_U8_VALUE 5, 255, npcAffection[CLIFF]
+    SPAWN_EXECUTOR 7, .cs38_cliff_entrance
+    DEACTIVATE_SELF
+
+; ====================================================
+; Cutscene 39 - Ann bumps into Cliff (introduction)
+; The player walks up and Cliff apologises. Ann reacts
+; (text 525), asks if Cliff is a traveller and catches
+; his name (text 526). Cliff then walks off NW.
+; ====================================================
+.cs_39:
+    SPAWN_EXECUTOR 7, .cs39_cliff_ann_setup
+    DEACTIVATE_SELF
+
+.cs38_cliff_entrance:
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES -48, 0, -48
+    SET_ASSET_ROTATION SOUTHWEST
+    UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 15
+    SET_SFX 42, 128
+    SET_WAIT_FRAMES 10
+    SET_SFX 42, 128
+    SET_WAIT_FRAMES 20
+    SPAWN_EXECUTOR 1, .cs38_cliff_walks_to_player
+    ENTITY_WALK 24, SOUTHEAST, 2
+    ENTITY_WALK 32, SOUTHWEST, 2
+    EXECUTE_SUBROUTINE .wait_loop
+
+.setup_cliff_e37:
+    SETUP_ENTITY 37, ENTITY_ASSET_CLIFF, 1
+    SET_ENTITY_ANIMATIONS 37, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    RETURN_FROM_SUBROUTINE
+
+.cs38_cliff_walks_to_player:
+    EXECUTE_SUBROUTINE .setup_cliff_e37
+    SET_RGBA 255, 255, 255, 255
+    SET_COORDINATES -32, 0, 160
+    SET_ASSET_ROTATION NORTHEAST
+    ENTITY_WALK 50, NORTHEAST, 2
+    ENTITY_WALK 16, SOUTHEAST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 521
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION 21
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_item_e37_anim_37
+    SET_WAIT_FRAMES 30
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    SET_OTHER_EXECUTOR_PTR 7, .cs38_cliff_gives_item
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs38_cliff_gives_item:
+    EXECUTE_SUBROUTINE .sub_player_react_anim_437
+    FLIP_ENTITY_DIRECTION 37
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 522
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_OTHER_EXECUTOR_PTR 1, .cs38_cliff_leaves_step1
+    DEACTIVATE_SELF
+
+.cs38_cliff_leaves_step1:
+    TOGGLE_PAUSE_ENTITY 37
+    ENTITY_WALK 16, NORTHWEST, 2
+    ENTITY_WALK 42, SOUTHWEST, 2
+    SPAWN_EXECUTOR 7, .cs38_cliff_leaves_fade_out
+    DEACTIVATE_SELF
+
+.cs38_cliff_leaves_fade_out:
+    SET_SFX 50, 128
+    SET_WAIT_FRAMES 30
+    SET_SFX 14, 128
+    SET_WAIT_FRAMES 10
+    EXECUTE_SUBROUTINE .setup_msgbox_center_avatar
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 523
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_RGBA 255, 255, 255, 255
+    TOGGLE_PAUSE_ENTITIES
+    ENTITY_WALK 16, SOUTHWEST, 2
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    ENTITY_WALK 16, NORTHWEST, 2
+    ENTITY_WALK 32, SOUTHWEST, 2
+    WAIT_RGBA_FINISHED
+    SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+.cs39_cliff_ann_setup:
+    SPAWN_EXECUTOR 1, .cs39_cliff_spawn
+    SPAWN_EXECUTOR 2, .cs39_ann_spawn
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_COORDINATES -372, 0, 112
+    SET_WAIT_FRAMES 1
+    UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
+    WAIT_RGBA_FINISHED
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 524
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_OTHER_EXECUTOR_PTR 1, .cs39_cliff_walk_off
+    SET_OTHER_EXECUTOR_PTR 2, .cs39_ann_dialogue
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs39_cliff_walk_off:
+    ENTITY_WALK 120, NORTHWEST, 2
+    DEACTIVATE_SELF
+
+.cs39_cliff_spawn:
+    EXECUTE_SUBROUTINE .setup_cliff_e37
+    SET_COORDINATES -400, 0, 152
+    SET_ASSET_ROTATION SOUTHEAST
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs39_ann_dialogue:
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 25
+    SET_WAIT_FRAMES 8
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 103
+    WAIT_ENTITY_ANIMATION
+    SET_ENTITY_ANIMATION 1
+    SET_WAIT_FRAMES 10
+    SET_ASSET_ROTATION NORTHWEST
+    SET_ENTITY_ANIMATION 36
+    WAIT_ENTITY_ANIMATION
+    SET_ENTITY_ANIMATION 40
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 525
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    ENTITY_WALK 16, NORTHWEST, 2
+    SET_ASSET_ROTATION NORTHEAST
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 526
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 256
+    ENTITY_WALK 120, NORTHWEST, 2
+    SET_OTHER_EXECUTOR_PTR 7, .executor_7_release_deactivate
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+.cs39_ann_spawn:
+    SETUP_ENTITY 36, ENTITY_ASSET_ANN, 1
+    SET_ENTITY_ANIMATIONS 36, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_NON_COLLIDABLE
+    SET_COORDINATES -342, 0, 152
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_ENTITY_ANIMATION 33
+    EXECUTE_SUBROUTINE .wait_loop
+
+; ====================================================
+; Cutscene 40 - Harvest Goddess grape blessing
+; Player stands with anim 482 (asleep / head bowed),
+; the map fades to a dim tint, Harvest Goddess (e22,
+; ENTITY_ASSET_HARVEST_GODDESS) appears elevated in
+; front. She speaks text 567 (message from the grape
+; spirit; Kief fairies have arrived; harvest will be
+; wonderful). Fade out and exit.
+; ====================================================
+.cs_40:
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SET_SPECIAL_BIT 31, gCutsceneCompletionFlags
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_BEHAVIOR_FLAGS 0
+    SET_WAIT_FRAMES 1
+    SPAWN_EXECUTOR 41, .cs40_map_fade_in
+    SET_ENTITY_ANIMATION 482
+    SET_COORDINATES -180, 0, -156
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs40_map_fade_in:
+    SETUP_MAP_ASSET MAIN_MAP_INDEX
+    SET_ASSET_ROTATION SOUTH
+    SET_COORDINATES -180, 0, -164
+    SET_WAIT_FRAMES 1
+    UPDATE_GLOBAL_RGBA 64, 64, 64, 64, 8
+    WAIT_RGBA_FINISHED
+    SPAWN_EXECUTOR 1, .cs40_goddess_talk
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs40_goddess_talk:
+    SETUP_ENTITY 22, ENTITY_ASSET_HARVEST_GODDESS, 1
+    SET_ENTITY_ANIMATIONS 22, 0, 8, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_PHYSICS_FLAGS 0
+    SET_ENTITY_ANIMATION 3
+    SET_COORDINATES -192, 64, -160
+    UPDATE_RGBA 255, 255, 255, 255, 6
+    WAIT_RGBA_FINISHED
+    SET_WAIT_FRAMES 30
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 567
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_WAIT_FRAMES 30
+    UPDATE_RGBA 0, 0, 0, 0, 6
+    WAIT_RGBA_FINISHED
+    SET_OTHER_EXECUTOR_PTR 41, .cs40_fade_out_exit
+    DEACTIVATE_SELF
+
+.cs40_fade_out_exit:
+    SET_WAIT_FRAMES 30
+    SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    WAIT_RGBA_FINISHED
+    STOP_SEQUENCE_WITH_FADE 0, 1
+    IDLE_WHILE_SEQUENCE_PLAYING 0
+    DEACTIVATE_EXECUTOR 0
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+; ====================================================
+; Cutscene 41 - Dream flashback
+; Black screen, player paused, a large-avatar message
+; box reads text 144 (narrator recalling a girl being
+; shown a fairy-tale book, waving goodbye as the
+; narrator promises to visit next summer). Fade-out
+; audio and exit via .sub_single_msg_exit.
+; ====================================================
+.cs_41:
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 255
+    SET_WAIT_FRAMES 1
+    PAUSE_ENTITIES
+    SET_WAIT_FRAMES 30
+    SET_MESSAGE_INTERPOLATION -4, 0, 0
+    SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 256
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 144
+
+.sub_single_msg_exit:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 256
+    SET_AUDIO_SEQUENCE_VOLUME 0, 0, 8
+    SET_WAIT_FRAMES 30
+    STOP_SEQUENCE_WITH_FADE 0, 1
+    IDLE_WHILE_SEQUENCE_PLAYING 0
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+; ====================================================
+; Cutscene 42 - Dream flashback
+; Same frame as .cs_41 showing text 223 (narrator
+; recalling a girl slipping while reaching for a
+; flower under the cliff and saying she found a
+; flower).
+; ====================================================
+.cs_42:
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 255
+    SET_WAIT_FRAMES 1
+    PAUSE_ENTITIES
+    SET_WAIT_FRAMES 30
+    SET_MESSAGE_INTERPOLATION -4, 0, 0
+    SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 256
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 223
+    EXECUTE_SUBROUTINE .sub_single_msg_exit
+
+; ====================================================
+; Cutscene 43 - Dream flashback
+; Same frame as .cs_41 showing text 288 (narrator
+; recalling a playing-house scene with mud cookies and
+; a stomach ache).
+; ====================================================
+.cs_43:
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 255
+    SET_WAIT_FRAMES 1
+    PAUSE_ENTITIES
+    SET_WAIT_FRAMES 30
+    SET_MESSAGE_INTERPOLATION -4, 0, 0
+    SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 256
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 288
+    EXECUTE_SUBROUTINE .sub_single_msg_exit
+
+; ====================================================
+; Cutscene 44 - Dream flashback
+; Same frame as .cs_41 showing text 359 (narrator
+; recalling a girl excitedly watching baby birds in a
+; tree and then falling).
+; ====================================================
+.cs_44:
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 255
+    SET_WAIT_FRAMES 1
+    PAUSE_ENTITIES
+    SET_WAIT_FRAMES 30
+    SET_MESSAGE_INTERPOLATION -4, 0, 0
+    SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 256
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 359
+    EXECUTE_SUBROUTINE .sub_single_msg_exit
+
+; ====================================================
+; Cutscene 45 - Dream flashback
+; Same frame as .cs_41 showing text 425 (narrator
+; recalling a crying girl locked out after getting in
+; trouble, walked home hand in hand).
+; ====================================================
+.cs_45:
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 255
+    SET_WAIT_FRAMES 1
+    PAUSE_ENTITIES
+    SET_WAIT_FRAMES 30
+    SET_MESSAGE_INTERPOLATION -4, 0, 0
+    SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
+    SET_MESSAGE_BOX_VIEW_POSITION 0, 0, -64, 256
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 425
+    EXECUTE_SUBROUTINE .sub_single_msg_exit
+
+; ====================================================
+; Cutscene 46 - Wife note (Maria leaves for home)
+; Triggered when player affection with the wife drops
+; too low. UPDATE_U8_VALUE -50 on npcAffection[MARIA],
+; an item spawns at the table (anim 211), and an
+; interaction dispatches to a wife-specific farewell
+; note. Maria uses text 216 . Popuri / Elli / Ann /
+; Karen variants share the same setup via cs_47..50.
+; ====================================================
+.cs_46:
+    UPDATE_U8_VALUE -50, 255, npcAffection[MARIA]
+    SPAWN_EXECUTOR 1, .cs46_setup_item_e46_anim_211
+    SPAWN_EXECUTOR 32, .executor_32_watch_interact_32
+    DEACTIVATE_SELF
+
+.cs46_setup_item_e46_anim_211:
+    SETUP_ENTITY 46, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 46, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_COORDINATES -56, 0, 16
+    SET_ENTITY_ANIMATION 211
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_32_watch_interact_32:
+    SET_WAIT_FRAMES 1
+    BRANCH_U8_VAR_WITHIN_RANGE 32, 32, interactedWithLevelInteractionIndex, .cs46_on_interact_wife_dispatch
+    EXECUTE_SUBROUTINE .executor_32_watch_interact_32
+
+.cs46_on_interact_wife_dispatch:
+    PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .setup_msgbox_center_avatar
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs46_angry_maria
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs46_angry_popuri
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs46_angry_elli
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs46_angry_ann
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs46_angry_karen
+
+.sub_angry_return:
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    TOGGLE_PAUSE_ENTITIES
+    EXECUTE_SUBROUTINE .executor_32_watch_interact_32
+
+.cs46_angry_maria:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 216
+    EXECUTE_SUBROUTINE .sub_angry_return
+
+.cs46_angry_popuri:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 283
+    EXECUTE_SUBROUTINE .sub_angry_return
+
+.cs46_angry_elli:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 355
+    EXECUTE_SUBROUTINE .sub_angry_return
+
+.cs46_angry_ann:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 411
+    EXECUTE_SUBROUTINE .sub_angry_return
+
+.cs46_angry_karen:
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 479
+    EXECUTE_SUBROUTINE .sub_angry_return
+
+; ====================================================
+; Cutscene 47 - Wife note (Popuri leaves for home)
+; Same shape as .cs_46 but -50 to npcAffection[POPURI]
+; and text 283 on interact.
+; ====================================================
+.cs_47:
+    UPDATE_U8_VALUE -50, 255, npcAffection[POPURI]
+    SPAWN_EXECUTOR 1, .cs46_setup_item_e46_anim_211
+    SPAWN_EXECUTOR 32, .executor_32_watch_interact_32
+    DEACTIVATE_SELF
+
+; ====================================================
+; Cutscene 48 - Wife note (Elli leaves for home)
+; Same shape as .cs_46 but -50 to npcAffection[ELLI]
+; and text 355 on interact.
+; ====================================================
+.cs_48:
+    UPDATE_U8_VALUE -50, 255, npcAffection[ELLI]
+    SPAWN_EXECUTOR 1, .cs46_setup_item_e46_anim_211
+    SPAWN_EXECUTOR 32, .executor_32_watch_interact_32
+    DEACTIVATE_SELF
+
+; ====================================================
+; Cutscene 49 - Wife note (Ann leaves for home)
+; Same shape as .cs_46 but -50 to npcAffection[ANN]
+; and text 411 on interact.
+; ====================================================
+.cs_49:
+    UPDATE_U8_VALUE -50, 255, npcAffection[ANN]
+    SPAWN_EXECUTOR 1, .cs46_setup_item_e46_anim_211
+    SPAWN_EXECUTOR 32, .executor_32_watch_interact_32
+    DEACTIVATE_SELF
+
+; ====================================================
+; Cutscene 50 - Wife note (Karen leaves for home)
+; Same shape as .cs_46 but -50 to npcAffection[KAREN]
+; and text 479 on interact.
+; ====================================================
+.cs_50:
+    UPDATE_U8_VALUE -50, 255, npcAffection[KAREN]
+    SPAWN_EXECUTOR 1, .cs46_setup_item_e46_anim_211
+    SPAWN_EXECUTOR 32, .executor_32_watch_interact_32
+    DEACTIVATE_SELF
+
+; ====================================================
+; Cutscene 51 - Player catches a cold
+; Player enters lying down (anim 455). The map setup
+; loads and the center-avatar message box shows text
+; 0.
+; Fades out audio and returns. This is the trigger
+; that later leads into .cs_3 / .cs_10 / .cs_17 /
+; .cs_24 / .cs_31 depending on marital state.
+; ====================================================
+.cs_51:
+    UPDATE_U8_VALUE -8, 255, gHappiness
+    SET_SPECIAL_BIT 15, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .executor_4_player_anim_455_pos
+    SPAWN_EXECUTOR 16, .executor_16_cs0_map_setup
+    SET_WAIT_FRAMES 50
+    EXECUTE_SUBROUTINE .setup_msgbox_center_avatar
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 0
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_WAIT_FRAMES 30
+    SET_AUDIO_SEQUENCE_VOLUME 0, 0, 4
+    UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
+    SET_WAIT_FRAMES 40
+    STOP_SEQUENCE_WITH_FADE 0, 1
+    IDLE_WHILE_SEQUENCE_PLAYING 0
+    DEACTIVATE_EXECUTOR 1
+    DEACTIVATE_EXECUTOR 16
+    EXECUTE_SUBROUTINE .cutscene_exit
+
+; ====================================================
+; Cutscene 52 - Maria cake tasting
+; Maria waits until the player is holding an item,
+; then speaks text 56 (Here you go, a vegetable
+; cake, very healthy), serves the cake, and the
+; player tastes (anim 437). Reinteract shows text 57
+; Branches via gCutsceneIndex to .taste_to_maria et al for the
+; +3 gHappiness and wait-tasted state.
+; ====================================================
+.cs_52:
+    SET_SPECIAL_BIT 30, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs52_maria_cake_setup
+    DEACTIVATE_SELF
+
+.cs52_maria_cake_setup:
+    EXECUTE_SUBROUTINE .setup_wife_maria_e22
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs52_maria_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs52_maria_serve_cake
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs52_maria_wait_tasted:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs52_maria_tasted_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.executor_10_cake_item_anim_6:
+    SETUP_ENTITY 47, ENTITY_ASSET_STATIC_ITEM, 1
+    SET_ENTITY_ANIMATIONS 47, 0, 0, 0, 0, 0, 0
+    SET_BEHAVIOR_FLAGS 0
+    SET_ENTITY_ANIMATION 6
+    SET_ENTITY_TRACKING_TARGET 22, 0, 14, 20, 255
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs52_maria_serve_cake:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .cs52_maria_wait
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 56
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_cake_item_anim_6
+    SET_WAIT_FRAMES 20
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    UPDATE_U8_VALUE 3, 255, gHappiness
+    SPAWN_EXECUTOR 0, .exec_0_player_taste_and_dispatch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs52_maria_tasted_msg:
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 57
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs52_maria_wait_tasted
+
+.exec_0_player_taste_and_dispatch:
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .setup_player_entity
+    SET_ASSET_ROTATION SOUTHWEST
+    SET_OTHER_EXECUTOR_PTR 10, .executor_10_tracking_finish
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 24
+    SET_WAIT_FRAMES 16
+    SET_ENTITY_ANIMATION 437
+    WAIT_ENTITY_ANIMATION
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    FLIP_ENTITY_DIRECTION 22
+    BRANCH_U16_VAR_WITHIN_RANGE 52, 52, gCutsceneIndex, .taste_to_maria
+    BRANCH_U16_VAR_WITHIN_RANGE 53, 53, gCutsceneIndex, .taste_to_popuri
+    BRANCH_U16_VAR_WITHIN_RANGE 54, 54, gCutsceneIndex, .taste_to_elli
+    BRANCH_U16_VAR_WITHIN_RANGE 55, 55, gCutsceneIndex, .taste_to_ann
+    BRANCH_U16_VAR_WITHIN_RANGE 56, 56, gCutsceneIndex, .taste_to_karen
+    DEACTIVATE_SELF
+
+.taste_to_maria:
+    SET_OTHER_EXECUTOR_PTR 1, .cs52_maria_wait_tasted
+
+.sub_taste_release_deactivate:
+    SET_WAIT_FRAMES 1
+    SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
+    DEACTIVATE_SELF
+
+.taste_to_popuri:
+    SET_OTHER_EXECUTOR_PTR 1, .cs53_popuri_wait_tasted
+    EXECUTE_SUBROUTINE .sub_taste_release_deactivate
+
+.taste_to_elli:
+    SET_OTHER_EXECUTOR_PTR 1, .cs54_elli_wait_tasted
+    EXECUTE_SUBROUTINE .sub_taste_release_deactivate
+
+.taste_to_ann:
+    SET_OTHER_EXECUTOR_PTR 1, .cs55_ann_wait_tasted
+    EXECUTE_SUBROUTINE .sub_taste_release_deactivate
+
+.taste_to_karen:
+    SET_OTHER_EXECUTOR_PTR 1, .cs56_karen_wait_tasted
+    EXECUTE_SUBROUTINE .sub_taste_release_deactivate
+
+; ====================================================
+; Cutscene 53 - Popuri cake tasting
+; Parallel of .cs_52 with Popuri. Serve text 58 and
+; reinteract text 59.
+; ====================================================
+.cs_53:
+    SET_SPECIAL_BIT 30, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs53_popuri_cake_setup
+    DEACTIVATE_SELF
+
+.cs53_popuri_cake_setup:
+    EXECUTE_SUBROUTINE .setup_wife_popuri_e22
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs53_popuri_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs53_popuri_serve_cake
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs53_popuri_wait_tasted:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs53_popuri_tasted_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs53_popuri_serve_cake:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .cs53_popuri_wait
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 58
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_cake_item_anim_6
+    SET_WAIT_FRAMES 20
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    UPDATE_U8_VALUE 3, 255, gHappiness
+    SPAWN_EXECUTOR 0, .exec_0_player_taste_and_dispatch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs53_popuri_tasted_msg:
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 59
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs53_popuri_wait_tasted
+
+; ====================================================
+; Cutscene 54 - Elli cake tasting
+; Parallel of .cs_52 with Elli. Serve text 60 and
+; reinteract text 61.
+; ====================================================
+.cs_54:
+    SET_SPECIAL_BIT 30, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs54_elli_cake_setup
+    DEACTIVATE_SELF
+
+.cs54_elli_cake_setup:
+    EXECUTE_SUBROUTINE .setup_wife_elli_e22
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs54_elli_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs54_elli_serve_cake
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs54_elli_wait_tasted:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs54_elli_tasted_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs54_elli_serve_cake:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .cs54_elli_wait
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 60
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_cake_item_anim_6
+    SET_WAIT_FRAMES 20
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    UPDATE_U8_VALUE 3, 255, gHappiness
+    SPAWN_EXECUTOR 0, .exec_0_player_taste_and_dispatch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs54_elli_tasted_msg:
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 61
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs54_elli_wait_tasted
+
+; ====================================================
+; Cutscene 55 - Ann cake tasting
+; Parallel of .cs_52 with Ann. Serve text 62 and
+; reinteract text 63.
+; ====================================================
+.cs_55:
+    SET_SPECIAL_BIT 30, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs55_ann_cake_setup
+    DEACTIVATE_SELF
+
+.cs55_ann_cake_setup:
+    EXECUTE_SUBROUTINE .setup_wife_ann_e22
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs55_ann_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs55_ann_serve_cake
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs55_ann_wait_tasted:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs55_ann_tasted_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs55_ann_serve_cake:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .cs55_ann_wait
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 62
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_cake_item_anim_6
+    SET_WAIT_FRAMES 20
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    UPDATE_U8_VALUE 3, 255, gHappiness
+    SPAWN_EXECUTOR 0, .exec_0_player_taste_and_dispatch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs55_ann_tasted_msg:
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 63
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs55_ann_wait_tasted
+
+; ====================================================
+; Cutscene 56 - Karen cake tasting
+; Parallel of .cs_52 with Karen. Serve text 64 and
+; reinteract text 65.
+; ====================================================
+.cs_56:
+    SET_SPECIAL_BIT 30, gCutsceneCompletionFlags
+    SPAWN_EXECUTOR 1, .cs56_karen_cake_setup
+    DEACTIVATE_SELF
+
+.cs56_karen_cake_setup:
+    EXECUTE_SUBROUTINE .setup_wife_karen_e22
+    SET_COORDINATES -96, 0, -64
+    SET_ASSET_ROTATION SOUTHEAST
+
+.cs56_karen_wait:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs56_karen_serve_cake
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs56_karen_wait_tasted:
+    SET_CALLBACK_ROUTINE 0, 32768, .cs56_karen_tasted_msg
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs56_karen_serve_cake:
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 254, gItemBeingHeld, .cs56_karen_wait
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 64
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 16
+    WAIT_ENTITY_ANIMATION
+    SPAWN_EXECUTOR 10, .executor_10_cake_item_anim_6
+    SET_WAIT_FRAMES 20
+    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE 0
+    UPDATE_U8_VALUE 3, 255, gHappiness
+    SPAWN_EXECUTOR 0, .exec_0_player_taste_and_dispatch
+    EXECUTE_SUBROUTINE .wait_loop
+
+.cs56_karen_tasted_msg:
+    PAUSE_ENTITY 0
+    FLIP_ENTITY_DIRECTION 0
+    EXECUTE_SUBROUTINE .setup_msgbox_default
+    INIT_MESSAGE_BOX_TYPE1 0, HOUSE_CUTSCENES_TEXT_INDEX, 65
+    WAIT_MESSAGE_BOX_CLOSED 0
+    RESET_MESSAGE_BOX_AVATAR 0
+    TOGGLE_PAUSE_ENTITY 0
+    EXECUTE_SUBROUTINE .cs56_karen_wait_tasted

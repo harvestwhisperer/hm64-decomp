@@ -1494,7 +1494,7 @@ void initializeNewGameState(void) {
     gPlayer.toolLevels[3] = 0;
     gPlayer.toolLevels[4] = 0;
     
-    gPlayer.bottleContents = 0;
+    gPlayer.bottleContents = BOTTLE_CONTENTS_EMPTY;
 
     tvContext.channelIndex = 0;
     tvContext.varietyShowEpisodeCounters[0] = 0;
@@ -3174,7 +3174,7 @@ void farmRankingScreenCallback(void) {
                 deactivateNumberSprites(7);
                 deactivateNumberSprites(8);
                 deactivateNumberSprites(9);
-                deactivateNumberSprites(0xA);
+                deactivateNumberSprites(10);
                 
                 gFarmRankingData.screenState = 4;
                 playSfx(0);
@@ -3636,49 +3636,49 @@ void loadTempRankingFromSave(u8 saveSlot, u8 source) {
 
         setHorseAffection();
         
-        if (gFarmAnimals[0].flags & 1) {
+        if (gFarmAnimals[0].flags & FARM_ANIMAL_ACTIVE) {
             gFarmRankingData.tempFarmAnimalAffection[0] = gFarmAnimals[0].affection;
         } else {
             gFarmRankingData.tempFarmAnimalAffection[0] = 0;
         }
                 
-        if (gFarmAnimals[1].flags & 1) {
+        if (gFarmAnimals[1].flags & FARM_ANIMAL_ACTIVE) {
             gFarmRankingData.tempFarmAnimalAffection[1] = gFarmAnimals[1].affection;
         } else {
             gFarmRankingData.tempFarmAnimalAffection[1] = 0;
         }
                 
-        if (gFarmAnimals[2].flags & 1) {
+        if (gFarmAnimals[2].flags & FARM_ANIMAL_ACTIVE) {
             gFarmRankingData.tempFarmAnimalAffection[2] = gFarmAnimals[2].affection;
         } else {
             gFarmRankingData.tempFarmAnimalAffection[2] = 0;
         }
                 
-        if (gFarmAnimals[3].flags & 1) {
+        if (gFarmAnimals[3].flags & FARM_ANIMAL_ACTIVE) {
             gFarmRankingData.tempFarmAnimalAffection[3] = gFarmAnimals[3].affection;
         } else {
             gFarmRankingData.tempFarmAnimalAffection[3] = 0;
         }
                 
-        if (gFarmAnimals[4].flags & 1) {
+        if (gFarmAnimals[4].flags & FARM_ANIMAL_ACTIVE) {
             gFarmRankingData.tempFarmAnimalAffection[4] = gFarmAnimals[4].affection;
         } else {
             gFarmRankingData.tempFarmAnimalAffection[4] = 0;
         }
                 
-        if (gFarmAnimals[5].flags & 1) {
+        if (gFarmAnimals[5].flags & FARM_ANIMAL_ACTIVE) {
             gFarmRankingData.tempFarmAnimalAffection[5] = gFarmAnimals[5].affection;
         } else {
             gFarmRankingData.tempFarmAnimalAffection[5] = 0;
         }
                         
-        if (gFarmAnimals[6].flags & 1) {
+        if (gFarmAnimals[6].flags & FARM_ANIMAL_ACTIVE) {
             gFarmRankingData.tempFarmAnimalAffection[6] = gFarmAnimals[6].affection;
         } else {
             gFarmRankingData.tempFarmAnimalAffection[6] = 0;
         }
                 
-        if (gFarmAnimals[7].flags & 1) {
+        if (gFarmAnimals[7].flags & FARM_ANIMAL_ACTIVE) {
             gFarmRankingData.tempFarmAnimalAffection[7] = gFarmAnimals[7].affection;
         } else {
             gFarmRankingData.tempFarmAnimalAffection[7] = 0;

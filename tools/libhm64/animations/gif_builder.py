@@ -1,30 +1,34 @@
 """
 GIF builder for HM64 animations.
 
-Composes multi-layer animation frames into GIFs using extracted PNG files
-and animation metadata JSON.
+Composes multi-layer animation frames into GIFs using sprite textures
+and animation metadata from assets/sprites/.
+
+Directory structure (from sprite extractor):
+    assets/sprites/{subdir}/{asset}/
+        textures/{index:03d}.png  - Sprite textures
+        animations/{index}.json   - Animation metadata
+        manifest.json             - Asset manifest with metadata
+
+Output:
+    assets/sprites/{subdir}/{asset}/animations/{index}.gif
 """
 
 import argparse
 import json
-import re
-import shutil
 from pathlib import Path
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict, Any
 
 from PIL import Image
 
 # Default paths
 _REPO_DIR = Path(__file__).resolve().parent.parent.parent.parent
-DEFAULT_ANIMATIONS_DIR = _REPO_DIR / "assets" / "animations"
+DEFAULT_SPRITES_DIR = _REPO_DIR / "assets" / "sprites"
 
 # GIF parameters
-TICK_MS = 10      # Multiply JSON frame_duration by this to get milliseconds
+TICK_MS = 20      # Multiply JSON frame_duration by this to get milliseconds
 LOOP = 0          # 0 = loop forever
 DISPOSAL = 2      # 2 = restore to background
-
-# Pattern to match frame PNG filenames
-PNG_PATTERN = re.compile(r".*frame-(\d+)-(\d+)\.png$", re.IGNORECASE)
 
 
 def compute_sprite_rect(
@@ -34,16 +38,20 @@ def compute_sprite_rect(
     """
     Compute the rectangle for a sprite in pivot space (anchor at 0,0).
 
-    The game's setupBitmapVertices (graphic.c) positions sprites such that:
-    - X: sprite center is at anchorX (left edge = anchorX - width/2)
-    - Y: sprite center is at -anchorY (top edge = -anchorY - height/2)
+    The game's setupBitmapVertices (graphic.c) positions sprite centers at:
+    - X: anchorX (so left edge = anchorX - width/2)
+    - Y: -anchorY in game coords (Y-up), which becomes anchorY in PIL coords (Y-down)
+
+    So in PIL coordinates:
+    - left = anchorX - width/2
+    - top = anchorY - height/2
 
     Returns: (left, top, right, bottom)
     """
     ax, ay = anchor
     w, h = im.size
     left = ax - w // 2
-    top = -ay - h // 2
+    top = ay - h // 2
     return (left, top, left + w, top + h)
 
 
@@ -89,18 +97,62 @@ def compose_frame_anchored(
     return canvas
 
 
-def build_gif_for_anim_dir(
-    anim_dir: Path,
+def normalize_animation_data(data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """
+    Normalize animation data to a common format.
+
+    Handles both formats:
+    - Simplified format (from sprite extractor): frame.duration, frame.sprites
+    - Full format (from animation metadata): frame.animation_metadata.frame_duration, frame.bitmap_metadata
+
+    Returns:
+        List of normalized frames with keys: duration, sprites (list of {spritesheet_index, anchor_x, anchor_y})
+    """
+    frames_json = data.get("frames", [])
+    normalized = []
+
+    for frame in frames_json:
+        # Check which format we have
+        if "sprites" in frame:
+            # Simplified format from sprite extractor
+            normalized.append({
+                "duration": int(frame.get("duration", 1)),
+                "sprites": frame["sprites"]
+            })
+        elif "bitmap_metadata" in frame:
+            # Full format from animation metadata extractor
+            anim_meta = frame.get("animation_metadata", {})
+            normalized.append({
+                "duration": int(anim_meta.get("frame_duration", 1)),
+                "sprites": [
+                    {
+                        "spritesheet_index": bm["spritesheet_index"],
+                        "anchor_x": bm["anchor_x"],
+                        "anchor_y": bm["anchor_y"]
+                    }
+                    for bm in frame["bitmap_metadata"]
+                ]
+            })
+
+    return normalized
+
+
+def build_gif_for_animation(
+    anim_json_path: Path,
+    textures_dir: Path,
+    output_path: Path,
     *,
     tick_ms: int = TICK_MS,
     loop: int = LOOP,
     disposal: int = DISPOSAL
 ) -> bool:
     """
-    Build a GIF from an animation directory.
+    Build a GIF from an animation JSON file.
 
     Args:
-        anim_dir: Path to animation directory containing JSON and PNGs
+        anim_json_path: Path to animation JSON file
+        textures_dir: Directory containing sprite texture PNGs ({index:03d}.png)
+        output_path: Path for output GIF file
         tick_ms: Multiply JSON frame_duration by this to get milliseconds
         loop: GIF loop count (0 = forever)
         disposal: GIF disposal method (2 = restore to background)
@@ -108,30 +160,16 @@ def build_gif_for_anim_dir(
     Returns:
         True if GIF was created successfully, False otherwise
     """
-    json_path = next(anim_dir.glob("*.json"), None)
-
-    if json_path is None:
+    if not anim_json_path.exists():
         return False
 
-    data = json.loads(json_path.read_text(encoding="utf-8"))
+    data = json.loads(anim_json_path.read_text(encoding="utf-8"))
 
-    # Skip alias animations - they get their GIF copied from the original
-    if data.get("is_alias"):
-        return False  # Alias handled separately by process_alias_gifs
+    # Normalize to common format
+    frames = normalize_animation_data(data)
 
-    frames_json = data.get("frames", [])
-
-    # Index PNGs: frame_num -> [(layer_num, Path), ...]
-    frame_to_layers = {}
-
-    for p in anim_dir.glob("*.png"):
-        m = PNG_PATTERN.match(p.name)
-        if not m:
-            continue
-
-        fnum = int(m.group(1))   # 1-based frame number from filename
-        lnum = int(m.group(2))   # Layer order: smaller first (bottom)
-        frame_to_layers.setdefault(fnum, []).append((lnum, p))
+    if not frames:
+        return False
 
     # FIRST PASS: Collect all frame data and compute global bounding box
     all_frame_data = []
@@ -140,47 +178,33 @@ def build_gif_for_anim_dir(
     global_max_right = float('-inf')
     global_max_bot = float('-inf')
 
-    for idx, frame_entry in enumerate(frames_json):
-        frame_num = idx + 1
+    for frame in frames:
+        sprites = frame.get("sprites", [])
 
-        # In the game (globalSprites.c:setBitmapFromSpriteObject), bitmaps are drawn
-        # in reverse order: bitmap[n-1] first (bottom), bitmap[0] last (top).
-        # For PIL, we paste bottom layers first, so we need reverse order too.
-        layer_entries = sorted(frame_to_layers.get(frame_num, []), reverse=True)
-
-        if not layer_entries:
+        if not sprites:
             continue
 
-        layer_paths = [p for _, p in layer_entries]
-        bm_meta = frame_entry.get("bitmap_metadata", [])
-
-        if not bm_meta:
-            continue
-
-        n = min(len(layer_paths), len(bm_meta))
-        if n <= 0:
-            continue
-
-        # Load layer images in reverse order (layer n, n-1, ..., 1 -> bottom to top)
-        # Handle corrupt/unreadable PNGs gracefully
+        # Load sprite images for each layer
+        # In the game, bitmap[0] ends up on top, so we paste in order
         imgs = []
-        valid_layer_indices = []
-        for i, p in enumerate(layer_paths[:n]):
+        anchors = []
+        for sprite in sprites:
+            sprite_idx = sprite["spritesheet_index"]
+            sprite_path = textures_dir / f"{sprite_idx:03d}.png"
+
+            if not sprite_path.exists():
+                continue
+
             try:
-                imgs.append(Image.open(p).convert("RGBA"))
-                valid_layer_indices.append(i)
+                img = Image.open(sprite_path).convert("RGBA")
+                imgs.append(img)
+                anchors.append((int(sprite["anchor_x"]), int(sprite["anchor_y"])))
             except Exception as e:
-                print(f"Skipping unreadable image: {p} ({e})")
+                print(f"Skipping unreadable sprite: {sprite_path} ({e})")
                 continue
 
         if not imgs:
             continue
-
-        # Anchors must match the image order (reversed)
-        # Only use anchors for layers that were successfully loaded
-        reversed_bm_meta = list(reversed(bm_meta[:n]))
-        anchors = [(int(reversed_bm_meta[i]["anchor_x"]), int(reversed_bm_meta[i]["anchor_y"]))
-                   for i in valid_layer_indices]
 
         # Update global bounds
         for im, anchor in zip(imgs, anchors):
@@ -190,7 +214,7 @@ def build_gif_for_anim_dir(
             global_max_right = max(global_max_right, right)
             global_max_bot = max(global_max_bot, bot)
 
-        dur_ms = int(frame_entry["animation_metadata"]["frame_duration"]) * tick_ms
+        dur_ms = int(frame["duration"]) * tick_ms
         all_frame_data.append((imgs, anchors, dur_ms))
 
     if not all_frame_data:
@@ -210,137 +234,171 @@ def build_gif_for_anim_dir(
     if not composed:
         return False
 
-    # Quantize to a single global palette for GIF stability
-    master = composed[0].convert("P", palette=Image.ADAPTIVE, colors=256)
+    # Quantize to a single global palette with transparency support
+    TRANS_COLOR = (255, 0, 255)
 
+    def rgba_to_p_with_transparency(rgba_img: Image.Image) -> Image.Image:
+        """Convert RGBA image to palette mode preserving transparency."""
+        rgb_img = Image.new("RGB", rgba_img.size, TRANS_COLOR)
+        rgb_img.paste(rgba_img, mask=rgba_img.split()[3])
+        return rgb_img
+
+    # Convert all frames to RGB with transparency color
+    rgb_frames = [rgba_to_p_with_transparency(im) for im in composed]
+
+    # Create master palette from first frame
+    master = rgb_frames[0].quantize(colors=255, method=Image.Quantize.MEDIANCUT)
+
+    # Find or add the transparency color index in the palette
+    palette_data = master.getpalette()
+    if palette_data is None:
+        palette_data = [0] * 768
+
+    # Pad palette to 256 colors if needed
+    while len(palette_data) < 768:
+        palette_data.append(0)
+
+    trans_index = None
+    for i in range(256):
+        r, g, b = palette_data[i*3:i*3+3]
+        if (r, g, b) == TRANS_COLOR:
+            trans_index = i
+            break
+
+    if trans_index is None:
+        trans_index = 255
+        palette_data[trans_index*3:trans_index*3+3] = list(TRANS_COLOR)
+
+    master.putpalette(palette_data)
+
+    # Quantize all frames using the master palette
     frames_p = [master]
-    for im in composed[1:]:
-        im_rgb = im.convert("RGB")
-        frames_p.append(im_rgb.quantize(palette=master, dither=Image.Dither.FLOYDSTEINBERG))
+    for rgb_img in rgb_frames[1:]:
+        frames_p.append(rgb_img.quantize(palette=master, dither=Image.Dither.FLOYDSTEINBERG))
 
-    # Save GIF
-    out_path = anim_dir / (anim_dir.name + ".gif")
+    # Save GIF with transparency
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     frames_p[0].save(
-        out_path,
+        output_path,
         save_all=True,
         append_images=frames_p[1:],
         duration=durations,
         loop=loop,
         disposal=disposal,
         optimize=False,
+        transparency=trans_index,
     )
 
     return True
 
 
-def copy_gif_for_alias(alias_dir: Path, original_dir: Path) -> bool:
-    """Copy GIF from original animation to alias directory."""
-    original_gif = original_dir / f"{original_dir.name}.gif"
-    alias_gif = alias_dir / f"{alias_dir.name}.gif"
-
-    if not original_gif.exists():
-        return False
-
-    try:
-        shutil.copy2(original_gif, alias_gif)
-        return True
-    except Exception as e:
-        print(f"Failed to copy GIF for alias: {e}")
-        return False
-
-
-def process_alias_gifs(asset_dir: Path) -> int:
+def build_gifs_for_asset(asset_dir: Path) -> int:
     """
-    Copy GIFs to alias animation directories.
+    Build GIFs for all animations in an asset directory.
 
-    Returns count of aliases processed.
+    Expects directory structure:
+        asset_dir/
+            textures/{index:03d}.png
+            animations/{index}.json
+
+    Output:
+        asset_dir/animations/{index}.gif
+
+    Args:
+        asset_dir: Path to asset directory (e.g., assets/sprites/entitySprites/player)
+
+    Returns:
+        Number of GIFs created
     """
-    index_path = asset_dir / "animation_index.json"
+    textures_dir = asset_dir / "textures"
+    animations_dir = asset_dir / "animations"
 
-    if not index_path.exists():
+    if not textures_dir.exists() or not animations_dir.exists():
         return 0
 
-    with open(index_path, encoding="utf-8") as f:
-        index_data = json.load(f)
+    gifs_built = 0
 
-    processed = 0
+    # Find all animation JSON files
+    for anim_json in sorted(animations_dir.glob("*.json")):
+        # Skip non-numeric files (like index files)
+        stem = anim_json.stem
+        if not stem.isdigit():
+            continue
 
-    for idx_str, info in index_data.get("animations", {}).items():
-        if info.get("status") == "alias":
-            idx = int(idx_str)
-            original_idx = info["alias_of"]
+        output_path = animations_dir / f"{stem}.gif"
 
-            alias_dir = asset_dir / f"animation{idx}"
-            original_dir = asset_dir / f"animation{original_idx}"
+        if build_gif_for_animation(anim_json, textures_dir, output_path):
+            gifs_built += 1
 
-            if copy_gif_for_alias(alias_dir, original_dir):
-                processed += 1
-
-    return processed
+    return gifs_built
 
 
 def build_all_gifs(
-    base_dir: Path = DEFAULT_ANIMATIONS_DIR,
+    sprites_dir: Path = DEFAULT_SPRITES_DIR,
     asset_name: Optional[str] = None
 ):
     """
-    Build GIFs for all animations.
+    Build GIFs for all animations in the sprites directory.
 
     Args:
-        base_dir: Base directory containing animation assets
+        sprites_dir: Base directory containing sprite assets (assets/sprites/)
         asset_name: If provided, only process this asset
     """
-    print("Creating GIFs...")
+    print("Creating GIFs from extracted sprites...")
 
-    if not base_dir.exists():
-        print(f"Warning: Animation directory does not exist: {base_dir}")
-        print("Run extract-animation-metadata first to extract animation data.")
+    if not sprites_dir.exists():
+        print(f"Warning: Sprites directory does not exist: {sprites_dir}")
+        print("Run 'python -m libhm64.sprites.extractor extract_all' first.")
         return
 
-    if asset_name:
-        asset_dirs = [base_dir / asset_name]
-    else:
-        asset_dirs = sorted(p for p in base_dir.iterdir() if p.is_dir())
-
     total_gifs = 0
-    total_aliases = 0
+    total_assets = 0
 
-    for asset_dir in asset_dirs:
-        if not asset_dir.is_dir():
+    # Iterate through subdirs (entitySprites, etc.)
+    for subdir in sorted(sprites_dir.iterdir()):
+        if not subdir.is_dir():
             continue
 
-        gifs_built = 0
-        for anim_dir in sorted(p for p in asset_dir.iterdir() if p.is_dir()):
-            if build_gif_for_anim_dir(anim_dir):
-                gifs_built += 1
+        # Iterate through asset directories
+        for asset_dir in sorted(subdir.iterdir()):
+            if not asset_dir.is_dir():
+                continue
 
-        # Process alias GIFs
-        aliases_copied = process_alias_gifs(asset_dir)
+            # Skip if looking for specific asset
+            if asset_name and asset_dir.name != asset_name:
+                continue
 
-        if gifs_built > 0 or aliases_copied > 0:
-            print(f"Built {gifs_built} GIFs for {asset_dir.name} ({aliases_copied} aliases)")
+            gifs_built = build_gifs_for_asset(asset_dir)
 
-        total_gifs += gifs_built
-        total_aliases += aliases_copied
+            if gifs_built > 0:
+                print(f"  Built {gifs_built} GIFs for {asset_dir.name}")
+                print(f"    Output: {(asset_dir / 'animations').resolve()}")
+                total_gifs += gifs_built
+                total_assets += 1
 
-    if total_gifs == 0 and total_aliases == 0:
-        print("No GIFs were built. Make sure to run extract-animation-sprites first to extract PNG frames.")
+    if total_gifs == 0:
+        print("No GIFs were built. Make sure sprites have been extracted with PNGs.")
+    else:
+        print(f"Built {total_gifs} GIFs across {total_assets} assets.")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="HM64 Animation GIF Builder")
+    parser = argparse.ArgumentParser(
+        description="HM64 Animation GIF Builder",
+        epilog="Reads from assets/sprites/{subdir}/{asset}/ and creates GIFs in animations/ subdirectory."
+    )
     parser.add_argument(
-        "--base-dir", type=str, default=str(DEFAULT_ANIMATIONS_DIR),
-        help="Base directory containing animation assets"
+        "--sprites-dir", type=str, default=str(DEFAULT_SPRITES_DIR),
+        help="Base directory containing sprite assets (default: assets/sprites/)"
     )
     parser.add_argument(
         "--asset", type=str, default=None,
-        help="Only process this specific asset"
+        help="Only process this specific asset (e.g., 'player')"
     )
 
     args = parser.parse_args()
 
-    build_all_gifs(Path(args.base_dir), args.asset)
+    build_all_gifs(Path(args.sprites_dir), args.asset)
 
 
 if __name__ == "__main__":
