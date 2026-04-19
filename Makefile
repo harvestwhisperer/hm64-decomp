@@ -8,32 +8,27 @@ REGION ?= us
 BASEROM := baserom.$(REGION).z64
 
 # Options
-
 VERBOSE := 0
-PERMUTER ?= 0
-
 MODERN_GCC ?= 0
 
 # Directories
-
 SRC_DIRS := src
 BIN_DIRS := bin
-
 BUILD_DIR := build
 TOOLS_DIR := tools
+ASSETS_DIR := assets
 
 # Files
-
 C_FILES = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.c))
 BIN_FILES=$(foreach dir, $(BIN_DIRS), $(wildcard $(dir)/*.bin))
 
 LD_MAP := $(BASENAME).map
 
-BSS_LD_SCRIPT := config/$(REGION)/common_bss.ld
+# Modding text pipeline: extract .txt per bank instead of decoded bytecode.
+TEXT_EXTRACT_ARGS := --modding
 
-# Cutscene CPP includes — matching build resolves named entityAnimationScripts
-# macros at transpile time.
-CUTSCENE_CPP_INCLUDES := -I src/buffers -I src/game -I src/assetIndices -I src/data/animation/entityAnimationScripts
+# Modding wavetable pipeline: omit HM64-specific SDK padding from repacked .bin.
+WAVETABLE_REPACKER_ARGS := --modding
 
 CODE_OBJECTS := \
 	$(BUILD_DIR)/src/mainproc.o \
@@ -47,7 +42,6 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/system/globalSprites.o \
 	$(BUILD_DIR)/src/system/entity.o \
 	$(BUILD_DIR)/src/system/staticGfx.o \
-	$(BUILD_DIR)/src/system/paddingData.o \
 	$(BUILD_DIR)/src/system/map.o \
 	$(BUILD_DIR)/src/system/mapController.o \
 	$(BUILD_DIR)/src/system/audio.o \
@@ -85,10 +79,8 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/game/gameFile.o \
 	$(BUILD_DIR)/src/data/animation/animationData.o \
 	$(BUILD_DIR)/src/data/audio/sfx.o \
-	$(BUILD_DIR)/src/game/namingScreen.o \
-	$(BUILD_DIR)/src/game/bssPadding.o
+	$(BUILD_DIR)/src/game/namingScreen.o
 
-# LIBULTRA_OBJECTS — need unusedPadding.o for matching 
 LIBULTRA_OBJECTS := \
 	$(BUILD_DIR)/lib/libultra/src/gu/sqrtf.o \
 	$(BUILD_DIR)/lib/libultra/src/gu/cosf.o \
@@ -101,7 +93,6 @@ LIBULTRA_OBJECTS := \
 	$(BUILD_DIR)/lib/libultra/src/gu/sinf.o \
 	$(BUILD_DIR)/lib/libultra/src/gu/translate.o \
 	$(BUILD_DIR)/lib/libultra/src/os/invaldcache.o \
-	$(BUILD_DIR)/lib/libultra/src/os/unusedPadding.o \
 	$(BUILD_DIR)/lib/libultra/src/os/setintmask.o \
 	$(BUILD_DIR)/lib/libultra/src/os/writebackdcache.o \
 	$(BUILD_DIR)/lib/libultra/src/os/writebackdcacheall.o \
@@ -251,86 +242,159 @@ LIBULTRA_OBJECTS := \
 include Makefile.common
 
 # ==============================================================================
-# Linker flags (include BSS_LD_SCRIPT)
+# Linker flags
 # ==============================================================================
 
-LDFLAGS := -G 0 -T config/$(REGION)/undefined_syms.txt -T $(BSS_LD_SCRIPT) -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
+LDFLAGS := -G 0 -T config/$(REGION)/undefined_syms.txt -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
 
 # ==============================================================================
-# Text rules (extract from ROM then transpile)
+# Asset paths
 # ==============================================================================
 
-# Extract texts to assets directory and transpile to assembly (generates two
-# files: bytecode and index)
-$(TEXT_ASSETS_DIR)/%Text.s:
-	$(V)$(TEXT_EXTRACTOR) extract $*
-	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/
+BOOT_BIN := bin/makerom/ipl3.bin
 
-# Mark dependency
-$(TEXT_ASSETS_DIR)/%TextIndex.s: $(TEXT_ASSETS_DIR)/%Text.s
+MAPS_DIR := bin/maps
+SEQ_DIR := bin/audio
+
+SPRITES_DIR := assets/sprites
+TEXTS_DIR := assets/text
+
+# ==============================================================================
+# Texts (modding pipeline)
+# ==============================================================================
+
+TEXT_BANKS := text1 \
+	library \
+	diary \
+	festivalOverlaySelections \
+	letters \
+	levelInteractions \
+	animalInteractions \
+	tv \
+	namingScreen \
+	elli \
+	kai \
+	karen \
+	gotz \
+	sasha \
+	cliff \
+	jeff \
+	kent \
+	harris \
+	popuri \
+	maria \
+	may \
+	ann \
+	doug \
+	gray \
+	basil \
+	lillia \
+	duke \
+	shipper \
+	harvestSprites \
+	assistantCarpenters \
+	masterCarpenter \
+	mayor \
+	greg \
+	rick \
+	barley \
+	sydney \
+	potionShopDealer \
+	mayorWife \
+	ellen \
+	stu \
+	midwife \
+	pastor \
+	saibara \
+	ranchCutscenes \
+	funeralIntro \
+	fireworksFestival \
+	flowerFestival \
+	seaFestivalAndEvaluation \
+	cowFestival \
+	fireflyFestival \
+	dogRace \
+	mountainCutscenes \
+	sowingFestival \
+	harvestFestival \
+	newYearFestival \
+	spiritFestival \
+	horseRace \
+	village1Cutscenes \
+	village2Cutscenes \
+	vineyardCutscenes \
+	roadCutscenes \
+	farmVisits \
+	houseCutscenes \
+	eggFestival \
+	beachCutscenes \
+	vegetableFestival \
+	baby \
+	mrsManaAndJohn \
+	additionalNPCs \
+	howToPlay
+
+define TEXT_BANK_RULE
+$(TEXT_ASSETS_DIR)/$(1)Text.s: $$(wildcard $(TEXT_ASSETS_DIR)/$(1)/*.txt)
+	@echo "Transpiling text bank: $(1)"
+	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$(1) -n $(1)Text -o $(TEXT_ASSETS_DIR)/ --modding
+
+$(TEXT_ASSETS_DIR)/$(1)TextIndex.s: $(TEXT_ASSETS_DIR)/$(1)Text.s
 	@:
+endef
+
+$(foreach bank,$(TEXT_BANKS),$(eval $(call TEXT_BANK_RULE,$(bank))))
 
 $(TEXT_BUILD_DIR)/%Text.bin.o: $(TEXT_ASSETS_DIR)/%Text.s
+	$(MKDIR)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 $(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
+	$(MKDIR)
 	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
 # ==============================================================================
 # Targets
 # ==============================================================================
 
-ifeq ($(MODERN_GCC),1)
-  $(info Building with modern GCC (non-matching))
-  $(info Compiler: $(CC))
-endif
+all: $(TARGET)
 
-all: check
-
-jp-%:
-	$(MAKE) -f Makefile.jp $*
-
-jp:
-	$(MAKE) -f Makefile.jp
-
-setup: clean split extract-sprites extract-fonts
-
-rerun: clean $(LD_SCRIPT) check
-
-check: $(TARGET)
-	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
-
-fresh:
-	$(MAKE) setup
-	$(MAKE) -j4
+# Extract all assets required for a dev rebuild
+extract: split extract-texts extract-sprites extract-fonts
 
 # ==============================================================================
 # Clean
 # ==============================================================================
 
+# Clean build artifacts only
 clean:
-	@rm -rf asm
-	@rm -rf bin
-	@rm -rf build
-# remove transpiled bytecode .s files
-	@find assets -type f -name "*.s" -delete 2>/dev/null || true
+	@rm -rf $(BUILD_DIR)
 	@rm -f $(LD_SCRIPT)
 	@rm -f $(BASENAME).elf
 	@rm -f $(BASENAME).map
 	@rm -f $(TARGET)
+	@rm -rf asm
+	@find assets -type f -name "*.s" -delete 2>/dev/null || true
 
-clean-assets:
+# Clean only extracted bin files (not extracted texts)
+clean-extracted:
+	@rm -rf bin
+	@rm lib/ucode/*.bin
+
+# Clean everything including texts
+clean-all-dangerous: clean
+	@rm -rf bin
+	@rm lib/ucode/*.bin
 	@find assets -type f ! -name "*.spec" -delete 2>/dev/null || true
-# clean up empty directories
 	@find assets -type d -empty -delete 2>/dev/null || true
 
-clean-all: clean clean-assets
+.PHONY: all extract split extract-texts extract-sprites extract-fonts
+.PHONY: clean clean-extracted clean-all-dangerous
 
-.PHONY: all clean clean-assets clean-all setup split rerun check codesegment
-.PHONY: extract-sprites extract-gifs extract-texts extract-map-sprites
-.PHONY: extract-cutscenes extract-fonts assemble-fonts extract-font
-.PHONY: fresh jp
+TEXT_ASM := $(foreach bank,$(TEXT_BANKS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
 
-# Prevent Make from deleting intermediate .s files (matching needs all of them)
-.SECONDARY:
-.PRECIOUS: %.bin
+# Prevent Make from deleting intermediate .s files (scoped: only the
+# transpiled asm files we care about, not every implicit .bin or .o).
+.SECONDARY: $(CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
+
+MAKEFLAGS += --no-builtin-rules

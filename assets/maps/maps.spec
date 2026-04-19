@@ -47,12 +47,6 @@ beginseg
 endseg
 
 beginseg
-    name "emptyMap1"
-    flags RAW
-    include "build/assets/maps/unknown/emptyMap1.hm64map.o"
-endseg
-
-beginseg
     name "beachSpringMap"
     flags RAW
     include "build/assets/maps/beach/beachSpringMap.hm64map.o"
@@ -386,12 +380,6 @@ beginseg
     name "potionShopMap"
     flags RAW
     include "build/assets/maps/potionShop/potionShopMap.hm64map.o"
-endseg
-
-beginseg
-    name "emptyMap2"
-    flags RAW
-    include "build/assets/maps/unknown/emptyMap2.hm64map.o"
 endseg
 
 beginseg

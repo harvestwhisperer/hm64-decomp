@@ -26,17 +26,17 @@ void func_8004DEC8(void) {
 //INCLUDE_ASM("asm/nonmatchings/system/flags", func_8004DEE4);
 
 // unused
-void func_8004DEE4(void) {
-    D_80181B8C &= ~1;
-}
+// void func_8004DEE4(void) {
+//     D_80181B8C &= ~1;
+// }
 
 // empty function
-void func_8004DF00(void) {}
+// void func_8004DF00(void) {}
 
 //INCLUDE_ASM("asm/nonmatchings/system/flags", func_8004DF08);
 
 // unused
-void func_8004DF08(void) {
-func_8004DF08:
-    goto func_8004DF08;
-}
+// void func_8004DF08(void) {
+// func_8004DF08:
+//     goto func_8004DF08;
+// }

@@ -1976,16 +1976,19 @@ segments:
   - name: emptyNPCTexture
     type: bin
     dir: assets/sprites/entitySprites/npc/empty
+    extract: false
     start: 0x5D11A0
 
   - name: emptyNPCAssetsIndex
     type: bin
     dir: assets/sprites/entitySprites/npc/empty
+    extract: false
     start: 0x5D11B0
 
   - name: emptyNPCSpritesheetIndex
     type: bin
     dir: assets/sprites/entitySprites/npc/empty
+    extract: false
     start: 0x5D11C0
 
   - name: bunnyTexture
@@ -2639,16 +2642,19 @@ segments:
   - name: emptyEntityTexture
     type: bin
     dir: assets/sprites/entitySprites/empty
+    extract: false
     start: 0x7F4CE0
 
   - name: emptyEntityAssetsIndex
     type: bin
     dir: assets/sprites/entitySprites/empty
+    extract: false
     start: 0x7F4CF0
 
   - name: emptyEntitySpritesheetIndex
     type: bin
     dir: assets/sprites/entitySprites/empty
+    extract: false
     start: 0x7F4D00
 
   - name: mariaHarrisBabyTexture
@@ -3432,11 +3438,13 @@ segments:
   - name: emptyMountainSprite1Texture
     type: bin
     dir: assets/sprites/mapObjects/mountain/empty
+    extract: false
     start: 0xCA5010
 
   - name: emptyMountainSprite2Texture
     type: bin
     dir: assets/sprites/mapObjects/mountain/empty
+    extract: false
     start: 0xCA5030
 
   - name: mountainPathTilesTexture
@@ -3550,31 +3558,37 @@ segments:
   - name: emptyMapSprite1Texture
     type: bin
     dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB040
 
   - name: emptyMapSprite2Texture
     type: bin
     dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB060
 
   - name: emptyMapSprite3Texture
     type: bin
     dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB070
 
   - name: emptyMapSprite4Texture
     type: bin
     dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB090
 
   - name: emptyMapSprite5Texture
     type: bin
     dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB0A0
 
   - name: emptyMapSprite6Texture
     type: bin
     dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAB0C0
 
   - name: stoneTexture
@@ -3616,11 +3630,13 @@ segments:
   - name: emptyMap1Texture
     type: bin
     dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAD4D0
 
   - name: emptyMap2Texture
     type: bin
     dir: assets/sprites/mapObjects/unknown/empty
+    extract: false
     start: 0xCAD4F0
 
   - name: farmPondTexture
@@ -3697,6 +3713,7 @@ segments:
   - name: emptyEffectTexture
     type: bin
     dir: assets/sprites/effects/empty
+    extract: false
     start: 0xCBE5A0
 
   - name: splashTexture
