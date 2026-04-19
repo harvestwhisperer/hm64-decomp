@@ -870,7 +870,7 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         gPlayer.heldItem = BABY_HELD_ITEM;
                         
                         deactivateEntity(npcs[BABY].entityIndex);
-                        npcs[BABY].flags &= ~4;
+                        npcs[BABY].flags &= ~NPC_ANIMATION_SLEEPING;
 
                         setPlayerAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
 
