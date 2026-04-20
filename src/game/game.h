@@ -188,7 +188,7 @@ extern u8 D_801FB5C4[6];
 extern u8 D_801FC152[2];
 extern u8 D_801FC156[6];
 extern u8 D_80204B3C[6];
-extern u8 D_80205210[2];
+extern u8 D_80205210[3];
 extern u8 D_8020563B[4];
 extern u8 D_80237380[6];
 extern u8 D_80237418[3];
