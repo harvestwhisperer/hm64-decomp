@@ -5507,7 +5507,7 @@ void setStuLocation(void) {
             
         }
 
-} else if (7 < gHour && gHour < 17) {
+    } else if (7 < gHour && gHour < 17) {
 
         npcs[STU].levelIndex = temp;
         npcs[STU].startingCoordinates.x = 0.0f;
