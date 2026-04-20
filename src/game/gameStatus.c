@@ -59,8 +59,6 @@ static inline void handleAddShipment(s32 amount) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", handleWifeMorningHelp);
-
 void handleWifeMorningHelp(void) {
 
     u8 temp;
@@ -133,9 +131,6 @@ void handleWifeMorningHelp(void) {
     }
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", handleWifeHelpsWeeding);
-
 void handleWifeHelpsWeeding(void) {
     
     u8 i;
@@ -154,8 +149,6 @@ void handleWifeHelpsWeeding(void) {
         
     }
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", handleWifeCratesEggs);
 
 void handleWifeCratesEggs(void) {
 
@@ -176,8 +169,6 @@ void handleWifeCratesEggs(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", handleWifeHelpsWatering);
 
 void handleWifeHelpsWatering(void) {
 
@@ -200,8 +191,6 @@ void handleWifeHelpsWatering(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", handleWifeFeedsChickens);
 
 void handleWifeFeedsChickens(void) {
 
@@ -333,8 +322,7 @@ void updateFarmStatusRain(void) {
                         
                     }
 
-
-                    break;
+break;
                 
             }
             
@@ -366,8 +354,6 @@ void updateFarmStatusRain(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", updateFarmStatusSnow);
 
 // snow
 void updateFarmStatusSnow(void) {
@@ -485,8 +471,7 @@ void updateFarmStatusSnow(void) {
                         
                     }
 
-
-                    break;
+break;
                 
             }
             
@@ -516,8 +501,6 @@ void updateFarmStatusSnow(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", updateFarmStatusTyphoon);
 
 void updateFarmStatusTyphoon(void) {
 
@@ -650,8 +633,7 @@ void updateFarmStatusTyphoon(void) {
                         
                     }
 
-
-                    break;
+break;
                 
             }
             
@@ -716,8 +698,6 @@ void updateFarmStatusTyphoon(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", func_80064CF0);
 
 // earthquake
 void func_80064CF0(void) {
@@ -836,8 +816,7 @@ void func_80064CF0(void) {
                         
                     }
 
-
-                    break;
+break;
                 
             }
             
@@ -869,70 +848,50 @@ void func_80064CF0(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setDailyEventBit);
-
 void setDailyEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
     dailyEventBits[temp / 32] |= 1 << (temp & 0x1F);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", clearDailyEventBit);
 
 void clearDailyEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
     dailyEventBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkDailyEventBit);
-
 u32 checkDailyEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
     return dailyEventBits[temp / 32] & (1 << (temp & 0x1F));
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setLifeEventBit);
 
 void setLifeEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
     lifeEventBits[temp / 32] |= 1 << (temp & 0x1F);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", clearLifeEventBit);
-
 void clearLifeEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
     lifeEventBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkLifeEventBit);
 
 u32 checkLifeEventBit(u16 bitIndex) {
     u32 temp = bitIndex;
     return lifeEventBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setSpecialDialogueBit);
-
 void setSpecialDialogueBit(u16 bitIndex) {
     u32 temp = bitIndex;
     specialDialogueBits[temp / 32] |= 1 << (temp & 0x1F);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", clearSpecialDialogueBit);
 
 void clearSpecialDialogueBit(u16 bitIndex) {
     u32 temp = bitIndex;
     specialDialogueBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkSpecialDialogueBit);
-
 u32 checkSpecialDialogueBit(u16 bitIndex) {
     u32 temp = bitIndex;
     return specialDialogueBits[temp / 32] & (1 << (temp & 0x1F));
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", addToReadMail);
 
 // unused
 void addToReadMail(u16 bitIndex) {
@@ -940,36 +899,26 @@ void addToReadMail(u16 bitIndex) {
     readMailBits[temp / 32] |= (1 << (temp & 0x1F));
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", clearReadLetterBit);
-
 void clearReadLetterBit(u16 bitIndex) {
     u32 temp = bitIndex;
     readMailBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkMailRead);
 
 u32 checkMailRead(u16 bitIndex) {
     u32 temp = bitIndex;
     return readMailBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setMail);
-
 void setMail(u16 bitIndex) {
     u32 temp = bitIndex;
     mailboxBits[temp / 32] |= (1 << (temp & 0x1F));
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", readLetter);
 
 // unused
 void readLetter(u16 bitIndex) {
     u32 temp = bitIndex;
     mailboxBits[temp / 32] &= ~(1 << (temp & 0x1F));
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", checkLetterInMailBox);
 
 // unused
 inline u32 checkLetterInMailBox(u16 bitIndex) {
@@ -988,8 +937,6 @@ static inline void setReadMail(u32 i, u32 mailBox) {
 static inline u32 getLetterBit(u32 mailBox) {
     return (1 << (mailBox & 0x1F));
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", readMail);
 
 // get first unread leter index
 u8 readMail(void) {
@@ -1019,8 +966,6 @@ u8 readMail(void) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", setAlbumPictureFromLetter);
 
 void setAlbumPictureFromLetter(u8 letterIndex) {
     
@@ -1078,8 +1023,6 @@ void setAlbumPictureFromLetter(u8 letterIndex) {
         }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", getAcquiredRecipesTotal);
 
 u8 getAcquiredRecipesTotal(void) {
 
@@ -1225,8 +1168,6 @@ u8 getAcquiredRecipesTotal(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStatus", getSumNpcAffection);
-
 s32 getSumNpcAffection(void) {
 
     u16 result = 0;
@@ -1239,17 +1180,3 @@ s32 getSumNpcAffection(void) {
     return result;
     
 }
-
-// empty function
-void func_800657AC(void) {}
-
-// main loop callback function
-// empty function
-void func_800657B4(void) {}
-
-// empty function
-void func_800657BC(void) {}
-
-// main loop callback function
-// empty function
-void func_800657C4(void) {}

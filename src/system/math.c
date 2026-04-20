@@ -1,8 +1,6 @@
 #include "common.h"
 #include <stdlib.h>
 
-//INCLUDE_ASM("asm/nonmatchings/system/utility", func_80026850);
-
 s32 getAbsoluteValue(s32 number) {
     
     s16 result = number;
@@ -15,8 +13,6 @@ s32 getAbsoluteValue(s32 number) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/math", getRandomNumberInRange);
 
 u16 getRandomNumberInRange(u16 min, u16 max) {
     

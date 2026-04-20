@@ -43,7 +43,6 @@ u8 gMaximumStamina;
 u8 gPlayerBirthdaySeason;
 u8 gToolboxSlots[8 * 4];
 
-
 // data
 // indexed by gSpawnPointIndex
 Vec3f spawnPointToPlayerCoordinates[] = {
@@ -455,8 +454,6 @@ static inline void reset() {
     gPlayer.actionPhase = 0;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", setupPlayerEntity);
-
 void setupPlayerEntity(u16 spawnPoint, u8 resetPlayer) {
  
     loadEntity(ENTITY_PLAYER, 0, TRUE);
@@ -487,8 +484,6 @@ void setupPlayerEntity(u16 spawnPoint, u8 resetPlayer) {
     toolUse.boulderHitPositionZ = 0;
 
 }
-  
-//INCLUDE_ASM("asm/nonmatchings/game/player", initializePlayerHeldItem);
 
 void initializePlayerHeldItem(void) {
 
@@ -532,8 +527,6 @@ inline u8 addItemToRucksack(u8 item) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", storeTool);
-
 u8 storeTool(u8 tool) {
 
     u8 i;
@@ -575,8 +568,6 @@ u8 storeTool(u8 tool) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", removeTool);
-
 u8 removeTool(u8 tool) {
 
     u8 i;
@@ -602,8 +593,6 @@ u8 removeTool(u8 tool) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", acquireKeyItem);
-
 inline u8 acquireKeyItem(u8 item) {
 
     u8 i;
@@ -620,8 +609,6 @@ inline u8 acquireKeyItem(u8 item) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", removeKeyItem);
-
 u8 removeKeyItem(u8 item) {
 
     u8 i;
@@ -637,8 +624,6 @@ u8 removeKeyItem(u8 item) {
     return found;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", checkHaveTool);
 
 bool checkHaveTool(u8 tool) {
 
@@ -667,8 +652,6 @@ bool checkHaveTool(u8 tool) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", checkHaveKeyItem);
-
 inline bool checkHaveKeyItem(u8 item) {
 
     u8 i;
@@ -686,15 +669,12 @@ inline bool checkHaveKeyItem(u8 item) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", syncPlayerCoordinatesFromEntity);
-
 void syncPlayerCoordinatesFromEntity(void) {
     gPlayer.coordinates.x = entities[ENTITY_PLAYER].coordinates.x;
     gPlayer.coordinates.y = entities[ENTITY_PLAYER].coordinates.y;
     gPlayer.coordinates.z = entities[ENTITY_PLAYER].coordinates.z;
 }
 
- 
 static const s8 directionToTileDeltaX[12] = { 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, 0, 0 };
 static const s8 directionToTileDeltaZ[12] = { 1, 1, 0, -1, -1, -1, 0, 1, 0, 0, 0, 0 };
 
@@ -721,11 +701,7 @@ Vec3f getOffsetTileCoordinates (f32 range, u8 directionalOffset) {
     
 }
 
-
-
-
 /* Action handling */
-
 
 void setPlayerAction(u16 action, u16 animationHandler) {
 
@@ -740,8 +716,6 @@ void setPlayerAction(u16 action, u16 animationHandler) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", updatePlayerAction);
 
 void updatePlayerAction(void) {
 
@@ -859,8 +833,6 @@ void updatePlayerAction(void) {
     processToolUseState();
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePlayerInput);
 
 void handlePlayerInput(void) {
 
@@ -1198,8 +1170,6 @@ void handlePlayerInput(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", mountHorse);
-
 inline void mountHorse(void) {
 
     deactivateEntity(horseInfo.entityIndex);
@@ -1213,8 +1183,6 @@ inline void mountHorse(void) {
     setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", dismountHorse);
 
 void dismountHorse(void) {
 
@@ -1273,8 +1241,6 @@ void dismountHorse(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleItemLevelInteraction);
 
 // item <-> level interaction 
 void handleItemLevelInteraction(u8 arg0) {
@@ -1416,10 +1382,7 @@ void handleItemLevelInteraction(u8 arg0) {
     
 }
 
-
 /* Stamina/fatigue helpers */
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", checkStaminaExhaustionLevel);
 
 inline u8 checkStaminaExhaustionLevel(void) {
 
@@ -1452,8 +1415,6 @@ inline u8 checkStaminaExhaustionLevel(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", checkFatigueLevel);
-
 inline u8 checkFatigueLevel(void) {
 
     u8 result;
@@ -1469,8 +1430,6 @@ inline u8 checkFatigueLevel(void) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", checkAndTriggerStaminaExhaustion);
 
 bool checkAndTriggerStaminaExhaustion(u8 arg0) {
 
@@ -1489,8 +1448,6 @@ bool checkAndTriggerStaminaExhaustion(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", checkTooFatiguedToUseTool);
-
 bool checkTooFatiguedToUseTool(void) {
 
     bool tooFatigued = FALSE;
@@ -1507,11 +1464,7 @@ bool checkTooFatiguedToUseTool(void) {
 
 }
 
-
-
 /* Action handlers */
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolAction);
 
 void handleToolAction(void) {
 
@@ -1550,8 +1503,7 @@ void handleToolAction(void) {
                     gPlayer.currentToolLevel++;
                 }
 
-                
-            } else {
+} else {
                 gPlayer.toolHeldCounter++;
             }
 
@@ -1565,8 +1517,6 @@ void handleToolAction(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleThrowItemAction);
 
 void handleThrowItemAction(void) {
 
@@ -1591,8 +1541,6 @@ void handlePutItemInShippingBinAction(void) {
     gPlayer.actionPhaseFrameCounter++;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePickUpItemAction);
 
 void handlePickUpItemAction(void) {
 
@@ -1625,8 +1573,6 @@ void handlePickUpItemAction(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePlaceItemAction);
-
 void handlePlaceItemAction(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
@@ -1644,9 +1590,6 @@ void handlePlaceItemAction(void) {
     }   
 
 }
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleEatAction);
 
 void handleEatAction(void) {
 
@@ -1680,8 +1623,6 @@ void handleEatAction(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleGetIntoBedAction);
-
 void handleGetIntoBedAction(void) {
 
     if (gPlayer.actionPhase == 0) {
@@ -1703,15 +1644,11 @@ void handleGetIntoBedAction(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleIdleNapAction);
-
 void handleIdleNapAction(void) {
     if (checkButtonHeld(CONTROLLER_1, 0xFFFFFFFF) && gPlayer.actionPhase < 4) {
         gPlayer.actionPhase = 4;
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleTurnOnTVAction);
 
 void handleTurnOnTVAction(void) {
 
@@ -1743,8 +1680,6 @@ void handleTurnOnTVAction(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleShopItemAction);
-
 void handleShopItemAction(void) {
 
     if (gPlayer.actionPhase == 0) {
@@ -1774,8 +1709,6 @@ void handleShopItemAction(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleJumpAction);
 
 void handleJumpAction(void) {
 
@@ -1831,8 +1764,6 @@ void handleJumpAction(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleJumpDownAction);
 
 void handleJumpDownAction(void) {
 
@@ -1892,8 +1823,6 @@ void handleJumpDownAction(void) {
 // empty function
 void handleResetHeldItemAction(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePutFoodInDogBowlAction);
-  
 // put food in dog bowl
 void handlePutFoodInDogBowlAction(void) {
  
@@ -1906,8 +1835,6 @@ void handlePutFoodInDogBowlAction(void) {
     gPlayer.actionPhaseFrameCounter++;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleDropItemInWaterAction);
 
 void handleDropItemInWaterAction(void) {
 
@@ -1923,8 +1850,6 @@ void handleDropItemInWaterAction(void) {
 
 // empty function
 void handleUnusedAction33(void) {}
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleAcquireMusicBoxAction);
 
 void handleAcquireMusicBoxAction(void) {
 
@@ -1942,8 +1867,6 @@ void handleAcquireMusicBoxAction(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleMountHorseAction);
 
 void handleMountHorseAction(void) {
 
@@ -1987,8 +1910,6 @@ void handleMountHorseAction(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleDismountHorseAction);
-
 void handleDismountHorseAction(void) {
 
     Vec3f vec;
@@ -2025,8 +1946,6 @@ void handleDismountHorseAction(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleWalkDownStairsAction);
 
 void handleWalkDownStairsAction(void) {
 
@@ -2081,8 +2000,6 @@ void handleWalkDownStairsAction(void) {
    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleToiletAction);
-
 void handleToiletAction(void) {
 
     Vec3f vec;
@@ -2109,8 +2026,7 @@ void handleToiletAction(void) {
             
             break;
 
-
-        case 1:
+case 1:
 
             if (gPlayer.actionTimer == 0) {
 
@@ -2130,8 +2046,7 @@ void handleToiletAction(void) {
             
             break;
 
-        
-        case 2:
+case 2:
 
             if (gPlayer.actionPhaseFrameCounter == 90) {
                 
@@ -2196,8 +2111,6 @@ void handleToiletAction(void) {
     setEntityMovementVector(ENTITY_PLAYER, gPlayer.movementVector.x, 0.0f, gPlayer.movementVector.z, 1.0f);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleBathingAction);
 
 // bathing
 void handleBathingAction(void) {
@@ -2359,8 +2272,6 @@ void handleBathingAction(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleHotSpringAction);
-
 void handleHotSpringAction(void) {
 
     // needing separate vecs implies these case statements are static inlines that have their own vecs
@@ -2477,8 +2388,6 @@ void handleHotSpringAction(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForDogAction);
-
 void handleWhistleForDogAction(void) {
     
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
@@ -2487,8 +2396,6 @@ void handleWhistleForDogAction(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForHorseAction);
-
 void handleWhistleForHorseAction(void) {
 
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
@@ -2496,8 +2403,6 @@ void handleWhistleForHorseAction(void) {
     }
 
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleDrinkAction);
 
 void handleDrinkAction(void) {
 
@@ -2520,8 +2425,6 @@ void handleDrinkAction(void) {
 
 // empty function
 void handleUnusedAction21(void) {}
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleFishingAction);
 
 void handleFishingAction(void) {
 
@@ -2674,13 +2577,8 @@ void handleTreeClimbingAction(void) {
 
 // empty function
 void handleToolAcquisitionAction(void) {} 
- 
-
 
 /* Animation handlers */
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePlayerAnimation);
 
 void handlePlayerAnimation(void) {
 
@@ -2888,8 +2786,6 @@ static inline void handleStopHolding() {
     gItemBeingHeld = 0xFF;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleThrowItemAnimation);
-
 void handleThrowItemAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
@@ -2907,8 +2803,6 @@ void handleThrowItemAnimation(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleShippingAnimation);
-
 void handleShippingAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
@@ -2922,8 +2816,6 @@ void handleShippingAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePickUpAnimation);
-
 void handlePickUpAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
@@ -2936,8 +2828,6 @@ void handlePickUpAnimation(void) {
         }
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePlaceItemAnimation);
 
 void handlePlaceItemAnimation(void) {
     
@@ -2964,8 +2854,6 @@ void handlePlaceItemAnimation(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleEatAnimation);
 
 void handleEatAnimation(void) {
     
@@ -2994,8 +2882,6 @@ void handleEatAnimation(void) {
 
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleStaminaExhaustionAnimation);
 
 void handleStaminaExhaustionAnimation(void) {
 
@@ -3028,8 +2914,6 @@ void handleStaminaExhaustionAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleFatigueThresholdAnimation);
-
 // fatigue levels 1 and 2
 void handleFatigueThresholdAnimation(void) {
 
@@ -3057,8 +2941,6 @@ void handleFatigueThresholdAnimation(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleGetIntoBedAnimation);
 
 void handleGetIntoBedAnimation(void) {
 
@@ -3120,8 +3002,6 @@ void handleGetIntoBedAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleIdleNapAnimation);
-
 // napping/idle animation
 void handleIdleNapAnimation(void) {
 
@@ -3159,8 +3039,6 @@ void handleIdleNapAnimation(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleTurnOnTVAnimation);
-
 // turn on TV
 void handleTurnOnTVAnimation(void) {
     
@@ -3188,8 +3066,6 @@ void handleTurnOnTVAnimation(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleShopAnimation);
 
 void handleShopAnimation(void) {
     
@@ -3223,8 +3099,6 @@ void handleShopAnimation(void) {
         }
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleJumpAnimation);
 
 void handleJumpAnimation(void) {
 
@@ -3350,8 +3224,6 @@ void handleJumpAnimation(void) {
 // empty function
 void handleUnusedAnimation29(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleDialogueSelectionAnimation);
-
 // dialogue selecting
 void handleDialogueSelectionAnimation(void) {
 
@@ -3373,8 +3245,6 @@ void handleDialogueSelectionAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePutFoodInDogBowlAnimation);
-
 void handlePutFoodInDogBowlAnimation(void) {
     
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
@@ -3392,8 +3262,6 @@ void handlePutFoodInDogBowlAnimation(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleDropItemInWaterAnimation);
 
 void handleDropItemInWaterAnimation(void) {
 
@@ -3417,8 +3285,6 @@ void handleDropItemInWaterAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleDrinkAlcoholAnimation);
-
 void handleDrinkAlcoholAnimation(void) {
 
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
@@ -3432,8 +3298,6 @@ void handleDrinkAlcoholAnimation(void) {
         
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleAcquireMusicBoxAnimation);
 
 void handleAcquireMusicBoxAnimation(void) {
 
@@ -3467,8 +3331,6 @@ void handleAcquireMusicBoxAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleMountHorseAnimation);
-
 void handleMountHorseAnimation(void) {
 
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
@@ -3480,8 +3342,6 @@ void handleMountHorseAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleDismountHorseAnimation);
 
 void handleDismountHorseAnimation(void) {
 
@@ -3504,8 +3364,6 @@ void handleUnusedAnimation18(void) {}
 // empty function
 void handleUnusedAnimation30(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForDogAnimation);
-
 void handleWhistleForDogAnimation(void) {
     
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
@@ -3522,9 +3380,6 @@ void handleWhistleForDogAnimation(void) {
 
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleWhistleForHorseAnimation);
-
 void handleWhistleForHorseAnimation(void) {
     
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
@@ -3539,8 +3394,6 @@ void handleWhistleForHorseAnimation(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleDrinkingAnimation);
 
 void handleDrinkingAnimation(void) {
 
@@ -3577,8 +3430,6 @@ void handleDrinkingAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePutItemInRucksackAnimation);
-
 void handlePutItemInRucksackAnimation(void) {
     
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
@@ -3599,8 +3450,6 @@ void handlePutItemInRucksackAnimation(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleFishingRodAnimation);
 
 void handleFishingRodAnimation(void) {
 
@@ -3711,8 +3560,7 @@ void handleFishingRodAnimation(void) {
                     gMaximumStamina += adjustValue(gMaximumStamina, 15, MAX_STAMINA);
                     gHappiness += adjustValue(gHappiness, 4, MAX_HAPPINESS);
 
-
-                }
+}
 
                 totalFishCaught += adjustValue(totalFishCaught, 1, MAX_FISH_CAUGHT);
 
@@ -3747,8 +3595,6 @@ void handleUnusedAnimation24(void) {}
 // empty function
 void handleUnusedAnimation25(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleClimbTreeAnimation);
-
 void handleClimbTreeAnimation(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0 || gPlayer.actionPhase == 2) {
@@ -3764,8 +3610,6 @@ void handleClimbTreeAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolAcquisitionAnimation);
 
 void handleToolAcquisitionAnimation(void) {
 
@@ -3816,8 +3660,6 @@ static const u8 toolHeldItemIndices[5][3] = {
     { HAMMER_HELD_ITEM, SILVER_HAMMER_HELD_ITEM, GOLDEN_HAMMER_HELD_ITEM },
     { WATERING_CAN_HELD_ITEM, SILVER_WATERING_CAN_HELD_ITEM, GOLDEN_WATERING_CAN_HELD_ITEM }
 };
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolAnimation);
 
 void handleToolAnimation(void) {
     
@@ -3953,8 +3795,6 @@ void handleToolAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleToolUseAnimation);
 
 void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex) {
 
@@ -4213,10 +4053,7 @@ void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex
     
 }
 
-
 // tool animations
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleSickleAnimation);
 
 void handleSickleAnimation(void) {
     
@@ -4236,8 +4073,6 @@ void handleSickleAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleHoeAnimation);
-
 void handleHoeAnimation(void) {
     
     switch(gPlayer.currentToolLevel) {
@@ -4256,8 +4091,6 @@ void handleHoeAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleAxAnimation);
-
 void handleAxAnimation(void) {
 
     switch(gPlayer.currentToolLevel) {
@@ -4275,8 +4108,6 @@ void handleAxAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleHammerAnimation);
 
 void handleHammerAnimation(void) {
 
@@ -4346,8 +4177,6 @@ static inline void handleSuccessfulWateringCanAction() {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleWateringCanAnimation);
-
 void handleWateringCanAnimation(void) {
 
     u8 temp;
@@ -4379,8 +4208,6 @@ void handleWateringCanAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleMilkerAnimation);
 
 void handleMilkerAnimation(void) {
 
@@ -4429,8 +4256,6 @@ void handleMilkerAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleBellAnimation);
-
 void handleBellAnimation(void) {
     
     switch (gPlayer.actionPhase) {                              
@@ -4459,8 +4284,6 @@ void handleBellAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleBrushAnimation);
 
 void handleBrushAnimation(void) {
 
@@ -4492,8 +4315,6 @@ void handleBrushAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleClippersAnimation);
 
 void handleClippersAnimation(void) {
 
@@ -4530,9 +4351,8 @@ void handleClippersAnimation(void) {
                     } else {
                         gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_PICKUP, gPlayer.heldItem, 0, ITEM_CONTEXT_USE_ATTACHMENT);
                     }
-                    
-                    
-                }
+
+}
                 
             } 
             
@@ -4541,8 +4361,6 @@ void handleClippersAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleTurnipSeedsAnimation);
 
 void handleTurnipSeedsAnimation(void) {
     
@@ -4583,8 +4401,6 @@ void handleTurnipSeedsAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePotatoSeedsAnimation);
-
 void handlePotatoSeedsAnimation(void) {
     
     switch (gPlayer.actionPhase) {
@@ -4623,8 +4439,6 @@ void handlePotatoSeedsAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleCabbageSeedsAnimation);
 
 void handleCabbageSeedsAnimation(void) {
     
@@ -4665,8 +4479,6 @@ void handleCabbageSeedsAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleTomatoSeedsAnimation);
-
 void handleTomatoSeedsAnimation(void) {
     
     switch (gPlayer.actionPhase) {
@@ -4704,8 +4516,6 @@ void handleTomatoSeedsAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleCornSeedsAnimation);
 
 void handleCornSeedsAnimation(void) {
     
@@ -4746,8 +4556,6 @@ void handleCornSeedsAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleEggplantSeedsAnimation);
-
 void handleEggplantSeedsAnimation(void) {
     
     switch (gPlayer.actionPhase) {
@@ -4786,8 +4594,6 @@ void handleEggplantSeedsAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleStrawberrySeedsAnimation);
 
 void handleStrawberrySeedsAnimation(void) {
     
@@ -4828,8 +4634,6 @@ void handleStrawberrySeedsAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleMoonDropSeedsAnimation);
-
 void handleMoonDropSeedsAnimation(void) {
 
     switch (gPlayer.actionPhase) {
@@ -4868,8 +4672,6 @@ void handleMoonDropSeedsAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handlePinkCatMintSeedsAnimation);
 
 void handlePinkCatMintSeedsAnimation(void) {
 
@@ -4910,8 +4712,6 @@ void handlePinkCatMintSeedsAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleBlueMistSeedsAnimation);
-
 void handleBlueMistSeedsAnimation(void) {
 
     switch (gPlayer.actionPhase) {
@@ -4942,8 +4742,6 @@ void handleBlueMistSeedsAnimation(void) {
             break;
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleChickenFeedAnimation);
 
 void handleChickenFeedAnimation(void) {
 
@@ -4994,13 +4792,9 @@ void handleFeedingBottleAnimation(void) {}
 // empty function
 void handleUnusedTool23Animation(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleFishingPoleAnimation);
-
 void handleFishingPoleAnimation(void) {
     startAction(FISHING, ANIM_FISHING);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleMiraclePotionAnimation);
 
 void handleMiraclePotionAnimation(void) {
 
@@ -5031,8 +4825,6 @@ void handleMiraclePotionAnimation(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleCowMedicineAnimation);
 
 void handleCowMedicineAnimation(void) {
 
@@ -5071,8 +4863,6 @@ void handleCowMedicineAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleGrassSeedsAnimation);
 
 void handleGrassSeedsAnimation(void) {
 
@@ -5113,8 +4903,6 @@ void handleGrassSeedsAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleBlueFeatherAnimation);
-
 void handleBlueFeatherAnimation(void) {
 
     switch (gPlayer.actionPhase) {
@@ -5140,8 +4928,6 @@ void handleBlueFeatherAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleEmptyBottleAnimation);
 
 void handleEmptyBottleAnimation(void) {
 

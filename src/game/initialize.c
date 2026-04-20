@@ -237,7 +237,6 @@ static inline void initializeToolboxSlots() {
        
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeAll);
 
 void initializeAll(void) {
     
@@ -266,7 +265,6 @@ void initializeAll(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeGameVariables);
 
 // TODO: there might be some static inlines for each group being initialized
 void initializeGameVariables(void) {
@@ -638,7 +636,6 @@ void initializeGameVariables(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", registerMainLoopCallbacks);
 
 void registerMainLoopCallbacks(void) {
 
@@ -709,15 +706,9 @@ void registerMainLoopCallbacks(void) {
     // game file
     registerMainLoopCallback(SELECT_GAME, gameSelectCallback);
     registerMainLoopCallback(FARM_RANKING_SCREEN, farmRankingScreenCallback);
-
-    // game status
-    // empty funtions
-    registerMainLoopCallback(55, func_800657B4);
-    registerMainLoopCallback(56, func_800657C4);
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeEntityAssets);
 
 void initializeEntityAssets(void) {
     
@@ -1123,7 +1114,6 @@ void initializeEntityAssets(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", loadMapAddresses);
 
 void loadMapAddresses(void) {
     
@@ -1261,7 +1251,6 @@ void loadMapAddresses(void) {
 
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeMainMessageBoxes);
 
 void initializeMainMessageBoxes(void) {
 
@@ -1313,7 +1302,6 @@ void initializeMainMessageBoxes(void) {
     
 }
     
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeTextAddresses);
 
 void initializeTextAddresses(void) {
 
@@ -1406,7 +1394,6 @@ void initializeTextAddresses(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeGameVariableStrings);
 
 void initializeGameVariableStrings(void) {
     
@@ -1505,7 +1492,6 @@ void initializeGameVariableStrings(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeDialogueSystem);
 
 void initializeDialogueSystem(void) {
 
@@ -1525,7 +1511,6 @@ void initializeDialogueSystem(void) {
 
 }
  
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", setDialogueBytecodeAddresses);
 
 void setDialogueBytecodeAddresses(void) {
     
@@ -1606,7 +1591,6 @@ void setDialogueBytecodeAddresses(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/initialize", initializeDialogueVariables);
 
 void initializeDialogueVariables(void) {
 

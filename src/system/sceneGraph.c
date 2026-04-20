@@ -11,9 +11,6 @@ u16 sceneNodeCounter;
 SceneNode sceneNodes[MAX_SCENE_NODES];
 SceneMatrices sceneMatrices[2];
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", initializeSceneNodes);
-
 void initializeSceneNodes(void) {
 
     u16 i;
@@ -35,16 +32,12 @@ void initializeSceneNodes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", resetSceneNodeCounter);
-
 void resetSceneNodeCounter(void) {
     sceneNodeCounter = 0;
 }
 
 // empty function
-void func_80029294(void) {}
-
-//INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", addSceneNode);
+// void func_80029294(void) {}
 
 u16 addSceneNode(Gfx *dl, u16 flags) {
 
@@ -59,8 +52,6 @@ u16 addSceneNode(Gfx *dl, u16 flags) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", addSceneNodePosition);
-
 bool addSceneNodePosition(u16 index, f32 x, f32 y, f32 z) {
     sceneNodes[index].positions.x = x;
     sceneNodes[index].positions.y = y;
@@ -68,16 +59,12 @@ bool addSceneNodePosition(u16 index, f32 x, f32 y, f32 z) {
     return TRUE;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", addSceneNodeScaling);
-
 bool addSceneNodeScaling(u16 index, f32 x, f32 y, f32 z) {
     sceneNodes[index].scaling.x = x;
     sceneNodes[index].scaling.y = y;
     sceneNodes[index].scaling.z = z;
     return TRUE;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", addSceneNodeRotation);
 
 bool addSceneNodeRotation(u16 index, f32 x, f32 y, f32 z) {
     sceneNodes[index].rotation.x = x;
@@ -87,9 +74,7 @@ bool addSceneNodeRotation(u16 index, f32 x, f32 y, f32 z) {
 }
 
 // empty function
-void func_800293B8(void) {}
-
-//INCLUDE_ASM("asm/nonmatchings/system/sceneGraph", renderSceneGraph);
+// void func_800293B8(void) {}
 
 Gfx* renderSceneGraph(Gfx* dl, SceneMatrices* matrices) {
 
