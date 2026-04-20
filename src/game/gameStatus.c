@@ -33,32 +33,6 @@ void handleWifeCratesEggs(void);
 void handleWifeHelpsWatering(void);
 void handleWifeFeedsChickens(void);
 
-// FIXME: should be adjustValue() call
-static inline void handleAddShipment(s32 amount) {
-
-    int temp;
-    int checkShippingOverflow;
-    int shippingValue;    
-    int maxShipping;
-
-    checkShippingOverflow = dailyShippingBinValue + amount;
-    shippingValue = amount;
-    maxShipping = MAX_TOTAL_SHIPPING;
-    
-    if (checkShippingOverflow > maxShipping) {
-        temp = checkShippingOverflow - MAX_TOTAL_SHIPPING;
-        shippingValue -= temp;
-        checkShippingOverflow = maxShipping;
-    }
-
-    if (checkShippingOverflow < 0) {
-        shippingValue -= checkShippingOverflow;
-    }
-    
-    dailyShippingBinValue += shippingValue;
-    
-}
-
 void handleWifeMorningHelp(void) {
 
     u8 temp;
@@ -161,7 +135,7 @@ void handleWifeCratesEggs(void) {
             setSpecialDialogueBit(WIFE_HELPS_CRATE_EGGS_DIALOGUE);
             gChickens[i].flags = 0;
 
-            handleAddShipment(EGG_VALUE);
+            dailyShippingBinValue += adjustValue(dailyShippingBinValue, EGG_VALUE, MAX_TOTAL_SHIPPING);
 
             gTotalEggsShipped += adjustValue(gTotalEggsShipped, 1, MAX_ANIMAL_ITEM_SHIPPED);
             
