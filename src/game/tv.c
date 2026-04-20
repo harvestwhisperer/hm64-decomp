@@ -61,8 +61,6 @@ static inline bool changeChannel(u8 channelIndex) {
     return TRUE;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/tv", initializeTVAssets);
-
 void initializeTVAssets(void) {
 
     setTVContentIndex();
@@ -83,8 +81,6 @@ void initializeTVAssets(void) {
     tvContext.mode = 0;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/tv", incrementVarietyShowCounter);
 
 // variety show episode incrementer
 void incrementVarietyShowCounter(void) {
@@ -147,8 +143,6 @@ void incrementVarietyShowCounter(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/tv", setTVContentIndex);
 
 void setTVContentIndex(void) {
 
@@ -256,8 +250,6 @@ void setTVContentIndex(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/tv", setTVDialogueIndex );
 
 void setTVDialogueIndex (void) {
 
@@ -579,8 +571,6 @@ void setTVDialogueIndex (void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/tv", setTVPictureIndex);
-
 void setTVPictureIndex(void) {
 
     switch (tvContext.contentIndex) {
@@ -665,82 +655,6 @@ void setTVPictureIndex(void) {
             break;
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/tv", tvMainLoopCallback);
-
-// alternate with static inline function and forced do {} while(0)
-// void tvMainLoopCallback(void) {
-
-//     bool set = FALSE;
-
-//     switch (tvContext.mode) {
-
-//         case TV_MODE_LOAD:
-
-//             if (tvContext.dialogueIndex != 0xFF) {
-                
-//                 // set up dialogue box
-//                 setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
-//                 setMessageBoxSpriteIndices(0, 1, 0, 0);
-//                 setMessageBoxInterpolationWithFlags(0, -4, 0);
-//                 initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
-
-//                 tvContext.mode++;
-
-//             } else {                
-//                 tvContext.mode = TV_MODE_WATCHING;
-//             }
-
-//             break;
-
-
-//         case TV_MODE_DIALOGUE:
-
-//             if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {
-//                 tvContext.mode++;
-//             }
-
-//             break;
-
-//         case TV_MODE_WATCHING:
-
-//             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_UP)) {
-//                 set = changeChannel(0);
-//             }
-
-//             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT)) {
-//                 // FIXME: changeChannel might be a do {} while(0) macro
-//                 do {} while (0);
-//                 if (!set) {
-//                     set = changeChannel(1);
-//                 }
-//             }
-
-//             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_DOWN)) {
-//                 if (!set) {
-//                    set = changeChannel(2);
-//                 }
-//             }
-
-//             if (checkButtonPressed(CONTROLLER_1, BUTTON_C_LEFT)) {
-//                 if (!set) {
-//                     set = changeChannel(3);
-//                 }
-//             }
-
-//             // turn off tv
-//             if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
-//                 if (!set) {
-//                     deactivateMapObject(MAIN_MAP_INDEX, 9);
-//                     closeOverlayScreen();
-//                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
-//                     playSfx(TV_OFF_SFX);
-//                 }
-//             }
-
-//          break;
-//     }
-// }
 
 void tvMainLoopCallback(void) {
 
