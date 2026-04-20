@@ -9112,9 +9112,9 @@ u8 checkNPCInteraction(void) {
                         if (!(*(u16*)(ptr2+0x4A) & 1)) {
 
                             if (gBabyAge >= 30) {
-                                *ptr2 = 0xC2;
+                                *ptr2 = BABY_GROWN_HELD_ITEM;
                             } else {
-                                *ptr2 = 0xBA;  
+                                *ptr2 = BABY_HELD_ITEM;  
                             }
 
                             if (!checkDailyEventBit(HELD_BABY)) {

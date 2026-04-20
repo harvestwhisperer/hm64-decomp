@@ -10170,7 +10170,7 @@ void lotteryScreenCallback(void) {
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
                 setMessageBoxInterpolationWithFlags(0, -4, 0);
                 
-                if (gBaseMapIndex == 0x32) {
+                if (gBaseMapIndex == FLOWER_SHOP) {
                     initializeDialogueSession(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 4, 0x40);
                 } else {
                     initializeDialogueSession(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 10, 0x40);
