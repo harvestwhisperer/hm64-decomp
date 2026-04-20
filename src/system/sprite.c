@@ -555,11 +555,7 @@ Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) 
         
         dl = loadBitmapTexture(dl, bitmap, textureDimensions, textureSize);
     
-        // FIXME: might be a wrapper around gSPVertex
-        gSPVertex(&tempDl[1], &bitmapVertices[gGraphicsBufferIndex][bitmap->spriteNumber + vtxIndex][0], 4, 0);
-    
-        *tempDl = *(tempDl + 1);
-        *dl++ = *tempDl;
+        gSPVertex(dl++, &bitmapVertices[gGraphicsBufferIndex][bitmap->spriteNumber + vtxIndex][0], 4, 0);
         
         // append triangle commands
         if (bitmap->renderingFlags & SPRITE_RENDERING_REVERSE_WINDING) {

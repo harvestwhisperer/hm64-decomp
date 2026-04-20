@@ -460,6 +460,9 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
     u16 result = 0xFFFF;
     u8 tempGirl;
     
+#if TESTING
+// skip mayor tour
+#else
     if (!checkLifeEventBit(MAYOR_TOUR)) {
         setLifeEventBit(MAYOR_TOUR);
         gCutsceneIndex = MAYOR_VILLAGE_TOUR;
@@ -467,6 +470,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
         loadCutscene(morningVisit);
         set = TRUE;
     }
+#endif
 
     if (gSpawnPointIndex != 0x6F) {
         

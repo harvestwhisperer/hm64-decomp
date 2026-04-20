@@ -109,7 +109,6 @@ inline void launchIntroCutscene(u16 cutsceneIndex, u16 spawnPoint, u8 arg2) {
 void loadLevel(u8 arg0) {
 
     u8 mapIndex;
-    u32 *ptr;
 
     gCutsceneCompletionFlags = 0;
     gCutsceneIndex = 0;
@@ -208,19 +207,14 @@ void loadLevel(u8 arg0) {
 
     if (arg0 != 2) {
 
-        // FIXME
-        ptr = &gCutsceneFlags;
-        
-        if (!(*ptr & (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS))) {
-            
+        if (!(gCutsceneFlags & (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS))) {
+
             if (!checkDailyEventBit(FESTIVAL)) {
                 spawnWildAnimals();
             }
 
-            if (!(*ptr & (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS))) {
-                clearNPCAlternateLocationDialogueBits();
-                setupActiveNPCs();
-            }
+            clearNPCAlternateLocationDialogueBits();
+            setupActiveNPCs();
 
         }
 
