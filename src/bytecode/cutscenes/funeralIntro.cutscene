@@ -20,8 +20,8 @@
     BRANCH_U16_VAR_WITHIN_RANGE 1453, 1453, gCutsceneIndex, .entry_mayor_village_tour_part_1
     BRANCH_U16_VAR_WITHIN_RANGE 1454, 1454, gCutsceneIndex, .entry_mayor_village_tour_part_2
     BRANCH_U16_VAR_WITHIN_RANGE 1455, 1455, gCutsceneIndex, .entry_mayor_village_tour_part_3
-    ; logos before opening cutscene
-    BRANCH_U16_VAR_WITHIN_RANGE 1456, 1456, gCutsceneIndex, .show_logos
+    ; force skip logos before opening cutscene
+    BRANCH_U16_VAR_WITHIN_RANGE 1456, 1456, gCutsceneIndex, .entry_funeral
 
 ; 0x149D54
 .end_cutscene:
