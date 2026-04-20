@@ -22,8 +22,6 @@ u16 checkTerrainMovementCollision(Entity*, f32, f32, u8);
 u8 detectEntityOverlap(Entity*, u16, f32, f32, u16, u16);
 void updateEntityPhysics(u16);
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", initializeEntities);
-
 void initializeEntities(void) {
     
     u16 i;
@@ -57,8 +55,6 @@ void initializeEntities(void) {
         entityAssetDescriptors[i].flags = 0; 
     } 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", initializeEntityAsset);
 
 bool initializeEntityAsset(u16 entityAssetIndex, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32 romSpritesheetIndexStart, u32 romSpritesheetIndexEnd, u8 isType1Sprite, u8 shadowSpriteIndex, u16* animationScripts) {
 
@@ -97,8 +93,6 @@ bool initializeEntityAsset(u16 entityAssetIndex, u32 romTextureStart, u32 romTex
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", initializeSpriteInstance);
 
 bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIndex, u8* vaddrTexture1, u8* vaddrTexture2, 
     u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationMetadata, u32* vaddrTextureToPaletteLookup, u32* vaddrSpritesheetIndex) {
@@ -144,8 +138,6 @@ bool initializeEntity(u16 entityIndex, u16 globalSpriteIndex, u16 shadowSpriteIn
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", initializeAnimalEntity);
-
 bool initializeAnimalEntity(u16 index, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationMetadata, u32* vaddrTextureToPaletteLookup, u32* vaddrSpritesheetIndex) {
 
     bool result = FALSE;
@@ -180,8 +172,6 @@ bool initializeAnimalEntity(u16 index, u16* vaddrPalette, AnimationFrameMetadata
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", forceDeactivateEntity);
-
 // unused; deactivate sprite without checking flags
 // bool forceDeactivateEntity(u16 index) {
 
@@ -205,8 +195,6 @@ bool initializeAnimalEntity(u16 index, u16* vaddrPalette, AnimationFrameMetadata
 
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", deactivateSprite);
- 
 void deactivateSprites(void) {
 
     u16 i = 0;
@@ -232,8 +220,6 @@ void deactivateSprites(void) {
       
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", loadEntity);
 
 bool loadEntity(u16 index, u16 entityAssetIndex, bool transformExempt) {
 
@@ -336,8 +322,6 @@ bool loadEntity(u16 index, u16 entityAssetIndex, bool transformExempt) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", initializeShadowSprite);
-
 bool initializeShadowSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u32* vaddrSpritesheet, u16* vaddrPalette, u16* vaddrUnknownAssetSheet, u16* vaddrAnimationMetadata, u16 animationIndex, u8 frameIndex) {
 
     bool result = FALSE;
@@ -359,8 +343,6 @@ bool initializeShadowSprite(u16 index, u32 romTextureStart, u32 romTextureEnd, u
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityTrackingTarget);
 
 bool setEntityTrackingTarget(u16 index, u16 targetEntityIndex, u16 trackingMode) {
 
@@ -387,8 +369,6 @@ bool setEntityTrackingTarget(u16 index, u16 targetEntityIndex, u16 trackingMode)
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityPaletteIndex);
-
 // likely set a palette index if shared asset has multiple palettes (animals, itemHandlers, and cutscenes)
 bool setEntityPaletteIndex(u16 index, u16 paletteIndex) {
     
@@ -405,8 +385,6 @@ bool setEntityPaletteIndex(u16 index, u16 paletteIndex) {
     return result;
 
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityAttachmentOffset);
 
 // used by animals, npcs, item handlers, and cutscenes
 bool setEntityAttachmentOffset(u16 index, s16 x, s16 y, s16 z) {
@@ -426,8 +404,6 @@ bool setEntityAttachmentOffset(u16 index, s16 x, s16 y, s16 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setMainMapIndex);
-
 // used by level.c and cutscene.c
 bool setMainMapIndex(u16 mapIndex) {
 
@@ -441,8 +417,6 @@ bool setMainMapIndex(u16 mapIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityViewSpacePosition);
 
 bool setEntityViewSpacePosition(u16 entityIndex, f32 x, f32 y, f32 z) {
 
@@ -461,8 +435,6 @@ bool setEntityViewSpacePosition(u16 entityIndex, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", adjustEntityViewSpacePosition);
-
 bool adjustEntityViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -477,8 +449,6 @@ bool adjustEntityViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityColor);
 
 bool setEntityColor(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
@@ -504,8 +474,6 @@ bool setEntityColor(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityShadow);
-
 bool setEntityShadow(u16 index, u8 shadowSpriteIndex) {
 
     bool result = FALSE;
@@ -530,8 +498,6 @@ bool setEntityShadow(u16 index, u8 shadowSpriteIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", updateEntityRGBA);
-
 bool updateEntityRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
     bool result = FALSE;
@@ -553,8 +519,6 @@ bool updateEntityRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityAnimation);
 
 bool setEntityAnimation(u16 index, u16 animationIndex) {
 
@@ -581,8 +545,6 @@ bool setEntityAnimation(u16 index, u16 animationIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityAnimationWithDirectionChange);
-
 bool setEntityAnimationWithDirectionChange(u16 index, u16 animationIndex) {
     
     bool result = FALSE;
@@ -608,8 +570,6 @@ bool setEntityAnimationWithDirectionChange(u16 index, u16 animationIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", loadPendingEntity);
-
 bool loadPendingEntity(u16 index) {
 
     bool result = FALSE;
@@ -632,8 +592,6 @@ bool loadPendingEntity(u16 index) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", pauseEntityLoad);
 
 bool pauseEntityLoad(u16 index) {
 
@@ -669,8 +627,6 @@ bool pauseEntityLoad(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityDirection);
-
 bool setEntityDirection(u16 index, u8 direction) {
 
     bool result = FALSE;
@@ -689,8 +645,6 @@ bool setEntityDirection(u16 index, u8 direction) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", pauseEntities);
-
 void pauseEntities(void) {
 
     u16 i;
@@ -701,8 +655,6 @@ void pauseEntities(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", togglePauseEntities);
-
 void togglePauseEntities(void) {
 
     u16 i;
@@ -712,8 +664,6 @@ void togglePauseEntities(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", rotateAllEntities);
 
 // increment/decrement rotation; used by map controller
 void rotateAllEntities(s16 arg0) {
@@ -726,8 +676,6 @@ void rotateAllEntities(s16 arg0) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntitiesRGBA);
 
 void setEntitiesRGBA(u8 r, u8 g, u8 b, u8 a) {
 
@@ -753,8 +701,6 @@ void setEntitiesRGBA(u8 r, u8 g, u8 b, u8 a) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntitiesRGBAWithTransition);
-
 void setEntitiesRGBAWithTransition(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
 
     u16 i;
@@ -778,8 +724,6 @@ void setEntitiesRGBAWithTransition(u8 r, u8 g, u8 b, u8 a, s16 arg4) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", deactivateEntity);
 
 bool deactivateEntity(u16 index) {
 
@@ -806,8 +750,6 @@ bool deactivateEntity(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", deactivateEntities);
-
 // unused
 // void deactivateEntities(void) {
 
@@ -818,8 +760,6 @@ bool deactivateEntity(u16 index) {
 //     }
     
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", pauseAllEntityLoads);
 
 // called by pause function
 void pauseAllEntityLoads(void) {
@@ -832,8 +772,6 @@ void pauseAllEntityLoads(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", loadAllPendingEntities);
-
 void loadAllPendingEntities(void) {
 
     u16 i;
@@ -843,9 +781,6 @@ void loadAllPendingEntities(void) {
     }
 
 }
-
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", pauseEntity);
 
 bool pauseEntity(u16 index) {
 
@@ -866,8 +801,6 @@ bool pauseEntity(u16 index) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", unpauseEntity);
 
 bool unpauseEntity(u16 index) {
     
@@ -890,8 +823,6 @@ bool unpauseEntity(u16 index) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityMapSpaceIndependent);
 
 bool setEntityMapSpaceIndependent(u16 index, bool flag) {
     
@@ -917,8 +848,6 @@ bool setEntityMapSpaceIndependent(u16 index, bool flag) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityMapSpaceDependent);
-
 // only used by main game loop callback
 bool checkEntityMapSpaceDependent(u16 index) {
     
@@ -937,8 +866,6 @@ bool checkEntityMapSpaceDependent(u16 index) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntitycoordinates);
 
 bool setEntityCoordinates(u16 entityIndex, f32 x, f32 y, f32 z) {
 
@@ -960,8 +887,6 @@ bool setEntityCoordinates(u16 entityIndex, f32 x, f32 y, f32 z) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityMovementVector);
 
 // manually set movement vector 
 // animals, player, item handlers, cutscene
@@ -988,8 +913,6 @@ bool setEntityMovementVector(u16 entityIndex, f32 x, f32 y, f32 z, f32 arg4) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityAnimationStateChanged);
-
 bool checkEntityAnimationStateChanged(u16 index) {
 
     bool result = FALSE;
@@ -1005,8 +928,6 @@ bool checkEntityAnimationStateChanged(u16 index) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setCameraTrackingEntity);
 
 bool setCameraTrackingEntity(u16 entityIndex, u16 flag) {
 
@@ -1031,8 +952,6 @@ bool setCameraTrackingEntity(u16 entityIndex, u16 flag) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityCollisionBuffers);
-
 bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue) {
     
     bool result = FALSE;
@@ -1051,8 +970,6 @@ bool setEntityCollisionBuffers(u16 entityIndex, u8 xValue, u8 yValue) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntitySpriteDimensions);
-
 bool setEntitySpriteDimensions(u16 entityAssetIndex, u8 spriteWidth, u8 spriteHeight) {
 
     bool result = FALSE;
@@ -1070,8 +987,6 @@ bool setEntitySpriteDimensions(u16 entityAssetIndex, u8 spriteWidth, u8 spriteHe
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityYMovement);
 
 bool setEntityYMovement(u16 index, bool flag) {
 
@@ -1095,8 +1010,6 @@ bool setEntityYMovement(u16 index, bool flag) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityHandlesMultipleCollisions);
-
 // only used by farm animals and misc. animals
 bool setEntityHandlesMultipleCollisions(u16 index, u8 flag) {
 
@@ -1116,8 +1029,6 @@ bool setEntityHandlesMultipleCollisions(u16 index, u8 flag) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityCollidable);
-
 bool setEntityCollidable(u16 index, bool flag) {
 
     bool result = FALSE;
@@ -1135,8 +1046,6 @@ bool setEntityCollidable(u16 index, bool flag) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setEntityTracksCollisions);
 
 bool setEntityTracksCollisions(u16 index, bool flag) {
 
@@ -1156,8 +1065,6 @@ bool setEntityTracksCollisions(u16 index, bool flag) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", enableEntityMovement);
-
 bool enableEntityMovement(u16 index, bool flag) {
 
     bool result = FALSE;
@@ -1176,8 +1083,6 @@ bool enableEntityMovement(u16 index, bool flag) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityPaused);
-
 bool checkEntityPaused(u16 index) {
 
     bool result = FALSE;
@@ -1193,8 +1098,6 @@ bool checkEntityPaused(u16 index) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityToEntityCollision);
 
 u16 checkEntityToEntityCollision(u16 entityIndex, f32 x, f32 z, u16 buttonPressed, u16 entityCount) {
 
@@ -1243,8 +1146,6 @@ u16 checkEntityToEntityCollision(u16 entityIndex, f32 x, f32 z, u16 buttonPresse
     return count;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityProximity);
 
 u16 checkEntityProximity(u16 index, f32 x, f32 z, u16 buttonPressed) {
 
@@ -1331,8 +1232,6 @@ u16 checkEntityProximity(u16 index, f32 x, f32 z, u16 buttonPressed) {
    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityInteractionAtPosition);
-
 // unused; check if position has level interaction
 bool checkEntityInteractionAtPosition(u16 entityIndex, f32 arg1, f32 arg2) {
     
@@ -1349,8 +1248,6 @@ bool checkEntityInteractionAtPosition(u16 entityIndex, f32 arg1, f32 arg2) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getLevelInteractionIndexFromEntityPosition);
 
 u8 getLevelInteractionIndexFromEntityPosition(u16 entityIndex, f32 x, f32 z) {
     
@@ -1387,8 +1284,6 @@ u8 getLevelInteractionIndexFromEntityPosition(u16 entityIndex, f32 x, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityAnimationOffset);
-
 // returns param 2 of startSpriteAnimation
 inline u16 getEntityAnimationOffset(u16 entityIndex, u16 offset) {
 
@@ -1404,15 +1299,11 @@ inline u16 getEntityAnimationOffset(u16 entityIndex, u16 offset) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getAnimationOffsetFromScript);
-
 // alternate get animation offset from animation scripts
 // used by shop and overlay screens
 u16 getAnimationOffsetFromScript(u16* vaddr, u16 offset) {
     return vaddr[offset] & 0x1FFF;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityAnimationType);
 
 inline u16 getEntityAnimationType(u16 entityIndex, u16 offset) {
 
@@ -1428,8 +1319,6 @@ inline u16 getEntityAnimationType(u16 entityIndex, u16 offset) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityAnimationHorizontalFlip);
-
 inline u16 getEntityAnimationHorizontalFlip(u16 entityIndex, u16 offset) {
 
     u16 flipHorizontal = 0xFFFF;
@@ -1443,8 +1332,6 @@ inline u16 getEntityAnimationHorizontalFlip(u16 entityIndex, u16 offset) {
     return flipHorizontal;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getGroundObjectAtEntityPosition);
 
 // unused or inline
 // u16 getGroundObjectAtEntityPosition(u16 entityIndex, f32 x, f32 z) {
@@ -1470,8 +1357,6 @@ inline u16 getEntityAnimationHorizontalFlip(u16 entityIndex, u16 offset) {
 
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setGroundObjectAtEntityPosition);
-
 // unused or inline
 // map ground objects
 // bool setGroundObjectAtEntityPosition(u16 entityIndex, f32 arg1, f32 arg2, u16 spriteIndex) {
@@ -1491,8 +1376,6 @@ inline u16 getEntityAnimationHorizontalFlip(u16 entityIndex, u16 offset) {
 //     return 0;
 
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityRelativeGroundObjectCoords);
 
 Vec3f getEntityRelativeGroundObjectCoords(u16 entityIndex, f32 arg2, f32 arg3) {
 
@@ -1529,9 +1412,6 @@ Vec3f getEntityRelativeGroundObjectCoords(u16 entityIndex, f32 arg2, f32 arg3) {
     
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getTerrainAtEntityPosition);
-
 // unused
 // u16 getTerrainAtEntityPosition(u16 entityIndex, f32 x, f32 z) {
 
@@ -1555,8 +1435,6 @@ Vec3f getEntityRelativeGroundObjectCoords(u16 entityIndex, f32 arg2, f32 arg3) {
 //     return terrainIndex;
     
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", setMapAdditionAtEntityPosition);
 
 // unused or inline
 // bool setMapAdditionAtEntityPosition(u16 entityIndex, f32 arg1, f32 arg2, u16 arg3) {
@@ -1586,8 +1464,6 @@ Vec3f getEntityRelativeGroundObjectCoords(u16 entityIndex, f32 arg2, f32 arg3) {
     
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", checkEntityShouldPlaySoundEffect);
-
 bool checkEntityShouldPlaySoundEffect(u16 entityIndex) {
     
     bool result = FALSE; 
@@ -1603,8 +1479,6 @@ bool checkEntityShouldPlaySoundEffect(u16 entityIndex) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityRelativeTilePosition);
 
 Vec3f getEntityRelativeTilePosition(u16 entityIndex, f32 x, f32 z) {
 
@@ -1641,8 +1515,6 @@ Vec3f getEntityRelativeTilePosition(u16 entityIndex, f32 x, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", getEntityTileCoordinates);
-
 Vec3f getEntityTileCoordinates(u16 entityIndex) {
 
     Vec3f tileCoordinates;
@@ -1660,7 +1532,6 @@ Vec3f getEntityTileCoordinates(u16 entityIndex) {
     return tileCoordinates;
 
 }
-
 
 // unused
 // Vec3f getEntityRelativeTileCoords(u16 entityIndex, f32 x, f32 z) {
@@ -1699,8 +1570,6 @@ Vec3f getEntityTileCoordinates(u16 entityIndex) {
 //     return tileCoordinates;
     
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", checkTerrainCollisionInDirection);
 
 bool checkTerrainCollisionInDirection(u16 index, s16 moveDistance, u8 direction) {
 
@@ -1741,8 +1610,6 @@ bool checkTerrainCollisionInDirection(u16 index, s16 moveDistance, u8 direction)
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", projectEntityPosition);
-
 Vec3f projectEntityPosition(u16 index, s16 zDisplacement, u8 direction) {
 
     Vec3f offset;
@@ -1766,8 +1633,6 @@ Vec3f projectEntityPosition(u16 index, s16 zDisplacement, u8 direction) {
     return offset;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", checkTerrainMovementCollision);
 
 u16 checkTerrainMovementCollision(Entity* entity, f32 deltaX, f32 deltaZ, u8 direction) {
 
@@ -1893,8 +1758,6 @@ u16 checkTerrainMovementCollision(Entity* entity, f32 deltaX, f32 deltaZ, u8 dir
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", detectEntityOverlap);
-
 u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, u16 entityWidth, u16 entityHeight) {
 
     f32 dimensionX;           
@@ -1999,8 +1862,6 @@ u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, 
       
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", attemptEntityMovement);
-
 // unused or inline
 // u16 attemptEntityMovement(u16 index) {
 
@@ -2024,8 +1885,6 @@ u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 deltaZ, 
 //     return collisionFlags;
     
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", doEntityPathfinding);
 
 void doEntityPathfinding(u16 index) {
     
@@ -2085,8 +1944,6 @@ void doEntityPathfinding(u16 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", updateEntityPhysics);
 
 void updateEntityPhysics(u16 index) {
 
@@ -2242,8 +2099,6 @@ void updateEntityPhysics(u16 index) {
     entities[index].movementVector.z = 0.0f;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/entity", updateEntities);
 
 void updateEntities(void) {
 

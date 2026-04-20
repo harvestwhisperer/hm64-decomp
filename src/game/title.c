@@ -36,7 +36,6 @@ void updateGrassAnimation();
 void resetWrappingSpritePositions();                                  
 void loadDogTitleSprite(void);
 
-
 void initializeTitleScreen(u8 arg0) {
     
     titleScreenContext.rowHighlighted = 0;
@@ -304,8 +303,6 @@ void initializeTitleScreen(u8 arg0) {
     setAudioSequenceVolume(TITLE_THEME, SEQUENCE_VOLUME);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/title", loadDogTitleSprite);
 
 void loadDogTitleSprite(void) {
     dmaSprite(DOG_TITLE_SPRITE, &_dogTextureSegmentRomStart, &_dogTextureSegmentRomEnd, &_dogAssetsIndexSegmentRomStart, &_dogAssetsIndexSegmentRomEnd, &_dogSpritesheetIndexSegmentRomStart, &_dogSpritesheetIndexSegmentRomEnd, (u8*)DOG_TITLE_TEXTURE_1_BUFFER, (u8*)DOG_TITLE_TEXTURE_2_BUFFER, (u16*)DOG_TITLE_PALETTE_BUFFER, (void*)DOG_TITLE_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DOG_TITLE_SPRITESHEET_INDEX_BUFFER, (u32*)DOG_TITLE_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 1, 0);
@@ -643,8 +640,6 @@ static inline void updateDogTitleAnimation() {
     titleScreenContext.dogIdleCounter++;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/title", handleDogAnimation);
 
 void handleDogAnimation(void) {
 

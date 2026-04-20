@@ -61,8 +61,6 @@ static inline bool changeChannel(u8 channelIndex) {
     return TRUE;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/tv", initializeTVAssets);
-
 void initializeTVAssets(void) {
 
     setTVContentIndex();
@@ -83,8 +81,6 @@ void initializeTVAssets(void) {
     tvContext.mode = 0;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/tv", incrementVarietyShowCounter);
 
 // variety show episode incrementer
 void incrementVarietyShowCounter(void) {
@@ -147,8 +143,6 @@ void incrementVarietyShowCounter(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/tv", setTVContentIndex);
 
 void setTVContentIndex(void) {
 
@@ -256,8 +250,6 @@ void setTVContentIndex(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/tv", setTVDialogueIndex );
 
 void setTVDialogueIndex (void) {
 
@@ -579,8 +571,6 @@ void setTVDialogueIndex (void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/tv", setTVPictureIndex);
-
 void setTVPictureIndex(void) {
 
     switch (tvContext.contentIndex) {
@@ -666,8 +656,6 @@ void setTVPictureIndex(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/tv", tvMainLoopCallback);
-
 // alternate with static inline function and forced do {} while(0)
 // void tvMainLoopCallback(void) {
 
@@ -692,7 +680,6 @@ void setTVPictureIndex(void) {
 //             }
 
 //             break;
-
 
 //         case TV_MODE_DIALOGUE:
 
@@ -764,7 +751,6 @@ void tvMainLoopCallback(void) {
             }
 
             break;
-
 
         case TV_MODE_DIALOGUE:
 

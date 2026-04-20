@@ -20,12 +20,8 @@ extern OSContStatus nuContStatus[NU_CONT_MAXCONTROLLERS];
 Controller controllers[NU_CONT_MAXCONTROLLERS];
 Controller gControllers[NU_CONT_MAXCONTROLLERS];
 
-
 // forward declaration
 void calculateAnalogStickDirection(u8);                         
-      
-
-//INCLUDE_ASM("asm/nonmatchings/system/controller", controllerInit);
 
 void controllerInit(void) {
     
@@ -72,8 +68,6 @@ void controllerInit(void) {
     contPattern = nuContInit();
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/controller", readControllerData);
 
 // this requires button on NUContData struct to be volatile
 void readControllerData(void) {
@@ -155,56 +149,37 @@ void readControllerData(void) {
     }
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/controller", checkButtonHeld);
-
 u32 checkButtonHeld(u8 contIndex, u32 buttonPattern) {
     return controllers[contIndex].button & buttonPattern;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/controller", checkButtonPressed);
 
 u32 checkButtonPressed(u8 contIndex, u32 buttonPattern) {
     return controllers[contIndex].buttonPressed & buttonPattern;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", checkButtonReleased);
-
 u32 checkButtonReleased(u8 contIndex, u32 buttonPattern) {
     return controllers[contIndex].buttonReleased & buttonPattern;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/controller", checkButtonRepeat);
 
 u32 checkButtonRepeat(u8 contIndex, u32 buttonPattern) {
     return controllers[contIndex].buttonRepeat & buttonPattern;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", getAnalogStickRawX);
-
 s8 getAnalogStickRawX(u8 contIndex) {
     return controllers[contIndex].analogStick.rawX;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/controller", getAnalogStickRawY);
 
 s8 getAnalogStickRawY(u8 contIndex) {
     return controllers[contIndex].analogStick.rawY;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", getAnalogStickDirection);
-
 u8 getAnalogStickDirection(u8 contIndex) {
     return controllers[contIndex].analogStick.direction;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", getAnalogStickMagnitude);
-
 u8 getAnalogStickMagnitude(u8 contIndex) {
     return controllers[contIndex].analogStick.magnitude;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/controller", calculateAnalogStickDirection);
 
 void calculateAnalogStickDirection(u8 controllerIndex) {
 
@@ -289,8 +264,6 @@ void calculateAnalogStickDirection(u8 controllerIndex) {
    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D788);
-
 bool func_8004D788(u8 contIndex) {
     
     bool result;
@@ -329,34 +302,24 @@ bool func_8004D788(u8 contIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D87C);
-
 s32 func_8004D87C(u8 contIndex) {
     return nuContPakGetFree(&controllers[contIndex].pak);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D8B4);
 
 u32 func_8004D8B4(u8 contIndex, s32 *max_files, s32 *used_files) {
     nuContPakFileNum(&controllers[contIndex].pak, max_files, used_files);
     return controllers[contIndex].pak.error == 0;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D904);
-
 u32 func_8004D904(u8 contIndex, u8 *companyCode, u8 *gameCode) {
     nuContPakCodeSet(companyCode, gameCode);
     return !controllers[contIndex].pak.error;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D954);
-
 u32 func_8004D954(u8 contIndex, u8* noteName, u8 *extName) {
     nuContPakFileOpenJis(&controllers[contIndex].pak, noteName, extName, NU_CONT_PAK_MODE_NOCREATE, 0);
     return !controllers[contIndex].pak.error;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004D9AC);
 
 u32 func_8004D9AC(u8 contIndex, u8 *noteName, u8 *extName, s32 offset, s32 size, s32 buf) {
 
@@ -371,8 +334,6 @@ u32 func_8004D9AC(u8 contIndex, u8 *noteName, u8 *extName, s32 offset, s32 size,
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004DA48);
-
 u32 func_8004DA48(u8 contIndex, u8* noteName, u8* extName, s32 offset, s32 size, u8* buf) {
 
     nuContPakFileOpenJis(&controllers[contIndex].pak, noteName, extName, 1, size);
@@ -385,8 +346,6 @@ u32 func_8004DA48(u8 contIndex, u8* noteName, u8* extName, s32 offset, s32 size,
     return 0;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/controller", func_8004DAF4);
 
 u32 func_8004DAF4(u8 contIndex, u8 *noteName, u8 *extName) {
     

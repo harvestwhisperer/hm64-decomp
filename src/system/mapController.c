@@ -17,7 +17,6 @@ Vec4f currentMapLightingRGBA;
 // RGBA update rate
 s16 D_8017045A;
 
-
 Vec3f previousWorldRotationAngles;
 Vec3f currentWorldRotationAngles;
 
@@ -27,8 +26,6 @@ void handleMapRotation(u16 mapIndex);
 
 // y rotations for maps
 static const f32 yRotationAngles[];
-                    
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", initializeMapControllers);
 
 void initializeMapControllers(void) {
     
@@ -80,8 +77,6 @@ void initializeMapControllers(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", setMapDataAddresses);
-
 bool setMapDataAddresses(u16 mapIndex, void *start, void *end) {
     
     bool result = FALSE;
@@ -98,8 +93,6 @@ bool setMapDataAddresses(u16 mapIndex, void *start, void *end) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", initializeMapController);
 
 bool initializeMapController(u16 index, u16 mapIndex, u32 *mapDataIndex) {
     
@@ -145,8 +138,6 @@ bool initializeMapController(u16 index, u16 mapIndex, u32 *mapDataIndex) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", loadMap);
-
 bool loadMap(u16 index, u16 mapIndex) {
 
     bool result = FALSE;
@@ -177,8 +168,6 @@ bool loadMap(u16 index, u16 mapIndex) {
 static inline u8* getAddress(u32 offsets[], u32 i) {
     return (u8*)offsets + offsets[i];
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", dmaMapAssets);
 
 bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
 
@@ -236,8 +225,6 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", enableMapController);
-
 bool enableMapController(u16 mapIndex) {
     
     bool result = FALSE;
@@ -250,8 +237,6 @@ bool enableMapController(u16 mapIndex) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapControllerViewPosition);
 
 bool setMapControllerViewPosition(u16 mapIndex, f32 x, f32 y, f32 z) {
     
@@ -271,9 +256,6 @@ bool setMapControllerViewPosition(u16 mapIndex, f32 x, f32 y, f32 z) {
 
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", adjustMapControllerViewPosition);
-
 bool adjustMapControllerViewPosition(u16 mapIndex, f32 x, f32 y, f32 z) {
     
     bool result = FALSE;
@@ -291,8 +273,6 @@ bool adjustMapControllerViewPosition(u16 mapIndex, f32 x, f32 y, f32 z) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapControllerRGBA);
 
 bool setMapControllerRGBA(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
     
@@ -314,8 +294,6 @@ bool setMapControllerRGBA(u16 mapIndex, u8 r, u8 g, u8 b, u8 a) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapControllerRGBAWithTransition);
 
 bool setMapControllerRGBAWithTransition(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 rate) {
     
@@ -339,8 +317,6 @@ bool setMapControllerRGBAWithTransition(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s1
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setInitialMapRotation);
 
 bool setInitialMapRotation(u16 mapIndex, u8 rotationIndex) {
     
@@ -369,8 +345,6 @@ bool setInitialMapRotation(u16 mapIndex, u8 rotationIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", getCurrentMapRotation);
-
 u8 getCurrentMapRotation(u16 mapIndex) {
 
     u8 rotation = 0;
@@ -382,8 +356,6 @@ u8 getCurrentMapRotation(u16 mapIndex) {
     return rotation;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapViewPositionAndCurrentTile);
 
 bool setMapViewPositionAndCurrentTile(u16 mapIndex, f32 x, f32 y, f32 z, u8 arg4, u8 arg5) {
 
@@ -407,8 +379,6 @@ bool setMapViewPositionAndCurrentTile(u16 mapIndex, f32 x, f32 y, f32 z, u8 arg4
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", setMapBoundaries);
 
 bool setMapBoundaries(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
 
@@ -435,8 +405,6 @@ bool setMapBoundaries(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", getClampedMapX);
-
 // unused or inline
 // f32 getClampedMapX(u16 mapIndex, f32 x) {
 
@@ -458,8 +426,6 @@ bool setMapBoundaries(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 
 //     return result;
 
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", getClampedMapZ);
 
 // unused or inline
 // f32 getClampedMapZ(u16 mapIndex, f32 z) {
@@ -483,8 +449,6 @@ bool setMapBoundaries(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 
     
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", shutdownMapController);
-
 // unused or inlne
 // bool shutdownMapController(u16 mapIndex) {
 
@@ -500,8 +464,6 @@ bool setMapBoundaries(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 
 
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", unloadMapAssets);
-
 bool unloadMapAssets(u16 mapIndex) {
 
     bool result = FALSE;
@@ -516,9 +478,6 @@ bool unloadMapAssets(u16 mapIndex) {
 
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", deactivateAllMapControllers);
-
 void deactivateAllMapControllers(void) {
 
     u16 i;
@@ -528,8 +487,6 @@ void deactivateAllMapControllers(void) {
     }    
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", startMapRotation);
 
 bool startMapRotation(u16 mapIndex, u8 arg1, u8 targetRotation) {
 
@@ -586,8 +543,6 @@ bool startMapRotation(u16 mapIndex, u8 arg1, u8 targetRotation) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", updateMapController);
-
 void updateMapController(void) {
 
     u16 i;
@@ -613,8 +568,6 @@ void updateMapController(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapContext", updateMapViewport);
 
 void updateMapViewport(MapController* mapController) {
     
@@ -651,8 +604,6 @@ void updateMapViewport(MapController* mapController) {
     setMapCameraView(mapController->mainMapIndex, param1, param2, mapController->currentTileX, mapController->currentTileZ, param3, y, param4, 1);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/mapController", handleMapRotation);
 
 void handleMapRotation(u16 mapIndex) {
 

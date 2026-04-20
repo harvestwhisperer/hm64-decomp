@@ -356,7 +356,6 @@ u16 keyItemAnimationIndices[] = {
      0x0000,
 };
 
-
 static u32 powerNutBits[] = {
     FARM_POWER_NUT,
     HARVEST_SPRITES_POWER_NUT,
@@ -763,9 +762,6 @@ bool checkAvailableBakeryPrize(u8 arg0);
 void handleGetBakeryPrize(u8 arg0);
 u32 checkRecipe(u16 bitIndex);
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", closeOverlayScreen);
-
 // close overlay screen
 // TODO: seems to be static inline calls (repeated deactivations)
 void closeOverlayScreen(void) {
@@ -794,8 +790,7 @@ void closeOverlayScreen(void) {
     // cursor hand
     resetAnimationState(0x79);
 
-    
-    deactivateSprite(0x89);
+deactivateSprite(0x89);
     deactivateSprite(0x8C);
     deactivateSprite(0x8D);
     deactivateSprite(0x8B);
@@ -857,8 +852,6 @@ void closeOverlayScreen(void) {
     }
 
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadClockSprites);
 
 void loadClockSprites(void) {
 
@@ -934,8 +927,6 @@ static inline void fadeOutClock() {
     updateSpriteAlpha(0x8E, 0, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadMoneySprites);
-
 // unused or inline
 // void loadMoneySprites(f32 x, f32 y, f32 z, u16 renderingLayer, u32 arg4) {
 
@@ -958,10 +949,7 @@ static inline void fadeOutClock() {
 
 // }
 
-
 /* TV functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadTVCButtonIcons);
 
 void loadTVCButtonIcons(void) {
 
@@ -998,8 +986,6 @@ void loadTVCButtonIcons(void) {
     updateTVCButtonsByChannel();
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateTVCButtonsByChannel);
 
 // update C buttons based on channel currently being watched
 void updateTVCButtonsByChannel(void) {
@@ -1041,7 +1027,6 @@ void updateTVCButtonsByChannel(void) {
 
 /* end TV functions */
 
-
 // set background plus + "g"
 static inline void setMoneySprites() {
 
@@ -1067,10 +1052,7 @@ static inline void setMoneySprites() {
 
 }
 
-
 /* shop functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadShopIcons);
 
 void loadShopIcons(void) {
     
@@ -1119,8 +1101,6 @@ void loadShopIcons(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateShopBuyAnimation);
-
 void updateShopBuyAnimation(void) {
 
     if (!shopContext.buySelected) {
@@ -1143,8 +1123,6 @@ void updateShopBuyAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateShopQuantityArrows);
-
 void updateShopQuantityArrows(u8 arg0) {
     
     // background
@@ -1166,10 +1144,7 @@ void updateShopQuantityArrows(u8 arg0) {
 
 /* end shop functions */
 
-
 /* load game/select game functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadDiarySelectScreen);
 
 void loadDiarySelectScreen(void) {
 
@@ -1440,8 +1415,6 @@ void loadDiarySelectScreen(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInLoadGameScreen);
-
 void fadeInLoadGameScreen(void) {
     updateSpriteRGBA(0x80, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0x82, 255, 255, 255, 255, 24);
@@ -1462,8 +1435,6 @@ void fadeInLoadGameScreen(void) {
     updateSpriteRGBA(0xAB, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0xAD, 255, 255, 255, 255, 24);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setLoadGameScreenFullAlpha);
 
 void setLoadGameScreenFullAlpha(void) {
     setSpriteColor(0x80, 255, 255, 255, 255);
@@ -1486,8 +1457,6 @@ void setLoadGameScreenFullAlpha(void) {
     setSpriteColor(0xAD, 255, 255, 255, 255);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutLoadGameScreen);
-
 void fadeOutLoadGameScreen(void) {
     updateSpriteRGBA(0x80, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0x82, 0, 0, 0, 0, 24);
@@ -1508,8 +1477,6 @@ void fadeOutLoadGameScreen(void) {
     updateSpriteRGBA(0xAB, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0xAD, 0, 0, 0, 0, 24);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setDiaryCursorPosition);
 
 void setDiaryCursorPosition(u8 arg0, u8 diaryHighlighted, u8 actionColumnHighlighted) {
 
@@ -1544,8 +1511,6 @@ void setDiaryCursorPosition(u8 arg0, u8 diaryHighlighted, u8 actionColumnHighlig
         }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateDiaryHighlighted);
 
 void updateDiaryHighlighted(u8 diaryHighlighted, u8 actionColumnHighlighted, bool arg2) {
 
@@ -1711,8 +1676,6 @@ void updateDiaryHighlighted(u8 diaryHighlighted, u8 actionColumnHighlighted, boo
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", animateDiarySelected);
-
 void animateDiarySelected(u8 diaryHighlighted, u8 actionColumnHighlighted) {
 
     if (!loadGameScreenContext.showControllerPakScreen) {
@@ -1784,10 +1747,7 @@ void animateDiarySelected(u8 diaryHighlighted, u8 actionColumnHighlighted) {
     
 }
 
-
 /* farm ranking functions */
-
-// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadFarmRankingsListScreen);
 
 void loadFarmRankingsListScreen(void) {
     
@@ -1897,8 +1857,6 @@ void loadFarmRankingsListScreen(void) {
     setSpriteBlendMode(CURSOR_HAND, 3);
     
 }
-
-// INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadIndividualRankingScreen);
 
 // individual ranking screen
 void loadIndividualRankingScreen(u8 arg0) {
@@ -2027,8 +1985,6 @@ void loadIndividualRankingScreen(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInFarmRankingScreen);
-
 void fadeInFarmRankingScreen(void) {
     updateSpriteRGBA(0x80, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0x82, 255, 255, 255, 255, 24);
@@ -2043,8 +1999,6 @@ void fadeInFarmRankingScreen(void) {
     updateSpriteRGBA(0xB1, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0xB2, 255, 255, 255, 255, 24);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutFarmRankingScreen);
 
 void fadeOutFarmRankingScreen(void) {
     updateSpriteRGBA(0x80, 0, 0, 0, 0, 24);
@@ -2061,8 +2015,6 @@ void fadeOutFarmRankingScreen(void) {
     updateSpriteRGBA(0xB2, 0, 0, 0, 0, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setFarmRankingScreenFullAlpha);
-
 void setFarmRankingScreenFullAlpha(void) {
     setSpriteColor(0x80, 255, 255, 255, 255);
     setSpriteColor(0x82, 255, 255, 255, 255);
@@ -2078,8 +2030,6 @@ void setFarmRankingScreenFullAlpha(void) {
     setSpriteColor(0xB2, 255, 255, 255, 255);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setFarmRankingCursorPosition);
-
 void setFarmRankingCursorPosition(u8 arg0) {
 
     if (arg0 != 0xFF) {
@@ -2089,8 +2039,6 @@ void setFarmRankingCursorPosition(u8 arg0) {
     startSpriteAnimation(CURSOR_HAND, 3, 0);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setFarmRankingItemPalette);
 
 void setFarmRankingItemPalette(u8 arg0, u8 arg1) {
 
@@ -2104,8 +2052,6 @@ void setFarmRankingItemPalette(u8 arg0, u8 arg1) {
 
 }
 
-
-
 static inline void initializeOverlayScreenTable(void) {
 
     overlayScreenTable.cellIndex = 0;
@@ -2116,11 +2062,8 @@ static inline void initializeOverlayScreenTable(void) {
 
 }
 
-
 /* main loop load screen callbacks */
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadEstimateScreenCallback);
- 
 void loadEstimateScreenCallback(void) {
     
     openOverlayScreen();
@@ -2137,8 +2080,6 @@ void loadEstimateScreenCallback(void) {
     setMainLoopCallbackFunctionIndex(ESTIMATE);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadKitchenPictureCallback);
 
 void loadKitchenPictureCallback(void) {
 
@@ -2161,8 +2102,6 @@ void loadKitchenPictureCallback(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadHouseExtensionsSelectionCallback);
-
 void loadHouseExtensionsSelectionCallback(void) {
 
     openOverlayScreen();
@@ -2179,8 +2118,6 @@ void loadHouseExtensionsSelectionCallback(void) {
     setMainLoopCallbackFunctionIndex(HOME_EXTENSIONS_SELECT);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCalendarScreenCallback);
 
 void loadCalendarScreenCallback(void) {
 
@@ -2203,8 +2140,6 @@ void loadCalendarScreenCallback(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRecipeBookScreenCallback);
-
 void loadRecipeBookScreenCallback(void) {
     
     openOverlayScreen();
@@ -2225,8 +2160,6 @@ void loadRecipeBookScreenCallback(void) {
     setMainLoopCallbackFunctionIndex(RECIPE_BOOK);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadAlbumScreenCallback);
 
 void loadAlbumScreenCallback(void) {
     
@@ -2254,19 +2187,13 @@ void loadAlbumScreenCallback(void) {
     
 }
 
-
-
 /* pause screen functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadPauseScreenCallback);
 
 // pause screen load callback
 void loadPauseScreenCallback(void) {
     openOverlayScreen();
     initializePauseScreenBackground();
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", initializePauseScreenBackground);
 
 void initializePauseScreenBackground(void) {
     
@@ -2286,8 +2213,6 @@ void initializePauseScreenBackground(void) {
     setMainLoopCallbackFunctionIndex(PAUSE_SCREEN);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadPauseScreenSprites);
 
 void loadPauseScreenSprites(void) {
 
@@ -2361,8 +2286,6 @@ void loadPauseScreenSprites(void) {
     fadeInPauseScreenSprites();
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadPauseScreenItemSprites);
 
 void loadPauseScreenItemSprites(void) {
 
@@ -2492,8 +2415,6 @@ reset:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInPauseScreenElements);
-
 void fadeInPauseScreenSprites(void) {
 
     u8 i;
@@ -2527,8 +2448,6 @@ void fadeInPauseScreenSprites(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutPauseScreenElements);
 
 void fadeOutPauseScreenSprites(void) {
 
@@ -2567,8 +2486,6 @@ void fadeOutPauseScreenSprites(void) {
     deactivateNumberSprites(1);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", pauseScreenCallback);
 
 void pauseScreenCallback(void) {
 
@@ -3108,8 +3025,6 @@ void pauseScreenCallback(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getPauseScreenItemXCoordinate);
-
 f32 getPauseScreenItemXCoordinate(u8 arg0, u32 arg1) {
 
     f32 res;
@@ -3149,8 +3064,6 @@ f32 getPauseScreenItemXCoordinate(u8 arg0, u32 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getPauseScreenItemYCoordinate);
-
 f32 getPauseScreenItemYCoordinate(u8 arg0, u8 arg1) {
 
     f32 res;
@@ -3185,8 +3098,6 @@ f32 getPauseScreenItemYCoordinate(u8 arg0, u8 arg1) {
     return res;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", resetPauseScreenSpriteColors);
 
 void resetPauseScreenSpriteColors(void) {
 
@@ -3229,8 +3140,6 @@ void resetPauseScreenSpriteColors(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", wapPauseScreenItems);
-
 void swapPauseScreenItems(void) {
     
     u8 temp;
@@ -3259,13 +3168,9 @@ void swapPauseScreenItems(void) {
     
 }
 
-
 /* end pause screen functions */
 
-
 /* toolbox functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadToolboxScreenCallback);
 
 void loadToolboxScreenCallback(void) {
     
@@ -3289,8 +3194,6 @@ void loadToolboxScreenCallback(void) {
     setMainLoopCallbackFunctionIndex(TOOLBOX);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadToolboxScreenSprites);
 
 void loadToolboxScreenSprites(void) {
 
@@ -3350,8 +3253,6 @@ void loadToolboxScreenSprites(void) {
     fadeInToolboxSprites();
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadToolboxToolSprites);
 
 void loadToolboxToolSprites(void) {
 
@@ -3417,8 +3318,6 @@ void loadToolboxToolSprites(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateToolboxSelectionHighlight);
-
 void updateToolboxSelectionHighlight(void) {
 
     f32 x;
@@ -3457,8 +3356,6 @@ void updateToolboxSelectionHighlight(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInToolboxElements);
-
 void fadeInToolboxSprites(void) {
     
     u8 i;
@@ -3486,8 +3383,6 @@ void fadeInToolboxSprites(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutToolboxElements);
 
 void fadeOutToolboxSprites(void) {
 
@@ -3520,8 +3415,6 @@ void fadeOutToolboxSprites(void) {
     deactivateNumberSprites(1);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", toolboxScreenCallback);
 
 void toolboxScreenCallback(void) {
 
@@ -3877,8 +3770,6 @@ void toolboxScreenCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getToolboxItemXCoordinate);
-
 f32 getToolboxItemXCoordinate(u8 arg0, u32 arg1) {
 
     f32 res;
@@ -3906,8 +3797,6 @@ f32 getToolboxItemXCoordinate(u8 arg0, u32 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getToolboxItemYCoordinate);
-
 f32 getToolboxItemYCoordinate(u8 arg0, u8 arg1) {
 
     f32 res;
@@ -3934,8 +3823,6 @@ f32 getToolboxItemYCoordinate(u8 arg0, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", resetToolboxSpriteColors);
-
 void resetToolboxSpriteColors(void) {
 
     u8 i;
@@ -3960,11 +3847,8 @@ void resetToolboxSpriteColors(void) {
         }
         
     }
-    
-    
-}
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", swapToolboxTools);
+}
 
 // swap tools
 void swapToolboxTools(void) {
@@ -4013,10 +3897,7 @@ void swapToolboxTools(void) {
 
 /* end toolbox funcs */
 
-
 /* freezer */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadFreezerScreenCallback);
 
 // freezer load callback
 void loadFreezerScreenCallback(void) {
@@ -4040,8 +3921,6 @@ void loadFreezerScreenCallback(void) {
     setMainLoopCallbackFunctionIndex(FREEZER);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadFreezerScreenSprites);
 
 void loadFreezerScreenSprites(void) {
     
@@ -4195,8 +4074,6 @@ reset:
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInFreezerElements);
 
 void fadeInFreezerSprites(void) {
     
@@ -4574,9 +4451,8 @@ void freezerScreenCallback(void) {
                     } else {
                         playSfx(3);
                     }
-                    
-                    
-                }
+
+}
     
                 set = TRUE;
             
@@ -4622,8 +4498,6 @@ void freezerScreenCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getFreezerItemXCoordinate);
-
 inline f32 getFreezerItemXCoordinate(u8 arg0, u8 arg1) {
 
     f32 res;
@@ -4649,8 +4523,6 @@ inline f32 getFreezerItemXCoordinate(u8 arg0, u8 arg1) {
     return res;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getFreezerItemYCoordinate);
 
 inline f32 getFreezerItemYCoordinate(u8 arg0, u8 arg1) {
 
@@ -4704,8 +4576,6 @@ void resetFreezerSpriteColors(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", isFreezerItemSwappable);
 
 bool isFreezerItemSwappable(void) {
     
@@ -4774,7 +4644,6 @@ void swapFreezerItems(void) {
 }
 
 /* end of freezer functions */
-
 
 /* cabinet functions */
 
@@ -4853,8 +4722,6 @@ void loadCabinetScreenSprites(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCabinetItemSprites);
-
 // cabinet
 void loadCabinetItemSprites(void) {
 
@@ -4920,8 +4787,6 @@ void loadCabinetItemSprites(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateCabinetSelectionHighlight);
-
 void updateCabinetSelectionHighlight(void) {
 
     if (overlayScreenTable.unk_5 == 5) {
@@ -4953,8 +4818,6 @@ reset:
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInCabinetElements);
-
 void fadeInCabinetSprites(void) {
     
     u8 i;
@@ -4982,8 +4845,6 @@ void fadeInCabinetSprites(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutCabinetElements);
 
 void fadeOutCabinetSprites(void) {
 
@@ -5018,8 +4879,6 @@ void fadeOutCabinetSprites(void) {
     deactivateNumberSprites(1);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", cabinetScreenCallback);
 
 // cabinet screen main loop callback
 void cabinetScreenCallback(void) {
@@ -5212,9 +5071,8 @@ void cabinetScreenCallback(void) {
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
             
                 if (!set) {
-                    
-                    
-                    if (overlayScreenTable.cellIndex != 8) {
+
+if (overlayScreenTable.cellIndex != 8) {
 
                         if (overlayScreenTable.cellIndex >= 4) {
                             overlayScreenTable.cellIndex -= 4;
@@ -5392,8 +5250,6 @@ void cabinetScreenCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getCabinetItemXCoordinate);
-
 f32 getCabinetItemXCoordinate(u8 arg0, u8 arg1) {
 
    f32 res;
@@ -5420,8 +5276,6 @@ f32 getCabinetItemXCoordinate(u8 arg0, u8 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getCabinetItemYCoordinate);
-
 f32 getCabinetItemYCoordinate(u8 arg0, u8 arg1) {
 
    f32 res;
@@ -5446,8 +5300,6 @@ f32 getCabinetItemYCoordinate(u8 arg0, u8 arg1) {
     return res;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", resetCabinetSpriteColors);
 
 void resetCabinetSpriteColors(void) {
 
@@ -5476,8 +5328,6 @@ void resetCabinetSpriteColors(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", isCabinetItemSwappable);
-
 bool isCabinetItemSwappable(void) {
 
     bool result = FALSE;
@@ -5505,8 +5355,6 @@ bool isCabinetItemSwappable(void) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", swapCabinetItems);
 
 void swapCabinetItems(void) {
 
@@ -5554,10 +5402,7 @@ void swapCabinetItems(void) {
 
 /* end of cabinet functions */
 
-
 // misc. helper
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", getToolLevelForAnimation);
 
 u8 getToolLevelForAnimation(u8 tool) {
     
@@ -5590,10 +5435,7 @@ u8 getToolLevelForAnimation(u8 tool) {
     
 }
 
-
 /* house extension selection functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadHouseExtensionsScreenSprites);
 
 void loadHouseExtensionsScreenSprites(void) {
     
@@ -5666,8 +5508,6 @@ void loadHouseExtensionsScreenSprites(void) {
     fadeInHouseExtensionsSelectionSprites();
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInHouseExtensionsSelectionSprites);
 
 void fadeInHouseExtensionsSelectionSprites(void) {
     
@@ -5883,10 +5723,7 @@ void houseExtensionsSelectionScreenCallback(void) {
     
 }
 
-
 /* estimate functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens",  loadEstimateScreenSprites);
 
 void loadEstimateScreenSprites(void) {
 
@@ -5973,9 +5810,6 @@ void loadEstimateScreenSprites(void) {
     
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInEstimateSprites);
-
 void fadeInEstimateSprites(void) {
 
     fadeInClock();
@@ -5986,8 +5820,6 @@ void fadeInEstimateSprites(void) {
     updateSpriteAlpha(0x84, 0xFF, 24);
     updateSpriteAlpha(0x85, 0xFF, 24);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutEstimateSprites);
 
 void fadeOutEstimateSprites(void) {
 
@@ -6012,8 +5844,6 @@ void fadeOutEstimateSprites(void) {
     deactivateNumberSprites(6);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", estimateScreenCallback);
 
 void estimateScreenCallback(void) {
 
@@ -6052,10 +5882,7 @@ void estimateScreenCallback(void) {
     
 }
 
-
 /* kitchen picture functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadKitchenPictureScreenSprites);
 
 void loadKitchenPictureScreenSprites(void) {
     
@@ -6076,8 +5903,6 @@ void loadKitchenPictureScreenSprites(void) {
     fadeInKitchenPictureSprites();
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadPowerNutTreeSprites);
 
 void loadPowerNutTreeSprites(void) {
 
@@ -6100,8 +5925,6 @@ void loadPowerNutTreeSprites(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updatePowerNutCellAnimations);
 
 void updatePowerNutCellAnimations(void) {
     
@@ -6129,8 +5952,6 @@ void updatePowerNutCellAnimations(void) {
     startSpriteAnimation(0xAC, 1, 0);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", findPowerNutCellIndex);
 
 u8 findPowerNutCellIndex(u8 cellIndex, u8 arg1) {
 
@@ -6188,17 +6009,14 @@ u8 findPowerNutCellIndex(u8 cellIndex, u8 arg1) {
                 temp--;
             
             }
-                
-            
-            break;
+
+break;
         
     }
 
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInKitchenPictureSprites);
 
 inline void fadeInKitchenPictureSprites(void) {
     
@@ -6218,8 +6036,6 @@ inline void fadeInKitchenPictureSprites(void) {
     updateSpriteAlpha(0xAC, 0xFF, 24);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutKitchenPictureSprites);
 
 void fadeOutKitchenPictureSprites(void) {
 
@@ -6241,8 +6057,6 @@ void fadeOutKitchenPictureSprites(void) {
     deactivateNumberSprites(1);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", kitchenPictureScreenCallback);
 
 void kitchenPictureScreenCallback(void) {
 
@@ -6290,8 +6104,7 @@ void kitchenPictureScreenCallback(void) {
             }
             break;
 
-
-        case 5:
+case 5:
 
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
                 
@@ -6332,9 +6145,8 @@ void kitchenPictureScreenCallback(void) {
                             playSfx(2);
                             
                         }
-                        
-                
-                    }
+
+}
                 
                     set = TRUE;
                     
@@ -6381,10 +6193,7 @@ void kitchenPictureScreenCallback(void) {
 
 /* end kitchen picture functions */
 
-
 /* calendar functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCalendarScreenSprites);
 
 void loadCalendarScreenSprites(void) {
     
@@ -6405,8 +6214,6 @@ void loadCalendarScreenSprites(void) {
     fadeInCalendarSprites();
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCalendarStickers);
 
 void loadCalendarStickers(void) {
 
@@ -6457,8 +6264,7 @@ void loadCalendarStickers(void) {
     
     }
 
-    
-    for (k = 0; k < 10; k++) {
+for (k = 0; k < 10; k++) {
 
         if (D_80205640[k] != 0xFF) {
 
@@ -6474,8 +6280,6 @@ void loadCalendarStickers(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadCalendarDateNumbers);
 
 void loadCalendarDateNumbers(u8 year, u8 season, u8 dayOfMonth) {
     
@@ -6546,8 +6350,6 @@ void loadCalendarDateNumbers(u8 year, u8 season, u8 dayOfMonth) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInCalendarElements);
-
 void fadeInCalendarSprites(void) {
     
     u8 i;
@@ -6575,9 +6377,6 @@ void fadeInCalendarSprites(void) {
     }
     
 }
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutCalendarElements);
 
 void fadeOutCalendarSprites(void) {
 
@@ -6620,8 +6419,6 @@ void fadeOutCalendarSprites(void) {
     deactivateNumberSprites(1);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", calendarScreenCallback);
 
 void calendarScreenCallback(void) {
 
@@ -6828,9 +6625,8 @@ void calendarScreenCallback(void) {
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-                    
-                        
-                        playSfx(2);
+
+playSfx(2);
                         
                     }
                 
@@ -6857,9 +6653,8 @@ void calendarScreenCallback(void) {
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-                    
-                        
-                        playSfx(2);
+
+playSfx(2);
                         
                     }
                 
@@ -6886,9 +6681,8 @@ void calendarScreenCallback(void) {
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-                    
-                        
-                        playSfx(2);
+
+playSfx(2);
                         
                     }
                 
@@ -6915,9 +6709,8 @@ void calendarScreenCallback(void) {
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-                    
-                        
-                        playSfx(2);
+
+playSfx(2);
                         
                     }
                 
@@ -6996,10 +6789,7 @@ void calendarScreenCallback(void) {
     
 }
 
-
 /* recipe book functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRecipeBookScreenSprites);
 
 void loadRecipeBookScreenSprites(void) {
     
@@ -7049,8 +6839,6 @@ void loadRecipeBookScreenSprites(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRecipeBookLabels);
-
 // load recipe label sprites for obtained recipes
 void loadRecipeBookLabels(void) {
 
@@ -7085,8 +6873,6 @@ void loadRecipeBookLabels(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInRecipeBookElements);
-
 void fadeInRecipeBookSprites(void) {
 
     fadeInClock();
@@ -7112,9 +6898,6 @@ void fadeInRecipeBookSprites(void) {
     updateSpriteAlpha(RECIPE_LABELS_BASE + 15, 0xFF, 24);
 
 }
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutRecipeBookElements);
 
 void fadeOutRecipeBookSprites(void) {
 
@@ -7144,8 +6927,6 @@ void fadeOutRecipeBookSprites(void) {
     deactivateNumberSprites(1);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", recipeBookScreenCallback);
 
 void recipeBookScreenCallback(void) {
 
@@ -7287,9 +7068,8 @@ void recipeBookScreenCallback(void) {
                 
                 }
             }
-            
 
-            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
                 
                 if (!set) {
                     
@@ -7302,9 +7082,8 @@ void recipeBookScreenCallback(void) {
                     set = TRUE;
                
                 }
-                
-                
-            }
+
+}
             
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
 
@@ -7334,9 +7113,8 @@ void recipeBookScreenCallback(void) {
             }
 
             break;
-    
-    
-    }
+
+}
 
     if (overlayScreenTable.screenState >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         hideRightArrow();
@@ -7349,10 +7127,7 @@ void recipeBookScreenCallback(void) {
     
 }
 
-
 /* album functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadAlbumScreenSprites);
 
 void loadAlbumScreenSprites(void) {
     
@@ -7388,8 +7163,6 @@ void loadAlbumScreenSprites(void) {
     fadeInAlbumSprites();
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadAlbumPhotos);
 
 void loadAlbumPhotos(void) {
 
@@ -7603,8 +7376,6 @@ void loadAlbumPhotos(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInAlbumSprites);
-
 void fadeInAlbumSprites(void) {
 
     fadeInClock();
@@ -7618,8 +7389,6 @@ void fadeInAlbumSprites(void) {
     updateSpriteAlpha(0x86, 0xFF, 24);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutAlbumSprites);
 
 void fadeOutAlbumSprites(void) {
 
@@ -7640,8 +7409,6 @@ void fadeOutAlbumSprites(void) {
 //INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_80121E34);
 
 static const u8 D_80121E34[20] = { 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x2D, 0x2E, 0, 0, 0, 0 };
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", albumScreenCallback);
 
 void albumScreenCallback(void) {
 
@@ -7830,34 +7597,24 @@ void albumScreenCallback(void) {
 
 /* end of album functions */
 
-
 // misc. recipe helpers
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", addRecipe);
 
 void addRecipe(u16 bitIndex) {
     u32 temp = bitIndex;
     recipesBits[temp >> 5] |= 1 << (temp & 0x1F);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", toggleRecipe);
-
 void toggleRecipe(u16 bitIndex) {
     u32 temp = bitIndex;
     recipesBits[temp >> 5] &= ~(1 << (temp & 0x1F));
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", checkRecipe);
 
 u32 checkRecipe(u16 bitIndex) {
     u32 temp = bitIndex;
     return recipesBits[temp >> 5] & (1 << (temp & 0x1F));
 }
 
-
 /* shared gold arrow functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadNavigationArrows);
 
 void loadNavigationArrows(void) {
 
@@ -7899,62 +7656,43 @@ void loadNavigationArrows(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showDownArrow);
-
 void showDownArrow(f32 x, f32 y) {
     startSpriteAnimation(DOWN_ARROW, 11, 0xFE);
     setSpriteViewSpacePosition(DOWN_ARROW, x, y, 32.0f);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showUpArrow);
 
 void showUpArrow(f32 x, f32 y) {
     startSpriteAnimation(UP_ARROW, 10, 0xFE);
     setSpriteViewSpacePosition(UP_ARROW, x, y, 32.0f);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showLeftArrow);
-
 void showLeftArrow(f32 x, f32 y) {
     startSpriteAnimation(LEFT_ARROW, 1, 0xFE);
     setSpriteViewSpacePosition(LEFT_ARROW, x, y, 32.0f);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showRightArrow);
 
 void showRightArrow(f32 x, f32 y) {
     startSpriteAnimation(RIGHT_ARROW, 12, 0xFE);
     setSpriteViewSpacePosition(RIGHT_ARROW, x, y, 32.0f);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideDownArrow);
-
 void hideDownArrow(void) {
     resetAnimationState(DOWN_ARROW);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideUpArrow);
 
 void hideUpArrow(void) {
     resetAnimationState(UP_ARROW);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideLeftArrow);
-
 void hideLeftArrow(void) {
     resetAnimationState(LEFT_ARROW);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideRightArrow);
 
 void hideRightArrow(void) {
     resetAnimationState(RIGHT_ARROW);
 }
 
-
 // up and down arrows
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadDialogueArrowSprites);
 
 void loadDialogueArrowSprites(void) {
     
@@ -7978,27 +7716,19 @@ void loadDialogueArrowSprites(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showDialogueDownArrow);
-
 void showDialogueDownArrow(f32 x, f32 y) {
     startSpriteAnimation(0x7B, 11, 0xFE);
     setSpriteViewSpacePosition(0x7B, x, y, 32.0f);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", showDialogueUpArrow);
 
 void showDialogueUpArrow(f32 x, f32 y) {
     startSpriteAnimation(0x7A, 10, 0xFE);
     setSpriteViewSpacePosition(0x7A, x, y, 32.0f);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideDialogueDownArrow);
-
 void hideDialogueDownArrow(void) {
     resetAnimationState(0x7B);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", hideDialogueUpArrow);
 
 void hideDialogueUpArrow(void) {
     resetAnimationState(0x7A);
@@ -8006,10 +7736,7 @@ void hideDialogueUpArrow(void) {
 
 /* end of shared arrow functions */
 
-
 /* shared helper */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", setItemDescriptionVariable);
 
 void setItemDescriptionVariable(u8 type, u8 itemOrToolIndex) {
 
@@ -8110,10 +7837,7 @@ skip:
     
 }
 
-
 /* pause screen map functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadPauseScreenMapScreenCallback);
 
 // main loop callback 30
 // seems like load village map (cut from NA release) 
@@ -8244,8 +7968,6 @@ void loadPauseScreenMapScreenCallback(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", pauseScreenMapCallback);
-
 void pauseScreenMapCallback(void) {    
 
     u8 temp = 0;
@@ -8290,10 +8012,7 @@ void pauseScreenMapCallback(void) {
 
 /* end pause screen map functions */
 
-
 /* horse/dog race functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceBettingScreenCallback);
 
 void loadRaceBettingScreenCallback(void) {
 
@@ -8328,8 +8047,6 @@ void loadRaceBettingScreenCallback(void) {
     setMainLoopCallbackFunctionIndex(HORSE_RACE_BETTING);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceBettingScreenSprites);
 
 void loadRaceBettingScreenSprites(void) {
     
@@ -8501,8 +8218,6 @@ void loadRaceBettingScreenSprites(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", initializeRaceBettingMessageBoxes);
-
 void initializeRaceBettingMessageBoxes(void) {
     
     setGameVariableString(0x2A, gRacingContext.racerNames[0], 6);
@@ -8586,8 +8301,6 @@ void initializeRaceBettingMessageBoxes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInRaceBettingElements);
-
 void fadeInRaceBettingSprites(void) {
     updateSpriteAlpha(0x8E, 0xFF, 24);
     updateSpriteAlpha(0x81, 0xFF, 24);
@@ -8603,8 +8316,6 @@ void fadeInRaceBettingSprites(void) {
     updateSpriteAlpha(0xBD, 0xFF, 24);
     updateSpriteAlpha(0xBE, 0xFF, 24);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutRaceBettingElements);
 
 void fadeOutRaceBettingSprites(void) {
 
@@ -8647,8 +8358,6 @@ void fadeOutRaceBettingSprites(void) {
     initializeMainMessageBoxes();
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", raceBettingScreenCallback);
 
 void raceBettingScreenCallback(void) {
 
@@ -8700,9 +8409,8 @@ void raceBettingScreenCallback(void) {
                 }
                 
                 set = TRUE;
-                    
-                
-            }
+
+}
             
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST) && !set) {
                 
@@ -8752,9 +8460,8 @@ void raceBettingScreenCallback(void) {
                         }
                         
                     }
-                    
-                    
-                    setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+
+setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     
                     set = TRUE;
                     
@@ -8774,9 +8481,8 @@ void raceBettingScreenCallback(void) {
                             playSfx(2);
                         }
                     }
-                    
-                    
-                    setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+
+setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
                         
                 }
@@ -8871,8 +8577,6 @@ void raceBettingScreenCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateHorseRaceContext);
-
 void updateHorseRaceContext(void) {
 
     u8 temp;
@@ -8961,8 +8665,6 @@ void updateHorseRaceContext(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", updateDogRaceContext);
 
 void updateDogRaceContext(void) {
 
@@ -9053,8 +8755,6 @@ void updateDogRaceContext(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", func_800CC11C);
-
 // unused or inline
 // bool func_800CC11C(u8 arg0, u8 arg1, u8 arg2) {
 
@@ -9072,8 +8772,6 @@ void updateDogRaceContext(void) {
 //     return result;
     
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", initializeRaceContext);
 
 void initializeRaceContext(void) {
 
@@ -9225,8 +8923,6 @@ void initializeRaceContext(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceResultsScreenCallback);
-
 void loadRaceResultsScreenCallback(void) {
 
     openOverlayScreen();
@@ -9260,8 +8956,6 @@ void loadRaceResultsScreenCallback(void) {
     gRacingContext.finishOrder[5] = gRaceFinishOrder[5] - 1;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceResultsScreenSprites);
 
 void loadRaceResultsScreenSprites(void) {
 
@@ -9329,8 +9023,6 @@ void loadRaceResultsScreenSprites(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", initializeRaceResultsMessageBoxes);
 
 void initializeRaceResultsMessageBoxes(void) {
 
@@ -9415,8 +9107,6 @@ void initializeRaceResultsMessageBoxes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInRaceResultsElements);
-
 void fadeInRaceResultsSprites(void) {
     updateSpriteAlpha(0x81, 0xFF, 24);
     updateSpriteAlpha(0x82, 0xFF, 24);
@@ -9424,8 +9114,6 @@ void fadeInRaceResultsSprites(void) {
     updateSpriteAlpha(0x84, 0xFF, 24);
     updateSpriteAlpha(0x85, 0xFF, 24);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutRaceResultsElements);
 
 void fadeOutRaceResultsSprites(void) {
 
@@ -9500,8 +9188,6 @@ static const u8 D_80122140[19][6] = {
     { 0xB5, 0xC1, 0xCF, 0xC3, 0xCD, 0xCF } 
 };
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", raceResultsScreenCallback);
-
 void raceResultsScreenCallback(void) {
     
     u16 temp = 0;
@@ -9567,8 +9253,6 @@ void raceResultsScreenCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceGiftsScreenCallback);
-
 void loadRaceGiftsScreenCallback(void) {
     
     openOverlayScreen();
@@ -9589,8 +9273,6 @@ void loadRaceGiftsScreenCallback(void) {
     setMainLoopCallbackFunctionIndex(HORSE_RACE_GIFTS);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadRaceGiftsScreenSprites);
 
 void loadRaceGiftsScreenSprites(void) {
 
@@ -9644,16 +9326,12 @@ void loadRaceGiftsScreenSprites(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInRaceGiftsElements);
-
 void fadeInRaceGiftsSprites(void) {
     updateSpriteAlpha(0x81, 0xFF, 24);
     updateSpriteAlpha(0x82, 0xFF, 24);
     updateSpriteAlpha(0x83, 0xFF, 24);
     updateSpriteAlpha(0x84, 0xFF, 24);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutRaceGiftsElements);
 
 void fadeOutRaceGiftsSprites(void) {
     updateSpriteAlpha(0x81, 0, 24);
@@ -9666,8 +9344,6 @@ void fadeOutRaceGiftsSprites(void) {
 //INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_801221CC);
 
 static const u16 D_801221CC[6] = { 3000, 1000, 500, 0, 0, 0 };
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", raceGiftsScreenCallback);
 
 void raceGiftsScreenCallback(void) {
 
@@ -9874,8 +9550,6 @@ label2:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", checkAlreadyHaveHorseRacePrize);
-
 bool checkAlreadyHaveHorseRacePrize(u8 prize) {
 
     bool result = FALSE;
@@ -9904,8 +9578,6 @@ bool checkAlreadyHaveHorseRacePrize(u8 prize) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", handleGetHorseRacePrize);
-
 void handleGetHorseRacePrize(u8 arg0) {
 
     switch (arg0) {                              
@@ -9921,8 +9593,6 @@ void handleGetHorseRacePrize(u8 arg0) {
             break;
         }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", checkAlreadyHaveDogRacePrize);
 
 bool checkAlreadyHaveDogRacePrize(u8 prize) {
 
@@ -9947,8 +9617,6 @@ bool checkAlreadyHaveDogRacePrize(u8 prize) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", handleGetDogRacePrize);
-
 void handleGetDogRacePrize(u8 arg0) {
 
     switch (arg0) {                              
@@ -9968,10 +9636,7 @@ void handleGetDogRacePrize(u8 arg0) {
 
 /* end horse/dog race functions */
 
-
 /* lottery/raffle */ 
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadLotteryScreenCallback);
 
 void loadLotteryScreenCallback(void) {
     
@@ -9995,8 +9660,6 @@ void loadLotteryScreenCallback(void) {
 }
 
 // winter lottery
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", loadLotteryScreenSprites);
 
 void loadLotteryScreenSprites(void) {
     
@@ -10030,23 +9693,17 @@ void loadLotteryScreenSprites(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeInLotteryElements);
-
 void fadeInLotterySprites(void) {
     updateSpriteAlpha(0x81, 0xFF, 24);
     updateSpriteAlpha(0x82, 0xFF, 24);
     updateSpriteAlpha(0x83, 0xFF, 24);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", fadeOutLotteryElements);
-
 void fadeOutLotterySprites(void) {
     updateSpriteAlpha(0x81, 0, 24);
     updateSpriteAlpha(0x82, 0, 24);
     updateSpriteAlpha(0x83, 0, 24);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", lotteryScreenCallback);
 
 void lotteryScreenCallback(void) {
 
@@ -10095,9 +9752,8 @@ void lotteryScreenCallback(void) {
                     } else {
                         bakeryCardPoints += adjustValue(bakeryCardPoints, -10, 100);
                     }
-                    
 
-                } else {
+} else {
                     
                     if (gBaseMapIndex == FLOWER_SHOP) {
                         initializeMessageBox(0, FESTIVALS_TEXT_INDEX, 0x3D, 0);
@@ -10108,9 +9764,8 @@ void lotteryScreenCallback(void) {
                     overlayScreenTable.screenState = 3;
 
                 }
-                
-            
-            }
+
+}
             
             break;
         
@@ -10303,8 +9958,6 @@ void lotteryScreenCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", checkAvailableFlowerShopPrize);
-
 bool checkAvailableFlowerShopPrize(u8 arg0) {
 
     bool result = FALSE;
@@ -10334,8 +9987,6 @@ bool checkAvailableFlowerShopPrize(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", handleGetFlowerShopPrize);
-
 void handleGetFlowerShopPrize(u8 arg0) {
 
     switch (arg0) {
@@ -10360,8 +10011,6 @@ void handleGetFlowerShopPrize(u8 arg0) {
     }
 
 } 
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", checkAvailableBakeryPrize);
 
 bool checkAvailableBakeryPrize(u8 arg0) {
 
@@ -10398,8 +10047,6 @@ bool checkAvailableBakeryPrize(u8 arg0) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", handleGetBakeryPrize);
 
 void handleGetBakeryPrize(u8 arg0) {
 
