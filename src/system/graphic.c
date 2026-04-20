@@ -146,8 +146,23 @@ volatile u8 renderScene() {
 
 }
 
+// FIXME: something wrong, but matches
 static inline u16 swap16(u16 halfword) {
-    return ((halfword & 0xFF) << 8) | (halfword >> 8);
+
+    u16 swapped;
+    
+    u32 upper;
+    u32 lower;
+
+    lower = halfword;
+
+    upper = (halfword & 0xFF) << 8;
+    lower = halfword >> 8;
+    
+    swapped = lower | upper;
+    
+    return swapped;
+    
 }
 
 void setBitmapFormat(BitmapObject *sprite, Texture *timg, u16 *palette) {

@@ -245,6 +245,28 @@ bool setDialogueButtonIcon3(u16 index, u16 spriteIndex, u32 romTextureStart, u32
     
 }
 
+// adjust value
+inline int func_80043408(int initial, int value, int max) {
+    
+    int temp;
+    int adjusted;
+
+    adjusted = value;
+    temp = initial + adjusted;
+    
+    if (max < temp) {
+        adjusted -= temp - max;
+        temp = max;
+    }
+    
+    if (temp < 0) {
+        adjusted -= temp;
+    } 
+      
+    return adjusted;
+    
+}
+
 bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u16 dialogueIndex, u16 flag) {
 
     bool result = FALSE;
@@ -821,13 +843,19 @@ void updateCurrentDialogue(u16 index) {
     u16 finishCurrentDialogueBlockProcessing = FALSE;
     
     u16 dialogueVariableValue;
-    u16 totalLines;
-    u16 randomValue;
-    u16 selectedMenuRow;
+    u16 temp2;
+    u16 temp3;
+    int temp4;
+    int temp5;
+    u16 temp6;
 
+    u16 tempIndex;
     u16 textOrDialogueIndex;
-
-
+    
+    int adjusted;
+    int max;
+    int initial;
+    
     // loop and continue to process new opcodes unless marked as done
     while (!finishCurrentDialogueBlockProcessing) {
         
@@ -896,12 +924,60 @@ void updateCurrentDialogue(u16 index) {
 
             case DIALOGUE_OPCODE_UPDATE_DIALOGUE_VARIABLE:
 
-                dialogueVariableValue = getDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex);
-                dialogueVariableValue += adjustValue(dialogueVariableValue, dialogues[index].bytecodeExecutor.updatedDialogueVariableAdjustment, dialogueVariables[dialogues[index].bytecodeExecutor.dialogueVariablesIndex].maxValue);
-                setDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex, dialogueVariableValue);
+                /*
+
+                temp4 = (u16)getDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex);
+
+                temp4 += adjustValue_dialogue_c(temp4, dialogues[index].bytecodeExecutor.updatedDialogueVariableAdjustment, dialogueVariables[dialogues[index].bytecodeExecutor.dialogueVariablesIndex].maxValue);
+                
+                setDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex, temp4);
+                
+                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                
+                break;
+
+                */
+
+                temp4 = getDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex);
+
+                // FIXME: should be inline adjustValue call
+
+                max = dialogueVariables[dialogues[index].bytecodeExecutor.dialogueVariablesIndex].maxValue;
+                adjusted = dialogues[index].bytecodeExecutor.updatedDialogueVariableAdjustment;
+                
+                temp5 = (u16)temp4;
+                temp5 += adjusted;
+                
+                if (max < temp5) {
+                    adjusted -= temp5 - max;
+                    temp5 = max;
+                }
+                if (temp5 < 0) {
+                    adjusted -= temp5;
+                }
+                
+                max = temp4 + adjusted;
+                
+                // FIXME: should be inline setDialogueVariableValue call
+
+                tempIndex = dialogues[index].bytecodeExecutor.dialogueVariablesIndex;
+                
+                switch (dialogueVariables[tempIndex].type) {
+                    case UNSIGNED_CHAR:
+                        *((u8*)dialogueVariables[tempIndex].value) = max;
+                        break;
+
+                    case UNSIGNED_SHORT:
+                        *((u16*)dialogueVariables[tempIndex].value) = (u16)max;
+                        break;
+
+                    case UNSIGNED_INT:
+                        *((u32*)dialogueVariables[tempIndex].value) = (u16)max;
+                        break;
+                }
 
                 dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
-
+                
                 break;
 
             case DIALOGUE_OPCODE_SET_DIALOGUE_VARIABLE:
@@ -959,9 +1035,9 @@ void updateCurrentDialogue(u16 index) {
 
             case DIALOGUE_OPCODE_RANDOM_BRANCH:
                 
-                randomValue = dialogues[index].bytecodeExecutor.randomValue;
-
-                if ((randomValue >= dialogues[index].bytecodeExecutor.randomMinimumValue) && (dialogues[index].bytecodeExecutor.randomMaximumValue >= randomValue)) {
+                temp3 = dialogues[index].bytecodeExecutor.randomValue;
+                
+                if ((temp3 >= dialogues[index].bytecodeExecutor.randomMinimumValue) && (dialogues[index].bytecodeExecutor.randomMaximumValue >= temp3)) {
                 
                     textOrDialogueIndex = dialogues[index].bytecodeExecutor.textIndex;
                     
@@ -1010,12 +1086,13 @@ void updateCurrentDialogue(u16 index) {
                 
                 initializeMessageBox(dialogues[index].sessionManager.overlayMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].selectionMenuTextAddressesIndex, dialogues[index].sessionManager.overlayTextOffset, 0);
                 
-                totalLines = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].totalLines;
-
-                if (totalLines >= 5) {
+                // probably line height or selection count
+                temp2 = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].totalLines;
+                
+                if (temp2 >= 5) {
                     setMessageBoxLineAndRowSizes(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine, 4);
                 } else {
-                    setMessageBoxLineAndRowSizes(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine, totalLines);
+                    setMessageBoxLineAndRowSizes(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine, temp2);
                 }
                 
                 dialogues[index].sessionManager.totalMenuRows = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].totalLines;
@@ -1036,13 +1113,13 @@ void updateCurrentDialogue(u16 index) {
 
             case DIALOGUE_OPCODE_HANDLE_MENU_SELECTION_BRANCH:
                 
-                selectedMenuRow = dialogues[index].sessionManager.selectedMenuRow;
-
-                if (dialogues[index].bytecodeExecutor.targetMenuRow == selectedMenuRow) {
-
+                temp6 = dialogues[index].sessionManager.selectedMenuRow;
+                
+                if (dialogues[index].bytecodeExecutor.targetMenuRow == temp6) {
+                    
                     initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, dialogues[index].bytecodeExecutor.branchingDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
-                    // preserve across session re-init
-                    dialogues[index].sessionManager.selectedMenuRow = selectedMenuRow;
+                    // ?
+                    dialogues[index].sessionManager.selectedMenuRow = temp6;
 
                 } else {
                     dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;

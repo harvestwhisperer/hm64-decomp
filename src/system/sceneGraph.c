@@ -92,6 +92,9 @@ Gfx* renderSceneGraph(Gfx* dl, SceneMatrices* matrices) {
     f32 cosYPrevious;
     
     f32 x, y, z;
+    f32 rotatedX;
+    f32 rotatedY;
+    f32 tempZ;
     
     gDPPipeSync(dl++);
     gDPSetCycleType(dl++, G_CYC_1CYCLE);
@@ -163,11 +166,15 @@ Gfx* renderSceneGraph(Gfx* dl, SceneMatrices* matrices) {
                 x = sceneNodes[i].positions.x;
                 y = sceneNodes[i].positions.y;
                 z = sceneNodes[i].positions.z;
-
-                vec.x = (z * sinYCurrent) + (x * cosYCurrent);
-                vec.z = (z * cosYCurrent) - (x * sinYCurrent);
-                vec.y = ((-vec.z) * sinXCurrent) + (y * cosXCurrent);
-                vec.z = (vec.z * cosXCurrent) + (y * sinXCurrent);
+        
+                // FIXME: possibly don't need to use tempZ
+                rotatedX = (sceneNodes[i].positions.z * sinYCurrent) + (x * cosYCurrent);
+                tempZ = (sceneNodes[i].positions.z * cosYCurrent) - (x * sinYCurrent);
+                rotatedY = ((-tempZ) * sinXCurrent) + (y * cosXCurrent);
+        
+                vec.x = rotatedX;
+                vec.y = rotatedY;
+                vec.z = (tempZ * cosXCurrent) + (y * sinXCurrent);
                        
             }
 
