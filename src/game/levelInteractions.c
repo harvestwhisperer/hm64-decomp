@@ -790,13 +790,21 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         // diary
         case 16:
 
-            // add this back in if not skipping mayor tour:
-            // && checkLifeEventBit(MAYOR_TOUR)
+#if TESTING
+            // skip mayor tour
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && !checkDailyEventBit(DIARY_BLOCKED)) {
                 showDialogueTextBox(DIALOGUE_MENU_DIARY_ROOT);
-                result = TRUE; 
+                result = TRUE;
             }
             break;
+
+#else
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(DIARY_BLOCKED)) {
+                showDialogueTextBox(DIALOGUE_MENU_DIARY_ROOT);
+                result = TRUE;
+            }
+            break;
+#endif
 
         // TV
         case 18:
@@ -883,8 +891,6 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
-    s32 temp;
-    u16 temp2;
 
     switch (levelInteractionIndex) {
         
@@ -921,20 +927,19 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
         // stall 1
         case 19:
-            
+
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                
+
                 if (gPlayer.heldItem != FODDER_HELD_ITEM && (gFarmAnimals[0].flags & FARM_ANIMAL_ACTIVE)) {
 
-                    temp = gFarmAnimals[0].type;
-                    
-                    // FIXME: actually a switch
-                    if (temp >= 0) {
+                    switch (gFarmAnimals[0].type) {
 
-                        if (temp < 4) {
-                            
+                        case BABY_COW:
+                        case CALF:
+                        case ADULT_COW:
+                        case PREGNANT_COW:
                             setGlobalSeasonName(gFarmAnimals[0].birthdaySeason);
-                        
+
                             gCurrentSeasonName[0] = gGlobalSeasonName[0];
                             gCurrentSeasonName[1] = gGlobalSeasonName[1];
                             gCurrentSeasonName[2] = gGlobalSeasonName[2];
@@ -947,18 +952,21 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             setGameVariableString(38, gFarmAnimals[0].motherName, 6);
                             func_80061690(gFarmAnimals[0].milkType);
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 229, 0, 2);
+                            break;
 
-                        } else if (temp < 7) {
+                        case BABY_SHEEP:
+                        case ADULT_SHEEP:
+                        case SHEARED_SHEEP:
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 237, 0, 2);
-                        }
-                                    
-                    } 
-                    
+                            break;
+
+                    }
+
                     result = 1;
 
                 }
             }
-            
+
             break;
 
         // stall 2
@@ -1010,255 +1018,264 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 21:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                
+
                 if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[2].flags & FARM_ANIMAL_ACTIVE) {
 
-                    temp = gFarmAnimals[2].type;
-                
-                    // FIXME: actually a switch
-                    if (temp >= 0) {
+                    switch (gFarmAnimals[2].type) {
 
-                        if (temp < 4) {
-                            
+                        case BABY_COW:
+                        case CALF:
+                        case ADULT_COW:
+                        case PREGNANT_COW:
                             setGlobalSeasonName(gFarmAnimals[2].birthdaySeason);
-                        
+
                             gCurrentSeasonName[0] = gGlobalSeasonName[0];
                             gCurrentSeasonName[1] = gGlobalSeasonName[1];
                             gCurrentSeasonName[2] = gGlobalSeasonName[2];
                             gCurrentSeasonName[3] = gGlobalSeasonName[3];
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
-                        
+
                             convertNumberToGameVariableString(21, gFarmAnimals[2].birthdayDayOfMonth, 1);
-                            
                             generateMilkTypeString(2);
-                            
                             setGameVariableString(38, gFarmAnimals[2].motherName, 6);
                             func_80061690(gFarmAnimals[2].milkType);
-
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 231, 0, 2);
+                            break;
 
-                        } else if (temp < 7) {
+                        case BABY_SHEEP:
+                        case ADULT_SHEEP:
+                        case SHEARED_SHEEP:
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 239, 0, 2);
-                        }
+                            break;
 
-                    } 
+                    }
 
                     result = 1;
-                    
+
                 }
             }
-            
+
             break;
 
         // stall 4
         case 22:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                
+
                 if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[3].flags & FARM_ANIMAL_ACTIVE) {
 
-                    temp = gFarmAnimals[3].type;
-                    
-                    // FIXME: actually a switch
-                    if (temp >= 0) {
+                    switch (gFarmAnimals[3].type) {
 
-                        if (temp < 4) {
-                            
+                        case BABY_COW:
+                        case CALF:
+                        case ADULT_COW:
+                        case PREGNANT_COW:
                             setGlobalSeasonName(gFarmAnimals[3].birthdaySeason);
-                        
+
                             gCurrentSeasonName[0] = gGlobalSeasonName[0];
                             gCurrentSeasonName[1] = gGlobalSeasonName[1];
                             gCurrentSeasonName[2] = gGlobalSeasonName[2];
                             gCurrentSeasonName[3] = gGlobalSeasonName[3];
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
-                        
+
                             convertNumberToGameVariableString(21, gFarmAnimals[3].birthdayDayOfMonth, 1);
                             generateMilkTypeString(3);
                             setGameVariableString(38, gFarmAnimals[3].motherName, 6);
                             func_80061690(gFarmAnimals[3].milkType);
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 232, 0, 2);
+                            break;
 
-                        } else if (temp < 7) {
+                        case BABY_SHEEP:
+                        case ADULT_SHEEP:
+                        case SHEARED_SHEEP:
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 240, 0, 2);
-                        }
+                            break;
 
-                    } 
+                    }
 
                     result = 1;
-        
+
                 }
             }
-            
+
             break;
 
         // stall 5
         case 23:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                
+
                 if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[4].flags & FARM_ANIMAL_ACTIVE) {
 
-                    temp = gFarmAnimals[4].type;
+                    switch (gFarmAnimals[4].type) {
 
-                    // FIXME: actually a switch
-                    if (temp >= 0) {
-
-                        if (temp < 4) {
-                            
+                        case BABY_COW:
+                        case CALF:
+                        case ADULT_COW:
+                        case PREGNANT_COW:
                             setGlobalSeasonName(gFarmAnimals[4].birthdaySeason);
-                        
+
                             gCurrentSeasonName[0] = gGlobalSeasonName[0];
                             gCurrentSeasonName[1] = gGlobalSeasonName[1];
                             gCurrentSeasonName[2] = gGlobalSeasonName[2];
                             gCurrentSeasonName[3] = gGlobalSeasonName[3];
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
-                        
+
                             convertNumberToGameVariableString(21, gFarmAnimals[4].birthdayDayOfMonth, 1);
                             generateMilkTypeString(4);
                             setGameVariableString(38, gFarmAnimals[4].motherName, 6);
                             func_80061690(gFarmAnimals[4].milkType);
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 233, 0, 2);
+                            break;
 
-                        } else if (temp < 7) {
+                        case BABY_SHEEP:
+                        case ADULT_SHEEP:
+                        case SHEARED_SHEEP:
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 241, 0, 2);
-                        }
+                            break;
 
-} 
+                    }
 
                     result = 1;
-                    
+
                 }
             }
-            
+
             break;
 
         // stall 6
         case 24:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                
+
                 if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[5].flags & FARM_ANIMAL_ACTIVE) {
 
-                    temp = gFarmAnimals[5].type;
-                    
-                    // FIXME: actually a switch
-                    if (temp >= 0) {
+                    switch (gFarmAnimals[5].type) {
 
-                        if (temp < 4) {
-                            
+                        case BABY_COW:
+                        case CALF:
+                        case ADULT_COW:
+                        case PREGNANT_COW:
                             setGlobalSeasonName(gFarmAnimals[5].birthdaySeason);
-                        
+
                             gCurrentSeasonName[0] = gGlobalSeasonName[0];
                             gCurrentSeasonName[1] = gGlobalSeasonName[1];
                             gCurrentSeasonName[2] = gGlobalSeasonName[2];
                             gCurrentSeasonName[3] = gGlobalSeasonName[3];
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
-                        
+
                             convertNumberToGameVariableString(21, gFarmAnimals[5].birthdayDayOfMonth, 1);
                             generateMilkTypeString(5);
                             setGameVariableString(38, gFarmAnimals[5].motherName, 6);
                             func_80061690(gFarmAnimals[5].milkType);
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 234, 0, 2);
+                            break;
 
-                        } else if (temp < 7) {
+                        case BABY_SHEEP:
+                        case ADULT_SHEEP:
+                        case SHEARED_SHEEP:
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 242, 0, 2);
-                        }
+                            break;
 
-} 
+                    }
 
                     result = 1;
-                    
+
                 }
             }
-            
+
             break;
 
         // stall 7
         case 25:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                
+
                 if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[6].flags & FARM_ANIMAL_ACTIVE) {
 
-                    temp = gFarmAnimals[6].type;
-                    
-                    // FIXME: actually a switch
-                    if (temp >= 0) {
+                    switch (gFarmAnimals[6].type) {
 
-                        if (temp < 4) {
-                            
+                        case BABY_COW:
+                        case CALF:
+                        case ADULT_COW:
+                        case PREGNANT_COW:
                             setGlobalSeasonName(gFarmAnimals[6].birthdaySeason);
-                        
+
                             gCurrentSeasonName[0] = gGlobalSeasonName[0];
                             gCurrentSeasonName[1] = gGlobalSeasonName[1];
                             gCurrentSeasonName[2] = gGlobalSeasonName[2];
                             gCurrentSeasonName[3] = gGlobalSeasonName[3];
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
-                        
+
                             convertNumberToGameVariableString(21, gFarmAnimals[6].birthdayDayOfMonth, 1);
                             generateMilkTypeString(6);
                             setGameVariableString(38, gFarmAnimals[6].motherName, 6);
                             func_80061690(gFarmAnimals[6].milkType);
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 235, 0, 2);
+                            break;
 
-                        } else if (temp < 7) {
+                        case BABY_SHEEP:
+                        case ADULT_SHEEP:
+                        case SHEARED_SHEEP:
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 243, 0, 2);
-                        }
+                            break;
 
-                    } 
+                    }
 
-                    result = 1; 
+                    result = 1;
 
                 }
             }
-            
+
             break;
 
         // stall 8
         case 26:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                
+
                 if (gPlayer.heldItem != FODDER_HELD_ITEM && gFarmAnimals[7].flags & FARM_ANIMAL_ACTIVE) {
 
-                    temp = gFarmAnimals[7].type;
-                    
-                    // FIXME: actually a switch
-                    if (temp >= 0) {
+                    switch (gFarmAnimals[7].type) {
 
-                        if (temp < 4) {
-                            
+                        case BABY_COW:
+                        case CALF:
+                        case ADULT_COW:
+                        case PREGNANT_COW:
                             setGlobalSeasonName(gFarmAnimals[7].birthdaySeason);
-                        
+
                             gCurrentSeasonName[0] = gGlobalSeasonName[0];
                             gCurrentSeasonName[1] = gGlobalSeasonName[1];
                             gCurrentSeasonName[2] = gGlobalSeasonName[2];
                             gCurrentSeasonName[3] = gGlobalSeasonName[3];
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
-                        
+
                             convertNumberToGameVariableString(21, gFarmAnimals[7].birthdayDayOfMonth, 1);
                             generateMilkTypeString(7);
                             setGameVariableString(38, gFarmAnimals[7].motherName, 6);
                             func_80061690(gFarmAnimals[7].milkType);
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 236, 0, 2);
+                            break;
 
-                        } else if (temp < 7) {
+                        case BABY_SHEEP:
+                        case ADULT_SHEEP:
+                        case SHEARED_SHEEP:
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 244, 0, 2);
-                        }
-                            
-                    } 
+                            break;
+
+                    }
 
                     result = 1;
-                    
+
                 }
             }
-            
+
             break;
 
         // fodder ledger
@@ -3266,11 +3283,9 @@ bool handlePotionShopBedroomLevelInteractions(u16 mapIndex, u8 levelInteractionI
     
 }
 
-// FIXME: lots of unnecessary gotos
 u8 handleSquareLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
-    u8 temp;
 
     switch (levelInteractionIndex) {
 
@@ -3313,13 +3328,10 @@ u8 handleSquareLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
                 if (gPlayer.heldItem == 0) {
-                    temp = DIALOGUE_MENU_SQUARE_STALL;
-label3:
-                    showDialogueTextBox(temp);
+                    showDialogueTextBox(DIALOGUE_MENU_SQUARE_STALL);
                     result = 1;
-label4:
                 }
-                
+
             }
 
             break;
@@ -3327,38 +3339,28 @@ label4:
         // horse/dog race prizes/mayor interaction
         case 21:
 
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
                 if (checkDailyEventBit(HORSE_RACE)) {
 
-                    if (checkAlreadyHaveHorseRacePrize(0) && checkAlreadyHaveHorseRacePrize(1)) {
-                        
-                        if (checkAlreadyHaveHorseRacePrize(2)) {
-                            goto label2;
-                        } else {
-                            goto label;
-                        }
-                        
+                    if (checkAlreadyHaveHorseRacePrize(0) && checkAlreadyHaveHorseRacePrize(1) && checkAlreadyHaveHorseRacePrize(2)) {
+                        showTextBox(0, FESTIVALS_TEXT_INDEX, 71, 0, 0);
                     } else {
                         pauseAllCutsceneExecutors();
                         setMainLoopCallbackFunctionIndex(RACE_GIFTS_LOAD);
                     }
-                    
+
                 } else if (checkAlreadyHaveDogRacePrize(0) && checkAlreadyHaveDogRacePrize(1) && checkAlreadyHaveDogRacePrize(2)) {
-label2:
                     showTextBox(0, FESTIVALS_TEXT_INDEX, 71, 0, 0);
-                    
                 } else {
-label:
                     pauseAllCutsceneExecutors();
                     setMainLoopCallbackFunctionIndex(RACE_GIFTS_LOAD);
-                    
                 }
-                
+
                 result = 1;
-                
+
             }
-            
+
             break;
 
         // mayor wife horse/dog race interaction
@@ -3412,42 +3414,35 @@ label:
                 if (gSeason == SPRING && (18 < gDayOfMonth && gDayOfMonth < 23)) {
 
                     if (gVoteForFlowerFestivalGoddess == 0xFF) {
-                        temp = 9;
-                        goto label3;
+                        showDialogueTextBox(DIALOGUE_MENU_FLOWER_FESTIVAL_VOTE);
                     } else {
                         showTextBox(0, FESTIVALS_TEXT_INDEX, 35, 0, 2);
-                        result = 1;
-                        goto label4;
                     }
-                    
-                }
 
-                if (!checkHaveTool(EMPTY_BOTTLE)) {
+                    result = 1;
+
+                } else if (!checkHaveTool(EMPTY_BOTTLE)) {
 
                     if (gPlayer.heldItem == 0) {
-                    
+
                         if (checkShopItemShouldBeDisplayed(FLOWER_FESTIVAL_EMPTY_BOTTLE_ITEM)) {
                             pauseAllCutsceneExecutors();
                             handlePickUpShopItem(FLOWER_FESTIVAL_EMPTY_BOTTLE_ITEM);
-                            goto label5;
-                        }
-                        
-                        if (checkShopItemShouldBeDisplayed(FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM)) {
-                            pauseAllCutsceneExecutors();   
+                        } else if (checkShopItemShouldBeDisplayed(FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM)) {
+                            pauseAllCutsceneExecutors();
                             handlePickUpShopItem(FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM);
-label5:
                         }
-                        
+
                         result = 2;
-                        
+
                     }
-                    
+
                 } else {
                     showTextBox(0, FESTIVALS_TEXT_INDEX, 38, 0, 0);
                 }
 
             }
-            
+
             break;
         
     }
@@ -4370,7 +4365,6 @@ bool handleRaceTrackLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
 }
 
-// FIXME: gotos
 bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -4410,11 +4404,13 @@ bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         setSpawnPoint(RANCH_STORE_SPAWN_POINT_1);
                      } else {
                         result = TRUE;
-                        goto label;
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                        result = TRUE;
                      }
                      
                 } else {
-                    goto label;
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    result = TRUE;
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -4449,7 +4445,6 @@ bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) {
-label:
                     showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
                     result = TRUE;
 
