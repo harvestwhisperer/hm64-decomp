@@ -1545,12 +1545,9 @@ void loadNamingScreenCallback(void) {
 }
 
 void mapLoadCallback(void) {
-    
+
     bool set;
-    int checkOverflow;
-    s16 maxHappiness;
-    u8 happinessIncrease;
-    
+
     clearDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
     clearDailyEventBit(BLOCK_BUTTON_USAGE);
     clearDailyEventBit(BLOCK_PAUSE_SCREEN);
@@ -1573,29 +1570,11 @@ void mapLoadCallback(void) {
         setLifeEventBit(CHICK_HATCHED);
         
         set = TRUE;
-        
-        // FIXME: should be inline adjustValue call
 
-        checkOverflow = gHappiness;
-        checkOverflow += 2;
-        maxHappiness = 0xFF;
-        happinessIncrease = 2;
-        
-        if (checkOverflow > maxHappiness) {
-          happinessIncrease -= (checkOverflow - maxHappiness);
-          checkOverflow = maxHappiness;
-        }
-        
-        if (checkOverflow < 0) {
-          happinessIncrease -= checkOverflow;
-        }
-        
-        gHappiness += happinessIncrease;
-
-        //
+        gHappiness += adjustValue(gHappiness, 2, MAX_HAPPINESS);
 
     }
-    
+
     // farm animal born
     if (gBaseMapIndex == BARN && checkLifeEventBit(ANIMAL_SOLD)) {
         
@@ -1609,28 +1588,9 @@ void mapLoadCallback(void) {
         clearLifeEventBit(ANIMAL_SOLD);
             
         set = TRUE;
-        
-        // FIXME: should be inline adjustValue call
 
-        checkOverflow = gHappiness;
-        checkOverflow += 20;
-        maxHappiness = 0xFF;
+        gHappiness += adjustValue(gHappiness, 20, MAX_HAPPINESS);
 
-        happinessIncrease = 20;
-            
-        if (checkOverflow > maxHappiness) {
-          happinessIncrease -= (checkOverflow - maxHappiness);
-          checkOverflow = maxHappiness;
-        }
-            
-        if (checkOverflow < 0) {
-          happinessIncrease -= checkOverflow;
-        }
-            
-        gHappiness += happinessIncrease;
-
-        //
-    
     }
     
     if (gHour >= 18) {
