@@ -235,7 +235,6 @@ void initializeMap(void) {
 
 } 
 
-// FIXME: iterators are messed up; loops are probably inline funcs 
 bool setupMap(u16 mapIndex, 
     u8* grid, 
     void* mesh, 
@@ -250,7 +249,7 @@ bool setupMap(u16 mapIndex,
 
     bool result;
 
-    u16 i, k, l, m, n, o, p, q, j, r;
+    u16 i, j;
 
     u8 centerTileX;
     u8 centerTileZ;
@@ -275,16 +274,16 @@ bool setupMap(u16 mapIndex,
 
         mainMap[mapIndex].mapAdditionsMetadataPtr = mapAdditionsMetadataPtr;
 
-        for (j = 0; j < 16; j++) {
+        for (i = 0; i < 16; i++) {
 
-            mainMap[mapIndex].coreMapObjectsMetadata[j].spriteIndex = 0; 
-            mainMap[mapIndex].coreMapObjectsMetadata[j].repeatObjectCount = 0; 
-            mainMap[mapIndex].coreMapObjectsMetadata[j].unk_0 = 0; 
+            mainMap[mapIndex].coreMapObjectsMetadata[i].spriteIndex = 0; 
+            mainMap[mapIndex].coreMapObjectsMetadata[i].repeatObjectCount = 0; 
+            mainMap[mapIndex].coreMapObjectsMetadata[i].unk_0 = 0; 
 
         }
 
-        for (l = 0; l < MAX_CORE_MAP_OBJECTS; l++) {
-            coreMapObjects[l].flags = 0;
+        for (i = 0; i < MAX_CORE_MAP_OBJECTS; i++) {
+            coreMapObjects[i].flags = 0;
         }
 
         for (i = 0; i < MAX_MAP_OBJECTS; i++) {
@@ -299,10 +298,10 @@ bool setupMap(u16 mapIndex,
             mainMap[mapIndex].weatherSprites[i].flags = 0;
         }
 
-        for (p = 0; p < 480; p++) {
-            mainMap[mapIndex].groundObjects.gridToSpriteIndex[p] = 0;
-            mainMap[mapIndex].groundObjects.previousGridToSpriteIndex[p] = 0;
-            mainMap[mapIndex].groundObjects.nextGridToSpriteIndex[p] = 0;
+        for (i = 0; i < 480; i++) {
+            mainMap[mapIndex].groundObjects.gridToSpriteIndex[i] = 0;
+            mainMap[mapIndex].groundObjects.previousGridToSpriteIndex[i] = 0;
+            mainMap[mapIndex].groundObjects.nextGridToSpriteIndex[i] = 0;
         }
 
         for (i = 0; i < MAX_MAP_ADDITIONS; i++) {
@@ -334,9 +333,9 @@ bool setupMap(u16 mapIndex,
         mainMap[mapIndex].mapState.mapOriginX = ((mainMap[mapIndex].mapGrid.mapWidth * mainMap[mapIndex].mapGrid.tileSizeX) / 2) + (mainMap[mapIndex].mapGrid.tileSizeX / 2);
         mainMap[mapIndex].mapState.mapOriginZ = ((mainMap[mapIndex].mapGrid.mapHeight * mainMap[mapIndex].mapGrid.tileSizeZ) / 2) + (mainMap[mapIndex].mapGrid.tileSizeZ / 2);
 
-        for (r = 0; r < 1596; r++) {
-            gridPositionToX[r] = r % mainMap[mapIndex].mapGrid.mapWidth;
-            gridPositionToZ[r] = r / mainMap[mapIndex].mapGrid.mapWidth;
+        for (i = 0; i < 1596; i++) {
+            gridPositionToX[i] = i % mainMap[mapIndex].mapGrid.mapWidth;
+            gridPositionToZ[i] = i / mainMap[mapIndex].mapGrid.mapWidth;
         }
         
         result = TRUE;
@@ -849,8 +848,7 @@ bool setGroundObjectBitmap(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x
 
 }
 
-// FIXME: inline function used before it's defined means it doesn't properly inline; also can't use `swap16TileIndex` directly
-static inline u16 getTileIndexFromGrid_static_inline(u16 mapIndex, u8 x, u8 z) {
+inline u16 getTileIndexFromGrid(u16 mapIndex, u8 x, u8 z) {
     return swap16TileIndex((&mainMap[mapIndex].mapGrid.gridToTileIndex[mainMap[mapIndex].mapGrid.mapWidth * z])[x]);
 }
 
@@ -886,7 +884,7 @@ f32 getTerrainHeightAtPosition(u16 mapIndex, f32 x, f32 z) {
         
         tileOriginZ = tileIndexZ * mainMap[mapIndex].mapGrid.tileSizeZ;        
 
-        tileIndex = getTileIndexFromGrid_static_inline(mapIndex, tileIndexX, tileIndexZ);
+        tileIndex = getTileIndexFromGrid(mapIndex, tileIndexX, tileIndexZ);
         
         zRemainder = worldZ - tileOriginZ;
         
@@ -1573,10 +1571,6 @@ void setGroundObjects(u16 mapIndex) {
 
 }
 
-inline u16 getTileIndexFromGrid(u16 mapIndex, u8 x, u8 z) {
-    return swap16TileIndex((&mainMap[mapIndex].mapGrid.gridToTileIndex[mainMap[mapIndex].mapGrid.mapWidth * z])[x]);
-}
-
 void setMapGrid(MapGrid* mapGrid, u8* data) {
 
     Swap16 swap;
@@ -1836,30 +1830,21 @@ Gfx* prepareTileTextures(Gfx* dl, MainMap* mainMap, u8 textureIndex) {
 
 Gfx* renderTiles(Gfx* dl, MainMap* mainMap, u16 gridIndex, u8 textureIndex) {
 
-    Swap16 swap;
-    
-    u16 temp;
     u16 tileIndex;
-    
+
     do {
 
         if (checkTileVisible(mainMap, gridPositionToX[gridIndex], gridPositionToZ[gridIndex])) {
 
             mainMap->visibilityGrid[gridPositionToZ[gridIndex]][gridPositionToX[gridIndex]] = TRUE;
-            
+
             // only load texture once for every tile that shares the texture
             if (textureIndex != MAX_TILE_TEXTURES) {
                 dl = prepareTileTextures(dl, mainMap, textureIndex);
                 textureIndex = MAX_TILE_TEXTURES;
             }
 
-            // FIXME: should be inline swap16TileIndex?
-            swap.byte[1] = mainMap->mapGrid.gridToTileIndex[gridIndex] >> 8;
-            swap.byte[0] = mainMap->mapGrid.gridToTileIndex[gridIndex];
-        
-            temp = swap.halfword;
-
-            tileIndex = temp - 1;
+            tileIndex = swap16TileIndex(mainMap->mapGrid.gridToTileIndex[gridIndex]);
             
             dl = appendTileToDL(dl, 
                     mainMap,

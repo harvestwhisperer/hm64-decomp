@@ -118,10 +118,10 @@ typedef struct {
 } CutsceneClearSpecialBitCmd;
 
 typedef struct {
-    u8 variablePtr;
-    u8 unk_1;
-    u8 unk_2;
+    u16 functionIndex;
+    u8 pad;
     u8 value;
+    u8* variablePtr;
 } CutsceneSetU8ValueCmd;
 
 typedef struct {

@@ -789,11 +789,22 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
         // diary
         case 16:
+        
+#if TESTING
+            // skip mayor tour
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && !checkDailyEventBit(DIARY_BLOCKED)) {
+                showDialogueTextBox(DIALOGUE_MENU_DIARY_ROOT);
+                result = TRUE; 
+            }
+            break;
+
+#else
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(DIARY_BLOCKED)) {
                 showDialogueTextBox(DIALOGUE_MENU_DIARY_ROOT);
                 result = TRUE; 
             }
             break;
+#endif
 
         // TV
         case 18:
@@ -3272,11 +3283,9 @@ bool handlePotionShopBedroomLevelInteractions(u16 mapIndex, u8 levelInteractionI
     
 }
 
-// FIXME: lots of unnecessary gotos
 u8 handleSquareLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     u8 result = 0;
-    u8 temp;
 
     switch (levelInteractionIndex) {
 
@@ -3319,13 +3328,10 @@ u8 handleSquareLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
                 if (gPlayer.heldItem == 0) {
-                    temp = DIALOGUE_MENU_SQUARE_STALL;
-label3:
-                    showDialogueTextBox(temp);
+                    showDialogueTextBox(DIALOGUE_MENU_SQUARE_STALL);
                     result = 1;
-label4:
                 }
-                
+
             }
 
             break;
@@ -3333,38 +3339,28 @@ label4:
         // horse/dog race prizes/mayor interaction
         case 21:
 
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
                 if (checkDailyEventBit(HORSE_RACE)) {
 
-                    if (checkAlreadyHaveHorseRacePrize(0) && checkAlreadyHaveHorseRacePrize(1)) {
-                        
-                        if (checkAlreadyHaveHorseRacePrize(2)) {
-                            goto label2;
-                        } else {
-                            goto label;
-                        }
-                        
+                    if (checkAlreadyHaveHorseRacePrize(0) && checkAlreadyHaveHorseRacePrize(1) && checkAlreadyHaveHorseRacePrize(2)) {
+                        showTextBox(0, FESTIVALS_TEXT_INDEX, 71, 0, 0);
                     } else {
                         pauseAllCutsceneExecutors();
                         setMainLoopCallbackFunctionIndex(RACE_GIFTS_LOAD);
                     }
-                    
+
                 } else if (checkAlreadyHaveDogRacePrize(0) && checkAlreadyHaveDogRacePrize(1) && checkAlreadyHaveDogRacePrize(2)) {
-label2:
                     showTextBox(0, FESTIVALS_TEXT_INDEX, 71, 0, 0);
-                    
                 } else {
-label:
                     pauseAllCutsceneExecutors();
                     setMainLoopCallbackFunctionIndex(RACE_GIFTS_LOAD);
-                    
                 }
-                
+
                 result = 1;
-                
+
             }
-            
+
             break;
 
         // mayor wife horse/dog race interaction
@@ -3418,42 +3414,35 @@ label:
                 if (gSeason == SPRING && (18 < gDayOfMonth && gDayOfMonth < 23)) {
 
                     if (gVoteForFlowerFestivalGoddess == 0xFF) {
-                        temp = 9;
-                        goto label3;
+                        showDialogueTextBox(DIALOGUE_MENU_FLOWER_FESTIVAL_VOTE);
                     } else {
                         showTextBox(0, FESTIVALS_TEXT_INDEX, 35, 0, 2);
-                        result = 1;
-                        goto label4;
                     }
-                    
-                }
 
-                if (!checkHaveTool(EMPTY_BOTTLE)) {
+                    result = 1;
+
+                } else if (!checkHaveTool(EMPTY_BOTTLE)) {
 
                     if (gPlayer.heldItem == 0) {
-                    
+
                         if (checkShopItemShouldBeDisplayed(FLOWER_FESTIVAL_EMPTY_BOTTLE_ITEM)) {
                             pauseAllCutsceneExecutors();
                             handlePickUpShopItem(FLOWER_FESTIVAL_EMPTY_BOTTLE_ITEM);
-                            goto label5;
-                        }
-                        
-                        if (checkShopItemShouldBeDisplayed(FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM)) {
-                            pauseAllCutsceneExecutors();   
+                        } else if (checkShopItemShouldBeDisplayed(FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM)) {
+                            pauseAllCutsceneExecutors();
                             handlePickUpShopItem(FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM);
-label5:
                         }
-                        
+
                         result = 2;
-                        
+
                     }
-                    
+
                 } else {
                     showTextBox(0, FESTIVALS_TEXT_INDEX, 38, 0, 0);
                 }
 
             }
-            
+
             break;
         
     }
@@ -4376,7 +4365,6 @@ bool handleRaceTrackLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
 }
 
-// FIXME: gotos
 bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -4416,11 +4404,13 @@ bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         setSpawnPoint(RANCH_STORE_SPAWN_POINT_1);
                      } else {
                         result = TRUE;
-                        goto label;
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                        result = TRUE;
                      }
                      
                 } else {
-                    goto label;
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    result = TRUE;
                 }
                 
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -4455,7 +4445,6 @@ bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) {
-label:
                     showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
                     result = TRUE;
 

@@ -5025,11 +5025,8 @@ void setPotionShopDealerLocation(void) {
 
 void setKentLocation(void) {
 
-    // FIXME: seems fake
-    int temp = 0x40;
-
-    npcs[KENT].wanderRadiusX = temp;
-    npcs[KENT].wanderRadiusZ = temp;
+    npcs[KENT].wanderRadiusX = 64;
+    npcs[KENT].wanderRadiusZ = 64;
     npcs[KENT].movingAnimation = 8;
     npcs[KENT].idleAnimation = 0;
 
@@ -5263,7 +5260,7 @@ void setKentLocation(void) {
         
     } else if (7 < gHour && gHour < 17) {
 
-        npcs[KENT].levelIndex = temp;
+        npcs[KENT].levelIndex = POTION_SHOP;
         npcs[KENT].startingCoordinates.x = 0.0f;
         npcs[KENT].startingCoordinates.y = 0.0f;
         npcs[KENT].direction = NORTHWEST;
@@ -5279,11 +5276,8 @@ void setKentLocation(void) {
 
 void setStuLocation(void) {
     
-    // FIXME: seems fake
-    int temp = 64;
-
-    npcs[STU].wanderRadiusX = temp;
-    npcs[STU].wanderRadiusZ = temp;
+    npcs[STU].wanderRadiusX = 64;
+    npcs[STU].wanderRadiusZ = 64;
     npcs[STU].movingAnimation = 8;
     npcs[STU].idleAnimation = 0;
 
@@ -5509,7 +5503,7 @@ void setStuLocation(void) {
 
     } else if (7 < gHour && gHour < 17) {
 
-        npcs[STU].levelIndex = temp;
+        npcs[STU].levelIndex = POTION_SHOP;
         npcs[STU].startingCoordinates.x = 0.0f;
         npcs[STU].startingCoordinates.y = 0.0f;
         npcs[STU].direction = NORTHWEST;
@@ -7801,7 +7795,7 @@ void handleGotzAnimation(void) {
                 case NPC_ANIMATION_CUSTOM:
 
                     // FIXME: should be inline function
-                    if (npcs[GOTZ].animationState == 0 ) {
+                    if (npcs[GOTZ].animationState == 0) {
 
                         npcs[GOTZ].speed = 0;
                         npcs[GOTZ].animationTimer = 0;
@@ -8822,6 +8816,22 @@ static inline bool checkHoldingItem() {
     return gPlayer.heldItem != 0;
 }
 
+// show the affection heart icon for a marriage-candidate NPC
+static inline void showAffectionHeart(u8 index) {
+
+    switch (index) {
+        case MARIA:
+        case POPURI:
+        case ELLI:
+        case ANN:
+        case KAREN:
+            setOverlayIconSprite(0, 120, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
+            setOverlayIconSprite(1, 120, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
+            break;
+    }
+
+}
+
 // initiates dialogue with NPC on button press or pick up baby
 u8 checkNPCInteraction(void) {
     
@@ -8874,10 +8884,7 @@ u8 checkNPCInteraction(void) {
                 if (dialogueEntryIndex != 0xFFFF) {
 
                     // show heart icon
-                    if (i >= MARIA && i < BABY) {
-                        setOverlayIconSprite(0, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
-                        setOverlayIconSprite(1, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[i] / 52) + 5, 0xFE, 106.0f, -15.0f, 0.0f);
-                    }
+                    showAffectionHeart(i);
                     
                     showMessageBox(0, npcToDialogueBytecodeIndex[i], dialogueEntryIndex, 0, 0);
                     result = 1;
@@ -8924,7 +8931,7 @@ bool findNPCToTalkTo(void) {
 
 }
 
-bool getBlueFeatherResponse(u8 index, u16 textIndex) {
+bool getBlueFeatherResponse(u8 index, u16 dialogueEntryIndex) {
 
     bool result;
     
@@ -8933,12 +8940,9 @@ bool getBlueFeatherResponse(u8 index, u16 textIndex) {
     if (npcs[index].flags & NPC_ENTITY_LOADED) {
 
         // show heart
-        if (index >= MARIA && index < BABY) {
-            setOverlayIconSprite(0, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
-            setOverlayIconSprite(1, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, (npcAffection[index] / 52) + 5, 0xFE, 106.0f, -15.0f, 0);
-        }
+        showAffectionHeart(index);
 
-        showMessageBox(0, npcToDialogueBytecodeIndex[index], textIndex, 0, 0);
+        showMessageBox(0, npcToDialogueBytecodeIndex[index], dialogueEntryIndex, 0, 0);
         result = TRUE;
         
     }
