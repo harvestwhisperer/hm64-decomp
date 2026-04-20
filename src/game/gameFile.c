@@ -1005,9 +1005,9 @@ void gameSelectCallback(void) {
                     loadGameFromSram(gCurrentGameIndex, 0);
                     startGame();
                 } else {
-#if TESTING
                     initializeNewGameState();
                     initializeGameVariables();
+#if TESTING
                     startGame();
 #else
                     initializeNamingScreen(gPlayer.name, 0);
