@@ -789,14 +789,29 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
         // diary
         case 16:
+<<<<<<< HEAD
 
 #if TESTING
             // skip mayor tour
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && !checkDailyEventBit(DIARY_BLOCKED)) {
+=======
+        
+#if TESTING
+            // skip mayor tour
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && !checkDailyEventBit(DIARY_BLOCKED)) {
+                showDialogueTextBox(DIALOGUE_MENU_DIARY_ROOT);
+                result = TRUE; 
+            }
+            break;
+
+#else
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(DIARY_BLOCKED)) {
+>>>>>>> 69e9121 (Revert "Revert "Fix fixmes dev"")
                 showDialogueTextBox(DIALOGUE_MENU_DIARY_ROOT);
                 result = TRUE;
             }
             break;
+#endif
 
 #else
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(DIARY_BLOCKED)) {
