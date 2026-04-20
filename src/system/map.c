@@ -2027,7 +2027,7 @@ Gfx* appendTileToDL(Gfx* dl, MainMap* mainMap, u16 tileIndex, f32 x, f32 y, f32 
 }
 
 // empty function 
-void func_80038514(void) {}
+// void func_80038514(void) {}
 
 void setCoreMapObjects(MainMap* mainMap) {
 
