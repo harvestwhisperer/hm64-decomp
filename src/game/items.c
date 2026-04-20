@@ -2475,12 +2475,11 @@ inline u8 initializeHeldItem(u8 index, u8 arg1, u32 heldItemIndex, s32 hasDirect
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", allocateThrownItemSlot);
 
 u8 allocateThrownItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
-    
+
     u8 found = FALSE;
-    int tempBit = 1;
-    
+
     while (index < 10 && !found) {
-        
+
         if (!(itemInfo[index].flags & ITEM_CONTEXT_ACTIVE)) {
           found = TRUE;
         }
@@ -2489,25 +2488,13 @@ u8 allocateThrownItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg
         }
 
     }
-    
+
     if (found) {
-        
-        // FIXME: inline initializeHeldItem call
-        itemInfo[index].stateIndex = arg1;
-        itemInfo[index].heldItemIndex = heldItemIndex;
-        itemInfo[index].flags = arg3 | (arg4 | tempBit);
-        itemInfo[index].itemAnimationFrameCounter = 0;
-
-        gItemBeingHeld = getHeldItemDialogueItemIndex(heldItemIndex);
-
-        // index = initializeHeldItem(index, arg1, arg2, arg3, arg4);
-
-    }
-      
-    else {
+        index = initializeHeldItem(index, arg1, heldItemIndex, arg3, arg4);
+    } else {
         index = 0xff;
     }
-    
+
     return index;
 
 }
@@ -3206,9 +3193,9 @@ void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
         
         if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
 
-            // FIXME: use a range
-            // fish
-            if (!checkLifeEventBit(MET_KAPPA) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY) && (itemInfo[itemIndex].heldItemIndex - 0x25) < 2U && 8 < gHour && gHour < 17) {
+            if (!checkLifeEventBit(MET_KAPPA) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY)
+                && (itemInfo[itemIndex].heldItemIndex == SMALL_FISH_HELD_ITEM || itemInfo[itemIndex].heldItemIndex == MEDIUM_FISH_HELD_ITEM)
+                && 8 < gHour && gHour < 17) {
                 setDailyEventBit(KAPPA_FISH_OFFERING_DAILY);
             }
 
