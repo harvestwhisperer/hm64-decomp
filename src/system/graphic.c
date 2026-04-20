@@ -32,11 +32,8 @@ Camera gCamera;
 Gfx initGfxList[2][0x20];
 Gfx sceneGraphDisplayList[2][0x500];
 Gfx D_80205000[2][0x20];
-                        
 
 //INCLUDE_RODATA("asm/nonmatchings/systemgraphic", D_8011EC40);
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", graphicsInit);
 
 void graphicsInit(void) {
 
@@ -66,8 +63,6 @@ void graphicsInit(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", drawFrame);
-
 void drawFrame(void) {
 
     gfxTaskNo = 0;
@@ -79,8 +74,6 @@ void drawFrame(void) {
     gGraphicsBufferIndex ^= 1;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", startGfxTask);
 
 volatile u8 startGfxTask(void) {
 
@@ -105,8 +98,6 @@ volatile u8 startGfxTask(void) {
     return gfxTaskNo;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", doViewportGfxTask);
-
 volatile u8 doViewportGfxTask(void) {
 
     Gfx *dl = D_80205000[gGraphicsBufferIndex];
@@ -128,8 +119,6 @@ volatile u8 doViewportGfxTask(void) {
     return gfxTaskNo;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", renderScene);
 
 volatile u8 renderScene() {
 
@@ -156,8 +145,6 @@ volatile u8 renderScene() {
     return gfxTaskNo;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", setBitmapFormat);
 
 // FIXME: something wrong, but matches
 static inline u16 swap16(u16 halfword) {
@@ -223,8 +210,6 @@ void setBitmapFormatAndSize(BitmapObject* sprite, u16* palette) {
 
     }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", loadBitmapTexture);
-
 Gfx* loadBitmapTexture(Gfx* dl, BitmapObject* sprite, u32 offset, u16 height) {
     
     switch (sprite->pixelSize) {
@@ -249,8 +234,6 @@ Gfx* loadBitmapTexture(Gfx* dl, BitmapObject* sprite, u32 offset, u16 height) {
     return dl++;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", setupBitmapVertices);
 
 void setupBitmapVertices(Vtx vtxs[], 
     u16 width, u16 height, 
@@ -385,19 +368,13 @@ void setupBitmapVertices(Vtx vtxs[],
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", sinfRadians);
-
 f32 sinfRadians(f32 angle) {
     return sinf(angle * DEGREES_TO_RADIANS_CONSTANT);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", cosfRadians);
-
 f32 cosfRadians(f32 angle) {
     return cosf(angle * DEGREES_TO_RADIANS_CONSTANT);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", rotateVector3D);
 
 void rotateVector3D(Vec3f inputVec, Vec3f* outputVec, Vec3f rotationAngles) {
     
@@ -465,8 +442,6 @@ void rotateVector3D(Vec3f inputVec, Vec3f* outputVec, Vec3f rotationAngles) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80027B74);
-
 // unused or inline
 // void func_80027B74(Vec3f arg0, Vec3f* arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
     
@@ -488,8 +463,6 @@ void rotateVector3D(Vec3f inputVec, Vec3f* outputVec, Vec3f rotationAngles) {
 //     arg1->z = tempZ;
     
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", calculatePlaneEquation);
 
 inline Plane calculatePlaneEquation( 
     f32 x1, f32 y1, f32 z1, 
@@ -538,8 +511,6 @@ inline Plane calculatePlaneEquation(
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", getHeightFromPlane);
-
 f32 getHeightFromPlane(f32 x, f32 z, Plane planeEquation) {
 
     f32 result;
@@ -549,13 +520,10 @@ f32 getHeightFromPlane(f32 x, f32 z, Plane planeEquation) {
     if (planeEquation.y != 0.0f) {
         result = ( (-(planeEquation.x*x) - (planeEquation.z * z)) - planeEquation.w) / planeEquation.y;
     }
-    
 
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", isPointInTriangle)
 
 u8 isPointInTriangle(f32 pointX, f32 pointY, f32 pointZ, f32 v1x, f32 v1y, f32 v1z, f32 v2x, f32 v2y, f32 v2z, f32 v3x, f32 v3y, f32 v3z) {
 
@@ -587,8 +555,6 @@ u8 isPointInTriangle(f32 pointX, f32 pointY, f32 pointZ, f32 v1x, f32 v1y, f32 v
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", evaluatePlaneEquation);
-
 f32 evaluatePlaneEquation(f32 x, f32 y, f32 z, Plane plane) {
     
     f32 ax = plane.x * x;
@@ -609,8 +575,6 @@ f32 evaluatePlaneEquation(f32 arg0, f32 arg1, f32 arg2, Plane coordinates) {
 }
 */
 
-//INCLUDE_RODATA("asm/nonmatchings/systemgraphic", directionsToYValues);
-
 static const f32 directionsToYValues[8] = {
     0.0f,   // north
     315.0f, // northeast
@@ -621,8 +585,6 @@ static const f32 directionsToYValues[8] = {
     90.0f,  // west
     45.0f   // northwest
 };
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", getMovementVectorFromDirection);
 
 // Alternate: Vec3f* getMovementVectorFromDirection(Vec3f *outputVec, f32 zDisplacement, u8 direction, f32 yOffset)
 
@@ -719,14 +681,10 @@ Vec3f getMovementVectorFromDirection(f32 zDisplacement, u8 direction, f32 yOffse
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", getSpriteYValueFromDirection);
-
 // get y value for sprite based on direction
 f32 getSpriteYValueFromDirection(u8 direction) {
     return directionsToYValues[direction];
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", getTexturePtr);
 
 // get ptr to ci texture from index
 u8* getTexturePtr(u16 spriteIndex, u32* textureIndex) {
@@ -741,15 +699,11 @@ void *getTexturePtr(u16 arg0, u32 *arg1) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", getPalettePtrType1);
-
 // get ptr to palette
 // FIXME: should return u16*?
 u8 *getPalettePtrType1(u16 index, u32 *paletteIndex) {
   return (u8*)paletteIndex + paletteIndex[index];
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", getPalettePtrType2);
 
 // returns palette pointer from sprite-to-palette mapping table
 // used if global sprite flag 0x100 is set
@@ -769,8 +723,6 @@ u8* getPalettePtrType2(u16 arg0, u32 *arg1, u8 *arg2) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", initRcp);
-
 Gfx* initRcp(Gfx* dl) {
     
     gSPSegment(dl++, 0, 0x0);
@@ -780,8 +732,6 @@ Gfx* initRcp(Gfx* dl) {
     return dl++;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", clearFramebuffer);
 
 Gfx* clearFramebuffer(Gfx* dl) {
 
@@ -801,8 +751,6 @@ Gfx* clearFramebuffer(Gfx* dl) {
     return dl++;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", setupCameraMatrices);
 
 Gfx* setupCameraMatrices(Gfx* dl, Camera* camera, SceneMatrices* matrices) {
 
@@ -829,8 +777,6 @@ Gfx* setupCameraMatrices(Gfx* dl, Camera* camera, SceneMatrices* matrices) {
     return dl++;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028C00);
 
 // unused
 // Gfx* func_80028C00(Gfx* dl, Camera* camera) {
@@ -859,8 +805,6 @@ Gfx* setupCameraMatrices(Gfx* dl, Camera* camera, SceneMatrices* matrices) {
 
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", setCameraOrthographicValues);
-
 void setCameraOrthographicValues(Camera* camera, f32 l, f32 r, f32 t, f32 b, f32 n, f32 f) {
     
     camera->l = l;
@@ -872,8 +816,6 @@ void setCameraOrthographicValues(Camera* camera, f32 l, f32 r, f32 t, f32 b, f32
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", setCameraPerspectiveValues);
-
 void setCameraPerspectiveValues(Camera* camera, f32 fov, f32 aspect, f32 near, f32 far) {
 
     camera->fov = fov;
@@ -882,8 +824,6 @@ void setCameraPerspectiveValues(Camera* camera, f32 fov, f32 aspect, f32 near, f
     camera->far = far;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", setCameraLookAt);
 
 void setCameraLookAt(Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32 atY, f32 atZ, f32 upX, f32 upY, f32 upZ) {
 
@@ -901,8 +841,6 @@ void setCameraLookAt(Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32 
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028E14);
-
 // unused
 // used by map as a static inline
 // inline Gfx *func_80028E14(Gfx* dl, u8 a, u8 r, u8 g, u8 b) {
@@ -912,8 +850,6 @@ void setCameraLookAt(Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32 
 //     return dl++;
 
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028E60);
 
 // unused
 // used by map as a static inline
@@ -925,16 +861,12 @@ void setCameraLookAt(Camera* camera, f32 xEye, f32 yEye, f32 zEye, f32 atX, f32 
 
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", func_80028EA8);
-
 // unused
 // void func_80028EA8(UnknownGraphicsStruct* arg0, u8 arg1, u8 arg2, u8 arg3) {
 //     arg0->unk_10 = arg1;
 //     arg0->unk_11 = arg2;
 //     arg0->unk_12 = arg3;
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", setInitialWorldRotationAngles);
 
 void setInitialWorldRotationAngles(f32 x, f32 y, f32 z) {
     
@@ -949,16 +881,12 @@ void setInitialWorldRotationAngles(f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", adjustCurrentWorldRotationAngles);
-
 // mapContext.c --> increments/decrements 6 by 1
 void adjustCurrentWorldRotationAngles(f32 x, f32 y, f32 z) {
     currentWorldRotationAngles.x += x;
     currentWorldRotationAngles.y += y;
     currentWorldRotationAngles.z += z;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/graphic", nuGfxInit);
 
 void nuGfxInit(void) {
 

@@ -238,8 +238,6 @@ void handleElliJeffBabyAnimation(void);
 void handleAnnCliffBabyAnimation(void);
 void handleKarenKaiBabyAnimation(void);
 void handleEntomologistAnimation(void);
- 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", deactivateNPCEntities);
 
 void deactivateNPCEntities(void) {
     
@@ -260,8 +258,6 @@ void deactivateNPCEntities(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", ma);
 
 u8 setupNPCEntity(u8 npcIndex, u8 currentEntityOffset) {
 
@@ -409,8 +405,6 @@ u8 setupNPCEntity(u8 npcIndex, u8 currentEntityOffset) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setupActiveNPCs);
-
 // called on map load
 void setupActiveNPCs(void) {
 
@@ -431,8 +425,6 @@ void setupActiveNPCs(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", updateNPCCoordinates);
-
 void updateNPCCoordinates(void) {
 
     u8 i;
@@ -449,8 +441,6 @@ void updateNPCCoordinates(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", randomizeNPCLocations);
-
 void randomizeNPCLocations(void) {
     
     u8 i;
@@ -460,8 +450,6 @@ void randomizeNPCLocations(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", updateNPCMovement);
 
 void updateNPCMovement(u8 npcIndex) {
 
@@ -511,9 +499,6 @@ void updateNPCMovement(u8 npcIndex) {
     
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", stopNPCMovement);
-
 inline void stopNPCMovement(u8 npcIndex) {
 
     npcs[npcIndex].speed = 0;
@@ -525,8 +510,6 @@ inline void stopNPCMovement(u8 npcIndex) {
     npcs[npcIndex].flags |= NPC_NEEDS_UPDATE;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", updateNPCRandomAnimation);
 
 // FIXME: should be inline?
 void updateNPCWanderAnimation(u8 index) {
@@ -579,8 +562,6 @@ void updateNPCWanderAnimation(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleBabyIdleAnimation);
-
 inline void handleBabyIdleAnimation(u8 index, u8 animationIndex) {
 
     npcs[index].speed = 0;
@@ -592,8 +573,6 @@ inline void handleBabyIdleAnimation(u8 index, u8 animationIndex) {
     npcs[index].flags |= NPC_NEEDS_UPDATE;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", updateBabyWanderAnimation);
 
 void updateBabyWanderAnimation(u8 index, u8 idleAnimation, u8 animationIndex2) {
 
@@ -641,10 +620,6 @@ void updateBabyWanderAnimation(u8 index, u8 idleAnimation, u8 animationIndex2) {
     npcs[index].flags |= NPC_NEEDS_UPDATE;
     
 }
-
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", updateBabyAnimations);
 
 void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 animationIndex3, u8 animationIndex4, u8 animationIndex5, u8 animationIndex6, u8 animationIndex7, u8 animationIndex8, u8 animationIndex9, u8 idleAnimation0, u8 idleAnimation1) {
 
@@ -788,8 +763,7 @@ void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 
             
             break;
 
-
-        case 7:
+case 7:
 
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
@@ -869,8 +843,6 @@ void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", updateBacheloretteBeachAnimation);
-
 void updateBacheloretteBeachAnimation(u8 npcIndex) {
 
     u16 temp;
@@ -932,8 +904,6 @@ void updateBacheloretteBeachAnimation(u8 npcIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setNPCSpawningLocations);
-
 void setNPCSpawningLocations(void) {
     
     // set girls' and baby's location
@@ -992,8 +962,6 @@ void setNPCSpawningLocations(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", getBabyCarryingState);
-
 inline u8 getBabyCarryingState(void) {
 
     u8 result = 0;
@@ -1029,8 +997,6 @@ inline u8 getBabyCarryingState(void) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", getNPCBabyCarryingState);
 
 u8 getNPCBabyCarryingState(u8 npcIndex) {
 
@@ -1114,11 +1080,7 @@ u8 getNPCBabyCarryingState(u8 npcIndex) {
     
 }
 
-
-
 /* set starting locations */
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setMariaLocation);
 
 void setMariaLocation(void) {
 
@@ -1568,8 +1530,6 @@ void setMariaLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setPopuriLocation);
-
 void setPopuriLocation(void) {
 
     u8 result;
@@ -2003,9 +1963,8 @@ void setPopuriLocation(void) {
                             setSpecialDialogueBit(POPURI_AT_BEACH_DIALOGUE);
                             
                         }
-                    
-                        
-                    }
+
+}
                     
                 }
 
@@ -2052,8 +2011,6 @@ void setPopuriLocation(void) {
     npcs[POPURI].animationMode = npcs[POPURI].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setElliLocation);
 
 void setElliLocation(void) {
 
@@ -2475,9 +2432,8 @@ void setElliLocation(void) {
                                 setSpecialDialogueBit(ELLI_AT_MOUNTAIN_1_DIALOGUE);
                                 
                             }       
-                            
-                            
-                        }
+
+}
                         
                     } else {
                              
@@ -2546,8 +2502,6 @@ void setElliLocation(void) {
     npcs[ELLI].animationMode = npcs[ELLI].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setAnnLocation);
 
 void setAnnLocation(void) {
 
@@ -2982,8 +2936,7 @@ void setAnnLocation(void) {
                                 
                                 break;
 
-                            
-                            case 3:
+case 3:
 
                                 if (8 < gHour && gHour < 17) {
                                     
@@ -3000,12 +2953,8 @@ void setAnnLocation(void) {
                                 }
                             
                         }
-                            
-                        
-                            
-                        
-                        
-                    } else {
+
+} else {
                         
                        if (8 < gHour && gHour < 17) {
                         
@@ -3016,9 +2965,8 @@ void setAnnLocation(void) {
                             npcs[ANN].startingCoordinates.x = 80.0f;
                             npcs[ANN].startingCoordinates.z = -144.0f;
                             npcs[ANN].flags |= NPC_ACTIVE;  
-    
-                                
-                        }      
+
+}      
                         
                     }
                    
@@ -3075,8 +3023,7 @@ void setAnnLocation(void) {
                     
                 }
 
-
-                if (gSeason == SUMMER && gDayOfWeek == TUESDAY && gWeather == SUNNY && npcs[ANN].location == 0) {
+if (gSeason == SUMMER && gDayOfWeek == TUESDAY && gWeather == SUNNY && npcs[ANN].location == 0) {
 
                     if (17 < gHour && gHour < 21) {
        
@@ -3091,9 +3038,8 @@ void setAnnLocation(void) {
                         setSpecialDialogueBit(ANN_AT_BEACH_DIALOGUE);
                         
                     }
-                                     
-                    
-                }
+
+}
                 
             } 
         
@@ -3104,8 +3050,6 @@ void setAnnLocation(void) {
     npcs[ANN].animationMode = npcs[ANN].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setKarenLocation);
 
 void setKarenLocation(void) {
 
@@ -3368,9 +3312,8 @@ void setKarenLocation(void) {
                         }
                         
                     }
-                    
-                    
-                }
+
+}
 
                 if (getNPCBabyCarryingState(KAREN) == 1) {
                     npcs[KAREN].idleAnimation = 0x66;
@@ -3393,8 +3336,7 @@ void setKarenLocation(void) {
 
                 switch (gDayOfWeek) {
 
-
-                    case TUESDAY:
+case TUESDAY:
                     case WEDNESDAY:
                     case FRIDAY:
                     case SATURDAY:
@@ -3447,9 +3389,7 @@ void setKarenLocation(void) {
                             
                         }
 
-
-                    
-                }
+}
 
                 if (gDayOfWeek == SUNDAY && gWeather == SUNNY) {
 
@@ -3464,9 +3404,8 @@ void setKarenLocation(void) {
                         npcs[KAREN].flags |= NPC_ACTIVE;
 
                         setSpecialDialogueBit(KAREN_AT_BEACH_DIALOGUE);
-                    
-                        
-                    }
+
+}
                     
                 } 
 
@@ -3545,8 +3484,6 @@ void setKarenLocation(void) {
     npcs[KAREN].animationMode = npcs[KAREN].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setBabyLocation);
 
 void setBabyLocation(void) {
 
@@ -3665,8 +3602,6 @@ void setBabyLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setHarrisLocation);
-
 void setHarrisLocation(void) {
 
     npcs[HARRIS].wanderRadiusX = 0x80;
@@ -3687,9 +3622,8 @@ void setHarrisLocation(void) {
                 npcs[HARRIS].direction = SOUTHWEST;
                 npcs[HARRIS].defaultAnimationMode = NPC_ANIMATION_WANDER;
                 npcs[HARRIS].flags |= NPC_ACTIVE;
-                
-                
-            } else {
+
+} else {
 
                 npcs[HARRIS].levelIndex = VILLAGE_2;
                 npcs[HARRIS].startingCoordinates.x = 0.0f;
@@ -3740,9 +3674,8 @@ void setHarrisLocation(void) {
                     npcs[HARRIS].flags |= NPC_ACTIVE;
 
                     break;
-                
-                
-            }
+
+}
             
         }
         
@@ -3779,11 +3712,8 @@ void setHarrisLocation(void) {
     }
 
     npcs[HARRIS].animationMode = npcs[HARRIS].defaultAnimationMode;
-    
-    
-}
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setGrayLocation);
+}
 
 void setGrayLocation(void) {
 
@@ -3888,8 +3818,6 @@ void setGrayLocation(void) {
     npcs[GRAY].animationMode = npcs[GRAY].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setJeffLocation);
 
 void setJeffLocation(void) {
 
@@ -4023,8 +3951,6 @@ void setJeffLocation(void) {
     npcs[JEFF].animationMode = npcs[JEFF].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setCliffLocation);
 
 void setCliffLocation(void) {
 
@@ -4309,8 +4235,6 @@ void setCliffLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setKaiLocation);
-
 void setKaiLocation(void) {
 
     npcs[KAI].wanderRadiusX = 64;
@@ -4465,8 +4389,6 @@ void setKaiLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setMayorLocation);
-
 void setMayorLocation(void) {
 
     npcs[MAYOR].wanderRadiusX = 64;
@@ -4569,8 +4491,6 @@ void setMayorLocation(void) {
     npcs[MAYOR].animationMode = npcs[MAYOR].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setMayorWifeLocation);
 
 void setMayorWifeLocation(void) {
 
@@ -4683,8 +4603,6 @@ void setMayorWifeLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setLilliaLocation);
-
 void setLilliaLocation(void) {
 
     npcs[LILLIA].wanderRadiusX = 64;
@@ -4731,8 +4649,6 @@ DEFAULT:
     npcs[LILLIA].animationMode = npcs[LILLIA].defaultAnimationMode;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setBasilLocation);
 
 void setBasilLocation(void) {
 
@@ -4813,8 +4729,6 @@ FUNC_END:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setEllenLocation);
-
 void setEllenLocation(void) {
 
     npcs[ELLEN].wanderRadiusX = 64;
@@ -4856,8 +4770,6 @@ void setEllenLocation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setDougLocation);
-
 void setDougLocation(void) {
 
     int temp = gDayOfWeek;
@@ -4892,8 +4804,6 @@ void setDougLocation(void) {
     npcs[DOUG].animationMode = npcs[DOUG].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setGotzLocation);
 
 void setGotzLocation(void) {
 
@@ -4986,16 +4896,13 @@ void setGotzLocation(void) {
             npcs[GOTZ].startingCoordinates.z = -160.0f;
             npcs[GOTZ].flags |= NPC_ACTIVE;
 
-        
-        }
+}
             
     }
         
     npcs[GOTZ].animationMode = npcs[GOTZ].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setSashaLocation);
 
 void setSashaLocation(void) {
 
@@ -5035,8 +4942,6 @@ void setSashaLocation(void) {
     npcs[SASHA].animationMode = npcs[SASHA].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setPotionShopDealerLocation);
 
 void setPotionShopDealerLocation(void) {
 
@@ -5117,8 +5022,6 @@ void setPotionShopDealerLocation(void) {
     npcs[POTION_SHOP_DEALER].animationMode = npcs[POTION_SHOP_DEALER].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setKentLocation);
 
 void setKentLocation(void) {
 
@@ -5374,8 +5277,6 @@ void setKentLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setStuLocation);
-
 void setStuLocation(void) {
     
     // FIXME: seems fake
@@ -5605,8 +5506,7 @@ void setStuLocation(void) {
             }
             
         }
-        
-        
+
     } else if (7 < gHour && gHour < 17) {
 
         npcs[STU].levelIndex = temp;
@@ -5622,8 +5522,6 @@ void setStuLocation(void) {
     npcs[STU].animationMode = npcs[STU].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setMidwifeLocation);
 
 void setMidwifeLocation(void) {
 
@@ -5674,9 +5572,8 @@ void setMidwifeLocation(void) {
                     }
                     
                     break;
-                    
-            
-            }
+
+}
             
         } else if (8 < gHour && gHour < 17) {
 
@@ -5695,8 +5592,6 @@ void setMidwifeLocation(void) {
     npcs[MIDWIFE].animationMode = npcs[MIDWIFE].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setMayLocation);
 
 void setMayLocation(void) {
     
@@ -5822,8 +5717,6 @@ void setMayLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setRickLocation);
-
 void setRickLocation(void) {
 
     npcs[RICK].wanderRadiusX = 64;
@@ -5908,17 +5801,14 @@ void setRickLocation(void) {
                 }
                 
                 break;
-            
-            
-        }
+
+}
         
     } 
         
     npcs[RICK].animationMode = npcs[RICK].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setPastorLocation);
 
 void setPastorLocation(void) {
 
@@ -5949,9 +5839,8 @@ void setPastorLocation(void) {
                     npcs[PASTOR].flags |= NPC_ACTIVE;
                     
                 }
-                
-    
-                break;
+
+break;
             
             case SATURDAY:
                 
@@ -5968,9 +5857,8 @@ void setPastorLocation(void) {
                     }
                 
                 break;
-            
-            
-        }
+
+}
         
     } else if (7 < gHour && gHour < 17) {
 
@@ -5987,8 +5875,6 @@ void setPastorLocation(void) {
     npcs[PASTOR].animationMode = npcs[PASTOR].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setShipperLocation);
 
 void setShipperLocation(void) {
 
@@ -6014,8 +5900,6 @@ void setShipperLocation(void) {
     npcs[SHIPPER].animationMode =  npcs[SHIPPER].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setSaibaraLocation);
 
 void setSaibaraLocation(void) {
 
@@ -6086,8 +5970,6 @@ void setSaibaraLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setDukeLocation);
-
 void setDukeLocation(void) { 
 
     int temp = gDayOfWeek;
@@ -6151,8 +6033,6 @@ void setDukeLocation(void) {
     
 }
 */
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setGregLocation);
 
 void setGregLocation(void) {
 
@@ -6237,8 +6117,6 @@ void setGregLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setCarpenter1Location);
-
 void setCarpenter1Location(void) {
 
     npcs[CARPENTER_1].wanderRadiusX = 64;
@@ -6316,8 +6194,6 @@ void setCarpenter1Location(void) {
     npcs[CARPENTER_1].animationMode = npcs[CARPENTER_1].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setCarpenter2Location);
 
 void setCarpenter2Location(void) {
 
@@ -6397,8 +6273,6 @@ void setCarpenter2Location(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setMasterCarpenterLocation);
-
 void setMasterCarpenterLocation(void) {
 
     npcs[MASTER_CARPENTER].wanderRadiusX = 64;
@@ -6451,8 +6325,6 @@ void setMasterCarpenterLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setHarvestSprite1Location);
-
 void setHarvestSprite1Location(void) {
 
     npcs[HARVEST_SPRITE_1].wanderRadiusX = 64;
@@ -6477,9 +6349,6 @@ void setHarvestSprite1Location(void) {
     npcs[HARVEST_SPRITE_1].animationMode =  npcs[HARVEST_SPRITE_1].defaultAnimationMode;
     
 }
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setHarvestSprite2Location);
 
 void setHarvestSprite2Location(void) {
 
@@ -6506,8 +6375,6 @@ void setHarvestSprite2Location(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setHarvestSprite3Location);
-
 void setHarvestSprite3Location(void) {
 
     npcs[HARVEST_SPRITE_3].wanderRadiusX = 64;
@@ -6532,8 +6399,6 @@ void setHarvestSprite3Location(void) {
     npcs[HARVEST_SPRITE_3].animationMode =  npcs[HARVEST_SPRITE_3].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setSydneyLocation);
 
 void setSydneyLocation(void) {
 
@@ -6572,8 +6437,6 @@ void setSydneyLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setBarleyLocation);
-
 void setBarleyLocation(void) {
 
     npcs[BARLEY].wanderRadiusX = 64;
@@ -6611,8 +6474,6 @@ void setBarleyLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setMrsManaLocation);
-
 void setMrsManaLocation(void) {
     
     npcs[MRS_MANA].wanderRadiusX = 64;
@@ -6638,8 +6499,6 @@ void setMrsManaLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setJohnLocation);
-
 void setJohnLocation(void) {
     
     npcs[JOHN].wanderRadiusX = 64;
@@ -6664,8 +6523,6 @@ void setJohnLocation(void) {
     npcs[JOHN].animationMode =  npcs[JOHN].defaultAnimationMode;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setGourmetJudgeLocation);
 
 void setGourmetJudgeLocation(void) {
 
@@ -6705,8 +6562,6 @@ void setGourmetJudgeLocation(void) {
      npcs[GOURMET_JUDGE].animationMode =  npcs[GOURMET_JUDGE].defaultAnimationMode; 
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setMariaHarrisBabyLocation);
 
 void setMariaHarrisBabyLocation(void) {
 
@@ -6781,8 +6636,6 @@ void setMariaHarrisBabyLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setPopuriGrayBabyLocation);
-
 void setPopuriGrayBabyLocation(void) {
     
     Vec3f vec1;
@@ -6855,8 +6708,6 @@ void setPopuriGrayBabyLocation(void) {
     npcs[POPURI_GRAY_BABY].animationMode = npcs[POPURI_GRAY_BABY].defaultAnimationMode;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setElliJeffBabyLocation);
 
 void setElliJeffBabyLocation(void) {
     
@@ -6931,8 +6782,6 @@ void setElliJeffBabyLocation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setAnnCliffBabyLocation);
-
 void setAnnCliffBabyLocation(void) {
     
     Vec3f vec1;
@@ -7005,8 +6854,6 @@ void setAnnCliffBabyLocation(void) {
     npcs[ANN_CLIFF_BABY].animationMode = npcs[ANN_CLIFF_BABY].defaultAnimationMode;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setKarenKaiBabyLocation);
 
 void setKarenKaiBabyLocation(void) {
 
@@ -7081,8 +6928,6 @@ void setKarenKaiBabyLocation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setEntomologistLocation);
-
 void setEntomologistLocation(void) {
     
     npcs[ENTOMOLOGIST].wanderRadiusX = 64;
@@ -7108,8 +6953,6 @@ void setEntomologistLocation(void) {
     
 }
 
-
-
 /* animations */
 
 static inline void updateAnimation(u8 index) {
@@ -7126,8 +6969,6 @@ static inline void updateAnimation(u8 index) {
 
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", setNPCAnimations);
 
 void setNPCAnimations(void) {
     handleMariaAnimation();
@@ -7179,8 +7020,6 @@ void setNPCAnimations(void) {
     handleEntomologistAnimation();
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleMariaAnimation);
-
 void handleMariaAnimation(void) {
 
     u16 temp;
@@ -7224,8 +7063,6 @@ void handleMariaAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handlePopuriAnimation);
 
 void handlePopuriAnimation(void) {
 
@@ -7325,8 +7162,6 @@ void handlePopuriAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleElliAnimation);
-
 void handleElliAnimation(void) {
     
     u16 temp;
@@ -7371,8 +7206,6 @@ void handleElliAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleAnnAnimation);
-
 void handleAnnAnimation(void) {
 
     u16 temp;
@@ -7416,8 +7249,6 @@ void handleAnnAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleKarenAnimation);
 
 void handleKarenAnimation(void) {
 
@@ -7499,8 +7330,6 @@ void handleKarenAnimation(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleBabyAnimation);
 
 void handleBabyAnimation(void) {
 
@@ -7587,8 +7416,6 @@ void handleBabyAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleHarrisAnimation);
-
 void handleHarrisAnimation(void) {
 
     if (npcs[HARRIS].flags & NPC_ENTITY_LOADED) {
@@ -7620,8 +7447,6 @@ void handleHarrisAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleGrayAnimation);
 
 void handleGrayAnimation(void) {
 
@@ -7669,8 +7494,6 @@ void handleGrayAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleJeffAnimation);
-
 void handleJeffAnimation(void) {
 
     if (npcs[JEFF].flags & NPC_ENTITY_LOADED) {
@@ -7716,8 +7539,6 @@ void handleJeffAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleCliffAnimation);
-
 void handleCliffAnimation(void) {
     
     if (npcs[CLIFF].flags & NPC_ENTITY_LOADED) {
@@ -7749,8 +7570,6 @@ void handleCliffAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleKaiAnimation);
 
 void handleKaiAnimation(void) {
     
@@ -7786,8 +7605,6 @@ void handleKaiAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleMayorAnimation);
-
 void handleMayorAnimation(void) {
     
     if (npcs[MAYOR].flags & NPC_ENTITY_LOADED) {
@@ -7821,9 +7638,6 @@ void handleMayorAnimation(void) {
     }
     
 }
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleMayorWifeAnimation);
 
 void handleMayorWifeAnimation(void) {
     
@@ -7859,8 +7673,6 @@ void handleMayorWifeAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleLilliaAnimation);
-
 void handleLilliaAnimation(void) {
     
     if (npcs[LILLIA].flags & NPC_ENTITY_LOADED) {
@@ -7894,8 +7706,6 @@ void handleLilliaAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleBasilAnimation);
-
 void handleBasilAnimation(void) {
 
     if (npcs[BASIL].flags & NPC_ENTITY_LOADED) {
@@ -7928,8 +7738,6 @@ void handleBasilAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleEllenAnimation);
-
 void handleEllenAnimation(void) {
 
     if (npcs[ELLEN].flags & NPC_ENTITY_LOADED) {
@@ -7956,8 +7764,6 @@ void handleEllenAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleDougAnimation);
-
 void handleDougAnimation(void) {
 
     if (npcs[DOUG].flags & NPC_ENTITY_LOADED) {
@@ -7973,8 +7779,6 @@ void handleDougAnimation(void) {
         updateNPCMovement(DOUG);
     }   
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleGotzAnimation);
 
 void handleGotzAnimation(void) {
 
@@ -8044,8 +7848,6 @@ void handleGotzAnimation(void) {
 
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleSashaAnimation);
 
 void handleSashaAnimation(void) {
 
@@ -8117,8 +7919,6 @@ void handleSashaAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handlePotionShopDealerAnimation);
-
 void handlePotionShopDealerAnimation(void) {
 
     if (npcs[POTION_SHOP_DEALER].flags & NPC_ENTITY_LOADED) {
@@ -8136,8 +7936,6 @@ void handlePotionShopDealerAnimation(void) {
     }   
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleKentAnimation);
 
 void handleKentAnimation(void) {
 
@@ -8207,8 +8005,6 @@ void handleKentAnimation(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleStuAnimation);
-
 void handleStuAnimation(void) {
 
     if (npcs[STU].flags & NPC_ENTITY_LOADED) {
@@ -8226,8 +8022,6 @@ void handleStuAnimation(void) {
     }   
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleMidwifeAnimation);
 
 void handleMidwifeAnimation(void) {
 
@@ -8247,8 +8041,6 @@ void handleMidwifeAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleMayAnimation);
-
 void handleMayAnimation(void) {
 
     if (npcs[MAY].flags & NPC_ENTITY_LOADED) {
@@ -8266,8 +8058,6 @@ void handleMayAnimation(void) {
     }   
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleRickAnimation);
 
 void handleRickAnimation(void) {
 
@@ -8287,8 +8077,6 @@ void handleRickAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handlePastorAnimation);
-
 void handlePastorAnimation(void) {
 
     if (npcs[PASTOR].flags & NPC_ENTITY_LOADED) {
@@ -8306,8 +8094,6 @@ void handlePastorAnimation(void) {
     }   
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleShipperAnimation);
 
 void handleShipperAnimation(void) {
 
@@ -8327,8 +8113,6 @@ void handleShipperAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleSaibaraAnimation);
-
 void handleSaibaraAnimation(void) {
 
     if (npcs[SAIBARA].flags & NPC_ENTITY_LOADED) {
@@ -8347,7 +8131,6 @@ void handleSaibaraAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleDukeAnimation);
 void handleDukeAnimation(void) {
 
     if (npcs[DUKE].flags & NPC_ENTITY_LOADED) {
@@ -8364,8 +8147,6 @@ void handleDukeAnimation(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleGregAnimation);
 
 void handleGregAnimation(void) {
 
@@ -8384,8 +8165,6 @@ void handleGregAnimation(void) {
     }   
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleCarpenter1Animation);
 
 void handleCarpenter1Animation(void) {
 
@@ -8479,8 +8258,6 @@ void handleCarpenter1Animation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleCarpenter2Animation);
-
 void handleCarpenter2Animation(void) {
 
     u16 temp;
@@ -8570,8 +8347,6 @@ void handleCarpenter2Animation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleMasterCarpenterAnimation);
-
 void handleMasterCarpenterAnimation(void) {
     
     if (npcs[MASTER_CARPENTER].flags & NPC_ENTITY_LOADED) {
@@ -8617,8 +8392,6 @@ void handleMasterCarpenterAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleHarvestSprite1Animation);
-
 void handleHarvestSprite1Animation(void) {
 
     if (npcs[HARVEST_SPRITE_1].flags & NPC_ENTITY_LOADED) {
@@ -8652,8 +8425,6 @@ void handleHarvestSprite1Animation(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleHarvestSprite2Animation);
 
 void handleHarvestSprite2Animation(void) {
 
@@ -8689,8 +8460,6 @@ void handleHarvestSprite2Animation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleHarvestSprite3Animation);
-
 void handleHarvestSprite3Animation(void) {
 
     if (npcs[HARVEST_SPRITE_3].flags & NPC_ENTITY_LOADED) {
@@ -8725,8 +8494,6 @@ void handleHarvestSprite3Animation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleSydneyAnimation);
-
 void handleSydneyAnimation(void) {
 
     if (npcs[SYDNEY].flags & NPC_ENTITY_LOADED) {
@@ -8744,8 +8511,6 @@ void handleSydneyAnimation(void) {
     }   
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleBarleyAnimation);
 
 void handleBarleyAnimation(void) {
 
@@ -8765,8 +8530,6 @@ void handleBarleyAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleMrsManaAnimation);
-
 void handleMrsManaAnimation(void) {
 
     if (npcs[MRS_MANA].flags & NPC_ENTITY_LOADED) {
@@ -8784,8 +8547,6 @@ void handleMrsManaAnimation(void) {
     }   
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleJohnAnimation);
 
 void handleJohnAnimation(void) {
 
@@ -8805,8 +8566,6 @@ void handleJohnAnimation(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleGourmetJudgeAnimation);
-
 void handleGourmetJudgeAnimation(void) {
 
     if (npcs[GOURMET_JUDGE].flags & NPC_ENTITY_LOADED) {
@@ -8824,8 +8583,6 @@ void handleGourmetJudgeAnimation(void) {
     }   
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleMariaHarrisBabyAnimation);
 
 void handleMariaHarrisBabyAnimation(void) {
 
@@ -8868,8 +8625,6 @@ void handleMariaHarrisBabyAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handlePopuriGrayBabyAnimation);
-
 void handlePopuriGrayBabyAnimation(void) {
 
     if (npcs[POPURI_GRAY_BABY].flags & NPC_ENTITY_LOADED) {
@@ -8910,8 +8665,6 @@ void handlePopuriGrayBabyAnimation(void) {
     }   
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleElliJeffBabyAnimation);
 
 void handleElliJeffBabyAnimation(void) {
 
@@ -8954,8 +8707,6 @@ void handleElliJeffBabyAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleAnnCliffBabyAnimation);
-
 void handleAnnCliffBabyAnimation(void) {
 
     if (npcs[ANN_CLIFF_BABY].flags & NPC_ENTITY_LOADED) {
@@ -8996,8 +8747,6 @@ void handleAnnCliffBabyAnimation(void) {
     }    
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleKarenKaiBabyAnimation);
 
 void handleKarenKaiBabyAnimation(void) {
 
@@ -9040,8 +8789,6 @@ void handleKarenKaiBabyAnimation(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/npc", handleEntomologistAnimation);
-
 void handleEntomologistAnimation(void) {
 
     if (npcs[ENTOMOLOGIST].flags & NPC_ENTITY_LOADED) {
@@ -9070,10 +8817,6 @@ void handleEntomologistAnimation(void) {
     }   
     
 }
-
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", checkNPCInteraction);
 
 static inline bool checkHoldingItem() {
     return gPlayer.heldItem != 0;
@@ -9153,8 +8896,6 @@ u8 checkNPCInteraction(void) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/npc", findNPCToTalkTo);
 
 bool findNPCToTalkTo(void) {
 

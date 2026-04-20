@@ -21,7 +21,6 @@ struct {
 
 #define specialDialogueBitsPointer (specialDialogueBitsWrapper.ptr)
 
-
 Dialogue dialogues[MAX_DIALOGUES];
 // game state updated by/talked about in dialogues
 DialogueVariable dialogueVariables[MAX_DIALOGUE_VARIABLES];
@@ -35,7 +34,6 @@ void updateDialogueButtonIcon2Display(u16 index);
 void updateDialogueButtonIcon3Display(u16 index);
 void handleMenuNavigation(u16);
 void updateCurrentDialogue(u16);
-
 
 void initializeDialogueSessionManagers(void) {
  
@@ -482,7 +480,7 @@ inline void setDialogueVariableValue(u16 index, u16 value) {
     }
     
 }
- 
+
 inline u32 getDialogueVariableValue(u16 index) {
 
     u32 value;

@@ -68,9 +68,6 @@ void addMessageCharSceneNode(MessageBox* messageBox, u8 line, Gfx* dl);
 u32 getTextAddress(u16 index, u16 offset);
 void unpackFontCI2Data(u16, MessageBoxFont*, u8*);
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", initializeMessageBoxes);
-
 void initializeMessageBoxes(void) {
 
     u16 i = 0;
@@ -139,8 +136,6 @@ void initializeMessageBoxes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", initializeEmptyMessageBox);
-
 bool initializeEmptyMessageBox(u16 messageBoxIndex, u8* textBufferAddr) {
  
     bool set = FALSE;
@@ -178,8 +173,6 @@ bool initializeEmptyMessageBox(u16 messageBoxIndex, u8* textBufferAddr) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", deactivateMessageBox);
-
 bool deactivateMessageBox(u16 index) {
 
     bool result = FALSE;
@@ -207,8 +200,6 @@ bool deactivateMessageBox(u16 index) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", initializeMessageBox);
 
 bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textIndex, u32 mode) {
 
@@ -304,8 +295,6 @@ bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textI
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxRGBA);
-
 bool setMessageBoxRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = FALSE;
@@ -334,8 +323,6 @@ bool setMessageBoxRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", adjustMessageBoxTargetRGBA);
-
 bool adjustMessageBoxTargetRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
     bool result = FALSE;
@@ -357,8 +344,6 @@ bool adjustMessageBoxTargetRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxRGBAWithTransition);
 
 bool setMessageBoxRGBAWithTransition(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
@@ -435,8 +420,6 @@ bool setMessageBoxRGBAWithTransition(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxAlphaWithTransition);
-
 // unused
 // bool setMessageBoxAlphaWithTransition(u16 index, u8 arg1, s16 arg2) {
 
@@ -474,8 +457,6 @@ bool setMessageBoxRGBAWithTransition(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate
     
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", checkMessageBoxRGBAComplete);
-
 bool checkMessageBoxRGBAComplete(u16 index) {
 
     bool result = FALSE;
@@ -491,8 +472,6 @@ bool checkMessageBoxRGBAComplete(u16 index) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxBaseRGBA);
 
 bool setMessageBoxBaseRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
@@ -517,8 +496,6 @@ bool setMessageBoxBaseRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", checkAnyMessageBoxTextFinished);
-
 bool checkAnyMessageBoxTextFinished(void) {
 
     u16 i;
@@ -535,8 +512,6 @@ bool checkAnyMessageBoxTextFinished(void) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", resetMessageBoxAnimation);
 
 bool resetMessageBoxAnimation(u16 index) {
 
@@ -570,8 +545,6 @@ bool resetMessageBoxAnimation(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxInterpolationRate);
-
 // unused
 // bool setMessageBoxInterpolationRate(u16 index, s16 rate) {
 
@@ -591,8 +564,6 @@ bool resetMessageBoxAnimation(u16 index) {
     
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setTextAddresses);
-
 bool setTextAddresses(u16 textAddressesIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 indexVaddr) {
 
     bool result = FALSE;
@@ -611,8 +582,6 @@ bool setTextAddresses(u16 textAddressesIndex, u32 romIndexStart, u32 romIndexEnd
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxInterpolationWithFlags);
 
 bool setMessageBoxInterpolationWithFlags(u16 index, s16 rate, u8 interpolationMode) {
     
@@ -656,8 +625,6 @@ bool setMessageBoxInterpolationWithFlags(u16 index, s16 rate, u8 interpolationMo
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxFont);
-
 bool setMessageBoxFont(u16 index, u8 arg1, u8 arg2, u8* compressedCI2FontData, u16* fontPalettePtr) {
     
     bool result = FALSE;
@@ -681,8 +648,6 @@ bool setMessageBoxFont(u16 index, u8 arg1, u8 arg2, u8* compressedCI2FontData, u
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxSfx);
-
 bool setMessageBoxSfx(u16 index, u32 arg1, u32 arg2, u32 arg3) {
 
     bool result = FALSE;
@@ -704,8 +669,6 @@ bool setMessageBoxSfx(u16 index, u32 arg1, u32 arg2, u32 arg3) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxViewSpacePosition);
 
 bool setMessageBoxViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
@@ -729,8 +692,6 @@ bool setMessageBoxViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxLineAndRowSizes);
-
 bool setMessageBoxLineAndRowSizes(u16 index, u8 arg1, u8 arg2) {
 
     bool result = FALSE;
@@ -750,8 +711,6 @@ bool setMessageBoxLineAndRowSizes(u16 index, u8 arg1, u8 arg2) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxSpacing);
 
 bool setMessageBoxSpacing(u16 index, u8 charSpacing, u8 lineSpacing) {
 
@@ -773,8 +732,6 @@ bool setMessageBoxSpacing(u16 index, u8 charSpacing, u8 lineSpacing) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxSpriteIndices);
 
 bool setMessageBoxSpriteIndices(u16 index, u8 dialogueWindowIndex, u8 overlayIconIndex, u8 characterAvatarIndex) {
 
@@ -816,8 +773,6 @@ bool setMessageBoxSpriteIndices(u16 index, u8 dialogueWindowIndex, u8 overlayIco
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setDialogueWindowSprite);
-
 bool setDialogueWindowSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -852,8 +807,6 @@ bool setDialogueWindowSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u3
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setOverlayIconSprite);
 
 bool setOverlayIconSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, 
@@ -891,8 +844,6 @@ bool setOverlayIconSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 r
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setCharacterAvatarSprite);
 
 bool setCharacterAvatarSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, 
     u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
@@ -934,13 +885,9 @@ bool setCharacterAvatarSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setCharacterAvatarAnimationsPtr);
-
 void setCharacterAvatarAnimationsPtr(u8* arg0) {
     characterAvatarsAnimationsPtr = arg0;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxButtonMask);
 
 bool setMessageBoxButtonMask(u16 index, u16 arg1) {
 
@@ -956,8 +903,6 @@ bool setMessageBoxButtonMask(u16 index, u16 arg1) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setMessageBoxScrollSpeed);
 
 bool setMessageBoxScrollSpeed(u16 index, s16 speed) {
 
@@ -975,9 +920,6 @@ bool setMessageBoxScrollSpeed(u16 index, s16 speed) {
     
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", setGameVariableString);
-
 bool setGameVariableString(u16 index, u8* ptr, s8 length) {
 
     bool result = FALSE;
@@ -994,8 +936,6 @@ bool setGameVariableString(u16 index, u8* ptr, s8 length) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", convertNumberToGameVariableString);
 
 // set number string for game variables based on their current quantity
 bool convertNumberToGameVariableString(u16 index, u32 number, u8 terminatorType) {
@@ -1052,8 +992,6 @@ advancePosition:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", clearTextBuffer);
-
 void clearTextBuffer(void) {
 
     u16 i;
@@ -1063,8 +1001,6 @@ void clearTextBuffer(void) {
     }
     
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/system/message", clearMessageBoxTextBuffer);
 
 bool clearMessageBoxTextBuffer(u16 index) {
 
@@ -1098,8 +1034,6 @@ bool clearMessageBoxTextBuffer(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", scrollMessageBoxDown);
-
 bool scrollMessageBoxDown(u16 index) {
 
     bool result = FALSE;
@@ -1131,8 +1065,6 @@ bool scrollMessageBoxDown(u16 index) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", scrollMessageBoxUp);
 
 bool scrollMessageBoxUp(u16 index) {
 
@@ -1169,8 +1101,6 @@ bool scrollMessageBoxUp(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", checkMoreLinesToPrint);
-
 bool checkMoreLinesToPrint(u16 index) {
 
     bool result = FALSE;
@@ -1187,8 +1117,6 @@ bool checkMoreLinesToPrint(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", checkMessageBoxScrolled);
- 
 u8 checkMessageBoxScrolled(u16 index) {
 
     u8 count = 0;
@@ -1202,8 +1130,6 @@ u8 checkMessageBoxScrolled(u16 index) {
     return count;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", updateScrollDownAnimation);
 
 void updateScrollDownAnimation(u16 index) {
 
@@ -1222,8 +1148,6 @@ void updateScrollDownAnimation(u16 index) {
     }
        
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", updateScrollUpAnimation);
 
 void updateScrollUpAnimation(u16 index) {
 
@@ -1253,8 +1177,6 @@ static const u8 digitCharacterCodes[16] = {
 };
 
 //INCLUDE_RODATA("asm/nonmatchings/systemmessage", digitCharacterCodes);
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", countTextLines);
 
 u8 countTextLines(u16 index, u16 textIndex) {
     
@@ -1344,8 +1266,6 @@ u8 countTextLines(u16 index, u16 textIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", advanceToLine);
-
 void advanceToLine(u16 index, u8 linesToSkip) {
     
     u8 i;
@@ -1417,8 +1337,6 @@ void advanceToLine(u16 index, u8 linesToSkip) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", processText);
 
 void processText(u16 index) {
     
@@ -1567,8 +1485,6 @@ void processText(u16 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", updateMessageBoxText);
 
 void updateMessageBoxText(u16 index) {
     
@@ -1888,8 +1804,6 @@ void updateMessageBoxText(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", readCompressedCharacter);
-
 u16 readCompressedCharacter(u16 index) {
     
     u16 character;
@@ -1926,8 +1840,6 @@ u16 readCompressedCharacter(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", readGameVariableChar);
-
 u8 readGameVariableChar(u16 index) {
 
     u8 result;
@@ -1950,8 +1862,6 @@ u8 readGameVariableChar(u16 index) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", getTextAddress);
 
 // returns rom address for text
 u32 getTextAddress(u16 index, u16 textIndex) {
@@ -1992,8 +1902,6 @@ static inline void swapBottom(u8* source, u8* dest) {
     *dest |= *source & 3;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", unpackFontCI2Data);
 
 // outputs CI2 data (pixel values range from 0-3, corresponding to one of four palettes)
 void unpackFontCI2Data(u16 characterIndex, MessageBoxFont* fontContext, u8 outputBuffer[]) {
@@ -2046,8 +1954,6 @@ void unpackFontCI2Data(u16 characterIndex, MessageBoxFont* fontContext, u8 outpu
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", setupMessageBoxScissor);
-
 Gfx* setupMessageBoxScissor(Gfx* dl, MessageBox* messageBox) {
 
     u16 ulx, uly, lrx, lry;
@@ -2077,8 +1983,6 @@ Gfx* setupMessageBoxScissor(Gfx* dl, MessageBox* messageBox) {
     return dl++;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", renderMessageBoxLine);
 
 Gfx* renderMessageBoxLine(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 arg3) {
 
@@ -2157,8 +2061,6 @@ Gfx* renderMessageBoxLine(Gfx* dl, MessageBox* messageBox, u8 lineNumber, s32 ar
     return dl++;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/message", addMessageCharSceneNode);
 
 void addMessageCharSceneNode(MessageBox* messageBox, u8 line, Gfx* dl) {
 
@@ -2332,8 +2234,6 @@ static inline u8 updateMessageBoxRGBA(u16 i) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/message", updateMessageBox);
-
 void updateMessageBox(void) {
     
     u16 i = 0;
@@ -2410,9 +2310,8 @@ void updateMessageBox(void) {
                         }
                         
                     }
-                    
-                
-                }
+
+}
                 
             }
 

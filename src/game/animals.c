@@ -62,7 +62,6 @@ u16 deadAnimalCount;
 // purchased animal type
 u8 selectedAnimalType;
 
-
 // data
 
 Vec3f chickenStartingCoordinates[] = {
@@ -169,9 +168,6 @@ void updateCricket(u8);
 void updateDogActionState(void);         
 void showAnimalExpressionBubble(u8, u8, u8);
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", deactivateAnimalEntities);
-
 void deactivateAnimalEntities(void) {
 
     u8 i;
@@ -229,8 +225,6 @@ void deactivateAnimalEntities(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", setAnimalState);
 
 void setAnimalState(u8 animalType, u8 index, u8 type, u8 condition, u8 actionState) {
 
@@ -290,8 +284,6 @@ void setAnimalState(u8 animalType, u8 index, u8 type, u8 condition, u8 actionSta
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", adjustAllAnimalAffection);
-
 void adjustAllAnimalAffection(s8 amount) {
 
     u8 i;
@@ -305,23 +297,17 @@ void adjustAllAnimalAffection(s8 amount) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", adjustDogAffection);
-
 inline void adjustDogAffection(s8 amount) {
     if (dogInfo.flags & DOG_ACTIVE) {
         dogInfo.affection += adjustValue(dogInfo.affection, amount, 0xFF);
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", adjustHorseAffection);
-
 inline void adjustHorseAffection(s8 amount) {
     if (horseInfo.flags & HORSE_ACTIVE) {
         horseInfo.affection += adjustValue(horseInfo.affection, amount, 0xFF);
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", adjustFarmAnimalAffection);
 
 void adjustFarmAnimalAffection(u8 animalIndex, s8 amount) {
     
@@ -402,8 +388,6 @@ void adjustFarmAnimalAffection(u8 animalIndex, s8 amount) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getMilkHeldItemIndex);
-
 inline u16 getMilkHeldItemIndex(u8 animalIndex, u8 arg1) {
 
     u16 res;
@@ -432,8 +416,6 @@ inline u16 getMilkHeldItemIndex(u8 animalIndex, u8 arg1) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getWoolHeldItemIndex);
-
 inline u16 getWoolHeldItemIndex(u8 animalIndex, u8 arg1) {
 
     u16 res;
@@ -453,8 +435,6 @@ inline u16 getWoolHeldItemIndex(u8 animalIndex, u8 arg1) {
     return res;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handlePlayerAnimalInteraction);
 
 bool handlePlayerAnimalInteraction(void) {
 
@@ -513,9 +493,8 @@ bool handlePlayerAnimalInteraction(void) {
                             gSelectedAnimalIndex = i;
                             
                             setgAnimalSalePrice();
-                            
-                            
-                        } else {
+
+} else {
                             showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 92, 0, 2);
                         }
                         
@@ -967,8 +946,6 @@ bool handlePlayerAnimalInteraction(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeAnimalEntities);
-
 void initializeAnimalEntities(void) {
 
     u8 i;
@@ -995,8 +972,6 @@ void initializeAnimalEntities(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", deactivateAnimalsAfterCutscene);
 
 void deactivateAnimalsAfterCutscene(void) {
 
@@ -1043,8 +1018,6 @@ void deactivateAnimalsAfterCutscene(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAnimalCoordinates);
-
 void updateAnimalCoordinates(void) {
 
     u8 i = 0;
@@ -1087,8 +1060,6 @@ void updateAnimalCoordinates(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAnimals);
-
 void updateAnimals(void) {
 
     u8 i;
@@ -1111,8 +1082,6 @@ void updateAnimals(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", feedAllAnimals);
-
 void feedAllAnimals(void) {
 
     u8 i;
@@ -1126,8 +1095,6 @@ void feedAllAnimals(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", resetAnimalStatuses);
 
 void resetAnimalStatuses(void) {
 
@@ -1157,8 +1124,6 @@ void resetAnimalStatuses(void) {
 
     horseInfo.flags &= ~(HORSE_BRUSHED_DAILY | HORSE_WHISTLED_DAILY | HORSE_RODE_DAILY | HORSE_TALKED_TO_DAILY);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeNewChicken);
 
 u8 initializeNewChicken(u8 animalType, u8 arg1) {
 
@@ -1208,8 +1173,6 @@ u8 initializeNewChicken(u8 animalType, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeChicken);
-
 void initializeChicken(u8 chickenIndex) {
 
     gChickens[chickenIndex].location = 0;
@@ -1239,8 +1202,6 @@ void initializeChicken(u8 chickenIndex) {
     gChickens[chickenIndex].name[5] = 0;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8008820C);
 
 u8 initializeNewFarmAnimal(u8 animalType, u8 arg1) {
 
@@ -1295,8 +1256,6 @@ u8 initializeNewFarmAnimal(u8 animalType, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", setMrsManaCowsNames);
-
 void setMrsManaCowsNames(void) {
 
     mrsManaCow1Index = initializeNewFarmAnimal(1, 0);
@@ -1326,16 +1285,12 @@ void setMrsManaCowsNames(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeWatchedCows);
-
 // initialize watched cows from Doug
 void initializeWatchedCows(void) {
     initializeFarmAnimal(mrsManaCow1Index);
     initializeFarmAnimal(mrsManaCow2Index);
     initializeFarmAnimal(mrsManaCow3Index);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", setFarmAnimalLocation);
 
 void setFarmAnimalLocation(u8 animalIndex) {
 
@@ -1362,8 +1317,6 @@ void setFarmAnimalLocation(u8 animalIndex) {
 
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeFarmAnimal);
 
 void initializeFarmAnimal(u8 animalIndex) {
 
@@ -1395,8 +1348,6 @@ void initializeFarmAnimal(u8 animalIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeDog);
-
 void initializeDog(void) {
 
     dogInfo.location = FARM;
@@ -1412,8 +1363,6 @@ void initializeDog(void) {
     dogInfo.coordinates.z = 96.0f;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeHorse);
 
 void initializeHorse(void) {
     
@@ -1433,8 +1382,6 @@ void initializeHorse(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", setAnimalLocations);
-
 void setAnimalLocations(u8 mapIndex) {
 
     u8 i;
@@ -1452,8 +1399,6 @@ void setAnimalLocations(u8 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", setDogLocation);
-
 void setDogLocation(u8 mapIndex) {
 
     if (dogInfo.flags & DOG_ACTIVE && (mapIndex == 0xFF || dogInfo.location == mapIndex)) {
@@ -1467,8 +1412,6 @@ void setDogLocation(u8 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", setHorseLocation);
-
 void setHorseLocation(u8 mapIndex) {
 
     if (horseInfo.flags & HORSE_ACTIVE && (mapIndex == 0xFF || horseInfo.location == mapIndex)) {
@@ -1481,8 +1424,6 @@ void setHorseLocation(u8 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", resetFarmAnimalLocation);
-
 void resetFarmAnimalLocation(u8 mapIndex, u8 animalIndex) {
 
     if ((gFarmAnimals[animalIndex].flags & FARM_ANIMAL_ACTIVE) && (mapIndex == 0xFF ||  gFarmAnimals[animalIndex].location == mapIndex)) {
@@ -1490,8 +1431,6 @@ void resetFarmAnimalLocation(u8 mapIndex, u8 animalIndex) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", resetChickenLocation);
 
 void resetChickenLocation(u8 mapIndex, u8 chickenIndex) {
 
@@ -1518,8 +1457,6 @@ void resetChickenLocation(u8 mapIndex, u8 chickenIndex) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", spawnWildAnimals);
 
 void spawnWildAnimals(void) {
 
@@ -1808,8 +1745,6 @@ void spawnWildAnimals(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", spawnMiscAnimal);
-
 u8 spawnMiscAnimal(u8 animalType, u8 direction, f32 x, f32 y, f32 z) {
 
     u8 i = 0;
@@ -1849,8 +1784,6 @@ u8 spawnMiscAnimal(u8 animalType, u8 direction, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateDogAffectionIfFed);
-
 void updateDogAffectionIfFed(void) {
     
     if (checkDailyEventBit(FED_DOG) && (dogInfo.flags & DOG_ACTIVE)) {
@@ -1858,8 +1791,6 @@ void updateDogAffectionIfFed(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateChickenStartOfDay);
 
 void updateChickenStartOfDay(u8 index) {
     
@@ -1976,8 +1907,6 @@ void updateChickenStartOfDay(u8 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateFarmAnimalStartOfDay);
 
 void updateFarmAnimalStartOfDay(u8 index) {
     
@@ -2254,8 +2183,6 @@ void updateFarmAnimalStartOfDay(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateHorseAge);
-
 void updateHorseAge(void) {
 
     if ((horseInfo.flags & HORSE_ACTIVE) && horseInfo.grown == FALSE) {
@@ -2270,8 +2197,6 @@ void updateHorseAge(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeDogEntity);
 
 void initializeDogEntity(void) {
     
@@ -2296,8 +2221,6 @@ void initializeDogEntity(void) {
     updateDog();
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeChickenEntity);
 
 void initializeChickenEntity(u8 chickenIndex) {
 
@@ -2342,8 +2265,6 @@ void initializeChickenEntity(u8 chickenIndex) {
     updateChicken(chickenIndex);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeFarmAnimalEntity);
 
 void initializeFarmAnimalEntity(u8 index) {
 
@@ -2409,8 +2330,6 @@ void initializeFarmAnimalEntity(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeHorseEntity);
-
 void initializeHorseEntity(void) {
 
     if ((horseInfo.flags & HORSE_ACTIVE) && (horseInfo.location == gBaseMapIndex) && !(horseInfo.flags & 8)) {
@@ -2441,8 +2360,6 @@ void initializeHorseEntity(void) {
     updateHorse();
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", initializeMiscAnimalEntity);
 
 void initializeMiscAnimalEntity(u8 index, u8 arg1) {
 
@@ -2577,8 +2494,6 @@ void initializeMiscAnimalEntity(u8 index, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateDog);
-
 void updateDog(void) {
 
     Vec3f vec;
@@ -2604,8 +2519,6 @@ void updateDog(void) {
     } 
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateDogActionState);
 
 void updateDogActionState(void) {
 
@@ -2823,8 +2736,7 @@ void updateDogActionState(void) {
 
             break;
 
-
-        case 6:
+case 6:
 
             dogInfo.speed = 0;
             dogInfo.stateTimer = 0;
@@ -3067,8 +2979,7 @@ void updateDogActionState(void) {
             
             break;
 
-        
-        case 20:
+case 20:
             
             dogInfo.speed = 0;
             dogInfo.stateTimer = 10;
@@ -3217,8 +3128,6 @@ void updateDogActionState(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateChicken);
-
 void updateChicken(u8 index) {
     
     Vec3f vec;
@@ -3264,8 +3173,6 @@ void updateChicken(u8 index) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultChickenNormal);
 
 void updateAdultChickenNormal(u8 index) {
 
@@ -3403,8 +3310,6 @@ void updateAdultChickenNormal(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultChickenStarved);
-
 void updateAdultChickenStarved(u8 chickenIndex) {
 
     u16 temp;
@@ -3425,8 +3330,6 @@ void updateAdultChickenStarved(u8 chickenIndex) {
     gChickens[chickenIndex].flags |= CHICKEN_STATE_CHANGED;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateChick);
 
 void updateChick(u8 index) {
 
@@ -3511,8 +3414,6 @@ void updateChick(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateChickenEgg);
-
 void updateChickenEgg(u8 chickenIndex) {
 
     switch (gChickens[chickenIndex].actionState) {
@@ -3528,8 +3429,6 @@ void updateChickenEgg(u8 chickenIndex) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateFarmAnimal);
 
 void updateFarmAnimal(u8 index) {
 
@@ -3678,8 +3577,6 @@ void updateFarmAnimal(u8 index) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultCowNormal);
 
 void updateAdultCowNormal(u8 index) {
     
@@ -3992,8 +3889,6 @@ void updateAdultCowNormal(u8 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultCowHappy);
 
 void updateAdultCowHappy(u8 index) {
 
@@ -4318,8 +4213,6 @@ void updateAdultCowHappy(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultCowMad);
-
 void updateAdultCowMad(u8 index) {
 
     u16 temp;
@@ -4386,8 +4279,7 @@ void updateAdultCowMad(u8 index) {
             gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
-        
-        case 1:
+case 1:
 
             gFarmAnimals[index].speed = 0.5f;
             gFarmAnimals[index].stateTimer = 0;
@@ -4612,8 +4504,6 @@ void updateAdultCowMad(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultCowSick);
-
 void updateAdultCowSick(u8 index) {
 
     u16 temp;
@@ -4678,8 +4568,7 @@ void updateAdultCowSick(u8 index) {
             gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
-        
-        case 1:
+case 1:
 
             gFarmAnimals[index].speed = 0.5f;
             gFarmAnimals[index].stateTimer = 0;
@@ -4885,8 +4774,6 @@ void updateAdultCowSick(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateCalf);
-
 void updateCalf(u8 index) {
     
     u16 temp;
@@ -4957,8 +4844,7 @@ void updateCalf(u8 index) {
             gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
-        
-        case 1:
+case 1:
 
             gFarmAnimals[index].speed = 1.0f;
             gFarmAnimals[index].stateTimer = 0;
@@ -5180,8 +5066,6 @@ void updateCalf(u8 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateBabyCow);
 
 void updateBabyCow(u8 index) {
 
@@ -5253,8 +5137,7 @@ void updateBabyCow(u8 index) {
             gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
-        
-        case 1:
+case 1:
 
             gFarmAnimals[index].speed = 1.0f;
             gFarmAnimals[index].stateTimer = 0;
@@ -5476,8 +5359,6 @@ void updateBabyCow(u8 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updatePregnantCow);
 
 void updatePregnantCow(u8 index) {
 
@@ -5784,8 +5665,6 @@ void updatePregnantCow(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultSheepNormal);
-
 void updateAdultSheepNormal(u8 index) {
 
     u16 temp;
@@ -5917,8 +5796,7 @@ void updateAdultSheepNormal(u8 index) {
             
             break;
 
-
-        case 4:
+case 4:
 
             gFarmAnimals[index].speed = 0;
             gFarmAnimals[index].stateTimer = 0;
@@ -6039,8 +5917,6 @@ void updateAdultSheepNormal(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateAdultSheepSick);
-
 void updateAdultSheepSick(u8 index) {
 
     switch (gFarmAnimals[index].actionState) {
@@ -6118,8 +5994,6 @@ void updateAdultSheepSick(u8 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateShearedSheepNormal);
 
 void updateShearedSheepNormal(u8 index) {
 
@@ -6331,8 +6205,6 @@ void updateShearedSheepNormal(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateShearedSheepSick);
-
 void updateShearedSheepSick(u8 farmAnimalIndex) {
 
     u16 temp;
@@ -6407,8 +6279,6 @@ void updateShearedSheepSick(u8 farmAnimalIndex) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateBabySheep);
 
 void updateBabySheep(u8 farmAnimalIndex) {
 
@@ -6631,8 +6501,6 @@ void updateBabySheep(u8 farmAnimalIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateHorse);
-
 void updateHorse(void) {
 
     Vec3f vec;
@@ -6660,8 +6528,6 @@ void updateHorse(void) {
 
     } 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateHorseGrown);
 
 void updateHorseGrown(void) {
 
@@ -6873,9 +6739,8 @@ void updateHorseGrown(void) {
            
             horseInfo.flags |= HORSE_STATE_CHANGED;
             break;
-        
-        
-        case 16:
+
+case 16:
             
             horseInfo.speed = 0;
             horseInfo.stateTimer = 0;
@@ -6926,8 +6791,6 @@ void updateHorseGrown(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateHorseNotGrown);
 
 void updateHorseNotGrown(void) {
 
@@ -7154,8 +7017,6 @@ void updateHorseNotGrown(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateMiscAnimal);
-
 void updateMiscAnimal(u8 index) {
 
     Vec3f vec;
@@ -7250,8 +7111,6 @@ void updateMiscAnimal(u8 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateMiscDog);
 
 void updateMiscDog(u8 index) {
     
@@ -7766,8 +7625,6 @@ void updateMiscDog(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateVillageDog);
-
 void updateVillageDog(u8 index) {
 
     u16 temp;
@@ -8099,8 +7956,6 @@ void updateVillageDog(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateCat);
-
 void updateCat(u8 index) {
     
     u32 temp;
@@ -8292,8 +8147,6 @@ void updateCat(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateRanchHorse);
-
 void updateRanchHorse(u8 index) {
 
     u16 temp;
@@ -8344,8 +8197,6 @@ void updateRanchHorse(u8 index) {
      }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateWildSheep);
 
 void updateWildSheep(u8 index) {
 
@@ -8454,8 +8305,7 @@ void updateWildSheep(u8 index) {
                 gMiscAnimals[index].actionState = 6;
             }
 
-            
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 5:
@@ -8489,8 +8339,6 @@ void updateWildSheep(u8 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateRanchCow);
 
 void updateRanchCow(u8 index) {
 
@@ -8698,12 +8546,9 @@ void updateRanchCow(u8 index) {
             gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
-
-    }
+}
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateFox);
 
 void updateFox(u8 index) {
     
@@ -8819,8 +8664,6 @@ void updateFox(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateBunny);
-
 void updateBunny(u8 index) {
 
     u16 temp;
@@ -8934,8 +8777,6 @@ void updateBunny(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateSquirrel);
-
 void updateSquirrel(u8 index) {
 
     u16 temp;
@@ -8977,8 +8818,7 @@ void updateSquirrel(u8 index) {
         
             break;
 
-
-        case 1:
+case 1:
             gMiscAnimals[index].zDisplacement = 1;
             gMiscAnimals[index].timer = 0;
             gMiscAnimals[index].unk_14 = 0;
@@ -9009,9 +8849,7 @@ void updateSquirrel(u8 index) {
             gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
-
-    
-        case 16:
+case 16:
             gMiscAnimals[index].zDisplacement = 0;
             gMiscAnimals[index].timer = 0;
             gMiscAnimals[index].unk_14 = 0;
@@ -9063,8 +8901,6 @@ void updateSquirrel(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateMonkey);
-
 void updateMonkey(u8 index) {
 
     u16 temp;
@@ -9108,8 +8944,7 @@ void updateMonkey(u8 index) {
         
             break;
 
-
-        case 1:
+case 1:
             gMiscAnimals[index].zDisplacement = 1;
             gMiscAnimals[index].timer = 0;
             gMiscAnimals[index].unk_14 = 0;
@@ -9124,9 +8959,7 @@ void updateMonkey(u8 index) {
             gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
-
-
-        case 2:
+case 2:
             gMiscAnimals[index].zDisplacement = 0;
             gMiscAnimals[index].timer = 0;
             gMiscAnimals[index].unk_14 = 0;
@@ -9143,8 +8976,7 @@ void updateMonkey(u8 index) {
             
             break;
 
-
-        case 3:
+case 3:
             gMiscAnimals[index].zDisplacement = 0;
             gMiscAnimals[index].timer = 0;
             gMiscAnimals[index].unk_14 = 0;
@@ -9203,12 +9035,9 @@ void updateMonkey(u8 index) {
             gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
-
-    }
+}
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateSparrow);
 
 void updateSparrow(u8 index) {
 
@@ -9312,8 +9141,6 @@ void updateSparrow(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateBird);
-
 void updateBird(u8 index) {
     
     u16 temp;
@@ -9415,8 +9242,6 @@ void updateBird(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateCrab);
-
 void updateCrab(u8 index) {
     
     u32 temp;
@@ -9494,8 +9319,6 @@ void updateCrab(u8 index) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateSnake);
-
 void updateSnake(u8 index) {
 
     u16 temp;
@@ -9567,8 +9390,6 @@ void updateSnake(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateWhiteButterfly);
-
 void updateWhiteButterfly(u8 index) {
 
     switch (gMiscAnimals[index].actionState) {
@@ -9600,8 +9421,6 @@ void updateWhiteButterfly(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateLadybug);
-
 void updateLadybug(u8 index) {
 
     switch (gMiscAnimals[index].actionState) {
@@ -9626,8 +9445,6 @@ void updateLadybug(u8 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateCicada);
 
 void updateCicada(u8 index) {
 
@@ -9678,8 +9495,6 @@ void updateCicada(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateHornedBeetle);
-
 void updateHornedBeetle(u8 index) {
 
      switch (gMiscAnimals[index].actionState) {
@@ -9720,8 +9535,6 @@ void updateHornedBeetle(u8 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateStagBeetle);
 
 void updateStagBeetle(u8 index) {
 
@@ -9764,8 +9577,6 @@ void updateStagBeetle(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateDragonfly);
-
 void updateDragonfly(u8 index) {
 
     u16 temp;
@@ -9800,8 +9611,6 @@ void updateDragonfly(u8 index) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateCricket);
 
 void updateCricket(u8 index) {
     
@@ -9838,7 +9647,6 @@ void updateCricket(u8 index) {
     }
     
 }
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleFarmAnimalPlayerCollision);
 
 void handleFarmAnimalPlayerCollision(void) {
     
@@ -9860,8 +9668,6 @@ void handleFarmAnimalPlayerCollision(void) {
     } 
         
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleChickenPlayerCollision);
 
 void handleChickenPlayerCollision(void) {
 
@@ -9886,8 +9692,6 @@ void handleChickenPlayerCollision(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleDogPlayerCollision);
-
 void handleDogPlayerCollision(void) {
 
     checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, 0);
@@ -9898,8 +9702,6 @@ void handleDogPlayerCollision(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHorsePlayerInteraction);
 
 bool handleHorsePlayerInteraction(void) {
     
@@ -9919,8 +9721,6 @@ bool handleHorsePlayerInteraction(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHorseGrownPlayerInteraction);
-
 bool handleHorseGrownPlayerInteraction(void) {
     
     bool result = FALSE;
@@ -9934,8 +9734,6 @@ bool handleHorseGrownPlayerInteraction(void) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleBrushFarmAnimal);
 
 bool handleBrushFarmAnimal(void) {
 
@@ -9985,8 +9783,6 @@ bool handleBrushFarmAnimal(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleBrushHorse);
-
 bool handleBrushHorse(void) {
 
     bool result = FALSE;
@@ -10016,8 +9812,6 @@ bool handleBrushHorse(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHorseShippingItem);
-
 bool handleHorseShippingItem(void) {
 
     bool result = FALSE;
@@ -10035,8 +9829,6 @@ bool handleHorseShippingItem(void) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleAnimalMedicineUse);
 
 bool handleAnimalMedicineUse(void) {
 
@@ -10070,8 +9862,6 @@ bool handleAnimalMedicineUse(void) {
     return set;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleMilkCow);
 
 bool handleMilkCow(void) {
 
@@ -10117,9 +9907,8 @@ bool handleMilkCow(void) {
                         set = TRUE;
                         
                         break;
-                    
-                    
-                }
+
+}
                 
             } 
             
@@ -10132,8 +9921,6 @@ bool handleMilkCow(void) {
     return set;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleUseMiraclePotion);
 
 u8 handleUseMiraclePotion(void) {
 
@@ -10171,8 +9958,6 @@ u8 handleUseMiraclePotion(void) {
     return set;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleGetMilkWithBottle);
 
 bool handleGetMilkWithBottle(void) {
 
@@ -10219,8 +10004,6 @@ bool handleGetMilkWithBottle(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleShearSheep);
-
 void handleShearSheep(void) {
 
     u8 i = 0;
@@ -10252,8 +10035,6 @@ void handleShearSheep(void) {
     } 
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHitFarmAnimalWithTool);
 
 bool handleHitFarmAnimalWithTool(void) {
 
@@ -10316,8 +10097,6 @@ bool handleHitFarmAnimalWithTool(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHitChickenWithTool);
-
 bool handleHitChickenWithTool(void) {
 
     u8 i = 0;
@@ -10359,8 +10138,6 @@ bool handleHitChickenWithTool(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHitDogWithTool);
- 
 bool handleHitDogWithTool(void) {
 
     bool result = FALSE;
@@ -10384,8 +10161,6 @@ bool handleHitDogWithTool(void) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHitHorseWithTool);
 
 bool handleHitHorseWithTool(void) {
     
@@ -10411,8 +10186,6 @@ bool handleHitHorseWithTool(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleWhistleForDog);
-
 void handleWhistleForDog(void) {
 
     if (dogInfo.flags & DOG_ENTITY_LOADED) {
@@ -10427,8 +10200,6 @@ void handleWhistleForDog(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleWhistleForHorse);
 
 void handleWhistleForHorse(void) {
     
@@ -10445,8 +10216,6 @@ void handleWhistleForHorse(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleCallFarmAnimalsWithCowBell);
-
 void handleCallFarmAnimalsWithCowBell(void) {
 
     u8 i;
@@ -10461,8 +10230,6 @@ void handleCallFarmAnimalsWithCowBell(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalFarmAnimalsByType);
 
 u8 getTotalFarmAnimalsByType(u8 type) {
 
@@ -10481,8 +10248,6 @@ u8 getTotalFarmAnimalsByType(u8 type) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalPregnantFamAnimals);
-
 u8 getTotalPregnantFamAnimals(void) {
 
     u8 i;
@@ -10499,8 +10264,6 @@ u8 getTotalPregnantFamAnimals(void) {
     return count;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalFarmAnimalsCount);
 
 // check all farm animals + animals going to be born
 u8 getTotalFarmAnimalsCount(void) {
@@ -10525,8 +10288,6 @@ u8 getTotalFarmAnimalsCount(void) {
     return count;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalCowsCount);
 
 u8 getTotalCowsCount(void) {
 
@@ -10553,8 +10314,6 @@ u8 getTotalCowsCount(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getCowWithHighestAffection);
-
 u8 getCowWithHighestAffection(void) {
 
     u8 i;
@@ -10577,8 +10336,6 @@ u8 getCowWithHighestAffection(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalSheepCount);
-
 u8 getTotalSheepCount(void) {
 
     u8 i;
@@ -10598,8 +10355,6 @@ u8 getTotalSheepCount(void) {
     return count;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalChickenCount);
 
 u8 getTotalChickenCount(void) {
 
@@ -10626,8 +10381,6 @@ u8 getTotalChickenCount(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getHealthyChickenCount);
-
 u8 getHealthyChickenCount(void) {
 
     u8 i;
@@ -10645,8 +10398,6 @@ u8 getHealthyChickenCount(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getChickenEggCount);
-
 u8 getChickenEggCount(void) {
 
     u8 i;
@@ -10663,8 +10414,6 @@ u8 getChickenEggCount(void) {
     return count;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", handleHatchChicken);
 
 void handleHatchChicken() {
 
@@ -10705,8 +10454,6 @@ void handleHatchChicken() {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getIncubatingEggCount);
-
 u8 getIncubatingEggCount(void) {
 
     u8 i;
@@ -10723,8 +10470,6 @@ u8 getIncubatingEggCount(void) {
     return sum;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009B828);
 
 u8 func_8009B828(u8 arg0) {
 
@@ -10757,7 +10502,6 @@ u8 func_8009B828(u8 arg0) {
     return count;
     
 }
-//INCLUDE_ASM("asm/nonmatchings/game/animals", setgAnimalSalePrice);
 
 void setgAnimalSalePrice() {
 
@@ -10828,8 +10572,6 @@ void setgAnimalSalePrice() {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", generateMilkTypeString);
-
 void generateMilkTypeString(u8 index) {
 
     u16 temp;
@@ -10881,8 +10623,6 @@ void generateMilkTypeString(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", func_8009BB70);
-
 // same as func_80061690
 // unused
 // void func_8009BB70(void) {
@@ -10893,8 +10633,6 @@ void generateMilkTypeString(u8 index) {
 //     D_801886D4[4] = 0xF6;
 //     D_801886D4[5] = 0xF6;
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getBestCowMilkType);
 
 u8 getBestCowMilkType(void) {
 
@@ -10927,19 +10665,13 @@ u8 getBestCowMilkType(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getDogBestRacePlacement);
-
 u8 getDogBestRacePlacement(void) {
     return dogInfo.bestRacePlacement;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", getHorseBestRacePlacement);
-
 u8 getHorseBestRacePlacement(void) {
     return horseInfo.bestRacePlacement;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", randomizeMiscAnimalSpawnVariants);
 
 void randomizeMiscAnimalSpawnVariants(void) {
 
@@ -10950,8 +10682,6 @@ void randomizeMiscAnimalSpawnVariants(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/animals", showAnimalExpressionBubble);
 
 void showAnimalExpressionBubble(u8 animalType, u8 animalIndex, u8 arg2) {
 

@@ -475,8 +475,6 @@ void loadMapAtSpawnPoint(u16 spawnPoint) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", setupLevelMap);
-
 void setupLevelMap(u16 mapIndex) {
 
     enableMapController(MAIN_MAP_INDEX);
@@ -500,8 +498,6 @@ void setupLevelMap(u16 mapIndex) {
     setGroundObjects(MAIN_MAP_INDEX);
 
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/game/level", setLevelAudio);
 
 void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
 
@@ -556,8 +552,6 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", getDefaultLevelLighting);
-
 Vec4f* getDefaultLevelLighting(Vec4f* rgba, u16 mapIndex) {
 
     Vec4f vec;
@@ -573,13 +567,9 @@ Vec4f* getDefaultLevelLighting(Vec4f* rgba, u16 mapIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", getLevelFlags);
-
 u8 getLevelFlags(u16 mapIndex) {
     return levelFlags[mapIndex];
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/level", loadLevelGroundObjects);
 
 void loadLevelGroundObjects(u16 mapIndex) {
 
@@ -734,8 +724,6 @@ void loadLevelGroundObjects(u16 mapIndex) {
             break;
     }    
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/level", loadLevelMapObjects);
 
 void loadLevelMapObjects(u16 levelIndex) {
 
@@ -1326,8 +1314,6 @@ void loadLevelMapObjects(u16 levelIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", setChickenFeedSprite);
-
 void setChickenFeedSprite(u8 itemIndex) {
 
     Vec3f arr[6];
@@ -1343,8 +1329,6 @@ void setChickenFeedSprite(u8 itemIndex) {
     setMapObject(MAIN_MAP_INDEX, itemIndex, MAP_OBJECT_1 + itemIndex, 12, arr[itemIndex].x, arr[itemIndex].y, arr[itemIndex].z, 0xFF, 0xFF, 0, 0);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/level", setBarnFodderSprite);
 
 void setBarnFodderSprite(u8 itemIndex) {
 
@@ -1415,8 +1399,6 @@ static const Vec3f barnFodderCoordinates[] = {
     { 120.0f, 0.0f, -104.0f },
     { 220.0f, 0.0f, -264.0f },
 };
-
-//INCLUDE_ASM("asm/nonmatchings/game/level", initializeMapAdditionsForLevel);
 
 void initializeMapAdditionsForLevel(u16 levelIndex) {
 
@@ -1664,8 +1646,6 @@ void initializeMapAdditionsForLevel(u16 levelIndex) {
     }   
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", setAdditionalMapAdditionsForLevel);
-
 void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
     
     switch (mapIndex) {
@@ -1810,13 +1790,9 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/level", getMapForSpawnPoint);
-
 u8 getMapForSpawnPoint(u8 spawnPoint) {
     return spawnPointToMap[spawnPoint];
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/level", getCantEnterTextIndex);
 
 u16 getCantEnterTextIndex(u16 spawnPoint) {
 
