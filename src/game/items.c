@@ -1985,7 +1985,6 @@ u8 itemFatigueReductionValue[] = {
     0, /* 223 */
 };
 
-
 // rodata
 static const u8 D_80122340[];
 static const u8 D_80122344[];
@@ -1995,7 +1994,6 @@ static const u8 D_80122350[];
 static const u8 D_8012235C[];
 static const u8 D_80122368[];
 static const u8 D_80122374[];
-
 
 // forward declarations
 bool processStumpHit(u8 arg0, s16 x, s16 z);
@@ -2038,16 +2036,11 @@ void handleItemDroppedInWater(u8 arg0, u8 index);
 u8 getHeldItemDialogueItemIndex(u8);
 u16 getItemFlags(u16 index);
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", resetToolUseState);
-
 void resetToolUseState(void) {
     toolUse.unk_0 = 0;
     toolUse.stepIndex = 0;
     toolUse.toolUseState = 2;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getToolLevel);
 
 u8 getToolLevel(u8 tool) {
 
@@ -2068,8 +2061,6 @@ u8 getToolLevel(u8 tool) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", spawnToolEffectEntity);
-
 void spawnToolEffectEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
     loadEntity(ENTITY_ITEM_BASE_INDEX + itemOffset, ENTITY_ASSET_TOOL_EFFECTS, 1);
@@ -2082,8 +2073,6 @@ void spawnToolEffectEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z
     setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemOffset, animationIndex);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", spawnFishingRodEntity);
 
 void spawnFishingRodEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z) {
 
@@ -2098,19 +2087,13 @@ void spawnFishingRodEntity(u8 itemOffset, u8 animationIndex, f32 x, f32 y, f32 z
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemEntityAnimation);
-
 void setItemEntityAnimation(u8 itemOffset, u8 animationIndex) {
     setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemOffset, animationIndex);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", deactivateItemEntity);
-
 void deactivateItemEntity(u8 offset) {
     deactivateEntity(ENTITY_ITEM_BASE_INDEX + offset);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processStumpHit);
 
 bool processStumpHit(u8 groundObjectIndex, s16 x, s16 z) {
 
@@ -2172,8 +2155,6 @@ bool processStumpHit(u8 groundObjectIndex, s16 x, s16 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processBoulderHit);
-
 bool processBoulderHit(u8 groundObjectIndex, s16 x, s16 z) {
     
     bool result = FALSE;
@@ -2234,8 +2215,6 @@ bool processBoulderHit(u8 groundObjectIndex, s16 x, s16 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleMusicBoxDigging);
-
 inline u8 handleMusicBoxDigging(s16 x, s16 z) {
     
     if (gBaseMapIndex == FARM) {
@@ -2255,8 +2234,6 @@ inline u8 handleMusicBoxDigging(s16 x, s16 z) {
     return toolUse.musicBoxTileDigCounter;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleToolUse);
 
 void handleToolUse(void) {
 
@@ -2356,8 +2333,6 @@ void handleToolUse(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processToolUseState);
-
 void processToolUseState(void) {
 
     if (toolUse.toolUseState) {
@@ -2393,8 +2368,7 @@ void processToolUseState(void) {
 //     }
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D0360);
-
+// sickle
 void useSickle(void) {
 
     Vec3f vec;
@@ -2559,8 +2533,6 @@ void useSickle(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D093C);
-
 void useHoe(void) {
 
     Vec3f vec;
@@ -2681,8 +2653,6 @@ void useHoe(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D0DD4);
-
 void useAx(void) {
     
     Vec3f vec;
@@ -2734,8 +2704,7 @@ void useAx(void) {
                         vec2.x = 16.0f;
                         vec2.z = -16.0f;
 
-                        
-                        break;
+break;
                     
                     case 0xCB:
                         addGroundObjectToMap(gBaseMapIndex, BASE_TILE, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
@@ -2811,8 +2780,6 @@ void useAx(void) {
     handleHitHorseWithTool();
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D1DB0);
 
 void useHammer(void) {
 
@@ -2989,8 +2956,6 @@ void useHammer(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D304C);
-
 void useWateringCan(void) {
     
     Vec3f vec;
@@ -3143,21 +3108,15 @@ void useWateringCan(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3694);
-
 void useMilker(void) {
     handleMilkCow();
     toolUse.toolUseState = 0;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D36BC);
-
 void useCowBell(void) {
     handleCallFarmAnimalsWithCowBell();
     toolUse.toolUseState = 0;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D36E4);
 
 void useBrush(void) {
     handleBrushFarmAnimal();
@@ -3165,14 +3124,10 @@ void useBrush(void) {
     toolUse.toolUseState = 0;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3714);
-
 void useClippers(void) {
     handleShearSheep();
     toolUse.toolUseState = 0;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D373C);
 
 void useTurnipSeeds(void) {
 
@@ -3216,8 +3171,6 @@ void useTurnipSeeds(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3958);
-
 void usePotatoSeeds(void) {
 
     u8 direction;
@@ -3259,8 +3212,6 @@ void usePotatoSeeds(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3B74);
 
 void useCabbageSeeds(void) {
  
@@ -3304,8 +3255,6 @@ void useCabbageSeeds(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3D90);
-
 void useTomatoSeeds(void) {
 
     u8 direction;
@@ -3348,8 +3297,6 @@ void useTomatoSeeds(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D3FAC);
-
 void useCornSeeds(void) {
 
     u8 direction;
@@ -3390,8 +3337,6 @@ void useCornSeeds(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D41C8);
 
 void useEggplantSeeds(void) {
 
@@ -3436,8 +3381,6 @@ void useEggplantSeeds(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D43E4);
-
 void useStrawberrySeeds(void) {
     
     u8 direction;
@@ -3479,8 +3422,6 @@ void useStrawberrySeeds(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D45F4);
 
 void useMoonDropSeeds(void) {
 
@@ -3526,8 +3467,6 @@ void useMoonDropSeeds(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4814);
-
 void usePinkCatMintSeeds(void) {
 
     u8 direction;
@@ -3569,8 +3508,6 @@ void usePinkCatMintSeeds(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4A34);
-
 void useBlueMistSeeds(void) {
 
     u8 direction;
@@ -3604,8 +3541,6 @@ void useBlueMistSeeds(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4C28);
-
 void useChickenFeed(void) {
     
     u8 levelInteractionIndex;
@@ -3627,13 +3562,9 @@ void useFeedingBottle(void) {}
 
 void useUnknownTool(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4CC0);
-
 void useFishingPole(void) {
     toolUse.toolUseState = 0;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4CD0);
 
 void useMiraclePotion(void) {
 
@@ -3647,8 +3578,6 @@ void useMiraclePotion(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4D1C);
-
 void useCowMedicine(void) {
 
     if (handleAnimalMedicineUse()) {
@@ -3660,8 +3589,6 @@ void useCowMedicine(void) {
     toolUse.toolUseState = 0;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D4D68);
 
 void useGrassSeeds(void) {
 
@@ -3732,8 +3659,6 @@ static const u8 D_80122368[12] = { 3, 4, 5, 2, 8, 6, 1, 0, 7, 0, 0, 0 };
 //INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", D_80122374);
 
 static const u8 D_80122374[12] = { 5, 4, 3, 6, 8, 2, 7, 0, 1, 0, 0, 0 };
- 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleBlueFeatherUse);
 
 void handleBlueFeatherUse(void) {
      
@@ -3804,8 +3729,6 @@ func_end:
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D5130);
-
 void useEmptyBottle(void) {
 
     if (checkWaterableSoilInteraction(gBaseMapIndex)) {
@@ -3819,8 +3742,6 @@ void useEmptyBottle(void) {
     toolUse.toolUseState = 0;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", clearAllItemContextSlots);
 
 // inline, used by initializeGameVariables
 void clearAllItemContextSlots(void) {
@@ -3851,8 +3772,6 @@ void clearAllItemContextSlots(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", loadActiveItemEntities);
-
 void loadActiveItemEntities(void) {
 
     u8 i;
@@ -3864,8 +3783,6 @@ void loadActiveItemEntities(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", initializeHeldItem);
 
 inline u8 initializeHeldItem(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment) {
 
@@ -3880,15 +3797,12 @@ inline u8 initializeHeldItem(u8 index, u8 stateIndex, u32 heldItemIndex, u16 has
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", allocateThrownItemSlot);
-
 u8 allocateThrownItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment) {
     
     u8 found = FALSE;
-    int tempBit = 1;
-    
+
     while (index < 10 && !found) {
-        
+
         if (!(itemInfo[index].flags & ITEM_CONTEXT_ACTIVE)) {
           found = TRUE;
         }
@@ -3897,30 +3811,16 @@ u8 allocateThrownItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDir
         }
 
     }
-    
+
     if (found) {
-        
-        // FIXME: inline initializeHeldItem call
-        itemInfo[index].stateIndex = stateIndex;
-        itemInfo[index].heldItemIndex = heldItemIndex;
-        itemInfo[index].flags = hasDirectionFrame | (useAttachment | tempBit);
-        itemInfo[index].itemAnimationFrameCounter = 0;
-
-        gItemBeingHeld = getHeldItemDialogueItemIndex(heldItemIndex);
-
-        // index = initializeHeldItem(index, stateIndex, heldItemINdex, hasDirectionFrame, hasDirectionFrame);
-
-    }
-      
-    else {
+        index = initializeHeldItem(index, stateIndex, heldItemIndex, hasDirectionFrame, useAttachment);
+    } else {
         index = 0xff;
     }
-    
+
     return index;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", allocateGroundItemSlot);
 
 u8 allocateGroundItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment) {
     
@@ -3952,8 +3852,6 @@ u8 allocateGroundItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDir
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", clearHeldItemSlot);
-
 void clearHeldItemSlot(u8 index) {
 
     if (itemInfo[index].flags & ITEM_CONTEXT_ACTIVE) {
@@ -3964,13 +3862,9 @@ void clearHeldItemSlot(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D55B8);
-
 u16 func_800D55B8(u8 index) {
     return itemInfo[index].heldItemIndex;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemState);
 
 void setItemState(u8 index, u8 stateIndex) {
 
@@ -3979,8 +3873,6 @@ void setItemState(u8 index, u8 stateIndex) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemPosition);
 
 void setItemPosition(u8 index, f32 x, f32 y, f32 z) {
 
@@ -3991,8 +3883,6 @@ void setItemPosition(u8 index, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemAttachmentOffset);
-
 void setItemAttachmentOffset(u8 index, f32 x, f32 y, f32 z) {
 
     itemInfo[index].attachmentOffset.x = x;
@@ -4001,8 +3891,6 @@ void setItemAttachmentOffset(u8 index, f32 x, f32 y, f32 z) {
     itemInfo[index].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
      
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", loadHeldItemEntity);
 
 void loadHeldItemEntity(u8 itemIndex, u16 heldItemIndex) {
 
@@ -4046,8 +3934,6 @@ u16 getItemFlags(u16 index) {
     return itemFlags[index];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getItemAnimationIndex);
-
 u16 getItemAnimationIndex(u16 index) {
 
   u16 result;
@@ -4070,19 +3956,13 @@ u16 getItemAnimationIndex(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getItemStaminaIncreaseValue);
-
 u8 getItemStaminaIncreaseValue(u16 index) {
     return itemStaminaRestorationValue[index];
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getItemFatigueReductionValue);
-
 u8 getItemFatigueReductionValue(u16 index) {
     return itemFatigueReductionValue[index];
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handlePickUpGroundItem);
 
 bool handlePickUpGroundItem(void) {
 
@@ -4150,8 +4030,6 @@ bool handlePickUpGroundItem(void) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handlePutDownHeldItem);
 
 // handle putting objects down
 bool handlePutDownHeldItem(u8 itemIndex) {
@@ -4234,7 +4112,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
             dogInfo.direction = convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             dogInfo.location = gBaseMapIndex;
 
-            dogInfo.flags &= ~DOG_HELD;
+            dogInfo.flags &= ~8;
 
             initializeDogEntity();
             
@@ -4414,8 +4292,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
                 
             }
 
-            
-            break;
+break;
         
         case BABY_HELD_ITEM:                                     
         case 0xBB:                                     
@@ -4471,18 +4348,13 @@ bool handlePutDownHeldItem(u8 itemIndex) {
         
     }
 
-
-    return result;
+return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", getHeldItemIndex);
 
 u8 getHeldItemDialogueItemIndex(u8 index) {
     return heldItemDialogueItemIndices[index];
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", showHeldItemText);
 
 void showHeldItemText(u8 index) {
 
@@ -4500,8 +4372,6 @@ void showHeldItemText(u8 index) {
     showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, temp, 0, 2);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", processItemShipping);
 
 void processItemShipping(u8 index) {
 
@@ -4554,8 +4424,6 @@ void processItemShipping(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleFeedDog);
-
 inline void handleFeedDog(void) {
     setMapObjectAnimation(MAIN_MAP_INDEX, 0, 19);
     setDailyEventBit(FED_DOG);
@@ -4568,8 +4436,6 @@ static inline void setVec3f(u8 index, f32 x, f32 y, f32 z) {
     itemInfo[index].position.z = z;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleItemDroppedInWater);
 
 void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
 
@@ -4614,9 +4480,9 @@ void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
         
         if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
 
-            // FIXME: use a range
-            // fish
-            if (!checkLifeEventBit(MET_KAPPA) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY) && (itemInfo[itemIndex].heldItemIndex - 0x25) < 2U && 8 < gHour && gHour < 17) {
+            if (!checkLifeEventBit(MET_KAPPA) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY)
+                && (itemInfo[itemIndex].heldItemIndex == SMALL_FISH_HELD_ITEM || itemInfo[itemIndex].heldItemIndex == MEDIUM_FISH_HELD_ITEM)
+                && 8 < gHour && gHour < 17) {
                 setDailyEventBit(KAPPA_FISH_OFFERING_DAILY);
             }
 
@@ -4647,8 +4513,6 @@ void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", updateHeldItemState);
 
 // handle thrown/dropped items
 void updateHeldItemState(void) {
@@ -4731,7 +4595,7 @@ void updateHeldItemState(void) {
 
                     case ITEM_STATE_THROW_FLIGHT:
                         
-                        if (entities[ENTITY_ITEM_BASE_INDEX + i].flags & ENTITY_TOUCHING_GROUND) {
+                        if (entities[ENTITY_ITEM_BASE_INDEX + i].flags & 0x800) {
                             
                             itemInfo[i].movement.x = 0;
                             itemInfo[i].movement.y = 0;
