@@ -812,7 +812,10 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
         // diary
         case 16:
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && checkLifeEventBit(MAYOR_TOUR) && !checkDailyEventBit(DIARY_BLOCKED)) {
+
+            // add this back in if not skipping mayor tour:
+            // && checkLifeEventBit(MAYOR_TOUR)
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.heldItem == 0 && !checkDailyEventBit(DIARY_BLOCKED)) {
                 showDialogueTextBox(DIALOGUE_MENU_DIARY_ROOT);
                 result = TRUE; 
             }

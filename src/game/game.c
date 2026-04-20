@@ -151,7 +151,7 @@ u8 D_801FB5C4[6];
 u8 D_801FC152[2];
 u8 D_801FC156[6];
 u8 D_80204B3C[6];
-u8 D_80205210[2];
+u8 D_80205210[3];
 u8 D_8020563B[4];
 u8 D_80237380[6];
 u8 D_80237418[3];
@@ -1349,13 +1349,23 @@ void setLevelLighting(s16 rate, u16 callbackFunctionIndex) {
 
 // arg0 = unused
 inline void handleExitLevel(u16 arg0, u16 callbackIndex) {
-    
+
+    u8 nextMapIndex;
+    u8 currentMusicIndex;
+    u8 nextMusicIndex;
+
     // fade out map and entities
     setMapControllerRGBAWithTransition(MAIN_MAP_INDEX, 0, 0, 0, 0, 8);
     setEntitiesRGBAWithTransition(0, 0, 0, 0, 8);
-       
-    stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
-    
+
+    nextMapIndex = getMapForSpawnPoint(gSpawnPointIndex);
+    currentMusicIndex = getMusicIndexForMap(gBaseMapIndex, gSeason, gHour);
+    nextMusicIndex = getMusicIndexForMap(nextMapIndex, gSeason, gHour);
+
+    if (currentMusicIndex != nextMusicIndex) {
+        stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
+    }
+
     gameLoopContext.callbackIndex = callbackIndex;
 
     resetGlobalLighting();
@@ -1392,9 +1402,19 @@ void levelLoadCallback(void) {
 
 void exitLevelCallback(void) {
 
+    u8 nextMapIndex;
+    u8 currentMusicIndex;
+    u8 nextMusicIndex;
+    u8 skipAudioWait;
+
     handleCutsceneCompletion();
 
-    if (checkMapRGBADone(MAIN_MAP_INDEX) && checkDefaultSequenceChannelOpen(gCurrentAudioSequenceIndex)) {
+    nextMapIndex = getMapForSpawnPoint(gSpawnPointIndex);
+    currentMusicIndex = getMusicIndexForMap(gBaseMapIndex, gSeason, gHour);
+    nextMusicIndex = getMusicIndexForMap(nextMapIndex, gSeason, gHour);
+    skipAudioWait = (currentMusicIndex == nextMusicIndex);
+
+    if (checkMapRGBADone(MAIN_MAP_INDEX) && (skipAudioWait || checkDefaultSequenceChannelOpen(gCurrentAudioSequenceIndex))) {
 
         setEntitiesRGBA(0, 0, 0, 0);
         setMapControllerRGBA(MAIN_MAP_INDEX, 0, 0, 0, 0);

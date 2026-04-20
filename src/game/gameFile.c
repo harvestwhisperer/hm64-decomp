@@ -568,7 +568,7 @@ void gameSelectCallback(void) {
             
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
                 if (!set) {
-                    if (loadGameScreenContext.actionColumnHighlighted != 1) {
+                    if (loadGameScreenContext.actionColumnHighlighted != 3) {
                         loadGameScreenContext.actionColumnHighlighted++;
                         playSfx(2);
                     }
