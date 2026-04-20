@@ -42,7 +42,6 @@ void processMapSceneNode(u16, Gfx*);
 void renderGroundObjects(MainMap*);         
 void processMapAdditions(u16);   
 
-
 // bss
 MainMap mainMap[MAX_MAPS];
 
@@ -163,8 +162,6 @@ static inline u16 swap16TileIndex(Swap16 halfword) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", initializeMap);
-
 void initializeMap(void) {
  
     u16 i, j; 
@@ -237,8 +234,6 @@ void initializeMap(void) {
     }
 
 } 
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setupMap);
 
 // FIXME: iterators are messed up; loops are probably inline funcs 
 bool setupMap(u16 mapIndex, 
@@ -352,8 +347,6 @@ bool setupMap(u16 mapIndex,
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", deactivateMapSprites);
-
 bool deactivateMapSprites(u16 mapIndex) {
 
     bool result = FALSE;
@@ -395,8 +388,6 @@ bool deactivateMapSprites(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapTranslation);
-
 bool setMapTranslation(u16 mapIndex, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -415,8 +406,6 @@ bool setMapTranslation(u16 mapIndex, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapScale);
-
 bool setMapScale(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
     bool result = FALSE;
@@ -433,8 +422,6 @@ bool setMapScale(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
     
     return result;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapRotation);
 
 bool setMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
 
@@ -453,8 +440,6 @@ bool setMapRotation(u16 mapIndex, f32 arg1, f32 arg2, f32 arg3) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapRGBA);
 
 bool setMapRGBA(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     
@@ -479,8 +464,6 @@ bool setMapRGBA(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapCameraView);
 
 bool setMapCameraView(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 x, f32 y, f32 z, bool updateCameraBounds) {
 
@@ -513,8 +496,6 @@ bool setMapCameraView(u16 mapIndex, u8 arg1, u8 arg2, u8 arg3, u8 arg4, f32 x, f
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", adjustMapTranslation);
-
 bool adjustMapTranslation(u16 mapIndex, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -532,8 +513,6 @@ bool adjustMapTranslation(u16 mapIndex, f32 x, f32 y, f32 z) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", adjustMapScale);
 
 // unused
 // bool adjustMapScale(u16 mapIndex, f32 x, f32 y, f32 z) {
@@ -554,8 +533,6 @@ bool adjustMapTranslation(u16 mapIndex, f32 x, f32 y, f32 z) {
 
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", adjustMapRotation);
-
 bool adjustMapRotation(u16 mapIndex, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -573,8 +550,6 @@ bool adjustMapRotation(u16 mapIndex, f32 x, f32 y, f32 z) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", adjustMapRGBA);
 
 bool adjustMapRGBA(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, s8 arg4) {
 
@@ -594,8 +569,6 @@ bool adjustMapRGBA(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, s8 arg4) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapRGBAWithTransition);
 
 bool setMapRGBAWithTransition(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
@@ -658,8 +631,6 @@ bool setMapRGBAWithTransition(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 rate) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", adjustMapCameraView);
-
 // unused
 // bool adjustMapCameraView(u16 mapIndex, s8 arg1, s8 arg2, s8 arg3, u8 arg4, f32 arg5, f32 arg6, f32 arg7) {
 
@@ -702,8 +673,6 @@ bool setMapRGBAWithTransition(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s16 rate) {
     
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapObject);
-
 bool setMapObject(u16 mapIndex, u8 index, u16 spriteIndex, u16 animationIndex, f32 x, f32 y, f32 z, u8 arg7, u8 animationMode, bool screenWrap, bool argA) {
 
     bool result = FALSE; 
@@ -739,8 +708,6 @@ bool setMapObject(u16 mapIndex, u8 index, u16 spriteIndex, u16 animationIndex, f
     return result;
 
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapWeatherSprite);
 
 bool setMapWeatherSprite(u16 mapIndex, u8 index, u16 spriteIndex, u16 animationIndex) {
 
@@ -759,8 +726,6 @@ bool setMapWeatherSprite(u16 mapIndex, u8 index, u16 spriteIndex, u16 animationI
     return result; 
         
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapObjectAnimation);
 
 bool setMapObjectAnimation(u16 mapIndex, u8 mapObjectIndex, u16 animationIndex) {
 
@@ -781,8 +746,6 @@ bool setMapObjectAnimation(u16 mapIndex, u8 mapObjectIndex, u16 animationIndex) 
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", deactivateMapObject);
-
 bool deactivateMapObject(u16 mapIndex, u8 index) {
 
     bool result = FALSE; 
@@ -799,8 +762,6 @@ bool deactivateMapObject(u16 mapIndex, u8 index) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", loadGroundObjects);
 
 // load and set texture for map spawnable sprite
 // called by level.c
@@ -848,8 +809,6 @@ bool loadGroundObjects(u16 mapIndex, u8 x, u8 z, u32* textureIndex, u32* palette
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapGroundObjectSpriteIndex);
-
 bool setMapGroundObjectSpriteIndex(u16 mapIndex, u16 spriteIndex, u8 x, u8 z) {
     
     bool result = FALSE;
@@ -865,8 +824,6 @@ bool setMapGroundObjectSpriteIndex(u16 mapIndex, u16 spriteIndex, u8 x, u8 z) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setGroundObjectBitmap);
 
 // used for maps with foragable items
 bool setGroundObjectBitmap(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x, f32 y, f32 z) {
@@ -896,8 +853,6 @@ bool setGroundObjectBitmap(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x
 static inline u16 getTileIndexFromGrid_static_inline(u16 mapIndex, u8 x, u8 z) {
     return swap16TileIndex((&mainMap[mapIndex].mapGrid.gridToTileIndex[mainMap[mapIndex].mapGrid.mapWidth * z])[x]);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", getTerrainHeightAtPosition);
 
 f32 getTerrainHeightAtPosition(u16 mapIndex, f32 x, f32 z) {
     
@@ -946,8 +901,6 @@ f32 getTerrainHeightAtPosition(u16 mapIndex, f32 x, f32 z) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", getTerrainHeight);
 
 Vec3f getTerrainHeight(TerrainQuad *quad, f32 x, f32 z, u8 fallbackHeight) {
   
@@ -1039,8 +992,6 @@ Vec3f getTerrainHeight(TerrainQuad *quad, f32 x, f32 z, u8 fallbackHeight) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", checkTileHasGroundObject);
-
 bool checkTileHasGroundObject(u16 mapIndex, f32 x, f32 z) {
 
     Vec3f vec;
@@ -1060,8 +1011,6 @@ bool checkTileHasGroundObject(u16 mapIndex, f32 x, f32 z) {
     return result;
 
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/system/map", getTileCoordinates);
 
 // alternate
 /*
@@ -1091,8 +1040,6 @@ Vec3f getTileCoordinates(MainMap* map, f32 x, f32 z) {
     return tileCoordinates;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", updateCameraViewBounds);
 
 void updateCameraViewBounds(MapCameraView* mapCameraView) {
 
@@ -1152,8 +1099,6 @@ void updateCameraViewBounds(MapCameraView* mapCameraView) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", checkTileVisible);
-
 bool checkTileVisible(MainMap *map, u8 x, u8 z) {
     
   bool result = FALSE;
@@ -1172,8 +1117,6 @@ bool checkTileVisible(MainMap *map, u8 x, u8 z) {
   return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", updateVisibilityGrid);
 
 // unused
 // void updateVisibilityGrid(MainMap* mainMap) {
@@ -1225,8 +1168,6 @@ bool checkTileVisible(MainMap *map, u8 x, u8 z) {
         
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", updateGridsWithMapAdditions);
-        
 u8 updateGridsWithMapAdditions(u16 mapIndex, u16 mapAdditionIndex, u8 xCoord, u8 zCoord, u16 overridePosition) {
 
     Swap16 swap;
@@ -1302,8 +1243,6 @@ u8 updateGridsWithMapAdditions(u16 mapIndex, u16 mapAdditionIndex, u8 xCoord, u8
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", getLevelInteractionIndexFromPosition);
-
 // takes in rotated entity coordinates and returns index for interactable object/exit from rodata array per level
 u8 getLevelInteractionIndexFromPosition(u16 mapIndex, f32 x, f32 z) {
 
@@ -1333,8 +1272,6 @@ u8 getLevelInteractionIndexFromPosition(u16 mapIndex, f32 x, f32 z) {
     return levelInteractionIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setLevelInteractionIndexAtPosition);
 
 // unused
 // manually set level interaction index on grid
@@ -1367,8 +1304,6 @@ u8 getLevelInteractionIndexFromPosition(u16 mapIndex, f32 x, f32 z) {
     
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", convertWorldToTileCoordinates);
-
 Vec3f convertWorldToTileCoordinates(u16 mapIndex, f32 x, f32 z) {
 
     Vec3f tileCoordinates;
@@ -1391,8 +1326,6 @@ Vec3f convertWorldToTileCoordinates(u16 mapIndex, f32 x, f32 z) {
     return tileCoordinates;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", getMapGroundObjectCoordinates);
 
 Vec3f getMapGroundObjectCoordinates(u16 mapIndex, f32 x, f32 z) {
 
@@ -1423,8 +1356,6 @@ Vec3f getMapGroundObjectCoordinates(u16 mapIndex, f32 x, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", getMapGroundObjectSpriteIndex);
-
 u16 getMapGroundObjectSpriteIndex(u16 mapIndex, f32 x, f32 z) {
 
     u16 result = 0;
@@ -1436,8 +1367,6 @@ u16 getMapGroundObjectSpriteIndex(u16 mapIndex, f32 x, f32 z) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapGroundObjectSpriteIndexFromFloat);
 
 bool setMapGroundObjectSpriteIndexFromFloat(u16 mapIndex, u16 spriteIndex, f32 x, f32 z) {
     
@@ -1455,8 +1384,6 @@ bool setMapGroundObjectSpriteIndexFromFloat(u16 mapIndex, u16 spriteIndex, f32 x
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", checkMapRGBADone);
-
 bool checkMapRGBADone(u16 mapIndex) {
 
     bool result = FALSE;
@@ -1468,8 +1395,6 @@ bool checkMapRGBADone(u16 mapIndex) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", initializeMesh);
 
 void initializeMesh(MainMap* mainMap) {
 
@@ -1522,8 +1447,6 @@ void initializeMesh(MainMap* mainMap) {
     }  
 
 } 
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setGridToTileTextureMappings);
 
 // implements a linked list for tile textures to grid positions to allow for batch rendering
 // i.e., tiles are rendered by texture order, not by grid position or tile number
@@ -1591,8 +1514,6 @@ void setGridToTileTextureMappings(u16 mapIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setGroundObjects);
-
 void setGroundObjects(u16 mapIndex) {
 
     u16 tempArr[0x40];
@@ -1652,13 +1573,9 @@ void setGroundObjects(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", getTileIndexFromGrid);
-
 inline u16 getTileIndexFromGrid(u16 mapIndex, u8 x, u8 z) {
     return swap16TileIndex((&mainMap[mapIndex].mapGrid.gridToTileIndex[mainMap[mapIndex].mapGrid.mapWidth * z])[x]);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapGrid);
 
 void setMapGrid(MapGrid* mapGrid, u8* data) {
 
@@ -1684,8 +1601,6 @@ void setMapGrid(MapGrid* mapGrid, u8* data) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80037350);
-
 // unused
 // u8* func_80037350(TileRenderingInfo* tileRenderingInfo, u8* data) {
 
@@ -1701,8 +1616,6 @@ void setMapGrid(MapGrid* mapGrid, u8* data) {
 //     return data;
     
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80037388);
 
 // unused or inline
 // u8* func_80037388(TileRenderingInfo* tileRenderingInfo, u8* data, u8 arg2) {
@@ -1730,8 +1643,6 @@ void setMapGrid(MapGrid* mapGrid, u8* data) {
 //     return data;
     
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_80037400);
 
 inline u8* func_80037400(TileRenderingInfo* tileRenderingInfo, u8* data, bool flag) {
     
@@ -1791,8 +1702,6 @@ static inline u8* getTriangle2Bitfield(TileRenderingInfo* tileRenderingInfo, u8*
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_800374C0);
-
 u8* func_800374C0(TileRenderingInfo* tileRenderingInfo, u8* data) {
 
     Swap16 swap;
@@ -1832,9 +1741,6 @@ u8* func_800374C0(TileRenderingInfo* tileRenderingInfo, u8* data) {
     
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setTileVertexData);
-
 u8* setTileVertexData(Tile* tile, u8* data) {
 
     u8 *ptr;
@@ -1852,8 +1758,6 @@ u8* setTileVertexData(Tile* tile, u8* data) {
     return ptr + tile->verticesPerTile * 3; 
     
 } 
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", getTileVtxPtrFromCount);
 
 u16* getTileVtxPtrFromCount(u16 count, void* vtxDataPtr) {
 
@@ -1877,8 +1781,6 @@ u16* getTileVtxPtrFromCount(u16 arg0, void *arg1) {
     return (u16*)(arg1 + *(u32*)(arg1 + arg0*4));
 }
 */
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setTileVertices);
 
 u32 setTileVertices(MainMap* mainMap, u16 tileIndex, f32 x, f32 y, f32 z) {
 
@@ -1919,8 +1821,6 @@ u32 setTileVertices(MainMap* mainMap, u16 tileIndex, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", prepareTileTextures);
-
 Gfx* prepareTileTextures(Gfx* dl, MainMap* mainMap, u8 textureIndex) {
 
     TileBitmap bitmap;
@@ -1933,8 +1833,6 @@ Gfx* prepareTileTextures(Gfx* dl, MainMap* mainMap, u8 textureIndex) {
     return dl++;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", renderTiles);
 
 Gfx* renderTiles(Gfx* dl, MainMap* mainMap, u16 gridIndex, u8 textureIndex) {
 
@@ -1983,9 +1881,6 @@ Gfx* renderTiles(Gfx* dl, MainMap* mainMap, u16 gridIndex, u8 textureIndex) {
     return dl;
     
 }
-
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", buildMapDisplayList);
 
 inline Gfx* buildMapDisplayList(Gfx* dl, MainMap* mainMap, u16 startingVertex) {
 
@@ -2134,8 +2029,6 @@ Gfx* appendTileToDL(Gfx* dl, MainMap* mainMap, u16 tileIndex, f32 x, f32 y, f32 
 // empty function 
 void func_80038514(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setCoreMapObjects);
-
 void setCoreMapObjects(MainMap* mainMap) {
 
     u16 i, j;
@@ -2178,8 +2071,6 @@ void setCoreMapObjects(MainMap* mainMap) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setCoreMapObject);
-
 void setCoreMapObject(CoreMapObject* coreMapObject, u8* data) {
 
     coreMapObject->flags = data[0];
@@ -2190,14 +2081,10 @@ void setCoreMapObject(CoreMapObject* coreMapObject, u8* data) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setCoreMapObjectsMetadata);
-
 void setCoreMapObjectsMetadata(CoreMapObjectsMetadata* metadata, u8* data) {
     metadata->spriteIndex = data[0];
     metadata->repeatObjectCount = data[1];
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", getCoreMapObjectPtrFromCount);
 
 u8* getCoreMapObjectPtrFromCount(u16 objectCount, u8* ptr) {
 
@@ -2223,8 +2110,6 @@ u8* getCoreMapObjectPtrFromCount(u16 objectCount, u8* ptr) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setTerrainQuad);
- 
 void setTerrainQuad(TerrainQuad* quad, u8* quadPtr, u16 tileIndex) {
 
     u8* arr;
@@ -2262,21 +2147,15 @@ void setTerrainQuad(TerrainQuad* quad, u8* quadPtr, u16 tileIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", func_800387E0);
-
 // inline or unused
 // u32* func_800387E0(u16 arg0, u32* arg1) {
 //     return (u8*)arg1 + arg1[arg0];
 // }
 
-// //INCLUDE_ASM("asm/nonmatchings/system/map", func_800387F8);
-
 // // inline or unused
 // u32* func_800387F8(u16 arg0, u32* arg1) {
 //     return (u8*)arg1 + arg1[arg0];
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", updateGroundObjects);
 
 bool updateGroundObjects(u16 mapIndex) {
 
@@ -2296,8 +2175,6 @@ bool updateGroundObjects(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", resetGroundObjectsLoaded);
-
 bool resetGroundObjectsLoaded(u16 mapIndex) {
     
     bool result  = 0;
@@ -2310,8 +2187,6 @@ bool resetGroundObjectsLoaded(u16 mapIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", getMapAdditionsMetadataPtrFromIndex);
 
 u8* getMapAdditionsMetadataPtrFromIndex(u16 mapAdditionIndex, u8 *ptr) {
 
@@ -2386,8 +2261,6 @@ u8* getMapAdditionsMetadataPtrFromIndex(u16 arg0, u8 *arg1) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapAdditionSequenceStep);
-
 // called by func_800735FC
 bool setMapAdditionSequenceStep(u16 mapIndex, u16 mapAdditionIndex, u16 arg2, u16 arg3, u16 arg4) {
 
@@ -2410,8 +2283,6 @@ bool setMapAdditionSequenceStep(u16 mapIndex, u16 mapAdditionIndex, u16 arg2, u1
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", activateMapAddition);
 
 bool activateMapAddition(u16 mapIndex, u16 mapAdditionIndex, bool loopFlag) {
 
@@ -2438,8 +2309,6 @@ bool activateMapAddition(u16 mapIndex, u16 mapAdditionIndex, bool loopFlag) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", initializeMapAdditionAtPosition);
 
 // used by unused entity function
 bool initializeMapAdditionAtPosition(u16 mapIndex, u16 mapAdditionIndex, u8 x, u8 z) {
@@ -2468,8 +2337,6 @@ bool initializeMapAdditionAtPosition(u16 mapIndex, u16 mapAdditionIndex, u8 x, u
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapAddition);
-
 bool setStaticMapAddition(u16 mapIndex, u16 mapAdditionIndex) {
 
     bool result = FALSE;
@@ -2484,8 +2351,6 @@ bool setStaticMapAddition(u16 mapIndex, u16 mapAdditionIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setMapAdditionIndexFromCoordinates);
 
 bool setMapAdditionIndexFromCoordinates(u16 mapIndex, u16 mapAdditionIndex, u8 x, u8 z) {
     
@@ -2507,8 +2372,6 @@ static inline u8* getTexturePtrInline(u8 spriteIndex, u32* textureIndex) {
 static inline u8 *getPalettePtrTypeInline(u8 index, u32 *paletteIndex) {
     return (u8*)paletteIndex + paletteIndex[index];
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", setupCoreMapObjectSprites);
 
 void setupCoreMapObjectSprites(MainMap* mainMap) {
     
@@ -2684,8 +2547,6 @@ void setupCoreMapObjectSprites(MainMap* mainMap) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setupMapObjectSprites);
-
 void setupMapObjectSprites(MainMap *mainMap) {
     
     u16 i;
@@ -2796,8 +2657,6 @@ void setupMapObjectSprites(MainMap *mainMap) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", setupWeatherSprites);
-
 void setupWeatherSprites(MainMap* mainMap) {
 
     u16 i;
@@ -2891,8 +2750,6 @@ void setupWeatherSprites(MainMap* mainMap) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", processMapSceneNode);
-
 void processMapSceneNode(u16 mapIndex, Gfx* dl) {
 
     u16 temp = addSceneNode(dl, (0x8 | SCENE_NODE_UPDATE_ROTATION));
@@ -2906,8 +2763,6 @@ void processMapSceneNode(u16 mapIndex, Gfx* dl) {
     addSceneNodeRotation(temp, mainMap[mapIndex].mapGlobals.rotation.x, mainMap[mapIndex].mapGlobals.rotation.y, mainMap[mapIndex].mapGlobals.rotation.z);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", processMapAdditions);
 
 void processMapAdditions(u16 mapIndex) {
 
@@ -3092,8 +2947,6 @@ static inline void handleRotation(u16 i) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", updateMapGraphics);
-
 void updateMapGraphics(void) {
 
     u16 startingCount = 0;
@@ -3169,8 +3022,6 @@ void updateMapGraphics(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", prepareGroundObjectBitmap);
-
 inline Gfx* prepareGroundObjectBitmap(Gfx* dl, GroundObjectBitmap* sprite) {
     
     // gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA)
@@ -3185,8 +3036,6 @@ inline Gfx* prepareGroundObjectBitmap(Gfx* dl, GroundObjectBitmap* sprite) {
     return loadBitmapTexture(dl++, (BitmapObject*)sprite, 0, sprite->height);
     
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/system/map", renderGroundObject);
 
 Gfx* renderGroundObject(Gfx* dl, MainMap* map, GroundObjectBitmap* bitmap, u16 vtxIndex) {
 
@@ -3218,8 +3067,6 @@ Gfx* renderGroundObject(Gfx* dl, MainMap* map, GroundObjectBitmap* bitmap, u16 v
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", getGroundObjectWorldPosition);
-
 Vec3f getGroundObjectWorldPosition(u16 mapIndex, u8 x, u8 z) {
 
     Vec3f vec;
@@ -3242,8 +3089,6 @@ Vec3f getGroundObjectWorldPosition(u16 mapIndex, u8 x, u8 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/map", addGroundObjectToSceneGraph);
-
 inline void addGroundObjectToSceneGraph(MainMap* map, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, Gfx* dl) {
 
     Vec3f vec;
@@ -3255,8 +3100,6 @@ inline void addGroundObjectToSceneGraph(MainMap* map, f32 arg1, f32 arg2, f32 ar
     addSceneNodePosition(addSceneNode(dl, 8), x, y, z);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/map", renderGroundObjects);
 
 void renderGroundObjects(MainMap* mainMap) {
 

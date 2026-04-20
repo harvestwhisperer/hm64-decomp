@@ -15,8 +15,6 @@ BitmapObject bitmaps[MAX_BITMAPS];
 Gfx spriteDisplayList[2][0x880] __attribute__((aligned(16)));
 Vtx bitmapVertices[2][0x80][4];
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", initializeBitmaps);
-
 void initializeBitmaps(void) {
 
     u16 i, j, k;
@@ -54,8 +52,6 @@ void initializeBitmaps(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", resetBitmaps);
-
 void resetBitmaps(void) {
 
     int i = 0;
@@ -68,8 +64,6 @@ void resetBitmaps(void) {
     } 
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapWithSize);
 
 // unused
 // u16 setBitmapWithSize(u8 *timg, u8 *pal, s32 width, s32 height, s32 fmt, s32 size, u32 arg6, u32 arg7, u16 flags) {
@@ -96,8 +90,6 @@ void resetBitmaps(void) {
 
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmap);
-
 u16 setBitmap(u8 *timg, u16 *pal, u16 flags) {
 
     u16 bitmapIndex = bitmapCounter;
@@ -115,8 +107,6 @@ u16 setBitmap(u8 *timg, u16 *pal, u16 flags) {
     return bitmapIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapAnchorAlignment);
 
 bool setBitmapAnchorAlignment(u16 index, u16 arg1, u16 arg2) {
     
@@ -146,8 +136,6 @@ bool setBitmapAnchorAlignment(u16 index, u16 arg1, u16 arg2) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapAxisMapping);
-
 bool setBitmapAxisMapping(u16 index, u16 mode) {
     
     bool result = FALSE;
@@ -169,8 +157,6 @@ bool setBitmapAxisMapping(u16 index, u16 mode) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapTriangleWinding);
 
 bool setBitmapTriangleWinding(u16 index, u16 arg1) {
 
@@ -194,8 +180,6 @@ bool setBitmapTriangleWinding(u16 index, u16 arg1) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapFlip);
 
 bool setBitmapFlip(u16 index, bool flipHorizontal, bool flipVertical) {
     
@@ -222,8 +206,6 @@ bool setBitmapFlip(u16 index, bool flipHorizontal, bool flipVertical) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapBlendMode);
-
 bool setBitmapBlendMode(u16 index, u16 flag) {
 
     bool result = FALSE;
@@ -247,8 +229,6 @@ bool setBitmapBlendMode(u16 index, u16 flag) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapViewSpacePosition);
-
 bool setBitmapViewSpacePosition(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
     bool result = FALSE;
@@ -269,8 +249,6 @@ bool setBitmapViewSpacePosition(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapScale);
 
 bool setBitmapScale(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     
@@ -293,8 +271,6 @@ bool setBitmapScale(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapRotation);
-
 bool setBitmapRotation(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
     bool result = FALSE;
@@ -315,8 +291,6 @@ bool setBitmapRotation(u16 index, f32 arg1, f32 arg2, f32 arg3) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapRGBA);
 
 bool setBitmapRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
     
@@ -340,8 +314,6 @@ bool setBitmapRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapAnchor);
-
 bool setBitmapAnchor(u16 index, s16 anchorX, s16 anchorY) {
 
     bool result = FALSE;
@@ -362,8 +334,6 @@ bool setBitmapAnchor(u16 index, s16 anchorX, s16 anchorY) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setSpriteDMAInfo);
-
 u8* setSpriteDMAInfo(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
 
     u32 offset = spritesheetIndex[index];
@@ -373,8 +343,6 @@ u8* setSpriteDMAInfo(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
     return timg;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", getTextureLength);
 
 u32 getTextureLength(u16 spriteIndex, u32 spritesheetIndex[]) {
     
@@ -409,8 +377,6 @@ static const Gfx D_8011ECE0 = gsDPSetRenderMode(G_RM_AA_TEX_EDGE, G_RM_AA_TEX_ED
 
 //INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECE0);
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", setBitmapBlendModeDisplayList);
-
 inline Gfx* setBitmapBlendModeDisplayList(Gfx* dl, u16 flag) {
 
     switch (flag) {
@@ -440,8 +406,6 @@ inline Gfx* setBitmapBlendModeDisplayList(Gfx* dl, u16 flag) {
     return dl++;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", calculateSceneNodePosition);
 
 inline void calculateSceneNodePosition(Vec3f* calculatedPosition, BitmapObject* sprite) {
     
@@ -506,8 +470,6 @@ static const Gfx D_8011ED28 = gsDPPipeSync();
 static const Gfx D_8011ED30 = gsSPEndDisplayList();
 
 //INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED30);
-
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", generateBitmapDisplayList);
 
 Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) {
 
@@ -623,8 +585,6 @@ Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) 
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", processBitmapSceneNode);
-
 static void processBitmapSceneNode(BitmapObject* sprite, Gfx *dl) {
 
     Vec3f vec;
@@ -641,8 +601,6 @@ static void processBitmapSceneNode(BitmapObject* sprite, Gfx *dl) {
     addSceneNodeRotation(spriteIndex, sprite->rotation.x, sprite->rotation.y, sprite->rotation.z);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/sprite", updateBitmaps);
 
 void updateBitmaps(void) {
 

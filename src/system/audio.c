@@ -21,9 +21,6 @@ s32 gAudioSequenceVolume;
 Sfx gSfx[4];
 SequenceInfo gAudioSequences[4];
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", initializeAudio);
-
 void initializeAudio(musConfig *config) {
 
     u16 i;
@@ -58,8 +55,6 @@ void initializeAudio(musConfig *config) {
     MusSetMasterVolume(MUSFLAG_EFFECTS, 0x7FFF);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", updateAudio);
 
 void updateAudio(void) {
 
@@ -124,13 +119,9 @@ void updateAudio(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/audio", setAudioSequenceBank);
-
 void setAudioSequenceBank(u8 *pBankStart, u8 *pBankEnd, u8 *wBankStart) {
     nuAuStlBankSet(pBankStart, pBankEnd - pBankStart, wBankStart);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", setAudioSequence);
 
 bool setAudioSequence(u16 sequenceIndex, u8 *sequenceAddrStart, u8 *sequenceAddrEnd) {
     
@@ -157,8 +148,6 @@ bool setAudioSequence(u16 sequenceIndex, u8 *sequenceAddrStart, u8 *sequenceAddr
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/audio", stopAudioSequenceWithFadeOut);
-
 bool stopAudioSequenceWithFadeOut(u16 index, u32 speed) {
 
     bool result = FALSE;
@@ -180,8 +169,6 @@ bool stopAudioSequenceWithFadeOut(u16 index, u32 speed) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/audio", stopAudioSequence);
-
 bool stopAudioSequence(u16 sequenceIndex) {
 
     bool result = FALSE;
@@ -202,8 +189,6 @@ bool stopAudioSequence(u16 sequenceIndex) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", setAudioSequenceVolumes);
 
 bool setAudioSequenceVolumes(u16 index, s32 targetVolume, s16 fadeInRate) {
     
@@ -232,8 +217,6 @@ bool setAudioSequenceVolumes(u16 index, s32 targetVolume, s16 fadeInRate) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/audio", func_8003D4E4);
-
 // unused
 // bool func_8003D4E4(u16 sequenceIndex, s32 arg1) {
     
@@ -260,8 +243,6 @@ bool setAudioSequenceVolumes(u16 index, s32 targetVolume, s16 fadeInRate) {
 //     return result;
 
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", func_8003D570);
 
 // unused
 // bool func_8003D570(u16 sequenceIndex, s32 arg1) {
@@ -290,14 +271,9 @@ bool setAudioSequenceVolumes(u16 index, s32 targetVolume, s16 fadeInRate) {
 
 // }
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", stopMusic);
-
 void stopMusic(int speed) {
     MusStop(MUSFLAG_SONGS, speed);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", setSfx);
 
 bool setSfx(u32 sfxIndex) {
 
@@ -333,8 +309,6 @@ bool setSfx(u32 sfxIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/audio", findAndStopSfx);
-
 // unused
 // bool findAndStopSfx(u32 sfxIndex) {
     
@@ -358,8 +332,6 @@ bool setSfx(u32 sfxIndex) {
 //     return result;
 
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", setSfxVolume);
 
 bool setSfxVolume(u32 sfxIndex, s32 volume) {
 
@@ -391,8 +363,6 @@ bool setSfxVolume(u32 sfxIndex, s32 volume) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/audio", setSfxFrequency);
-
 bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
 
     u16 i = 0;
@@ -410,8 +380,7 @@ bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
                     gSfx[i].frequency = -6;
                 }
 
-
-                if (gSfx[i].frequency > MAX_SFX_FREQUENCY) {
+if (gSfx[i].frequency > MAX_SFX_FREQUENCY) {
                     gSfx[i].frequency = 6;
                 }
 
@@ -424,8 +393,6 @@ bool setSfxFrequency(u32 sfxIndex, s32 frequency) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", setSfxPan);
 
 bool setSfxPan(u32 sfxIndex, s32 arg1) {
 
@@ -456,8 +423,6 @@ bool setSfxPan(u32 sfxIndex, s32 arg1) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/audio", stopSoundEffect);
 
 void stopSfx(void) {
     MusStop(MUSFLAG_EFFECTS, 0);

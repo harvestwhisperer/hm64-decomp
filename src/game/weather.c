@@ -33,8 +33,6 @@ u8 weatherLightingAdjustments[5][4] = {
 static const u8 weatherForecastProbabilities[4][5];
 static const u8 weatherForecastProbabilitiesAlternate[4][5];
 
-//INCLUDE_ASM("asm/nonmatchings/game/weather", setWeatherSprites);
-
 void setWeatherSprites(void) {
     
     u8 i;
@@ -59,8 +57,6 @@ void setWeatherSprites(void) {
         }
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/weather", setForecast);
 
 void setForecast(void) {
     
@@ -94,8 +90,6 @@ void setForecast(void) {
     gForecast = i;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/weather", setWeatherLighting);
 
 Vec4f setWeatherLighting(u8 weather) {
 

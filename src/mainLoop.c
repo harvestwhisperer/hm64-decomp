@@ -35,9 +35,6 @@ void updateMainLoopTimer(int pendingGfx);
 
 extern s32 __osSpSetPc(u32 pc);
 
-  
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", mainLoop)
-
 void mainLoop(void) {
 
     stepMainLoop = FALSE;
@@ -101,8 +98,6 @@ void mainLoop(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", registerMainLoopCallback);
-
 bool registerMainLoopCallback(u16 index, void *(func)()) {
 
     bool result = FALSE;
@@ -117,8 +112,6 @@ bool registerMainLoopCallback(u16 index, void *(func)()) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", setMainLoopCallbackFunctionIndex);
 
 bool setMainLoopCallbackFunctionIndex(u16 index) {
     
@@ -137,8 +130,6 @@ bool setMainLoopCallbackFunctionIndex(u16 index) {
 }
 
 void noOpCallback(void) {}
-
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", func_80026248);
 
 inline void func_80026248(u16 count) {
 
@@ -162,8 +153,6 @@ inline void func_80026248(u16 count) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", func_80026284);
-
 // start up before main loop
 void func_80026284(void) {
 
@@ -180,10 +169,7 @@ loop_end:
 
 }
 
-
 // gfx retrace funcs
-
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", gfxRetraceCallback);
 
 // NUGfxFunc
 u8 gfxRetraceCallback(int pendingGfx) {
@@ -216,8 +202,6 @@ u8 gfxRetraceCallback(int pendingGfx) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", handleGraphicsUpdate);
-
 void handleGraphicsUpdate(int pendingGfx) {
 
   u8 temp;
@@ -249,8 +233,6 @@ void handleGraphicsUpdate(int pendingGfx) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", updateMainLoopTimer);
-
 void updateMainLoopTimer(int pendingGfx) {
     
     if ((frameCount % mainLoopUpdateRate) == 0) {
@@ -274,8 +256,6 @@ void updateMainLoopTimer(int pendingGfx) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", gfxBufferSwap);
-
 void gfxBufferSwap(void *gfxTask) {
     
     currentGfxTaskPtr = gfxTask;
@@ -287,8 +267,6 @@ void gfxBufferSwap(void *gfxTask) {
 s32 osAfterPreNMI(void) {
     return __osSpSetPc(0);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/mainLoop", gfxPreNMICallback);
 
 void gfxPreNMICallback(void) {
     

@@ -24,8 +24,6 @@
 // shared bss
 u32 D_8016FB00;
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStart", setupGameStart);
-
 void setupGameStart(void) {
     
     // set up game
@@ -47,8 +45,6 @@ void setupGameStart(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStart", startGame);
-
 void startGame(void) {
 
     setSpawnPoint(HOUSE_SPAWN_POINT_3);
@@ -64,8 +60,6 @@ void startGame(void) {
     setMainLoopCallbackFunctionIndex(MAP_LOAD);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameStart", func_8004DFF8);
 
 // unused function: probably for sandboxing during development or demos
 // not in JP version
