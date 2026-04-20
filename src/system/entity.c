@@ -1968,7 +1968,8 @@ void updateEntityPhysics(u16 index) {
 
         if (!(mapControllers[gMainMapIndex].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE))) {
 
-            if (entities[index].trackingMode == 0xFE || entities[index].trackingMode == 0xFF) {
+            // FIXME: something off here 
+            if (((entities[index].trackingMode + 2) & 0xFF) < 2U) {
                 
                 rotation.x = 0.0f;
                 rotation.y = getSpriteYValueFromDirection((entities[entities[index].targetEntityIndex].direction + mapControllers[gMainMapIndex].rotation) % 8);

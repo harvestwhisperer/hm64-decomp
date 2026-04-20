@@ -519,79 +519,100 @@ skip_callback:
 void updateCutsceneSpriteAnimation(u16 index) {
 
     u16 animation;
+
     u8 animationModeOrFrameIndex;
     u8 flipFlags;
 
-    if (cutsceneExecutors[index].animationFrameCounter != 0) {
+    if (cutsceneExecutors[index].animationFrameCounter == 0)  {
+        
+        while (cutsceneExecutors[index].animationFrameCounter == 0) {
+            
+loop:
+            resetAnimationState(cutsceneExecutors[index].assetIndex);    
+    
+            animation = *(u16*)cutsceneExecutors[index].animationDataPtr;
+    
+            // FIXME: fake, cursed gotos
+            if (animation == 0xFFFE) {
+                goto label;
+            } 
+            
+            if (animation == 0xFFFF) {
+                
+                endCutsceneSpriteAnimationSequence(index);
+                goto check;
+                
+label:
+                cutsceneHandlerAdjustAnimationDataPtr(index);
+                goto check;
+                
+            } 
+    
+                cutsceneExecutors[index].animationDataPtr += 2;
+    
+                animationModeOrFrameIndex = *(u8*)cutsceneExecutors[index].animationDataPtr;
+    
+                cutsceneExecutors[index].animationDataPtr++;
+                
+                cutsceneExecutors[index].movementVector.x = *(s8*)cutsceneExecutors[index].animationDataPtr;
+    
+                cutsceneExecutors[index].animationDataPtr++;
+    
+                cutsceneExecutors[index].movementVector.y = *(s8*)cutsceneExecutors[index].animationDataPtr;
+    
+                cutsceneExecutors[index].animationDataPtr++;
+    
+                cutsceneExecutors[index].movementVector.z = *(s8*)cutsceneExecutors[index].animationDataPtr;
+    
+                cutsceneExecutors[index].animationDataPtr++;
+                        
+                startSpriteAnimation(cutsceneExecutors[index].assetIndex, animation, animationModeOrFrameIndex);
+    
+                cutsceneExecutors[index].animationFrameCounter = *(u8*)cutsceneExecutors[index].animationDataPtr;
+                
+                cutsceneExecutors[index].animationDataPtr++;
+                
+                flipFlags = *(u8*)cutsceneExecutors[index].animationDataPtr;
+    
+                cutsceneExecutors[index].animationDataPtr++;
+                
+                setSpriteFlip(cutsceneExecutors[index].assetIndex, flipFlags & 1, flipFlags & 2);
+    
+                setSpriteViewSpacePosition(cutsceneExecutors[index].assetIndex, 
+                    cutsceneExecutors[index].coordinates.x + cutsceneExecutors[index].movementVector.x, 
+                    cutsceneExecutors[index].coordinates.y + cutsceneExecutors[index].movementVector.y, 
+                    cutsceneExecutors[index].coordinates.z + cutsceneExecutors[index].movementVector.z);
+    
+                if (animationModeOrFrameIndex == 0xFE) {
+                    cutsceneExecutors[index].flags |= CUTSCENE_ASSET_BEHAVIOR_MOVING_DEFAULT;
+                } else {
+                    cutsceneExecutors[index].flags &= ~CUTSCENE_ASSET_BEHAVIOR_MOVING_DEFAULT;
+                }
+                
+            }
 
-        setSpriteViewSpacePosition(cutsceneExecutors[index].assetIndex,
-            cutsceneExecutors[index].coordinates.x + cutsceneExecutors[index].movementVector.x,
-            cutsceneExecutors[index].coordinates.y + cutsceneExecutors[index].movementVector.y,
+} else {
+        
+       setSpriteViewSpacePosition(cutsceneExecutors[index].assetIndex, 
+            cutsceneExecutors[index].coordinates.x + cutsceneExecutors[index].movementVector.x, 
+            cutsceneExecutors[index].coordinates.y + cutsceneExecutors[index].movementVector.y, 
             cutsceneExecutors[index].coordinates.z + cutsceneExecutors[index].movementVector.z);
-
+    
         if (cutsceneExecutors[index].animationFrameCounter == 0xFF) {
+    
             if (getSpriteAnimationStateChangedFlag(cutsceneExecutors[index].assetIndex) && !(cutsceneExecutors[index].flags & CUTSCENE_ANIMATION_LOOP)) {
                 cutsceneExecutors[index].animationFrameCounter = 0;
-            }
+            } 
+            
         } else {
             cutsceneExecutors[index].animationFrameCounter--;
         }
 
+check:
+        if (cutsceneExecutors[index].animationFrameCounter == 0) goto loop;
+        
     }
-
-    while (cutsceneExecutors[index].animationFrameCounter == 0) {
-
-        resetAnimationState(cutsceneExecutors[index].assetIndex);
-
-        animation = *(u16*)cutsceneExecutors[index].animationDataPtr;
-
-        if (animation == 0xFFFE) {
-            cutsceneHandlerAdjustAnimationDataPtr(index);
-            continue;
-        }
-
-        if (animation == 0xFFFF) {
-            endCutsceneSpriteAnimationSequence(index);
-            continue;
-        }
-
-        cutsceneExecutors[index].animationDataPtr += 2;
-
-        animationModeOrFrameIndex = *(u8*)cutsceneExecutors[index].animationDataPtr;
-        cutsceneExecutors[index].animationDataPtr++;
-
-        cutsceneExecutors[index].movementVector.x = *(s8*)cutsceneExecutors[index].animationDataPtr;
-        cutsceneExecutors[index].animationDataPtr++;
-
-        cutsceneExecutors[index].movementVector.y = *(s8*)cutsceneExecutors[index].animationDataPtr;
-        cutsceneExecutors[index].animationDataPtr++;
-
-        cutsceneExecutors[index].movementVector.z = *(s8*)cutsceneExecutors[index].animationDataPtr;
-        cutsceneExecutors[index].animationDataPtr++;
-
-        startSpriteAnimation(cutsceneExecutors[index].assetIndex, animation, animationModeOrFrameIndex);
-
-        cutsceneExecutors[index].animationFrameCounter = *(u8*)cutsceneExecutors[index].animationDataPtr;
-        cutsceneExecutors[index].animationDataPtr++;
-
-        flipFlags = *(u8*)cutsceneExecutors[index].animationDataPtr;
-        cutsceneExecutors[index].animationDataPtr++;
-
-        setSpriteFlip(cutsceneExecutors[index].assetIndex, flipFlags & 1, flipFlags & 2);
- 
-        setSpriteViewSpacePosition(cutsceneExecutors[index].assetIndex,
-            cutsceneExecutors[index].coordinates.x + cutsceneExecutors[index].movementVector.x,
-            cutsceneExecutors[index].coordinates.y + cutsceneExecutors[index].movementVector.y,
-            cutsceneExecutors[index].coordinates.z + cutsceneExecutors[index].movementVector.z);
-
-        if (animationModeOrFrameIndex == 0xFE) {
-            cutsceneExecutors[index].flags |= CUTSCENE_ASSET_BEHAVIOR_MOVING_DEFAULT;
-        } else {
-            cutsceneExecutors[index].flags &= ~CUTSCENE_ASSET_BEHAVIOR_MOVING_DEFAULT;
-        }
-
-    }
-
+    
 }
 
 void endCutsceneSpriteAnimationSequence(u16 index) {
@@ -1331,25 +1352,28 @@ void cutsceneHandlerDoDMA(u16 index) {
 }
 
 // set u8 value
+// FIXME: should be reading u32 value for ptr
 void cutsceneHandlerSetU8Value(u16 index) {
 
+    u8 value;
+
+    CutsceneSetU8ValueCmd* ptr2;
+    
     CutsceneSetU8ValueCmd* ptr = (CutsceneSetU8ValueCmd*)cutsceneExecutors[index].bytecodePtr;
 
-    u8 value;
-    u8* variablePtr;
-
     cutsceneExecutors[index].bytecodePtr += 2;
-
+    
     value = ptr->value;
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    variablePtr = ptr->variablePtr;
-
+    // FIXME: something not right
+    ptr2 = *(CutsceneSetU8ValueCmd**)cutsceneExecutors[index].bytecodePtr;
+    
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    *variablePtr = value;
-
+    ptr2->variablePtr = value;
+    
 }
 
 // set u16 value
