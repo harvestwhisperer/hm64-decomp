@@ -56,8 +56,6 @@ volatile u8 D_80237408;
 void initializeEngine(void);
 void initializeMainProcess(void);
 
-//INCLUDE_ASM("asm/nonmatchings/mainproc", mainproc);
-
 void mainproc(void *arg) {
     
     #ifndef JP
@@ -97,8 +95,6 @@ void mainproc(void *arg) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/mainproc", initializeEngine);
-
 void initializeEngine(void) {
 
     // initialize mainproc and main loop variables
@@ -131,8 +127,6 @@ void initializeEngine(void) {
     nuGfxFuncSet((NUGfxFunc)gfxRetraceCallback);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/mainproc", initializeMainProcess);
 
 void initializeMainProcess(void) {
     

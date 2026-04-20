@@ -90,9 +90,6 @@ bool handleBeachLevelInteractions(u16, u8);
 bool handleHarvestSpriteCaveLevelInteractions(u16, u8);
 bool handleMineLevelInteractions(u16, u8);
 
-                                                                  
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkShippingBinInteraction);
-
 u8 checkShippingBinInteraction(u16 mapIndex) {
 
     u8 result = 0xFF;
@@ -110,8 +107,6 @@ u8 checkShippingBinInteraction(u16 mapIndex) {
 
     return result;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkBarnAnimalFeedInteraction);
 
 u8 checkBarnAnimalFeedInteraction(u16 mapIndex) {
 
@@ -132,8 +127,6 @@ u8 checkBarnAnimalFeedInteraction(u16 mapIndex) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkChickenFeedInteraction);
-
 bool checkChickenFeedInteraction(u16 mapIndex) {
 
     u8 temp;
@@ -153,8 +146,6 @@ bool checkChickenFeedInteraction(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkFarmDogBowlInteraction);
-
 u8 checkFarmDogBowlInteraction(u16 mapIndex) {
 
     u8 result = 0xFF;
@@ -172,8 +163,6 @@ u8 checkFarmDogBowlInteraction(u16 mapIndex) {
 
     return result;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkWaterSourceInteraction);
 
 u8 checkWaterSourceInteraction(u16 mapIndex) {
     
@@ -203,8 +192,6 @@ u8 checkWaterSourceInteraction(u16 mapIndex) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkWaterableSoilInteraction);
-
 bool checkWaterableSoilInteraction(u16 mapIndex) {
 
     bool result = FALSE;
@@ -225,8 +212,6 @@ bool checkWaterableSoilInteraction(u16 mapIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkWineBarrelInteraction);
-
 bool checkWineBarrelInteraction(u16 mapIndex) {
 
     bool result = FALSE;
@@ -238,8 +223,6 @@ bool checkWineBarrelInteraction(u16 mapIndex) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", checkFishingSpotInteraction);
 
 bool checkFishingSpotInteraction(u16 mapIndex) {
 
@@ -279,8 +262,6 @@ bool checkFishingSpotInteraction(u16 mapIndex) {
     return result;
     
 } 
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleLevelInteraction);
 
 bool handleLevelInteraction(u16 mapIndex) {
 
@@ -546,8 +527,6 @@ bool handleLevelInteraction(u16 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleFarmLevelInteractions);
-
 bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -768,8 +747,6 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
    
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleHouseLevelInteractions);
-
 bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -902,8 +879,6 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleBarnLevelInteractions);
 
 u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -1150,9 +1125,8 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         } else if (temp < 7) {
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 241, 0, 2);
                         }
-                        
-                        
-                    } 
+
+} 
 
                     result = 1;
                     
@@ -1193,9 +1167,8 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         } else if (temp < 7) {
                             showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 242, 0, 2);
                         }
-                        
-                        
-                    } 
+
+} 
 
                     result = 1;
                     
@@ -1318,8 +1291,6 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleCoopLevelInteractions);
-
 bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -1408,8 +1379,6 @@ bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleKitchenLevelInteractions);
-
 bool handleKitchenLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -1467,8 +1436,6 @@ bool handleKitchenLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleBathroomLevelInteractions);
 
 bool handleBathroomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -1528,8 +1495,6 @@ bool handleBathroomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleGreenhouseLevelInteractions);
-
 bool handleGreenhouseLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -1545,8 +1510,6 @@ bool handleGreenhouseLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVillage1LevelInteractions);
 
 bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -1800,8 +1763,6 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
    
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleFlowerShopLevelInteractions);
 
 u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -2085,15 +2046,12 @@ u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 showMessageBox(0, DIALOGUE_SHOP, DIALOGUE_SHOP_POPURIS_NOTEBOOK, 0x80, 0);
                 result = 1;
             }
-        
-        
-    }
+
+}
 
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handlePopuriRoomLevelInteractions);
 
 bool handlePopuriRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
@@ -2110,8 +2068,6 @@ bool handlePopuriRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleBakeryLevelInteractions);
 
 bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -2218,14 +2174,11 @@ bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             break;
 
-        
-    }
+}
     
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleElliRoomLevelInteractions);
 
 bool handleElliRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -2242,8 +2195,6 @@ bool handleElliRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRickStoreLevelInteractions);
 
 bool handleRickStoreLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -2390,8 +2341,6 @@ bool handleRickStoreLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleSouvenirShopLevelInteractions);
-
 u8 handleSouvenirShopLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
 
     u8 result = 0;
@@ -2452,8 +2401,6 @@ u8 handleSouvenirShopLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleChurchLevelInteractions);
-
 bool handleChurchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -2505,8 +2452,6 @@ bool handleChurchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleTavernLevelInteractions);
 
 bool handleTavernLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
 
@@ -2579,8 +2524,6 @@ bool handleTavernLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVillage2LevelInteractions);
 
 bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -2805,8 +2748,6 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleLibraryLevelInteractions);
-
 bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -2837,9 +2778,8 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                         showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 214, 0, 0);
                         result = TRUE;
                     }
-                    
-                    
-                }
+
+}
                 
             }
 
@@ -3011,8 +2951,6 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMidwifeHouseLevelInteractions);
-
 bool handleMidwifeHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -3044,8 +2982,6 @@ bool handleMidwifeHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMayorHouseLevelInteractions);
 
 bool handleMayorHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -3111,8 +3047,6 @@ bool handleMayorHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMariaRoomLevelInteractions);
-
 bool handleMariaRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
    bool result = FALSE;
@@ -3134,8 +3068,6 @@ bool handleMariaRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handlePotionShopLevelInteractions);
 
 u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -3293,8 +3225,6 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handlePotionShopBedroomLevelInteractions);
-
 bool handlePotionShopBedroomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -3335,8 +3265,6 @@ bool handlePotionShopBedroomLevelInteractions(u16 mapIndex, u8 levelInteractionI
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleSquareLevelInteractions);
 
 // FIXME: lots of unnecessary gotos
 u8 handleSquareLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
@@ -3528,8 +3456,6 @@ label5:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMountain1LevelInteractions);
-
 bool handleMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -3579,8 +3505,6 @@ bool handleMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;    
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMountain2LevelInteractions);
 
 u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -3740,8 +3664,6 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleTopOfMountain1LevelInteractions);
-
 u8 handleTopOfMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = 0;
@@ -3818,8 +3740,6 @@ u8 handleTopOfMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMoonMountainLevelInteractions);
-
 bool handleMoonMountainLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -3867,8 +3787,6 @@ bool handleMoonMountainLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRoadLevelInteractions);
 
 bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -3978,8 +3896,6 @@ bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleCarpenterHutLevelInteractions);
-
 bool handleCarpenterHutLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -4029,8 +3945,6 @@ bool handleCarpenterHutLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleDumplingHouseLevelInteractions);
-
 bool handleDumplingHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -4052,8 +3966,6 @@ bool handleDumplingHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleCaveLevelInteractions);
 
 bool handleCaveLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -4101,8 +4013,6 @@ bool handleCaveLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleHarvestSpriteCaveLevelInteractions);
 
 bool handleHarvestSpriteCaveLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -4171,8 +4081,6 @@ bool handleHarvestSpriteCaveLevelInteractions(u16 mapIndex, u8 levelInteractionI
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleMineLevelInteractions);
-
 bool handleMineLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -4195,8 +4103,6 @@ bool handleMineLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handlePondLevelInteractions);
-
 bool handlePondLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
     bool result = FALSE;
@@ -4218,8 +4124,6 @@ bool handlePondLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVineyardLevelInteractions);
 
 bool handleVineyardLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -4283,8 +4187,6 @@ bool handleVineyardLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVineyardHouseLevelInteractions);
-
 bool handleVineyardHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;
@@ -4327,8 +4229,6 @@ bool handleVineyardHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleKarenRoomLevelInteractions);
-
 bool handleKarenRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;    
@@ -4354,8 +4254,6 @@ bool handleKarenRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVineyardCellarLevelInteractions);
 
 bool handleVineyardCellarLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
@@ -4409,8 +4307,6 @@ bool handleVineyardCellarLevelInteractions(u16 mapIndex, u8 levelInteractionInde
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleVineyardCellarBasementLevelInteractions);
-
 bool handleVineyardCellarBasementLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE; 
@@ -4443,8 +4339,6 @@ bool handleVineyardCellarBasementLevelInteractions(u16 mapIndex, u8 levelInterac
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRaceTrackLevelInteractions);
-
 bool handleRaceTrackLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE; 
@@ -4475,8 +4369,6 @@ bool handleRaceTrackLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
     return result;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRanchLevelInteractions);
 
 // FIXME: gotos
 bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
@@ -4579,8 +4471,6 @@ label:
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRanchHouseLevelInteractions);
-
 bool handleRanchHouseLevelInteractions(u16 mapIndex, u8 collisionIndex) {
 
     bool result = FALSE;
@@ -4630,8 +4520,6 @@ bool handleRanchHouseLevelInteractions(u16 mapIndex, u8 collisionIndex) {
     
     return result;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRanchStoreLevelInteractions);
 
 u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
 
@@ -4762,8 +4650,6 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleAnnRoomLevelInteractions);
-
 bool handleAnnRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE; 
@@ -4796,8 +4682,6 @@ bool handleAnnRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleRanchBarnLevelInteractions);
-
 bool handleRanchBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
     bool result = FALSE;    
@@ -4813,8 +4697,6 @@ bool handleRanchBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/levelInteractions", handleBeachLevelInteractions);
 
 bool handleBeachLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 

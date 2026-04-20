@@ -14,8 +14,6 @@
 extern u8 gSumGirlsWithHighAffection;
 extern u8 gAverageFarmAnimalAffection;
 
-//INCLUDE_ASM("asm/nonmatchings/game/load", func_800598E0);
-
 void func_800598E0(void) {
 
     resetDailyBits();

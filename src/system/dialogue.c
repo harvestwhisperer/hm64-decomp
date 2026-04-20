@@ -21,7 +21,6 @@ struct {
 
 #define specialDialogueBitsPointer (specialDialogueBitsWrapper.ptr)
 
-
 Dialogue dialogues[MAX_DIALOGUES];
 // game state updated by/talked about in dialogues
 DialogueVariable dialogueVariables[MAX_DIALOGUE_VARIABLES];
@@ -35,9 +34,6 @@ void updateDialogueButtonIcon2Display(u16 index);
 void updateDialogueButtonIcon3Display(u16 index);
 void handleMenuNavigation(u16);
 void updateCurrentDialogue(u16);
-
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", initializeDialogueSessionManagers);
 
 void initializeDialogueSessionManagers(void) {
  
@@ -54,8 +50,6 @@ void initializeDialogueSessionManagers(void) {
     }
 
 } 
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", initializeDialogueSessionManager);
 
 bool initializeDialogueSessionManager(u16 index, u16 mainMessageBoxIndex, u16 overlayMessageBoxIndex) {
 
@@ -79,8 +73,6 @@ bool initializeDialogueSessionManager(u16 index, u16 mainMessageBoxIndex, u16 ov
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueBytecodeAddressInfo);
-
 bool setDialogueBytecodeAddressInfo(u16 index, u16 textAddressesIndex, u16 selectionMenuTextAddressesIndex, u32 romIndexStart, u32 romIndexEnd, u32* vaddrIndex, u32 romStart, void* vaddr) {
 
     bool result = FALSE;
@@ -102,8 +94,6 @@ bool setDialogueBytecodeAddressInfo(u16 index, u16 textAddressesIndex, u16 selec
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueVariable);
 
 bool setDialogueVariable(u16 index, void *value, u8 type, s32 max) {
 
@@ -127,14 +117,10 @@ bool setDialogueVariable(u16 index, void *value, u8 type, s32 max) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setSpecialDialogueBitsPointer);
-
 bool setSpecialDialogueBitsPointer(u32* dialogueBitsPointer) {
     specialDialogueBitsPointer = dialogueBitsPointer;
     return 0;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueSfxIndices);
 
 bool setDialogueSfxIndices(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 sfxIndex) {
 
@@ -153,8 +139,6 @@ bool setDialogueSfxIndices(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueButtonIcon1);
 
 bool setDialogueButtonIcon1(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
@@ -191,8 +175,6 @@ bool setDialogueButtonIcon1(u16 index, u16 spriteIndex, u32 romTextureStart, u32
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueButtonIcon2);
-
 bool setDialogueButtonIcon2(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
@@ -228,8 +210,6 @@ bool setDialogueButtonIcon2(u16 index, u16 spriteIndex, u32 romTextureStart, u32
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueButtonIcon3);
- 
 bool setDialogueButtonIcon3(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, 
     u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
@@ -265,8 +245,6 @@ bool setDialogueButtonIcon3(u16 index, u16 spriteIndex, u32 romTextureStart, u32
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", func_80043408);
-
 // adjust value
 inline int func_80043408(int initial, int value, int max) {
     
@@ -288,8 +266,6 @@ inline int func_80043408(int initial, int value, int max) {
     return adjusted;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", initializeDialogueSession);
 
 bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u16 dialogueIndex, u16 flag) {
 
@@ -425,8 +401,6 @@ bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u1
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", checkAllDialoguesCompleted);
-
 bool checkAllDialoguesCompleted(void) {
 
     bool result = FALSE;
@@ -441,8 +415,6 @@ bool checkAllDialoguesCompleted(void) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", closeDialogueSession);
 
 bool closeDialogueSession(u16 index) {
 
@@ -467,8 +439,6 @@ bool closeDialogueSession(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", cleanupDialogueOverlayBox);
-
 void cleanupDialogueOverlayBox(u16 index) {
 
     messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
@@ -483,13 +453,9 @@ void cleanupDialogueOverlayBox(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", getSelectedMenuRow);
-
 u8 getSelectedMenuRow(u16 index) {
     return dialogues[index].sessionManager.selectedMenuRow;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", getDialogueBytecodeAddress);
 
 u32 getDialogueBytecodeAddress(u16 index, u16 dialogueOffset) {
 
@@ -498,8 +464,6 @@ u32 getDialogueBytecodeAddress(u16 index, u16 dialogueOffset) {
     return ptr + dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].vaddrIndex[dialogueOffset];
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setDialogueVariableValue);
 
 inline void setDialogueVariableValue(u16 index, u16 value) {
 
@@ -516,8 +480,6 @@ inline void setDialogueVariableValue(u16 index, u16 value) {
     }
     
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", getDialogueVariableValue);
 
 inline u32 getDialogueVariableValue(u16 index) {
 
@@ -539,16 +501,12 @@ inline u32 getDialogueVariableValue(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setSpecialDialogueBitFromPointer);
-
 inline void setSpecialDialogueBitFromPointer(u16 bitIndex) {
 
     u32 temp = bitIndex;
     specialDialogueBitsPointer[temp >> 5] |= 1 << (temp & 0x1F);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", clearSpecialDialogueBitFromPointer);
 
 inline void clearSpecialDialogueBitFromPointer(u16 bitIndex) {
 
@@ -557,8 +515,6 @@ inline void clearSpecialDialogueBitFromPointer(u16 bitIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", checkSpecialDialogueBitFromPointer);
-
 inline u32 checkSpecialDialogueBitFromPointer(u16 bitIndex) {
     
     u32 temp = bitIndex;
@@ -566,8 +522,6 @@ inline u32 checkSpecialDialogueBitFromPointer(u16 bitIndex) {
     return !(specialDialogueBitsPointer[temp >> 5] & (1 << (temp & 0x1F))) == 0;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", parseDialogueBytecode);
 
 void parseDialogueBytecode(u16 index) {
 
@@ -729,8 +683,6 @@ void parseDialogueBytecode(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", setOverlayMessageBoxSprite);
-
 void setOverlayMessageBoxSprite(u16 index) {
 
     f32 xPosition, yPosition;
@@ -760,8 +712,6 @@ void setOverlayMessageBoxSprite(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", updateDialogueButtonIcon2Display);
-
 void updateDialogueButtonIcon2Display(u16 index) {
 
     f32 tempX = dialogues[index].dialogueButtonIcon2.coordinates.x;
@@ -777,8 +727,6 @@ void updateDialogueButtonIcon2Display(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", updateDialogueButtonIcon3Display);
-
 void updateDialogueButtonIcon3Display(u16 index) {
  
     f32 tempX = dialogues[index].dialogueButtonIcon3.coordinates.x;
@@ -791,8 +739,6 @@ void updateDialogueButtonIcon3Display(u16 index) {
     setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon3.spriteIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.x + tempX, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.y + tempY, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.z);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", handleMenuNavigation);
 
 void handleMenuNavigation(u16 index) {
 
@@ -891,8 +837,6 @@ void handleMenuNavigation(u16 index) {
     }
    
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", updateCurrentDialogue);
 
 void updateCurrentDialogue(u16 index) {
     
@@ -1192,8 +1136,6 @@ void updateCurrentDialogue(u16 index) {
 
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/dialogue", updateDialogues);
 
 void updateDialogues(void) {
 

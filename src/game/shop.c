@@ -526,12 +526,8 @@ AnimationIndices playerShopAnimationIndices[TOTAL_SHOP_ITEMS] = {
     { 6, 8 }, { 11, 13 }, { 11, 13 }, { 11, 13 }
 };
 
-
 // forward declarations
 u8 handlePurchase(u16 storeItemIndex, s32 quantity);
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/shop", intializeShopDialogue);
 
 void intializeShopDialogue(u8 storeItemIndex) {
 
@@ -547,8 +543,6 @@ void intializeShopDialogue(u8 storeItemIndex) {
     setMainLoopCallbackFunctionIndex(SHOP_DIALOGUE);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/shop", loadShopItemSprite);
 
 void loadShopItemSprite(u8 index) {
     
@@ -573,8 +567,6 @@ void loadShopItemSprite(u8 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/shop", deactivateShopItemMapObject);
-
 void deactivateShopItemMapObject(u8 index) {
 
     if (shopItemSpriteIndexOffsets[index] != 0xFF) {
@@ -582,8 +574,6 @@ void deactivateShopItemMapObject(u8 index) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/shop", handlePickUpShopItem);
 
 void handlePickUpShopItem(u8 shopItemIndex) {
     
@@ -603,13 +593,9 @@ void handlePickUpShopItem(u8 shopItemIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/shop", checkCanPickUpShopItem);
-
 u8 checkCanPickUpShopItem(u8 index) {
     return shopItemPickUpEnabled[index];
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/shop", shopDialogueCallback);
 
 void shopDialogueCallback(void) {
 
@@ -905,8 +891,6 @@ void shopDialogueCallback(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/shop", handlePurchase);
 
 u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
 
@@ -1423,8 +1407,6 @@ u8 handlePurchase(u16 storeItemIndex, s32 quantity) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/shop", checkShopItemShouldBeDisplayed);
-
 bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
     bool result = FALSE;
@@ -1467,8 +1449,7 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-
-        case FLOWER_SHOP_GRASS_SEEDS_ITEM:
+case FLOWER_SHOP_GRASS_SEEDS_ITEM:
 
             if (0 < gSeason && gSeason < AUTUMN) {
                 result = 1;
@@ -1744,8 +1725,7 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-
-        default:
+default:
             break;
 
     }

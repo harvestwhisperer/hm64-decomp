@@ -123,7 +123,6 @@ void moveSeasonCursorHorizontally(void);
 void moveSeasonCursorVertically(void);
 void handleNamingGridInput(void);
 
-
 static inline int getSpriteIndexFromFlags(u16 flags) {
     int v = (flags & NAMING_SCREEN_NAME_POSITION_MASK) >> NAMING_SCREEN_NAME_POSITION_SHIFT;
     v -= 1;
@@ -134,8 +133,6 @@ static inline void setSpriteIndexOnFlags(s32 index) {
     namingScreenContext.flags &= ~NAMING_SCREEN_NAME_POSITION_MASK;
     namingScreenContext.flags |= (index << NAMING_SCREEN_NAME_POSITION_SHIFT);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", initializeNamingScreen);
 
 inline void initializeNamingScreen(u8* arg0, u8 arg1) {
 
@@ -168,8 +165,6 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", namingScreenCallback);
 
 void namingScreenCallback(void) {
 
@@ -447,12 +442,9 @@ switch (namingScreenContext.screenType) {
             }
         }
 
-
-    }
-
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", loadNameSelectionSprites);
+}
 
 void loadNameSelectionSprites(void) {
 
@@ -582,8 +574,7 @@ void loadNameSelectionSprites(void) {
                 
             } 
 
-            
-        } else {
+} else {
             break;
         }
 
@@ -606,8 +597,6 @@ void loadNameSelectionSprites(void) {
     setMessageBoxRGBAWithTransition(3, 255, 255, 255, 255, 8);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", selectCharacterOrConfirm);
 
 bool selectCharacterOrConfirm(void) {
 
@@ -779,8 +768,6 @@ bool selectCharacterOrConfirm(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveCursorLeft);
-
 void moveCursorLeft(void) {
 
     namingScreenContext.cursor.x -= 16.0f;
@@ -806,8 +793,6 @@ void moveCursorLeft(void) {
     updateBottomRowUI();
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveCursorRight);
 
 void moveCursorRight(void) {
         
@@ -835,9 +820,6 @@ void moveCursorRight(void) {
     updateBottomRowUI();
 
 }
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveCursorUp);
 
 void moveCursorUp(void) {
 
@@ -878,8 +860,6 @@ void moveCursorUp(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveCursorDown);
 
 void moveCursorDown(void) {
 
@@ -1019,7 +999,6 @@ void deactivateNamingScreenSprites(void) {
     
 }
 
-
 void updateBottomRowUI(void) {
 
     s8 temp;
@@ -1102,8 +1081,6 @@ void updateBottomRowUI(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", snapCursorToOKButton);
-
 void snapCursorToOKButton(void) {
     
     if ((namingScreenContext.gridY == 5) && (namingScreenContext.gridX >= 10)) {
@@ -1122,8 +1099,6 @@ void snapCursorToOKButton(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", handleNamingGridInput);
 
 void handleNamingGridInput(void) {
         
@@ -1185,9 +1160,8 @@ void handleNamingGridInput(void) {
             }
             
         }       
-            
-        
-    }
+
+}
 
     if (!set) {
             
@@ -1243,8 +1217,6 @@ void handleNamingGridInput(void) {
     setSpriteViewSpacePosition(0x82, namingScreenContext.shadow.x, namingScreenContext.shadow.y, 5.0f);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", loadSeasonSelectionSprites);
 
 void loadSeasonSelectionSprites(void) {
     
@@ -1324,8 +1296,6 @@ void loadSeasonSelectionSprites(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", handleSeasonSelectionInput);
-
 void handleSeasonSelectionInput(void) {
     
     bool set = FALSE;
@@ -1398,8 +1368,6 @@ void handleSeasonSelectionInput(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveSeasonCursorVertically);
-
 void moveSeasonCursorVertically(void) {
 
     u16 temp1;
@@ -1422,8 +1390,6 @@ void moveSeasonCursorVertically(void) {
     namingScreenContext.selectedSeason = temp2;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/namingScreen", moveSeasonCursorHorizontally);
 
 void moveSeasonCursorHorizontally(void) {
 

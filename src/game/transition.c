@@ -45,8 +45,6 @@ s16 D_80182D8C;
 s16 D_8018A062;
 s16 D_80237A20; 
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", mainGameLoopCallback);
-
 void mainGameLoopCallback(void) {
     
     // for debugging?
@@ -72,8 +70,6 @@ void mainGameLoopCallback(void) {
     checkButtonPressed(CONTROLLER_1, BUTTON_Z);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/transition", launchIntroCutscene);
 
 // used by game.c
 inline void launchIntroCutscene(u16 cutsceneIndex, u16 spawnPoint, u8 arg2) {
@@ -107,8 +103,6 @@ inline void launchIntroCutscene(u16 cutsceneIndex, u16 spawnPoint, u8 arg2) {
     setMainLoopCallbackFunctionIndex(SET_AUDIO_AND_LIGHTING);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/transition", loadLevel);
 
 // arg0 = entering new location
 // called by map load callback, end of day callback, cutscene completion
@@ -249,9 +243,6 @@ void loadLevel(u8 arg0) {
     previousLightingRGBA.a = 0;
     
 }
-
-
-//INCLUDE_ASM("asm/nonmatchings/game/transition", initializeEntityInstances);
 
 void initializeEntityInstances(u8 arg0) {
 
@@ -525,23 +516,17 @@ void initializeEntityInstances(u8 arg0) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", resumeGameplay);
-
 void resumeGameplay(void) {
     togglePauseEntities();
     resumeCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", pauseGameplay);
-
 inline void pauseGameplay(void) {
     pauseEntities();
     pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", exitOverlayScreen);
 
 void exitOverlayScreen(void) {
 
@@ -563,16 +548,12 @@ void exitOverlayScreen(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", openOverlayScreen);
-
 void inline openOverlayScreen(void) {
     pauseAllEntityLoads();
     pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
     unloadMapAssets(MAIN_MAP_INDEX);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/transition", startNewDay);
 
 void startNewDay(void) {
     

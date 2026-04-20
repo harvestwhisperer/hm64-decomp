@@ -122,7 +122,6 @@ u8 interactedWithLevelInteractionIndex;
 
 RacingContext gRacingContext;
 
-
 // shared (with overlayScreens.c)
 u32 D_801C3F78;
 u8 gRaceFinishOrder[6];
@@ -329,8 +328,6 @@ static inline void transitionCutscenes(u16 cutsceneIndex, u16 spawnPoint) {
     loadMapAtSpawnPoint(spawnPoint);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", initializeCutscene);
-
 inline void initializeCutscene(u16 segmentIndex) {
 
     nuPiReadRom(cutsceneBytecodeAddresses[segmentIndex].romAddrStart, cutsceneBankLoadAddresses[segmentIndex], cutsceneBytecodeAddresses[segmentIndex].romAddrEnd - cutsceneBytecodeAddresses[segmentIndex].romAddrStart);
@@ -348,8 +345,6 @@ inline void initializeCutscene(u16 segmentIndex) {
     clearDailyEventBit(EAT_BREAKFAST);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setLevelCutscene);
 
 u16 setLevelCutscene(u16 mapIndex) {
     
@@ -457,8 +452,6 @@ u16 setLevelCutscene(u16 mapIndex) {
     return bytecodeSegmentIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setFarmVisitCutscenes);
 
 // arg0 = cutscene type; 0 = show up while working; 1 = morning/show up on map entry
 u16 setFarmVisitCutscenes(bool morningVisit) {
@@ -1771,9 +1764,6 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
     return result;
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setFarmCutscenes);
-
 u16 setFarmCutscenes(void) {
 
     u16 bytecodeSegmentIndex = 0xFFFF;
@@ -1901,8 +1891,6 @@ u16 setFarmCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setMountain1Cutscenes);
-
 u16 setMountain1Cutscenes(void) {
 
     bool set = FALSE;
@@ -1991,8 +1979,6 @@ u16 setMountain1Cutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setMountain2Cutscenes);
-
 u16 setMountain2Cutscenes(void) {
 
     bool set = FALSE;
@@ -2055,8 +2041,7 @@ u16 setMountain2Cutscenes(void) {
         set = TRUE;
     }
 
-
-    if (!set && !checkLifeEventBit(POPURI_CONFESSION) && !checkLifeEventBit(MARRIED) && npcAffection[POPURI] >= 250 && gWeather == SUNNY && 11 < gHour && gHour < 18 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+if (!set && !checkLifeEventBit(POPURI_CONFESSION) && !checkLifeEventBit(MARRIED) && npcAffection[POPURI] >= 250 && gWeather == SUNNY && 11 < gHour && gHour < 18 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
         setLifeEventBit(POPURI_CONFESSION);
         gCutsceneIndex = 342;
         gCutsceneFlags |= (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS);
@@ -2067,8 +2052,6 @@ u16 setMountain2Cutscenes(void) {
     return bytecodeSegmentIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setTopOfMountain1Cutscenes);
 
 u16 setTopOfMountain1Cutscenes(void) {
 
@@ -2107,8 +2090,6 @@ u16 setTopOfMountain1Cutscenes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setMoonMountainCutscenes);
-
 u16 setMoonMountainCutscenes(void) {
 
     bool set = FALSE;
@@ -2131,8 +2112,6 @@ u16 setMoonMountainCutscenes(void) {
     
     return bytecodeSegmentIndex;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setPondCutscenes);
 
 u16 setPondCutscenes(void) {
 
@@ -2172,8 +2151,6 @@ u16 setPondCutscenes(void) {
     return bytecodeSegmentIndex;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setHarvestSpriteCaveCutscenes);
-
 u16 setHarvestSpriteCaveCutscenes(void) {
 
     u16 bytecodeSegmentIndex = 0xFFFF;
@@ -2188,8 +2165,6 @@ u16 setHarvestSpriteCaveCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setCaveCutscenes);
-
 u16 setCaveCutscenes(void) {
 
     u16 bytecodeSegmentIndex = 0xFFFF;
@@ -2202,8 +2177,6 @@ u16 setCaveCutscenes(void) {
     return bytecodeSegmentIndex;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setHouseCutscenes);
 
 u16 setHouseCutscenes(void) {
 
@@ -2323,8 +2296,6 @@ u16 setHouseCutscenes(void) {
     return bytecodeSegmentIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setKitchenCutscenes);
 
 u16 setKitchenCutscenes(void) {
 
@@ -2496,8 +2467,6 @@ u16 setKitchenCutscenes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRanchCutscenes);
-
 u16 setRanchCutscenes(void) {
 
     u16 bytecodeSegmentIndex = 0xFFFF;
@@ -2636,8 +2605,6 @@ u16 setRanchCutscenes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRanchStoreCutscenes);
-
 u16 setRanchStoreCutscenes(void) {
 
     u16 bytecodeSegmentIndex = 0xFFFF;
@@ -2659,8 +2626,6 @@ u16 setRanchStoreCutscenes(void) {
     return bytecodeSegmentIndex;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVineyardCutscenes);
 
 u16 setVineyardCutscenes(void) {
 
@@ -2709,8 +2674,6 @@ u16 setVineyardCutscenes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVineyardHouseCutscenes);
-
 u16 setVineyardHouseCutscenes(void) {
     
     u16 bytecodeSegmentIndex = 0xFFFF;
@@ -2731,8 +2694,6 @@ u16 setVineyardHouseCutscenes(void) {
     
     return bytecodeSegmentIndex;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVineyardCellarCutscenes);
 
 u16 setVineyardCellarCutscenes(void) {
     
@@ -2763,8 +2724,6 @@ u16 setVineyardCellarCutscenes(void) {
     
     return bytecodeSegmentIndex;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVillage1Cutscenes);
 
 u16 setVillage1Cutscenes(void) {
 
@@ -2801,8 +2760,7 @@ u16 setVillage1Cutscenes(void) {
         set = TRUE;
     } 
 
-
-    if (!set && !checkLifeEventBit(MARIA_POPURI_VILLAGE_CUTSCENE) && npcAffection[MARIA] >= 150 && npcAffection[POPURI] >= 150 && gWeather == SUNNY && gSeason == SPRING && 5 < gHour && gHour < 18) {
+if (!set && !checkLifeEventBit(MARIA_POPURI_VILLAGE_CUTSCENE) && npcAffection[MARIA] >= 150 && npcAffection[POPURI] >= 150 && gWeather == SUNNY && gSeason == SPRING && 5 < gHour && gHour < 18) {
 
         if (previousMapIndex == ROAD) {
             
@@ -2849,8 +2807,6 @@ u16 setVillage1Cutscenes(void) {
     return bytecodeSegmentIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setVillage2Cutscenes);
 
 // village 2
 u16 setVillage2Cutscenes(void) {
@@ -3064,8 +3020,6 @@ u16 setVillage2Cutscenes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRickStoreCutscenes);
-
 u16 setRickStoreCutscenes(void) {
     
     u16 bytecodeSegmentIndex = 0xFFFF;
@@ -3080,8 +3034,6 @@ u16 setRickStoreCutscenes(void) {
     return bytecodeSegmentIndex;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setFlowerShopCutscenes);
 
 u16 setFlowerShopCutscenes(void) {
     
@@ -3104,8 +3056,6 @@ u16 setFlowerShopCutscenes(void) {
     return bytecodeSegmentIndex;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setBakeryCutscenes);
 
 u16 setBakeryCutscenes(void) {
 
@@ -3191,8 +3141,6 @@ u16 setBakeryCutscenes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setMayorHouseCutscenes);
-
 u16 setMayorHouseCutscenes(void) {
 
     u16 bytecodeSegmentIndex = 0xFFFF;
@@ -3225,8 +3173,6 @@ u16 setMayorHouseCutscenes(void) {
 
 }    
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setLibraryCutscenes);
-
 u16 setLibraryCutscenes(void) {
 
     u16 bytecodeSegmentIndex = 0xFFFF;
@@ -3254,8 +3200,6 @@ u16 setLibraryCutscenes(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setChurchCutscenes);
-
 u16 setChurchCutscenes(void) {
 
     bool set = FALSE;
@@ -3278,8 +3222,6 @@ u16 setChurchCutscenes(void) {
     
     return bytecodeSegmentIndex;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setTavernCutscenes);
 
 u16 setTavernCutscenes(void) {
 
@@ -3304,8 +3246,6 @@ u16 setTavernCutscenes(void) {
     return bytecodeSegmentIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setSquareCutscenes);
 
 u16 setSquareCutscenes(void) {
 
@@ -3378,8 +3318,7 @@ u16 setSquareCutscenes(void) {
         
     }
 
-
-    if (!set && gSeason == SPRING && gDayOfMonth == 1 && 5 < gHour && gHour < 18) {
+if (!set && gSeason == SPRING && gDayOfMonth == 1 && 5 < gHour && gHour < 18) {
         gCutsceneIndex = 1400;
         loadCutscene(FALSE);
         gCutsceneFlags |= (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS);
@@ -3412,8 +3351,6 @@ u16 setSquareCutscenes(void) {
     return bytecodeSegmentIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRaceTrackCutscenes);
 
 u16 setRaceTrackCutscenes(void) {
 
@@ -3473,8 +3410,6 @@ u16 setRaceTrackCutscenes(void) {
     return bytecodeSegmentIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setBeachCutscenes);
 
 u16 setBeachCutscenes(void) {
     
@@ -3569,8 +3504,6 @@ u16 setBeachCutscenes(void) {
     return bytecodeSegmentIndex;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setRoadCutscenes);
-
 u16 setRoadCutscenes(void) {
     
     bool set = FALSE;
@@ -3629,8 +3562,6 @@ u16 setRoadCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", handleTimedDailyCutscenes);
- 
 // time-based daily cutscenes/update game
 // mapIndex unused
 u16 handleTimedDailyCutscenes(u8 mapIndex) {
@@ -3721,8 +3652,6 @@ u16 handleTimedDailyCutscenes(u8 mapIndex) {
     return bytecodeSegmentIndex;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", handleStartOfDayCutscenes);
 
 // cutscenes on wake up: evaluation, wedding, rivals' weddings, animal funeral, sick days
 u16 handleStartOfDayCutscenes(void) {
@@ -4020,8 +3949,6 @@ u16 handleStartOfDayCutscenes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", setDreamCutscenes);
-
 // dreams
 u16 setDreamCutscenes(void) {
 
@@ -4127,8 +4054,6 @@ u16 setDreamCutscenes(void) {
     return set;
     
 }
-
-// INCLUDE_ASM("asm/nonmatchings/game/cutscenes", handleCutsceneCompletion);
 
 void handleCutsceneCompletion(void) {
 
@@ -5195,9 +5120,8 @@ void handleCutsceneCompletion(void) {
                             memcpy(farmFieldTiles, D_80115030, FIELD_HEIGHT * FIELD_WIDTH); 
                             tempSpawnPoint = FARM_SPAWN_POINT_1;
                             gCutsceneIndex = 1601;
-                            
-                            
-                        } else if (D_80189824 == 1) {
+
+} else if (D_80189824 == 1) {
 
                             gSeason = SPRING;
 
@@ -5299,11 +5223,6 @@ void handleCutsceneCompletion(void) {
             if (((gCutsceneIndex == HARVEST_FESTIVAL) || (gCutsceneIndex == NEW_YEAR_FESTIVAL))) {
                 setEntitySpriteDimensions(ENTITY_ASSET_SHIPPER, 12, 12);
                 setEntitySpriteDimensions(ENTITY_ASSET_ASSISTANT_CARPENTER, 12, 12);
-            }
-
-            if (checkDailyEventBit(95)) {
-                // empty function 
-                func_800657BC();
             }
 
             gCutsceneCompletionFlags = 0;
@@ -5691,8 +5610,6 @@ void handleCutsceneCompletion(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/cutscenes", loadCutscene);
 
 void loadCutscene(bool morningVisit) {
     
