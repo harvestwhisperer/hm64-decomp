@@ -252,14 +252,9 @@ s32 volumesTable[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", initializeWaveTable);
-
 void initializeWaveTable(u16 waveTableIndex) {
     setAudioSequenceBank(waveTableAddresses[waveTableIndex].pbk_addr, waveTableAddresses[waveTableIndex].pbk_end, waveTableAddresses[waveTableIndex].wbk_addr);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setCurrentAudioSequence);
 
 void setCurrentAudioSequence(u16 sequenceIndex) {
 
@@ -271,23 +266,17 @@ void setCurrentAudioSequence(u16 sequenceIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", stopAudioSequenceWithDefaultFadeOut);
-
 void stopAudioSequenceWithDefaultFadeOut(u16 sequenceIndex) {
     if (sequenceIndex < TOTAL_SEQUENCES) {
         stopAudioSequenceWithFadeOut(0, 32);
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", stopCurrentAudioSequence);
-
 void stopCurrentAudioSequence(u16 sequenceIndex) {
     if (sequenceIndex  < TOTAL_SEQUENCES) {
         stopAudioSequence(0);
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", checkDefaultSequenceChannelOpen);
 
 // check if first sequence slot is open/not set
 bool checkDefaultSequenceChannelOpen(u16 sequenceIndex) {
@@ -306,15 +295,11 @@ bool checkDefaultSequenceChannelOpen(u16 sequenceIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setAudioSequenceVolume);
-
 void setAudioSequenceVolume(u16 sequenceIndex, u32 targetVolume) {
     if (sequenceIndex < TOTAL_SEQUENCES) {
         setAudioSequenceVolumes(0, targetVolume, 32);
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", func_800ACC1C);
 
 // unused
 // void func_800ACC1C(u16 sequenceIndex) {
@@ -322,8 +307,6 @@ void setAudioSequenceVolume(u16 sequenceIndex, u32 targetVolume) {
 //         setAudioSequenceVolumes(0, 0, 32);
 //     }
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", setSfx);
 
 void playSfx(u16 index) {
     
@@ -344,8 +327,6 @@ void playSfx(u16 index) {
   }
   
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameAudio", checkAllSfxInactive);
 
 u8 checkAllSfxInactive(void) {
 

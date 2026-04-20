@@ -84,10 +84,7 @@ u32 D_802226E4;
 // "PACKINSOFT FARM2" in ASCII
 u8 sramSignature[16] = { 0x50, 0x41, 0x43, 0x4B, 0x49, 0x4E, 0x53, 0x4F, 0x46, 0x54, 0x20, 0x46, 0x41, 0x52, 0x4D, 0x32 };
 
-
 /* helpers */
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", initializeLoadGameScreen);
 
 void initializeLoadGameScreen(bool controllerPakEnabled) {
     
@@ -175,8 +172,6 @@ void initializeLoadGameScreen(bool controllerPakEnabled) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", resetGamePakState);
-
 void resetGamePakState(void) {
 
     u32 padding[4];
@@ -188,10 +183,7 @@ void resetGamePakState(void) {
 
 }
 
-
 /* select game functions */
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", showDiarySelectScreen);
 
 void showDiarySelectScreen(bool fadeIn, u8 diaryIndex) {
 
@@ -254,8 +246,6 @@ void showDiarySelectScreen(bool fadeIn, u8 diaryIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadAllDiarySlots);
-
 void loadAllDiarySlots(void) {
 
     resetGamePakState();
@@ -289,8 +279,6 @@ void loadAllDiarySlots(void) {
     setupDiaryMessageBoxes();
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", setupDiaryMessageBoxes);
 
 void setupDiaryMessageBoxes(void) {
 
@@ -385,8 +373,6 @@ void setupDiaryMessageBoxes(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", gameSelectCallback);
 
 void gameSelectCallback(void) {
 
@@ -1125,8 +1111,6 @@ void gameSelectCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", verifySramSignature);
-
 inline bool verifySramSignature(u8 buffer[]) {
 
     u8 i = 0;
@@ -1147,8 +1131,6 @@ inline bool verifySramSignature(u8 buffer[]) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadDiarySlotData);
 
 void loadDiarySlotData(u8 slot, u8 source, u8 status) {
 
@@ -1295,8 +1277,6 @@ void loadDiarySlotData(u8 slot, u8 source, u8 status) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", calculateSaveChecksum);
-
 inline u16 calculateSaveChecksum(u8 buffer[]) {
 
     u16 result = 0;
@@ -1312,8 +1292,6 @@ inline u16 calculateSaveChecksum(u8 buffer[]) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", verifySaveChecksum);
 
 inline u16 verifySaveChecksum(u8* buffer) {
 
@@ -1331,8 +1309,6 @@ inline u16 verifySaveChecksum(u8* buffer) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", calculateRankingChecksum);
-
 inline u16 calculateRankingChecksum(u8 buffer[]) {
 
     u16 result = 0;
@@ -1349,8 +1325,6 @@ inline u16 calculateRankingChecksum(u8 buffer[]) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", verifyRankingChecksum);
-
 inline u16 verifyRankingChecksum(u8 buffer[]) {
 
     u16 result = 0;
@@ -1366,8 +1340,6 @@ inline u16 verifyRankingChecksum(u8 buffer[]) {
     return result == *(u16*)(buffer + 254);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", initializeNewGameState);
 
 void initializeNewGameState(void) {
 
@@ -1708,8 +1680,6 @@ void initializeNewGameState(void) {
     specialDialogueBits[15] = 0;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadGameFromSram);
 
 bool loadGameFromSram(u8 saveSlot, bool gamePakEnabled) {
 
@@ -2080,8 +2050,6 @@ bool loadGameFromSram(u8 saveSlot, bool gamePakEnabled) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", saveGameToSram);
 
 // save game state to sram
 bool saveGameToSram(u8 saveSlot) {
@@ -2457,8 +2425,6 @@ bool saveGameToSram(u8 saveSlot) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", handleSramOperation);
-
 void handleSramOperation(u8 srcSlot, bool srcGamePak, u8 destSlot, bool destGamePak) {
 
     u32 devAddr;
@@ -2498,8 +2464,6 @@ void handleSramOperation(u8 srcSlot, bool srcGamePak, u8 destSlot, bool destGame
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", deleteSaveSlot);
 
 void deleteSaveSlot(u8 saveSlot, bool gamePakEnabled) {
 
@@ -2542,10 +2506,7 @@ void deleteSaveSlot(u8 saveSlot, bool gamePakEnabled) {
     
 }
 
-
 /* farm ranking screen functions */
-
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadFarmRankingScreen);
 
 void loadFarmRankingScreen(void) {
 
@@ -2607,8 +2568,6 @@ void loadFarmRankingScreen(void) {
     D_80204DF0 = gFarmRankingData.scores[4];
     
 }
-
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", clearFarmRankingSlot);
 
 // setup/reset farm ranking screen strings
 void clearFarmRankingSlot(u8 slot) {
@@ -2709,8 +2668,6 @@ void clearFarmRankingSlot(u8 slot) {
     gFarmRankingData.scores[slot] = 0;
 
 }
-
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", setupRankingListMessageBoxes);
 
 void setupRankingListMessageBoxes(bool noFadeIn) {
 
@@ -2868,8 +2825,6 @@ void setupRankingListMessageBoxes(bool noFadeIn) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", setupRankingDetailMessageBoxes);
-
 void setupRankingDetailMessageBoxes(u8 slot) {
 
     setGameVariableString(5, (u8*)&gFarmRankingData.farmNames[slot], 6);
@@ -3014,8 +2969,6 @@ void setupRankingDetailMessageBoxes(u8 slot) {
     setNumberSpritesRGBA(10, 255, 255, 255, 255);
     
 }
-
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", farmRankingScreenCallback);
 
 // farm ranking screen main loop callback
 void farmRankingScreenCallback(void) {
@@ -3226,8 +3179,6 @@ void farmRankingScreenCallback(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadFarmRankingFromSram);
-
 void loadFarmRankingFromSram(u8 slot) {
 
     FarmRankingsBuffer* buff = (FarmRankingsBuffer*)FARM_RANKINGS_BUFFER;
@@ -3339,7 +3290,6 @@ void loadFarmRankingFromSram(u8 slot) {
 }
 
 // save/cache top completion state into sram
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", saveFarmRankingToSram);
 
 void saveFarmRankingToSram(u8 slot) {
 
@@ -3476,8 +3426,6 @@ void saveFarmRankingToSram(u8 slot) {
 
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", clearFarmRankingBuffer);
-
 void clearFarmRankingBuffer(u8 slot) {
 
     farmRankingsBuffer.signature[0] = 0;
@@ -3500,8 +3448,6 @@ void clearFarmRankingBuffer(u8 slot) {
     sramWrite(((slot * 0x100) + 0x4000) | 0x08000000, (FarmRankingsBuffer*)FARM_RANKINGS_BUFFER, 0x10);
 
 } 
-
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", countActiveFarmRankings);
 
 u8 countActiveFarmRankings(void) {
 
@@ -3542,8 +3488,6 @@ static inline void setHorseAffection() {
         gFarmRankingData.horseAffection[RANKING_TEMP_SLOT] = 0;
     }
 }
-
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", loadTempRankingFromSave);
 
 void loadTempRankingFromSave(u8 saveSlot, u8 source) {
 
@@ -3711,8 +3655,6 @@ void loadTempRankingFromSave(u8 saveSlot, u8 source) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", calculateFarmRankingScore);
-
 void calculateFarmRankingScore(u8 slot) {
     
     f32 totalScore;
@@ -3787,13 +3729,9 @@ void calculateFarmRankingScore(u8 slot) {
     
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", setRankingGrassTiles);
-
 void setRankingGrassTiles(u8 slot) {
     gFarmRankingData.grassTiles[slot] = getFarmGrassTilesSum();
 }
-
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", countRankingPhotos);
 
 void countRankingPhotos(u8 slot) {
 
@@ -3865,13 +3803,9 @@ void countRankingPhotos(u8 slot) {
 
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", setRankingRecipeCount);
-
 void setRankingRecipeCount(u8 slot) {
     gFarmRankingData.recipeCount[slot] = getAcquiredRecipesTotal();
 }
-
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", countRankingHouseExtensions);
 
 void countRankingHouseExtensions(u8 slot) {
 
@@ -3897,8 +3831,6 @@ void countRankingHouseExtensions(u8 slot) {
     }
 
 }
-
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", sortFarmRankings);
 
 // get highest percentage
 void sortFarmRankings(void) {
@@ -3938,8 +3870,6 @@ void sortFarmRankings(void) {
     
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameFile", findMatchingFarmRanking);
-
 u8 findMatchingFarmRanking(void) {
     
     bool found = FALSE;
@@ -3975,8 +3905,6 @@ u8 findMatchingFarmRanking(void) {
     return found;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", swapFarmRankingSlots);
 
 void swapFarmRankingSlots(u8 slotA, u8 slotB) {
 
@@ -4247,8 +4175,6 @@ void swapFarmRankingSlots(u8 slotA, u8 slotB) {
     gFarmRankingData.scores[slotB] = gFarmRankingData.scores[RANKING_SWAP_SLOT];
    
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/gameFile", copyFarmRankingSlot);
 
 void copyFarmRankingSlot(u8 destSlot, u8 srcSlot) {
 

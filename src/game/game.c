@@ -158,7 +158,6 @@ u8 D_80237418[3];
 
 Vec4f previousLightingRGBA;
 
-
 // data
 
 // lighting values based on hour
@@ -211,8 +210,6 @@ static const s16 houseExtensionLumberCosts[6];
 // forward declarations
 extern inline void showTextBox(u16 arg0, u16 arg1, u16 arg2, u32 flag, u16 arg4);
 extern void showDialogueTextBox(u8);
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", updateFamilyStates);
 
 void updateFamilyStates(void) {
 
@@ -425,8 +422,6 @@ not_married:
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", decrementFamilyAndPetAffection);
-
 void decrementFamilyAndPetAffection(void) {
 
     if (!checkLifeEventBit(MARRIED)) goto handle_animals;
@@ -460,8 +455,6 @@ handle_animals:
     adjustHorseAffection(-1);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", setSpecialDialogues);
 
 void setSpecialDialogues(void) {
 
@@ -587,8 +580,6 @@ void setSpecialDialogues(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", clearNPCAlternateLocationDialogueBits);
-
 void clearNPCAlternateLocationDialogueBits(void) {
 
     clearSpecialDialogueBit(HARRIS_AT_TAVERN_DIALOGUE);
@@ -617,8 +608,6 @@ void clearNPCAlternateLocationDialogueBits(void) {
     clearSpecialDialogueBit(KENT_AT_MOUNTAIN_DIALOGUE);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", resetDailyBits);
 
 void resetDailyBits(void) {
     
@@ -716,8 +705,6 @@ void resetDailyBits(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", adjustValue);
-
 // same as func_80046D50
 inline int adjustValue(int initial, int value, int max) {
 
@@ -739,8 +726,6 @@ inline int adjustValue(int initial, int value, int max) {
     return adjusted;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", showTextBox);
 
 inline void showTextBox(u16 messageBoxType, u16 textBankIndex, u16 textIndex, u32 flag, u16 flags) {
   
@@ -774,8 +759,6 @@ inline void showTextBox(u16 messageBoxType, u16 textBankIndex, u16 textIndex, u3
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", showMessageBox);
-
 inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dialogueIndex, u32 flag, u16 messageBoxFlags) {
     
     pauseGameplay();
@@ -803,8 +786,6 @@ inline void showMessageBox(u16 arg0, u16 dialogueBytecodeAddressesIndex, u16 dia
     setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", showDialogueTextBox);
 
 void showDialogueTextBox(u8 dialogueMenuIndex) {
 
@@ -940,8 +921,6 @@ void showDialogueTextBox(u8 dialogueMenuIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", setMapAudioAndLighting);
-
 void setMapAudioAndLighting(void) {
     
     // ?
@@ -958,8 +937,6 @@ void setMapAudioAndLighting(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", setLevelLighting);
 
 void setLevelLighting(s16 rate, u16 callbackFunctionIndex) {
 
@@ -1029,8 +1006,6 @@ void setLevelLighting(s16 rate, u16 callbackFunctionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", handleExitLevel);
-
 // arg0 = unused
 inline void handleExitLevel(u16 arg0, u16 callbackIndex) {
     
@@ -1051,16 +1026,12 @@ inline void handleExitLevel(u16 arg0, u16 callbackIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", loadOverlayScreen);
-
 void loadOverlayScreen(u16 delayedFramesCount, u16 callbackFunctionIndex) {
     gameLoopContext.delayedFramesCount = delayedFramesCount;
     gameLoopContext.frameCount = 0;
     gameLoopContext.callbackIndex = callbackFunctionIndex;
     setMainLoopCallbackFunctionIndex(OVERLAY_SCREEN_LOAD);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", levelLoadCallback);
 
 void levelLoadCallback(void) {
 
@@ -1071,8 +1042,6 @@ void levelLoadCallback(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", exitLevelCallback);
 
 void exitLevelCallback(void) {
 
@@ -1094,8 +1063,6 @@ void exitLevelCallback(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", setOverlayScreenCallbackWithDelay);
-
 void setOverlayScreenCallbackWithDelay(void) {
 
     if (gameLoopContext.frameCount >= gameLoopContext.delayedFramesCount) {
@@ -1105,8 +1072,6 @@ void setOverlayScreenCallbackWithDelay(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", handleRotationCallback);
 
 void handleRotationCallback(void) {
 
@@ -1118,8 +1083,6 @@ void handleRotationCallback(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", handleDialogueCallback);
 
 // main loop callback for finishing dialogue
 void handleDialogueCallback(void) {
@@ -1147,8 +1110,6 @@ void handleDialogueCallback(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_8005CDCC);
 
 // update stuff after closing dialogue/overlay screen
 void func_8005CDCC(void) {
@@ -1197,8 +1158,6 @@ void func_8005CDCC(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", messageBoxCallback);
-
 void messageBoxCallback(void) {
     
     // check if a message box has flag 4 set
@@ -1213,8 +1172,6 @@ void messageBoxCallback(void) {
     }
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", endCutsceneCallback);
 
 // ends cutscene
 void endCutsceneCallback(void) {
@@ -1231,8 +1188,6 @@ void endCutsceneCallback(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", loadNamingScreenCallback);
 
 void loadNamingScreenCallback(void) {
     
@@ -1272,8 +1227,6 @@ void loadNamingScreenCallback(void) {
     initializeNamingScreen(namePtr, gNamingScreenIndex);
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", mapLoadCallback);
 
 void mapLoadCallback(void) {
 
@@ -1431,8 +1384,6 @@ static inline void launchIntroCutscene_2(u16 cutsceneIndex, u16 spawnPoint, u8 a
 }
 
 // possible split
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", dialogueMenuCallback);
 
 void dialogueMenuCallback() {
 
@@ -1802,8 +1753,7 @@ void dialogueMenuCallback() {
 
                 break;
 
-
-            case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:                 
+case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:                 
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
@@ -2366,21 +2316,15 @@ void dialogueMenuCallback() {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", waitForAudioFinishCallback);
-
 void waitForAudioFinishCallback(void) {
     if (checkAllSfxInactive()) {
         setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", dreamCutscenesCallback);
-
 void dreamCutscenesCallback(void) {
     handleCutsceneCompletion();
 } 
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", endOfFestivalDayCallback1);
 
 // show end of festival day dialogue box 
 void endOfFestivalDayCallback1(void) {
@@ -2415,8 +2359,6 @@ void endOfFestivalDayCallback1(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", endOfFestivalDayCallback2);
-
 // second end of festival day callback
 void endOfFestivalDayCallback2(void) {
     // check if a message box has flag 4 set
@@ -2424,8 +2366,6 @@ void endOfFestivalDayCallback2(void) {
         setMainLoopCallbackFunctionIndex(END_OF_DAY_1);
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", endOfDayCallback1);
 
 // first end of day callback
 void endOfDayCallback1(void) {
@@ -2493,8 +2433,6 @@ void endOfDayCallback1(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", endOfDayCallback2);
-
 // second end of day callback
 void endOfDayCallback2(void) {
     
@@ -2548,8 +2486,6 @@ void endOfDayCallback2(void) {
 
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", setFestivalDailyBits);
 
 void setFestivalDailyBits(void) {
 
@@ -2683,8 +2619,6 @@ void setFestivalDailyBits(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", checkEarthquakeShouldHappen);
-
 bool checkEarthquakeShouldHappen(void) {
 
     bool result = FALSE;
@@ -2702,8 +2636,6 @@ bool checkEarthquakeShouldHappen(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", handleDailyShipment);
-
 void handleDailyShipment(void) {
 
     gGold += adjustValue(gGold, dailyShippingBinValue, MAX_GOLD);
@@ -2712,8 +2644,6 @@ void handleDailyShipment(void) {
     setDailyEventBit(DAILY_SHIPMENT);
 
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/game/game", calculateAnimalDirectionToPlayer);
 
 u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 playerZ) {
    
@@ -2780,8 +2710,6 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", clearHeldItemsAtEndOfDay);
-
 void clearHeldItemsAtEndOfDay(void) {
     
     if (gPlayer.heldItem) {
@@ -2805,8 +2733,6 @@ void clearHeldItemsAtEndOfDay(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", checkBacheloretteReadyForMarriage);
 
 bool checkBacheloretteReadyForMarriage(void) {
     
@@ -2833,8 +2759,6 @@ bool checkBacheloretteReadyForMarriage(void) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", setWifeNameString);
 
 void setWifeNameString(u8 wife) {
 
@@ -2885,8 +2809,6 @@ void setWifeNameString(u8 wife) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", setDefaultBabyName);
-
 void setDefaultBabyName(u8 wife) {
     
     switch (wife) {
@@ -2935,8 +2857,6 @@ void setDefaultBabyName(u8 wife) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", setHarvestKingName);
- 
 void setHarvestKingName(u8 harvestKing) {
 
     switch (harvestKing) {
@@ -2993,8 +2913,6 @@ void setHarvestKingName(u8 harvestKing) {
         }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80061690);
-
 void func_80061690(u8 arg0) {
     D_801886D4[0] = 0xF6;
     D_801886D4[1] = 0xF6;
@@ -3003,8 +2921,6 @@ void func_80061690(u8 arg0) {
     D_801886D4[4] = 0xF6;
     D_801886D4[5] = 0xF6;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", handlePurchaseHouseExtension);
 
 // returns cutscene index
 u8 handlePurchaseHouseExtension(u8 houseExtensionIndex) {
@@ -3038,8 +2954,6 @@ u8 handlePurchaseHouseExtension(u8 houseExtensionIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", setFlowerFestivalGoddess);
-
 void setFlowerFestivalGoddess(void) {
     
     u8 temp;
@@ -3057,8 +2971,6 @@ void setFlowerFestivalGoddess(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", getBacholeretteWithHighestAffection);
 
 u8 getBacholeretteWithHighestAffection(u8 affectionLevel) {
     
@@ -3093,8 +3005,6 @@ u8 getBacholeretteWithHighestAffection(u8 affectionLevel) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", setSpritiFestivalRecruits);
-
 inline void setSpritiFestivalRecruits(u8 numberOfSpiritFestivalAssistants, u8 npcIndex) {
     switch (numberOfSpiritFestivalAssistants) {                   
         case 1:
@@ -3113,8 +3023,6 @@ static inline void setSpiritFestivalAssistant(u8 npcIndex) {
     numberOfSpiritFestivalAssistantsRecruited++;
     setSpritiFestivalRecruits(numberOfSpiritFestivalAssistantsRecruited, npcIndex);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", recruitSpiritFestivalAssistants);
 
 void recruitSpiritFestivalAssistants(void) {
     
@@ -3174,8 +3082,6 @@ void recruitSpiritFestivalAssistants(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", setRecipes);
 
 void setRecipes(void) {
 
@@ -3287,8 +3193,6 @@ void setRecipes(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", handleHouseConstruction);
-
 u8 handleHouseConstruction(u8 day) {
 
     u8 result;
@@ -3370,8 +3274,6 @@ u8 handleHouseConstruction(u8 day) {
     return result;
 }
 */
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", setLetters);
 
 void setLetters(void) {
 
@@ -3675,8 +3577,6 @@ void setLetters(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/game/game", getTextIndexFromLetterIndex);
 
 u16 getTextIndexFromLetterIndex(u8 index) {
 

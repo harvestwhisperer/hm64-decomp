@@ -5,8 +5,6 @@
 
 OSPiHandle sramHandle;
 
-//INCLUDE_ASM("asm/nonmatchings/system/memory", sramInit);
-
 inline OSPiHandle* sramInit(void) {
     
     if (sramHandle.baseAddress == PHYS_TO_K1(SRAM_START_ADDR)) {
@@ -31,8 +29,6 @@ inline OSPiHandle* sramInit(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/memory", sramLoad);
-
 void sramLoad(void* devAddr, void* dramAddr, u32 size) {
 
     OSPiHandle* handle = sramInit();
@@ -53,8 +49,6 @@ void sramLoad(void* devAddr, void* dramAddr, u32 size) {
     osRecvMesg(&queue, &mesg, 1);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/memory", sramWrite);
 
 void sramWrite(void *devAddr, void *dramAddr, u32 size) {
 

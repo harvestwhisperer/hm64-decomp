@@ -5,15 +5,11 @@
 // forward declaration
 void initializeInterpolator(Interpolator* interpolator, s16 rate, s16 frameCount);     
 
-//INCLUDE_ASM("asm/nonmatchings/system/interpolator", setupInterpolator);
-
 void setupInterpolator(Interpolator* interpolator, u32 currentValue, u32 max, s16 rate, s16 frameRate) {
     interpolator->currentValue = currentValue;
     interpolator->targetValue = max;
     initializeInterpolator(interpolator, rate, frameRate);
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/interpolator", interpolateToTarget);
 
 bool interpolateToTarget(Interpolator* interpolator) {
 
@@ -58,15 +54,11 @@ bool interpolateToTarget(Interpolator* interpolator) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/interpolator", initializeInterpolator);
-
 void initializeInterpolator(Interpolator* interpolator, s16 rate, s16 frameRate) {
     interpolator->rate = rate;
     interpolator->frameRate = frameRate;
     interpolator->accumulatedValue = 0;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/interpolator", calculateInterpolatorStep);
 
 s16 calculateInterpolatorStep(Interpolator* interpolator) {
 
@@ -86,14 +78,10 @@ s16 calculateInterpolatorStep(Interpolator* interpolator) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/interpolator", setAccumulatedInterpolatorValue);
-
 // unused
 // void setAccumulatedInterpolatorValue(Interpolator* interpolator, s16 value) {
 //     interpolator->accumulatedValue = value;
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/interpolator", getInterpolatorValue);
 
 s16 getInterpolatorValue(Interpolator* interpolator) {
     return interpolator->accumulatedValue;

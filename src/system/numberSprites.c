@@ -14,8 +14,6 @@ static u32 powersOfTen[] = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000 
 bool renderNumberSpriteDisplayDigits(u16 spriteIndex);
 bool renderNumberSpriteDisplayDigit(u16 spriteIndex, u8 arg1, u8 arg2);
 
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", initializeNumberSprites);
-
 void initializeNumberSprites(void) {
 
     u16 i;
@@ -26,8 +24,6 @@ void initializeNumberSprites(void) {
     }
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", setNumberSprites);
 
 bool setNumberSprites(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 romSpritesheetEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, 
     u8 *vaddrTexture, u16 *vaddrPalette, AnimationFrameMetadata *vaddrAnimationFrameMetadata, u32 *spriteToPaletteVaddr, 
@@ -71,8 +67,6 @@ bool setNumberSprites(u16 index, u16 spriteIndex, u32 romSpritesheetStart, u32 r
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", dmaNumberSprites);
 
 bool dmaNumberSprites(u16 index, u32 value, u8 arg2, u16 flag) {
     
@@ -129,9 +123,6 @@ bool dmaNumberSprites(u16 index, u32 value, u8 arg2, u16 flag) {
     return result;
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", deactivateNumberSprites);
-
 bool deactivateNumberSprites(u16 index) {
     
     bool result = FALSE;
@@ -160,8 +151,6 @@ bool deactivateNumberSprites(u16 index) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", setNumberSpritesRGBA);
-
 bool setNumberSpritesRGBA(u16 spriteIndex, u8 r, u8 g, u8 b, u8 a) {
 
     u8 digitIndex = 0;
@@ -186,8 +175,6 @@ bool setNumberSpritesRGBA(u16 spriteIndex, u8 r, u8 g, u8 b, u8 a) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", setNumberSpritesAlpha);
 
 bool setNumberSpritesAlpha(u16 spriteIndex, u8 a) {
 
@@ -214,8 +201,6 @@ bool setNumberSpritesAlpha(u16 spriteIndex, u8 a) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", updateNumberSpriteRGBA);
-
 bool updateNumberSpriteRGBA(u16 spriteIndex, u8 r, u8 g, u8 b, u8 a, u16 rate) {
 
     u8 digitIndex = 0;
@@ -241,8 +226,6 @@ bool updateNumberSpriteRGBA(u16 spriteIndex, u8 r, u8 g, u8 b, u8 a, u16 rate) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", updateNumberSpriteAlphaWithTransition);
-
 bool updateNumberSpriteAlphaWithTransition(u16 spriteIndex, u8 a, s16 rate) {
 
     u8 digitIndex = 0;
@@ -266,8 +249,6 @@ bool updateNumberSpriteAlphaWithTransition(u16 spriteIndex, u8 a, s16 rate) {
     
     return result;
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", renderNumberSpriteDisplayDigits);
 
 bool renderNumberSpriteDisplayDigits(u16 spriteIndex) {
 
@@ -317,8 +298,6 @@ bool renderNumberSpriteDisplayDigits(u16 spriteIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", renderNumberSpriteDisplayDigit);
-
 bool renderNumberSpriteDisplayDigit(u16 spriteIndex, u8 digitValue, u8 digitIndex) {
 
     bool result = FALSE;
@@ -352,8 +331,6 @@ bool renderNumberSpriteDisplayDigit(u16 spriteIndex, u8 digitValue, u8 digitInde
     return result;
 
 } 
-
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", updateNumberSprites);
 
 void updateNumberSprites(void) {
 

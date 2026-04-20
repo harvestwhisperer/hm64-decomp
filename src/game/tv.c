@@ -679,7 +679,6 @@ void tvMainLoopCallback(void) {
 
             break;
 
-
         case TV_MODE_DIALOGUE:
 
             if (messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & 4) {

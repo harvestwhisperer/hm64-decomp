@@ -215,8 +215,6 @@ void setClockNewDay(void) {
     updateClock(FALSE);
 
 }
- 
-//INCLUDE_ASM("asm/nonmatchings/game/time", checkFestivalDay);
 
 // unused
 // bool checkFestivalDay(void) {

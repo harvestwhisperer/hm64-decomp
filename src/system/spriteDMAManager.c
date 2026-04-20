@@ -6,9 +6,6 @@
 SpriteAssetDescriptor spriteAssetDescriptors[MAX_SPRITE_ASSET_DESCRIPTORS];
 u16 spritesToLoadCounter;
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/spriteDMAManager", initializeSpriteAssetDescriptorFlags);
-
 void initializeSpriteAssetDescriptorFlags(void) {
 
     u16 i;
@@ -20,8 +17,6 @@ void initializeSpriteAssetDescriptorFlags(void) {
     spritesToLoadCounter= 0;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/spriteDMAManager", setSpriteAssetDescriptors);
 
 bool setSpriteAssetDescriptors(u8 *romAddr, u8 *vaddr, u32 length) {
     
@@ -46,8 +41,6 @@ bool setSpriteAssetDescriptors(u8 *romAddr, u8 *vaddr, u32 length) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/spriteDMAManager", dmaSprites);
 
 void dmaSprites(void) {
 

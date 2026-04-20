@@ -19,7 +19,6 @@ inline AnimationFrameMetadata* getAnimationFrameMetadataPtrFromFrame(u16, u16*);
 // bss
 SpriteObject globalSprites[MAX_SPRITES];
 
-
 static inline u16 swap16(Swap16 halfword) {
     
     Swap16 swap;
@@ -30,8 +29,6 @@ static inline u16 swap16(Swap16 halfword) {
     return swap.halfword;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", initializeGlobalSprites);
 
 void initializeGlobalSprites(void) {
 
@@ -71,8 +68,6 @@ void initializeGlobalSprites(void) {
 
     }
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", dmaSprite);
 
 bool dmaSprite(u16 index, 
     u32 romTextureStart, u32 romTextureEnd, 
@@ -147,8 +142,6 @@ bool dmaSprite(u16 index,
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteType2);
-
 bool setSpriteType2(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr) {
 
     bool result = FALSE;
@@ -187,8 +180,6 @@ bool setSpriteType2(u16 index, u32* animationIndexPtr, u32* spritesheetIndexPtr,
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteType1);
 
 bool setSpriteType1(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetIndexPtr, u32* paletteIndexPtr, u8* spriteToPaletteMappingPtr, u32 romTexturePtr, u8* texturePtr, u8* texture2Ptr) {
     
@@ -229,8 +220,6 @@ bool setSpriteType1(u16 spriteIndex, u32* animationIndexPtr, u32* spritesheetInd
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", deactivateSprite);
-
 inline bool deactivateSprite(u16 spriteIndex) {
 
     bool result = FALSE;
@@ -245,8 +234,6 @@ inline bool deactivateSprite(u16 spriteIndex) {
     return result; 
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", deactivateGlobalSprites);
 
 void deactivateGlobalSprites(void) {
 
@@ -264,8 +251,6 @@ void deactivateGlobalSprites(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", func_8002B7A0);
-
 // unused or inline
 // bool func_8002B7A0(u16 spriteIndex, u8 animationModeOrFrameIndex) {
 
@@ -279,8 +264,6 @@ void deactivateGlobalSprites(void) {
 //     return result;
     
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", startSpriteAnimation);
 
 bool startSpriteAnimation(u16 spriteIndex, u16 animationIndex, u8 animationModeOrFrameIndex) {
 
@@ -304,8 +287,6 @@ bool startSpriteAnimation(u16 spriteIndex, u16 animationIndex, u8 animationModeO
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setupSpriteAnimation);
 
 bool setupSpriteAnimation(u16 spriteIndex, u8 animationModeOrFrameIndex, u16* animationDataPtr) {
 
@@ -360,8 +341,6 @@ bool setupSpriteAnimation(u16 spriteIndex, u8 animationModeOrFrameIndex, u16* an
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", resetAnimationState);
-
 bool resetAnimationState(u16 index) {
 
     bool result = FALSE;
@@ -377,8 +356,6 @@ bool resetAnimationState(u16 index) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", resumeSpriteAnimation);
 
 bool resumeSpriteAnimation(u16 index) {
 
@@ -396,8 +373,6 @@ bool resumeSpriteAnimation(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", pauseSpriteAnimation);
-
 bool pauseSpriteAnimation(u16 index) {
 
     bool result = FALSE;
@@ -413,8 +388,6 @@ bool pauseSpriteAnimation(u16 index) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteFlip);
 
 bool setSpriteFlip(u16 index, bool flipHorizontal, bool flipVertical) {
 
@@ -445,8 +418,6 @@ bool setSpriteFlip(u16 index, bool flipHorizontal, bool flipVertical) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getSpriteAnimationStateChangedFlag);
-
 u16 getSpriteAnimationStateChangedFlag(u16 index) {
 
     u16 result = FALSE;
@@ -462,8 +433,6 @@ u16 getSpriteAnimationStateChangedFlag(u16 index) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteViewSpacePosition);
 
 bool setSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
@@ -486,8 +455,6 @@ bool setSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteScale);
-
 bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -508,8 +475,6 @@ bool setSpriteScale(u16 index, f32 x, f32 y, f32 z) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteRotation);
 
 bool setSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
 
@@ -532,8 +497,6 @@ bool setSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteViewSpacePosition);
-
 bool adjustSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
     bool result = FALSE;
@@ -554,8 +517,6 @@ bool adjustSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteScale);
 
 // unused
 // bool adjustSpriteScale(u16 index, f32 x, f32 y, f32 z) {
@@ -579,8 +540,6 @@ bool adjustSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
     
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteRotation);
-
 // unused or inline
 // bool adjustSpriteRotation(u16 index, f32 x, f32 y, f32 z) {
 
@@ -602,8 +561,6 @@ bool adjustSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 //     return result;
 
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", adjustSpriteRGBA);
 
 // unused or inline
 // bool adjustSpriteRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
@@ -627,8 +584,6 @@ bool adjustSpriteViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 //     return result;
 
 // }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", updateSpriteRGBA);
 
 // update sprite rgba
 // fade out on screen transitions
@@ -693,8 +648,6 @@ bool updateSpriteRGBA(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", updateSpriteAlpha);
-
 bool updateSpriteAlpha(u16 index, u8 arg1, s16 rate) {
 
     bool result;
@@ -729,8 +682,6 @@ bool updateSpriteAlpha(u16 index, u8 arg1, s16 rate) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteAnchorAlignment);
-
 bool setSpriteAnchorAlignment(u16 index, u16 arg1, u16 flags) {
 
     bool result = FALSE;
@@ -757,8 +708,6 @@ bool setSpriteAnchorAlignment(u16 index, u16 arg1, u16 flags) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteAxisMapping);
-
 bool setSpriteAxisMapping(u16 index, u16 mode) {
     
     int temp;
@@ -782,8 +731,6 @@ bool setSpriteAxisMapping(u16 index, u16 mode) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteTriangleWinding);
-
 bool setSpriteTriangleWinding(u16 index, u16 arg1) {
 
     bool result = FALSE;
@@ -798,8 +745,7 @@ bool setSpriteTriangleWinding(u16 index, u16 arg1) {
                 globalSprites[index].renderingFlags &= ~SPRITE_RENDERING_REVERSE_WINDING;
             }
 
-
-            result = TRUE;
+result = TRUE;
 
         }
     }
@@ -807,8 +753,6 @@ bool setSpriteTriangleWinding(u16 index, u16 arg1) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteBlendMode);
 
 bool setSpriteBlendMode(u16 index, u16 flags) {
     
@@ -833,8 +777,6 @@ bool setSpriteBlendMode(u16 index, u16 flags) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteBaseRGBA);
-
 bool setSpriteBaseRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
     bool result = FALSE;
@@ -856,8 +798,6 @@ bool setSpriteBaseRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
     return result;
 
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteColor);
 
 bool setSpriteColor(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
@@ -885,9 +825,6 @@ bool setSpriteColor(u16 index, u8 r, u8 g, u8 b, u8 a) {
     return result;
 }
 
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpriteAlpha);
-
 bool setSpriteAlpha(u16 index, u8 a) {
     
     bool result = FALSE;
@@ -908,8 +845,6 @@ bool setSpriteAlpha(u16 index, u8 a) {
     return result;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setBilinearFiltering);
 
 bool setBilinearFiltering(u16 index, bool useBilinearFiltering) {
 
@@ -932,8 +867,6 @@ bool setBilinearFiltering(u16 index, bool useBilinearFiltering) {
     return result;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setSpritePaletteIndex);
-
 bool setSpritePaletteIndex(u16 index, u16 paletteIndex) {
 
     bool result = FALSE;
@@ -954,8 +887,6 @@ bool setSpritePaletteIndex(u16 index, u16 paletteIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", checkSpriteRGBAUpdateFinished);
-
 // seems like check fade out completed
 bool checkSpriteRGBAUpdateFinished(u16 index) {
 
@@ -973,9 +904,7 @@ bool checkSpriteRGBAUpdateFinished(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", checkSpriteAnimationCycleEnded);
-
-bool checkSpriteAnimationCycleEnded(u16 index) {
+bool checkSpriteAnimationStateChanged(u16 index) {
 
     bool result = FALSE;
 
@@ -988,16 +917,12 @@ bool checkSpriteAnimationCycleEnded(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setTotalAnimationFrames);
-
 void setTotalAnimationFrames(AnimationFrameMetadata *animationFrameMetadata, Swap16 *animationAsset) {
     
     // skip 4 byte header
     animationFrameMetadata->objectCount = swap16(animationAsset[2]);
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setAnimationFrameMetadata);
 
 inline void setAnimationFrameMetadata(AnimationFrameMetadata* animationFrameMetadata, Swap16* animationFrameMetadataPtr) {
 
@@ -1034,8 +959,6 @@ inline void setAnimationFrameMetadata(AnimationFrameMetadata* animationFrameMeta
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setBitmapMetadata);
-
 inline void setBitmapMetadata(BitmapMetadata* ptr, Swap16* data) {
     
     Swap16 swap;
@@ -1071,8 +994,6 @@ inline void setBitmapMetadata(BitmapMetadata* ptr, u16* data) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getAnimationFrameMetadataPtr);
-
 // TODO: see if void* type is necessary
 u8* getAnimationFrameMetadataPtr(u16 index, void* table) {
  
@@ -1088,8 +1009,6 @@ u8* getAnimationFrameMetadataPtr(u16 arg0, void* arg1) {
     return (u8*)(arg1 + *(u32*)(arg1 + arg0*4));
 }
 */
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", getAnimationFrameMetadataPtrFromFrame);
 
 // update pointer by iterateing through animation data (contains header, animation metadata, and sprite metadata)
 inline AnimationFrameMetadata* getAnimationFrameMetadataPtrFromFrame(u16 currentFrame, u16* animationFrameMetadataPtr) {
@@ -1116,8 +1035,6 @@ inline AnimationFrameMetadata* getAnimationFrameMetadataPtrFromFrame(u16 current
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", advanceBitmapMetadataPtr);
-
 inline u16* advanceBitmapMetadataPtr(u16 numFrames, u16* bitmapMetadataPtr) {
     
     u16 i;
@@ -1129,8 +1046,6 @@ inline u16* advanceBitmapMetadataPtr(u16 numFrames, u16* bitmapMetadataPtr) {
     return bitmapMetadataPtr;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", setBitmapFromSpriteObject);
 
 void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animationFrameMetadataPtr, u8 animationType) {
     
@@ -1172,9 +1087,8 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
                 }
             
                 length = getTextureLength(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
-        
-                
-            } else {
+
+} else {
                 
                 setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr(((animationFrameMetadataPtr->objectCount - i) - 1), globalSprites[spriteIndex].bitmapMetadataPtr));
                 texturePtr = getTexturePtr(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
@@ -1320,8 +1234,6 @@ static inline u8 updateSpriteCurrentRGBA(u16 i) {
     return count;
     
 }
-
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", updateSprites);
 
 void updateSprites(void) {
 
