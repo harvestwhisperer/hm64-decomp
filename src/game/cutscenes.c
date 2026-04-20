@@ -1760,6 +1760,7 @@ u16 setFarmVisitCutscenes(bool morningVisit) {
     }
 
     return result;
+    
 }
 
 u16 setFarmCutscenes(void) {
@@ -2039,7 +2040,7 @@ u16 setMountain2Cutscenes(void) {
         set = TRUE;
     }
 
-if (!set && !checkLifeEventBit(POPURI_CONFESSION) && !checkLifeEventBit(MARRIED) && npcAffection[POPURI] >= 250 && gWeather == SUNNY && 11 < gHour && gHour < 18 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
+    if (!set && !checkLifeEventBit(POPURI_CONFESSION) && !checkLifeEventBit(MARRIED) && npcAffection[POPURI] >= 250 && gWeather == SUNNY && 11 < gHour && gHour < 18 && !checkLifeEventBit(MARRIED) && !checkLifeEventBit(POPURI_GRAY_MARRIED)) {
         setLifeEventBit(POPURI_CONFESSION);
         gCutsceneIndex = 342;
         gCutsceneFlags |= (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS);
@@ -2109,6 +2110,7 @@ u16 setMoonMountainCutscenes(void) {
     }
     
     return bytecodeSegmentIndex;
+
 }
 
 u16 setPondCutscenes(void) {
@@ -2691,6 +2693,7 @@ u16 setVineyardHouseCutscenes(void) {
     }
     
     return bytecodeSegmentIndex;
+
 }
 
 u16 setVineyardCellarCutscenes(void) {
@@ -2758,7 +2761,7 @@ u16 setVillage1Cutscenes(void) {
         set = TRUE;
     } 
 
-if (!set && !checkLifeEventBit(MARIA_POPURI_VILLAGE_CUTSCENE) && npcAffection[MARIA] >= 150 && npcAffection[POPURI] >= 150 && gWeather == SUNNY && gSeason == SPRING && 5 < gHour && gHour < 18) {
+    if (!set && !checkLifeEventBit(MARIA_POPURI_VILLAGE_CUTSCENE) && npcAffection[MARIA] >= 150 && npcAffection[POPURI] >= 150 && gWeather == SUNNY && gSeason == SPRING && 5 < gHour && gHour < 18) {
 
         if (previousMapIndex == ROAD) {
             
@@ -3316,7 +3319,7 @@ u16 setSquareCutscenes(void) {
         
     }
 
-if (!set && gSeason == SPRING && gDayOfMonth == 1 && 5 < gHour && gHour < 18) {
+    if (!set && gSeason == SPRING && gDayOfMonth == 1 && 5 < gHour && gHour < 18) {
         gCutsceneIndex = 1400;
         loadCutscene(FALSE);
         gCutsceneFlags |= (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS);
@@ -3500,6 +3503,7 @@ u16 setBeachCutscenes(void) {
     }
     
     return bytecodeSegmentIndex;
+
 }
 
 u16 setRoadCutscenes(void) {
@@ -5119,7 +5123,7 @@ void handleCutsceneCompletion(void) {
                             tempSpawnPoint = FARM_SPAWN_POINT_1;
                             gCutsceneIndex = 1601;
 
-} else if (D_80189824 == 1) {
+            } else if (D_80189824 == 1) {
 
                             gSeason = SPRING;
 
