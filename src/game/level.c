@@ -1798,7 +1798,11 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
 
     u16 index = 0xFFFF;
 
-    switch (spawnPointToMap[spawnPoint]) {
+    // FIXME: no idea
+    u32 temp = spawnPointToMap[spawnPoint];
+    u8 temp2 = temp;
+
+    switch (temp2) {
 
         case ANN_ROOM:
 
