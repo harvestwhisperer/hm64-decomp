@@ -1,4 +1,5 @@
 #include "common.h"
+#include "yay0.h"
 
 #include "system/map.h"
 
@@ -796,7 +797,7 @@ bool loadGroundObjects(u16 mapIndex, u8 x, u8 z, u32* textureIndex, u32* palette
         offset4 = assetIndex[3];
         offset5 = assetIndex[4];
         
-        nuPiReadRom(romTextureStart + offset1, mainMap[mapIndex].groundObjects.textureIndex, offset2 - offset1);
+        dmaReadRom(romTextureStart + offset1, mainMap[mapIndex].groundObjects.textureIndex, offset2 - offset1);
         nuPiReadRom(romTextureStart + offset2, mainMap[mapIndex].groundObjects.paletteIndex, offset3 - offset2);
         nuPiReadRom(romTextureStart + offset4, mainMap[mapIndex].groundObjects.spriteToPaletteIndex, offset5 - offset4);
         

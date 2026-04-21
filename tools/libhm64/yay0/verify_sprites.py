@@ -21,6 +21,11 @@ ROOT = Path(__file__).resolve().parents[3]
 BUILD = ROOT / "build" / "assets" / "sprites"
 OBJCOPY = "mips-linux-gnu-objcopy"
 
+# Sprites that look type-1 on disk (SpritesheetIndex file present) but are
+# consumed via the whole-blob DMA path at runtime. For these, the spritesheet
+# sub-region must be compressed as a single yay0 blob.
+WHOLE_BLOB_OVERRIDES = {"festivalFlowers"}
+
 
 def extract_bin(obj_path: Path) -> bytes:
     with tempfile.NamedTemporaryFile(suffix=".bin", delete=False) as tf:
@@ -41,7 +46,11 @@ def verify_one(texture_path: Path, idx_path: Path, sht_path: Path | None) -> tup
     idx_bytes = extract_bin(idx_path)
     sht_bytes = extract_bin(sht_path) if sht_path else None
 
-    new_tex, new_idx_bytes, new_sht_bytes = process(texture, idx_bytes, sht_bytes)
+    base = texture_path.name[: -len("Texture.bin.o")]
+    mode = "whole-blob" if base in WHOLE_BLOB_OVERRIDES else "auto"
+    new_tex, new_idx_bytes, new_sht_bytes = process(texture, idx_bytes, sht_bytes, mode=mode)
+
+    effective_mode = ("per-frame" if sht_bytes is not None else "whole-blob") if mode == "auto" else mode
 
     orig_idx = parse_u32_be_all(idx_bytes)
     new_idx = parse_u32_be_all(new_idx_bytes)
@@ -49,28 +58,30 @@ def verify_one(texture_path: Path, idx_path: Path, sht_path: Path | None) -> tup
     orig_spritesheet = texture[orig_idx[0]:orig_idx[1]]
     new_spritesheet = new_tex[new_idx[0]:new_idx[1]]
 
-    if sht_bytes is None:
-        # Whole-blob: decode new spritesheet, compare
+    if effective_mode == "whole-blob":
         decoded = decode(new_spritesheet)
         if decoded != orig_spritesheet:
             raise RuntimeError(f"{texture_path.name}: whole-spritesheet round-trip failed")
     else:
         orig_sht = parse_u32_be_all(sht_bytes)
         new_sht = parse_u32_be_all(new_sht_bytes)
-        # For each unique frame, check decode matches original frame bytes
         orig_uniques = unique_frames(orig_sht)
         new_uniques = unique_frames(new_sht)
         if len(orig_uniques) != len(new_uniques):
             raise RuntimeError(f"{texture_path.name}: unique frame count mismatch")
-        for i, orig_off in enumerate(orig_uniques):
-            orig_end = orig_uniques[i + 1] if i + 1 < len(orig_uniques) else len(orig_spritesheet)
-            orig_frame = orig_spritesheet[orig_off:orig_end]
-            new_off = new_uniques[i]
-            new_end = new_uniques[i + 1] if i + 1 < len(new_uniques) else len(new_spritesheet)
-            decoded = decode(new_spritesheet[new_off:new_end])
+        # Well-formed: last unique is sentinel == len(spritesheet), real frames are uniques[:-1].
+        # Malformed: last unique is a real frame whose end is spritesheet length.
+        has_sentinel = orig_uniques and orig_uniques[-1] == len(orig_spritesheet)
+        orig_starts = orig_uniques[:-1] if has_sentinel else orig_uniques
+        orig_ends = orig_uniques[1:] if has_sentinel else (orig_uniques[1:] + [len(orig_spritesheet)])
+        new_starts = new_uniques[:-1] if has_sentinel else new_uniques
+        new_ends = new_uniques[1:] if has_sentinel else (new_uniques[1:] + [len(new_spritesheet)])
+        for i, (o_s, o_e, n_s, n_e) in enumerate(zip(orig_starts, orig_ends, new_starts, new_ends)):
+            orig_frame = orig_spritesheet[o_s:o_e]
+            decoded = decode(new_spritesheet[n_s:n_e])
             if decoded != orig_frame:
                 raise RuntimeError(
-                    f"{texture_path.name}: frame {i} (orig_off={orig_off}) round-trip failed"
+                    f"{texture_path.name}: frame {i} (orig_off={o_s}) round-trip failed"
                 )
 
     # Sub-region checks: palette/animation/spriteToPalette unchanged

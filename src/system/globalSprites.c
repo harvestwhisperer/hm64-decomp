@@ -1,4 +1,5 @@
 #include "common.h"
+#include "yay0.h"
 
 #include "system/globalSprites.h"
 
@@ -117,7 +118,7 @@ bool dmaSprite(u16 index,
             // spritesheet index in spritesheet
             } else {
 
-                nuPiReadRom(romTextureStart + offset1, texture1Vaddr, offset2 - offset1);
+                dmaReadRom(romTextureStart + offset1, texture1Vaddr, offset2 - offset1);
                 nuPiReadRom(romTextureStart + offset2, paletteVaddr, offset3 - offset2);
                 nuPiReadRom(romTextureStart + offset3, animationVaddr, offset4 - offset3);
                 nuPiReadRom(romTextureStart + offset4, spriteToPaletteVaddr, offset5 - offset4);

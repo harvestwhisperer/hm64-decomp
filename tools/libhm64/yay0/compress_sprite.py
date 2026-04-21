@@ -63,36 +63,47 @@ def unique_frames(sheet_index: list[int]) -> list[int]:
 def compress_per_frame(spritesheet: bytes, sheet_index: list[int]) -> tuple[bytes, list[int]]:
     """Returns (new_spritesheet_bytes, new_sheet_index).
 
-    Original sheet_index is an array of u32 offsets (with duplicates for
-    aliased sprites). We compress each *unique* offset's frame and map every
-    original entry to that frame's offset in the concatenated compressed stream.
+    sheet_index is an array of u32 offsets (with duplicates for aliased
+    sprites) nominally terminated by a sentinel equal to len(spritesheet).
+    A handful of sprites (e.g. festivalFlowers) have malformed indices with
+    no valid sentinel — the game's getTextureLength for the last sprite in
+    those returns garbage, but those frames evidently aren't read at runtime.
+    We preserve that behavior by encoding the bytes from the last real offset
+    to end-of-spritesheet as a final frame, without adding a sentinel entry
+    the index didn't have.
     """
     uniques = unique_frames(sheet_index)
-    # Compute each unique frame's bounds in the original spritesheet.
-    frame_ranges = []
-    for i, off in enumerate(uniques):
-        end = uniques[i + 1] if i + 1 < len(uniques) else len(spritesheet)
-        frame_ranges.append((off, end))
+    if not uniques:
+        return b"", list(sheet_index)
 
-    # Encode each frame; build a map from old-offset to new-offset (in compressed stream).
+    last = uniques[-1]
+    if last == len(spritesheet):
+        # Well-formed: last unique is an explicit sentinel, preceding entries are frames.
+        frame_starts = uniques[:-1]
+        frame_ends = uniques[1:]
+        sentinel = last
+    else:
+        # Malformed: no sentinel. Treat the last unique as a real frame whose end
+        # is end-of-spritesheet. Synthesize an internal-only sentinel for bookkeeping.
+        frame_starts = uniques
+        frame_ends = uniques[1:] + [len(spritesheet)]
+        sentinel = None
+
     new_stream = bytearray()
     old_to_new = {}
-    for (start, end) in frame_ranges:
+    for start, end in zip(frame_starts, frame_ends):
         old_to_new[start] = len(new_stream)
-        encoded = encode(spritesheet[start:end])
-        new_stream.extend(encoded)
+        new_stream.extend(encode(spritesheet[start:end]))
+    if sentinel is not None:
+        old_to_new[sentinel] = len(new_stream)
 
-    # The sentinel at the end (old offset == len(spritesheet)) maps to the new stream length.
-    old_to_new[len(spritesheet)] = len(new_stream)
-
-    # Rewrite every SpritesheetIndex entry. Preserves duplicates — aliased sprites
-    # collapse to the same new offset, so getTextureLength still scans past them correctly.
     new_sheet_index = []
     for off in sheet_index:
         if off in old_to_new:
             new_sheet_index.append(old_to_new[off])
         else:
-            # Trailing zero padding — leave as zero. Never read by game code past the sentinel.
+            # Trailing zero padding, or (on malformed indices) garbage entries
+            # past the last frame — leave as zero. Not read by game code.
             new_sheet_index.append(0)
 
     return bytes(new_stream), new_sheet_index
@@ -116,7 +127,8 @@ def rewrite_assets_index(assets_index: list[int], new_spritesheet_len: int) -> l
     return new
 
 
-def process(texture_bytes: bytes, assets_index_bytes: bytes, sheet_index_bytes: bytes | None):
+def process(texture_bytes: bytes, assets_index_bytes: bytes, sheet_index_bytes: bytes | None, mode: str = "auto"):
+    """mode: 'per-frame', 'whole-blob', or 'auto' (per-frame iff sheet_index_bytes given)."""
     assets_index = parse_u32_be_all(assets_index_bytes)
     if len(assets_index) < 5:
         raise ValueError("AssetsIndex too short")
@@ -130,13 +142,23 @@ def process(texture_bytes: bytes, assets_index_bytes: bytes, sheet_index_bytes: 
     spritesheet = texture_bytes[off0:off1]
     rest = texture_bytes[off1:]  # palette + animation + spriteToPalette, unchanged
 
-    if sheet_index_bytes is not None:
+    if mode == "auto":
+        mode = "per-frame" if sheet_index_bytes is not None else "whole-blob"
+
+    if mode == "per-frame":
+        if sheet_index_bytes is None:
+            raise ValueError("per-frame mode requires a SpritesheetIndex")
         sheet_index = parse_u32_be_all(sheet_index_bytes)
         new_spritesheet, new_sheet_index = compress_per_frame(spritesheet, sheet_index)
         new_sheet_index_bytes = pack_u32_be(new_sheet_index, len(sheet_index))
-    else:
+    elif mode == "whole-blob":
         new_spritesheet = compress_whole(spritesheet)
-        new_sheet_index_bytes = None
+        # In whole-blob mode, SpritesheetIndex (if any) passes through unchanged —
+        # it's either unused at runtime (type-2 sprite) or references offsets in
+        # the decompressed spritesheet in RAM, which matches the original layout.
+        new_sheet_index_bytes = sheet_index_bytes
+    else:
+        raise ValueError(f"unknown mode {mode!r}")
 
     new_texture = new_spritesheet + rest
     new_assets_index = rewrite_assets_index(assets_index, len(new_spritesheet))
@@ -153,6 +175,7 @@ def main():
     ap.add_argument("--texture-out", required=True, type=Path)
     ap.add_argument("--assets-index-out", required=True, type=Path)
     ap.add_argument("--sheet-index-out", type=Path, default=None)
+    ap.add_argument("--mode", choices=("auto", "per-frame", "whole-blob"), default="auto")
     args = ap.parse_args()
 
     texture_bytes = args.texture_in.read_bytes()
@@ -163,7 +186,7 @@ def main():
         ap.error("--sheet-index-in and --sheet-index-out must be provided together")
 
     new_texture, new_assets_index, new_sheet_index = process(
-        texture_bytes, assets_index_bytes, sheet_index_bytes
+        texture_bytes, assets_index_bytes, sheet_index_bytes, mode=args.mode
     )
 
     args.texture_out.parent.mkdir(parents=True, exist_ok=True)
