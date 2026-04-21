@@ -27,12 +27,16 @@ static u32 readBE32(const u8 *p) {
     return ((u32)p[0] << 24) | ((u32)p[1] << 16) | ((u32)p[2] << 8) | (u32)p[3];
 }
 
+#ifdef DEBUG
 u64 yay0LastDecodeCycles = 0;
 u32 yay0LastDecodeBytes  = 0;
+#endif
 
 void dmaReadRom(u32 romAddr, void *vaddr, u32 length) {
     u32 decompressedSize;
+#ifdef DEBUG
     OSTime t0, t1;
+#endif
 
     if (!isCompressedRom(romAddr)) {
         nuPiReadRom(romAddr, vaddr, length);
@@ -42,12 +46,15 @@ void dmaReadRom(u32 romAddr, void *vaddr, u32 length) {
     nuPiReadRom(romAddr, yay0Scratch, length);
     decompressedSize = readBE32(yay0Scratch + 4);
 
+#ifdef DEBUG
     t0 = osGetTime();
+#endif
     yay0Decode(yay0Scratch, (u8 *)vaddr);
+#ifdef DEBUG
     t1 = osGetTime();
-
     yay0LastDecodeCycles = t1 - t0;
     yay0LastDecodeBytes  = decompressedSize;
+#endif
 
     osWritebackDCache(vaddr, (s32)decompressedSize);
 }

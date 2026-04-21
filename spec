@@ -160,6 +160,13 @@ beginseg
 endseg
 
 beginseg
+    name "nuAuHeapBuffer"
+    flags OBJECT
+    address 0x8031F800
+    include "build/src/buffers/nuAuHeapBuffer.o"
+endseg
+
+beginseg
     name "frameBuffer"
     flags OBJECT
     address 0x8038F800
