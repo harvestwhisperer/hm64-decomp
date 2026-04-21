@@ -3479,7 +3479,7 @@ label:
                 if (gSeason == SPRING && (18 < gDayOfMonth && gDayOfMonth < 23)) {
 
                     if (gVoteForFlowerFestivalGoddess == 0xFF) {
-                        temp = 9;
+                        temp = DIALOGUE_MENU_FLOWER_FESTIVAL_VOTE;
                         goto label3;
                     } else {
                         showTextBox(0, FESTIVALS_TEXT_INDEX, 35, 0, 2);
