@@ -251,6 +251,7 @@ BUILTIN_CONSTANTS = {
     'HELD_ITEM_ROCK':                  0x2F,  # ROCK_HELD_ITEM (2)
     'HELD_ITEM_WEED':                  0x30,  # WEED_HELD_ITEM (1)
     'HELD_ITEM_POISONOUS_MUSHROOM':    0x31,  # POISONOUS_MUSHROOM (32)
+    'HELD_ITEM_BLUE_FEATHER':          0x32,  # BLUE_FEATHER (10)
     'HELD_ITEM_DOG':                   0x33,  # DOG_HELD_ITEM (88) + 7 direction variants
     'HELD_ITEM_BABY':                  0x34,  # BABY_HELD_ITEM (186) + grown + 14 variants
     'HELD_ITEM_HORNED_BEETLE':         0x35,  # HORNED_BEETLE_HELD_ITEM (182)

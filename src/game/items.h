@@ -272,7 +272,7 @@
 #define HELD_ITEM_DIALOGUE_ROCK                  47  // ROCK_HELD_ITEM (2)
 #define HELD_ITEM_DIALOGUE_WEED                  48  // WEED_HELD_ITEM (1)
 #define HELD_ITEM_DIALOGUE_POISONOUS_MUSHROOM    49  // POISONOUS_MUSHROOM (32)
-// 50: 10 (unnamed in items.h); routed to .proposal in mariaDialogue
+#define HELD_ITEM_DIALOGUE_BLUE_FEATHER          50  // BLUE_FEATHER_HELD_ITEM (10)
 #define HELD_ITEM_DIALOGUE_DOG                   51  // DOG_HELD_ITEM (88) + 7 direction variants
 #define HELD_ITEM_DIALOGUE_BABY                  52  // BABY_HELD_ITEM (186) + grown + 14 variants
 #define HELD_ITEM_DIALOGUE_HORNED_BEETLE         53  // HORNED_BEETLE_HELD_ITEM (182)
@@ -286,7 +286,7 @@
 #define HELD_ITEM_DIALOGUE_PONTATA_ROOT          61  // PONTATA_ROOT (50)
 #define HELD_ITEM_DIALOGUE_CHICKEN               62  // CHICKEN_HELD_ITEM (96) + 7 direction variants
 #define HELD_ITEM_DIALOGUE_CHICK                 63  // CHICK_HELD_ITEM (104) + 7 direction variants
-// 64: aggregate wild-animal index (CAT, FOX, SQUIRREL, RABBIT, MONKEY — 40 IDs)
+#define HELD_ITEM_DIALOGUE_ANIMAL                64  // (CAT, FOX, SQUIRREL, RABBIT, MONKEY — 40 IDs)
 #define HELD_ITEM_DIALOGUE_PUPPY                 65  // PUPPY_1_HELD_ITEM (123) + 7 direction variants
 #define HELD_ITEM_DIALOGUE_DOG_2                 66  // DOG_2_HELD_ITEM (171) + 7 direction variants
 

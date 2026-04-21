@@ -399,82 +399,684 @@ u16 itemEntityMetadata[224][5] = {
 
 // entity palette index overrides (0xFFFF = use default)
 u16 itemPaletteOverrides[] = {
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
-    0xFFFF, 0xFFFF, 0xFFFF, 0x0096, 0x0096, 0x0096, 0x0096, 0x0096, 
-    0x0096, 0x0096, 0x0096, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
-    0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0x0000, 0x0000, 0x0000
+    0xFFFF, /* 0 */
+    0xFFFF, /* WEED_HELD_ITEM */
+    0xFFFF, /* ROCK_HELD_ITEM */
+    0xFFFF, /* LOG_HELD_ITEM */
+    0xFFFF, /* MOONDROP_FLOWER_HELD_ITEM */
+    0xFFFF, /* PINK_CAT_MINT_FLOWER_HELD_ITEM */
+    0xFFFF, /* BLUE_MIST_FLOWER_HELD_ITEM */
+    0xFFFF, /* CAKE_HELD_ITEM */
+    0xFFFF, /* PIE_HELD_ITEM */
+    0xFFFF, /* COOKIES_HELD_ITEM */
+    0xFFFF, /* BLUE_FEATHER_HELD_ITEM */
+    0xFFFF, /* DOOR_TO_HEAVEN_HELD_ITEM */
+    0xFFFF, /* 12 */
+    0xFFFF, /* TURNIP_HELD_ITEM */
+    0xFFFF, /* POTATO_HELD_ITEM */
+    0xFFFF, /* CABBAGE_HELD_ITEM */
+    0xFFFF, /* TOMATO_HELD_ITEM */
+    0xFFFF, /* CORN_HELD_ITEM */
+    0xFFFF, /* EGGPLANT_HELD_ITEM */
+    0xFFFF, /* STRAWBERRY_HELD_ITEM */
+    0xFFFF, /* EGG_HELD_ITEM */
+    0xFFFF, /* SMALL_MILK_HELD_ITEM */
+    0xFFFF, /* MEDIUM_MILK_HELD_ITEM */
+    0xFFFF, /* LARGE_MILK_HELD_ITEM */
+    0xFFFF, /* GOLDEN_MILK_HELD_ITEM */
+    0xFFFF, /* WOOL_HELD_ITEM */
+    0xFFFF, /* HIGH_QUALITY_WOOL_HELD_ITEM */
+    0xFFFF, /* WILD_GRAPES_HELD_ITEM */
+    0xFFFF, /* VERYBERRY_HELD_ITEM */
+    0xFFFF, /* TROPICAL_FRUIT_HELD_ITEM */
+    0xFFFF, /* WALNUT_HELD_ITEM */
+    0xFFFF, /* MUSHROOM_HELD_ITEM */
+    0xFFFF, /* POISONOUS_MUSHROOM_HELD_ITEM */
+    0xFFFF, /* BOOK_HELD_ITEM */
+    0xFFFF, /* BERRY_OF_THE_FULLMOON_HELD_ITEM */
+    0xFFFF, /* MEDICINAL_HERB_HELD_ITEM */
+    0xFFFF, /* EDIBLE_HERB_HELD_ITEM */
+    0xFFFF, /* SMALL_FISH_HELD_ITEM */
+    0xFFFF, /* MEDIUM_FISH_HELD_ITEM */
+    0xFFFF, /* LARGE_FISH_HELD_ITEM */
+    0xFFFF, /* DUMPLING_HELD_ITEM */
+    0xFFFF, /* COTTON_CANDY_HELD_ITEM */
+    0xFFFF, /* FRIED_OCTUPUS_HELD_ITEM */
+    0xFFFF, /* ROASTED_CORN_HELD_ITEM */
+    0xFFFF, /* CANDY_HELD_ITEM */
+    0xFFFF, /* CHOCOLATE_HELD_ITEM */
+    0xFFFF, /* IRON_ORE_HELD_ITEM */
+    0xFFFF, /* BLUE_ROCK_HELD_ITEM */
+    0xFFFF, /* RARE_METAL_HELD_ITEM */
+    0xFFFF, /* MOONLIGHT_STONE_HELD_ITEM */
+    0xFFFF, /* PONTATA_ROOT_HELD_ITEM */
+    0xFFFF, /* 51 */
+    0xFFFF, /* 52 */
+    0xFFFF, /* 53 */
+    0xFFFF, /* 54 */
+    0xFFFF, /* 55 */
+    0xFFFF, /* 56 */
+    0xFFFF, /* FODDER_HELD_ITEM */
+    0xFFFF, /* 58 */
+    0xFFFF, /* 59 */
+    0xFFFF, /* 60 */
+    0xFFFF, /* 61 */
+    0xFFFF, /* 62 */
+    0xFFFF, /* 63 */
+    0xFFFF, /* SEEDS_HELD_ITEM */
+    0xFFFF, /* 65 */
+    0xFFFF, /* 66 */
+    0xFFFF, /* 67 */
+    0xFFFF, /* 68 */
+    0xFFFF, /* 69 */
+    0xFFFF, /* 70 */
+    0xFFFF, /* 71 */
+    0xFFFF, /* MEDICINE_HELD_ITEM */
+    0xFFFF, /* SHEARS_HELD_ITEM */
+    0xFFFF, /* 74 */
+    0xFFFF, /* 75 */
+    0xFFFF, /* 76 */
+    0xFFFF, /* 77 */
+    0xFFFF, /* 78 */
+    0xFFFF, /* 79 */
+    0xFFFF, /* RICE_CAKE_HELD_ITEM */
+    0xFFFF, /* BREAD_HELD_ITEM */
+    0xFFFF, /* EGGS_HELD_ITEM */
+    0xFFFF, /* 83 */
+    0xFFFF, /* 84 */
+    0xFFFF, /* 85 */
+    0xFFFF, /* 86 */
+    0xFFFF, /* POWER_NUT_HELD_ITEM */
+    0xFFFF, /* DOG_HELD_ITEM */
+    0xFFFF, /* 89 */
+    0xFFFF, /* 90 */
+    0xFFFF, /* 91 */
+    0xFFFF, /* 92 */
+    0xFFFF, /* 93 */
+    0xFFFF, /* 94 */
+    0xFFFF, /* 95 */
+    0xFFFF, /* CHICKEN_HELD_ITEM */
+    0xFFFF, /* 97 */
+    0xFFFF, /* 98 */
+    0xFFFF, /* 99 */
+    0xFFFF, /* 100 */
+    0xFFFF, /* 101 */
+    0xFFFF, /* 102 */
+    0xFFFF, /* 103 */
+    0xFFFF, /* CHICK_HELD_ITEM */
+    0xFFFF, /* 105 */
+    0xFFFF, /* 106 */
+    0xFFFF, /* 107 */
+    0xFFFF, /* 108 */
+    0xFFFF, /* 109 */
+    0xFFFF, /* 110 */
+    0xFFFF, /* 111 */
+    0xFFFF, /* EMPTY_BOTTLE_HELD_ITEM */
+    0xFFFF, /* BOTTLE_WITH_WATER_HELD_ITEM */
+    0xFFFF, /* BOTTLE_WITH_WINE_HELD_ITEM */
+    0xFFFF, /* 115 */
+    0xFFFF, /* 116 */
+    0xFFFF, /* 117 */
+    0xFFFF, /* BOTTLE_WITH_MILK_HELD_ITEM */
+    0xFFFF, /* 119 */
+    0xFFFF, /* BOTTLE_WITH_TEA_HELD_ITEM */
+    0xFFFF, /* 121 */
+    0xFFFF, /* 122 */
+    0xFFFF, /* PUPPY_1_HELD_ITEM */
+    0xFFFF, /* 124 */
+    0xFFFF, /* 125 */
+    0xFFFF, /* 126 */
+    0xFFFF, /* 127 */
+    0xFFFF, /* 128 */
+    0xFFFF, /* 129 */
+    0xFFFF, /* 130 */
+    0xFFFF, /* CAT_HELD_ITEM */
+    0xFFFF, /* 132 */
+    0xFFFF, /* 133 */
+    0xFFFF, /* 134 */
+    0xFFFF, /* 135 */
+    0xFFFF, /* 136 */
+    0xFFFF, /* 137 */
+    0xFFFF, /* 138 */
+    0xFFFF, /* FOX_HELD_ITEM */
+    0xFFFF, /* 140 */
+    0xFFFF, /* 141 */
+    0xFFFF, /* 142 */
+    0xFFFF, /* 143 */
+    0xFFFF, /* 144 */
+    0xFFFF, /* 145 */
+    0xFFFF, /* 146 */
+    0xFFFF, /* SQUIRREL_HELD_ITEM */
+    0xFFFF, /* 148 */
+    0xFFFF, /* 149 */
+    0xFFFF, /* 150 */
+    0xFFFF, /* 151 */
+    0xFFFF, /* 152 */
+    0xFFFF, /* 153 */
+    0xFFFF, /* 154 */
+    0xFFFF, /* RABBIT_HELD_ITEM */
+    0xFFFF, /* 156 */
+    0xFFFF, /* 157 */
+    0xFFFF, /* 158 */
+    0xFFFF, /* 159 */
+    0xFFFF, /* 160 */
+    0xFFFF, /* 161 */
+    0xFFFF, /* 162 */
+    0xFFFF, /* MONKEY_HELD_ITEM */
+    0xFFFF, /* 164 */
+    0xFFFF, /* 165 */
+    0xFFFF, /* 166 */
+    0xFFFF, /* 167 */
+    0xFFFF, /* 168 */
+    0xFFFF, /* 169 */
+    0xFFFF, /* 170 */
+       150, /* DOG_2_HELD_ITEM */
+       150, /* 172 */
+       150, /* 173 */
+       150, /* 174 */
+       150, /* 175 */
+       150, /* 176 */
+       150, /* 177 */
+       150, /* 178 */
+    0xFFFF, /* BUTTERFLY_HELD_ITEM */
+    0xFFFF, /* LADYBUG_HELD_ITEM */
+    0xFFFF, /* CICADA_HELD_ITEM */
+    0xFFFF, /* HORNED_BEETLE_HELD_ITEM */
+    0xFFFF, /* STAG_BEETLE_HELD_ITEM */
+    0xFFFF, /* RED_DRAGONFLY_HELD_ITEM */
+    0xFFFF, /* CRICKET_HELD_ITEM */
+    0xFFFF, /* BABY_HELD_ITEM */
+    0xFFFF, /* 187 */
+    0xFFFF, /* 188 */
+    0xFFFF, /* 189 */
+    0xFFFF, /* 190 */
+    0xFFFF, /* 191 */
+    0xFFFF, /* 192 */
+    0xFFFF, /* 193 */
+    0xFFFF, /* BABY_GROWN_HELD_ITEM */
+    0xFFFF, /* 195 */
+    0xFFFF, /* 196 */
+    0xFFFF, /* 197 */
+    0xFFFF, /* 198 */
+    0xFFFF, /* 199 */
+    0xFFFF, /* 200 */
+    0xFFFF, /* 201 */
+    0xFFFF, /* OPEN_BOOK_HELD_ITEM */
+    0xFFFF, /* SICKLE_HELD_ITEM */
+    0xFFFF, /* SILVER_SICKLE_HELD_ITEM */
+    0xFFFF, /* GOLDEN_SICKLE_HELD_ITEM */
+    0xFFFF, /* HOE_HELD_ITEM */
+    0xFFFF, /* SILVER_HOE_HELD_ITEM */
+    0xFFFF, /* GOLDEN_HOE_HELD_ITEM */
+    0xFFFF, /* AX_HELD_ITEM */
+    0xFFFF, /* SILVER_AX_HELD_ITEM */
+    0xFFFF, /* GOLDEN_AX_HELD_ITEM */
+    0xFFFF, /* HAMMER_HELD_ITEM */
+    0xFFFF, /* SILVER_HAMMER_HELD_ITEM */
+    0xFFFF, /* GOLDEN_HAMMER_HELD_ITEM */
+    0xFFFF, /* WATERING_CAN_HELD_ITEM */
+    0xFFFF, /* SILVER_WATERING_CAN_HELD_ITEM */
+    0xFFFF, /* GOLDEN_WATERING_CAN_HELD_ITEM */
+    0xFFFF, /* BROKEN_MUSIC_BOX_HELD_ITEM */
+    0xFFFF, /* 219 */
+    0xFFFF, /* 220 */
+        0, /* 221 */
+        0, /* 222 */
+        0, /* 223 */
 };
 
 u8 heldItemDialogueItemIndices[] = {
-     0, 48, 47, 42, 13, 14,  0, 15, 16, 17, 50,  0,  0,  1,  2,  3,
-     4,  5,  6,  7,  8,  9, 10, 11, 12, 18, 19, 20, 21, 22, 23, 24,
-    49,  0, 25, 27, 28, 29, 30, 31, 26, 32, 33,  0, 35, 34, 43, 45,
-    44, 46, 61,  0,  0,  0,  0,  0,  0, 41,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0, 51, 51, 51, 51, 51, 51, 51, 51,
-    62, 62, 62, 62, 62, 62, 62, 62, 63, 63, 63, 63, 63, 63, 63, 63,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 65, 65, 65, 65, 65,
-    65, 65, 65, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 66, 66, 66, 66, 66,
-    66, 66, 66, 57, 58, 56, 53, 54, 59, 60, 52, 52, 52, 52, 52, 52,
-    52, 52, 52, 52, 52, 52, 52, 52, 52, 52,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0, /* 0 */
+     HELD_ITEM_DIALOGUE_WEED, /* WEED_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_ROCK, /* ROCK_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_LOG, /* LOG_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_MOONDROP_FLOWER, /* MOONDROP_FLOWER_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_PINK_CAT_MINT_FLOWER, /* PINK_CAT_MINT_FLOWER_HELD_ITEM */
+     0, /* BLUE_MIST_FLOWER_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_CAKE, /* CAKE_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_PIE, /* PIE_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_COOKIES, /* COOKIES_HELD_ITEM */
+     50, /* BLUE_FEATHER_HELD_ITEM */
+     0, /* DOOR_TO_HEAVEN_HELD_ITEM */
+     0, /* 12 */
+     HELD_ITEM_DIALOGUE_TURNIP, /* TURNIP_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_POTATO, /* POTATO_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_CABBAGE, /* CABBAGE_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_TOMATO, /* TOMATO_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_CORN, /* CORN_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_EGGPLANT, /* EGGPLANT_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_STRAWBERRY, /* STRAWBERRY_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_EGG, /* EGG_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_SMALL_MILK, /* SMALL_MILK_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_MEDIUM_MILK, /* MEDIUM_MILK_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_LARGE_MILK, /* LARGE_MILK_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_GOLDEN_MILK, /* GOLDEN_MILK_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_WOOL, /* WOOL_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_HIGH_QUALITY_WOOL, /* HIGH_QUALITY_WOOL_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_WILD_GRAPES, /* WILD_GRAPES_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_VERYBERRY, /* VERYBERRY_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_TROPICAL_FRUIT, /* TROPICAL_FRUIT_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_WALNUT, /* WALNUT_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_MUSHROOM, /* MUSHROOM_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_POISONOUS_MUSHROOM, /* POISONOUS_MUSHROOM_HELD_ITEM */
+     0, /* BOOK_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_BERRY_OF_THE_FULLMOON, /* BERRY_OF_THE_FULLMOON_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_MEDICINAL_HERB, /* MEDICINAL_HERB_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_EDIBLE_HERB, /* EDIBLE_HERB_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_SMALL_FISH, /* SMALL_FISH_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_MEDIUM_FISH, /* MEDIUM_FISH_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_LARGE_FISH, /* LARGE_FISH_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_DUMPLING, /* DUMPLING_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_COTTON_CANDY, /* COTTON_CANDY_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_FRIED_OCTUPUS, /* FRIED_OCTUPUS_HELD_ITEM */
+     0, /* ROASTED_CORN_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_CANDY, /* CANDY_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_CHOCOLATE, /* CHOCOLATE_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_IRON_ORE, /* IRON_ORE_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_BLUE_ROCK, /* BLUE_ROCK_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_RARE_METAL, /* RARE_METAL_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_MOONLIGHT_STONE, /* MOONLIGHT_STONE_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_PONTATA_ROOT, /* PONTATA_ROOT_HELD_ITEM */
+     0, /* 51 */
+     0, /* 52 */
+     0, /* 53 */
+     0, /* 54 */
+     0, /* 55 */
+     0, /* 56 */
+     HELD_ITEM_DIALOGUE_FODDER, /* FODDER_HELD_ITEM */
+     0, /* 58 */
+     0, /* 59 */
+     0, /* 60 */
+     0, /* 61 */
+     0, /* 62 */
+     0, /* 63 */
+     0, /* SEEDS_HELD_ITEM */
+     0, /* 65 */
+     0, /* 66 */
+     0, /* 67 */
+     0, /* 68 */
+     0, /* 69 */
+     0, /* 70 */
+     0, /* 71 */
+     0, /* MEDICINE_HELD_ITEM */
+     0, /* SHEARS_HELD_ITEM */
+     0, /* 74 */
+     0, /* 75 */
+     0, /* 76 */
+     0, /* 77 */
+     0, /* 78 */
+     0, /* 79 */
+     0, /* RICE_CAKE_HELD_ITEM */
+     0, /* BREAD_HELD_ITEM */
+     0, /* EGGS_HELD_ITEM */
+     0, /* 83 */
+     0, /* 84 */
+     0, /* 85 */
+     0, /* 86 */
+     0, /* POWER_NUT_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_DOG, /* DOG_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_DOG, /* 89 */
+     HELD_ITEM_DIALOGUE_DOG, /* 90 */
+     HELD_ITEM_DIALOGUE_DOG, /* 91 */
+     HELD_ITEM_DIALOGUE_DOG, /* 92 */
+     HELD_ITEM_DIALOGUE_DOG, /* 93 */
+     HELD_ITEM_DIALOGUE_DOG, /* 94 */
+     HELD_ITEM_DIALOGUE_DOG, /* 95 */
+     HELD_ITEM_DIALOGUE_CHICKEN, /* CHICKEN_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_CHICKEN, /* 97 */
+     HELD_ITEM_DIALOGUE_CHICKEN, /* 98 */
+     HELD_ITEM_DIALOGUE_CHICKEN, /* 99 */
+     HELD_ITEM_DIALOGUE_CHICKEN, /* 100 */
+     HELD_ITEM_DIALOGUE_CHICKEN, /* 101 */
+     HELD_ITEM_DIALOGUE_CHICKEN, /* 102 */
+     HELD_ITEM_DIALOGUE_CHICKEN, /* 103 */
+     HELD_ITEM_DIALOGUE_CHICK, /* CHICK_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_CHICK, /* 105 */
+     HELD_ITEM_DIALOGUE_CHICK, /* 106 */
+     HELD_ITEM_DIALOGUE_CHICK, /* 107 */
+     HELD_ITEM_DIALOGUE_CHICK, /* 108 */
+     HELD_ITEM_DIALOGUE_CHICK, /* 109 */
+     HELD_ITEM_DIALOGUE_CHICK, /* 110 */
+     HELD_ITEM_DIALOGUE_CHICK, /* 111 */
+     0, /* EMPTY_BOTTLE_HELD_ITEM */
+     0, /* BOTTLE_WITH_WATER_HELD_ITEM */
+     0, /* BOTTLE_WITH_WINE_HELD_ITEM */
+     0, /* 115 */
+     0, /* 116 */
+     0, /* 117 */
+     0, /* BOTTLE_WITH_MILK_HELD_ITEM */
+     0, /* 119 */
+     0, /* BOTTLE_WITH_TEA_HELD_ITEM */
+     0, /* 121 */
+     0, /* 122 */
+     HELD_ITEM_DIALOGUE_PUPPY, /* PUPPY_1_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_PUPPY, /* 124 */
+     HELD_ITEM_DIALOGUE_PUPPY, /* 125 */
+     HELD_ITEM_DIALOGUE_PUPPY, /* 126 */
+     HELD_ITEM_DIALOGUE_PUPPY, /* 127 */
+     HELD_ITEM_DIALOGUE_PUPPY, /* 128 */
+     HELD_ITEM_DIALOGUE_PUPPY, /* 129 */
+     HELD_ITEM_DIALOGUE_PUPPY, /* 130 */
+     64, /* CAT_HELD_ITEM */
+     64, /* 132 */
+     64, /* 133 */
+     64, /* 134 */
+     64, /* 135 */
+     64, /* 136 */
+     64, /* 137 */
+     64, /* 138 */
+     64, /* FOX_HELD_ITEM */
+     64, /* 140 */
+     64, /* 141 */
+     64, /* 142 */
+     64, /* 143 */
+     64, /* 144 */
+     64, /* 145 */
+     64, /* 146 */
+     64, /* SQUIRREL_HELD_ITEM */
+     64, /* 148 */
+     64, /* 149 */
+     64, /* 150 */
+     64, /* 151 */
+     64, /* 152 */
+     64, /* 153 */
+     64, /* 154 */
+     64, /* RABBIT_HELD_ITEM */
+     64, /* 156 */
+     64, /* 157 */
+     64, /* 158 */
+     64, /* 159 */
+     64, /* 160 */
+     64, /* 161 */
+     64, /* 162 */
+     64, /* MONKEY_HELD_ITEM */
+     64, /* 164 */
+     64, /* 165 */
+     64, /* 166 */
+     64, /* 167 */
+     64, /* 168 */
+     64, /* 169 */
+     64, /* 170 */
+     HELD_ITEM_DIALOGUE_DOG_2, /* DOG_2_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_DOG_2, /* 172 */
+     HELD_ITEM_DIALOGUE_DOG_2, /* 173 */
+     HELD_ITEM_DIALOGUE_DOG_2, /* 174 */
+     HELD_ITEM_DIALOGUE_DOG_2, /* 175 */
+     HELD_ITEM_DIALOGUE_DOG_2, /* 176 */
+     HELD_ITEM_DIALOGUE_DOG_2, /* 177 */
+     HELD_ITEM_DIALOGUE_DOG_2, /* 178 */
+     HELD_ITEM_DIALOGUE_BUTTERFLY, /* BUTTERFLY_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_LADYBUG, /* LADYBUG_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_CICADA, /* CICADA_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_HORNED_BEETLE, /* HORNED_BEETLE_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_STAG_BEETLE, /* STAG_BEETLE_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_RED_DRAGONFLY, /* RED_DRAGONFLY_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_CRICKET, /* CRICKET_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_BABY, /* BABY_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_BABY, /* 187 */
+     HELD_ITEM_DIALOGUE_BABY, /* 188 */
+     HELD_ITEM_DIALOGUE_BABY, /* 189 */
+     HELD_ITEM_DIALOGUE_BABY, /* 190 */
+     HELD_ITEM_DIALOGUE_BABY, /* 191 */
+     HELD_ITEM_DIALOGUE_BABY, /* 192 */
+     HELD_ITEM_DIALOGUE_BABY, /* 193 */
+     HELD_ITEM_DIALOGUE_BABY, /* BABY_GROWN_HELD_ITEM */
+     HELD_ITEM_DIALOGUE_BABY, /* 195 */
+     HELD_ITEM_DIALOGUE_BABY, /* 196 */
+     HELD_ITEM_DIALOGUE_BABY, /* 197 */
+     HELD_ITEM_DIALOGUE_BABY, /* 198 */
+     HELD_ITEM_DIALOGUE_BABY, /* 199 */
+     HELD_ITEM_DIALOGUE_BABY, /* 200 */
+     HELD_ITEM_DIALOGUE_BABY, /* 201 */
+     0, /* OPEN_BOOK_HELD_ITEM */
+     0, /* SICKLE_HELD_ITEM */
+     0, /* SILVER_SICKLE_HELD_ITEM */
+     0, /* GOLDEN_SICKLE_HELD_ITEM */
+     0, /* HOE_HELD_ITEM */
+     0, /* SILVER_HOE_HELD_ITEM */
+     0, /* GOLDEN_HOE_HELD_ITEM */
+     0, /* AX_HELD_ITEM */
+     0, /* SILVER_AX_HELD_ITEM */
+     0, /* GOLDEN_AX_HELD_ITEM */
+     0, /* HAMMER_HELD_ITEM */
+     0, /* SILVER_HAMMER_HELD_ITEM */
+     0, /* GOLDEN_HAMMER_HELD_ITEM */
+     0, /* WATERING_CAN_HELD_ITEM */
+     0, /* SILVER_WATERING_CAN_HELD_ITEM */
+     0, /* GOLDEN_WATERING_CAN_HELD_ITEM */
+     0, /* BROKEN_MUSIC_BOX_HELD_ITEM */
+     0, /* 219 */
+     0, /* 220 */
+     0, /* 221 */
+     0, /* 222 */
+     0, /* 223 */
 };
 
 u16 itemTextIndices[] = {
-    0x0000, 0x013B, 0x013A, 0x0135, 0x011D, 0x011E, 0x0000, 0x011F, 
-    0x0120, 0x0121, 0x013D, 0x0000, 0x0000, 0x0111, 0x0112, 0x0113, 
-    0x0114, 0x0115, 0x0116, 0x0117, 0x0118, 0x0119, 0x011A, 0x011B, 
-    0x011C, 0x0122, 0x0123, 0x0124, 0x0125, 0x0126, 0x0127, 0x0128, 
-    0x013C, 0x0000, 0x0129, 0x012B, 0x012C, 0x012D, 0x012E, 0x012F, 
-    0x012A, 0x0130, 0x0131, 0x014E, 0x0133, 0x0132, 0x0136, 0x0138, 
-    0x0137, 0x0139, 0x014D, 0x0000, 0x0000, 0x014F, 0x0000, 0x0000, 
-    0x0000, 0x0134, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
-    0x013E, 0x013E, 0x013E, 0x013E, 0x013E, 0x013E, 0x013E, 0x013E, 
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
-    0x0000, 0x0000, 0x0000, 0x0150, 0x0150, 0x0150, 0x0150, 0x0150, 
-    0x0150, 0x0150, 0x0150, 0x014A, 0x014A, 0x014A, 0x014A, 0x014A, 
-    0x014A, 0x014A, 0x014A, 0x0149, 0x0149, 0x0149, 0x0149, 0x0149, 
-    0x0149, 0x0149, 0x0149, 0x014B, 0x014B, 0x014B, 0x014B, 0x014B, 
-    0x014B, 0x014B, 0x014B, 0x0148, 0x0148, 0x0148, 0x0148, 0x0148, 
-    0x0148, 0x0148, 0x0148, 0x014C, 0x014C, 0x014C, 0x014C, 0x014C, 
-    0x014C, 0x014C, 0x014C, 0x0151, 0x0151, 0x0151, 0x0151, 0x0151, 
-    0x0151, 0x0151, 0x0151, 0x0144, 0x0145, 0x0143, 0x0140, 0x0141, 
-    0x0146, 0x0147, 0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 
-    0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 0x013F, 
-    0x013F, 0x013F, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+       0, /* 0 */
+     315, /* WEED_HELD_ITEM */
+     314, /* ROCK_HELD_ITEM */
+     309, /* LOG_HELD_ITEM */
+     285, /* MOONDROP_FLOWER_HELD_ITEM */
+     286, /* PINK_CAT_MINT_FLOWER_HELD_ITEM */
+       0, /* BLUE_MIST_FLOWER_HELD_ITEM */
+     287, /* CAKE_HELD_ITEM */
+     288, /* PIE_HELD_ITEM */
+     289, /* COOKIES_HELD_ITEM */
+     317, /* BLUE_FEATHER_HELD_ITEM */
+       0, /* DOOR_TO_HEAVEN_HELD_ITEM */
+       0, /* 12 */
+     273, /* TURNIP_HELD_ITEM */
+     274, /* POTATO_HELD_ITEM */
+     275, /* CABBAGE_HELD_ITEM */
+     276, /* TOMATO_HELD_ITEM */
+     277, /* CORN_HELD_ITEM */
+     278, /* EGGPLANT_HELD_ITEM */
+     279, /* STRAWBERRY_HELD_ITEM */
+     280, /* EGG_HELD_ITEM */
+     281, /* SMALL_MILK_HELD_ITEM */
+     282, /* MEDIUM_MILK_HELD_ITEM */
+     283, /* LARGE_MILK_HELD_ITEM */
+     284, /* GOLDEN_MILK_HELD_ITEM */
+     290, /* WOOL_HELD_ITEM */
+     291, /* HIGH_QUALITY_WOOL_HELD_ITEM */
+     292, /* WILD_GRAPES_HELD_ITEM */
+     293, /* VERYBERRY_HELD_ITEM */
+     294, /* TROPICAL_FRUIT_HELD_ITEM */
+     295, /* WALNUT_HELD_ITEM */
+     296, /* MUSHROOM_HELD_ITEM */
+     316, /* POISONOUS_MUSHROOM_HELD_ITEM */
+       0, /* BOOK_HELD_ITEM */
+     297, /* BERRY_OF_THE_FULLMOON_HELD_ITEM */
+     299, /* MEDICINAL_HERB_HELD_ITEM */
+     300, /* EDIBLE_HERB_HELD_ITEM */
+     301, /* SMALL_FISH_HELD_ITEM */
+     302, /* MEDIUM_FISH_HELD_ITEM */
+     303, /* LARGE_FISH_HELD_ITEM */
+     298, /* DUMPLING_HELD_ITEM */
+     304, /* COTTON_CANDY_HELD_ITEM */
+     305, /* FRIED_OCTUPUS_HELD_ITEM */
+     334, /* ROASTED_CORN_HELD_ITEM */
+     307, /* CANDY_HELD_ITEM */
+     306, /* CHOCOLATE_HELD_ITEM */
+     310, /* IRON_ORE_HELD_ITEM */
+     312, /* BLUE_ROCK_HELD_ITEM */
+     311, /* RARE_METAL_HELD_ITEM */
+     313, /* MOONLIGHT_STONE_HELD_ITEM */
+     333, /* PONTATA_ROOT_HELD_ITEM */
+       0, /* 51 */
+       0, /* 52 */
+     335, /* 53 */
+       0, /* 54 */
+       0, /* 55 */
+       0, /* 56 */
+     308, /* FODDER_HELD_ITEM */
+       0, /* 58 */
+       0, /* 59 */
+       0, /* 60 */
+       0, /* 61 */
+       0, /* 62 */
+       0, /* 63 */
+       0, /* SEEDS_HELD_ITEM */
+       0, /* 65 */
+       0, /* 66 */
+       0, /* 67 */
+       0, /* 68 */
+       0, /* 69 */
+       0, /* 70 */
+       0, /* 71 */
+       0, /* MEDICINE_HELD_ITEM */
+       0, /* SHEARS_HELD_ITEM */
+       0, /* 74 */
+       0, /* 75 */
+       0, /* 76 */
+       0, /* 77 */
+       0, /* 78 */
+       0, /* 79 */
+       0, /* RICE_CAKE_HELD_ITEM */
+       0, /* BREAD_HELD_ITEM */
+       0, /* EGGS_HELD_ITEM */
+       0, /* 83 */
+       0, /* 84 */
+       0, /* 85 */
+       0, /* 86 */
+       0, /* POWER_NUT_HELD_ITEM */
+     318, /* DOG_HELD_ITEM */
+     318, /* 89 */
+     318, /* 90 */
+     318, /* 91 */
+     318, /* 92 */
+     318, /* 93 */
+     318, /* 94 */
+     318, /* 95 */
+       0, /* CHICKEN_HELD_ITEM */
+       0, /* 97 */
+       0, /* 98 */
+       0, /* 99 */
+       0, /* 100 */
+       0, /* 101 */
+       0, /* 102 */
+       0, /* 103 */
+       0, /* CHICK_HELD_ITEM */
+       0, /* 105 */
+       0, /* 106 */
+       0, /* 107 */
+       0, /* 108 */
+       0, /* 109 */
+       0, /* 110 */
+       0, /* 111 */
+       0, /* EMPTY_BOTTLE_HELD_ITEM */
+       0, /* BOTTLE_WITH_WATER_HELD_ITEM */
+       0, /* BOTTLE_WITH_WINE_HELD_ITEM */
+       0, /* 115 */
+       0, /* 116 */
+       0, /* 117 */
+       0, /* BOTTLE_WITH_MILK_HELD_ITEM */
+       0, /* 119 */
+       0, /* BOTTLE_WITH_TEA_HELD_ITEM */
+       0, /* 121 */
+       0, /* 122 */
+     336, /* PUPPY_1_HELD_ITEM */
+     336, /* 124 */
+     336, /* 125 */
+     336, /* 126 */
+     336, /* 127 */
+     336, /* 128 */
+     336, /* 129 */
+     336, /* 130 */
+     330, /* CAT_HELD_ITEM */
+     330, /* 132 */
+     330, /* 133 */
+     330, /* 134 */
+     330, /* 135 */
+     330, /* 136 */
+     330, /* 137 */
+     330, /* 138 */
+     329, /* FOX_HELD_ITEM */
+     329, /* 140 */
+     329, /* 141 */
+     329, /* 142 */
+     329, /* 143 */
+     329, /* 144 */
+     329, /* 145 */
+     329, /* 146 */
+     331, /* SQUIRREL_HELD_ITEM */
+     331, /* 148 */
+     331, /* 149 */
+     331, /* 150 */
+     331, /* 151 */
+     331, /* 152 */
+     331, /* 153 */
+     331, /* 154 */
+     328, /* RABBIT_HELD_ITEM */
+     328, /* 156 */
+     328, /* 157 */
+     328, /* 158 */
+     328, /* 159 */
+     328, /* 160 */
+     328, /* 161 */
+     328, /* 162 */
+     332, /* MONKEY_HELD_ITEM */
+     332, /* 164 */
+     332, /* 165 */
+     332, /* 166 */
+     332, /* 167 */
+     332, /* 168 */
+     332, /* 169 */
+     332, /* 170 */
+     337, /* DOG_2_HELD_ITEM */
+     337, /* 172 */
+     337, /* 173 */
+     337, /* 174 */
+     337, /* 175 */
+     337, /* 176 */
+     337, /* 177 */
+     337, /* 178 */
+     324, /* BUTTERFLY_HELD_ITEM */
+     325, /* LADYBUG_HELD_ITEM */
+     323, /* CICADA_HELD_ITEM */
+     320, /* HORNED_BEETLE_HELD_ITEM */
+     321, /* STAG_BEETLE_HELD_ITEM */
+     326, /* RED_DRAGONFLY_HELD_ITEM */
+     327, /* CRICKET_HELD_ITEM */
+     319, /* BABY_HELD_ITEM */
+     319, /* 187 */
+     319, /* 188 */
+     319, /* 189 */
+     319, /* 190 */
+     319, /* 191 */
+     319, /* 192 */
+     319, /* 193 */
+     319, /* BABY_GROWN_HELD_ITEM */
+     319, /* 195 */
+     319, /* 196 */
+     319, /* 197 */
+     319, /* 198 */
+     319, /* 199 */
+     319, /* 200 */
+     319, /* 201 */
+       0, /* OPEN_BOOK_HELD_ITEM */
+       0, /* SICKLE_HELD_ITEM */
+       0, /* SILVER_SICKLE_HELD_ITEM */
+       0, /* GOLDEN_SICKLE_HELD_ITEM */
+       0, /* HOE_HELD_ITEM */
+       0, /* SILVER_HOE_HELD_ITEM */
+       0, /* GOLDEN_HOE_HELD_ITEM */
+       0, /* AX_HELD_ITEM */
+       0, /* SILVER_AX_HELD_ITEM */
+       0, /* GOLDEN_AX_HELD_ITEM */
+       0, /* HAMMER_HELD_ITEM */
+       0, /* SILVER_HAMMER_HELD_ITEM */
+       0, /* GOLDEN_HAMMER_HELD_ITEM */
+       0, /* WATERING_CAN_HELD_ITEM */
+       0, /* SILVER_WATERING_CAN_HELD_ITEM */
+       0, /* GOLDEN_WATERING_CAN_HELD_ITEM */
+       0, /* BROKEN_MUSIC_BOX_HELD_ITEM */
+       0, /* 219 */
+       0, /* 220 */
+       0, /* 221 */
+       0, /* 222 */
+       0, /* 223 */
 };
 
 u16 itemShippingValues[] = {
