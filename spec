@@ -821,8 +821,6 @@ beginwave
     include "albumPhotosTexture"
     include "albumPhotosAssetsIndex"
     include "albumPhotosSpritesheetIndex"
-    include "villageMapScreenTexture"
-    include "villageMapScreenAssetsIndex"
 
     include "fontTexture"
     include "fontPalette1"

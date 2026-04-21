@@ -158,7 +158,7 @@ extern void calendarScreenCallback();
 extern void recipeBookScreenCallback();
 extern void albumScreenCallback();
 extern void loadPauseScreenMapScreenCallback();
-extern void pauseScreenMapCallback();
+// extern void pauseScreenMapCallback();
 extern void loadRaceBettingScreenCallback();
 extern void raceBettingScreenCallback();
 extern void loadRaceResultsScreenCallback();
