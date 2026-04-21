@@ -4673,7 +4673,7 @@ void handleCutsceneCompletion(void) {
                         if (D_80180710 == 0) {
                             showDialogueTextBox(DIALOGUE_MENU_EVALUATION_CONTINUE_PROMPT);
                         } else {
-                            launchIntroCutscene(FUNERAL, 97, 1);
+                            launchIntroCutscene(FUNERAL, SQUARE_SPAWN_POINT_1, 1);
                         }
 
                     }
@@ -4682,10 +4682,10 @@ void handleCutsceneCompletion(void) {
                 
                 case 32:
                     if (gCutsceneIndex == DEMO_CUTSCENE_2) {
-                        launchIntroCutscene(1502, 26, 1);
+                        launchIntroCutscene(1502, MOUNTAIN_1_SPAWN_POINT_1, 1);
                     } else {
                         memcpy(farmFieldTiles, D_80113580, FIELD_HEIGHT * FIELD_WIDTH);
-                        launchIntroCutscene(FUNERAL, 97, 1);
+                        launchIntroCutscene(FUNERAL, SQUARE_SPAWN_POINT_1, 1);
                     }
                     break;
 
