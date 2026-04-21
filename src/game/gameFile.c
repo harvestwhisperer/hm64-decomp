@@ -1007,7 +1007,11 @@ void gameSelectCallback(void) {
                 } else {
                     initializeNewGameState();
                     initializeGameVariables();
+#if TESTING
+                    startGame();
+#else
                     initializeNamingScreen(gPlayer.name, 0);
+#endif
                 }
             }
             

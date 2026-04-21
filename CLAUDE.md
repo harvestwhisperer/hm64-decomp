@@ -57,7 +57,6 @@ hm64-decomp-master/
 ├── spec                  # ROM layout specification (segment definitions)
 ├── Makefile              # Main build (matching, US)
 ├── Makefile.jp           # Japanese version build
-├── Makefile.modding      # Modding build (shiftable, non-matching OK)
 └── docs/                 # Documentation (cutscene readability guide, etc.)
 ```
 

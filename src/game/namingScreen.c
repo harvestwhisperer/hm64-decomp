@@ -270,7 +270,7 @@ void namingScreenCallback(void) {
             setMessageBoxSpriteIndices(0, 0, 0, 0);
             setMessageBoxViewSpacePosition(0, 24.0f, -64.0f, 352.0f);
 
-switch (namingScreenContext.screenType) {
+            switch (namingScreenContext.screenType) {
 
                  case NAMING_SCREEN_TYPE_PLAYER:
                     initializeNamingScreen(gFarmName, NAMING_SCREEN_TYPE_FARM);

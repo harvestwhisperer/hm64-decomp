@@ -10297,17 +10297,21 @@ u8 getTotalCowsCount(void) {
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         
         if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) {
-            
-            // FIXME: should be range
-            if ((u8)(gFarmAnimals[i].type - 1) < 2U || (gFarmAnimals[i].type == BABY_COW || gFarmAnimals[i].type == PREGNANT_COW)) {
-                count++;
+
+            switch (gFarmAnimals[i].type) {
+                case BABY_COW:
+                case CALF:
+                case ADULT_COW:
+                case PREGNANT_COW:
+                    count++;
+                    break;
             }
-    
+
         }
     }
-    
+
     return count;
-    
+
 }
 
 u8 getCowWithHighestAffection(void) {
@@ -10474,16 +10478,21 @@ u8 func_8009B828(u8 arg0) {
     
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
 
-        // FIXME: should be range
-        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) 
-            && (((u8)(gFarmAnimals[i].type - 1) < 2U 
-                || (gFarmAnimals[i].type == BABY_COW || gFarmAnimals[i].type == PREGNANT_COW))
-            && gFarmAnimals[i].location == FARM && (arg0 == 0 || (gFarmAnimals[i].milkType == 0)))) {
+        if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) {
 
-            count++;
-        
+            switch (gFarmAnimals[i].type) {
+                case BABY_COW:
+                case CALF:
+                case ADULT_COW:
+                case PREGNANT_COW:
+                    if (gFarmAnimals[i].location == FARM && (arg0 == 0 || gFarmAnimals[i].milkType == 0)) {
+                        count++;
+                    }
+                    break;
+            }
+
         }
-        
+
     }
 
     if (count) {
@@ -10635,17 +10644,19 @@ u8 getBestCowMilkType(void) {
 
         if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) {
 
-            // FIXME: should be range
-            if ((u8)(gFarmAnimals[i].type - 1) < 2U || (gFarmAnimals[i].type == BABY_COW || gFarmAnimals[i].type == PREGNANT_COW)) {
-                
-                temp = gFarmAnimals[i].milkType;
-    
-                if (temp < found) {
-                    found = temp;
-                }
-                
+            switch (gFarmAnimals[i].type) {
+                case BABY_COW:
+                case CALF:
+                case ADULT_COW:
+                case PREGNANT_COW:
+                    temp = gFarmAnimals[i].milkType;
+
+                    if (temp < found) {
+                        found = temp;
+                    }
+                    break;
             }
-            
+
         }
         
     }

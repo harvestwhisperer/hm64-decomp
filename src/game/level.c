@@ -574,12 +574,13 @@ u8 getMusicIndexForMap(u8 mapIndex, u8 season, u8 hour) {
         }
 
         return levelToMusicMappings[mapIndex][nightOffset + (season - 1)];
-        
+
     }
 
     return 0xFF;
 
 }
+
 
 Vec4f* getDefaultLevelLighting(Vec4f* rgba, u16 mapIndex) {
 
@@ -1827,11 +1828,7 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
 
     u16 index = 0xFFFF;
 
-    // FIXME: no idea
-    u32 temp = spawnPointToMap[spawnPoint];
-    u8 temp2 = temp;
-
-    switch (temp2) {
+    switch (spawnPointToMap[spawnPoint]) {
 
         case ANN_ROOM:
 
