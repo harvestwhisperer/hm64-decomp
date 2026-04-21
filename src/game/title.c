@@ -19,6 +19,7 @@
 #include "mainLoop.h" 
 
 #include "assetIndices/cutscenes.h"
+#include "assetIndices/maps.h"
 #include "assetIndices/sequences.h"
 #include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
