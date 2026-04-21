@@ -184,8 +184,13 @@ void loadLevel(u8 arg0) {
    if (checkDailyEventBit(DEFAULT_MORNING)) {
 
         if (checkDailyEventBit(EAT_BREAKFAST)) {
+#if TESTING
+            setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
+            gPlayer.heldItem = 0;
+#else
             setPlayerAction(EATING, ANIM_EATING);
             gPlayer.heldItem = RICE_CAKE_HELD_ITEM;
+#endif
         } else {
             setPlayerAction(CONTROLLER_INPUT, ANIM_DEFAULT);
             gPlayer.heldItem = 0;
