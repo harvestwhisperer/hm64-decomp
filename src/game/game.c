@@ -2639,7 +2639,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         break;
                     
                     case 1:                      
-                        launchIntroCutscene_2(FUNERAL, 0x61, 1);
+                        launchIntroCutscene_2(FUNERAL, SQUARE_SPAWN_POINT_1, 1);
                         break;
 
                 }
