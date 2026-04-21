@@ -100,7 +100,7 @@ else
 endif
 
 ASFLAGS := -G 0 -I include -mips3
-CPPFLAGS := -I. -I include -I src -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libmus/include/PR -I lib/gcc/include
+CPPFLAGS := -I. -I include -I src -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libmus/include/PR -I lib/gcc/include -I lib/yay0
 
 HASM_AS_DEFINES := -D_LANGUAGE_ASSEMBLY -DMIPSEB -D_ULTRA64 -D_MIPS_SIM=1
 
@@ -498,6 +498,41 @@ SPRITES_DIR := assets/sprites
 TEXTS_DIR := assets/text
 
 # ==============================================================================
+# COMPRESSION
+# ==============================================================================
+
+# Must be defined before rules that reference it (compressed_ranges.h prereq).
+SPEC_INCLUDES := $(shell find assets -name '*.spec' 2>/dev/null)
+
+# Yay0 compression pipeline (generic across asset types):
+#   .bin.o --(objcopy -j .data)--> .bin --(yay0 encoder)--> .yay0 --(ld -r -b binary)--> .yay0.o
+# NOTE: only works on asset .bin.o files with zero relocations. Cutscene
+# banks carry relocations against game globals and cannot use this path
+# directly; they need a two-pass build that extracts resolved bytes from
+# the final ELF.
+$(BUILD_DIR)/assets/%.bin: $(BUILD_DIR)/assets/%.bin.o
+	$(V)$(OBJCOPY) -O binary -j .data $< $@
+
+$(BUILD_DIR)/assets/%.yay0: $(BUILD_DIR)/assets/%.bin
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.yay0.encoder $< $@
+
+$(BUILD_DIR)/assets/%.yay0.o: $(BUILD_DIR)/assets/%.yay0
+	$(V)$(LD) -r -b binary -o $@ $<
+
+# Parallel pipeline for maps (.hm64map.o extension).
+$(BUILD_DIR)/assets/%.hm64map.raw: $(BUILD_DIR)/assets/%.hm64map.o
+	$(V)$(OBJCOPY) -O binary -j .data $< $@
+
+$(BUILD_DIR)/assets/%.hm64map.yay0: $(BUILD_DIR)/assets/%.hm64map.raw
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.yay0.encoder $< $@
+
+$(BUILD_DIR)/assets/%.hm64map.yay0.o: $(BUILD_DIR)/assets/%.hm64map.yay0
+	$(V)$(LD) -r -b binary -o $@ $<
+
+# Don't wipe these on every build — they're expensive to regenerate.
+.SECONDARY:
+
+# ==============================================================================
 # TARGETS
 # ==============================================================================
 
@@ -586,6 +621,24 @@ $(BUILD_DIR)/src/data/%.o: src/data/%.c
 $(BUILD_DIR)/lib/libmus/src/player.o: lib/libmus/src/player.c
 	$(MKDIR)
 	$(CC) $(CC_FLAG) $(LIBMUS_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBMUS_CPP_FLAGS) -c -o $@ $<
+
+# yay0
+
+# Generated header listing the ROM start of every .yay0.o segment in the spec.
+# Regenerated any time a .spec file changes.
+$(BUILD_DIR)/lib/yay0/compressed_ranges.h: tools/libhm64/yay0/generate_ranges.py $(SPEC) $(SPEC_INCLUDES)
+	$(MKDIR)
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.yay0.generate_ranges $@ $(SPEC) $(SPEC_INCLUDES)
+
+$(BUILD_DIR)/lib/yay0/yay0.o: $(BUILD_DIR)/lib/yay0/compressed_ranges.h
+
+$(BUILD_DIR)/lib/yay0/%.o: lib/yay0/%.c
+	$(MKDIR)
+	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -I $(BUILD_DIR)/lib/yay0 -c -o $@ $<
+
+$(BUILD_DIR)/lib/yay0/%.o: lib/yay0/%.s
+	$(MKDIR)
+	$(AS) $(ASFLAGS) -o $@ $<
 
 # nusys
 
@@ -726,6 +779,10 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/data/animationScripts/animationScripts.o \
 	$(BUILD_DIR)/src/data/audio/sfx.o \
 	$(BUILD_DIR)/src/game/namingScreen.o
+	
+LIB_COMPRESSION_OBJECTS := \
+	$(BUILD_DIR)/lib/yay0/yay0.o \
+	$(BUILD_DIR)/lib/yay0/yay0Decode.o
 
 NUSYS_SAMPLE_OBJECTS := \
 	$(BUILD_DIR)/lib/nusys-1/src/sample/nunospak/nupakmenu.o \
@@ -975,6 +1032,7 @@ LIBKMC_OBJECTS := \
 ALL_CODE_OBJECTS := \
 	$(NUBOOT_OBJECTS) \
 	$(CODE_OBJECTS) \
+	$(LIB_COMPRESSION_OBJECTS) \
 	$(NUSYS_SAMPLE_OBJECTS) \
 	$(NUALSTL_OBJECTS) \
 	$(LIBMUS_OBJECTS) \
@@ -991,7 +1049,7 @@ $(BUILD_DIR)/codesegment.o: $(ALL_CODE_OBJECTS)
 # LINKER SCRIPT
 # ==============================================================================
 
-$(SPEC_PROCESSED): $(SPEC)
+$(SPEC_PROCESSED): $(SPEC) $(SPEC_INCLUDES)
 	$(MKDIR)
 	$(V)$(CPP) $(SPEC_CPP_FLAGS) $< > $@
 

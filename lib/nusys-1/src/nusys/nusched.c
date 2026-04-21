@@ -1,7 +1,7 @@
 #include <nusys.h>
 
-#define TASK_YIELD	1		
-#define TASK_YIELDED	2		
+#define TASK_YIELD	1
+#define TASK_YIELDED	2
 
 #define VIDEO_MSG		666		
 #define RSP_DONE_MSG	667		
@@ -212,7 +212,7 @@ static void nuScExecuteAudio(void) {
  	while (1) {
 	
 		osRecvMesg(&nusched.audioRequestMQ, (OSMesg*)&audioTask, OS_MESG_BLOCK);
-		osWritebackDCacheAll();	
+		osWritebackDCacheAll();
 		
 		yieldFlag = 0;
 		gfxTask = nusched.curGraphicsTask;

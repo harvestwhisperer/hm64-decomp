@@ -1,4 +1,5 @@
 #include "common.h"
+#include "yay0.h"
 
 #include "system/mapController.h"
 
@@ -189,7 +190,7 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
         mapControllers[mainMapIndex].mapIndex = levelMapIndex;
         
         // mapDataIndex = virtual address of map data 
-        nuPiReadRom(mapDataAddresses[levelMapIndex].romStart, mapControllers[mainMapIndex].mapDataIndex, mapDataAddresses[levelMapIndex].romEnd - mapDataAddresses[levelMapIndex].romStart);
+        dmaReadRom(mapDataAddresses[levelMapIndex].romStart, mapControllers[mainMapIndex].mapDataIndex, mapDataAddresses[levelMapIndex].romEnd - mapDataAddresses[levelMapIndex].romStart);
  
         mapGrid = getAddress(mapControllers[mainMapIndex].mapDataIndex, 0);
         mesh = getAddress(mapControllers[mainMapIndex].mapDataIndex, 1);

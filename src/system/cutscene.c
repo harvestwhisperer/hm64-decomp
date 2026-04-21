@@ -1,4 +1,5 @@
 #include "common.h"
+#include "yay0.h"
 
 #include "cutscene.h"
 
@@ -1326,7 +1327,7 @@ void cutsceneHandlerDoDMA(u16 index) {
     
     cutsceneExecutors[index].bytecodePtr += 4;
     
-    nuPiReadRom(romAddrStart, vaddr, romAddrEnd - romAddrStart);
+    dmaReadRom(romAddrStart, vaddr, romAddrEnd - romAddrStart);
 
 }
 
