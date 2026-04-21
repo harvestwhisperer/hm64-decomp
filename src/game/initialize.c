@@ -690,7 +690,7 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(CALENDAR, calendarScreenCallback);
     registerMainLoopCallback(RECIPE_BOOK, recipeBookScreenCallback);
     registerMainLoopCallback(ALBUM, albumScreenCallback);
-    registerMainLoopCallback(PAUSE_SCREEN_MAP, pauseScreenMapCallback);
+    // registerMainLoopCallback(PAUSE_SCREEN_MAP, pauseScreenMapCallback);
     registerMainLoopCallback(HORSE_RACE_BETTING, raceBettingScreenCallback);
     registerMainLoopCallback(HORSE_RACE_RESULTS, raceResultsScreenCallback);
     registerMainLoopCallback(HORSE_RACE_GIFTS, raceGiftsScreenCallback);
