@@ -69,332 +69,332 @@ u8 toolSweepOffsetsRight[] = { 8, 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0 };
 u8 unused[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 u16 itemSpriteAnimations[96][4] = {
-    { 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF },
-    { 0x0000, 0x003D, 0x003E, 0x003E },
-    { 0x0001, 0x0001, 0x0001, 0x0042 },
-    { 0x0002, 0x0002, 0x0002, 0x0002 },
-    { 0x0003, 0x0003, 0x0003, 0x0003 },
-    { 0x0004, 0x0004, 0x0004, 0x0004 },
-    { 0x0005, 0x0005, 0x0005, 0x0005 },
-    { 0x0006, 0x0006, 0x0006, 0x0006 },
-    { 0x0007, 0x0007, 0x0007, 0x0007 },
-    { 0x0008, 0x0008, 0x0008, 0x0008 },
-    { 0x0009, 0x0009, 0x0009, 0x0009 },
-    { 0x000A, 0x000A, 0x000A, 0x000A },
-    { 0x000B, 0x000B, 0x000B, 0x000B },
-    { 0x000C, 0x000C, 0x000C, 0x000C },
-    { 0x000D, 0x000D, 0x000D, 0x000D },
-    { 0x000E, 0x000E, 0x000E, 0x000E },
-    { 0x000F, 0x000F, 0x000F, 0x000F },
-    { 0x0010, 0x0010, 0x0010, 0x0010 },
-    { 0x0011, 0x0011, 0x0011, 0x0011 },
-    { 0x0012, 0x0012, 0x0012, 0x0012 },
-    { 0x0013, 0x0013, 0x0013, 0x0013 },
-    { 0x0014, 0x0014, 0x0014, 0x0014 },
-    { 0x0015, 0x0015, 0x0015, 0x0015 },
-    { 0x0016, 0x0016, 0x0016, 0x0016 },
-    { 0x0017, 0x0017, 0x0017, 0x0017 },
-    { 0x0018, 0x0018, 0x0018, 0x0018 },
-    { 0x0019, 0x0019, 0x0019, 0x0019 },
-    { 0x001A, 0x001A, 0x001A, 0x001A },
-    { 0x001B, 0x001B, 0x001B, 0x001B },
-    { 0x001C, 0x001C, 0x001C, 0x001C },
-    { 0x001D, 0x001D, 0x001D, 0x001D },
-    { 0x001E, 0x001E, 0x001E, 0x001E },
-    { 0x001F, 0x001F, 0x001F, 0x001F },
-    { 0x0020, 0x0020, 0x0020, 0x0020 },
-    { 0x0021, 0x0021, 0x0021, 0x0021 },
-    { 0x0022, 0x0022, 0x0022, 0x0022 },
-    { 0x0023, 0x0023, 0x0023, 0x0023 },
-    { 0x0024, 0x0024, 0x0024, 0x0024 },
-    { 0x0025, 0x0025, 0x0025, 0x0025 },
-    { 0x0026, 0x0026, 0x0026, 0x0026 },
-    { 0x0027, 0x0027, 0x0027, 0x0027 },
-    { 0x0028, 0x0028, 0x0028, 0x0028 },
-    { 0x0029, 0x0029, 0x0029, 0x0029 },
-    { 0x002A, 0x002A, 0x002A, 0x002A },
-    { 0x002B, 0x002B, 0x002B, 0x002B },
-    { 0x002C, 0x002C, 0x002C, 0x002C },
-    { 0x002D, 0x002D, 0x002D, 0x002D },
-    { 0x002E, 0x002E, 0x002E, 0x002E },
-    { 0x002F, 0x002F, 0x002F, 0x002F },
-    { 0x0030, 0x0030, 0x0030, 0x0030 },
-    { 0x0031, 0x0031, 0x0031, 0x0031 },
-    { 0x0032, 0x0032, 0x0032, 0x0032 },
-    { 0x0033, 0x0033, 0x0033, 0x0033 },
-    { 0x0034, 0x0034, 0x0034, 0x0034 },
-    { 0x0035, 0x0035, 0x0035, 0x0035 },
-    { 0x0036, 0x0036, 0x0036, 0x0036 },
-    { 0x0037, 0x0037, 0x0037, 0x0037 },
-    { 0x0038, 0x0038, 0x0038, 0x0038 },
-    { 0x0039, 0x0039, 0x0039, 0x0039 },
-    { 0x003A, 0x003A, 0x003A, 0x003A },
-    { 0x003B, 0x003B, 0x003B, 0x0043 },
-    { 0x003C, 0x003C, 0x003C, 0x0044 },
-    { 0x003F, 0x0040, 0x0041, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000 },
+    { 0xFFFF,  0xFFFF,  0xFFFF,  0xFFFF }, /* 0 */
+    {      0,      61,      62,      62 }, /* WEED_HELD_ITEM */
+    {      1,       1,       1,      66 }, /* ROCK_HELD_ITEM */
+    {      2,       2,       2,       2 }, /* LOG_HELD_ITEM */
+    {      3,       3,       3,       3 }, /* MOONDROP_FLOWER_HELD_ITEM */
+    {      4,       4,       4,       4 }, /* PINK_CAT_MINT_FLOWER_HELD_ITEM */
+    {      5,       5,       5,       5 }, /* BLUE_MIST_FLOWER_HELD_ITEM */
+    {      6,       6,       6,       6 }, /* CAKE_HELD_ITEM */
+    {      7,       7,       7,       7 }, /* PIE_HELD_ITEM */
+    {      8,       8,       8,       8 }, /* COOKIES_HELD_ITEM */
+    {      9,       9,       9,       9 }, /* BLUE_FEATHER_HELD_ITEM */
+    {     10,      10,      10,      10 }, /* DOOR_TO_HEAVEN_HELD_ITEM */
+    {     11,      11,      11,      11 }, /* 12 */
+    {     12,      12,      12,      12 }, /* TURNIP_HELD_ITEM */
+    {     13,      13,      13,      13 }, /* POTATO_HELD_ITEM */
+    {     14,      14,      14,      14 }, /* CABBAGE_HELD_ITEM */
+    {     15,      15,      15,      15 }, /* TOMATO_HELD_ITEM */
+    {     16,      16,      16,      16 }, /* CORN_HELD_ITEM */
+    {     17,      17,      17,      17 }, /* EGGPLANT_HELD_ITEM */
+    {     18,      18,      18,      18 }, /* STRAWBERRY_HELD_ITEM */
+    {     19,      19,      19,      19 }, /* EGG_HELD_ITEM */
+    {     20,      20,      20,      20 }, /* SMALL_MILK_HELD_ITEM */
+    {     21,      21,      21,      21 }, /* MEDIUM_MILK_HELD_ITEM */
+    {     22,      22,      22,      22 }, /* LARGE_MILK_HELD_ITEM */
+    {     23,      23,      23,      23 }, /* GOLDEN_MILK_HELD_ITEM */
+    {     24,      24,      24,      24 }, /* WOOL_HELD_ITEM */
+    {     25,      25,      25,      25 }, /* HIGH_QUALITY_WOOL_HELD_ITEM */
+    {     26,      26,      26,      26 }, /* WILD_GRAPES_HELD_ITEM */
+    {     27,      27,      27,      27 }, /* VERYBERRY_HELD_ITEM */
+    {     28,      28,      28,      28 }, /* TROPICAL_FRUIT_HELD_ITEM */
+    {     29,      29,      29,      29 }, /* WALNUT_HELD_ITEM */
+    {     30,      30,      30,      30 }, /* MUSHROOM_HELD_ITEM */
+    {     31,      31,      31,      31 }, /* POISONOUS_MUSHROOM_HELD_ITEM */
+    {     32,      32,      32,      32 }, /* BOOK_HELD_ITEM */
+    {     33,      33,      33,      33 }, /* BERRY_OF_THE_FULLMOON_HELD_ITEM */
+    {     34,      34,      34,      34 }, /* MEDICINAL_HERB_HELD_ITEM */
+    {     35,      35,      35,      35 }, /* EDIBLE_HERB_HELD_ITEM */
+    {     36,      36,      36,      36 }, /* SMALL_FISH_HELD_ITEM */
+    {     37,      37,      37,      37 }, /* MEDIUM_FISH_HELD_ITEM */
+    {     38,      38,      38,      38 }, /* LARGE_FISH_HELD_ITEM */
+    {     39,      39,      39,      39 }, /* DUMPLING_HELD_ITEM */
+    {     40,      40,      40,      40 }, /* COTTON_CANDY_HELD_ITEM */
+    {     41,      41,      41,      41 }, /* FRIED_OCTUPUS_HELD_ITEM */
+    {     42,      42,      42,      42 }, /* ROASTED_CORN_HELD_ITEM */
+    {     43,      43,      43,      43 }, /* CANDY_HELD_ITEM */
+    {     44,      44,      44,      44 }, /* CHOCOLATE_HELD_ITEM */
+    {     45,      45,      45,      45 }, /* IRON_ORE_HELD_ITEM */
+    {     46,      46,      46,      46 }, /* BLUE_ROCK_HELD_ITEM */
+    {     47,      47,      47,      47 }, /* RARE_METAL_HELD_ITEM */
+    {     48,      48,      48,      48 }, /* MOONLIGHT_STONE_HELD_ITEM */
+    {     49,      49,      49,      49 }, /* PONTATA_ROOT_HELD_ITEM */
+    {     50,      50,      50,      50 }, /* 51 */
+    {     51,      51,      51,      51 }, /* 52 */
+    {     52,      52,      52,      52 }, /* 53 */
+    {     53,      53,      53,      53 }, /* 54 */
+    {     54,      54,      54,      54 }, /* 55 */
+    {     55,      55,      55,      55 }, /* 56 */
+    {     56,      56,      56,      56 }, /* FODDER_HELD_ITEM */
+    {     57,      57,      57,      57 }, /* 58 */
+    {     58,      58,      58,      58 }, /* 59 */
+    {     59,      59,      59,      67 }, /* 60 */
+    {     60,      60,      60,      68 }, /* 61 */
+    {     63,      64,      65,       0 }, /* 62 */
+    {      0,       0,       0,       0 }, /* 63 */
+    {      0,       0,       0,       0 }, /* SEEDS_HELD_ITEM */
+    {      0,       0,       0,       0 }, /* 65 */
+    {      0,       0,       0,       0 }, /* 66 */
+    {      0,       0,       0,       0 }, /* 67 */
+    {      0,       0,       0,       0 }, /* 68 */
+    {      0,       0,       0,       0 }, /* 69 */
+    {      0,       0,       0,       0 }, /* 70 */
+    {      0,       0,       0,       0 }, /* 71 */
+    {      0,       0,       0,       0 }, /* MEDICINE_HELD_ITEM */
+    {      0,       0,       0,       0 }, /* SHEARS_HELD_ITEM */
+    {      0,       0,       0,       0 }, /* 74 */
+    {      0,       0,       0,       0 }, /* 75 */
+    {      0,       0,       0,       0 }, /* 76 */
+    {      0,       0,       0,       0 }, /* 77 */
+    {      0,       0,       0,       0 }, /* 78 */
+    {      0,       0,       0,       0 }, /* 79 */
+    {      0,       0,       0,       0 }, /* RICE_CAKE_HELD_ITEM */
+    {      0,       0,       0,       0 }, /* BREAD_HELD_ITEM */
+    {      0,       0,       0,       0 }, /* EGGS_HELD_ITEM */
+    {      0,       0,       0,       0 }, /* 83 */
+    {      0,       0,       0,       0 }, /* 84 */
+    {      0,       0,       0,       0 }, /* 85 */
+    {      0,       0,       0,       0 }, /* 86 */
+    {      0,       0,       0,       0 }, /* POWER_NUT_HELD_ITEM */
+    {      0,       0,       0,       0 }, /* DOG_HELD_ITEM */
+    {      0,       0,       0,       0 }, /* 89 */
+    {      0,       0,       0,       0 }, /* 90 */
+    {      0,       0,       0,       0 }, /* 91 */
+    {      0,       0,       0,       0 }, /* 92 */
+    {      0,       0,       0,       0 }, /* 93 */
+    {      0,       0,       0,       0 }, /* 94 */
+    {      0,       0,       0,       0 }, /* 95 */
 };
 
 // entity metadata struct
 //   entity asset index
 //   animation index per season
 u16 itemEntityMetadata[224][5] = {
-    { ENTITY_ASSET_STATIC_ITEM, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0000, 0x008B, 0x008C, 0x008C },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0001, 0x0001, 0x0001, 0x0001 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0002, 0x0002, 0x0002, 0x0002 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0003, 0x0003, 0x0003, 0x0003 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0004, 0x0004, 0x0004, 0x0004 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0005, 0x0005, 0x0005, 0x0005 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0006, 0x0006, 0x0006, 0x0006 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0007, 0x0007, 0x0007, 0x0007 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0008, 0x0008, 0x0008, 0x0008 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0009, 0x0009, 0x0009, 0x0009 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x000A, 0x000A, 0x000A, 0x000A },
-    { ENTITY_ASSET_STATIC_ITEM, 0x000B, 0x000B, 0x000B, 0x000B },
-    { ENTITY_ASSET_STATIC_ITEM, 0x000C, 0x000C, 0x000C, 0x000C },
-    { ENTITY_ASSET_STATIC_ITEM, 0x000D, 0x000D, 0x000D, 0x000D },
-    { ENTITY_ASSET_STATIC_ITEM, 0x000E, 0x000E, 0x000E, 0x000E },
-    { ENTITY_ASSET_STATIC_ITEM, 0x000F, 0x000F, 0x000F, 0x000F },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0010, 0x0010, 0x0010, 0x0010 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0011, 0x0011, 0x0011, 0x0011 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0012, 0x0012, 0x0012, 0x0012 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0013, 0x0013, 0x0013, 0x0013 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0014, 0x0014, 0x0014, 0x0014 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0015, 0x0015, 0x0015, 0x0015 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0016, 0x0016, 0x0016, 0x0016 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0017, 0x0017, 0x0017, 0x0017 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0018, 0x0018, 0x0018, 0x0018 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0019, 0x0019, 0x0019, 0x0019 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x001A, 0x001A, 0x001A, 0x001A },
-    { ENTITY_ASSET_STATIC_ITEM, 0x001B, 0x001B, 0x001B, 0x001B },
-    { ENTITY_ASSET_STATIC_ITEM, 0x001C, 0x001C, 0x001C, 0x001C },
-    { ENTITY_ASSET_STATIC_ITEM, 0x001D, 0x001D, 0x001D, 0x001D },
-    { ENTITY_ASSET_STATIC_ITEM, 0x001E, 0x001E, 0x001E, 0x001E },
-    { ENTITY_ASSET_STATIC_ITEM, 0x001F, 0x001F, 0x001F, 0x001F },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0020, 0x0020, 0x0020, 0x0020 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0021, 0x0021, 0x0021, 0x0021 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0022, 0x0022, 0x0022, 0x0022 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0023, 0x0023, 0x0023, 0x0023 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0024, 0x0024, 0x0024, 0x0024 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0025, 0x0025, 0x0025, 0x0025 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0026, 0x0026, 0x0026, 0x0026 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0027, 0x0027, 0x0027, 0x0027 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0028, 0x0028, 0x0028, 0x0028 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0029, 0x0029, 0x0029, 0x0029 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x002A, 0x002A, 0x002A, 0x002A },
-    { ENTITY_ASSET_STATIC_ITEM, 0x002B, 0x002B, 0x002B, 0x002B },
-    { ENTITY_ASSET_STATIC_ITEM, 0x002C, 0x002C, 0x002C, 0x002C },
-    { ENTITY_ASSET_STATIC_ITEM, 0x002D, 0x002D, 0x002D, 0x002D },
-    { ENTITY_ASSET_STATIC_ITEM, 0x002E, 0x002E, 0x002E, 0x002E },
-    { ENTITY_ASSET_STATIC_ITEM, 0x002F, 0x002F, 0x002F, 0x002F },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0030, 0x0030, 0x0030, 0x0030 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0031, 0x0031, 0x0031, 0x0031 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0032, 0x0032, 0x0032, 0x0032 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0033, 0x0033, 0x0033, 0x0033 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0034, 0x0034, 0x0034, 0x0034 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0035, 0x0035, 0x0035, 0x0035 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0036, 0x0036, 0x0036, 0x0036 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0037, 0x0037, 0x0037, 0x0037 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0038, 0x0038, 0x0038, 0x0038 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0060, 0x0060, 0x0060, 0x0060 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0061, 0x0061, 0x0061, 0x0061 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0062, 0x0062, 0x0062, 0x0062 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0063, 0x0063, 0x0063, 0x0063 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0064, 0x0064, 0x0064, 0x0064 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0065, 0x0065, 0x0065, 0x0065 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0066, 0x0066, 0x0066, 0x0066 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0067, 0x0067, 0x0067, 0x0067 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0068, 0x0068, 0x0068, 0x0068 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0069, 0x0069, 0x0069, 0x0069 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x006A, 0x006A, 0x006A, 0x006A },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0082, 0x0082, 0x0082, 0x0082 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0083, 0x0083, 0x0083, 0x0083 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0084, 0x0084, 0x0084, 0x0084 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0085, 0x0085, 0x0085, 0x0085 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0086, 0x0086, 0x0086, 0x0086 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0087, 0x0087, 0x0087, 0x0087 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0088, 0x0088, 0x0088, 0x0088 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0089, 0x0089, 0x0089, 0x0089 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x008A, 0x008A, 0x008A, 0x008A },
-    { ENTITY_ASSET_STATIC_ITEM, 0x009B, 0x009B, 0x009B, 0x009B },
-    { ENTITY_ASSET_STATIC_ITEM, 0x009C, 0x009C, 0x009C, 0x009C },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0039, 0x0039, 0x0039, 0x0039 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x003A, 0x003A, 0x003A, 0x003A },
-    { ENTITY_ASSET_STATIC_ITEM, 0x003B, 0x003B, 0x003B, 0x003B },
-    { ENTITY_ASSET_STATIC_ITEM, 0x003C, 0x003C, 0x003C, 0x003C },
-    { ENTITY_ASSET_STATIC_ITEM, 0x003D, 0x003D, 0x003D, 0x003D },
-    { ENTITY_ASSET_STATIC_ITEM, 0x003E, 0x003E, 0x003E, 0x003E },
-    { ENTITY_ASSET_STATIC_ITEM, 0x003F, 0x003F, 0x003F, 0x003F },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00D2, 0x00D2, 0x00D2, 0x00D2 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0040, 0x0040, 0x0040, 0x0040 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0041, 0x0041, 0x0041, 0x0041 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0042, 0x0042, 0x0042, 0x0042 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0043, 0x0043, 0x0043, 0x0043 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0044, 0x0044, 0x0044, 0x0044 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0045, 0x0045, 0x0045, 0x0045 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0046, 0x0046, 0x0046, 0x0046 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0047, 0x0047, 0x0047, 0x0047 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0050, 0x0050, 0x0050, 0x0050 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0051, 0x0051, 0x0051, 0x0051 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0052, 0x0052, 0x0052, 0x0052 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0053, 0x0053, 0x0053, 0x0053 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0054, 0x0054, 0x0054, 0x0054 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0055, 0x0055, 0x0055, 0x0055 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0056, 0x0056, 0x0056, 0x0056 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0057, 0x0057, 0x0057, 0x0057 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0058, 0x0058, 0x0058, 0x0058 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0059, 0x0059, 0x0059, 0x0059 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x005A, 0x005A, 0x005A, 0x005A },
-    { ENTITY_ASSET_STATIC_ITEM, 0x005B, 0x005B, 0x005B, 0x005B },
-    { ENTITY_ASSET_STATIC_ITEM, 0x005C, 0x005C, 0x005C, 0x005C },
-    { ENTITY_ASSET_STATIC_ITEM, 0x005D, 0x005D, 0x005D, 0x005D },
-    { ENTITY_ASSET_STATIC_ITEM, 0x005E, 0x005E, 0x005E, 0x005E },
-    { ENTITY_ASSET_STATIC_ITEM, 0x005F, 0x005F, 0x005F, 0x005F },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0070, 0x0070, 0x0070, 0x0070 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x008D, 0x008D, 0x008D, 0x008D },
-    { ENTITY_ASSET_STATIC_ITEM, 0x006D, 0x006D, 0x006D, 0x006D },
-    { ENTITY_ASSET_STATIC_ITEM, 0x006F, 0x006F, 0x006F, 0x006F },
-    { ENTITY_ASSET_STATIC_ITEM, 0x006E, 0x006E, 0x006E, 0x006E },
-    { ENTITY_ASSET_STATIC_ITEM, 0x006E, 0x006E, 0x006E, 0x006E },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0071, 0x0071, 0x0071, 0x0071 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x006E, 0x006E, 0x006E, 0x006E },
-    { ENTITY_ASSET_STATIC_ITEM, 0x006D, 0x006D, 0x006D, 0x006D },
-    { ENTITY_ASSET_STATIC_ITEM, 0x006D, 0x006D, 0x006D, 0x006D },
-    { ENTITY_ASSET_STATIC_ITEM, 0x006E, 0x006E, 0x006E, 0x006E },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0048, 0x0048, 0x0048, 0x0048 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0049, 0x0049, 0x0049, 0x0049 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x004A, 0x004A, 0x004A, 0x004A },
-    { ENTITY_ASSET_STATIC_ITEM, 0x004B, 0x004B, 0x004B, 0x004B },
-    { ENTITY_ASSET_STATIC_ITEM, 0x004C, 0x004C, 0x004C, 0x004C },
-    { ENTITY_ASSET_STATIC_ITEM, 0x004D, 0x004D, 0x004D, 0x004D },
-    { ENTITY_ASSET_STATIC_ITEM, 0x004E, 0x004E, 0x004E, 0x004E },
-    { ENTITY_ASSET_STATIC_ITEM, 0x004F, 0x004F, 0x004F, 0x004F },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00C3, 0x00C3, 0x00C3, 0x00C3 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00C4, 0x00C4, 0x00C4, 0x00C4 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00C5, 0x00C5, 0x00C5, 0x00C5 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00C6, 0x00C6, 0x00C6, 0x00C6 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00C7, 0x00C7, 0x00C7, 0x00C7 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00C8, 0x00C8, 0x00C8, 0x00C8 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00C9, 0x00C9, 0x00C9, 0x00C9 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00CA, 0x00CA, 0x00CA, 0x00CA },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00A3, 0x00A3, 0x00A3, 0x00A3 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00A4, 0x00A4, 0x00A4, 0x00A4 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00A5, 0x00A5, 0x00A5, 0x00A5 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00A6, 0x00A6, 0x00A6, 0x00A6 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00A7, 0x00A7, 0x00A7, 0x00A7 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00A8, 0x00A8, 0x00A8, 0x00A8 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00A9, 0x00A9, 0x00A9, 0x00A9 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00AA, 0x00AA, 0x00AA, 0x00AA },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00AB, 0x00AB, 0x00AB, 0x00AB },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00AC, 0x00AC, 0x00AC, 0x00AC },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00AD, 0x00AD, 0x00AD, 0x00AD },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00AE, 0x00AE, 0x00AE, 0x00AE },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00AF, 0x00AF, 0x00AF, 0x00AF },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00B0, 0x00B0, 0x00B0, 0x00B0 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00B1, 0x00B1, 0x00B1, 0x00B1 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00B2, 0x00B2, 0x00B2, 0x00B2 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00B3, 0x00B3, 0x00B3, 0x00B3 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00B4, 0x00B4, 0x00B4, 0x00B4 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00B5, 0x00B5, 0x00B5, 0x00B5 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00B6, 0x00B6, 0x00B6, 0x00B6 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00B7, 0x00B7, 0x00B7, 0x00B7 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00B8, 0x00B8, 0x00B8, 0x00B8 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00B9, 0x00B9, 0x00B9, 0x00B9 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00BA, 0x00BA, 0x00BA, 0x00BA },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00BB, 0x00BB, 0x00BB, 0x00BB },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00BC, 0x00BC, 0x00BC, 0x00BC },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00BD, 0x00BD, 0x00BD, 0x00BD },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00BE, 0x00BE, 0x00BE, 0x00BE },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00BF, 0x00BF, 0x00BF, 0x00BF },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00C0, 0x00C0, 0x00C0, 0x00C0 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00C1, 0x00C1, 0x00C1, 0x00C1 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00C2, 0x00C2, 0x00C2, 0x00C2 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0040, 0x0040, 0x0040, 0x0040 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0041, 0x0041, 0x0041, 0x0041 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0042, 0x0042, 0x0042, 0x0042 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0043, 0x0043, 0x0043, 0x0043 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0044, 0x0044, 0x0044, 0x0044 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0045, 0x0045, 0x0045, 0x0045 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0046, 0x0046, 0x0046, 0x0046 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0047, 0x0047, 0x0047, 0x0047 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00CB, 0x00CB, 0x00CB, 0x00CB },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00CC, 0x00CC, 0x00CC, 0x00CC },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00CD, 0x00CD, 0x00CD, 0x00CD },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00CE, 0x00CE, 0x00CE, 0x00CE },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00CF, 0x00CF, 0x00CF, 0x00CF },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00D0, 0x00D0, 0x00D0, 0x00D0 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00D1, 0x00D1, 0x00D1, 0x00D1 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00D5, 0x00D5, 0x00D5, 0x00D5 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00D6, 0x00D6, 0x00D6, 0x00D6 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00D7, 0x00D7, 0x00D7, 0x00D7 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00D8, 0x00D8, 0x00D8, 0x00D8 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00D9, 0x00D9, 0x00D9, 0x00D9 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00DA, 0x00DA, 0x00DA, 0x00DA },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00DB, 0x00DB, 0x00DB, 0x00DB },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00DC, 0x00DC, 0x00DC, 0x00DC },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00DD, 0x00DD, 0x00DD, 0x00DD },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00DE, 0x00DE, 0x00DE, 0x00DE },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00DF, 0x00DF, 0x00DF, 0x00DF },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00E0, 0x00E0, 0x00E0, 0x00E0 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00E1, 0x00E1, 0x00E1, 0x00E1 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00E2, 0x00E2, 0x00E2, 0x00E2 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00E3, 0x00E3, 0x00E3, 0x00E3 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00E4, 0x00E4, 0x00E4, 0x00E4 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00E7, 0x00E7, 0x00E7, 0x00E7 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00EA, 0x00EA, 0x00EA, 0x00EA },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00EB, 0x00EB, 0x00EB, 0x00EB },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00EC, 0x00EC, 0x00EC, 0x00EC },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00ED, 0x00ED, 0x00ED, 0x00ED },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00EE, 0x00EE, 0x00EE, 0x00EE },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00EF, 0x00EF, 0x00EF, 0x00EF },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00F0, 0x00F0, 0x00F0, 0x00F0 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00F1, 0x00F1, 0x00F1, 0x00F1 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00F2, 0x00F2, 0x00F2, 0x00F2 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00F3, 0x00F3, 0x00F3, 0x00F3 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00F4, 0x00F4, 0x00F4, 0x00F4 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00F5, 0x00F5, 0x00F5, 0x00F5 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00F6, 0x00F6, 0x00F6, 0x00F6 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00F7, 0x00F7, 0x00F7, 0x00F7 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x00F8, 0x00F8, 0x00F8, 0x00F8 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0090, 0x0090, 0x0090, 0x0090 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0095, 0x0095, 0x0095, 0x0095 },
-    { ENTITY_ASSET_STATIC_ITEM, 0x0093, 0x0093, 0x0093, 0x0093 },
-    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 },
-    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 },
+    { ENTITY_ASSET_STATIC_ITEM, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF }, /* 0 */
+    { ENTITY_ASSET_STATIC_ITEM,     0,   139,   140,   140 }, /* WEED_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,     1,     1,     1,     1 }, /* ROCK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,     2,     2,     2,     2 }, /* LOG_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,     3,     3,     3,     3 }, /* MOONDROP_FLOWER_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,     4,     4,     4,     4 }, /* PINK_CAT_MINT_FLOWER_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,     5,     5,     5,     5 }, /* BLUE_MIST_FLOWER_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,     6,     6,     6,     6 }, /* CAKE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,     7,     7,     7,     7 }, /* PIE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,     8,     8,     8,     8 }, /* COOKIES_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,     9,     9,     9,     9 }, /* BLUE_FEATHER_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    10,    10,    10,    10 }, /* DOOR_TO_HEAVEN_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    11,    11,    11,    11 }, /* 12 */
+    { ENTITY_ASSET_STATIC_ITEM,    12,    12,    12,    12 }, /* TURNIP_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    13,    13,    13,    13 }, /* POTATO_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    14,    14,    14,    14 }, /* CABBAGE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    15,    15,    15,    15 }, /* TOMATO_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    16,    16,    16,    16 }, /* CORN_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    17,    17,    17,    17 }, /* EGGPLANT_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    18,    18,    18,    18 }, /* STRAWBERRY_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    19,    19,    19,    19 }, /* EGG_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    20,    20,    20,    20 }, /* SMALL_MILK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    21,    21,    21,    21 }, /* MEDIUM_MILK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    22,    22,    22,    22 }, /* LARGE_MILK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    23,    23,    23,    23 }, /* GOLDEN_MILK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    24,    24,    24,    24 }, /* WOOL_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    25,    25,    25,    25 }, /* HIGH_QUALITY_WOOL_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    26,    26,    26,    26 }, /* WILD_GRAPES_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    27,    27,    27,    27 }, /* VERYBERRY_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    28,    28,    28,    28 }, /* TROPICAL_FRUIT_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    29,    29,    29,    29 }, /* WALNUT_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    30,    30,    30,    30 }, /* MUSHROOM_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    31,    31,    31,    31 }, /* POISONOUS_MUSHROOM_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    32,    32,    32,    32 }, /* BOOK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    33,    33,    33,    33 }, /* BERRY_OF_THE_FULLMOON_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    34,    34,    34,    34 }, /* MEDICINAL_HERB_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    35,    35,    35,    35 }, /* EDIBLE_HERB_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    36,    36,    36,    36 }, /* SMALL_FISH_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    37,    37,    37,    37 }, /* MEDIUM_FISH_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    38,    38,    38,    38 }, /* LARGE_FISH_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    39,    39,    39,    39 }, /* DUMPLING_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    40,    40,    40,    40 }, /* COTTON_CANDY_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    41,    41,    41,    41 }, /* FRIED_OCTUPUS_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    42,    42,    42,    42 }, /* ROASTED_CORN_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    43,    43,    43,    43 }, /* CANDY_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    44,    44,    44,    44 }, /* CHOCOLATE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    45,    45,    45,    45 }, /* IRON_ORE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    46,    46,    46,    46 }, /* BLUE_ROCK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    47,    47,    47,    47 }, /* RARE_METAL_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    48,    48,    48,    48 }, /* MOONLIGHT_STONE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    49,    49,    49,    49 }, /* PONTATA_ROOT_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    50,    50,    50,    50 }, /* 51 */
+    { ENTITY_ASSET_STATIC_ITEM,    51,    51,    51,    51 }, /* 52 */
+    { ENTITY_ASSET_STATIC_ITEM,    52,    52,    52,    52 }, /* 53 */
+    { ENTITY_ASSET_STATIC_ITEM,    53,    53,    53,    53 }, /* 54 */
+    { ENTITY_ASSET_STATIC_ITEM,    54,    54,    54,    54 }, /* 55 */
+    { ENTITY_ASSET_STATIC_ITEM,    55,    55,    55,    55 }, /* 56 */
+    { ENTITY_ASSET_STATIC_ITEM,    56,    56,    56,    56 }, /* FODDER_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    96,    96,    96,    96 }, /* 58 */
+    { ENTITY_ASSET_STATIC_ITEM,    97,    97,    97,    97 }, /* 59 */
+    { ENTITY_ASSET_STATIC_ITEM,    98,    98,    98,    98 }, /* 60 */
+    { ENTITY_ASSET_STATIC_ITEM,    99,    99,    99,    99 }, /* 61 */
+    { ENTITY_ASSET_STATIC_ITEM,   100,   100,   100,   100 }, /* 62 */
+    { ENTITY_ASSET_STATIC_ITEM,   101,   101,   101,   101 }, /* 63 */
+    { ENTITY_ASSET_STATIC_ITEM,   102,   102,   102,   102 }, /* SEEDS_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   103,   103,   103,   103 }, /* 65 */
+    { ENTITY_ASSET_STATIC_ITEM,   104,   104,   104,   104 }, /* 66 */
+    { ENTITY_ASSET_STATIC_ITEM,   105,   105,   105,   105 }, /* 67 */
+    { ENTITY_ASSET_STATIC_ITEM,   106,   106,   106,   106 }, /* 68 */
+    { ENTITY_ASSET_STATIC_ITEM,   130,   130,   130,   130 }, /* 69 */
+    { ENTITY_ASSET_STATIC_ITEM,   131,   131,   131,   131 }, /* 70 */
+    { ENTITY_ASSET_STATIC_ITEM,   132,   132,   132,   132 }, /* 71 */
+    { ENTITY_ASSET_STATIC_ITEM,   133,   133,   133,   133 }, /* MEDICINE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   134,   134,   134,   134 }, /* SHEARS_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   135,   135,   135,   135 }, /* 74 */
+    { ENTITY_ASSET_STATIC_ITEM,   136,   136,   136,   136 }, /* 75 */
+    { ENTITY_ASSET_STATIC_ITEM,   137,   137,   137,   137 }, /* 76 */
+    { ENTITY_ASSET_STATIC_ITEM,   138,   138,   138,   138 }, /* 77 */
+    { ENTITY_ASSET_STATIC_ITEM,   155,   155,   155,   155 }, /* 78 */
+    { ENTITY_ASSET_STATIC_ITEM,   156,   156,   156,   156 }, /* 79 */
+    { ENTITY_ASSET_STATIC_ITEM,    57,    57,    57,    57 }, /* RICE_CAKE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    58,    58,    58,    58 }, /* BREAD_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    59,    59,    59,    59 }, /* EGGS_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    60,    60,    60,    60 }, /* 83 */
+    { ENTITY_ASSET_STATIC_ITEM,    61,    61,    61,    61 }, /* 84 */
+    { ENTITY_ASSET_STATIC_ITEM,    62,    62,    62,    62 }, /* 85 */
+    { ENTITY_ASSET_STATIC_ITEM,    63,    63,    63,    63 }, /* 86 */
+    { ENTITY_ASSET_STATIC_ITEM,   210,   210,   210,   210 }, /* POWER_NUT_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    64,    64,    64,    64 }, /* DOG_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    65,    65,    65,    65 }, /* 89 */
+    { ENTITY_ASSET_STATIC_ITEM,    66,    66,    66,    66 }, /* 90 */
+    { ENTITY_ASSET_STATIC_ITEM,    67,    67,    67,    67 }, /* 91 */
+    { ENTITY_ASSET_STATIC_ITEM,    68,    68,    68,    68 }, /* 92 */
+    { ENTITY_ASSET_STATIC_ITEM,    69,    69,    69,    69 }, /* 93 */
+    { ENTITY_ASSET_STATIC_ITEM,    70,    70,    70,    70 }, /* 94 */
+    { ENTITY_ASSET_STATIC_ITEM,    71,    71,    71,    71 }, /* 95 */
+    { ENTITY_ASSET_STATIC_ITEM,    80,    80,    80,    80 }, /* CHICKEN_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    81,    81,    81,    81 }, /* 97 */
+    { ENTITY_ASSET_STATIC_ITEM,    82,    82,    82,    82 }, /* 98 */
+    { ENTITY_ASSET_STATIC_ITEM,    83,    83,    83,    83 }, /* 99 */
+    { ENTITY_ASSET_STATIC_ITEM,    84,    84,    84,    84 }, /* 100 */
+    { ENTITY_ASSET_STATIC_ITEM,    85,    85,    85,    85 }, /* 101 */
+    { ENTITY_ASSET_STATIC_ITEM,    86,    86,    86,    86 }, /* 102 */
+    { ENTITY_ASSET_STATIC_ITEM,    87,    87,    87,    87 }, /* 103 */
+    { ENTITY_ASSET_STATIC_ITEM,    88,    88,    88,    88 }, /* CHICK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    89,    89,    89,    89 }, /* 105 */
+    { ENTITY_ASSET_STATIC_ITEM,    90,    90,    90,    90 }, /* 106 */
+    { ENTITY_ASSET_STATIC_ITEM,    91,    91,    91,    91 }, /* 107 */
+    { ENTITY_ASSET_STATIC_ITEM,    92,    92,    92,    92 }, /* 108 */
+    { ENTITY_ASSET_STATIC_ITEM,    93,    93,    93,    93 }, /* 109 */
+    { ENTITY_ASSET_STATIC_ITEM,    94,    94,    94,    94 }, /* 110 */
+    { ENTITY_ASSET_STATIC_ITEM,    95,    95,    95,    95 }, /* 111 */
+    { ENTITY_ASSET_STATIC_ITEM,   112,   112,   112,   112 }, /* EMPTY_BOTTLE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   141,   141,   141,   141 }, /* BOTTLE_WITH_WATER_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   109,   109,   109,   109 }, /* BOTTLE_WITH_WINE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   111,   111,   111,   111 }, /* 115 */
+    { ENTITY_ASSET_STATIC_ITEM,   110,   110,   110,   110 }, /* 116 */
+    { ENTITY_ASSET_STATIC_ITEM,   110,   110,   110,   110 }, /* 117 */
+    { ENTITY_ASSET_STATIC_ITEM,   113,   113,   113,   113 }, /* BOTTLE_WITH_MILK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   110,   110,   110,   110 }, /* 119 */
+    { ENTITY_ASSET_STATIC_ITEM,   109,   109,   109,   109 }, /* BOTTLE_WITH_TEA_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   109,   109,   109,   109 }, /* 121 */
+    { ENTITY_ASSET_STATIC_ITEM,   110,   110,   110,   110 }, /* 122 */
+    { ENTITY_ASSET_STATIC_ITEM,    72,    72,    72,    72 }, /* PUPPY_1_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    73,    73,    73,    73 }, /* 124 */
+    { ENTITY_ASSET_STATIC_ITEM,    74,    74,    74,    74 }, /* 125 */
+    { ENTITY_ASSET_STATIC_ITEM,    75,    75,    75,    75 }, /* 126 */
+    { ENTITY_ASSET_STATIC_ITEM,    76,    76,    76,    76 }, /* 127 */
+    { ENTITY_ASSET_STATIC_ITEM,    77,    77,    77,    77 }, /* 128 */
+    { ENTITY_ASSET_STATIC_ITEM,    78,    78,    78,    78 }, /* 129 */
+    { ENTITY_ASSET_STATIC_ITEM,    79,    79,    79,    79 }, /* 130 */
+    { ENTITY_ASSET_STATIC_ITEM,   195,   195,   195,   195 }, /* CAT_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   196,   196,   196,   196 }, /* 132 */
+    { ENTITY_ASSET_STATIC_ITEM,   197,   197,   197,   197 }, /* 133 */
+    { ENTITY_ASSET_STATIC_ITEM,   198,   198,   198,   198 }, /* 134 */
+    { ENTITY_ASSET_STATIC_ITEM,   199,   199,   199,   199 }, /* 135 */
+    { ENTITY_ASSET_STATIC_ITEM,   200,   200,   200,   200 }, /* 136 */
+    { ENTITY_ASSET_STATIC_ITEM,   201,   201,   201,   201 }, /* 137 */
+    { ENTITY_ASSET_STATIC_ITEM,   202,   202,   202,   202 }, /* 138 */
+    { ENTITY_ASSET_STATIC_ITEM,   163,   163,   163,   163 }, /* FOX_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   164,   164,   164,   164 }, /* 140 */
+    { ENTITY_ASSET_STATIC_ITEM,   165,   165,   165,   165 }, /* 141 */
+    { ENTITY_ASSET_STATIC_ITEM,   166,   166,   166,   166 }, /* 142 */
+    { ENTITY_ASSET_STATIC_ITEM,   167,   167,   167,   167 }, /* 143 */
+    { ENTITY_ASSET_STATIC_ITEM,   168,   168,   168,   168 }, /* 144 */
+    { ENTITY_ASSET_STATIC_ITEM,   169,   169,   169,   169 }, /* 145 */
+    { ENTITY_ASSET_STATIC_ITEM,   170,   170,   170,   170 }, /* 146 */
+    { ENTITY_ASSET_STATIC_ITEM,   171,   171,   171,   171 }, /* SQUIRREL_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   172,   172,   172,   172 }, /* 148 */
+    { ENTITY_ASSET_STATIC_ITEM,   173,   173,   173,   173 }, /* 149 */
+    { ENTITY_ASSET_STATIC_ITEM,   174,   174,   174,   174 }, /* 150 */
+    { ENTITY_ASSET_STATIC_ITEM,   175,   175,   175,   175 }, /* 151 */
+    { ENTITY_ASSET_STATIC_ITEM,   176,   176,   176,   176 }, /* 152 */
+    { ENTITY_ASSET_STATIC_ITEM,   177,   177,   177,   177 }, /* 153 */
+    { ENTITY_ASSET_STATIC_ITEM,   178,   178,   178,   178 }, /* 154 */
+    { ENTITY_ASSET_STATIC_ITEM,   179,   179,   179,   179 }, /* RABBIT_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   180,   180,   180,   180 }, /* 156 */
+    { ENTITY_ASSET_STATIC_ITEM,   181,   181,   181,   181 }, /* 157 */
+    { ENTITY_ASSET_STATIC_ITEM,   182,   182,   182,   182 }, /* 158 */
+    { ENTITY_ASSET_STATIC_ITEM,   183,   183,   183,   183 }, /* 159 */
+    { ENTITY_ASSET_STATIC_ITEM,   184,   184,   184,   184 }, /* 160 */
+    { ENTITY_ASSET_STATIC_ITEM,   185,   185,   185,   185 }, /* 161 */
+    { ENTITY_ASSET_STATIC_ITEM,   186,   186,   186,   186 }, /* 162 */
+    { ENTITY_ASSET_STATIC_ITEM,   187,   187,   187,   187 }, /* MONKEY_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   188,   188,   188,   188 }, /* 164 */
+    { ENTITY_ASSET_STATIC_ITEM,   189,   189,   189,   189 }, /* 165 */
+    { ENTITY_ASSET_STATIC_ITEM,   190,   190,   190,   190 }, /* 166 */
+    { ENTITY_ASSET_STATIC_ITEM,   191,   191,   191,   191 }, /* 167 */
+    { ENTITY_ASSET_STATIC_ITEM,   192,   192,   192,   192 }, /* 168 */
+    { ENTITY_ASSET_STATIC_ITEM,   193,   193,   193,   193 }, /* 169 */
+    { ENTITY_ASSET_STATIC_ITEM,   194,   194,   194,   194 }, /* 170 */
+    { ENTITY_ASSET_STATIC_ITEM,    64,    64,    64,    64 }, /* DOG_2_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,    65,    65,    65,    65 }, /* 172 */
+    { ENTITY_ASSET_STATIC_ITEM,    66,    66,    66,    66 }, /* 173 */
+    { ENTITY_ASSET_STATIC_ITEM,    67,    67,    67,    67 }, /* 174 */
+    { ENTITY_ASSET_STATIC_ITEM,    68,    68,    68,    68 }, /* 175 */
+    { ENTITY_ASSET_STATIC_ITEM,    69,    69,    69,    69 }, /* 176 */
+    { ENTITY_ASSET_STATIC_ITEM,    70,    70,    70,    70 }, /* 177 */
+    { ENTITY_ASSET_STATIC_ITEM,    71,    71,    71,    71 }, /* 178 */
+    { ENTITY_ASSET_STATIC_ITEM,   203,   203,   203,   203 }, /* BUTTERFLY_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   204,   204,   204,   204 }, /* LADYBUG_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   205,   205,   205,   205 }, /* CICADA_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   206,   206,   206,   206 }, /* HORNED_BEETLE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   207,   207,   207,   207 }, /* STAG_BEETLE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   208,   208,   208,   208 }, /* RED_DRAGONFLY_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   209,   209,   209,   209 }, /* CRICKET_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   213,   213,   213,   213 }, /* BABY_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   214,   214,   214,   214 }, /* 187 */
+    { ENTITY_ASSET_STATIC_ITEM,   215,   215,   215,   215 }, /* 188 */
+    { ENTITY_ASSET_STATIC_ITEM,   216,   216,   216,   216 }, /* 189 */
+    { ENTITY_ASSET_STATIC_ITEM,   217,   217,   217,   217 }, /* 190 */
+    { ENTITY_ASSET_STATIC_ITEM,   218,   218,   218,   218 }, /* 191 */
+    { ENTITY_ASSET_STATIC_ITEM,   219,   219,   219,   219 }, /* 192 */
+    { ENTITY_ASSET_STATIC_ITEM,   220,   220,   220,   220 }, /* 193 */
+    { ENTITY_ASSET_STATIC_ITEM,   221,   221,   221,   221 }, /* BABY_GROWN_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   222,   222,   222,   222 }, /* 195 */
+    { ENTITY_ASSET_STATIC_ITEM,   223,   223,   223,   223 }, /* 196 */
+    { ENTITY_ASSET_STATIC_ITEM,   224,   224,   224,   224 }, /* 197 */
+    { ENTITY_ASSET_STATIC_ITEM,   225,   225,   225,   225 }, /* 198 */
+    { ENTITY_ASSET_STATIC_ITEM,   226,   226,   226,   226 }, /* 199 */
+    { ENTITY_ASSET_STATIC_ITEM,   227,   227,   227,   227 }, /* 200 */
+    { ENTITY_ASSET_STATIC_ITEM,   228,   228,   228,   228 }, /* 201 */
+    { ENTITY_ASSET_STATIC_ITEM,   231,   231,   231,   231 }, /* OPEN_BOOK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   234,   234,   234,   234 }, /* SICKLE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   235,   235,   235,   235 }, /* SILVER_SICKLE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   236,   236,   236,   236 }, /* GOLDEN_SICKLE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   237,   237,   237,   237 }, /* HOE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   238,   238,   238,   238 }, /* SILVER_HOE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   239,   239,   239,   239 }, /* GOLDEN_HOE_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   240,   240,   240,   240 }, /* AX_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   241,   241,   241,   241 }, /* SILVER_AX_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   242,   242,   242,   242 }, /* GOLDEN_AX_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   243,   243,   243,   243 }, /* HAMMER_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   244,   244,   244,   244 }, /* SILVER_HAMMER_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   245,   245,   245,   245 }, /* GOLDEN_HAMMER_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   246,   246,   246,   246 }, /* WATERING_CAN_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   247,   247,   247,   247 }, /* SILVER_WATERING_CAN_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   248,   248,   248,   248 }, /* GOLDEN_WATERING_CAN_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   144,   144,   144,   144 }, /* BROKEN_MUSIC_BOX_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   149,   149,   149,   149 }, /* 219 */
+    { ENTITY_ASSET_STATIC_ITEM,   147,   147,   147,   147 }, /* 220 */
+    { 0, 0, 0, 0, 0 }, /* 221 */
+    { 0, 0, 0, 0, 0 }, /* 222 */
+    { 0, 0, 0, 0, 0 }, /* 223 */
 };
 
 // entity palette index overrides (0xFFFF = use default)
@@ -1761,20 +1761,230 @@ u8 itemStaminaRestorationValue[] = {
 };
 
 u8 itemFatigueReductionValue[] = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x14, 0x0A, 0x1E, 0x00, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0, /* 0 */
+    0, /* WEED_HELD_ITEM */
+    0, /* ROCK_HELD_ITEM */
+    0, /* LOG_HELD_ITEM */
+    0, /* MOONDROP_FLOWER_HELD_ITEM */
+    0, /* PINK_CAT_MINT_FLOWER_HELD_ITEM */
+    0, /* BLUE_MIST_FLOWER_HELD_ITEM */
+    0, /* CAKE_HELD_ITEM */
+    0, /* PIE_HELD_ITEM */
+    0, /* COOKIES_HELD_ITEM */
+    0, /* BLUE_FEATHER_HELD_ITEM */
+    0, /* DOOR_TO_HEAVEN_HELD_ITEM */
+    0, /* 12 */
+    0, /* TURNIP_HELD_ITEM */
+    0, /* POTATO_HELD_ITEM */
+    0, /* CABBAGE_HELD_ITEM */
+    0, /* TOMATO_HELD_ITEM */
+    0, /* CORN_HELD_ITEM */
+    0, /* EGGPLANT_HELD_ITEM */
+    0, /* STRAWBERRY_HELD_ITEM */
+    0, /* EGG_HELD_ITEM */
+    0, /* SMALL_MILK_HELD_ITEM */
+    0, /* MEDIUM_MILK_HELD_ITEM */
+    0, /* LARGE_MILK_HELD_ITEM */
+    0, /* GOLDEN_MILK_HELD_ITEM */
+    0, /* WOOL_HELD_ITEM */
+    0, /* HIGH_QUALITY_WOOL_HELD_ITEM */
+    0, /* WILD_GRAPES_HELD_ITEM */
+    0, /* VERYBERRY_HELD_ITEM */
+    0, /* TROPICAL_FRUIT_HELD_ITEM */
+    0, /* WALNUT_HELD_ITEM */
+    0, /* MUSHROOM_HELD_ITEM */
+    0, /* POISONOUS_MUSHROOM_HELD_ITEM */
+    0, /* BOOK_HELD_ITEM */
+    0, /* BERRY_OF_THE_FULLMOON_HELD_ITEM */
+    2, /* MEDICINAL_HERB_HELD_ITEM */
+    0, /* EDIBLE_HERB_HELD_ITEM */
+    0, /* SMALL_FISH_HELD_ITEM */
+    0, /* MEDIUM_FISH_HELD_ITEM */
+    0, /* LARGE_FISH_HELD_ITEM */
+    0, /* DUMPLING_HELD_ITEM */
+    0, /* COTTON_CANDY_HELD_ITEM */
+    0, /* FRIED_OCTUPUS_HELD_ITEM */
+    0, /* ROASTED_CORN_HELD_ITEM */
+    0, /* CANDY_HELD_ITEM */
+    0, /* CHOCOLATE_HELD_ITEM */
+    0, /* IRON_ORE_HELD_ITEM */
+    0, /* BLUE_ROCK_HELD_ITEM */
+    0, /* RARE_METAL_HELD_ITEM */
+    0, /* MOONLIGHT_STONE_HELD_ITEM */
+    0, /* PONTATA_ROOT_HELD_ITEM */
+    0, /* 51 */
+    0, /* 52 */
+    0, /* 53 */
+    0, /* 54 */
+    0, /* 55 */
+    0, /* 56 */
+    0, /* FODDER_HELD_ITEM */
+    0, /* 58 */
+    0, /* 59 */
+    0, /* 60 */
+    0, /* 61 */
+    0, /* 62 */
+    0, /* 63 */
+    0, /* SEEDS_HELD_ITEM */
+    0, /* 65 */
+    0, /* 66 */
+    0, /* 67 */
+    0, /* 68 */
+    0, /* 69 */
+    0, /* 70 */
+    0, /* 71 */
+    0, /* MEDICINE_HELD_ITEM */
+    0, /* SHEARS_HELD_ITEM */
+    0, /* 74 */
+    0, /* 75 */
+    0, /* 76 */
+    0, /* 77 */
+    0, /* 78 */
+    0, /* 79 */
+    0, /* RICE_CAKE_HELD_ITEM */
+    0, /* BREAD_HELD_ITEM */
+    0, /* EGGS_HELD_ITEM */
+    0, /* 83 */
+    0, /* 84 */
+    0, /* 85 */
+    0, /* 86 */
+    0, /* POWER_NUT_HELD_ITEM */
+    0, /* DOG_HELD_ITEM */
+    0, /* 89 */
+    0, /* 90 */
+    0, /* 91 */
+    0, /* 92 */
+    0, /* 93 */
+    0, /* 94 */
+    0, /* 95 */
+    0, /* CHICKEN_HELD_ITEM */
+    0, /* 97 */
+    0, /* 98 */
+    0, /* 99 */
+    0, /* 100 */
+    0, /* 101 */
+    0, /* 102 */
+    0, /* 103 */
+    0, /* CHICK_HELD_ITEM */
+    0, /* 105 */
+    0, /* 106 */
+    0, /* 107 */
+    0, /* 108 */
+    0, /* 109 */
+    0, /* 110 */
+    0, /* 111 */
+    0, /* EMPTY_BOTTLE_HELD_ITEM */
+    0, /* BOTTLE_WITH_WATER_HELD_ITEM */
+    0, /* BOTTLE_WITH_WINE_HELD_ITEM */
+   20, /* 115 */
+   10, /* 116 */
+   30, /* 117 */
+    0, /* BOTTLE_WITH_MILK_HELD_ITEM */
+  100, /* 119 */
+    0, /* BOTTLE_WITH_TEA_HELD_ITEM */
+    0, /* 121 */
+    0, /* 122 */
+    0, /* PUPPY_1_HELD_ITEM */
+    0, /* 124 */
+    0, /* 125 */
+    0, /* 126 */
+    0, /* 127 */
+    0, /* 128 */
+    0, /* 129 */
+    0, /* 130 */
+    0, /* CAT_HELD_ITEM */
+    0, /* 132 */
+    0, /* 133 */
+    0, /* 134 */
+    0, /* 135 */
+    0, /* 136 */
+    0, /* 137 */
+    0, /* 138 */
+    0, /* FOX_HELD_ITEM */
+    0, /* 140 */
+    0, /* 141 */
+    0, /* 142 */
+    0, /* 143 */
+    0, /* 144 */
+    0, /* 145 */
+    0, /* 146 */
+    0, /* SQUIRREL_HELD_ITEM */
+    0, /* 148 */
+    0, /* 149 */
+    0, /* 150 */
+    0, /* 151 */
+    0, /* 152 */
+    0, /* 153 */
+    0, /* 154 */
+    0, /* RABBIT_HELD_ITEM */
+    0, /* 156 */
+    0, /* 157 */
+    0, /* 158 */
+    0, /* 159 */
+    0, /* 160 */
+    0, /* 161 */
+    0, /* 162 */
+    0, /* MONKEY_HELD_ITEM */
+    0, /* 164 */
+    0, /* 165 */
+    0, /* 166 */
+    0, /* 167 */
+    0, /* 168 */
+    0, /* 169 */
+    0, /* 170 */
+    0, /* DOG_2_HELD_ITEM */
+    0, /* 172 */
+    0, /* 173 */
+    0, /* 174 */
+    0, /* 175 */
+    0, /* 176 */
+    0, /* 177 */
+    0, /* 178 */
+    0, /* BUTTERFLY_HELD_ITEM */
+    0, /* LADYBUG_HELD_ITEM */
+    0, /* CICADA_HELD_ITEM */
+    0, /* HORNED_BEETLE_HELD_ITEM */
+    0, /* STAG_BEETLE_HELD_ITEM */
+    0, /* RED_DRAGONFLY_HELD_ITEM */
+    0, /* CRICKET_HELD_ITEM */
+    0, /* BABY_HELD_ITEM */
+    0, /* 187 */
+    0, /* 188 */
+    0, /* 189 */
+    0, /* 190 */
+    0, /* 191 */
+    0, /* 192 */
+    0, /* 193 */
+    0, /* BABY_GROWN_HELD_ITEM */
+    0, /* 195 */
+    0, /* 196 */
+    0, /* 197 */
+    0, /* 198 */
+    0, /* 199 */
+    0, /* 200 */
+    0, /* 201 */
+    0, /* OPEN_BOOK_HELD_ITEM */
+    0, /* SICKLE_HELD_ITEM */
+    0, /* SILVER_SICKLE_HELD_ITEM */
+    0, /* GOLDEN_SICKLE_HELD_ITEM */
+    0, /* HOE_HELD_ITEM */
+    0, /* SILVER_HOE_HELD_ITEM */
+    0, /* GOLDEN_HOE_HELD_ITEM */
+    0, /* AX_HELD_ITEM */
+    0, /* SILVER_AX_HELD_ITEM */
+    0, /* GOLDEN_AX_HELD_ITEM */
+    0, /* HAMMER_HELD_ITEM */
+    0, /* SILVER_HAMMER_HELD_ITEM */
+    0, /* GOLDEN_HAMMER_HELD_ITEM */
+    0, /* WATERING_CAN_HELD_ITEM */
+    0, /* SILVER_WATERING_CAN_HELD_ITEM */
+    0, /* GOLDEN_WATERING_CAN_HELD_ITEM */
+    0, /* BROKEN_MUSIC_BOX_HELD_ITEM */
+    0, /* 219 */
+    0, /* 220 */
+    0, /* 221 */
+    0, /* 222 */
+    0, /* 223 */
 };
 
 
@@ -1790,8 +2000,8 @@ static const u8 D_80122374[];
 
 
 // forward declarations
-bool processStumpHit(u8 arg0, s16 arg1, s16 arg2);
-bool processBoulderHit(u8 arg0, s16 arg1, s16 arg2);          
+bool processStumpHit(u8 arg0, s16 x, s16 z);
+bool processBoulderHit(u8 arg0, s16 x, s16 z);          
 void handleBlueFeatherUse();         
 void useSickle();
 void useHoe();
@@ -1821,8 +2031,8 @@ void useMiraclePotion();
 void useCowMedicine();
 void useGrassSeeds();
 void useEmptyBottle();
-u8 allocateGroundItemSlot(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4);
-void setItemPosition(u8 index, f32 arg1, f32 arg2, f32 arg3);
+u8 allocateGroundItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment);
+void setItemPosition(u8 index, f32 x, f32 y, f32 z);
 void loadHeldItemEntity(u8, u16);   
 bool handlePutDownHeldItem(u8 itemIndex);
 void processItemShipping(u8 index);
@@ -2028,13 +2238,13 @@ bool processBoulderHit(u8 groundObjectIndex, s16 x, s16 z) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleMusicBoxDigging);
 
-inline u8 handleMusicBoxDigging(s16 arg0, s16 arg1) {
+inline u8 handleMusicBoxDigging(s16 x, s16 z) {
     
     if (gBaseMapIndex == FARM) {
          
         setDailyEventBit(POWER_NUT_ELIGIBLE_TOOL_USE); 
         
-        if (arg0 == 12 && arg1 == 2) {
+        if (x == 12 && z == 2) {
             toolUse.musicBoxTileDigCounter++;
         } else {
             toolUse.musicBoxTileDigCounter = 0;    
@@ -3661,9 +3871,9 @@ void loadActiveItemEntities(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", initializeHeldItem);
 
-inline u8 initializeHeldItem(u8 index, u8 arg1, u32 heldItemIndex, s32 hasDirectionFrame, s32 useAttachment) {
+inline u8 initializeHeldItem(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment) {
 
-    itemInfo[index].stateIndex = arg1;
+    itemInfo[index].stateIndex = stateIndex;
     itemInfo[index].heldItemIndex = heldItemIndex;
     itemInfo[index].itemAnimationFrameCounter = 0;
     itemInfo[index].flags = hasDirectionFrame | (useAttachment | 1);
@@ -3676,7 +3886,7 @@ inline u8 initializeHeldItem(u8 index, u8 arg1, u32 heldItemIndex, s32 hasDirect
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", allocateThrownItemSlot);
 
-u8 allocateThrownItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
+u8 allocateThrownItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment) {
     
     u8 found = FALSE;
     int tempBit = 1;
@@ -3695,14 +3905,14 @@ u8 allocateThrownItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg
     if (found) {
         
         // FIXME: inline initializeHeldItem call
-        itemInfo[index].stateIndex = arg1;
+        itemInfo[index].stateIndex = stateIndex;
         itemInfo[index].heldItemIndex = heldItemIndex;
-        itemInfo[index].flags = arg3 | (arg4 | tempBit);
+        itemInfo[index].flags = hasDirectionFrame | (useAttachment | tempBit);
         itemInfo[index].itemAnimationFrameCounter = 0;
 
         gItemBeingHeld = getHeldItemDialogueItemIndex(heldItemIndex);
 
-        // index = initializeHeldItem(index, arg1, arg2, arg3, arg4);
+        // index = initializeHeldItem(index, stateIndex, heldItemINdex, hasDirectionFrame, hasDirectionFrame);
 
     }
       
@@ -3715,7 +3925,7 @@ u8 allocateThrownItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", allocateGroundItemSlot);
 
-u8 allocateGroundItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg4) {
+u8 allocateGroundItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment) {
     
     u8 found = FALSE;
     
@@ -3732,9 +3942,9 @@ u8 allocateGroundItemSlot(u8 index, u8 arg1, u32 heldItemIndex, u16 arg3, u8 arg
 
     if (found) {
         
-        itemInfo[index].stateIndex = arg1;
+        itemInfo[index].stateIndex = stateIndex;
         itemInfo[index].heldItemIndex = heldItemIndex;
-        itemInfo[index].flags = arg3 | (arg4 | 1);
+        itemInfo[index].flags = hasDirectionFrame | (useAttachment | 1);
         itemInfo[index].itemAnimationFrameCounter = 0;
 
     } else {
@@ -3765,32 +3975,32 @@ u16 func_800D55B8(u8 index) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemState);
 
-void setItemState(u8 index, u8 arg1) {
+void setItemState(u8 index, u8 stateIndex) {
 
     if (itemInfo[index].flags & ITEM_CONTEXT_ACTIVE) {
-        itemInfo[index].stateIndex = arg1;
+        itemInfo[index].stateIndex = stateIndex;
     }
     
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemPosition);
 
-void setItemPosition(u8 index, f32 arg1, f32 arg2, f32 arg3) {
+void setItemPosition(u8 index, f32 x, f32 y, f32 z) {
 
-    itemInfo[index].position.x = arg1;
-    itemInfo[index].position.y = arg2;
-    itemInfo[index].position.z = arg3;
+    itemInfo[index].position.x = x;
+    itemInfo[index].position.y = y;
+    itemInfo[index].position.z = z;
     itemInfo[index].flags |= ITEM_CONTEXT_USE_POSITION;
 
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", setItemAttachmentOffset);
 
-void setItemAttachmentOffset(u8 index, f32 arg1, f32 arg2, f32 arg3) {
+void setItemAttachmentOffset(u8 index, f32 x, f32 y, f32 z) {
 
-    itemInfo[index].attachmentOffset.x = arg1;
-    itemInfo[index].attachmentOffset.y = arg2;
-    itemInfo[index].attachmentOffset.z = arg3;
+    itemInfo[index].attachmentOffset.x = x;
+    itemInfo[index].attachmentOffset.y = y;
+    itemInfo[index].attachmentOffset.z = z;
     itemInfo[index].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
      
 }

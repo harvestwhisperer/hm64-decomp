@@ -9,6 +9,11 @@
 /* global sprite rendering flags */
 #define SPRITE_RENDERING_FLIP_HORIZONTAL 1
 #define SPRITE_RENDERING_FLIP_VERTICAL 2
+// 0x10
+// 0x20
+// 0x40
+// 0x80
+// 0x100
 
 /* global sprite state flags */
 #define SPRITE_ACTIVE 0x1

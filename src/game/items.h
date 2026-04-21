@@ -8,18 +8,18 @@
 #define MAX_TOOLS 30
 
 /* holdable item flags */
-#define ITEM_EATABLE                    0x0001  
-#define ITEM_RUCKSACK_STORABLE          0x0002   
-#define ITEM_SHIPPABLE                  0x0004   
-#define ITEM_THROWABLE                  0x0008  
-#define ITEM_PLACEABLE_ON_GROUND        0x0010  
-#define ITEM_INCUBATOR_PLACEABLE        0x0020   
-#define ITEM_ANIMAL_FEED                0x0040   
-#define ITEM_SMALL_ANIMAL               0x0080  
-#define ITEM_BABY                       0x0100   
-#define ITEM_FREEZER_STORABLE           0x0200   
-#define ITEM_CRIB_PLACEABLE             0x0400
-#define ITEM_TOOL                       0x0800  
+#define ITEM_EATABLE                    0x1  
+#define ITEM_RUCKSACK_STORABLE          0x2   
+#define ITEM_SHIPPABLE                  0x4   
+#define ITEM_THROWABLE                  0x8  
+#define ITEM_PLACEABLE_ON_GROUND        0x10  
+#define ITEM_INCUBATOR_PLACEABLE        0x20   
+#define ITEM_ANIMAL_FEED                0x40   
+#define ITEM_SMALL_ANIMAL               0x80  
+#define ITEM_BABY                       0x100   
+#define ITEM_FREEZER_STORABLE           0x200   
+#define ITEM_CRIB_PLACEABLE             0x400
+#define ITEM_TOOL                       0x800  
 #define ITEM_CABINET_STORABLE           0x1000  
 #define ITEM_LUMBER_STORABLE            0x2000
 #define ITEM_HAS_ALCOHOL                0x4000  
@@ -337,7 +337,7 @@ extern void spawnFishingRodEntity(u8, u8, f32, f32, f32);
 extern void setItemEntityAnimation(u8, u8);
 extern void deactivateItemEntity(u8);
 extern void processToolUseState();
-extern u8 initializeHeldItem(u8 index, u8 arg1, u32 arg2, s32 arg3, s32 arg4);
+extern u8 initializeHeldItem(u8 index, u8 arg1, u32 arg2, u16 arg3, bool arg4);
 extern u8 allocateHeldItemSlot(u8 index, u8 arg1, u32 arg2, u16 arg3, u8 arg4);
 extern void clearHeldItemSlot(u8);
 extern void setItemState(u8, u8);

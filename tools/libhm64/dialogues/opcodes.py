@@ -108,90 +108,8 @@ BUILTIN_CONSTANTS = {
     'NO_TEXT': 0xFFFF,
     'NO_BRANCH': 0xFFFF,
 
-    # Dialogue variables
-    'VAR_ALCOHOL_TOLERANCE': 0x00,
-    'VAR_SEASON': 0x01,
-    'VAR_HOUR': 0x02,
-    'VAR_WEATHER': 0x03,
-    'VAR_DAY_OF_WEEK': 0x04,
-    'VAR_YEAR': 0x05,
-    'VAR_ITEM_BEING_HELD': 0x06,
-
-    'VAR_AFFECTION_MARIA': 0x07,
-    'VAR_AFFECTION_POPURI': 0x08,
-    'VAR_AFFECTION_ELLI': 0x09,
-    'VAR_AFFECTION_ANN': 0x0A,
-    'VAR_AFFECTION_KAREN': 0x0B,
-    'VAR_AFFECTION_HARRIS': 0x0C,
-    'VAR_AFFECTION_GRAY': 0x0D,
-    'VAR_AFFECTION_JEFF': 0x0E,
-    'VAR_AFFECTION_CLIFF': 0x0F,
-    'VAR_AFFECTION_KAI': 0x10,
-    'VAR_AFFECTION_MAYOR': 0x11,
-    'VAR_AFFECTION_MAYOR_WIFE': 0x12,
-    'VAR_AFFECTION_LILLIA': 0x13,
-    'VAR_AFFECTION_BASIL': 0x14,
-    'VAR_AFFECTION_ELLEN': 0x15,
-    'VAR_AFFECTION_PASTOR': 0x16,
-    'VAR_AFFECTION_RICK': 0x17,
-    'VAR_AFFECTION_SAIBARA': 0x18,
-    'VAR_AFFECTION_POTION_SHOP_DEALER': 0x19,
-    'VAR_AFFECTION_KENT': 0x1A,
-    'VAR_AFFECTION_STU': 0x1B,
-    'VAR_AFFECTION_MIDWIFE': 0x1C,
-    'VAR_AFFECTION_MAY': 0x1D,
-    'VAR_AFFECTION_CARPENTER_1': 0x1E,
-    'VAR_AFFECTION_CARPENTER_2': 0x1F,
-    'VAR_AFFECTION_MASTER_CARPENTER': 0x20,
-    'VAR_AFFECTION_HARVEST_SPRITE_1': 0x21,
-    'VAR_AFFECTION_SYDNEY': 0x22,
-    'VAR_AFFECTION_BARLEY': 0x23,
-    'VAR_AFFECTION_GREG': 0x24,
-    'VAR_AFFECTION_BABY': 0x25,
-
-    'VAR_TOTAL_BACHELORETTE_AFFECTION': 0x26,
-    'VAR_DAY_OF_MONTH': 0x27,
-    'VAR_GOLD': 0x28,
-    'VAR_TOTAL_GRASS_TILES': 0x29,
-    'VAR_TOTAL_PINK_CAT_MINT_FLOWERS': 0x2A,
-
-    'VAR_CROPS_SHIPPED_1': 0x2B,
-    'VAR_CROPS_SHIPPED_2': 0x2C,
-    'VAR_CROPS_SHIPPED_3': 0x2D,
-    'VAR_CROPS_SHIPPED_4': 0x2E,
-    'VAR_CROPS_SHIPPED_5': 0x2F,
-    'VAR_CROPS_SHIPPED_6': 0x30,
-
-    'VAR_AFFECTION_DOUG': 0x31,
-    'VAR_AFFECTION_GOTZ': 0x32,
-    'VAR_AFFECTION_SASHA': 0x33,
-    'VAR_AFFECTION_SHIPPER': 0x34,
-    'VAR_AFFECTION_DUKE': 0x35,
-
-    'VAR_AFFECTION_HORSE': 0x36,
-    'VAR_AFFECTION_FIRST_FARM_ANIMAL': 0x37,
-    'VAR_AFFECTION_DOG': 0x38,
-
-    'VAR_ELLI_GRIEVING_COUNTER': 0x39,
-
-    'VAR_BABY_AGE': 0x3A,
-    'VAR_WIFE_CONCEPTION_COUNTER': 0x3B,
-    'VAR_WIFE_CONCEPTION_COUNTER_2': 0x3C,
-    'VAR_BABY_AGE_2': 0x3D,
-    'VAR_UNUSED_3E': 0x3E,
-    'VAR_BABY_AGE_3': 0x3F,
-    'VAR_UNUSED_40': 0x40,
-    'VAR_BABY_AGE_4': 0x41,
-    'VAR_BABY_AGE_5': 0x42,
-    'VAR_UNUSED_43': 0x43,
-    'VAR_UNUSED_44': 0x44,
-    'VAR_WIFE_PREGNANCY_COUNTER': 0x45,
-    'VAR_WIFE_PREGNANCY_COUNTER_2': 0x46,
-    'VAR_UNUSED_47': 0x47,
-    'VAR_UNUSED_48': 0x48,
-    'VAR_WIFE_PREGNANCY_COUNTER_3': 0x49,
-    'VAR_WIFE_PREGNANCY_COUNTER_4': 0x4A,
-    'VAR_WIFE_PREGNANCY_COUNTER_5': 0x4B,
+    # Dialogue variable indices (VAR_*) are sourced from
+    # src/system/dialogue.h and merged in at module load time.
 
     # VAR_WEATHER values
     'SUNNY':   1,
@@ -275,25 +193,25 @@ BUILTIN_CONSTANTS = {
 
 
 # =============================================================================
-# SPECIAL DIALOGUE BIT MACROS (sourced from src/game/gameStatus.h)
+# Load macro values from C headers
 # =============================================================================
 # The C header is the single source of truth for named indices into
-# specialDialogueBits. We parse the `#define` block under the
-# `/* special dialogue bits */` sentinel and merge the names into
-# BUILTIN_CONSTANTS so DSL files can reference e.g. MARRIED_DIALOGUE
-# instead of a bare integer.
+# specialDialogueBits and dialogue variables. We parse the `#define` block under the
 
 _GAME_STATUS_HEADER = Path(__file__).resolve().parents[3] / "src" / "game" / "gameStatus.h"
+_DIALOGUE_HEADER = Path(__file__).resolve().parents[3] / "src" / "system" / "dialogue.h"
 _SPECIAL_BIT_START_SENTINEL = "/* special dialogue bits */"
 _SPECIAL_BIT_END_SENTINEL = "/* end special dialogue bits */"
+_DIALOGUE_VAR_START_SENTINEL = "/* dialogue variables */"
+_DIALOGUE_VAR_END_SENTINEL = "/* end dialogue variables */"
 _DEFINE_RE = re.compile(r'^\s*#define\s+(\w+)\s+(\S+)')
 
 
-def load_special_dialogue_bit_macros(header_path: Path = _GAME_STATUS_HEADER) -> Dict[str, int]:
-    """Parse #define NAME N entries from the special-dialogue-bit block in gameStatus.h.
+def _load_sentinel_define_block(header_path: Path, start_sentinel: str, end_sentinel: str) -> Dict[str, int]:
+    """Parse `#define NAME VALUE` entries from a sentinel-delimited block of a C header.
 
-    The block is delimited by explicit start/end sentinel comments so that
-    blank lines inside the block do not truncate parsing.
+    Blank lines inside the block do not truncate parsing; the block ends at the
+    end-sentinel line.
     """
     if not header_path.is_file():
         return {}
@@ -303,11 +221,11 @@ def load_special_dialogue_bit_macros(header_path: Path = _GAME_STATUS_HEADER) ->
 
     for line in header_path.read_text(encoding='utf-8').splitlines():
         if not in_block:
-            if _SPECIAL_BIT_START_SENTINEL in line:
+            if start_sentinel in line:
                 in_block = True
             continue
 
-        if _SPECIAL_BIT_END_SENTINEL in line:
+        if end_sentinel in line:
             break
 
         match = _DEFINE_RE.match(line)
@@ -323,4 +241,15 @@ def load_special_dialogue_bit_macros(header_path: Path = _GAME_STATUS_HEADER) ->
     return macros
 
 
+def load_special_dialogue_bit_macros(header_path: Path = _GAME_STATUS_HEADER) -> Dict[str, int]:
+    """Parse the special-dialogue-bit `#define` block from gameStatus.h."""
+    return _load_sentinel_define_block(header_path, _SPECIAL_BIT_START_SENTINEL, _SPECIAL_BIT_END_SENTINEL)
+
+
+def load_dialogue_variable_macros(header_path: Path = _DIALOGUE_HEADER) -> Dict[str, int]:
+    """Parse the VAR_* dialogue variable `#define` block from system/dialogue.h."""
+    return _load_sentinel_define_block(header_path, _DIALOGUE_VAR_START_SENTINEL, _DIALOGUE_VAR_END_SENTINEL)
+
+
+BUILTIN_CONSTANTS.update(load_dialogue_variable_macros())
 BUILTIN_CONSTANTS.update(load_special_dialogue_bit_macros())

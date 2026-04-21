@@ -2940,7 +2940,7 @@ void setupMapObjectSprites(MainMap *mainMap) {
             }
             
             setSpriteColor(mainMap->mapObjects[i].spriteIndex, mainMap->mapGlobals.currentRGBA.r, mainMap->mapGlobals.currentRGBA.g, mainMap->mapGlobals.currentRGBA.b, mainMap->mapGlobals.currentRGBA.a);
-            setBilinearFiltering(mainMap->mapObjects[i].spriteIndex, 1);
+            setBilinearFiltering(mainMap->mapObjects[i].spriteIndex, TRUE);
         
         }
     
