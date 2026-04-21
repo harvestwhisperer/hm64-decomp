@@ -215,6 +215,7 @@ beginwave
     include "sramBuffer"
     include "farmRankingsBuffer"
     include "yay0ScratchBuffer"
+    include "nuAuHeapBuffer"
     include "frameBuffer"
 
     include "farmBusiness"
