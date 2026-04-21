@@ -153,10 +153,10 @@ beginseg
 endseg
 
 beginseg
-    name "unknownBuffer"
+    name "nuAuHeapBuffer"
     flags OBJECT
     address 0x8030F800
-    include "build/src/buffers/unknownBuffer.o"
+    include "build/src/buffers/nuAuHeapBuffer.o"
 endseg
 
 beginseg
@@ -207,7 +207,7 @@ beginwave
     include "dialogueBytecodeBuffer"
     include "sramBuffer"
     include "farmRankingsBuffer"
-    include "unknownBuffer"
+    include "nuAuHeapBuffer"
     include "frameBuffer"
 
     include "farmBusiness"
