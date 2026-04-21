@@ -6,22 +6,18 @@
 // "Yay0" big-endian
 #define YAY0_MAGIC 0x59617930
 
-// Size of the Yay0 header, in bytes
 #define YAY0_HEADER_SIZE 16
 
-// Scratch buffer for staging compressed blobs. Lives in its own dedicated
-// spec segment (see src/buffers/yay0ScratchBuffer.c). Sized to comfortably
-// hold the largest compressed asset.
+// Scratch buffer for staging compressed blobs. Sized to comfortably hold the largest compressed asset.
 #define YAY0_SCRATCH_SIZE 0x10000
 
 extern u8 yay0Scratch[YAY0_SCRATCH_SIZE];
 
-// DMA `length` bytes from `romAddr` into `vaddr`.
-//
-// If `romAddr` is listed in the compressed-range table, the blob is staged
-// into yay0Scratch, decoded into vaddr, and the cache is flushed. Otherwise
-// this falls through to nuPiReadRom.
-void dmaReadRom(u32 romAddr, void *vaddr, u32 length);
+// Stage `compressedLen` bytes of Yay0-compressed data from `romAddr` into
+// yay0Scratch, decode into `vaddr`, and flush the writeback cache for the
+// decompressed range. Caller must know the blob is compressed — use
+// nuPiReadRom directly for raw data.
+void dmaReadRom(u32 romAddr, void *vaddr, u32 compressedLen);
 
 // Memory-to-memory Yay0 decoder. `dst` must have room for the
 // decompressed size declared in the `src` header.

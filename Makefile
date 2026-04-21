@@ -624,17 +624,9 @@ $(BUILD_DIR)/lib/libmus/src/player.o: lib/libmus/src/player.c
 
 # yay0
 
-# Generated header listing the ROM start of every .yay0.o segment in the spec.
-# Regenerated any time a .spec file changes.
-$(BUILD_DIR)/lib/yay0/compressed_ranges.h: tools/libhm64/yay0/generate_ranges.py $(SPEC) $(SPEC_INCLUDES)
-	$(MKDIR)
-	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.yay0.generate_ranges $@ $(SPEC) $(SPEC_INCLUDES)
-
-$(BUILD_DIR)/lib/yay0/yay0.o: $(BUILD_DIR)/lib/yay0/compressed_ranges.h
-
 $(BUILD_DIR)/lib/yay0/%.o: lib/yay0/%.c
 	$(MKDIR)
-	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -I $(BUILD_DIR)/lib/yay0 -c -o $@ $<
+	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/lib/yay0/%.o: lib/yay0/%.s
 	$(MKDIR)
