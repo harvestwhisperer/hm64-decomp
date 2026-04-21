@@ -858,9 +858,9 @@ void loadClockSprites(void) {
     // clock and background
     dmaSprite(CLOCK, (u32)&_timeUITextureSegmentRomStart, (u32)&_timeUITextureSegmentRomEnd, (u32)&_timeUIAssetsIndexSegmentRomStart, (u32)&_timeUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_CLOCK_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_CLOCK_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_CLOCK_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_CLOCK_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CLOCK, 0.0f, 0.0f, 256.0f);
-    setBilinearFiltering(CLOCK, 1);
+    setBilinearFiltering(CLOCK, TRUE);
     setSpriteColor(CLOCK, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(CLOCK, 2);
+    setSpriteBlendMode(CLOCK, SPRITE_BLEND_ALPHA_MODULATED);
 
     if (checkLifeEventBit(HAVE_CUTE_CLOCK)) {
         // cow skin background
@@ -873,7 +873,7 @@ void loadClockSprites(void) {
     dmaSprite(0x8C, (u32)&_timeUITextureSegmentRomStart, (u32)&_timeUITextureSegmentRomEnd, (u32)&_timeUIAssetsIndexSegmentRomStart, (u32)&_timeUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_CLOCK_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_CLOCK_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_CLOCK_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_CLOCK_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x8C, -79.0f, 81.0f, 256.0f);
     setSpriteRotation(0x8C, 0.0f, 0.0f, (360 - (gMinutes * 6)));
-    setBilinearFiltering(0x8C, 1);
+    setBilinearFiltering(0x8C, TRUE);
     setSpriteColor(0x8C, 0xFF, 0xFF, 0xFF, 0);
     setSpriteBlendMode(0x8C, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8C, 4, 0);
@@ -882,7 +882,7 @@ void loadClockSprites(void) {
     dmaSprite(0x8D, (u32)&_timeUITextureSegmentRomStart, (u32)&_timeUITextureSegmentRomEnd, (u32)&_timeUIAssetsIndexSegmentRomStart, (u32)&_timeUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_CLOCK_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_CLOCK_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_CLOCK_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_CLOCK_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x8D, -80.0f, 80.0f, 256.0f);
     setSpriteRotation(0x8D, 0.0f, 0.0f, ((360 - (gHour * 30)) - (gMinutes * 0.5)));
-    setBilinearFiltering(0x8D, 1);
+    setBilinearFiltering(0x8D, TRUE);
     setSpriteColor(0x8D, 0xFF, 0xFF, 0xFF, 0);
     setSpriteBlendMode(0x8D, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8D, 5, 0);
@@ -890,7 +890,7 @@ void loadClockSprites(void) {
     // season name
     dmaSprite(0x8B, (u32)&_timeUITextureSegmentRomStart, (u32)&_timeUITextureSegmentRomEnd, (u32)&_timeUIAssetsIndexSegmentRomStart, (u32)&_timeUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_CLOCK_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_CLOCK_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_CLOCK_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_CLOCK_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x8B, 0.0f, 0.0f, 256.0f);
-    setBilinearFiltering(0x8B, 1);
+    setBilinearFiltering(0x8B, TRUE);
     setSpriteColor(0x8B, 0xFF, 0xFF, 0xFF, 0);
     setSpriteBlendMode(0x8B, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8B, 1, gSeason - 1);
@@ -898,7 +898,7 @@ void loadClockSprites(void) {
     // day of week
     dmaSprite(0x8A, (u32)&_timeUITextureSegmentRomStart, (u32)&_timeUITextureSegmentRomEnd, (u32)&_timeUIAssetsIndexSegmentRomStart, (u32)&_timeUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_CLOCK_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_CLOCK_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_CLOCK_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_CLOCK_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x8A, 0.0f, 0.0f, 256.0f);
-    setBilinearFiltering(0x8A, 1);
+    setBilinearFiltering(0x8A, TRUE);
     setSpriteColor(0x8A, 0xFF, 0xFF, 0xFF, 0);
     setSpriteBlendMode(0x8A, SPRITE_BLEND_ALPHA_MODULATED);
     startSpriteAnimation(0x8A, 3, gDayOfWeek);
@@ -930,13 +930,13 @@ static inline void fadeOutClock() {
 // unused or inline
 // void loadMoneySprites(f32 x, f32 y, f32 z, u16 renderingLayer, u32 arg4) {
 
-//     // background and "g"
-//     dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)GOLD_UI_TEXTURE_BUFFER, NULL, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-//     setSpriteViewSpacePosition(0x8E, x, y, z);
-//     setBilinearFiltering(0x8E, 1);
-//     setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
-//     setSpriteBlendMode(0x8E, renderingLayer);
-//     startSpriteAnimation(0x8E, 0, 0);
+    // background and "g"
+    // dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)GOLD_UI_TEXTURE_BUFFER, NULL, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    // setSpriteViewSpacePosition(0x8E, x, y, z);
+    // setBilinearFiltering(0x8E, TRUE);
+    // setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
+    // setSpriteBlendMode(0x8E, renderingLayer);
+    // startSpriteAnimation(0x8E, 0, 0);
 
 //     setNumberSprites(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 
 //         (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 
@@ -955,31 +955,31 @@ void loadTVCButtonIcons(void) {
 
     dmaSprite(0x86, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 80.0f, 32.0f, 256.0f);
-    setBilinearFiltering(0x86, 1);
+    setBilinearFiltering(0x86, TRUE);
     setSpriteColor(0x86, 255, 255, 255, 255);
     startSpriteAnimation(0x86, 0, 0);
     
     dmaSprite(0x82, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 80.0f, 32.0f, 256.0f);
-    setBilinearFiltering(0x82, 1);
+    setBilinearFiltering(0x82, TRUE);
     setSpriteColor(0x82, 255, 255, 255, 255);
     startSpriteAnimation(0x82, 0, 1);
     
     dmaSprite(0x83, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 80.0f, 32.0f, 256.0f);
-    setBilinearFiltering(0x83, 1);
+    setBilinearFiltering(0x83, TRUE);
     setSpriteColor(0x83, 255, 255, 255, 255);
     startSpriteAnimation(0x83, 0, 3);
     
     dmaSprite(0x84, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 80.0f, 32.0f, 256.0f);
-    setBilinearFiltering(0x84, 1);
+    setBilinearFiltering(0x84, TRUE);
     setSpriteColor(0x84, 255, 255, 255, 255);
     startSpriteAnimation(0x84, 0, 5);
     
     dmaSprite(0x85, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 80.0f, 32.0f, 256.0f);
-    setBilinearFiltering(0x85, 1);
+    setBilinearFiltering(0x85, TRUE);
     setSpriteColor(0x85, 255, 255, 255, 255);
     startSpriteAnimation(0x85, 0, 7);
     
@@ -1151,7 +1151,7 @@ void loadDiarySelectScreen(void) {
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
-    setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
+    setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
     setSpriteColor(CHECKERBOARD_BACKGROUND, 0, 0, 0, 0);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
@@ -1161,32 +1161,32 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0x82, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x82, 0, 0, 0, 0);
-        setSpriteBlendMode(0x82, 3);
-        setBilinearFiltering(0x82, 1);
+        setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x82, TRUE);
         startSpriteAnimation(0x82, 0, 0);
         
         // DELETE button
         dmaSprite(0x83, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x83, 0, 0, 0, 0);
-        setSpriteBlendMode(0x83, 3);
-        setBilinearFiltering(0x83, 1);
+        setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x83, TRUE);
         startSpriteAnimation(0x83, 3, 0);
         
         // MOVE button
         dmaSprite(0x84, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 0, 0, 0, 0);
-        setSpriteBlendMode(0x84, 3);
-        setBilinearFiltering(0x84, 1);
+        setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x84, TRUE);
         startSpriteAnimation(0x84, 1, 0);
         
         // diary book 1
         dmaSprite(0xA3, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA3, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xA3, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA3, 3);
-        setBilinearFiltering(0xA3, 1);
+        setSpriteBlendMode(0xA3, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA3, TRUE);
         setSpritePaletteIndex(0xA3, 2);
         startSpriteAnimation(0xA3, 4, 0);
         
@@ -1194,8 +1194,8 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0xA4, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA4, 0.0f, -44.0f, 8.0f);
         setSpriteColor(0xA4, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA4, 3);
-        setBilinearFiltering(0xA4, 1);
+        setSpriteBlendMode(0xA4, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA4, TRUE);
         setSpritePaletteIndex(0xA4, 3);
         startSpriteAnimation(0xA4, 4, 0);
         
@@ -1203,8 +1203,8 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0xA5, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA5, 0.0f, -88.0f, 8.0f);
         setSpriteColor(0xA5, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA5, 3);
-        setBilinearFiltering(0xA5, 1);
+        setSpriteBlendMode(0xA5, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA5, TRUE);
         setSpritePaletteIndex(0xA5, 4);
         startSpriteAnimation(0xA5, 4, 0);
         
@@ -1212,8 +1212,8 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0xA6, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA6, 0.0f, -132.0f, 8.0f);
         setSpriteColor(0xA6, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA6, 3);
-        setBilinearFiltering(0xA6, 1);
+        setSpriteBlendMode(0xA6, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA6, TRUE);
         setSpritePaletteIndex(0xA6, 5);
         startSpriteAnimation(0xA6, 4, 0);
         
@@ -1221,40 +1221,40 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0xA7, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA7, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA7, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA7, 3);
-        setBilinearFiltering(0xA7, 1);
+        setSpriteBlendMode(0xA7, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA7, TRUE);
         startSpriteAnimation(0xA7, 5, 0);
         
         // numbers
         dmaSprite(0xA8, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA8, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA8, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA8, 3);
-        setBilinearFiltering(0xA8, 1);
+        setSpriteBlendMode(0xA8, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA8, TRUE);
         startSpriteAnimation(0xA8, 5, 2);
         
         // numbers
         dmaSprite(0xA9, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA9, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA9, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA9, 3);
-        setBilinearFiltering(0xA9, 1);
+        setSpriteBlendMode(0xA9, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA9, TRUE);
         startSpriteAnimation(0xA9, 5, 4);
 
         // numbers
         dmaSprite(0xAA, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAA, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xAA, 0, 0, 0, 0);
-        setSpriteBlendMode(0xAA, 3);
-        setBilinearFiltering(0xAA, 1);
+        setSpriteBlendMode(0xAA, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xAA, TRUE);
         startSpriteAnimation(0xAA, 5, 6);
         
         // row background
         dmaSprite(0x85, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 4.0f);
         setSpriteColor(0x85, 0, 0, 0, 0);
-        setSpriteBlendMode(0x85, 3);
-        setBilinearFiltering(0x85, 1);
+        setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x85, TRUE);
         setSpritePaletteIndex(0x85, 1);
         startSpriteAnimation(0x85, 2, 0);
         
@@ -1262,8 +1262,8 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0x86, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, -44.0f, 4.0f);
         setSpriteColor(0x86, 0, 0, 0, 0);
-        setSpriteBlendMode(0x86, 3);
-        setBilinearFiltering(0x86, 1);
+        setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x86, TRUE);
         setSpritePaletteIndex(0x86, 1);
         startSpriteAnimation(0x86, 2, 0);
         
@@ -1271,8 +1271,8 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0x87, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x87, 0.0f, -88.0f, 4.0f);
         setSpriteColor(0x87, 0, 0, 0, 0);
-        setSpriteBlendMode(0x87, 3);
-        setBilinearFiltering(0x87, 1);
+        setSpriteBlendMode(0x87, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x87, TRUE);
         setSpritePaletteIndex(0x87, 1);
         startSpriteAnimation(0x87, 2, 0);
         
@@ -1280,28 +1280,28 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0x88, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x88, 0.0f, -132.0f, 4.0f);
         setSpriteColor(0x88, 0, 0, 0, 0);
-        setSpriteBlendMode(0x88, 3);
-        setBilinearFiltering(0x88, 1);
+        setSpriteBlendMode(0x88, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x88, TRUE);
         setSpritePaletteIndex(0x88, 1);
         startSpriteAnimation(0x88, 2, 0);
         
         dmaSprite(CURSOR_HAND, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(CURSOR_HAND, 0.0f, 0.0f, 32.0f);
-        setBilinearFiltering(CURSOR_HAND, 1);
+        setBilinearFiltering(CURSOR_HAND, TRUE);
         setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
-        setSpriteBlendMode(CURSOR_HAND, 3);
+        setSpriteBlendMode(CURSOR_HAND, SPRITE_BLEND_ALPHA_DECAL);
         
         dmaSprite(0xB2, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, 0.0f, 0.0f, 32.0f);
-        setBilinearFiltering(0xB2, 1);
+        setBilinearFiltering(0xB2, TRUE);
         setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0x80);
         setSpriteBlendMode(0xB2, SPRITE_BLEND_ALPHA_MODULATED);
 
         dmaSprite(0xAC, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAC, 0.0f, 0.0f, 32.0f);
-        setBilinearFiltering(0xAC, 1);
+        setBilinearFiltering(0xAC, TRUE);
         setSpriteColor(0xAC, 255, 255, 255, 255);
-        setSpriteBlendMode(0xAC, 3);
+        setSpriteBlendMode(0xAC, SPRITE_BLEND_ALPHA_DECAL);
         
         // arrows
         loadNavigationArrows();
@@ -1312,24 +1312,24 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0x82, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x82, 0, 0, 0, 0);
-        setSpriteBlendMode(0x82, 3);
-        setBilinearFiltering(0x82, 1);
+        setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x82, TRUE);
         startSpriteAnimation(0x82, 7, 0);
         
         // DELETE button
         dmaSprite(0x83, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x83, 0, 0, 0, 0);
-        setSpriteBlendMode(0x83, 3);
-        setBilinearFiltering(0x83, 1);
+        setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x83, TRUE);
         startSpriteAnimation(0x83, 3, 0);
         
         // MOVE button
         dmaSprite(0x84, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 0, 0, 0, 0);
-        setSpriteBlendMode(0x84, 3);
-        setBilinearFiltering(0x84, 1);
+        setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x84, TRUE);
         startSpriteAnimation(0x84, 1, 0);
         
         // data book icons
@@ -1337,16 +1337,16 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0xA3, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA3, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xA3, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA3, 3);
-        setBilinearFiltering(0xA3, 1);
+        setSpriteBlendMode(0xA3, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA3, TRUE);
         setSpritePaletteIndex(0xA3, 2);
         startSpriteAnimation(0xA3, 8, 0);
         
         dmaSprite(0xA4, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA4, 0.0f, -44.0f, 8.0f);
         setSpriteColor(0xA4, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA4, 3);
-        setBilinearFiltering(0xA4, 1);
+        setSpriteBlendMode(0xA4, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA4, TRUE);
         setSpritePaletteIndex(0xA4, 3);
         startSpriteAnimation(0xA4, 8, 0);
         
@@ -1355,31 +1355,31 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0xA7, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA7, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA7, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA7, 3);
-        setBilinearFiltering(0xA7, 1);
+        setSpriteBlendMode(0xA7, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA7, TRUE);
         startSpriteAnimation(0xA7, 5, 0);
         
         dmaSprite(0xA8, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xA8, 0.0f, 0.0f, 16.0f);
         setSpriteColor(0xA8, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA8, 3);
-        setBilinearFiltering(0xA8, 1);
+        setSpriteBlendMode(0xA8, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA8, TRUE);
         startSpriteAnimation(0xA8, 5, 2);
         
         // extra rows for game pak
         dmaSprite(0x85, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 4.0f);
         setSpriteColor(0x85, 0, 0, 0, 0);
-        setSpriteBlendMode(0x85, 3);
-        setBilinearFiltering(0x85, 1);
+        setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x85, TRUE);
         setSpritePaletteIndex(0x85, 1);
         startSpriteAnimation(0x85, 2, 0);
         
         dmaSprite(0x86, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, -44.0f, 4.0f);
         setSpriteColor(0x86, 0, 0, 0, 0);
-        setSpriteBlendMode(0x86, 3);
-        setBilinearFiltering(0x86, 1);
+        setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x86, TRUE);
         setSpritePaletteIndex(0x86, 1);
         startSpriteAnimation(0x86, 2, 0);
         
@@ -1387,27 +1387,27 @@ void loadDiarySelectScreen(void) {
         dmaSprite(0xAB, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAB, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0xAB, 0, 0, 0, 0);
-        setSpriteBlendMode(0xAB, 3);
-        setBilinearFiltering(0xAB, 1);
+        setSpriteBlendMode(0xAB, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xAB, TRUE);
         startSpriteAnimation(0xAB, 9, 0);
         
         dmaSprite(CURSOR_HAND, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(CURSOR_HAND, 0.0f, 0.0f, 32.0f);
-        setBilinearFiltering(CURSOR_HAND, 1);
+        setBilinearFiltering(CURSOR_HAND, TRUE);
         setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
-        setSpriteBlendMode(CURSOR_HAND, 3);
+        setSpriteBlendMode(CURSOR_HAND, SPRITE_BLEND_ALPHA_DECAL);
         
         dmaSprite(0xB2, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, 0.0f, 0.0f, 32.0f);
-        setBilinearFiltering(0xB2, 1);
+        setBilinearFiltering(0xB2, TRUE);
         setSpriteColor(0xB2, 0xFF, 0xFF, 0xFF, 0x80);
         setSpriteBlendMode(0xB2, SPRITE_BLEND_ALPHA_MODULATED);
 
         dmaSprite(0xAC, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAC, 0.0f, 0.0f, 32.0f);
-        setBilinearFiltering(0xAC, 1);
+        setBilinearFiltering(0xAC, TRUE);
         setSpriteColor(0xAC, 255, 255, 255, 255);
-        setSpriteBlendMode(0xAC, 3);
+        setSpriteBlendMode(0xAC, SPRITE_BLEND_ALPHA_DECAL);
         
         loadNavigationArrows();
         
@@ -1755,7 +1755,7 @@ void loadFarmRankingsListScreen(void) {
     dmaSprite(0x80, (u32)&_namingScreenBackgroundTextureSegmentRomStart, (u32)&_namingScreenBackgroundTextureSegmentRomEnd, (u32)&_namingScreenBackgroundAssetsIndexSegmentRomStart, (u32)&_namingScreenBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x80, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x80, 2.0f, 2.0f, 1.0f);
-    setBilinearFiltering(0x80, 1);
+    setBilinearFiltering(0x80, TRUE);
     setSpriteColor(0x80, 0, 0, 0, 0);
     startSpriteAnimation(0x80, 0, 0);
     
@@ -1764,43 +1764,43 @@ void loadFarmRankingsListScreen(void) {
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0, 0, 0, 0);
     setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
-    setBilinearFiltering(0x82, 1);
+    setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 0, 0);
     
     // slots
     dmaSprite(0x83, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 40.0f, 8.0f);
     setSpriteColor(0x83, 0, 0, 0, 0);
-    setSpriteBlendMode(0x83, 3);
-    setBilinearFiltering(0x83, 1);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_DECAL);
+    setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 1, 0);
     
     dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, 8.0f, 8.0f);
     setSpriteColor(0x84, 0, 0, 0, 0);
-    setSpriteBlendMode(0x84, 3);
-    setBilinearFiltering(0x84, 1);
+    setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_DECAL);
+    setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 1, 1);
     
     dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, -24.0f, 8.0f);
     setSpriteColor(0x85, 0, 0, 0, 0);
-    setSpriteBlendMode(0x85, 3);
-    setBilinearFiltering(0x85, 1);
+    setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_DECAL);
+    setBilinearFiltering(0x85, TRUE);
     startSpriteAnimation(0x85, 1, 2);
     
     dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, -56.0f, 8.0f);
     setSpriteColor(0x86, 0, 0, 0, 0);
-    setSpriteBlendMode(0x86, 3);
-    setBilinearFiltering(0x86, 1);
+    setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_DECAL);
+    setBilinearFiltering(0x86, TRUE);
     startSpriteAnimation(0x86, 1, 3);
     
     dmaSprite(0x87, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, -88.0f, 8.0f);
     setSpriteColor(0x87, 0, 0, 0, 0);
-    setSpriteBlendMode(0x87, 3);
-    setBilinearFiltering(0x87, 1);
+    setSpriteBlendMode(0x87, SPRITE_BLEND_ALPHA_DECAL);
+    setBilinearFiltering(0x87, TRUE);
     startSpriteAnimation(0x87, 1, 4);
 
     // if slot has active game, load sprite
@@ -1809,8 +1809,8 @@ void loadFarmRankingsListScreen(void) {
         dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAE, -4.0f, 40.0f, 16.0f);
         setSpriteColor(0xAE, 0, 0, 0, 0);
-        setSpriteBlendMode(0xAE, 3);
-        setBilinearFiltering(0xAE, 1);
+        setSpriteBlendMode(0xAE, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xAE, TRUE);
         startSpriteAnimation(0xAE, 7, gFarmRankingData.seasons[0] - 1);
     }
     
@@ -1818,8 +1818,8 @@ void loadFarmRankingsListScreen(void) {
         dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAF, -4.0f, 8.0f, 16.0f);
         setSpriteColor(0xAF, 0, 0, 0, 0);
-        setSpriteBlendMode(0xAF, 3);
-        setBilinearFiltering(0xAF, 1);
+        setSpriteBlendMode(0xAF, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xAF, TRUE);
         startSpriteAnimation(0xAF, 7, gFarmRankingData.seasons[1] - 1);
     }
     
@@ -1827,8 +1827,8 @@ void loadFarmRankingsListScreen(void) {
         dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB0, -4.0f, -24.0f, 16.0f);
         setSpriteColor(0xB0, 0, 0, 0, 0);
-        setSpriteBlendMode(0xB0, 3);
-        setBilinearFiltering(0xB0, 1);
+        setSpriteBlendMode(0xB0, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xB0, TRUE);
         startSpriteAnimation(0xB0, 7, gFarmRankingData.seasons[2] - 1);
     }
     
@@ -1836,8 +1836,8 @@ void loadFarmRankingsListScreen(void) {
         dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB1, -4.0f, -56.0f, 16.0f);
         setSpriteColor(0xB1, 0, 0, 0, 0);
-        setSpriteBlendMode(0xB1, 3);
-        setBilinearFiltering(0xB1, 1);
+        setSpriteBlendMode(0xB1, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xB1, TRUE);
         startSpriteAnimation(0xB1, 7, gFarmRankingData.seasons[3] - 1);
     }
     
@@ -1845,16 +1845,16 @@ void loadFarmRankingsListScreen(void) {
         dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, -4.0f, -88.0f, 16.0f);
         setSpriteColor(0xB2, 0, 0, 0, 0);
-        setSpriteBlendMode(0xB2, 3);
-        setBilinearFiltering(0xB2, 1);
+        setSpriteBlendMode(0xB2, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xB2, TRUE);
         startSpriteAnimation(0xB2, 7, gFarmRankingData.seasons[4] - 1);
     }
     
     dmaSprite(CURSOR_HAND, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CURSOR_HAND, 0.0f, 0.0f, 32.0f);
-    setBilinearFiltering(CURSOR_HAND, 1);
+    setBilinearFiltering(CURSOR_HAND, TRUE);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
-    setSpriteBlendMode(CURSOR_HAND, 3);
+    setSpriteBlendMode(CURSOR_HAND, SPRITE_BLEND_ALPHA_DECAL);
     
 }
 
@@ -1865,8 +1865,8 @@ void loadIndividualRankingScreen(u8 arg0) {
     dmaSprite(0x82, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x82, 255, 255, 255, 255);
-    setSpriteBlendMode(0x82, 3);
-    setBilinearFiltering(0x82, 1);
+    setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_DECAL);
+    setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 1, arg0);
     
     // "Farm ranking" and background
@@ -1874,7 +1874,7 @@ void loadIndividualRankingScreen(u8 arg0) {
     setSpriteViewSpacePosition(0x81, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x81, 255, 255, 255, 255);
     setSpriteBlendMode(0x81, SPRITE_BLEND_ALPHA_MODULATED);
-    setBilinearFiltering(0x81, 1);
+    setBilinearFiltering(0x81, TRUE);
     startSpriteAnimation(0x81, 0, 0);
     
     // player icon
@@ -1882,7 +1882,7 @@ void loadIndividualRankingScreen(u8 arg0) {
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 255, 255, 255, 255);
     setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
-    setBilinearFiltering(0x83, 1);
+    setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 2, 0);
 
     if (gFarmRankingData.flags[arg0] & RANKING_FLAG_MARRIED) {
@@ -1890,16 +1890,16 @@ void loadIndividualRankingScreen(u8 arg0) {
         dmaSprite(0x84, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x84, 255, 255, 255, 255);
-        setSpriteBlendMode(0x84, 3);
-        setBilinearFiltering(0x84, 1);
+        setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x84, TRUE);
         // get frame based on wife
         startSpriteAnimation(0x84, 3, gFarmRankingData.wife[arg0]);
         
         dmaSprite(0xAE, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAE, 0.0f, 32.0f, 8.0f);
         setSpriteColor(0xAE, 255, 255, 255, 255);
-        setSpriteBlendMode(0xAE, 3);
-        setBilinearFiltering(0xAE, 1);
+        setSpriteBlendMode(0xAE, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xAE, TRUE);
         
         if (gFarmRankingData.wifeAffection[arg0] == 0xFF) {
             startSpriteAnimation(0xAE, 6, 0xFE);
@@ -1915,16 +1915,16 @@ void loadIndividualRankingScreen(u8 arg0) {
         dmaSprite(0x85, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x85, 255, 255, 255, 255);
-        setSpriteBlendMode(0x85, 3);
-        setBilinearFiltering(0x85, 1);
+        setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x85, TRUE);
         startSpriteAnimation(0x85, 3, 5);
         
         // heart
         dmaSprite(0xAF, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xAF, 0.0f, 16.0f, 8.0f);
         setSpriteColor(0xAF, 255, 255, 255, 255);
-        setSpriteBlendMode(0xAF, 3);
-        setBilinearFiltering(0xAF, 1);
+        setSpriteBlendMode(0xAF, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xAF, TRUE);
 
         if (gFarmRankingData.babyAffection[arg0] == 0xFF) {
             startSpriteAnimation(0xAF, 6, 0xFE);
@@ -1940,16 +1940,16 @@ void loadIndividualRankingScreen(u8 arg0) {
         dmaSprite(0x86, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 8.0f);
         setSpriteColor(0x86, 255, 255, 255, 255);
-        setSpriteBlendMode(0x86, 3);
-        setBilinearFiltering(0x86, 1);
+        setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0x86, TRUE);
         startSpriteAnimation(0x86, 3, 6);
         
         // heart
         dmaSprite(0xB1, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB1, 0.0f, -16.0f, 8.0f);
         setSpriteColor(0xB1, 255, 255, 255, 255);
-        setSpriteBlendMode(0xB1, 3);
-        setBilinearFiltering(0xB1, 1);
+        setSpriteBlendMode(0xB1, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xB1, TRUE);
         
         // hearts
         if (gFarmRankingData.horseAffection[arg0] == 0xFF) {
@@ -1965,8 +1965,8 @@ void loadIndividualRankingScreen(u8 arg0) {
     dmaSprite(0xB0, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xB0, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0xB0, 255, 255, 255, 255);
-    setSpriteBlendMode(0xB0, 3);
-    setBilinearFiltering(0xB0, 1);
+    setSpriteBlendMode(0xB0, SPRITE_BLEND_ALPHA_DECAL);
+    setBilinearFiltering(0xB0, TRUE);
     
     if (gFarmRankingData.dogAffection[arg0] == 0xFF) {
         startSpriteAnimation(0xB0, 6, 0xFE);
@@ -1978,8 +1978,8 @@ void loadIndividualRankingScreen(u8 arg0) {
         dmaSprite(0xB2, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0xB2, -4.0f, 80.0f, 16.0f);
         setSpriteColor(0xB2, 255, 255, 255, 255);
-        setSpriteBlendMode(0xB2, 3);
-        setBilinearFiltering(0xB2, 1);
+        setSpriteBlendMode(0xB2, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xB2, TRUE);
         startSpriteAnimation(0xB2, 7, gFarmRankingData.seasons[arg0] - 1);
     }
     
@@ -2227,7 +2227,7 @@ void loadPauseScreenSprites(void) {
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
     setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
-    setBilinearFiltering(0x83, 1);
+    setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 0, 0);
 
     // tool/item slots
@@ -2235,7 +2235,7 @@ void loadPauseScreenSprites(void) {
     setSpriteViewSpacePosition(0x84, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0x80, 0x80, 0x80, 0);
     setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
-    setBilinearFiltering(0x84, 1);
+    setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 0, 0);
     
     // key item slots
@@ -2243,7 +2243,7 @@ void loadPauseScreenSprites(void) {
     setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x85, 0x80, 0x80, 0x80, 0);
     setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
-    setBilinearFiltering(0x85, 1);
+    setBilinearFiltering(0x85, TRUE);
     startSpriteAnimation(0x85, 1, 0);
     
     // tool and belongings labels
@@ -2259,7 +2259,7 @@ void loadPauseScreenSprites(void) {
     setSpriteViewSpacePosition(0x87, -28.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
     setSpriteBlendMode(0x87, SPRITE_BLEND_ALPHA_MODULATED);
-    setBilinearFiltering(0x87, 1);
+    setBilinearFiltering(0x87, TRUE);
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 3);
     
@@ -2267,18 +2267,18 @@ void loadPauseScreenSprites(void) {
     setSpriteViewSpacePosition(0x88, 20.0f, 80.0f, 8.0f);
     setSpriteColor(0x88, 0xFF, 0xFF, 0xFF, 0);
     setSpriteBlendMode(0x88, SPRITE_BLEND_ALPHA_MODULATED);
-    setBilinearFiltering(0x88, 1);
+    setBilinearFiltering(0x88, TRUE);
     startSpriteAnimation(0x88, 2, 0);
     setSpritePaletteIndex(0x88, 2);
     
     dmaSprite(CURSOR_HAND, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setBilinearFiltering(CURSOR_HAND, 1);
+    setBilinearFiltering(CURSOR_HAND, TRUE);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     // selected tool/item
     dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
-    setBilinearFiltering(0x82, 1);
+    setBilinearFiltering(0x82, TRUE);
     setSpriteColor(0x82, 255, 255, 255, 255);
     
     loadNavigationArrows();
@@ -2307,8 +2307,8 @@ void loadPauseScreenItemSprites(void) {
             setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, pauseScreenToolXPositions[j % 4], pauseScreenToolYPositions[j / 4], 256.0f);
 
             setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(TOOL_SPRITES_BASE + i, 2);
-            setBilinearFiltering(TOOL_SPRITES_BASE + i, 1);
+            setSpriteBlendMode(TOOL_SPRITES_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(TOOL_SPRITES_BASE + i, TRUE);
             startSpriteAnimation(TOOL_SPRITES_BASE + i, getAnimationOffsetFromScript(toolsAnimationScripts, toolAnimationIndices[gPlayer.toolSlots[i]] + getToolLevelForAnimation(gPlayer.toolSlots[i])), 0);
         
         }
@@ -2320,8 +2320,8 @@ void loadPauseScreenItemSprites(void) {
         dmaSprite(TOOL_SPRITES_BASE + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_PALETTE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_ANIM_METADATA, (u8*)OVERLAY_SCREEN_TOOL_SPRITES_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
         setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, pauseScreenCurrentToolXPosition, pauseScreenCurrentToolYPosition, 256.0f);
         setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteBlendMode(TOOL_SPRITES_BASE + i, 2);
-        setBilinearFiltering(TOOL_SPRITES_BASE + i, 1);
+        setSpriteBlendMode(TOOL_SPRITES_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
+        setBilinearFiltering(TOOL_SPRITES_BASE + i, TRUE);
         
         startSpriteAnimation(TOOL_SPRITES_BASE + i, getAnimationOffsetFromScript(toolsAnimationScripts, toolAnimationIndices[gPlayer.currentTool] + getToolLevelForAnimation(gPlayer.currentTool)), 0);
 
@@ -2342,8 +2342,8 @@ void loadPauseScreenItemSprites(void) {
             setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, pauseScreenBelongingsXPosition[j % 4], pauseScreenBelongingsYPosition[j / 4], 256.0f);
 
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
-            setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
+            setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, TRUE);
             startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
         
         }
@@ -2354,8 +2354,8 @@ void loadPauseScreenItemSprites(void) {
         dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
         setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, pauseScreenHeldItemXPosition, pauseScreenHeldItemYPosition, 256.0f);
         setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
-        setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
+        setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
+        setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, TRUE);
         startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
     }
 
@@ -2372,8 +2372,8 @@ void loadPauseScreenItemSprites(void) {
             dmaSprite(KEY_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_KEY_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_KEY_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             setSpriteViewSpacePosition(KEY_ITEMS_BASE + i, pauseScreenKeyItemsXPosition [k & 1], pauseScreenKeyItemsYPosition[k >> 1], 256.0f);
             setSpriteColor(KEY_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(KEY_ITEMS_BASE + i, 2);
-            setBilinearFiltering(KEY_ITEMS_BASE + i, 1);
+            setSpriteBlendMode(KEY_ITEMS_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(KEY_ITEMS_BASE + i, TRUE);
 
             startSpriteAnimation(KEY_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, keyItemAnimationIndices[gPlayer.keyItemSlots[overlayScreenTable.pageNumber * 8 + i]]), 0);
         
@@ -3180,7 +3180,7 @@ void loadToolboxScreenCallback(void) {
     
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
-    setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
+    setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
     setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
@@ -3206,42 +3206,42 @@ void loadToolboxScreenSprites(void) {
     dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 42.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x83, 2);
-    setBilinearFiltering(0x83, 1);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 0, 0);
 
     dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 42.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x84, 2);
-    setBilinearFiltering(0x84, 1);
+    setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 0, 0);
     
     // toolbox and rucksack labels
     dmaSprite(TOOL_AND_RUCKSACK_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(TOOL_AND_RUCKSACK_LABELS, 0.0f, 0.0f, 16.0f);
     setSpriteColor(TOOL_AND_RUCKSACK_LABELS, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(TOOL_AND_RUCKSACK_LABELS, 2);
-    setBilinearFiltering(TOOL_AND_RUCKSACK_LABELS, 1);
+    setSpriteBlendMode(TOOL_AND_RUCKSACK_LABELS, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(TOOL_AND_RUCKSACK_LABELS, TRUE);
     startSpriteAnimation(TOOL_AND_RUCKSACK_LABELS, 5, 1);
 
     // selected square
     dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x87, 2);
-    setBilinearFiltering(0x87, 1);
+    setSpriteBlendMode(0x87, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x87, TRUE);
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 3);
     
     dmaSprite(CURSOR_HAND, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CURSOR_HAND, getToolboxItemXCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, getToolboxItemYCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
-    setBilinearFiltering(CURSOR_HAND, 1);
+    setBilinearFiltering(CURSOR_HAND, TRUE);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
-    setBilinearFiltering(0x82, 1);
+    setBilinearFiltering(0x82, TRUE);
     setSpriteColor(0x82, 255, 255, 255, 255);
     
     // up and down arrows
@@ -3272,8 +3272,8 @@ void loadToolboxToolSprites(void) {
             dmaSprite(TOOL_SPRITES_BASE + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (u8*)((i * (OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_1_BASE), (u8*)((i * (OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_2_BASE), (u16*)OVERLAY_SCREEN_TOOL_SPRITES_PALETTE, (u16*)OVERLAY_SCREEN_TOOL_SPRITES_ANIM_METADATA, (u8*)OVERLAY_SCREEN_TOOL_SPRITES_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_TOOL_SPRITES_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             setSpriteViewSpacePosition(TOOL_SPRITES_BASE + i, toolboxToolSlotsXPosition[j % 4], toolboxToolSlotsYPosition[j / 4], 256.0f);
             setSpriteColor(TOOL_SPRITES_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(TOOL_SPRITES_BASE + i, 2);
-            setBilinearFiltering(TOOL_SPRITES_BASE + i, 1);
+            setSpriteBlendMode(TOOL_SPRITES_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(TOOL_SPRITES_BASE + i, TRUE);
             
             startSpriteAnimation(TOOL_SPRITES_BASE + i, getAnimationOffsetFromScript(toolsAnimationScripts,  toolAnimationIndices[gToolboxSlots[(overlayScreenTable.pageNumber * 8) + i]] + getToolLevelForAnimation(gToolboxSlots[(overlayScreenTable.pageNumber * 8) + i])), 0);
             
@@ -3296,8 +3296,8 @@ void loadToolboxToolSprites(void) {
             setSpriteViewSpacePosition(0xAC + i, toolboxPlayerToolSlotsXPosition[j % 4], toolboxPlayerToolSlotsYPosition[j / 4], 256.0f);
 
             setSpriteColor(0xAC + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(0xAC + i, 2);
-            setBilinearFiltering(0xAC + i, 1);
+            setSpriteBlendMode(0xAC + i, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(0xAC + i, TRUE);
             startSpriteAnimation(0xAC + i, getAnimationOffsetFromScript(toolsAnimationScripts, toolAnimationIndices[gPlayer.toolSlots[i]] + getToolLevelForAnimation(gPlayer.toolSlots[i])), 0);
         
         }
@@ -3309,8 +3309,8 @@ void loadToolboxToolSprites(void) {
         dmaSprite(0xAC + i, (u32)&_toolsTextureSegmentRomStart, (u32)&_toolsTextureSegmentRomEnd, (u32)&_toolsAssetsIndexSegmentRomStart, (u32)&_toolsAssetsIndexSegmentRomEnd, (u32) &_toolsSpritesheetIndexSegmentRomStart, (u32)&_toolsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
         setSpriteViewSpacePosition(0xAC + i, toolboxCurrentToolXPosition, toolboxCurrentToolYPosition, 256.0f);
         setSpriteColor(0xAC + i, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteBlendMode(0xAC + i, 2);
-        setBilinearFiltering(0xAC + i, 1);
+        setSpriteBlendMode(0xAC + i, SPRITE_BLEND_ALPHA_MODULATED);
+        setBilinearFiltering(0xAC + i, TRUE);
 
         startSpriteAnimation(0xAC + i, getAnimationOffsetFromScript(toolsAnimationScripts, toolAnimationIndices[gPlayer.currentTool] + getToolLevelForAnimation(gPlayer.currentTool)), 0);
 
@@ -3932,40 +3932,40 @@ void loadFreezerScreenSprites(void) {
 
     setSpriteViewSpacePosition(0x83, 42.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x83, 2);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 0, 0);
 
     dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x84, 42.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x84, 2);
-    setBilinearFiltering(0x84, 1);
+    setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 0, 0);
     
     dmaSprite(FREEZER_AND_RUCKSACK_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(FREEZER_AND_RUCKSACK_LABELS, 0.0f, 0.0f, 16.0f);
     setSpriteColor(FREEZER_AND_RUCKSACK_LABELS, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(FREEZER_AND_RUCKSACK_LABELS, 2);
-    setBilinearFiltering(FREEZER_AND_RUCKSACK_LABELS, 1);
+    setSpriteBlendMode(FREEZER_AND_RUCKSACK_LABELS, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(FREEZER_AND_RUCKSACK_LABELS, TRUE);
     startSpriteAnimation(FREEZER_AND_RUCKSACK_LABELS, 5, 2);
     
     dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x87, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x87, 2);
-    setBilinearFiltering(0x87, 1);
+    setSpriteBlendMode(0x87, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x87, TRUE);
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 2);
     
     dmaSprite(CURSOR_HAND, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8* )DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16* )(u16*)DIALOGUE_ICON_PALETTE_BUFFER, (u16* )(AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u8* )DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(CURSOR_HAND, getFreezerItemXCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 16.0f, getFreezerItemYCoordinate(overlayScreenTable.screenState, overlayScreenTable.cellIndex) - 8.0f, 32.0f);
-    setBilinearFiltering(CURSOR_HAND, 1);
+    setBilinearFiltering(CURSOR_HAND, TRUE);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     dmaSprite(0x82, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd,  (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 24.0f);
-    setBilinearFiltering(0x82, 1);
+    setBilinearFiltering(0x82, TRUE);
     setSpriteColor(0x82, 255, 255, 255, 255);
     
     loadNavigationArrows();
@@ -3994,8 +3994,8 @@ void loadFreezerItemSprites(void) {
             setSpriteViewSpacePosition(0xA3 + i,freezerSlotsXCoordinates[j % 4], freezerSlotsYCoordinates[j / 4], 256.0f);
 
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(0xA3 + i, 2);
-            setBilinearFiltering(0xA3 + i, 1);
+            setSpriteBlendMode(0xA3 + i, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(0xA3 + i, TRUE);
             startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(D_80237420[(overlayScreenTable.pageNumber * 8) + i])), 0);
         
         }
@@ -4017,8 +4017,8 @@ void loadFreezerItemSprites(void) {
             dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
             setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, belongingXCoords[j % 4], *(f32*)((u8*)belongingYCoords + (j & 0xFC)), 256.0f);
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
-            setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
+            setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, TRUE);
             startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
         
         }
@@ -4029,8 +4029,8 @@ void loadFreezerItemSprites(void) {
         dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
         setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, freezerHeldItemXCoordinate, freezerHeldItemYCoordinate, 256.0f);
         setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
-        setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
+        setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
+        setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, TRUE);
         startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
     }
 
@@ -4654,7 +4654,7 @@ void loadCabinetScreenCallback(void) {
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
-    setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
+    setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
     setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
@@ -4678,28 +4678,28 @@ void loadCabinetScreenSprites(void) {
     dmaSprite(0x83, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 42.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x83, 2);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 0, 0);
     
     dmaSprite(0x84, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 42.0f, -80.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x84, 2);
+    setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 0, 0);
 
     dmaSprite(CABINET_AND_RUCKSACK_LABELS, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CABINET_AND_RUCKSACK_LABELS, 0.0f, 0.0f, 16.0f);
     setSpriteColor(CABINET_AND_RUCKSACK_LABELS, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(CABINET_AND_RUCKSACK_LABELS, 2);
-    setBilinearFiltering(CABINET_AND_RUCKSACK_LABELS, 1);
+    setSpriteBlendMode(CABINET_AND_RUCKSACK_LABELS, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(CABINET_AND_RUCKSACK_LABELS, TRUE);
     startSpriteAnimation(CABINET_AND_RUCKSACK_LABELS, 5, 3);
     
     dmaSprite(0x87, (u32)&_inventoryScreenTextureSegmentRomStart, (u32)&_inventoryScreenTextureSegmentRomEnd, (u32)&_inventoryScreenAssetsIndexSegmentRomStart, (u32)&_inventoryScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, 80.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x87, 2);
+    setSpriteBlendMode(0x87, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x87, TRUE);
     startSpriteAnimation(0x87, 2, 0);
     setSpritePaletteIndex(0x87, 2);
@@ -4743,8 +4743,8 @@ void loadCabinetItemSprites(void) {
             setSpriteViewSpacePosition(0xA3 + i, cabinetSlotsXCoordinates[j % 4], cabinetSlotsYCoordinates[j / 4], 256.0f);
 
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(0xA3 + i, 2);
-            setBilinearFiltering(0xA3 + i, 1);
+            setSpriteBlendMode(0xA3 + i, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(0xA3 + i, TRUE);
             startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(D_801890E8[(overlayScreenTable.pageNumber * 8) + i])), 0);
         
         }
@@ -4768,8 +4768,8 @@ void loadCabinetItemSprites(void) {
             setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, cabinetBelongingsSlotsXCoordinates[j % 4], cabinetBelongingsSlotsYCoordinates[j / 4], 256.0f);
 
             setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
-            setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
+            setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, TRUE);
             startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.belongingsSlots[i])), 0);
         
         }
@@ -4780,8 +4780,8 @@ void loadCabinetItemSprites(void) {
         dmaSprite(HOLDABLE_ITEMS_BASE + i, (u32)&_holdableItemsTextureSegmentRomStart, (u32)&_holdableItemsTextureSegmentRomEnd, (u32)&_holdableItemsAssetsIndexSegmentRomStart, (u32)&_holdableItemsAssetsIndexSegmentRomEnd, (u32) &_holdableItemsSpritesheetIndexSegmentRomStart, (u32)&_holdableItemsSpritesheetIndexSegmentRomEnd, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_1_BASE, (i * (OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_SIZE * 2)) + OVERLAY_SCREEN_HOLDABLE_ITEMS_TEXTURE_2_BASE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_PALETTE, (u16*)OVERLAY_SCREEN_ITEMS_GRID_ANIM_METADATA, (u8*)OVERLAY_SCREEN_ITEMS_GRID_SPRITESHEET_INDEX, (u32*)OVERLAY_SCREEN_ITEMS_GRID_TEXTURE_TO_PALETTE_LOOKUP, 1, 0);
         setSpriteViewSpacePosition(HOLDABLE_ITEMS_BASE + i, cabinetHeldItemXCoordinate, cabinetHeldItemYCoordinate, 256.0f);
         setSpriteColor(HOLDABLE_ITEMS_BASE + i, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, 2);
-        setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, 1);
+        setSpriteBlendMode(HOLDABLE_ITEMS_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
+        setBilinearFiltering(HOLDABLE_ITEMS_BASE + i, TRUE);
         startSpriteAnimation(HOLDABLE_ITEMS_BASE + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(gPlayer.heldItem)), 0);
     }
     
@@ -5447,7 +5447,7 @@ void loadHouseExtensionsScreenSprites(void) {
     dmaSprite(HOUSE_EXTENSIONS_LIST, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(HOUSE_EXTENSIONS_LIST, 0.0f, 0.0f, 8.0f);
     setSpriteColor(HOUSE_EXTENSIONS_LIST, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(HOUSE_EXTENSIONS_LIST, 2);
+    setSpriteBlendMode(HOUSE_EXTENSIONS_LIST, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(HOUSE_EXTENSIONS_LIST, TRUE);
     startSpriteAnimation(HOUSE_EXTENSIONS_LIST, 0, 0);
 
@@ -5455,49 +5455,49 @@ void loadHouseExtensionsScreenSprites(void) {
     dmaSprite(0x83, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x83, 2);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 1, 0);
     
     dmaSprite(0x84, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x84, 2);
+    setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 1, 0);
     
     dmaSprite(0x85, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, -32.0f, 8.0f);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x85, 2);
+    setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x85, TRUE);
     startSpriteAnimation(0x85, 1, 0);
     
     dmaSprite(0x86, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, -48.0f, 8.0f);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x86, 2);
+    setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x86, TRUE);
     startSpriteAnimation(0x86, 1, 0);
     
     dmaSprite(0x87, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x87, 0.0f, -64.0f, 8.0f);
     setSpriteColor(0x87, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x87, 2);
+    setSpriteBlendMode(0x87, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x87, TRUE);
     startSpriteAnimation(0x87, 1, 0);
     
     dmaSprite(0x88, (u32)&_houseExtensionSelectionTextureSegmentRomStart, (u32)&_houseExtensionSelectionTextureSegmentRomEnd, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomStart, (u32)&_houseExtensionSelectionAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x88, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0x88, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x88, 2);
+    setSpriteBlendMode(0x88, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x88, TRUE);
     startSpriteAnimation(0x88, 1, 0);
         
     dmaSprite(HOUSE_EXTENSIONS_BACKGROUND, (u32)&_photoSmallTextureSegmentRomStart, (u32)&_photoSmallTextureSegmentRomEnd, (u32)&_photoSmallAssetsIndexSegmentRomStart, (u32)&_photoSmallAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(HOUSE_EXTENSIONS_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(HOUSE_EXTENSIONS_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(HOUSE_EXTENSIONS_BACKGROUND, 2);
+    setSpriteBlendMode(HOUSE_EXTENSIONS_BACKGROUND, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(HOUSE_EXTENSIONS_BACKGROUND, TRUE);
     startSpriteAnimation(HOUSE_EXTENSIONS_BACKGROUND, 0, 0);
 
@@ -5737,15 +5737,15 @@ void loadEstimateScreenSprites(void) {
     dmaSprite(0x82, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x82, 2);
-    setBilinearFiltering(0x82, 1);
+    setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 0, 0);
 
     dmaSprite(ESTIMATE_BACKGROUND, (u32)&_photoLargeTextureSegmentRomStart, (u32)&_photoLargeTextureSegmentRomEnd, (u32)&_photoLargeAssetsIndexSegmentRomStart, (u32)&_photoLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(ESTIMATE_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(ESTIMATE_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(ESTIMATE_BACKGROUND, 2);
-    setBilinearFiltering(ESTIMATE_BACKGROUND, 1);
+    setSpriteBlendMode(ESTIMATE_BACKGROUND, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(ESTIMATE_BACKGROUND, TRUE);
     startSpriteAnimation(ESTIMATE_BACKGROUND, 0, 0);
 
     temp = getDogBestRacePlacement();
@@ -5754,8 +5754,8 @@ void loadEstimateScreenSprites(void) {
         dmaSprite(0x83, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x83, 32.0f, 36.0f, 16.0f);
         setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteBlendMode(0x83, 2);
-        setBilinearFiltering(0x83, 1);
+        setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
+        setBilinearFiltering(0x83, TRUE);
         startSpriteAnimation(0x83, temp + 1, 0);
     }
 
@@ -5765,8 +5765,8 @@ void loadEstimateScreenSprites(void) {
         dmaSprite(0x84, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x84, 32.0f, 20.0f, 8.0f);
         setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteBlendMode(0x84, 2);
-        setBilinearFiltering(0x84, 1);
+        setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
+        setBilinearFiltering(0x84, TRUE);
         startSpriteAnimation(0x84, temp + 1, 0);
     }
 
@@ -5776,8 +5776,8 @@ void loadEstimateScreenSprites(void) {
         dmaSprite(0x85, (u32)&_estimateScreenTextureSegmentRomStart, (u32)&_estimateScreenTextureSegmentRomEnd, (u32)&_estimateScreenAssetsIndexSegmentRomStart, (u32)&_estimateScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
         setSpriteViewSpacePosition(0x85, -24.0f, 4.0f, 8.0f);
         setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
-        setSpriteBlendMode(0x85, 2);
-        setBilinearFiltering(0x85, 1);
+        setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
+        setBilinearFiltering(0x85, TRUE);
         startSpriteAnimation(0x85, temp + 1, 0);
     }
     
@@ -5891,7 +5891,7 @@ void loadKitchenPictureScreenSprites(void) {
     dmaSprite(0x82, (u32)&_powerNutTreeDrawingTextureSegmentRomStart, (u32)&_powerNutTreeDrawingTextureSegmentRomEnd, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomStart, (u32)&_powerNutTreeDrawingAssetsIndexSegmentRomEnd,  0, 0, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x82, 2);
+    setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 0, 0);
     
@@ -5916,8 +5916,8 @@ void loadPowerNutTreeSprites(void) {
             
             setSpriteViewSpacePosition(0xA3 + i, kitchenPicturePowerNutsXCoordinates[i], kitchenPicturePowerNutsYCoordinates[i], 8.0f);
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(0xA3 + i, 2);
-            setBilinearFiltering(0xA3 + i, 1);
+            setSpriteBlendMode(0xA3 + i, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(0xA3 + i, TRUE);
             startSpriteAnimation(0xA3 + i, 1, 0);
             
         }
@@ -6201,7 +6201,7 @@ void loadCalendarScreenSprites(void) {
     dmaSprite(CALENDAR_BACKGROUND, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CALENDAR_BACKGROUND, 0.0f, 0.0f, 8.0f);
     setSpriteColor(CALENDAR_BACKGROUND, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(CALENDAR_BACKGROUND, 2);
+    setSpriteBlendMode(CALENDAR_BACKGROUND, SPRITE_BLEND_ALPHA_MODULATED);
     setBilinearFiltering(CALENDAR_BACKGROUND, TRUE);
     startSpriteAnimation(CALENDAR_BACKGROUND, 0, 0);
     
@@ -6254,8 +6254,8 @@ void loadCalendarStickers(void) {
                 setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + temp, calendarStickersXCoordinates[0], calendarStickersYCoordinates[0], 8.0f);
                 setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + temp, (j << 5) - 122, -(i * 24) + 0x1A, 4.0f);
                 setSpriteColor(CALENDAR_STICKERS_BASE + temp, 0xFF, 0xFF, 0xFF, 0);
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE + temp, 2);
-                setBilinearFiltering(CALENDAR_STICKERS_BASE + temp, 1);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + temp, SPRITE_BLEND_ALPHA_MODULATED);
+                setBilinearFiltering(CALENDAR_STICKERS_BASE + temp, TRUE);
                 startSpriteAnimation(CALENDAR_STICKERS_BASE + temp, 1, temp);
                 
             }
@@ -6271,8 +6271,8 @@ for (k = 0; k < 10; k++) {
             dmaSprite(CALENDAR_STICKERS_BASE + k, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
             setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + k, calendarStickersXCoordinates[k], calendarStickersYCoordinates[k], 8.0f);
             setSpriteColor(CALENDAR_STICKERS_BASE + k, 0xFF, 0xFF, 0xFF, 0);
-            setSpriteBlendMode(CALENDAR_STICKERS_BASE + k, 2);
-            setBilinearFiltering(CALENDAR_STICKERS_BASE + k, 1);
+            setSpriteBlendMode(CALENDAR_STICKERS_BASE + k, SPRITE_BLEND_ALPHA_MODULATED);
+            setBilinearFiltering(CALENDAR_STICKERS_BASE + k, TRUE);
             startSpriteAnimation(CALENDAR_STICKERS_BASE + k, 1, k);
             
         }
@@ -6294,8 +6294,8 @@ void loadCalendarDateNumbers(u8 year, u8 season, u8 dayOfMonth) {
     
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 255, 255, 255, 0);
-    setSpriteBlendMode(0x83, 2);
-    setBilinearFiltering(0x83, 1);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 4, season - 1);
 
     skipCount = 0;
@@ -6314,8 +6314,8 @@ void loadCalendarDateNumbers(u8 year, u8 season, u8 dayOfMonth) {
 
                 setSpriteViewSpacePosition(0x8F + dayIndex, (f32)(col * 32), (f32)(-row * 24), 16.0f);
                 setSpriteColor(0x8F + dayIndex, 255, 255, 255, 0);
-                setSpriteBlendMode(0x8F + dayIndex, 2);
-                setBilinearFiltering(0x8F + dayIndex, 1);
+                setSpriteBlendMode(0x8F + dayIndex, SPRITE_BLEND_ALPHA_MODULATED);
+                setBilinearFiltering(0x8F + dayIndex, TRUE);
 
                 if (isSaturdayStart) {
                     if (dayIndex == 22) {
@@ -6333,8 +6333,8 @@ void loadCalendarDateNumbers(u8 year, u8 season, u8 dayOfMonth) {
                     
                     setSpriteViewSpacePosition(0xB7, (f32)(col * 32), (f32)(-row * 24), 32.0f);
                     setSpriteColor(0xB7, 255, 255, 255, 0);
-                    setSpriteBlendMode(0xB7, 2);
-                    setBilinearFiltering(0xB7, 1);
+                    setSpriteBlendMode(0xB7, SPRITE_BLEND_ALPHA_MODULATED);
+                    setBilinearFiltering(0xB7, TRUE);
                     startSpriteAnimation(0xB7, 3, 0);
                 }
 
@@ -6389,16 +6389,16 @@ void fadeOutCalendarSprites(void) {
 
     updateSpriteAlpha(0xB7, 0, 24);
 
-    setSpriteBlendMode(CALENDAR_STICKERS_BASE, 2);
-    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 1, 2);
-    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 2, 2);
-    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 3, 2);
-    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 4, 2);
-    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 5, 2);
-    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 6, 2);
-    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 7, 2);
-    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 8, 2);
-    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 9, 2);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE, SPRITE_BLEND_ALPHA_MODULATED);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 1, SPRITE_BLEND_ALPHA_MODULATED);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 2, SPRITE_BLEND_ALPHA_MODULATED);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 3, SPRITE_BLEND_ALPHA_MODULATED);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 4, SPRITE_BLEND_ALPHA_MODULATED);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 5, SPRITE_BLEND_ALPHA_MODULATED);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 6, SPRITE_BLEND_ALPHA_MODULATED);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 7, SPRITE_BLEND_ALPHA_MODULATED);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 8, SPRITE_BLEND_ALPHA_MODULATED);
+    setSpriteBlendMode(CALENDAR_STICKERS_BASE + 9, SPRITE_BLEND_ALPHA_MODULATED);
 
     updateSpriteAlpha(CALENDAR_STICKERS_BASE, 0, 24);
     updateSpriteAlpha(CALENDAR_STICKERS_BASE + 1, 0, 24);
@@ -6436,16 +6436,16 @@ void calendarScreenCallback(void) {
             
             if (checkSpriteRGBAUpdateFinished(CALENDAR_BACKGROUND)) {
 
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE, 3);
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 1, 3);
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 2, 3);
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 3, 3);
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 4, 3);
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 5, 3);
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 6, 3);
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 7, 3);
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 8, 3);
-                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 9, 3);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE, SPRITE_BLEND_ALPHA_DECAL);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 1, SPRITE_BLEND_ALPHA_DECAL);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 2, SPRITE_BLEND_ALPHA_DECAL);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 3, SPRITE_BLEND_ALPHA_DECAL);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 4, SPRITE_BLEND_ALPHA_DECAL);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 5, SPRITE_BLEND_ALPHA_DECAL);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 6, SPRITE_BLEND_ALPHA_DECAL);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 7, SPRITE_BLEND_ALPHA_DECAL);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 8, SPRITE_BLEND_ALPHA_DECAL);
+                setSpriteBlendMode(CALENDAR_STICKERS_BASE + 9, SPRITE_BLEND_ALPHA_DECAL);
 
                 overlayScreenTable.screenState = 5;
                 
@@ -6593,7 +6593,7 @@ void calendarScreenCallback(void) {
                             32.0f);
                         
                         setSpriteColor(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 0xFF, 0xFF, 0xFF, 0x80);
-                        setSpriteBlendMode(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 3);
+                        setSpriteBlendMode(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, SPRITE_BLEND_ALPHA_DECAL);
                         playSfx(0);
                     
                     }
@@ -6765,7 +6765,7 @@ playSfx(2);
                     
                     setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, calendarStickersXCoordinates[overlayScreenTable.cellIndex], calendarStickersYCoordinates[overlayScreenTable.cellIndex], 8.0f);
                     setSpriteColor(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 255, 255, 255, 255);
-                    setSpriteBlendMode(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 3);
+                    setSpriteBlendMode(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, SPRITE_BLEND_ALPHA_DECAL);
                     overlayScreenTable.screenState = 5;
         
                     playSfx(1);
@@ -6860,7 +6860,7 @@ void loadRecipeBookLabels(void) {
                 setSpriteViewSpacePosition(RECIPE_LABELS_BASE + i, (k * 128) + -120.0f, 64.0f - (j * 16), 8.0f);
                 setSpriteColor(RECIPE_LABELS_BASE + i, 255, 255, 255, 255);
                 setSpriteBlendMode(RECIPE_LABELS_BASE + i, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(RECIPE_LABELS_BASE + i, 1);
+                setBilinearFiltering(RECIPE_LABELS_BASE + i, TRUE);
                 startSpriteAnimation(RECIPE_LABELS_BASE + i, 1, (i + (overlayScreenTable.pageNumber * 16)));
                 
             }
@@ -6962,7 +6962,7 @@ void recipeBookScreenCallback(void) {
         
         case 4:
             
-            if (!(messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & (0x40 | 0x80))) {
+            if (!(messageBoxes[MAIN_MESSAGE_BOX_INDEX].flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) {
                 
                 if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
                     
@@ -7180,7 +7180,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x83, 255, 255, 255, 255);
                 setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x83, 1);
+                setBilinearFiltering(0x83, TRUE);
                 startSpriteAnimation(0x83, 0, 0);
             }
             
@@ -7189,7 +7189,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x84, 255, 255, 255, 255);
                 setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x84, 1);
+                setBilinearFiltering(0x84, TRUE);
                 startSpriteAnimation(0x84, 1, 0);
             }
             
@@ -7198,7 +7198,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x85, 255, 255, 255, 255);
                 setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x85, 1);
+                setBilinearFiltering(0x85, TRUE);
                 startSpriteAnimation(0x85, 2, 0);
             }
             
@@ -7207,7 +7207,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x86, 255, 255, 255, 255);
                 setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x86, 1);
+                setBilinearFiltering(0x86, TRUE);
                 startSpriteAnimation(0x86, 3, 0);
             }
             
@@ -7220,7 +7220,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x83, 255, 255, 255, 255);
                 setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x83, 1);
+                setBilinearFiltering(0x83, TRUE);
                 startSpriteAnimation(0x83, 4, 0);
             }
             
@@ -7229,7 +7229,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x84, 255, 255, 255, 255);
                 setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x84, 1);
+                setBilinearFiltering(0x84, TRUE);
                 startSpriteAnimation(0x84, 5, 0);
             }
             
@@ -7238,7 +7238,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x85, 255, 255, 255, 255);
                 setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x85, 1);
+                setBilinearFiltering(0x85, TRUE);
                 startSpriteAnimation(0x85, 6, 0);
             }
             
@@ -7248,7 +7248,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x86, 255, 255, 255, 255);
                 setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x86, 1);
+                setBilinearFiltering(0x86, TRUE);
                 
                 switch (gWife) {                        
                     case MARIA:                                 
@@ -7280,7 +7280,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x83, 255, 255, 255, 255);
                 setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x83, 1);
+                setBilinearFiltering(0x83, TRUE);
 
                 switch (gWife) {           
                     
@@ -7308,7 +7308,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x84, 255, 255, 255, 255);
                 setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x84, 1);
+                setBilinearFiltering(0x84, TRUE);
                 startSpriteAnimation(0x84, 17, 0);
             }
             
@@ -7317,7 +7317,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x85, 255, 255, 255, 255);
                 setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x85, 1);
+                setBilinearFiltering(0x85, TRUE);
                 startSpriteAnimation(0x85, 0x12, 0);
             }
             
@@ -7326,7 +7326,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x86, 255, 255, 255, 255);
                 setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x86, 1);
+                setBilinearFiltering(0x86, TRUE);
                 startSpriteAnimation(0x86, 0x13, 0);
             }
             
@@ -7339,7 +7339,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x83, -64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x83, 255, 255, 255, 255);
                 setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x83, 1);
+                setBilinearFiltering(0x83, TRUE);
                 startSpriteAnimation(0x83, 20, 0);
             }
             
@@ -7348,7 +7348,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x84, -64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x84, 255, 255, 255, 255);
                 setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x84, 1);
+                setBilinearFiltering(0x84, TRUE);
                 startSpriteAnimation(0x84, 21, 0);
             }
             
@@ -7357,7 +7357,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x85, 64.0f, 40.0f, 8.0f);
                 setSpriteColor(0x85, 255, 255, 255, 255);
                 setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x85, 1);
+                setBilinearFiltering(0x85, TRUE);
                 startSpriteAnimation(0x85, 22, 0);
             }
             
@@ -7366,7 +7366,7 @@ void loadAlbumPhotos(void) {
                 setSpriteViewSpacePosition(0x86, 64.0f, -30.0f, 8.0f);
                 setSpriteColor(0x86, 255, 255, 255, 255);
                 setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_MODULATED);
-                setBilinearFiltering(0x86, 1);
+                setBilinearFiltering(0x86, TRUE);
                 startSpriteAnimation(0x86, 23, 0);
             }
             
@@ -7622,37 +7622,37 @@ void loadNavigationArrows(void) {
     setSpriteViewSpacePosition(DOWN_ARROW, 0.0f, 0.0f, 0.0f);
     setSpriteScale(DOWN_ARROW, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(DOWN_ARROW, 0.0f, 0.0f, 0.0f);
-    setBilinearFiltering(DOWN_ARROW, 1);
+    setBilinearFiltering(DOWN_ARROW, TRUE);
     setSpriteColor(DOWN_ARROW, 255, 255, 255, 255);
     setSpriteAnchorAlignment(DOWN_ARROW, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-    setSpriteBlendMode(DOWN_ARROW, 3);
+    setSpriteBlendMode(DOWN_ARROW, SPRITE_BLEND_ALPHA_DECAL);
     
     dmaSprite(UP_ARROW, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(UP_ARROW, 0.0f, 0.0f, 0.0f);
     setSpriteScale(UP_ARROW, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(UP_ARROW, 0.0f, 0.0f, 0.0f);
-    setBilinearFiltering(UP_ARROW, 1);
+    setBilinearFiltering(UP_ARROW, TRUE);
     setSpriteColor(UP_ARROW, 255, 255, 255, 255);
     setSpriteAnchorAlignment(UP_ARROW, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-    setSpriteBlendMode(UP_ARROW, 3);
+    setSpriteBlendMode(UP_ARROW, SPRITE_BLEND_ALPHA_DECAL);
     
     dmaSprite(RIGHT_ARROW, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(RIGHT_ARROW, 0.0f, 0.0f, 0.0f);
     setSpriteScale(RIGHT_ARROW, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(RIGHT_ARROW, 0.0f, 0.0f, 0.0f);
-    setBilinearFiltering(RIGHT_ARROW, 1);
+    setBilinearFiltering(RIGHT_ARROW, TRUE);
     setSpriteColor(RIGHT_ARROW, 255, 255, 255, 255);
     setSpriteAnchorAlignment(RIGHT_ARROW, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-    setSpriteBlendMode(RIGHT_ARROW, 3);
+    setSpriteBlendMode(RIGHT_ARROW, SPRITE_BLEND_ALPHA_DECAL);
     
     dmaSprite(LEFT_ARROW, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(LEFT_ARROW, 0.0f, 0.0f, 0.0f);
     setSpriteScale(LEFT_ARROW, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(LEFT_ARROW, 0.0f, 0.0f, 0.0f);
-    setBilinearFiltering(LEFT_ARROW, 1);
+    setBilinearFiltering(LEFT_ARROW, TRUE);
     setSpriteColor(LEFT_ARROW, 255, 255, 255, 255);
     setSpriteAnchorAlignment(LEFT_ARROW, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-    setSpriteBlendMode(LEFT_ARROW, 3);
+    setSpriteBlendMode(LEFT_ARROW, SPRITE_BLEND_ALPHA_DECAL);
 
 }
 
@@ -7700,19 +7700,19 @@ void loadDialogueArrowSprites(void) {
     setSpriteViewSpacePosition(0x7A, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x7A, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(0x7A, 0.0f, 0.0f, 0.0f);
-    setBilinearFiltering(0x7A, 1);
+    setBilinearFiltering(0x7A, TRUE);
     setSpriteColor(0x7A, 255, 255, 255, 255);
     setSpriteAnchorAlignment(0x7A, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-    setSpriteBlendMode(0x7A, 3);
+    setSpriteBlendMode(0x7A, SPRITE_BLEND_ALPHA_DECAL);
 
     dmaSprite(0x7B, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x7B, 0.0f, 0.0f, 0.0f);
     setSpriteScale(0x7B, 1.0f, 1.0f, 1.0f);
     setSpriteRotation(0x7B, 0.0f, 0.0f, 0.0f);
-    setBilinearFiltering(0x7B, 1);
+    setBilinearFiltering(0x7B, TRUE);
     setSpriteColor(0x7B, 255, 255, 255, 255);
     setSpriteAnchorAlignment(0x7B, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-    setSpriteBlendMode(0x7B, 3);
+    setSpriteBlendMode(0x7B, SPRITE_BLEND_ALPHA_DECAL);
     
 }
 
@@ -7843,18 +7843,18 @@ skip:
 // seems like load village map (cut from NA release) 
 // void loadPauseScreenMapScreenCallback(void) {
     
-//     dmaSprite(0x82, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-//     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 0.0f);
-//     setSpriteScale(0x82, 1.0f, 1.0f, 1.0f);
-//     setBilinearFiltering(0x82, 1);
-//     setSpriteColor(0x82, 0, 0, 0, 0);
-//     startSpriteAnimation(0x82, 0, 0);
+    // dmaSprite(0x82, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    // setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 0.0f);
+    // setSpriteScale(0x82, 1.0f, 1.0f, 1.0f);
+    // setBilinearFiltering(0x82, TRUE);
+    // setSpriteColor(0x82, 0, 0, 0, 0);
+    // startSpriteAnimation(0x82, 0, 0);
     
-//     dmaSprite(0xA3, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-//     setSpriteScale(0xA3, 1.0f, 1.0f, 1.0f);
-//     setBilinearFiltering(0xA3, 1);
-//     setSpriteColor(0xA3, 0, 0, 0, 0);
-//     startSpriteAnimation(0xA3, 1, 0xFE);
+    // dmaSprite(0xA3, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    // setSpriteScale(0xA3, 1.0f, 1.0f, 1.0f);
+    // setBilinearFiltering(0xA3, TRUE);
+    // setSpriteColor(0xA3, 0, 0, 0, 0);
+    // startSpriteAnimation(0xA3, 1, 0xFE);
     
 //     switch (gBaseMapIndex) {
         
@@ -8027,7 +8027,7 @@ void loadRaceBettingScreenCallback(void) {
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
-    setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
+    setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
     setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
@@ -8057,15 +8057,15 @@ void loadRaceBettingScreenSprites(void) {
     dmaSprite(0x81, (u32)&_photoSmallTextureSegmentRomStart, (u32)&_photoSmallTextureSegmentRomEnd, (u32)&_photoSmallAssetsIndexSegmentRomStart, (u32)&_photoSmallAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x81, 2);
-    setBilinearFiltering(0x81, 1);
+    setSpriteBlendMode(0x81, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x81, TRUE);
     startSpriteAnimation(0x81, 0, 0);
 
     dmaSprite(0x82, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
     setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
-    setBilinearFiltering(0x82, 1);
+    setBilinearFiltering(0x82, TRUE);
 
     // check horse or dog race
     if (checkDailyEventBit(HORSE_RACE)) {
@@ -8078,75 +8078,75 @@ void loadRaceBettingScreenSprites(void) {
 
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x83, 2);
-    setBilinearFiltering(0x83, 1);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 1, 0);
 
     dmaSprite(0x84, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x84, 2);
-    setBilinearFiltering(0x84, 1);
+    setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 2, 0);
     
     dmaSprite(0xB9, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xB9, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0xB9, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0xB9, 2);
-    setBilinearFiltering(0xB9, 1);
+    setSpriteBlendMode(0xB9, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0xB9, TRUE);
     startSpriteAnimation(0xB9, 1, 1);
 
     dmaSprite(0xBA, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBA, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0xBA, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0xBA, 2);
-    setBilinearFiltering(0xBA, 1);
+    setSpriteBlendMode(0xBA, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0xBA, TRUE);
     startSpriteAnimation(0xBA, 1, 1);
     
     dmaSprite(0xBB, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBB, 0.0f, -32.0f, 8.0f);
     setSpriteColor(0xBB, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0xBB, 2);
-    setBilinearFiltering(0xBB, 1);
+    setSpriteBlendMode(0xBB, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0xBB, TRUE);
     startSpriteAnimation(0xBB, 1, 1);
     
     dmaSprite(0xBC, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBC, 0.0f, -48.0f, 8.0f);
     setSpriteColor(0xBC, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0xBC, 2);
-    setBilinearFiltering(0xBC, 1);
+    setSpriteBlendMode(0xBC, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0xBC, TRUE);
     startSpriteAnimation(0xBC, 1, 1);
     
     dmaSprite(0xBD, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBD, 0.0f, -64.0f, 8.0f);
     setSpriteColor(0xBD, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0xBD, 2);
-    setBilinearFiltering(0xBD, 1);
+    setSpriteBlendMode(0xBD, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0xBD, TRUE);
     startSpriteAnimation(0xBD, 1, 1);
     
     dmaSprite(0xBE, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0xBE, 0.0f, -80.0f, 8.0f);
     setSpriteColor(0xBE, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0xBE, 2);
-    setBilinearFiltering(0xBE, 1);
+    setSpriteBlendMode(0xBE, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0xBE, TRUE);
     startSpriteAnimation(0xBE, 1, 1);
     
     dmaSprite(0x85, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x85, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x85, 2);
-    setBilinearFiltering(0x85, 1);
+    setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x85, TRUE);
     startSpriteAnimation(0x85, 2, 1);
 
     dmaSprite(0x86, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x86, 0.0f, 0.0f, 32.0f);
     setSpriteColor(0x86, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x86, 2);
-    setBilinearFiltering(0x86, 1);
+    setSpriteBlendMode(0x86, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x86, TRUE);
     startSpriteAnimation(0x86, 2, 0);
 
     dmaSprite(CURSOR_HAND, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setBilinearFiltering(CURSOR_HAND, 1);
+    setBilinearFiltering(CURSOR_HAND, TRUE);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     setNumberSprites(2, 0x97, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -98.0f, -153.0f, 256.0f, 10);
@@ -8936,7 +8936,7 @@ void loadRaceResultsScreenCallback(void) {
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
-    setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
+    setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
     setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
@@ -8962,36 +8962,36 @@ void loadRaceResultsScreenSprites(void) {
     dmaSprite(0x81, (u32)&_photoLargeTextureSegmentRomStart, (u32)&_photoLargeTextureSegmentRomEnd, (u32)&_photoLargeAssetsIndexSegmentRomStart, (u32)&_photoLargeAssetsIndexSegmentRomEnd, 0, 0, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u8*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, 0);
     setSpriteViewSpacePosition(0x81, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x81, 2);
-    setBilinearFiltering(0x81, 1);
+    setSpriteBlendMode(0x81, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x81, TRUE);
     startSpriteAnimation(0x81, 0, 0);
     
     dmaSprite(0x82, (u32)&_raceBettingUITextureSegmentRomStart, (u32)&_raceBettingUITextureSegmentRomEnd, (u32)&_raceBettingUIAssetsIndexSegmentRomStart, (u32)&_raceBettingUIAssetsIndexSegmentRomEnd, 0, 0, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x82, 2);
-    setBilinearFiltering(0x82, 1);
+    setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 3, gRacingContext.currentRaceIndex);
     
     dmaSprite(0x83, (u32)&_raceBettingUITextureSegmentRomStart, (u32)&_raceBettingUITextureSegmentRomEnd, (u32)&_raceBettingUIAssetsIndexSegmentRomStart, (u32)&_raceBettingUIAssetsIndexSegmentRomEnd, 0, 0, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x83, 2);
-    setBilinearFiltering(0x83, 1);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 4, 0);
     
     dmaSprite(0x84, (u32)&_raceBettingUITextureSegmentRomStart, (u32)&_raceBettingUITextureSegmentRomEnd, (u32)&_raceBettingUIAssetsIndexSegmentRomStart, (u32)&_raceBettingUIAssetsIndexSegmentRomEnd, 0, 0, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x84, 2);
-    setBilinearFiltering(0x84, 1);
+    setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 4, 1);
     
     dmaSprite(0x85, (u32)&_raceBettingUITextureSegmentRomStart, (u32)&_raceBettingUITextureSegmentRomEnd, (u32)&_raceBettingUIAssetsIndexSegmentRomStart, (u32)&_raceBettingUIAssetsIndexSegmentRomEnd, 0, 0, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, 0);
     setSpriteViewSpacePosition(0x85, 0.0f, -16.0f, 8.0f);
     setSpriteColor(0x85, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x85, 2);
-    setBilinearFiltering(0x85, 1);
+    setSpriteBlendMode(0x85, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x85, TRUE);
     startSpriteAnimation(0x85, 4, 1);
     
     setNumberSprites(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -153.0f, 256.0f, 10);
@@ -9260,7 +9260,7 @@ void loadRaceGiftsScreenCallback(void) {
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
-    setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
+    setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
     setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
@@ -9279,15 +9279,15 @@ void loadRaceGiftsScreenSprites(void) {
     dmaSprite(0x81, (u32)&_photoLargeTextureSegmentRomStart, (u32)&_photoLargeTextureSegmentRomEnd, (u32)&_photoLargeAssetsIndexSegmentRomStart, (u32)&_photoLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x81, 2);
-    setBilinearFiltering(0x81, 1);
+    setSpriteBlendMode(0x81, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x81, TRUE);
     startSpriteAnimation(0x81, 0, 0);
     
     dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x82, 2);
-    setBilinearFiltering(0x82, 1);
+    setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x82, TRUE);
     
     // horse or dog race
     if (checkDailyEventBit(HORSE_RACE)) {
@@ -9300,16 +9300,16 @@ void loadRaceGiftsScreenSprites(void) {
     dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x83, 2);
-    setBilinearFiltering(0x83, 1);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x83, TRUE);
     startSpriteAnimation(0x83, 4, 0);
     
     // medal count display 2
     dmaSprite(0x84, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x84, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x84, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x84, 2);
-    setBilinearFiltering(0x84, 1);
+    setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x84, TRUE);
     startSpriteAnimation(0x84, 4, 1);
     
     setNumberSprites(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -24.0f, 6.0f, 256.0f, 10);
@@ -9318,7 +9318,7 @@ void loadRaceGiftsScreenSprites(void) {
     setNumberSpritesRGBA(2, 255, 255, 255, 255);
     
     dmaSprite(CURSOR_HAND, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setBilinearFiltering(CURSOR_HAND, 1);
+    setBilinearFiltering(CURSOR_HAND, TRUE);
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     // fade in
@@ -9645,7 +9645,7 @@ void loadLotteryScreenCallback(void) {
     dmaSprite(CHECKERBOARD_BACKGROUND, (u32)&_checkerboardBackgroundTextureSegmentRomStart, (u32)&_checkerboardBackgroundTextureSegmentRomEnd, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomStart, (u32)&_checkerboardBackgroundAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_BACKGROUND_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_BACKGROUND_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_BACKGROUND_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(CHECKERBOARD_BACKGROUND, 0.0f, 0.0f, 0.0f);
     setSpriteScale(CHECKERBOARD_BACKGROUND, 2.0f, 2.0f, 1.0f);
-    setBilinearFiltering(CHECKERBOARD_BACKGROUND, 1);
+    setBilinearFiltering(CHECKERBOARD_BACKGROUND, TRUE);
     setSpriteColor(CHECKERBOARD_BACKGROUND, 255, 255, 255, 255);
     startSpriteAnimation(CHECKERBOARD_BACKGROUND, 0, 0);
     
@@ -9666,22 +9666,22 @@ void loadLotteryScreenSprites(void) {
     dmaSprite(0x81, (u32)&_photoLargeTextureSegmentRomStart, (u32)&_photoLargeTextureSegmentRomEnd, (u32)&_photoLargeAssetsIndexSegmentRomStart, (u32)&_photoLargeAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_SNAPSHOT_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_SNAPSHOT_PALETTE, (u16*)OVERLAY_SCREEN_SNAPSHOT_ANIM_METADATA, (u32*)OVERLAY_SCREEN_SNAPSHOT_SPRITESHEET_INDEX, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x81, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x81, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x81, 2);
-    setBilinearFiltering(0x81, 1);
+    setSpriteBlendMode(0x81, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x81, TRUE);
     startSpriteAnimation(0x81, 0, 0);
     
     dmaSprite(0x82, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x82, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x82, 2);
-    setBilinearFiltering(0x82, 1);
+    setSpriteBlendMode(0x82, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x82, TRUE);
     startSpriteAnimation(0x82, 3, 0);
     
     dmaSprite(0x83, (u32)&_prizeScreenTextureSegmentRomStart, (u32)&_prizeScreenTextureSegmentRomEnd, (u32)&_prizeScreenAssetsIndexSegmentRomStart, (u32)&_prizeScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
     setSpriteViewSpacePosition(0x83, 0.0f, 0.0f, 8.0f);
     setSpriteColor(0x83, 0xFF, 0xFF, 0xFF, 0);
-    setSpriteBlendMode(0x83, 2);
-    setBilinearFiltering(0x83, 1);
+    setSpriteBlendMode(0x83, SPRITE_BLEND_ALPHA_MODULATED);
+    setBilinearFiltering(0x83, TRUE);
     
     if (gBaseMapIndex == FLOWER_SHOP) {
         startSpriteAnimation(0x83, 0, 0);
