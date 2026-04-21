@@ -1306,7 +1306,7 @@ void handleItemLevelInteraction(u8 arg0) {
             
         }
 
-        if ((getItemFlags(gPlayer.heldItem) & 0x80) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_SMALL_ANIMAL) && !set) {
 
             if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
 
@@ -1324,7 +1324,7 @@ void handleItemLevelInteraction(u8 arg0) {
             
         }
 
-        if ((getItemFlags(gPlayer.heldItem) & 0x100) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_BABY) && !set) {
             startAction(PLACING_ITEM, ANIM_PLACING_ITEM);
             set = TRUE;
         }
@@ -1344,7 +1344,7 @@ void handleItemLevelInteraction(u8 arg0) {
             
         }
 
-        if ((getItemFlags(gPlayer.heldItem) & 0x800) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_TOOL) && !set) {
 
             if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
 
@@ -1362,7 +1362,7 @@ void handleItemLevelInteraction(u8 arg0) {
             
         }
 
-        if ((getItemFlags(gPlayer.heldItem) & 0x10) && !set) {
+        if ((getItemFlags(gPlayer.heldItem) & ITEM_PLACEABLE_ON_GROUND) && !set) {
 
             groundObjectIndex = getGroundObjectIndexFromPlayerPosition(1.0f, 8);
 

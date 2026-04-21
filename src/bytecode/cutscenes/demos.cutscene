@@ -500,7 +500,7 @@
 ; Mountain 1 demo (gCutsceneIndex = 1502)
 ; ============================================
 ; Launched from cutscenes.c when the mountain 2 demo finishes naturally
-; (see the case-32 handler that calls launchIntroCutscene(1502, 0x1A, 1)
+; (see the case-32 handler that calls launchIntroCutscene(1502, MOUNTAIN_1_SPAWN_POINT_1, 1)
 ; with spawn point MOUNTAIN_1_SPAWN_POINT_1). The player runs past Basil
 ; and then Greg, each of whom plays a single animation. This demo does
 ; not spawn executor 40 (map setup), start new audio, or set bit 31 of
