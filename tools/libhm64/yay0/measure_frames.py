@@ -11,9 +11,7 @@ as a single 'chunk' (that's how globalSprites DMAs them).
 """
 
 import struct
-import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -21,22 +19,7 @@ from libhm64.yay0.encoder import encode
 
 ROOT = Path(__file__).resolve().parents[3]
 BUILD = ROOT / "build" / "assets" / "sprites"
-OBJCOPY = "mips-linux-gnu-objcopy"
 SCRATCH_LIMIT = 0x10000  # 64 KB
-
-
-def extract_bin(obj_path: Path) -> bytes:
-    with tempfile.NamedTemporaryFile(suffix=".bin", delete=False) as tf:
-        out = Path(tf.name)
-    try:
-        subprocess.run(
-            [OBJCOPY, "-O", "binary", "-j", ".data", str(obj_path), str(out)],
-            check=True,
-            capture_output=True,
-        )
-        return out.read_bytes()
-    finally:
-        out.unlink(missing_ok=True)
 
 
 def parse_u32s(b: bytes) -> list[int]:
@@ -48,7 +31,7 @@ def spritesheet_frames(sheet: bytes, sheet_index: list[int]) -> list[tuple[int, 
     """Return list of (offset, length) for unique consecutive entries.
 
     The SpritesheetIndex is a list of u32 offsets where consecutive distinct
-    entries bound a frame. Trailing zeros are padding to the .bin.o alignment.
+    entries bound a frame. Trailing zeros are padding to alignment.
     The last real entry equals the spritesheet length (sentinel).
     """
     frames = []
@@ -84,15 +67,15 @@ def main():
     without_index_yay0 = 0
     big_frames = []  # (compressed_size, name, raw_size)
 
-    for tex in sorted(BUILD.rglob("*Texture.bin.o")):
-        base = tex.name[: -len("Texture.bin.o")]
-        idx_path = tex.parent / f"{base}AssetsIndex.bin.o"
-        sheet_idx_path = tex.parent / f"{base}SpritesheetIndex.bin.o"
+    for tex in sorted(BUILD.rglob("*Texture.bin")):
+        base = tex.name[: -len("Texture.bin")]
+        idx_path = tex.parent / f"{base}AssetsIndex.bin"
+        sheet_idx_path = tex.parent / f"{base}SpritesheetIndex.bin"
         if not idx_path.exists():
             continue
 
-        texture = extract_bin(tex)
-        index = parse_u32s(extract_bin(idx_path))
+        texture = tex.read_bytes()
+        index = parse_u32s(idx_path.read_bytes())
         if len(index) < 5:
             continue
         spritesheet = texture[index[0] : index[1]]  # sub-region 0 = spritesheet
@@ -100,7 +83,7 @@ def main():
         has_index = sheet_idx_path.exists()
         if has_index:
             sheets_with_index += 1
-            sheet_idx = parse_u32s(extract_bin(sheet_idx_path))
+            sheet_idx = parse_u32s(sheet_idx_path.read_bytes())
             frames = spritesheet_frames(spritesheet, sheet_idx)
         else:
             sheets_without_index += 1

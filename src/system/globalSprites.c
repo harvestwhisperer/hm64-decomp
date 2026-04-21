@@ -1049,27 +1049,27 @@ inline u16* advanceBitmapMetadataPtr(u16 numFrames, u16* bitmapMetadataPtr) {
 }
 
 void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animationFrameMetadataPtr, u8 animationType) {
-    
-    BitmapMetadata bitmapMetadata; 
-    
+
+    BitmapMetadata bitmapMetadata;
+
     u32 length;
     u16 bitmapIndex;
-    
+
     u32 texturePtr;
     u16 *palettePtr;
-    
+
     f32 viewSpacePositionX;
     f32 viewSpacePositionY;
     f32 viewSpacePositionZ;
-    
+
     u16 objectCount;
-    
+
     u16 i = 0;
-    
+
     objectCount = animationFrameMetadataPtr->objectCount;
-    
+
     length = 0;
-    
+
     // virtual address; destination of DMA
     texturePtr = globalSprites[spriteIndex].texturePtr[gGraphicsBufferIndex];
 
@@ -1083,15 +1083,16 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
                 
                 texturePtr += length;
 
-                if (animationType == 2) {
-                    // DMAs + decodes the frame synchronously and returns the
-                    // decompressed size, which is what we need to stride
-                    // texturePtr in RAM for layered frames. getTextureLength
-                    // below would return the compressed length.
-                    length = setSpriteDMAInfo(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
-                } else {
-                    length = getTextureLength(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
-                }
+                // Always re-DMA, even when the animation frame hasn't
+                // advanced (animationType would be 1). The "skip DMA"
+                // optimization required getTextureLength to return the
+                // RAM stride — but for per-frame-compressed sprites,
+                // getTextureLength returns the *compressed* length, which
+                // differs from the decompressed stride used when frames
+                // were packed. Mismatched strides give bitmap 2+ in a
+                // layered frame a bogus timg → RDP reads past the buffer
+                // → crash deep in display-list generation.
+                length = setSpriteDMAInfo(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
 
             } else {
                 

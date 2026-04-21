@@ -449,23 +449,24 @@ $(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
 
 # Sprite compression: transform the raw .bin files from the assembler into
 # Yay0-compressed equivalents. Each sprite's 2-or-3 .bin files compress in a
-# single tool invocation, producing .compressed.bin siblings.
+# single tool invocation, producing .bin.yay0 siblings. Final wrap produces
+# .bin.yay0.o, mirroring the map convention (.hm64map.yay0.o).
 SPRITE_COMPRESSOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.yay0.compress_sprite
 
 # Sprites that have a SpritesheetIndex on disk but are DMA'd as a whole blob at
 # runtime (see globalSprites.c assetType-2 path) must be compressed whole-blob.
 WHOLE_BLOB_SPRITES := festivalFlowers
 
-# Preserve the stamp + .compressed.bin intermediates across builds so Make
+# Preserve the stamp + .bin.yay0 intermediates across builds so Make
 # doesn't recompress every sprite on every incremental build.
 .PRECIOUS: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
-.PRECIOUS: $(SPRITE_BUILD_DIR)/%Texture.compressed.bin
-.PRECIOUS: $(SPRITE_BUILD_DIR)/%AssetsIndex.compressed.bin
-.PRECIOUS: $(SPRITE_BUILD_DIR)/%SpritesheetIndex.compressed.bin
+.PRECIOUS: $(SPRITE_BUILD_DIR)/%Texture.bin.yay0
+.PRECIOUS: $(SPRITE_BUILD_DIR)/%AssetsIndex.bin.yay0
+.PRECIOUS: $(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin.yay0
 
-# Stamp file routes all 2-or-3 .compressed.bin outputs through a single
+# Stamp file routes all 2-or-3 .bin.yay0 outputs through a single
 # pattern-rule dependency. Avoids Make's implicit-chain "Circular dependency
-# dropped" warnings that arise when each sibling points at Texture.compressed.bin.
+# dropped" warnings that arise when each sibling points at Texture.bin.yay0.
 $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp: $(SPRITE_BUILD_DIR)/%Texture.bin $(SPRITE_BUILD_DIR)/%AssetsIndex.bin
 	@mode=auto; \
 	 case " $(WHOLE_BLOB_SPRITES) " in *" $(notdir $*) "*) mode=whole-blob ;; esac; \
@@ -473,26 +474,26 @@ $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp: $(SPRITE_BUILD_DIR)/%Texture.bin $(SPRI
 	 if [ -f "$$sht" ]; then \
 	   $(SPRITE_COMPRESSOR) --mode $$mode \
 	     --texture-in $(SPRITE_BUILD_DIR)/$*Texture.bin --assets-index-in $(SPRITE_BUILD_DIR)/$*AssetsIndex.bin --sheet-index-in $$sht \
-	     --texture-out $(SPRITE_BUILD_DIR)/$*Texture.compressed.bin --assets-index-out $(SPRITE_BUILD_DIR)/$*AssetsIndex.compressed.bin \
-	     --sheet-index-out $(SPRITE_BUILD_DIR)/$*SpritesheetIndex.compressed.bin; \
+	     --texture-out $(SPRITE_BUILD_DIR)/$*Texture.bin.yay0 --assets-index-out $(SPRITE_BUILD_DIR)/$*AssetsIndex.bin.yay0 \
+	     --sheet-index-out $(SPRITE_BUILD_DIR)/$*SpritesheetIndex.bin.yay0; \
 	 else \
 	   $(SPRITE_COMPRESSOR) --mode $$mode \
 	     --texture-in $(SPRITE_BUILD_DIR)/$*Texture.bin --assets-index-in $(SPRITE_BUILD_DIR)/$*AssetsIndex.bin \
-	     --texture-out $(SPRITE_BUILD_DIR)/$*Texture.compressed.bin --assets-index-out $(SPRITE_BUILD_DIR)/$*AssetsIndex.compressed.bin; \
+	     --texture-out $(SPRITE_BUILD_DIR)/$*Texture.bin.yay0 --assets-index-out $(SPRITE_BUILD_DIR)/$*AssetsIndex.bin.yay0; \
 	 fi
 	@touch $@
 
-$(SPRITE_BUILD_DIR)/%Texture.compressed.bin: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
+$(SPRITE_BUILD_DIR)/%Texture.bin.yay0: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
 	@:
 
-$(SPRITE_BUILD_DIR)/%AssetsIndex.compressed.bin: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
+$(SPRITE_BUILD_DIR)/%AssetsIndex.bin.yay0: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
 	@:
 
-$(SPRITE_BUILD_DIR)/%SpritesheetIndex.compressed.bin: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
+$(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin.yay0: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
 	@:
 
-# Sprite .bin.o wraps the compressed .bin.
-$(SPRITE_BUILD_DIR)/%.bin.o: $(SPRITE_BUILD_DIR)/%.compressed.bin
+# Sprite .bin.yay0.o wraps the Yay0-compressed bytes.
+$(SPRITE_BUILD_DIR)/%.bin.yay0.o: $(SPRITE_BUILD_DIR)/%.bin.yay0
 	$(V)$(LD) -r -b binary -o $@ $<
 
 .SECONDEXPANSION:

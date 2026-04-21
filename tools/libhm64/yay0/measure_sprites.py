@@ -1,8 +1,8 @@
 """One-shot measurement: sprite compressibility + sub-region size breakdown.
 
 For each sprite directory under build/assets/sprites that has both a
-*Texture.bin.o and *AssetsIndex.bin.o, extracts the raw .bin payload,
-parses the AssetsIndex (u32 BE), and yay0-compresses:
+*Texture.bin and *AssetsIndex.bin, parses the AssetsIndex (u32 BE) and
+yay0-compresses:
   - the whole texture blob
   - each of the 4 sub-regions (spritesheet, palette, animation, spriteToPalette)
 
@@ -10,9 +10,7 @@ Prints aggregate numbers and a per-sub-region breakdown.
 """
 
 import struct
-import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -20,23 +18,8 @@ from libhm64.yay0.encoder import encode
 
 ROOT = Path(__file__).resolve().parents[3]
 BUILD = ROOT / "build" / "assets" / "sprites"
-OBJCOPY = "mips-linux-gnu-objcopy"
 
 SUB_NAMES = ["spritesheet", "palette", "animation", "spriteToPalette"]
-
-
-def extract_bin(obj_path: Path) -> bytes:
-    with tempfile.NamedTemporaryFile(suffix=".bin", delete=False) as tf:
-        out = Path(tf.name)
-    try:
-        subprocess.run(
-            [OBJCOPY, "-O", "binary", "-j", ".data", str(obj_path), str(out)],
-            check=True,
-            capture_output=True,
-        )
-        return out.read_bytes()
-    finally:
-        out.unlink(missing_ok=True)
 
 
 def parse_offsets(index_bytes: bytes, count: int = 5) -> list[int]:
@@ -47,8 +30,8 @@ def parse_offsets(index_bytes: bytes, count: int = 5) -> list[int]:
 
 
 def measure_one(texture_path: Path, index_path: Path):
-    texture = extract_bin(texture_path)
-    index = extract_bin(index_path)
+    texture = texture_path.read_bytes()
+    index = index_path.read_bytes()
     offsets = parse_offsets(index, 5)
     if len(offsets) < 5:
         return None
@@ -74,9 +57,9 @@ def measure_one(texture_path: Path, index_path: Path):
 
 def find_pairs():
     pairs = []
-    for tex in BUILD.rglob("*Texture.bin.o"):
-        base = tex.name[: -len("Texture.bin.o")]
-        idx = tex.parent / f"{base}AssetsIndex.bin.o"
+    for tex in BUILD.rglob("*Texture.bin"):
+        base = tex.name[: -len("Texture.bin")]
+        idx = tex.parent / f"{base}AssetsIndex.bin"
         if idx.exists():
             pairs.append((tex, idx))
     return sorted(pairs)

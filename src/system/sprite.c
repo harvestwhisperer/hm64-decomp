@@ -336,10 +336,10 @@ bool setBitmapAnchor(u16 index, s16 anchorX, s16 anchorY) {
 }
 
 // Loads one compressed frame from a per-frame-compressed spritesheet into
-// `timg` and returns the *decompressed* frame size. Callers that pack multiple
-// layered frames back-to-back in RAM use the returned size as the stride —
-// getTextureLength(spritesheetIndex) returns the compressed length here, which
-// is correct for the DMA but wrong for the RAM layout.
+// `timg` and returns the *decompressed* frame size. Callers that pack
+// multiple layered frames back-to-back in RAM use the returned size as the
+// RAM stride — getTextureLength(spritesheetIndex) returns the compressed
+// length, which is correct for DMA but wrong for the RAM layout.
 u32 setSpriteDMAInfo(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
 
     u32 offset = spritesheetIndex[index];
@@ -491,8 +491,6 @@ Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) 
     u16 textureSize;
 
     u16 remainingSize;
-    
-    Gfx tempDl[2];
     
     bitmap->spriteNumber = spriteNumber;
 

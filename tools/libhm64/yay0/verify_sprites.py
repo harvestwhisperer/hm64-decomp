@@ -3,14 +3,11 @@ what the runtime would do: decode the compressed spritesheet sub-region (or
 each frame, if SpritesheetIndex is present) and verify bytes match the
 original.
 
-Does NOT touch the build dir. Reads .bin.o files via objcopy, runs the
-transform in memory.
+Reads the raw .bin files from build/assets/sprites/ and runs the transform
+in memory; nothing is written back.
 """
 
-import struct
-import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -19,7 +16,6 @@ from libhm64.yay0.compress_sprite import process, parse_u32_be_all, unique_frame
 
 ROOT = Path(__file__).resolve().parents[3]
 BUILD = ROOT / "build" / "assets" / "sprites"
-OBJCOPY = "mips-linux-gnu-objcopy"
 
 # Sprites that look type-1 on disk (SpritesheetIndex file present) but are
 # consumed via the whole-blob DMA path at runtime. For these, the spritesheet
@@ -27,26 +23,12 @@ OBJCOPY = "mips-linux-gnu-objcopy"
 WHOLE_BLOB_OVERRIDES = {"festivalFlowers"}
 
 
-def extract_bin(obj_path: Path) -> bytes:
-    with tempfile.NamedTemporaryFile(suffix=".bin", delete=False) as tf:
-        out = Path(tf.name)
-    try:
-        subprocess.run(
-            [OBJCOPY, "-O", "binary", "-j", ".data", str(obj_path), str(out)],
-            check=True,
-            capture_output=True,
-        )
-        return out.read_bytes()
-    finally:
-        out.unlink(missing_ok=True)
-
-
 def verify_one(texture_path: Path, idx_path: Path, sht_path: Path | None) -> tuple[int, int]:
-    texture = extract_bin(texture_path)
-    idx_bytes = extract_bin(idx_path)
-    sht_bytes = extract_bin(sht_path) if sht_path else None
+    texture = texture_path.read_bytes()
+    idx_bytes = idx_path.read_bytes()
+    sht_bytes = sht_path.read_bytes() if sht_path else None
 
-    base = texture_path.name[: -len("Texture.bin.o")]
+    base = texture_path.name[: -len("Texture.bin")]
     mode = "whole-blob" if base in WHOLE_BLOB_OVERRIDES else "auto"
     new_tex, new_idx_bytes, new_sht_bytes = process(texture, idx_bytes, sht_bytes, mode=mode)
 
@@ -96,10 +78,10 @@ def verify_one(texture_path: Path, idx_path: Path, sht_path: Path | None) -> tup
 
 def main():
     pairs = []
-    for tex in sorted(BUILD.rglob("*Texture.bin.o")):
-        base = tex.name[: -len("Texture.bin.o")]
-        idx = tex.parent / f"{base}AssetsIndex.bin.o"
-        sht = tex.parent / f"{base}SpritesheetIndex.bin.o"
+    for tex in sorted(BUILD.rglob("*Texture.bin")):
+        base = tex.name[: -len("Texture.bin")]
+        idx = tex.parent / f"{base}AssetsIndex.bin"
+        sht = tex.parent / f"{base}SpritesheetIndex.bin"
         if not idx.exists():
             continue
         pairs.append((tex, idx, sht if sht.exists() else None))

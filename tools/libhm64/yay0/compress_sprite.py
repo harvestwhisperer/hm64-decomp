@@ -19,8 +19,8 @@ offsets shift to reflect the new (smaller) spritesheet sub-region. Callers
 that use `nextOffset - thisOffset` as a DMA length still work unchanged —
 the difference is just the compressed length now.
 
-I/O model: takes raw .bin inputs, writes raw .bin outputs. The Makefile
-wraps them back into .bin.o via `ld -r -b binary`.
+I/O model: takes raw .bin inputs, writes Yay0-compressed .bin.yay0 outputs.
+The Makefile wraps them into .bin.yay0.o via `ld -r -b binary`.
 """
 
 import argparse
@@ -48,7 +48,7 @@ def pack_u32_be(values: list[int], total_entries: int) -> bytes:
 def unique_frames(sheet_index: list[int]) -> list[int]:
     """Return the list of distinct consecutive offsets, stopping at the first regression.
 
-    Trailing zeros in SpritesheetIndex are padding to the .bin.o alignment.
+    Trailing zeros in SpritesheetIndex are padding to alignment.
     The last real entry equals the uncompressed spritesheet length (sentinel).
     """
     out = []
