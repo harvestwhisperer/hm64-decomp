@@ -36,14 +36,14 @@ yay0Decode:
 
 main_loop:
     bnez    $a2, have_bits
-     nop
+    nop
     lw      $t0, 0($a0)         # load next 32 flag bits
     li      $a2, 0x20
     addiu   $a0, $a0, 4
 
 have_bits:
     bltz    $t0, literal_path   # top bit set -> literal
-     nop
+    nop
 
 # --- Back-reference ---
     lhu     $t2, 0($a3)         # 16-bit link (native BE on VR4300)
@@ -51,7 +51,7 @@ have_bits:
     srl     $t3, $t2, 12        # raw len bits (0 = extended)
     andi    $t2, $t2, 0xFFF     # raw dist
     beqz    $t3, extended_len
-     subu   $t1, $a1, $t2       # from = dst - raw_dist  [delay slot]
+    subu    $t1, $a1, $t2       # from = dst - raw_dist  [delay slot]
     addiu   $t3, $t3, 2         # short_len = raw_len + 2
 
 byte_loop:
@@ -60,21 +60,21 @@ byte_loop:
     addiu   $t1, $t1, 1
     sb      $t2, 0($a1)
     bnez    $t3, byte_loop
-     addiu  $a1, $a1, 1
+    addiu   $a1, $a1, 1
 
 advance:
     sll     $t0, $t0, 1
     bne     $a1, $t8, main_loop
-     addiu  $a2, $a2, -1
+    addiu   $a2, $a2, -1
     jr      $ra
-     nop
+    nop
 
 # --- Extended back-ref length ---
 extended_len:
     lbu     $t3, 0($t9)
     addiu   $t9, $t9, 1
     b       byte_loop
-     addiu  $t3, $t3, 0x12      # ext_len = byte + 18
+    addiu   $t3, $t3, 0x12      # ext_len = byte + 18
 
 # --- Literal ---
 literal_path:
@@ -82,6 +82,6 @@ literal_path:
     addiu   $t9, $t9, 1
     sb      $t2, 0($a1)
     b       advance
-     addiu  $a1, $a1, 1
+    addiu   $a1, $a1, 1
 
 .end yay0Decode

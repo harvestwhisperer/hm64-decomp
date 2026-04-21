@@ -1082,14 +1082,18 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
                 setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr((objectCount - i) - 1, globalSprites[spriteIndex].bitmapMetadataPtr));
                 
                 texturePtr += length;
-            
-                if (animationType == 2) {
-                    setSpriteDMAInfo(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
-                }
-            
-                length = getTextureLength(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
 
-} else {
+                if (animationType == 2) {
+                    // DMAs + decodes the frame synchronously and returns the
+                    // decompressed size, which is what we need to stride
+                    // texturePtr in RAM for layered frames. getTextureLength
+                    // below would return the compressed length.
+                    length = setSpriteDMAInfo(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
+                } else {
+                    length = getTextureLength(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
+                }
+
+            } else {
                 
                 setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr(((animationFrameMetadataPtr->objectCount - i) - 1), globalSprites[spriteIndex].bitmapMetadataPtr));
                 texturePtr = getTexturePtr(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
