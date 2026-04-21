@@ -483,8 +483,6 @@ Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) 
 
     u16 remainingSize;
     
-    Gfx tempDl[2];
-    
     bitmap->spriteNumber = spriteNumber;
 
     dl = setBitmapBlendModeDisplayList(dl, (bitmap->renderingFlags >> 10) & 7);
