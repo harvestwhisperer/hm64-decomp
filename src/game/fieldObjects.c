@@ -863,7 +863,7 @@ u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthInd
         case BEACH_AUTUMN:
         case BEACH_WINTER:
         case RACE_TRACK_SPRING:
-        case RACE_TRACK_SUMMER:
+        // case RACE_TRACK_SUMMER:
         case RACE_TRACK_AUTUMN:
         case RACE_TRACK_WINTER:
         case MOUNTAIN_1_SUMMER:
@@ -909,7 +909,6 @@ u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthInd
         case MAYOR_HOUSE:
         case POTION_SHOP_BEDROOM:
         case POTION_SHOP:
-        case EMPTY_MAP_2:
         case HARVEST_SPRITE_CAVE:
         case KAREN_ROOM:
         case VINEYARD_SPRING:

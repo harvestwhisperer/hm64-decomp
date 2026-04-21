@@ -564,7 +564,6 @@ beginwave
     include "beachWinterMap"
 
     include "raceTrackSpringMap"
-    include "raceTrackSummerMap"
     include "raceTrackFallMap"
     include "raceTrackWinterMap"
 
