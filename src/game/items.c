@@ -2835,7 +2835,7 @@ bool handlePutDownHeldItem(u8 itemIndex) {
             dogInfo.direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
             dogInfo.location = gBaseMapIndex;
 
-            dogInfo.flags &= ~8;
+            dogInfo.flags &= ~DOG_HELD;
 
             initializeDogEntity();
             
@@ -3359,7 +3359,7 @@ void updateHeldItemState(void) {
 
                     case ITEM_STATE_THROW_FLIGHT:
                         
-                        if (entities[ENTITY_ITEM_BASE_INDEX + i].flags & 0x800) {
+                        if (entities[ENTITY_ITEM_BASE_INDEX + i].flags & ENTITY_TOUCHING_GROUND) {
                             
                             itemInfo[i].movement.x = 0;
                             itemInfo[i].movement.y = 0;
