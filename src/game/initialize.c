@@ -1595,111 +1595,104 @@ void setDialogueBytecodeAddresses(void) {
 void initializeDialogueVariables(void) {
 
     // alcohol tolerance is first lol
-    setDialogueVariable(0, &gAlcoholTolerance, UNSIGNED_CHAR, MAX_ALCOHOL_TOLERANCE);
+    setDialogueVariable(VAR_ALCOHOL_TOLERANCE, &gAlcoholTolerance, UNSIGNED_CHAR, MAX_ALCOHOL_TOLERANCE);
 
-    setDialogueVariable(1, &gSeason, UNSIGNED_CHAR, 4);
-    setDialogueVariable(2, &gHour, UNSIGNED_CHAR, 23);
-    setDialogueVariable(3, &gWeather, UNSIGNED_CHAR, 5);
-    setDialogueVariable(4, &gDayOfWeek, UNSIGNED_CHAR, 6);
-    setDialogueVariable(5, &gYear, UNSIGNED_CHAR, 99);
-    
-    setDialogueVariable(6, &gItemBeingHeld, UNSIGNED_CHAR, TOTAL_ITEMS);
+    setDialogueVariable(VAR_SEASON, &gSeason, UNSIGNED_CHAR, 4);
+    setDialogueVariable(VAR_HOUR, &gHour, UNSIGNED_CHAR, 23);
+    setDialogueVariable(VAR_WEATHER, &gWeather, UNSIGNED_CHAR, 5);
+    setDialogueVariable(VAR_DAY_OF_WEEK, &gDayOfWeek, UNSIGNED_CHAR, 6);
+    setDialogueVariable(VAR_YEAR, &gYear, UNSIGNED_CHAR, 99);
 
-    setDialogueVariable(7, &npcAffection[MARIA], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(8, &npcAffection[POPURI], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(9, &npcAffection[ELLI], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0xA, &npcAffection[ANN], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0xB, &npcAffection[KAREN], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0xC, &npcAffection[HARRIS], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0xD, &npcAffection[GRAY], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0xE, &npcAffection[JEFF], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0xF, &npcAffection[CLIFF], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x10, &npcAffection[KAI], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x11, &npcAffection[MAYOR], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x12, &npcAffection[MAYOR_WIFE], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x13, &npcAffection[LILLIA], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x14, &npcAffection[BASIL], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x15, &npcAffection[ELLEN], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x16, &npcAffection[PASTOR], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x17, &npcAffection[RICK], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x18, &npcAffection[SAIBARA], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x19, &npcAffection[POTION_SHOP_DEALER], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x1A, &npcAffection[KENT], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x1B, &npcAffection[STU], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x1C, &npcAffection[MIDWIFE], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x1D, &npcAffection[MAY], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x1E, &npcAffection[CARPENTER_1], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x1F, &npcAffection[CARPENTER_2], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x20, &npcAffection[MASTER_CARPENTER], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x21, &npcAffection[HARVEST_SPRITE_1], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x22, &npcAffection[SYDNEY], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x23, &npcAffection[BARLEY], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x24, &npcAffection[GREG], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x25, &npcAffection[BABY], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_ITEM_BEING_HELD, &gItemBeingHeld, UNSIGNED_CHAR, TOTAL_ITEMS);
 
-    // sum of girls' affection
-    setDialogueVariable(0x26, &D_80215DF0, UNSIGNED_SHORT, MAX_AFFECTION * 5);
+    setDialogueVariable(VAR_AFFECTION_MARIA, &npcAffection[MARIA], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_POPURI, &npcAffection[POPURI], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_ELLI, &npcAffection[ELLI], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_ANN, &npcAffection[ANN], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_KAREN, &npcAffection[KAREN], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_HARRIS, &npcAffection[HARRIS], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_GRAY, &npcAffection[GRAY], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_JEFF, &npcAffection[JEFF], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_CLIFF, &npcAffection[CLIFF], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_KAI, &npcAffection[KAI], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_MAYOR, &npcAffection[MAYOR], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_MAYOR_WIFE, &npcAffection[MAYOR_WIFE], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_LILLIA, &npcAffection[LILLIA], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_BASIL, &npcAffection[BASIL], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_ELLEN, &npcAffection[ELLEN], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_PASTOR, &npcAffection[PASTOR], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_RICK, &npcAffection[RICK], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_SAIBARA, &npcAffection[SAIBARA], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_POTION_SHOP_DEALER, &npcAffection[POTION_SHOP_DEALER], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_KENT, &npcAffection[KENT], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_STU, &npcAffection[STU], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_MIDWIFE, &npcAffection[MIDWIFE], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_MAY, &npcAffection[MAY], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_CARPENTER_1, &npcAffection[CARPENTER_1], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_CARPENTER_2, &npcAffection[CARPENTER_2], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_MASTER_CARPENTER, &npcAffection[MASTER_CARPENTER], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_HARVEST_SPRITE_1, &npcAffection[HARVEST_SPRITE_1], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_SYDNEY, &npcAffection[SYDNEY], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_BARLEY, &npcAffection[BARLEY], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_GREG, &npcAffection[GREG], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_BABY, &npcAffection[BABY], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_TOTAL_BACHELORETTE_AFFECTION, &D_80215DF0, UNSIGNED_SHORT, MAX_AFFECTION * 5);
 
-    setDialogueVariable(0x27, &gDayOfMonth, UNSIGNED_CHAR, 30);
+    setDialogueVariable(VAR_DAY_OF_MONTH, &gDayOfMonth, UNSIGNED_CHAR, 30);
+    setDialogueVariable(VAR_GOLD, &gGold, UNSIGNED_INT, MAX_GOLD);
+    setDialogueVariable(VAR_TOTAL_GRASS_TILES, &gTotalGrassTiles, UNSIGNED_SHORT, 1000);
+    setDialogueVariable(VAR_TOTAL_PINK_CAT_MINT_FLOWERS, &gTotalPinkCatMintFlowersGrowing, UNSIGNED_SHORT, 1000);
 
-    setDialogueVariable(0x28, &gGold, UNSIGNED_INT, MAX_GOLD);
+    setDialogueVariable(VAR_CROPS_SHIPPED_1, &totalTurnipsShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(VAR_CROPS_SHIPPED_2, &totalPotatoesShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(VAR_CROPS_SHIPPED_3, &totalCabbageShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(VAR_CROPS_SHIPPED_4, &totalTomatoesShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(VAR_CROPS_SHIPPED_5, &totalCornShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(VAR_CROPS_SHIPPED_6, &totalEggplantsShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
 
-    setDialogueVariable(0x29, &gTotalGrassTiles, UNSIGNED_SHORT, 1000);
-    setDialogueVariable(0x2A, &gTotalPinkCatMintFlowersGrowing, UNSIGNED_SHORT, 1000);
+    setDialogueVariable(VAR_AFFECTION_DOUG, &npcAffection[DOUG], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_GOTZ, &npcAffection[GOTZ], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_SASHA, &npcAffection[SASHA], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_SHIPPER, &npcAffection[SHIPPER], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_DUKE, &npcAffection[DUKE], UNSIGNED_CHAR, MAX_AFFECTION);
 
-    // crops shipped
-    setDialogueVariable(0x2B, &totalTurnipsShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
-    setDialogueVariable(0x2C, &totalPotatoesShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
-    setDialogueVariable(0x2D, &totalCabbageShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
-    setDialogueVariable(0x2E, &totalTomatoesShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
-    setDialogueVariable(0x2F, &totalCornShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
-    setDialogueVariable(0x30, &totalEggplantsShipped, UNSIGNED_INT, MAX_ITEM_SHIPPING_VALUE);
+    setDialogueVariable(VAR_AFFECTION_HORSE, &horseInfo.affection, UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_FIRST_FARM_ANIMAL, &gFarmAnimals[0].affection, UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_AFFECTION_DOG, &dogInfo.affection, UNSIGNED_CHAR, MAX_AFFECTION);
 
-    setDialogueVariable(0x31, &npcAffection[DOUG], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x32, &npcAffection[GOTZ], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x33, &npcAffection[SASHA], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x34, &npcAffection[SHIPPER], UNSIGNED_CHAR, MAX_AFFECTION);
-    setDialogueVariable(0x35, &npcAffection[DUKE], UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_ELLI_GRIEVING_COUNTER, &gElliGrievingCounter, UNSIGNED_CHAR, 30);
 
-    setDialogueVariable(0x36, &horseInfo.affection, UNSIGNED_CHAR, MAX_AFFECTION);
-    
-    setDialogueVariable(0x37, &gFarmAnimals[0].affection, UNSIGNED_CHAR, MAX_AFFECTION);
+    setDialogueVariable(VAR_BABY_AGE, &gBabyAge, UNSIGNED_CHAR, 120);
+    setDialogueVariable(VAR_WIFE_CONCEPTION_COUNTER, &gWifeConceptionCounter, UNSIGNED_CHAR, 120);
+    setDialogueVariable(VAR_WIFE_CONCEPTION_COUNTER_2, &gWifeConceptionCounter, UNSIGNED_CHAR, 120);
+    setDialogueVariable(VAR_BABY_AGE_2, &gBabyAge, UNSIGNED_CHAR, 120);
 
-    setDialogueVariable(0x38, &dogInfo.affection, UNSIGNED_CHAR, MAX_AFFECTION);
-
-    setDialogueVariable(0x39, &gElliGrievingCounter, UNSIGNED_CHAR, 30);
-
-    setDialogueVariable(0x3A, &gBabyAge, UNSIGNED_CHAR, 120);
-    setDialogueVariable(0x3B, &gWifeConceptionCounter, UNSIGNED_CHAR, 120);
-    setDialogueVariable(0x3C, &gWifeConceptionCounter, UNSIGNED_CHAR, 120);
-    setDialogueVariable(0x3D, &gBabyAge, UNSIGNED_CHAR, 120);
-    
     // unused
-    setDialogueVariable(0x3E, &D_801890D8, UNSIGNED_CHAR, 30);
-    
-    setDialogueVariable(0x3F, &gBabyAge, UNSIGNED_CHAR, 120);
-    
+    setDialogueVariable(VAR_UNUSED_3E, &D_801890D8, UNSIGNED_CHAR, 30);
+
+    setDialogueVariable(VAR_BABY_AGE_3, &gBabyAge, UNSIGNED_CHAR, 120);
+
     // unused
-    setDialogueVariable(0x40, &D_801C4214, UNSIGNED_CHAR, 30);
-    
-    setDialogueVariable(0x41, &gBabyAge, UNSIGNED_CHAR, 120);
-    setDialogueVariable(0x42, &gBabyAge, UNSIGNED_CHAR, 120);
-    
+    setDialogueVariable(VAR_UNUSED_40, &D_801C4214, UNSIGNED_CHAR, 30);
+
+    setDialogueVariable(VAR_BABY_AGE_4, &gBabyAge, UNSIGNED_CHAR, 120);
+    setDialogueVariable(VAR_BABY_AGE_5, &gBabyAge, UNSIGNED_CHAR, 120);
+
     // unsued
-    setDialogueVariable(0x43, &D_80189A48, UNSIGNED_CHAR, 30);
+    setDialogueVariable(VAR_UNUSED_43, &D_80189A48, UNSIGNED_CHAR, 30);
     // unused
-    setDialogueVariable(0x44, &D_80180712, UNSIGNED_CHAR, 30);
+    setDialogueVariable(VAR_UNUSED_44, &D_80180712, UNSIGNED_CHAR, 30);
 
-    setDialogueVariable(0x45, &gWifePregnancyCounter, UNSIGNED_CHAR, 60);
-    setDialogueVariable(0x46, &gWifePregnancyCounter, UNSIGNED_CHAR, 60);
-    
-    // unused
-    setDialogueVariable(0x47, &D_8017044B, UNSIGNED_CHAR, 255);
-    // unused
-    setDialogueVariable(0x48, &D_801C3B64, UNSIGNED_CHAR, 255);
+    setDialogueVariable(VAR_WIFE_PREGNANCY_COUNTER, &gWifePregnancyCounter, UNSIGNED_CHAR, 60);
+    setDialogueVariable(VAR_WIFE_PREGNANCY_COUNTER_2, &gWifePregnancyCounter, UNSIGNED_CHAR, 60);
 
-    setDialogueVariable(0x49, &gWifePregnancyCounter, UNSIGNED_CHAR, 60);
-    setDialogueVariable(0x4A, &gWifePregnancyCounter, UNSIGNED_CHAR, 60);
-    setDialogueVariable(0x4B, &gWifePregnancyCounter, UNSIGNED_CHAR, 60);
+    // unused
+    setDialogueVariable(VAR_UNUSED_47, &D_8017044B, UNSIGNED_CHAR, 255);
+    // unused
+    setDialogueVariable(VAR_UNUSED_48, &D_801C3B64, UNSIGNED_CHAR, 255);
+
+    setDialogueVariable(VAR_WIFE_PREGNANCY_COUNTER_3, &gWifePregnancyCounter, UNSIGNED_CHAR, 60);
+    setDialogueVariable(VAR_WIFE_PREGNANCY_COUNTER_4, &gWifePregnancyCounter, UNSIGNED_CHAR, 60);
+    setDialogueVariable(VAR_WIFE_PREGNANCY_COUNTER_5, &gWifePregnancyCounter, UNSIGNED_CHAR, 60);
 
 }

@@ -470,7 +470,7 @@ bool unloadMapAssets(u16 mapIndex) {
 
     if (mapIndex == MAIN_MAP_INDEX && (mapControllers[mapIndex].flags & MAP_CONTROLLER_INITIALIZED) && (mapControllers[mapIndex].flags & MAP_CONTROLLER_ACTIVE)) {
         deactivateMapSprites(mapControllers[mapIndex].mainMapIndex);
-        mapControllers[mapIndex].flags &= ~(2 | 4);
+        mapControllers[mapIndex].flags &= ~(MAP_CONTROLLER_ASSETS_LOADED | MAP_CONTROLLER_ACTIVE);
         result = TRUE;
     }
 
@@ -483,7 +483,7 @@ void deactivateAllMapControllers(void) {
     u16 i;
 
     for (i = 0; i < MAX_MAPS; i++) {
-        mapControllers[i].flags &= ~( 2 | 4);        
+        mapControllers[i].flags &= ~(MAP_CONTROLLER_ASSETS_LOADED | MAP_CONTROLLER_ACTIVE);        
     }    
 
 }
