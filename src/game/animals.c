@@ -1465,7 +1465,7 @@ void setDogLocation(u8 mapIndex) {
         dogInfo.location = FARM;
         dogInfo.coordinates.y = 0.0f;
         dogInfo.direction = SOUTHWEST;
-        dogInfo.flags &= ~0x8;
+        dogInfo.flags &= ~DOG_HELD;
         dogInfo.coordinates.x = -432.0f;
         dogInfo.coordinates.z = 96.0f;
     }

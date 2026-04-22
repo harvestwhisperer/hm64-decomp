@@ -185,7 +185,7 @@ void handleWifeCratesEggs(void) {
  
     for (i = 0; i < MAX_CHICKENS; i++) {
         
-        if (gChickens[i].flags & CHICKEN_ACTIVE && gChickens[i].type == 0 && !(gChickens[i].flags & 0x20)) {
+        if (gChickens[i].flags & CHICKEN_ACTIVE && gChickens[i].type == 0 && !(gChickens[i].flags & CHICKEN_EGG_INCUBATING)) {
             
             setSpecialDialogueBit(WIFE_HELPS_CRATE_EGGS_DIALOGUE);
             gChickens[i].flags = 0;

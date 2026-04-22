@@ -373,105 +373,105 @@ segments:
       - [ 0xF3F70, .data, game/shop]
       - [ 0xF4B40, .data, game/gameFile]
 
-      - name: data/animationScripts/animationScripts
+      - name: data/animation/entityAnimationScripts/entityAnimationScripts
         type: animationScripts
         start: 0xF4B50
         subsegments:
-          - { start: 0xF4B50, type: animationScriptData, name: data/animationScripts/player }
-          - { start: 0xF50D0, type: animationScriptData, name: data/animationScripts/maria }
-          - { start: 0xF51D0, type: animationScriptData, name: data/animationScripts/popuri }
-          - { start: 0xF52F0, type: animationScriptData, name: data/animationScripts/elli }
-          - { start: 0xF53F0, type: animationScriptData, name: data/animationScripts/ann }
-          - { start: 0xF5500, type: animationScriptData, name: data/animationScripts/karen }
-          - { start: 0xF55F4, type: animationScriptData, name: data/animationScripts/gray }
-          - { start: 0xF5660, type: animationScriptData, name: data/animationScripts/jeff }
-          - { start: 0xF56C8, type: animationScriptData, name: data/animationScripts/cliff }
-          - { start: 0xF5718, type: animationScriptData, name: data/animationScripts/kai }
-          - { start: 0xF5778, type: animationScriptData, name: data/animationScripts/rick }
-          - { start: 0xF57A8, type: animationScriptData, name: data/animationScripts/masterCarpenter }
-          - { start: 0xF57CC, type: animationScriptData, name: data/animationScripts/shadySalesman }
-          - { start: 0xF57FC, type: animationScriptData, name: data/animationScripts/duke }
-          - { start: 0xF5820, type: animationScriptData, name: data/animationScripts/harvestSprite }
-          - { start: 0xF5870, type: animationScriptData, name: data/animationScripts/princess }
-          - { start: 0xF5890, type: animationScriptData, name: data/animationScripts/may }
-          - { start: 0xF58BC, type: animationScriptData, name: data/animationScripts/touristCoupleMan }
-          - { start: 0xF58E0, type: animationScriptData, name: data/animationScripts/touristCoupleWoman }
-          - { start: 0xF5900, type: animationScriptData, name: data/animationScripts/oldMan }
-          - { start: 0xF5920, type: animationScriptData, name: data/animationScripts/oldWoman }
-          - { start: 0xF5940, type: animationScriptData, name: data/animationScripts/festivalGirl1 }
-          - { start: 0xF5960, type: animationScriptData, name: data/animationScripts/festivalGirl2 }
-          - { start: 0xF5980, type: animationScriptData, name: data/animationScripts/festivalGirl3 }
-          - { start: 0xF59A0, type: animationScriptData, name: data/animationScripts/midwife }
-          - { start: 0xF59E4, type: animationScriptData, name: data/animationScripts/mayorWife }
-          - { start: 0xF5A0C, type: animationScriptData, name: data/animationScripts/lillia }
-          - { start: 0xF5A34, type: animationScriptData, name: data/animationScripts/mariaHarrisBaby }
-          - { start: 0xF5A54, type: animationScriptData, name: data/animationScripts/popuriGrayBaby }
-          - { start: 0xF5A74, type: animationScriptData, name: data/animationScripts/elliJeffBaby }
-          - { start: 0xF5A94, type: animationScriptData, name: data/animationScripts/annCliffBaby }
-          - { start: 0xF5AB4, type: animationScriptData, name: data/animationScripts/karenKaiBaby }
-          - { start: 0xF5AD4, type: animationScriptData, name: data/animationScripts/baby }
-          - { start: 0xF5BF4, type: animationScriptData, name: data/animationScripts/pastor }
-          - { start: 0xF5C1C, type: animationScriptData, name: data/animationScripts/sasha }
-          - { start: 0xF5C40, type: animationScriptData, name: data/animationScripts/potionShopDealer }
-          - { start: 0xF5C6C, type: animationScriptData, name: data/animationScripts/harris }
-          - { start: 0xF5CC4, type: animationScriptData, name: data/animationScripts/mayor }
-          - { start: 0xF5CF8, type: animationScriptData, name: data/animationScripts/doug }
-          - { start: 0xF5D1C, type: animationScriptData, name: data/animationScripts/gotz }
-          - { start: 0xF5D40, type: animationScriptData, name: data/animationScripts/shipper }
-          - { start: 0xF5D74, type: animationScriptData, name: data/animationScripts/basil }
-          - { start: 0xF5DA0, type: animationScriptData, name: data/animationScripts/kent }
-          - { start: 0xF5E00, type: animationScriptData, name: data/animationScripts/stu }
-          - { start: 0xF5E5C, type: animationScriptData, name: data/animationScripts/assistantCarpenter }
-          - { start: 0xF5ECC, type: animationScriptData, name: data/animationScripts/entomologist }
-          - { start: 0xF5EF0, type: animationScriptData, name: data/animationScripts/greg }
-          - { start: 0xF5F24, type: animationScriptData, name: data/animationScripts/photographer }
-          - { start: 0xF5F54, type: animationScriptData, name: data/animationScripts/saibara }
-          - { start: 0xF5F84, type: animationScriptData, name: data/animationScripts/ellen }
-          - { start: 0xF5F98, type: animationScriptData, name: data/animationScripts/barley }
-          - { start: 0xF5FB8, type: animationScriptData, name: data/animationScripts/sydney }
-          - { start: 0xF5FF8, type: animationScriptData, name: data/animationScripts/spiritFestivalOcarinaPerformer }
-          - { start: 0xF6004, type: animationScriptData, name: data/animationScripts/gourmetJudge }
-          - { start: 0xF6028, type: animationScriptData, name: data/animationScripts/mrsMana }
-          - { start: 0xF6048, type: animationScriptData, name: data/animationScripts/mrsManaSon }
-          - { start: 0xF6068, type: animationScriptData, name: data/animationScripts/kappa }
-          - { start: 0xF606C, type: animationScriptData, name: data/animationScripts/harvestGoddess }
-          - { start: 0xF6090, type: animationScriptData, name: data/animationScripts/dog }
-          - { start: 0xF6240, type: animationScriptData, name: data/animationScripts/dogVillage }
-          - { start: 0xF6330, type: animationScriptData, name: data/animationScripts/chicken }
-          - { start: 0xF63A0, type: animationScriptData, name: data/animationScripts/chick }
-          - { start: 0xF63D0, type: animationScriptData, name: data/animationScripts/cow }
-          - { start: 0xF6650, type: animationScriptData, name: data/animationScripts/calf }
-          - { start: 0xF6710, type: animationScriptData, name: data/animationScripts/youngCow }
-          - { start: 0xF67D0, type: animationScriptData, name: data/animationScripts/cowIndoors }
-          - { start: 0xF68A0, type: animationScriptData, name: data/animationScripts/sheep }
-          - { start: 0xF69A0, type: animationScriptData, name: data/animationScripts/lamb }
-          - { start: 0xF6A00, type: animationScriptData, name: data/animationScripts/horseGrown }
-          - { start: 0xF6AB0, type: animationScriptData, name: data/animationScripts/horsePony }
-          - { start: 0xF6B20, type: animationScriptData, name: data/animationScripts/cat }
-          - { start: 0xF6BA0, type: animationScriptData, name: data/animationScripts/horseUnbridled }
-          - { start: 0xF6BC0, type: animationScriptData, name: data/animationScripts/fox }
-          - { start: 0xF6C00, type: animationScriptData, name: data/animationScripts/squirrel }
-          - { start: 0xF6C40, type: animationScriptData, name: data/animationScripts/monkey }
-          - { start: 0xF6C90, type: animationScriptData, name: data/animationScripts/hawk }
-          - { start: 0xF6CD0, type: animationScriptData, name: data/animationScripts/bunny }
-          - { start: 0xF6D10, type: animationScriptData, name: data/animationScripts/mouse }
-          - { start: 0xF6D34, type: animationScriptData, name: data/animationScripts/bird }
-          - { start: 0xF6D64, type: animationScriptData, name: data/animationScripts/crab }
-          - { start: 0xF6D84, type: animationScriptData, name: data/animationScripts/snake }
-          - { start: 0xF6DA4, type: animationScriptData, name: data/animationScripts/whiteButterfly }
-          - { start: 0xF6DB4, type: animationScriptData, name: data/animationScripts/ladybug }
-          - { start: 0xF6DBC, type: animationScriptData, name: data/animationScripts/cicada }
-          - { start: 0xF6DC4, type: animationScriptData, name: data/animationScripts/hornedBeetle }
-          - { start: 0xF6DD4, type: animationScriptData, name: data/animationScripts/stagBeetle }
-          - { start: 0xF6DE4, type: animationScriptData, name: data/animationScripts/dragonfly }
-          - { start: 0xF6DEC, type: animationScriptData, name: data/animationScripts/cricket }
-          - { start: 0xF6DF4, type: animationScriptData, name: data/animationScripts/homeItems }
-          - { start: 0xF6DFC, type: animationScriptData, name: data/animationScripts/expressionBubbles }
-          - { start: 0xF6E10, type: animationScriptData, name: data/animationScripts/heldItems }
-          - { start: 0xF7010, type: animationScriptData, name: data/animationScripts/thrownItems }
-          - { start: 0xF70A0, type: animationScriptData, name: data/animationScripts/tools }
-          - { start: 0xF7100, type: animationScriptData, name: data/animationScripts/toolEffects }
-          - { start: 0xF7118, type: animationScriptData, name: data/animationScripts/characterAvatars, extract: false }
+          - { start: 0xF4B50, type: animationScriptData, name: data/animation/entityAnimationScripts/player }
+          - { start: 0xF50D0, type: animationScriptData, name: data/animation/entityAnimationScripts/maria }
+          - { start: 0xF51D0, type: animationScriptData, name: data/animation/entityAnimationScripts/popuri }
+          - { start: 0xF52F0, type: animationScriptData, name: data/animation/entityAnimationScripts/elli }
+          - { start: 0xF53F0, type: animationScriptData, name: data/animation/entityAnimationScripts/ann }
+          - { start: 0xF5500, type: animationScriptData, name: data/animation/entityAnimationScripts/karen }
+          - { start: 0xF55F4, type: animationScriptData, name: data/animation/entityAnimationScripts/gray }
+          - { start: 0xF5660, type: animationScriptData, name: data/animation/entityAnimationScripts/jeff }
+          - { start: 0xF56C8, type: animationScriptData, name: data/animation/entityAnimationScripts/cliff }
+          - { start: 0xF5718, type: animationScriptData, name: data/animation/entityAnimationScripts/kai }
+          - { start: 0xF5778, type: animationScriptData, name: data/animation/entityAnimationScripts/rick }
+          - { start: 0xF57A8, type: animationScriptData, name: data/animation/entityAnimationScripts/masterCarpenter }
+          - { start: 0xF57CC, type: animationScriptData, name: data/animation/entityAnimationScripts/shadySalesman }
+          - { start: 0xF57FC, type: animationScriptData, name: data/animation/entityAnimationScripts/duke }
+          - { start: 0xF5820, type: animationScriptData, name: data/animation/entityAnimationScripts/harvestSprite }
+          - { start: 0xF5870, type: animationScriptData, name: data/animation/entityAnimationScripts/princess }
+          - { start: 0xF5890, type: animationScriptData, name: data/animation/entityAnimationScripts/may }
+          - { start: 0xF58BC, type: animationScriptData, name: data/animation/entityAnimationScripts/touristCoupleMan }
+          - { start: 0xF58E0, type: animationScriptData, name: data/animation/entityAnimationScripts/touristCoupleWoman }
+          - { start: 0xF5900, type: animationScriptData, name: data/animation/entityAnimationScripts/oldMan }
+          - { start: 0xF5920, type: animationScriptData, name: data/animation/entityAnimationScripts/oldWoman }
+          - { start: 0xF5940, type: animationScriptData, name: data/animation/entityAnimationScripts/festivalGirl1 }
+          - { start: 0xF5960, type: animationScriptData, name: data/animation/entityAnimationScripts/festivalGirl2 }
+          - { start: 0xF5980, type: animationScriptData, name: data/animation/entityAnimationScripts/festivalGirl3 }
+          - { start: 0xF59A0, type: animationScriptData, name: data/animation/entityAnimationScripts/midwife }
+          - { start: 0xF59E4, type: animationScriptData, name: data/animation/entityAnimationScripts/mayorWife }
+          - { start: 0xF5A0C, type: animationScriptData, name: data/animation/entityAnimationScripts/lillia }
+          - { start: 0xF5A34, type: animationScriptData, name: data/animation/entityAnimationScripts/mariaHarrisBaby }
+          - { start: 0xF5A54, type: animationScriptData, name: data/animation/entityAnimationScripts/popuriGrayBaby }
+          - { start: 0xF5A74, type: animationScriptData, name: data/animation/entityAnimationScripts/elliJeffBaby }
+          - { start: 0xF5A94, type: animationScriptData, name: data/animation/entityAnimationScripts/annCliffBaby }
+          - { start: 0xF5AB4, type: animationScriptData, name: data/animation/entityAnimationScripts/karenKaiBaby }
+          - { start: 0xF5AD4, type: animationScriptData, name: data/animation/entityAnimationScripts/baby }
+          - { start: 0xF5BF4, type: animationScriptData, name: data/animation/entityAnimationScripts/pastor }
+          - { start: 0xF5C1C, type: animationScriptData, name: data/animation/entityAnimationScripts/sasha }
+          - { start: 0xF5C40, type: animationScriptData, name: data/animation/entityAnimationScripts/potionShopDealer }
+          - { start: 0xF5C6C, type: animationScriptData, name: data/animation/entityAnimationScripts/harris }
+          - { start: 0xF5CC4, type: animationScriptData, name: data/animation/entityAnimationScripts/mayor }
+          - { start: 0xF5CF8, type: animationScriptData, name: data/animation/entityAnimationScripts/doug }
+          - { start: 0xF5D1C, type: animationScriptData, name: data/animation/entityAnimationScripts/gotz }
+          - { start: 0xF5D40, type: animationScriptData, name: data/animation/entityAnimationScripts/shipper }
+          - { start: 0xF5D74, type: animationScriptData, name: data/animation/entityAnimationScripts/basil }
+          - { start: 0xF5DA0, type: animationScriptData, name: data/animation/entityAnimationScripts/kent }
+          - { start: 0xF5E00, type: animationScriptData, name: data/animation/entityAnimationScripts/stu }
+          - { start: 0xF5E5C, type: animationScriptData, name: data/animation/entityAnimationScripts/assistantCarpenter }
+          - { start: 0xF5ECC, type: animationScriptData, name: data/animation/entityAnimationScripts/entomologist }
+          - { start: 0xF5EF0, type: animationScriptData, name: data/animation/entityAnimationScripts/greg }
+          - { start: 0xF5F24, type: animationScriptData, name: data/animation/entityAnimationScripts/photographer }
+          - { start: 0xF5F54, type: animationScriptData, name: data/animation/entityAnimationScripts/saibara }
+          - { start: 0xF5F84, type: animationScriptData, name: data/animation/entityAnimationScripts/ellen }
+          - { start: 0xF5F98, type: animationScriptData, name: data/animation/entityAnimationScripts/barley }
+          - { start: 0xF5FB8, type: animationScriptData, name: data/animation/entityAnimationScripts/sydney }
+          - { start: 0xF5FF8, type: animationScriptData, name: data/animation/entityAnimationScripts/spiritFestivalOcarinaPerformer }
+          - { start: 0xF6004, type: animationScriptData, name: data/animation/entityAnimationScripts/gourmetJudge }
+          - { start: 0xF6028, type: animationScriptData, name: data/animation/entityAnimationScripts/mrsMana }
+          - { start: 0xF6048, type: animationScriptData, name: data/animation/entityAnimationScripts/mrsManaSon }
+          - { start: 0xF6068, type: animationScriptData, name: data/animation/entityAnimationScripts/kappa }
+          - { start: 0xF606C, type: animationScriptData, name: data/animation/entityAnimationScripts/harvestGoddess }
+          - { start: 0xF6090, type: animationScriptData, name: data/animation/entityAnimationScripts/dog }
+          - { start: 0xF6240, type: animationScriptData, name: data/animation/entityAnimationScripts/dogVillage }
+          - { start: 0xF6330, type: animationScriptData, name: data/animation/entityAnimationScripts/chicken }
+          - { start: 0xF63A0, type: animationScriptData, name: data/animation/entityAnimationScripts/chick }
+          - { start: 0xF63D0, type: animationScriptData, name: data/animation/entityAnimationScripts/cow }
+          - { start: 0xF6650, type: animationScriptData, name: data/animation/entityAnimationScripts/calf }
+          - { start: 0xF6710, type: animationScriptData, name: data/animation/entityAnimationScripts/youngCow }
+          - { start: 0xF67D0, type: animationScriptData, name: data/animation/entityAnimationScripts/cowIndoors }
+          - { start: 0xF68A0, type: animationScriptData, name: data/animation/entityAnimationScripts/sheep }
+          - { start: 0xF69A0, type: animationScriptData, name: data/animation/entityAnimationScripts/lamb }
+          - { start: 0xF6A00, type: animationScriptData, name: data/animation/entityAnimationScripts/horseGrown }
+          - { start: 0xF6AB0, type: animationScriptData, name: data/animation/entityAnimationScripts/horsePony }
+          - { start: 0xF6B20, type: animationScriptData, name: data/animation/entityAnimationScripts/cat }
+          - { start: 0xF6BA0, type: animationScriptData, name: data/animation/entityAnimationScripts/horseUnbridled }
+          - { start: 0xF6BC0, type: animationScriptData, name: data/animation/entityAnimationScripts/fox }
+          - { start: 0xF6C00, type: animationScriptData, name: data/animation/entityAnimationScripts/squirrel }
+          - { start: 0xF6C40, type: animationScriptData, name: data/animation/entityAnimationScripts/monkey }
+          - { start: 0xF6C90, type: animationScriptData, name: data/animation/entityAnimationScripts/hawk }
+          - { start: 0xF6CD0, type: animationScriptData, name: data/animation/entityAnimationScripts/bunny }
+          - { start: 0xF6D10, type: animationScriptData, name: data/animation/entityAnimationScripts/mouse }
+          - { start: 0xF6D34, type: animationScriptData, name: data/animation/entityAnimationScripts/bird }
+          - { start: 0xF6D64, type: animationScriptData, name: data/animation/entityAnimationScripts/crab }
+          - { start: 0xF6D84, type: animationScriptData, name: data/animation/entityAnimationScripts/snake }
+          - { start: 0xF6DA4, type: animationScriptData, name: data/animation/entityAnimationScripts/whiteButterfly }
+          - { start: 0xF6DB4, type: animationScriptData, name: data/animation/entityAnimationScripts/ladybug }
+          - { start: 0xF6DBC, type: animationScriptData, name: data/animation/entityAnimationScripts/cicada }
+          - { start: 0xF6DC4, type: animationScriptData, name: data/animation/entityAnimationScripts/hornedBeetle }
+          - { start: 0xF6DD4, type: animationScriptData, name: data/animation/entityAnimationScripts/stagBeetle }
+          - { start: 0xF6DE4, type: animationScriptData, name: data/animation/entityAnimationScripts/dragonfly }
+          - { start: 0xF6DEC, type: animationScriptData, name: data/animation/entityAnimationScripts/cricket }
+          - { start: 0xF6DF4, type: animationScriptData, name: data/animation/entityAnimationScripts/homeItems }
+          - { start: 0xF6DFC, type: animationScriptData, name: data/animation/entityAnimationScripts/expressionBubbles }
+          - { start: 0xF6E10, type: animationScriptData, name: data/animation/entityAnimationScripts/heldItems }
+          - { start: 0xF7010, type: animationScriptData, name: data/animation/entityAnimationScripts/thrownItems }
+          - { start: 0xF70A0, type: animationScriptData, name: data/animation/entityAnimationScripts/tools }
+          - { start: 0xF7100, type: animationScriptData, name: data/animation/entityAnimationScripts/toolEffects }
+          - { start: 0xF7118, type: animationScriptData, name: data/animation/characterAvatars/characterAvatars, extract: false }
 
       - [ 0xF71B0, .data, data/audio/sfx]
       - [ 0xF7A80, .data, game/namingScreen]
@@ -2897,7 +2897,7 @@ segments:
     dir: maps/ranch
     start: 0x828FC0
 
-  - name: annsRoomMap
+  - name: annRoomMap
     type: hm64map
     dir: maps/ranch
     start: 0x836420
@@ -3073,7 +3073,7 @@ segments:
     dir: maps/pond
     start: 0xA1CF60
 
-  - name: ellisRoomMap
+  - name: elliRoomMap
     type: hm64map
     dir: maps/bakery
     start: 0xA24FB0
@@ -3123,7 +3123,7 @@ segments:
     dir: maps/village/village2
     start: 0xAD4420
 
-  - name: popurisRoomMap
+  - name: popuriRoomMap
     type: hm64map
     dir: maps/flowerShop
     start: 0xAE84D0
@@ -3168,7 +3168,7 @@ segments:
     dir: maps/rickShop
     start: 0xB38990
 
-  - name: midwifesHouseMap
+  - name: midwifeHouseMap
     type: hm64map
     dir: maps/midwife
     start: 0xB3CE10
@@ -3183,14 +3183,14 @@ segments:
     dir: maps/library
     start: 0xB4A9C0
 
-  - name: mariasRoomMap
+  - name: mariaRoomMap
     type: hm64map
-    dir: maps/mayorsHouse
+    dir: maps/mayorHouse
     start: 0xB4E440
 
-  - name: mayorsHouseMap
+  - name: mayorHouseMap
     type: hm64map
-    dir: maps/mayorsHouse
+    dir: maps/mayorHouse
     start: 0xB543D0
 
   - name: potionShopBackroomMap
@@ -3229,7 +3229,7 @@ segments:
     dir: maps/mine
     start: 0xB6E710
 
-  - name: karensRoomMap
+  - name: karenRoomMap
     type: hm64map
     dir: maps/vineyard
     start: 0xB6FB70

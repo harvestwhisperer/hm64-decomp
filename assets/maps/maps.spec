@@ -23,9 +23,9 @@ beginseg
 endseg
 
 beginseg
-    name "annsRoomMap"
+    name "annRoomMap"
     flags RAW
-    include "build/assets/maps/ranch/annsRoomMap.hm64map.o"
+    include "build/assets/maps/ranch/annRoomMap.hm64map.o"
 endseg
 
 beginseg
@@ -233,9 +233,9 @@ beginseg
 endseg
 
 beginseg
-    name "ellisRoomMap"
+    name "elliRoomMap"
     flags RAW
-    include "build/assets/maps/bakery/ellisRoomMap.hm64map.o"
+    include "build/assets/maps/bakery/elliRoomMap.hm64map.o"
 endseg
 
 beginseg
@@ -293,9 +293,9 @@ beginseg
 endseg
 
 beginseg
-    name "popurisRoomMap"
+    name "popuriRoomMap"
     flags RAW
-    include "build/assets/maps/flowerShop/popurisRoomMap.hm64map.o"
+    include "build/assets/maps/flowerShop/popuriRoomMap.hm64map.o"
 endseg
 
 beginseg
@@ -347,9 +347,9 @@ beginseg
 endseg
 
 beginseg
-    name "midwifesHouseMap"
+    name "midwifeHouseMap"
     flags RAW
-    include "build/assets/maps/midwife/midwifesHouseMap.hm64map.o"
+    include "build/assets/maps/midwife/midwifeHouseMap.hm64map.o"
 endseg
 
 beginseg
@@ -365,15 +365,15 @@ beginseg
 endseg
 
 beginseg
-    name "mariasRoomMap"
+    name "mariaRoomMap"
     flags RAW
-    include "build/assets/maps/mayorsHouse/mariasRoomMap.hm64map.o"
+    include "build/assets/maps/mayorHouse/mariaRoomMap.hm64map.o"
 endseg
 
 beginseg
-    name "mayorsHouseMap"
+    name "mayorHouseMap"
     flags RAW
-    include "build/assets/maps/mayorsHouse/mayorsHouseMap.hm64map.o"
+    include "build/assets/maps/mayorHouse/mayorHouseMap.hm64map.o"
 endseg
 
 beginseg
@@ -419,9 +419,9 @@ beginseg
 endseg
 
 beginseg
-    name "karensRoomMap"
+    name "karenRoomMap"
     flags RAW
-    include "build/assets/maps/vineyard/karensRoomMap.hm64map.o"
+    include "build/assets/maps/vineyard/karenRoomMap.hm64map.o"
 endseg
 
 beginseg

@@ -754,7 +754,7 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/game/shop.o \
 	$(BUILD_DIR)/src/game/title.o \
 	$(BUILD_DIR)/src/game/gameFile.o \
-	$(BUILD_DIR)/src/data/animationScripts/animationScripts.o \
+	$(BUILD_DIR)/src/data/animation/animationData.o \
 	$(BUILD_DIR)/src/data/audio/sfx.o \
 	$(BUILD_DIR)/src/game/namingScreen.o \
 	$(BUILD_DIR)/src/game/bssPadding.o
