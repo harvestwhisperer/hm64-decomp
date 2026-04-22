@@ -1,6 +1,6 @@
 #include "common.h"
 
-#include "animationScripts.h"
+#include "characterAvatars.h"
 
 u8 characterAvatarCodesToAnimations[] = {
 	// maria

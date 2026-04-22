@@ -37,7 +37,7 @@
 
 #include "buffers/buffers.h"
 
-#include "data/animationScripts/animationScripts.h"
+#include "data/animation/entityAnimationScripts/entityAnimationScripts.h"
 
 #include "ld_symbols.h"
 

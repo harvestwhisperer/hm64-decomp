@@ -43,15 +43,15 @@ def clear_cache():
 # Explicit area mappings for non-obvious cases
 _EXPLICIT_AREA_MAPPINGS = {
     # Ranch area
-    'annsRoom': 'ranch',
+    'annRoom': 'ranch',
     'ranchBarn': 'ranch',
     'ranchStore': 'ranch',
     'ranchHouse': 'ranch',
     # Bakery area
-    'ellisRoom': 'bakery',
+    'elliRoom': 'bakery',
     'bakery': 'bakery',
     # Flower shop area
-    'popurisRoom': 'flowerShop',
+    'popuriRoom': 'flowerShop',
     'flowerShop': 'flowerShop',
     # Church (standalone)
     'church': 'church',
@@ -60,14 +60,14 @@ _EXPLICIT_AREA_MAPPINGS = {
     # Rick's shop
     'ricksShop': 'rickShop',
     # Midwife
-    'midwifesHouse': 'midwife',
+    'midwifeHouse': 'midwife',
     # Tavern (standalone)
     'tavern': 'tavern',
     # Library (standalone)
     'library': 'library',
     # Mayor's house area
-    'mariasRoom': 'mayorsHouse',
-    'mayorsHouse': 'mayorsHouse',
+    'mariaRoom': 'mayorHouse',
+    'mayorHouse': 'mayorHouse',
     # Potion shop area
     'potionShopBackroom': 'potionShop',
     'potionShop': 'potionShop',
@@ -79,7 +79,7 @@ _EXPLICIT_AREA_MAPPINGS = {
     'emptyMine': 'mine',
     'mine': 'mine',
     # Vineyard area
-    'karensRoom': 'vineyard',
+    'karenRoom': 'vineyard',
     'vineyardHouse': 'vineyard',
     'vineyardCellar': 'vineyard',
     'vineyardCellar1': 'vineyard',

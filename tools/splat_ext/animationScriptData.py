@@ -1,5 +1,5 @@
 """
-Animation script data subsegment (included by animationScripts parent).
+Animation script data subsegment (included by entityAnimationScripts parent).
 """
 
 from pathlib import Path, PurePosixPath
@@ -99,7 +99,7 @@ class N64SegAnimationScriptData(CommonSegCodeSubsegment):
         lines = [
             '#include "common.h"',
             "",
-            '#include "animationScripts.h"',
+            '#include "entityAnimationScripts.h"',
             "",
             f"u16 {basename}AnimationScripts[] = {{",
             "        ",

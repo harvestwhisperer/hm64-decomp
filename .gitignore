@@ -6,7 +6,7 @@
 *.o
 *.s
 *.inc.c
-!/src/data/animationScripts/characterAvatars.inc.c
+!/src/data/animation/characterAvatars/characterAvatars.inc.c
 *.bin
 *.elf
 *.d
