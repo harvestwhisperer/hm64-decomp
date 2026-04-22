@@ -3210,50 +3210,24 @@ void renderGroundObjects(MainMap* mainMap) {
 
 static const Gfx D_8011ED68 = gsDPSetCombineMode(G_CC_MODULATEIA, G_CC_MODULATEIA);
 
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011ED68);
-
 static const Gfx D_8011ED70 = gsDPSetRenderMode(G_RM_RA_ZB_OPA_SURF, G_RM_RA_ZB_OPA_SURF2);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011ED70);
 
 static const Gfx D_8011ED78 = gsDPSetTextureFilter(G_TF_BILERP);
 
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011ED78);
-
 static const Gfx D_8011ED80 = gsSPEndDisplayList();
-
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011ED80);
 
 static const Gfx D_8011ED88 = gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_ON);
 
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011ED88);
-
 static const Gfx D_8011ED90 = gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODULATEIDECALA);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011ED90);
 
 static const Gfx D_8011ED98 = gsSPTexture(0, 0, 0, G_TX_RENDERTILE, G_OFF);
 
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011ED98);
-
 static const Gfx D_8011EDA0 = gsDPSetCombineLERP(PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0, PRIMITIVE, 0, SHADE, 0);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011EDA0);
 
 static const Gfx D_8011EDA8 = gsDPPipeSync();
 
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011EDB0);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011EDB4);
-
 static const Gfx D_8011EDC8 = gsDPSetRenderMode(G_RM_TEX_EDGE, G_RM_TEX_EDGE2);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011EDC8);
 
 static const Gfx D_8011EDD0 = gsSPTexture(0x8000, 0x8000, 0, G_TX_RENDERTILE, G_ON);
 
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011EDD0);
-
 static const Gfx D_8011EDD8 = gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemmap", D_8011EDD8);

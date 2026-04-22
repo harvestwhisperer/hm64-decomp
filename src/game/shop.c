@@ -1450,7 +1450,7 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
             break;
 
-case FLOWER_SHOP_GRASS_SEEDS_ITEM:
+        case FLOWER_SHOP_GRASS_SEEDS_ITEM:
 
             if (0 < gSeason && gSeason < AUTUMN) {
                 result = 1;
@@ -1726,7 +1726,7 @@ case FLOWER_SHOP_GRASS_SEEDS_ITEM:
 
             break;
 
-default:
+        default:
             break;
 
     }
