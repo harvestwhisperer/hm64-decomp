@@ -30,7 +30,7 @@ MASK_HORIZONTAL_FLIP = 0x8000
 # C file templates
 FILE_HEADER = '''#include "common.h"
 
-#include "animationScripts.h"
+#include "entityAnimationScripts.h"
 
 '''
 
@@ -44,7 +44,7 @@ ARRAY_TEMPLATE = '''u16 {label}AnimationScripts[] = {{
 # Default paths
 _REPO_DIR = Path(__file__).resolve().parent.parent.parent.parent
 ANIMATION_ADDRESSES_CSV = ANIMATION_SCRIPTS_ADDRESSES_CSV
-DEFAULT_OUTPUT_DIR = _REPO_DIR / "src" / "data" / "animationScripts"
+DEFAULT_OUTPUT_DIR = _REPO_DIR / "src" / "data" / "animation" / "entityAnimationScripts"
 
 
 def read_slice_as_u16(start: int, end: int) -> np.ndarray:

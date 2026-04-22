@@ -162,348 +162,32 @@ Vec4f previousLightingRGBA;
 
 // lighting values based on hour
 
-// FIXME: these could be D_80113B20[4][24] or struct { r[24]; g[24]; b[24]; a[24]; 
-// TODO: label
+typedef struct {
+    u8 r[24];
+    u8 g[24];
+    u8 b[24];
+    u8 a[24];
+} HourLightingRGBA;
 
-// sunny, weather type 4, typhoon
-// r values
-u8 D_80113B20[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    128,
-    192,
-    192,
-    224,
-    224,
-    224,
-    224,
-    255,
-    255,
-    255,
-    255,
-    255,
-    255,
-    128,
-    128,
-    80,
-    80,
-    80,
-    80,
+HourLightingRGBA sunnyHourLighting = {
+    { 80, 80, 80, 80, 80, 128, 192, 192, 224, 224, 224, 224, 255, 255, 255, 255, 255, 255, 128, 128, 80, 80, 80, 80 },
+    { 80, 80, 80, 80, 80, 128, 192, 192, 224, 224, 224, 224, 255, 255, 255, 255, 224, 192, 128, 128, 80, 80, 80, 80 },
+    { 80, 80, 80, 80, 80, 128, 192, 192, 224, 224, 224, 224, 255, 255, 255, 255, 224, 192, 128, 128, 80, 80, 80, 80 },
+    { 80, 80, 80, 80, 80, 128, 192, 192, 224, 224, 224, 224, 255, 255, 255, 255, 224, 192, 128, 128, 80, 80, 80, 80 },
 };
 
-// g
-u8 D_80113B38[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    128,
-    192,
-    192,
-    224,
-    224,
-    224,
-    224,
-    255,
-    255,
-    255,
-    255,
-    224,
-    192,
-    128,
-    128,
-    80,
-    80,
-    80,
-    80,
+HourLightingRGBA rainHourLighting = {
+    {  80,  80,  80,  80,  80, 112, 112, 112, 128, 128, 128, 128, 144, 144, 144, 144, 128, 128, 112, 112,  80,  80,  80,  80 },
+    {  80,  80,  80,  80,  80, 112, 112, 112, 128, 128, 128, 128, 144, 144, 144, 144, 128, 128, 112, 112,  80,  80,  80,  80 },
+    { 128, 128, 128, 128, 128, 192, 192, 192, 208, 208, 208, 208, 255, 255, 255, 255, 208, 208, 192, 192, 128, 128, 128, 128 },
+    {  80,  80,  80,  80,  80, 112, 112, 112, 128, 128, 128, 128, 144, 144, 144, 144, 128, 128, 112, 112,  80,  80,  80,  80 },
 };
 
-// b
-u8 D_80113B50[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    128,
-    192,
-    192,
-    224,
-    224,
-    224,
-    224,
-    255,
-    255,
-    255,
-    255,
-    224,
-    192,
-    128,
-    128,
-    80,
-    80,
-    80,
-    80,
-};
-
-// a
-u8 D_80113B68[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    128,
-    192,
-    192,
-    224,
-    224,
-    224,
-    224,
-    255,
-    255,
-    255,
-    255,
-    224,
-    192,
-    128,
-    128,
-    80,
-    80,
-    80,
-    80,
-};
-
-// rain
-
-// r
-u8 D_80113B80[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    112,
-    112,
-    112,
-    128,
-    128,
-    128,
-    128,
-    144,
-    144,
-    144,
-    144,
-    128,
-    128,
-    112,
-    112,
-    80,
-    80,
-    80,
-    80,
-};
-
-// g
-u8 D_80113B98[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    112,
-    112,
-    112,
-    128,
-    128,
-    128,
-    128,
-    144,
-    144,
-    144,
-    144,
-    128,
-    128,
-    112,
-    112,
-    80,
-    80,
-    80,
-    80,
-};
-
-// b
-u8 D_80113BB0[24] = {
-    128,
-    128,
-    128,
-    128,
-    128,
-    192,
-    192,
-    192,
-    208,
-    208,
-    208,
-    208,
-    255,
-    255,
-    255,
-    255,
-    208,
-    208,
-    192,
-    192,
-    128,
-    128,
-    128,
-    128,
-};
-
-// a
-u8 D_80113BC8[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    112,
-    112,
-    112,
-    128,
-    128,
-    128,
-    128,
-    144,
-    144,
-    144,
-    144,
-    128,
-    128,
-    112,
-    112,
-    80,
-    80,
-    80,
-    80,
-};
-
-// snow
-
-// r
-u8 D_80113BE0[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    128,
-    192,
-    192,
-    224,
-    224,
-    224,
-    224,
-    255,
-    255,
-    255,
-    255,
-    224,
-    192,
-    128,
-    128,
-    80,
-    80,
-    80,
-    80,
-};
-
-// g
-u8 D_80113BF8[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    128,
-    192,
-    192,
-    224,
-    224,
-    224,
-    224,
-    255,
-    255,
-    255,
-    255,
-    224,
-    192,
-    128,
-    128,
-    80,
-    80,
-    80,
-    80,
-};
-
-// b
-u8 D_80113C10[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    128,
-    192,
-    192,
-    224,
-    224,
-    224,
-    224,
-    255,
-    255,
-    255,
-    255,
-    224,
-    192,
-    128,
-    128,
-    80,
-    80,
-    80,
-    80,
-};
-
-// a
-u8 D_80113C28[24] = {
-    80,
-    80,
-    80,
-    80,
-    80,
-    128,
-    192,
-    192,
-    224,
-    224,
-    224,
-    224,
-    255,
-    255,
-    255,
-    255,
-    224,
-    192,
-    128,
-    128,
-    80,
-    80,
-    80,
-    80,
+HourLightingRGBA snowHourLighting = {
+    { 80, 80, 80, 80, 80, 128, 192, 192, 224, 224, 224, 224, 255, 255, 255, 255, 224, 192, 128, 128, 80, 80, 80, 80 },
+    { 80, 80, 80, 80, 80, 128, 192, 192, 224, 224, 224, 224, 255, 255, 255, 255, 224, 192, 128, 128, 80, 80, 80, 80 },
+    { 80, 80, 80, 80, 80, 128, 192, 192, 224, 224, 224, 224, 255, 255, 255, 255, 224, 192, 128, 128, 80, 80, 80, 80 },
+    { 80, 80, 80, 80, 80, 128, 192, 192, 224, 224, 224, 224, 255, 255, 255, 255, 224, 192, 128, 128, 80, 80, 80, 80 },
 };
 
 // unused or padding
@@ -1266,22 +950,22 @@ void setLevelLighting(s16 rate, u16 callbackFunctionIndex) {
             case SUNNY:
             case 4:
             case TYPHOON:
-                globalLightingRGBA.r = D_80113B20[gHour];
-                globalLightingRGBA.g = D_80113B38[gHour];
-                globalLightingRGBA.b = D_80113B50[gHour];
-                globalLightingRGBA.a = D_80113B68[gHour];
+                globalLightingRGBA.r = sunnyHourLighting.r[gHour];
+                globalLightingRGBA.g = sunnyHourLighting.g[gHour];
+                globalLightingRGBA.b = sunnyHourLighting.b[gHour];
+                globalLightingRGBA.a = sunnyHourLighting.a[gHour];
                 break;
             case RAIN:
-                globalLightingRGBA.r = D_80113B80[gHour];
-                globalLightingRGBA.g = D_80113B98[gHour];
-                globalLightingRGBA.b = D_80113BB0[gHour];
-                globalLightingRGBA.a = D_80113BC8[gHour];  
+                globalLightingRGBA.r = rainHourLighting.r[gHour];
+                globalLightingRGBA.g = rainHourLighting.g[gHour];
+                globalLightingRGBA.b = rainHourLighting.b[gHour];
+                globalLightingRGBA.a = rainHourLighting.a[gHour];
                 break;
             case SNOW:
-                globalLightingRGBA.r = D_80113BE0[gHour];
-                globalLightingRGBA.g = D_80113BF8[gHour];
-                globalLightingRGBA.b = D_80113C10[gHour];
-                globalLightingRGBA.a = D_80113C28[gHour];  
+                globalLightingRGBA.r = snowHourLighting.r[gHour];
+                globalLightingRGBA.g = snowHourLighting.g[gHour];
+                globalLightingRGBA.b = snowHourLighting.b[gHour];
+                globalLightingRGBA.a = snowHourLighting.a[gHour];
                 break;
             default:
                 break;
@@ -2639,7 +2323,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         break;
                     
                     case 1:                      
-                        launchIntroCutscene_2(FUNERAL, 0x61, 1);
+                        launchIntroCutscene_2(FUNERAL, SQUARE_SPAWN_POINT_1, 1);
                         break;
 
                 }
