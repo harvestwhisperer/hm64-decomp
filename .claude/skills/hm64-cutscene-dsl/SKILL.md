@@ -179,7 +179,7 @@ All 98 opcodes organized by category. Parameter types: `u8`/`u16`/`u32`/`s8`/`s1
 | `SETUP_ENTITY` | entity(u16), asset(u16), variant(u16) | Create entity with asset sprite |
 | `SET_ENTITY_ANIMATIONS` | entity(u16), a0-a5(u16 x6) | Set 6 animation indices |
 | `SET_ENTITY_ANIMATION` | anim(u16) | Set current animation |
-| `SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE` | anim(u16) | Set animation and update direction |
+| `SET_ENTITY_DIRECTIONAL_ANIMATION` | anim(u16) | Set animation and update direction |
 | `SET_BEHAVIOR_FLAGS` | flags(u8) | Set entity behavior (1=track entity) |
 | `SET_ENTITY_NON_COLLIDABLE` | | Disable collision |
 | `SET_ENTITY_MAP_SPACE_INDEPENDENT_FLAG` | flag(u16) | Set map-space independent flag |

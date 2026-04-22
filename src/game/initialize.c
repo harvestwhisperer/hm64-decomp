@@ -877,9 +877,9 @@ void initializeEntityAssets(void) {
     setEntityCollisionBuffers(ENTITY_ASSET_SHADY_SALESMAN, 15, 15);
     setEntitySpriteDimensions(ENTITY_ASSET_SHADY_SALESMAN, 12, 12);
     
-    initializeEntityAsset(ENTITY_ASSET_MRS_MANA_SON, &_mrsManaSonTextureSegmentRomStart, &_mrsManaSonTextureSegmentRomEnd, &_mrsManaSonAssetsIndexSegmentRomStart, &_mrsManaSonAssetsIndexSegmentRomEnd, &_mrsManaSonSpritesheetIndexSegmentRomStart, &_mrsManaSonSpritesheetIndexSegmentRomEnd, 1, 0, &mrsManaSonAnimationScripts);
-    setEntityCollisionBuffers(ENTITY_ASSET_MRS_MANA_SON, 15, 15);
-    setEntitySpriteDimensions(ENTITY_ASSET_MRS_MANA_SON, 12, 12);
+    initializeEntityAsset(ENTITY_ASSET_JOHN, &_johnTextureSegmentRomStart, &_johnTextureSegmentRomEnd, &_johnAssetsIndexSegmentRomStart, &_johnAssetsIndexSegmentRomEnd, &_johnSpritesheetIndexSegmentRomStart, &_johnSpritesheetIndexSegmentRomEnd, 1, 0, &johnAnimationScripts);
+    setEntityCollisionBuffers(ENTITY_ASSET_JOHN, 15, 15);
+    setEntitySpriteDimensions(ENTITY_ASSET_JOHN, 12, 12);
     
     initializeEntityAsset(ENTITY_ASSET_MRS_MANA, &_mrsManaTextureSegmentRomStart, &_mrsManaTextureSegmentRomEnd, &_mrsManaAssetsIndexSegmentRomStart, &_mrsManaAssetsIndexSegmentRomEnd, &_mrsManaSpritesheetIndexSegmentRomStart, &_mrsManaSpritesheetIndexSegmentRomEnd, 1, 0, &mrsManaAnimationScripts);
     setEntityCollisionBuffers(ENTITY_ASSET_MRS_MANA, 15, 15);

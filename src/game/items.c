@@ -3915,7 +3915,7 @@ void loadHeldItemEntity(u8 itemIndex, u16 heldItemIndex) {
     setEntityAttachmentOffset(ENTITY_ITEM_BASE_INDEX + itemIndex, 0, 0, 0);
 
     if (itemInfo[itemIndex].flags & ITEM_CONTEXT_HAS_DIRECTION_FRAME) {
-        setEntityAnimationWithDirectionChange(ENTITY_ITEM_BASE_INDEX + itemIndex, itemEntityMetadata[heldItemIndex][gSeason]);
+        setEntityDirectionalAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, itemEntityMetadata[heldItemIndex][gSeason]);
     } else {
         setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, itemEntityMetadata[heldItemIndex][gSeason]);
     }
