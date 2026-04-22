@@ -52,7 +52,7 @@ extern u16 entomologistAnimationScripts[];
 extern u16 gourmetJudgeAnimationScripts[];
 extern u16 photographerAnimationScripts[];
 extern u16 shadySalesmanAnimationScripts[];
-extern u16 mrsManaSonAnimationScripts[];
+extern u16 johnAnimationScripts[];
 extern u16 mrsManaAnimationScripts[];
 extern u16 oldManAnimationScripts[];
 extern u16 oldWomanAnimationScripts[];

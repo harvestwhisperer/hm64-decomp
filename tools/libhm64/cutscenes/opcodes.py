@@ -48,7 +48,7 @@ class CutsceneOpcode(IntEnum):
     CLEAR_MESSAGE_BOX_FLAG = 35
     ENTITY_RUN = 36
     SET_ENTITY_ANIMATION = 37
-    SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE = 38
+    SET_ENTITY_DIRECTIONAL_ANIMATION = 38
     SET_CALLBACK_ROUTINE = 39
     PAUSE_ENTITY = 40
     TOGGLE_PAUSE_ENTITY = 41
@@ -162,7 +162,7 @@ COMMAND_SPECS: Dict[int, Tuple[str, int, List[Tuple[str, str]]]] = {
     35: ("CMD_RESET_MESSAGE_BOX_AVATAR", 4, [('box', 'u16')]),
     36: ("CMD_ENTITY_RUN", 8, [('distance', 'u16'), ('direction', 'u8'), ('speed', 'u8'), ('pad', 'pad16')]),
     37: ("CMD_SET_ENTITY_ANIMATION", 4, [('anim', 'u16')]),
-    38: ("CMD_SET_ENTITY_ANIMATION_WITH_DIRECTION_CHANGE", 4, [('anim', 'u16')]),
+    38: ("CMD_SET_ENTITY_DIRECTIONAL_ANIMATION", 4, [('anim', 'u16')]),
     39: ("CMD_SET_CALLBACK_ROUTINE", 8, [('entity', 'u16'), ('button', 'u16'), ('target', 'rel16')]),
     40: ("CMD_PAUSE_ENTITY", 4, [('entity', 'u16')]),
     41: ("CMD_TOGGLE_PAUSE_ENTITY", 4, [('entity', 'u16')]),

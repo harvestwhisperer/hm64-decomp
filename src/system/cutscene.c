@@ -59,7 +59,7 @@ void cutsceneHandlerSetMessageBoxViewSpacePosition(u16);
 void cutsceneHandlerResetMessageBoxAvatar(u16);
 void cutsceneHandlerEntityRun(u16);
 void cutsceneHandlerSetEntityAnimation(u16);
-void cutsceneHandlerSetEntityAnimationWithDirectionChange(u16);
+void cutsceneHandlerSetEntityDirectionalAnimation(u16);
 void cutsceneHandlerSetCallbackBytecodePtr(u16);
 void cutsceneHandlerPauseEntity(u16);
 void cutsceneHandlerTogglePauseEntity(u16);
@@ -160,7 +160,7 @@ void (*cutsceneCommandHandlers[])(u16) = {
     cutsceneHandlerResetMessageBoxAvatar,
     cutsceneHandlerEntityRun,
     cutsceneHandlerSetEntityAnimation,
-    cutsceneHandlerSetEntityAnimationWithDirectionChange,
+    cutsceneHandlerSetEntityDirectionalAnimation,
     cutsceneHandlerSetCallbackBytecodePtr,
     cutsceneHandlerPauseEntity,
     cutsceneHandlerTogglePauseEntity,
@@ -650,15 +650,15 @@ void updateCutsceneEntityMovement(u16 index) {
                         if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_MOVING_DEFAULT) {
 
                             if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-                                setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].walkingHoldingAnimation);
+                                setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].walkingHoldingAnimation);
                             } else {
-                                setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].walkingAnimation);
+                                setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].walkingAnimation);
                             }
                             
                         } else if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-                            setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].runningHoldingAnimation);
+                            setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].runningHoldingAnimation);
                         } else {
-                            setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].runningAnimation);
+                            setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].runningAnimation);
                         }
                         
                     } else {
@@ -668,9 +668,9 @@ void updateCutsceneEntityMovement(u16 index) {
                         cutsceneExecutors[index].movementVector.z = 0.0f;
     
                         if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-                            setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleHoldingAnimation);
+                            setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleHoldingAnimation);
                         } else {
-                            setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleAnimation);
+                            setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleAnimation);
                         }
                         
                     }
@@ -682,9 +682,9 @@ void updateCutsceneEntityMovement(u16 index) {
                 if (cutsceneExecutors[index].frameDelta.x == 0.0f && cutsceneExecutors[index].frameDelta.y == 0.0f && cutsceneExecutors[index].frameDelta.z == 0.0f) {
     
                     if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {    
-                        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleHoldingAnimation);
+                        setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleHoldingAnimation);
                     } else {
-                        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleAnimation);
+                        setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleAnimation);
                     }
 
                     cutsceneExecutors[index].movementVector.x = 0.0f;
@@ -704,9 +704,9 @@ void updateCutsceneEntityMovement(u16 index) {
         } else {
             
             if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {    
-                setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleHoldingAnimation);
+                setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleHoldingAnimation);
             } else {
-                setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleAnimation);
+                setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleAnimation);
             }
     
             cutsceneExecutors[index].movementVector.x = 0.0f;
@@ -1289,9 +1289,9 @@ void cutsceneHandlerSetEntityAnimations(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 2;
 
     if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleHoldingAnimation);
+        setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleHoldingAnimation);
     } else {
-        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleAnimation);
+        setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleAnimation);
     }
 
     setEntityMapSpaceIndependent(cutsceneExecutors[index].assetIndex, FALSE);
@@ -1638,9 +1638,9 @@ void cutsceneHandlerEntityWalk(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 2;
     
     if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].walkingHoldingAnimation);
+        setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].walkingHoldingAnimation);
     } else {
-        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].walkingAnimation);
+        setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].walkingAnimation);
     }
 
     setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
@@ -1841,9 +1841,9 @@ void cutsceneHandlerEntityRun(u16 index) {
     cutsceneExecutors[index].bytecodePtr += 2;
     
     if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].runningHoldingAnimation);
+        setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].runningHoldingAnimation);
     } else {
-        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].runningAnimation);
+        setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].runningAnimation);
     }
 
     setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
@@ -1876,7 +1876,7 @@ void cutsceneHandlerSetEntityAnimation(u16 index) {
     
 }
 
-void cutsceneHandlerSetEntityAnimationWithDirectionChange(u16 index) {
+void cutsceneHandlerSetEntityDirectionalAnimation(u16 index) {
 
     CutsceneEntitySetAnimationWithDirectionCmd* ptr = (CutsceneEntitySetAnimationWithDirectionCmd*)cutsceneExecutors[index].bytecodePtr;
 
@@ -1888,7 +1888,7 @@ void cutsceneHandlerSetEntityAnimationWithDirectionChange(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
     
-    setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, animation);
+    setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, animation);
     
     cutsceneExecutors[index].behaviorFlags &= ~(CUTSCENE_ASSET_BEHAVIOR_MOVING_DEFAULT | CUTSCENE_ASSET_BEHAVIOR_RUNNING);
     
@@ -1982,9 +1982,9 @@ void cutsceneHandlerFlipEntityAnimation(u16 index) {
     cutsceneExecutors[index].bytecodePtr = cutsceneExecutors[index].bytecodePtr + 4;
 
     if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleHoldingAnimation);
+        setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleHoldingAnimation);
     } else {
-        setEntityAnimationWithDirectionChange(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleAnimation);
+        setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].idleAnimation);
     }
     
 }

@@ -76,7 +76,7 @@ u16 npcToEntityAssetIndex[] = {
     ENTITY_ASSET_BARLEY, 
     ENTITY_ASSET_SYDNEY, 
     ENTITY_ASSET_MRS_MANA, 
-    ENTITY_ASSET_MRS_MANA_SON, 
+    ENTITY_ASSET_JOHN, 
     ENTITY_ASSET_GOURMET_JUDGE, 
     ENTITY_ASSET_MARIA_HARRIS_BABY,
     ENTITY_ASSET_POPURI_GRAY_BABY, 
@@ -463,14 +463,14 @@ void updateNPCMovement(u8 npcIndex) {
 
         direction = (gPlayer.direction + 4) % 8;        
 
-        setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, npcs[npcIndex].idleAnimation);
+        setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, npcs[npcIndex].idleAnimation);
         npcs[npcIndex].animationMode = npcs[npcIndex].defaultAnimationMode;
         
     }
 
     if (npcs[npcIndex].animationMode == NPC_ANIMATION_FACE_PLAYER) {
         direction = (gPlayer.direction + 4) % 8;        
-        setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, npcs[npcIndex].idleAnimation);
+        setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, npcs[npcIndex].idleAnimation);
     }
 
     npcs[npcIndex].currentCoordinates.x = entities[npcs[npcIndex].entityIndex].coordinates.x;
@@ -505,7 +505,7 @@ inline void stopNPCMovement(u8 npcIndex) {
     npcs[npcIndex].animationState = 10;
     npcs[npcIndex].animationTimer = 0;
 
-    setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, npcs[npcIndex].idleAnimation);
+    setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, npcs[npcIndex].idleAnimation);
 
     npcs[npcIndex].flags |= NPC_NEEDS_UPDATE;
     
@@ -521,7 +521,7 @@ void updateNPCWanderAnimation(u8 index) {
         npcs[index].speed = 0;
         npcs[index].animationTimer = 0;
 
-        setEntityAnimationWithDirectionChange(npcs[index].entityIndex, npcs[index].idleAnimation);
+        setEntityDirectionalAnimation(npcs[index].entityIndex, npcs[index].idleAnimation);
 
         temp = getRandomNumberInRange(0, 60);
 
@@ -545,7 +545,7 @@ void updateNPCWanderAnimation(u8 index) {
             npcs[index].speed = 1;
             npcs[index].animationTimer = 0;
     
-            setEntityAnimationWithDirectionChange(npcs[index].entityIndex, npcs[index].movingAnimation);
+            setEntityDirectionalAnimation(npcs[index].entityIndex, npcs[index].movingAnimation);
             
             if (getRandomNumberInRange(0, 19) < 8) {
                 npcs[index].animationState = 1;
@@ -568,7 +568,7 @@ inline void handleBabyIdleAnimation(u8 index, u8 animationIndex) {
     npcs[index].animationState = 10;
     npcs[index].animationTimer = 0;
 
-    setEntityAnimationWithDirectionChange(npcs[index].entityIndex, animationIndex);
+    setEntityDirectionalAnimation(npcs[index].entityIndex, animationIndex);
 
     npcs[index].flags |= NPC_NEEDS_UPDATE;
     
@@ -583,7 +583,7 @@ void updateBabyWanderAnimation(u8 index, u8 idleAnimation, u8 animationIndex2) {
         npcs[index].speed = 0;
         npcs[index].animationTimer = 0;
 
-        setEntityAnimationWithDirectionChange(npcs[index].entityIndex, idleAnimation);
+        setEntityDirectionalAnimation(npcs[index].entityIndex, idleAnimation);
 
         temp = getRandomNumberInRange(0, 60);
 
@@ -607,7 +607,7 @@ void updateBabyWanderAnimation(u8 index, u8 idleAnimation, u8 animationIndex2) {
         npcs[index].speed = 1;
         npcs[index].animationTimer = 0;
         
-        setEntityAnimationWithDirectionChange(npcs[index].entityIndex, animationIndex2);
+        setEntityDirectionalAnimation(npcs[index].entityIndex, animationIndex2);
         
         if (getRandomNumberInRange(0, 19) < 8) {
             npcs[index].animationState = 1;
@@ -633,7 +633,7 @@ void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 10;
             
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, idleAnimation);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, idleAnimation);
 
             temp = getRandomNumberInRange(0, 60);
             
@@ -674,7 +674,7 @@ void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 
                 
                 npcs[npcIndex].speed = 1;
                 npcs[npcIndex].animationTimer = 0;
-                setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex2);
+                setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, animationIndex2);
     
                 if (getRandomNumberInRange(0, 19) < 8) {
                     npcs[npcIndex].animationState = 1;
@@ -693,7 +693,7 @@ void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
 
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex3);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, animationIndex3);
 
             if (getRandomNumberInRange(0, 19) < 8) {
                 npcs[npcIndex].animationState = 2;
@@ -709,7 +709,7 @@ void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
 
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex4);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, animationIndex4);
 
             if (getRandomNumberInRange(0, 19) < 8) {
                 npcs[npcIndex].animationState = 3;
@@ -725,7 +725,7 @@ void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
             
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex5);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, animationIndex5);
 
             npcs[npcIndex].animationState = 0;
             
@@ -737,7 +737,7 @@ void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
             
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex6);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, animationIndex6);
 
             if (getRandomNumberInRange(0, 19) < 8) {
                 npcs[npcIndex].animationState = 5;
@@ -753,7 +753,7 @@ void updateBabyAnimations(u8 npcIndex, u8 idleAnimation, u8 animationIndex2, u8 
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
             
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex7);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, animationIndex7);
 
             if (getRandomNumberInRange(0, 19) < 8) {
                 npcs[npcIndex].animationState = 6;
@@ -768,7 +768,7 @@ case 7:
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
             
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex8);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, animationIndex8);
 
             npcs[npcIndex].animationState = 10;
             
@@ -780,7 +780,7 @@ case 7:
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
             
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, animationIndex9);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, animationIndex9);
 
             if (getRandomNumberInRange(0, 19) < 8) {
                 npcs[npcIndex].animationState = 8;
@@ -796,7 +796,7 @@ case 7:
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
             
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, idleAnimation0);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, idleAnimation0);
 
             if (getRandomNumberInRange(0, 19) < 8) {
                 npcs[npcIndex].animationState = 9;
@@ -811,7 +811,7 @@ case 7:
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 10;
 
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, idleAnimation1);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, idleAnimation1);
 
             npcs[npcIndex].animationState = 10;
 
@@ -854,7 +854,7 @@ void updateBacheloretteBeachAnimation(u8 npcIndex) {
             npcs[npcIndex].speed = 0;
             npcs[npcIndex].animationTimer = 0;
             
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, 0);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, 0);
             
             temp = getRandomNumberInRange(0, 60);
 
@@ -875,7 +875,7 @@ void updateBacheloretteBeachAnimation(u8 npcIndex) {
             
             npcs[npcIndex].speed = 1;
             npcs[npcIndex].animationTimer = 0;
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, 8);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 8) {
                 npcs[npcIndex].animationState = 1;
@@ -893,7 +893,7 @@ void updateBacheloretteBeachAnimation(u8 npcIndex) {
             npcs[npcIndex].animationTimer = 60;
             
             // crouching
-            setEntityAnimationWithDirectionChange(npcs[npcIndex].entityIndex, 25);
+            setEntityDirectionalAnimation(npcs[npcIndex].entityIndex, 25);
 
             npcs[npcIndex].animationState = 1;
             npcs[npcIndex].flags |= NPC_NEEDS_UPDATE;
@@ -7088,7 +7088,7 @@ void handlePopuriAnimation(void) {
                             npcs[POPURI].speed = 0;
                             npcs[POPURI].animationTimer = 0;
 
-                            setEntityAnimationWithDirectionChange(npcs[POPURI].entityIndex, 0);
+                            setEntityDirectionalAnimation(npcs[POPURI].entityIndex, 0);
 
                             temp = getRandomNumberInRange(0, 60);
 
@@ -7108,7 +7108,7 @@ void handlePopuriAnimation(void) {
                             npcs[POPURI].speed = 1;
                             npcs[POPURI].animationTimer = 0;
 
-                            setEntityAnimationWithDirectionChange(npcs[POPURI].entityIndex, 8);
+                            setEntityDirectionalAnimation(npcs[POPURI].entityIndex, 8);
 
                             if (getRandomNumberInRange(0, 19) <= 7) {
                                 npcs[POPURI].animationState = 1;
@@ -7124,7 +7124,7 @@ void handlePopuriAnimation(void) {
                             npcs[POPURI].speed = 0;
                             npcs[POPURI].animationTimer = 60;
 
-                            setEntityAnimationWithDirectionChange(npcs[POPURI].entityIndex, 0x72);
+                            setEntityDirectionalAnimation(npcs[POPURI].entityIndex, 0x72);
                             npcs[POPURI].animationState = 1;
 
                             npcs[POPURI].flags |= NPC_NEEDS_UPDATE;
@@ -7273,7 +7273,7 @@ void handleKarenAnimation(void) {
                         npcs[KAREN].speed = 0;
                         npcs[KAREN].animationTimer = 0;
 
-                        setEntityAnimationWithDirectionChange(npcs[KAREN].entityIndex, 0);
+                        setEntityDirectionalAnimation(npcs[KAREN].entityIndex, 0);
 
                         temp = getRandomNumberInRange(0, 60);
 
@@ -7289,7 +7289,7 @@ void handleKarenAnimation(void) {
                         npcs[KAREN].speed = 1;
                         npcs[KAREN].animationTimer = 0;
 
-                        setEntityAnimationWithDirectionChange(npcs[KAREN].entityIndex, 8);
+                        setEntityDirectionalAnimation(npcs[KAREN].entityIndex, 8);
 
                         if (getRandomNumberInRange(0, 19) <=7) {
                             npcs[KAREN].animationState = 1;
@@ -7800,7 +7800,7 @@ void handleGotzAnimation(void) {
                         npcs[GOTZ].speed = 0;
                         npcs[GOTZ].animationTimer = 0;
 
-                        setEntityAnimationWithDirectionChange(npcs[GOTZ].entityIndex, 0);
+                        setEntityDirectionalAnimation(npcs[GOTZ].entityIndex, 0);
 
                         tempDirection = getRandomNumberInRange(0, 60);
 
@@ -7816,7 +7816,7 @@ void handleGotzAnimation(void) {
                         npcs[GOTZ].speed = 1;
                         npcs[GOTZ].animationTimer = 0;
 
-                        setEntityAnimationWithDirectionChange(npcs[GOTZ].entityIndex, 8);
+                        setEntityDirectionalAnimation(npcs[GOTZ].entityIndex, 8);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
                             npcs[GOTZ].animationState = 1;
@@ -7869,7 +7869,7 @@ void handleSashaAnimation(void) {
                         npcs[SASHA].speed = 0;
                         npcs[SASHA].animationTimer = 0;
 
-                        setEntityAnimationWithDirectionChange(npcs[SASHA].entityIndex, 0);
+                        setEntityDirectionalAnimation(npcs[SASHA].entityIndex, 0);
                         tempDirection = getRandomNumberInRange(0, 60);
 
                         if (tempDirection < NORTHEAST) {
@@ -7884,7 +7884,7 @@ void handleSashaAnimation(void) {
                         npcs[SASHA].speed = 1;
                         npcs[SASHA].animationTimer = 0;
 
-                        setEntityAnimationWithDirectionChange(npcs[SASHA].entityIndex, 8);
+                        setEntityDirectionalAnimation(npcs[SASHA].entityIndex, 8);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
                             npcs[SASHA].animationState = 1;
@@ -7956,7 +7956,7 @@ void handleKentAnimation(void) {
 
                         npcs[KENT].speed = 0;
                         npcs[KENT].animationTimer = 0;
-                        setEntityAnimationWithDirectionChange(npcs[KENT].entityIndex, 0);
+                        setEntityDirectionalAnimation(npcs[KENT].entityIndex, 0);
                         tempDirection = getRandomNumberInRange(0, 60);
 
                         if (tempDirection < NORTHEAST) {
@@ -7972,7 +7972,7 @@ void handleKentAnimation(void) {
                         npcs[KENT].animationTimer = 0;
 
                         // running
-                        setEntityAnimationWithDirectionChange(npcs[KENT].entityIndex, 16);
+                        setEntityDirectionalAnimation(npcs[KENT].entityIndex, 16);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
                             npcs[KENT].animationState = 1;
@@ -8188,7 +8188,7 @@ void handleCarpenter1Animation(void) {
                             npcs[CARPENTER_1].speed = 0;
                             npcs[CARPENTER_1].animationTimer = 0;
 
-                            setEntityAnimationWithDirectionChange(npcs[CARPENTER_1].entityIndex, 0);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, 0);
 
                             temp = getRandomNumberInRange(0, 60);
 
@@ -8210,7 +8210,7 @@ void handleCarpenter1Animation(void) {
 
                             npcs[CARPENTER_1].speed = 1;
                             npcs[CARPENTER_1].animationTimer = 0;
-                            setEntityAnimationWithDirectionChange(npcs[CARPENTER_1].entityIndex, 8);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, 8);
 
                             temp = getRandomNumberInRange(0, 19);
 
@@ -8229,7 +8229,7 @@ void handleCarpenter1Animation(void) {
 
                             npcs[CARPENTER_1].speed = 0;
                             npcs[CARPENTER_1].animationTimer = 60;
-                            setEntityAnimationWithDirectionChange(npcs[CARPENTER_1].entityIndex, 20);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, 20);
 
                             npcs[CARPENTER_1].animationState = 1;
                             npcs[CARPENTER_1].flags |= NPC_NEEDS_UPDATE;
@@ -8279,7 +8279,7 @@ void handleCarpenter2Animation(void) {
                             npcs[CARPENTER_2].speed = 0;
                             npcs[CARPENTER_2].animationTimer = 0;
 
-                            setEntityAnimationWithDirectionChange(npcs[CARPENTER_2].entityIndex, 0);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, 0);
 
                             temp = getRandomNumberInRange(0, 60);
 
@@ -8300,7 +8300,7 @@ void handleCarpenter2Animation(void) {
 
                             npcs[CARPENTER_2].speed = 1;
                             npcs[CARPENTER_2].animationTimer = 0;
-                            setEntityAnimationWithDirectionChange(npcs[CARPENTER_2].entityIndex, 8);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, 8);
 
                             temp = getRandomNumberInRange(0, 19);
 
@@ -8318,7 +8318,7 @@ void handleCarpenter2Animation(void) {
 
                             npcs[CARPENTER_2].speed = 0;
                             npcs[CARPENTER_2].animationTimer = 60;
-                            setEntityAnimationWithDirectionChange(npcs[CARPENTER_2].entityIndex, 28);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, 28);
 
                             npcs[CARPENTER_2].animationState = 1;
                             npcs[CARPENTER_2].flags |= NPC_NEEDS_UPDATE;
@@ -8591,7 +8591,7 @@ void handleMariaHarrisBabyAnimation(void) {
                     npcs[MARIA_HARRIS_BABY].animationState = 10;
                     npcs[MARIA_HARRIS_BABY].animationTimer = 0;
 
-                    setEntityAnimationWithDirectionChange(npcs[MARIA_HARRIS_BABY].entityIndex, 8);
+                    setEntityDirectionalAnimation(npcs[MARIA_HARRIS_BABY].entityIndex, 8);
 
                     npcs[MARIA_HARRIS_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
@@ -8601,7 +8601,7 @@ void handleMariaHarrisBabyAnimation(void) {
                     npcs[MARIA_HARRIS_BABY].animationState = 10;
                     npcs[MARIA_HARRIS_BABY].animationTimer = 0;
 
-                    setEntityAnimationWithDirectionChange(npcs[MARIA_HARRIS_BABY].entityIndex, 0);
+                    setEntityDirectionalAnimation(npcs[MARIA_HARRIS_BABY].entityIndex, 0);
 
                     npcs[MARIA_HARRIS_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
@@ -8632,7 +8632,7 @@ void handlePopuriGrayBabyAnimation(void) {
                     npcs[POPURI_GRAY_BABY].animationState = 10;
                     npcs[POPURI_GRAY_BABY].animationTimer = 0;
 
-                    setEntityAnimationWithDirectionChange(npcs[POPURI_GRAY_BABY].entityIndex, 8);
+                    setEntityDirectionalAnimation(npcs[POPURI_GRAY_BABY].entityIndex, 8);
 
                     npcs[POPURI_GRAY_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
@@ -8642,7 +8642,7 @@ void handlePopuriGrayBabyAnimation(void) {
                     npcs[POPURI_GRAY_BABY].animationState = 10;
                     npcs[POPURI_GRAY_BABY].animationTimer = 0;
 
-                    setEntityAnimationWithDirectionChange(npcs[POPURI_GRAY_BABY].entityIndex, 0);
+                    setEntityDirectionalAnimation(npcs[POPURI_GRAY_BABY].entityIndex, 0);
 
                     npcs[POPURI_GRAY_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
@@ -8673,7 +8673,7 @@ void handleElliJeffBabyAnimation(void) {
                     npcs[ELLI_JEFF_BABY].animationState = 10;
                     npcs[ELLI_JEFF_BABY].animationTimer = 0;
 
-                    setEntityAnimationWithDirectionChange(npcs[ELLI_JEFF_BABY].entityIndex, 8);
+                    setEntityDirectionalAnimation(npcs[ELLI_JEFF_BABY].entityIndex, 8);
 
                     npcs[ELLI_JEFF_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
@@ -8683,7 +8683,7 @@ void handleElliJeffBabyAnimation(void) {
                     npcs[ELLI_JEFF_BABY].animationState = 10;
                     npcs[ELLI_JEFF_BABY].animationTimer = 0;
 
-                    setEntityAnimationWithDirectionChange(npcs[ELLI_JEFF_BABY].entityIndex, 0);
+                    setEntityDirectionalAnimation(npcs[ELLI_JEFF_BABY].entityIndex, 0);
 
                     npcs[ELLI_JEFF_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
@@ -8714,7 +8714,7 @@ void handleAnnCliffBabyAnimation(void) {
                     npcs[ANN_CLIFF_BABY].animationState = 10;
                     npcs[ANN_CLIFF_BABY].animationTimer = 0;
 
-                    setEntityAnimationWithDirectionChange(npcs[ANN_CLIFF_BABY].entityIndex, 8);
+                    setEntityDirectionalAnimation(npcs[ANN_CLIFF_BABY].entityIndex, 8);
 
                     npcs[ANN_CLIFF_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
@@ -8724,7 +8724,7 @@ void handleAnnCliffBabyAnimation(void) {
                     npcs[ANN_CLIFF_BABY].animationState = 10;
                     npcs[ANN_CLIFF_BABY].animationTimer = 0;
 
-                    setEntityAnimationWithDirectionChange(npcs[ANN_CLIFF_BABY].entityIndex, 0);
+                    setEntityDirectionalAnimation(npcs[ANN_CLIFF_BABY].entityIndex, 0);
 
                     npcs[ANN_CLIFF_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
@@ -8755,7 +8755,7 @@ void handleKarenKaiBabyAnimation(void) {
                     npcs[KAREN_KAI_BABY].animationState = 10;
                     npcs[KAREN_KAI_BABY].animationTimer = 0;
 
-                    setEntityAnimationWithDirectionChange(npcs[KAREN_KAI_BABY].entityIndex, 8);
+                    setEntityDirectionalAnimation(npcs[KAREN_KAI_BABY].entityIndex, 8);
 
                     npcs[KAREN_KAI_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;
@@ -8765,7 +8765,7 @@ void handleKarenKaiBabyAnimation(void) {
                     npcs[KAREN_KAI_BABY].animationState = 10;
                     npcs[KAREN_KAI_BABY].animationTimer = 0;
 
-                    setEntityAnimationWithDirectionChange(npcs[KAREN_KAI_BABY].entityIndex, 0);
+                    setEntityDirectionalAnimation(npcs[KAREN_KAI_BABY].entityIndex, 0);
 
                     npcs[KAREN_KAI_BABY].flags |= NPC_NEEDS_UPDATE;
                     break;

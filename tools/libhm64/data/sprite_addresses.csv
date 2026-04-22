@@ -38,7 +38,7 @@
 56EE30,578CD0,578CF0,578D60,gourmetJudge,entitySprites/npc
 578D60,583C30,583C50,583D40,photographer,entitySprites/npc
 583D40,593730,593750,593840,shadySalesman,entitySprites/npc
-593840,597040,597060,5970C0,mrsManaSon,entitySprites/npc
+593840,597040,597060,5970C0,john,entitySprites/npc
 5970C0,59CD00,59CD20,59CD90,mrsMana,entitySprites/npc
 59CD90,5A2580,5A25A0,5A26A0,oldMan,entitySprites/npc
 5A26A0,5A7910,5A7930,5A7A10,oldWoman,entitySprites/npc

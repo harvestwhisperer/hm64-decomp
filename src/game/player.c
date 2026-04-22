@@ -1112,7 +1112,7 @@ void handlePlayerInput(void) {
     if (!set) {
         if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && entities[ENTITY_PLAYER].collision != 0xFFFF) {
             gPlayer.animationHandler = ANIM_DEFAULT;
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
             set = TRUE;
             temp = 0xFF;
         }
@@ -2587,16 +2587,16 @@ void handlePlayerAnimation(void) {
         case ANIM_DEFAULT:
             if (!gPlayer.heldItem && !checkDailyEventBit(EGG_FESTIVAL_HOLDING_EGG)) {
                 if ((gPlayer.flags & PLAYER_RIDING_HORSE)) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 516);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 516);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_2) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 580);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 580);
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_2) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 580);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 580);
                 } else {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
                 }
             } else {
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 24);
             }
             if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
                 if (playerIdleCounter == 1200) {
@@ -2613,12 +2613,12 @@ void handlePlayerAnimation(void) {
         case ANIM_WALKING:
             if (!gPlayer.heldItem && !checkDailyEventBit(EGG_FESTIVAL_HOLDING_EGG)) {
                 if (gPlayer.flags & PLAYER_RIDING_HORSE) {
-                   setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 524);
+                   setEntityDirectionalAnimation(ENTITY_PLAYER, 524);
                 } else {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 8);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 8);
                 }
             } else {
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 32);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 32);
             }
             playerIdleCounter = 0;
             break;
@@ -2629,18 +2629,18 @@ void handlePlayerAnimation(void) {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         playSfx(9);
                     }
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 532);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 532);
                 } else {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         playSfx(WALKING_SFX);
                     }
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 16);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 16);
                 }
             } else {
                 if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                     playSfx(WALKING_SFX);
                 }
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 40);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 40);
             }
             playerIdleCounter = 0;
             break;
@@ -2792,7 +2792,7 @@ void handleThrowItemAnimation(void) {
         
         if (gPlayer.actionPhase == 0) {
         
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 421);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 421);
             gPlayer.actionPhase++;
         
         } else {
@@ -2807,7 +2807,7 @@ void handleShippingAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
         if (gPlayer.actionPhase == 0) {
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 421);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 421);
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_RAISED);
         } else {
             handleStopHolding();
@@ -2821,7 +2821,7 @@ void handlePickUpAnimation(void) {
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
     
         if (gPlayer.actionPhase == 0) {
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 429);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 429);
         } else {
             resetAction();
 
@@ -2836,14 +2836,14 @@ void handlePlaceItemAnimation(void) {
         switch (gPlayer.actionPhase) {     
 
             case 0:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 439);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 439);
                 setItemState(gPlayer.itemInfoIndex, ITEM_STATE_PLACE);
                 break;
             case 1:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 447);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 447);
                 break;
             case 2:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 439);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 439);
                 break;
             default:
                 handleStopHolding();
@@ -2863,7 +2863,7 @@ void handleEatAnimation(void) {
 
             case 0:
                 // holding
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 24);
                 break;
             case 1:
                 setItemState(gPlayer.itemInfoIndex, ITEM_STATE_EATING);
@@ -3046,17 +3046,17 @@ void handleTurnOnTVAnimation(void) {
 
         switch (gPlayer.actionPhase) { 
             case 0:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 439);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 439);
                 break;
             case 1:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 447);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 447);
                 gPlayer.actionPhase++;
                 break;
             case 3:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 447);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 447);
                 break;            
             case 4:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 439);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 439);
                 gPlayer.actionPhase++;
                 break;           
             default:
@@ -3074,9 +3074,9 @@ void handleShopAnimation(void) {
         switch (gPlayer.actionPhase) {  
             case 0:
                 if (!checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
                 } else {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 429);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 429);
                 }
                 break;
             case 1:
@@ -3086,12 +3086,12 @@ void handleShopAnimation(void) {
                 break;
             case 2:
                 if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 429);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 429);
                 }
                 break;
             case 3:
                 if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 429);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 429);
                 }
                 break;
             default:
@@ -3109,9 +3109,9 @@ void handleJumpAnimation(void) {
             case 0:
                 
                 if (gPlayer.heldItem != 0) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 64);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 64);
                 } else if (gPlayer.flags & PLAYER_RIDING_HORSE) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 548);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 548);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_1) {
                     setEntityAnimation(ENTITY_PLAYER, 0x23C);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
@@ -3121,7 +3121,7 @@ void handleJumpAnimation(void) {
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
                     setEntityAnimation(ENTITY_PLAYER, 0x240);
                 } else {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 48);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 48);
                 }
                 
                 break;
@@ -3129,9 +3129,9 @@ void handleJumpAnimation(void) {
             case 1:
                 
                 if (gPlayer.heldItem != 0) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 72);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 72);
                 } else if (gPlayer.flags & PLAYER_RIDING_HORSE) {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 556);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 556);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_1) {
                     setEntityAnimation(ENTITY_PLAYER, 574);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
@@ -3141,7 +3141,7 @@ void handleJumpAnimation(void) {
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
                     setEntityAnimation(ENTITY_PLAYER, 578);
                 } else {
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 56);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 56);
                 }
 
                 break;
@@ -3251,7 +3251,7 @@ void handlePutFoodInDogBowlAnimation(void) {
         
         if (gPlayer.actionPhase == 0) {
             
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 439);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 439);
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_DOG_BOWL);
             
         } else {
@@ -3268,11 +3268,11 @@ void handleDropItemInWaterAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 421);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 421);
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_RAISED);
         } else {
 
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
             gItemBeingHeld = 0xFF;
 
             if (!checkDailyEventBit(HARVEST_GODDESS_OFFERING) && !checkDailyEventBit(KAPPA_FISH_OFFERING_DAILY) && !checkDailyEventBit(KAPPA_LARGE_FISH_OFFERING_DAILY)) {
@@ -3306,11 +3306,11 @@ void handleAcquireMusicBoxAnimation(void) {
         switch (gPlayer.actionPhase) {
 
             case 0:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 24);
                 break;
             
             case 1:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 618);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 618);
                 setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
                 gPlayer.actionPhase++;
                 break;
@@ -3336,7 +3336,7 @@ void handleMountHorseAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
-             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 540);
+             setEntityDirectionalAnimation(ENTITY_PLAYER, 540);
         }
 
     }
@@ -3348,7 +3348,7 @@ void handleDismountHorseAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
-             setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 604);
+             setEntityDirectionalAnimation(ENTITY_PLAYER, 604);
         }
 
     }
@@ -3369,7 +3369,7 @@ void handleWhistleForDogAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
         if (gPlayer.actionPhase == 0) {
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 413);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 413);
             gPlayer.actionPhase++;
         } else {
             resetAction();
@@ -3385,7 +3385,7 @@ void handleWhistleForHorseAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
         if (gPlayer.actionPhase == 0) {
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 413);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 413);
             gPlayer.actionPhase++;
         } else {
             resetAction();
@@ -3403,7 +3403,7 @@ void handleDrinkingAnimation(void) {
 
             case 0:
                 // carrying
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 24);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 24);
                 break;
             
             case 1:
@@ -3436,7 +3436,7 @@ void handlePutItemInRucksackAnimation(void) {
         
         if (gPlayer.actionPhase == 0) {
             
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 618);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 618);
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
             gPlayer.heldItem = 0;
             gPlayer.actionPhase++;
@@ -3464,7 +3464,7 @@ void handleFishingRodAnimation(void) {
             
             // cast
             case 0:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 386);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 386);
                 gPlayer.actionPhase++;
                 break;
             
@@ -3493,7 +3493,7 @@ void handleFishingRodAnimation(void) {
 
                     spawnFishingRodEntity(0, 157, vec.x, vec.y, vec.z);
                     playSfx(FISHING_ROD_CAST);
-                    setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 378);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, 378);
                     gPlayer.actionPhase = 2;
                 
                 } else {
@@ -3506,7 +3506,7 @@ void handleFishingRodAnimation(void) {
             // fish bite/reel in
             case 3:
                 setItemEntityAnimation(0, 158);
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 394);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 394);
                 gPlayer.actionPhase = 4;
                 break;
             
@@ -3571,7 +3571,7 @@ void handleFishingRodAnimation(void) {
             case 6:
             case 8:
                 deactivateItemEntity(0);
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 402);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 402);
                 // catch fish if phase 6, otherwise end
                 gPlayer.actionPhase++;
                 break;
@@ -3600,11 +3600,11 @@ void handleClimbTreeAnimation(void) {
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0 || gPlayer.actionPhase == 2) {
         switch (gPlayer.actionPhase) {
             case 1:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 667);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 667);
                 break;
             case 0:
             case 2:
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 48);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 48);
                 break;
         }
     }
@@ -3807,7 +3807,7 @@ void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex
         case 0:
 
             clearDailyEventBit(POWER_NUT_ELIGIBLE_TOOL_USE);
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, chargedAnimationIndex);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, chargedAnimationIndex);
 
             switch (gPlayer.currentTool) {
                 case SICKLE:
@@ -3825,7 +3825,7 @@ void handleToolUseAnimation(u16 chargedAnimationIndex, u16 useToolAnimationIndex
         
         // use tool
         case 1:                                         
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, useToolAnimationIndex);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, useToolAnimationIndex);
             resetToolUseState();
             break;
 
@@ -4135,7 +4135,7 @@ static inline void handleSuccessfulWateringCanAction() {
     switch (gPlayer.actionPhase) {
                     
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 320);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 320);
             break;
         
         case 1:
@@ -4214,12 +4214,12 @@ void handleMilkerAnimation(void) {
     switch (gPlayer.actionPhase) {                              
         
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
             handleFarmAnimalPlayerCollision();
             break;
         
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 329);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 329);
             break;
         
         case 2:
@@ -4261,11 +4261,11 @@ void handleBellAnimation(void) {
     switch (gPlayer.actionPhase) {                              
         
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
             break;
         
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 337);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 337);
             break;
         
         case 2:
@@ -4290,13 +4290,13 @@ void handleBrushAnimation(void) {
     switch (gPlayer.actionPhase) {                              
         
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
             handleFarmAnimalPlayerCollision();
             handleHorsePlayerInteraction();
             break;
         
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 345);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 345);
             break;
         
         case 2:
@@ -4321,12 +4321,12 @@ void handleClippersAnimation(void) {
     switch (gPlayer.actionPhase) {                              
         
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
             handleFarmAnimalPlayerCollision();
             break;
 
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 353);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 353);
             break;
     
         case 2:
@@ -4748,11 +4748,11 @@ void handleChickenFeedAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
             break;
 
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 361);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 361);
             break;
 
         case 2:
@@ -4800,11 +4800,11 @@ void handleMiraclePotionAnimation(void) {
 
     switch (gPlayer.actionPhase) {                           
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
             handleFarmAnimalPlayerCollision();
             break;
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 564);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 564);
             break;
         case 2:
             resetToolUseState();
@@ -4831,12 +4831,12 @@ void handleCowMedicineAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
             handleFarmAnimalPlayerCollision();
             break;
         
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 564);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 564);
             break;
         
         case 2:
@@ -4907,12 +4907,12 @@ void handleBlueFeatherAnimation(void) {
 
     switch (gPlayer.actionPhase) {
         case 0:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
             checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, 0);
             findNPCToTalkTo();
             break;
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 564);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 564);
             break;
         case 2:
             resetToolUseState();
@@ -4938,7 +4938,7 @@ void handleEmptyBottleAnimation(void) {
 
             if (gPlayer.bottleContents == 0) {
                 
-                setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 0);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
                 handleFarmAnimalPlayerCollision();
                 
             } else {
@@ -4985,7 +4985,7 @@ void handleEmptyBottleAnimation(void) {
 
         // fill up bottle
         case 1:
-            setEntityAnimationWithDirectionChange(ENTITY_PLAYER, 626);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, 626);
             break;
 
         case 2:

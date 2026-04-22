@@ -13,7 +13,7 @@
 #define ENTITY_MOVEMENT_DISABLED 2
 #define ENTITY_INITIALIZED 0x4
 #define ENTITY_IS_CURRENTLY_ANIMATED 0x8
-#define ENTITY_ANIMATION_DIRECTION_CHANGE 0x10
+#define ENTITY_ANIMATION_TRACKS_DIRECTION 0x10
 #define ENTITY_CAMERA_TRACKING 0x20
 #define ENTITY_PAUSED 0x40 
 #define ENTITY_Y_MOVEMENT 0x80
@@ -146,7 +146,7 @@ extern u8 detectEntityOverlap(Entity* entity, u16 entityIndex, f32 deltaX, f32 d
 extern bool checkEntityShouldPlaySoundEffect(u16 entityIndex);   
 extern bool checkTerrainCollisionInDirection(u16 entityIndex, s16 z, u8 direction);        
 extern Vec3f projectEntityPosition(u16 entityIndex, s16 z, u8 direction);
-extern bool setEntityAnimationWithDirectionChange(u16 entityIndex, u16);
+extern bool setEntityDirectionalAnimation(u16 entityIndex, u16);
 
 extern Entity entities[MAX_ENTITIES];
 extern EntityAssetDescriptor entityAssetDescriptors[MAX_ENTITY_ASSETS];
