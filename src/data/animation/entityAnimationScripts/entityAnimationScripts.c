@@ -57,7 +57,7 @@
 #include "spiritFestivalOcarinaPerformer.inc.c"
 #include "gourmetJudge.inc.c"
 #include "mrsMana.inc.c"
-#include "mrsManaSon.inc.c"
+#include "john.inc.c"
 #include "kappa.inc.c"
 #include "harvestGoddess.inc.c"
 #include "dog.inc.c"
