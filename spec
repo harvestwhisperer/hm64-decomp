@@ -545,7 +545,7 @@ beginwave
     include "ranchSummerMap"
     include "ranchFallMap"
     include "ranchWinterMap"
-    include "annsRoomMap"
+    include "annRoomMap"
     include "ranchBarnMap"
     include "ranchStoreMap"
     include "ranchHouseMap"
@@ -585,7 +585,7 @@ beginwave
     include "pondFallMap"
     include "pondWinterMap"
 
-    include "ellisRoomMap"
+    include "elliRoomMap"
     include "bakeryMap"
 
     include "village1SpringMap"
@@ -596,7 +596,7 @@ beginwave
     include "village2SummerMap"
     include "village2FallMap"
     include "village2WinterMap"
-    include "popurisRoomMap"
+    include "popuriRoomMap"
     include "flowerShopMap"
     include "churchMap"
     include "souvenirShopMap"
@@ -606,12 +606,12 @@ beginwave
     include "squareFallMap"
     include "squareWinterMap"
     include "ricksShopMap"
-    include "midwifesHouseMap"
+    include "midwifeHouseMap"
     include "tavernMap"
     include "libraryMap"
 
-    include "mariasRoomMap"
-    include "mayorsHouseMap"
+    include "mariaRoomMap"
+    include "mayorHouseMap"
 
     include "potionShopBackroomMap"
     include "potionShopMap"
@@ -622,7 +622,7 @@ beginwave
     include "emptyMineMap"
     include "mineMap"
 
-    include "karensRoomMap"
+    include "karenRoomMap"
     include "vineyardSpringMap"
     include "vineyardSummerMap"
     include "vineyardFallMap"
@@ -821,8 +821,6 @@ beginwave
     include "albumPhotosTexture"
     include "albumPhotosAssetsIndex"
     include "albumPhotosSpritesheetIndex"
-    include "villageMapScreenTexture"
-    include "villageMapScreenAssetsIndex"
 
     include "fontTexture"
     include "fontPalette1"

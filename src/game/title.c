@@ -19,6 +19,7 @@
 #include "mainLoop.h" 
 
 #include "assetIndices/cutscenes.h"
+#include "assetIndices/maps.h"
 #include "assetIndices/sequences.h"
 #include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
@@ -558,7 +559,7 @@ void titleScreenMainLoopCallback(void) {
                 if (titleScreenContext.rowHighlighted == 0) {
                     initializeLoadGameScreen(FALSE);
                 } else {
-                    launchIntroCutscene(HOW_TO_PLAY_CUTSCENE, 0, 0);
+                    launchIntroCutscene(HOW_TO_PLAY_CUTSCENE, FARM_SPAWN_POINT_1, 0);
                 }
             }
 
@@ -572,13 +573,13 @@ void titleScreenMainLoopCallback(void) {
  
                 switch (demoCutsceneIndex) {
                     case 0:
-                        launchIntroCutscene(DEMO_CUTSCENE_1, 0, 1);
+                        launchIntroCutscene(DEMO_CUTSCENE_1, FARM_SPAWN_POINT_1, 1);
                         break;
                     case 1:
-                        launchIntroCutscene(DEMO_CUTSCENE_2, 0x1D, 1);
+                        launchIntroCutscene(DEMO_CUTSCENE_2, MOUNTAIN_2_SPAWN_POINT_1, 1);
                         break;
                     case 2:
-                        launchIntroCutscene(DEMO_CUTSCENE_3, 0x32, 1);
+                        launchIntroCutscene(DEMO_CUTSCENE_3, VILLAGE_1_SPAWN_POINT_1, 1);
                         break;
                     default:
                         break;

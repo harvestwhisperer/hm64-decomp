@@ -1072,7 +1072,7 @@ bool scrollMessageBoxUp(u16 index) {
 
     if (index < MAX_MESSAGE_BOXES) { 
 
-        if ((messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) && (messageBoxes[index].flags & MESSAGE_BOX_INITIALIZED) && !(messageBoxes[index].flags & (0x40 | 0x80))) {
+        if ((messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) && (messageBoxes[index].flags & MESSAGE_BOX_INITIALIZED) && !(messageBoxes[index].flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) {
 
             if (messageBoxes[index].scrollCount) {
 

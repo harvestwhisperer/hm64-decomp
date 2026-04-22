@@ -11,6 +11,7 @@
 #include "system/message.h"
 #include "system/numberSprites.h"
 #include "system/globalSprites.h"
+#include "system/sprite.h"
 
 #include "game/animals.h"
 #include "game/cutscenes.h"
@@ -33,7 +34,7 @@
 
 #include "buffers/buffers.h"
 
-#include "data/animationScripts/animationScripts.h"
+#include "data/animation/entityAnimationScripts/entityAnimationScripts.h"
 
 // bss
 ShopContext shopContext;
@@ -559,7 +560,7 @@ void loadShopItemSprite(u8 index) {
         1, TRUE);
 
     setSpriteScale(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 1.0f, 1.0f, 1.0f);
-    setSpriteBlendMode(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], (1 | 2));
+    setSpriteBlendMode(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], SPRITE_BLEND_ALPHA_DECAL);
     setSpriteBaseRGBA(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 255, 255, 255, 255);
     setSpriteColor(SHOP_ITEMS + shopItemSpriteIndexOffsets[index], 255, 255, 255, 255);
 
