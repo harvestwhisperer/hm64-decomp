@@ -1,6 +1,6 @@
 #include "common.h"
 
-#include "animationScripts.h"
+#include "entityAnimationScripts.h"
 
 #include "player.inc.c"
 #include "maria.inc.c"
@@ -96,4 +96,3 @@
 #include "thrownItems.inc.c"
 #include "tools.inc.c"
 #include "toolEffects.inc.c"
-#include "characterAvatars.inc.c"

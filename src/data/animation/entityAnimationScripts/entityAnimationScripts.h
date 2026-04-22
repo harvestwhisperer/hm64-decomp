@@ -1,5 +1,5 @@
-#ifndef _ANIMATON_SCRIPTS_H_
-#define _ANIMATON_SCRIPTS_H_
+#ifndef _ENTITY_ANIMATION_SCRIPTS_H_
+#define _ENTITY_ANIMATION_SCRIPTS_H_
 
 #include "common.h"
 
@@ -106,6 +106,5 @@ extern u16 expressionBubblesAnimationScripts[];
 extern u16 thrownItemsAnimationScripts[];
 extern u16 toolEffectsAnimationScripts[];
 extern u16 toolsAnimationScripts[];
-extern u8 characterAvatarCodesToAnimations[];
 
 #endif
