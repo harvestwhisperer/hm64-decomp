@@ -2957,6 +2957,7 @@ segments:
   - name: raceTrackSummerMap
     type: hm64map
     dir: maps/raceTrack
+    extract: false
     start: 0x87F510
 
   - name: raceTrackFallMap

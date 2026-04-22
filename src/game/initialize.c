@@ -676,7 +676,7 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(CALENDAR_LOAD, loadCalendarScreenCallback);
     registerMainLoopCallback(RECIPE_BOOK_LOAD, loadRecipeBookScreenCallback);
     registerMainLoopCallback(ALBUM_LOAD, loadAlbumScreenCallback);
-    registerMainLoopCallback(PAUSE_SCREEN_MAP_LOAD, loadPauseScreenMapScreenCallback);
+    // registerMainLoopCallback(PAUSE_SCREEN_MAP_LOAD, loadPauseScreenMapScreenCallback);
     registerMainLoopCallback(RACE_BETTING_LOAD, loadRaceBettingScreenCallback);
     registerMainLoopCallback(RACE_RESULTS_LOAD, loadRaceResultsScreenCallback);
     registerMainLoopCallback(RACE_GIFTS_LOAD, loadRaceGiftsScreenCallback);

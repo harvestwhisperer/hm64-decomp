@@ -7841,132 +7841,132 @@ skip:
 
 // main loop callback 30
 // seems like load village map (cut from NA release) 
-void loadPauseScreenMapScreenCallback(void) {
+// void loadPauseScreenMapScreenCallback(void) {
     
-    dmaSprite(0x82, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 0.0f);
-    setSpriteScale(0x82, 1.0f, 1.0f, 1.0f);
-    setBilinearFiltering(0x82, TRUE);
-    setSpriteColor(0x82, 0, 0, 0, 0);
-    startSpriteAnimation(0x82, 0, 0);
+    // dmaSprite(0x82, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    // setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 0.0f);
+    // setSpriteScale(0x82, 1.0f, 1.0f, 1.0f);
+    // setBilinearFiltering(0x82, TRUE);
+    // setSpriteColor(0x82, 0, 0, 0, 0);
+    // startSpriteAnimation(0x82, 0, 0);
     
-    dmaSprite(0xA3, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setSpriteScale(0xA3, 1.0f, 1.0f, 1.0f);
-    setBilinearFiltering(0xA3, TRUE);
-    setSpriteColor(0xA3, 0, 0, 0, 0);
-    startSpriteAnimation(0xA3, 1, 0xFE);
+    // dmaSprite(0xA3, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    // setSpriteScale(0xA3, 1.0f, 1.0f, 1.0f);
+    // setBilinearFiltering(0xA3, TRUE);
+    // setSpriteColor(0xA3, 0, 0, 0, 0);
+    // startSpriteAnimation(0xA3, 1, 0xFE);
     
-    switch (gBaseMapIndex) {
+//     switch (gBaseMapIndex) {
         
-        case RANCH:
-        case ANN_ROOM:
-        case RANCH_BARN:
-        case RANCH_STORE:
-        case RANCH_HOUSE:
-            setSpriteViewSpacePosition(0xA3, 0.0f, -72.0f, 8.0f);
-            break;
+//         case RANCH:
+//         case ANN_ROOM:
+//         case RANCH_BARN:
+//         case RANCH_STORE:
+//         case RANCH_HOUSE:
+//             setSpriteViewSpacePosition(0xA3, 0.0f, -72.0f, 8.0f);
+//             break;
 
-        case BEACH:
-            setSpriteViewSpacePosition(0xA3, 56.0f, -96.0f, 8.0f);
-            break;
+//         case BEACH:
+//             setSpriteViewSpacePosition(0xA3, 56.0f, -96.0f, 8.0f);
+//             break;
 
-        case MOUNTAIN_1:
-            setSpriteViewSpacePosition(0xA3, 88.0f, 12.0f, 8.0f);
-            break;
+//         case MOUNTAIN_1:
+//             setSpriteViewSpacePosition(0xA3, 88.0f, 12.0f, 8.0f);
+//             break;
 
-        case MOUNTAIN_2:
-        case CARPENTER_HUT:
-            setSpriteViewSpacePosition(0xA3, 32.0f, 20.0f, 8.0f);
-            break;
+//         case MOUNTAIN_2:
+//         case CARPENTER_HUT:
+//             setSpriteViewSpacePosition(0xA3, 32.0f, 20.0f, 8.0f);
+//             break;
         
-        case TOP_OF_MOUNTAIN_1:
-            setSpriteViewSpacePosition(0xA3, 104.0f, 48.0f, 8.0f);
-            break;
+//         case TOP_OF_MOUNTAIN_1:
+//             setSpriteViewSpacePosition(0xA3, 104.0f, 48.0f, 8.0f);
+//             break;
 
-        case MOON_MOUNTAIN:
-        case DUMPLING_HOUSE:
-            setSpriteViewSpacePosition(0xA3, 104.0f, 84.0f, 8.0f);
-            break;
+//         case MOON_MOUNTAIN:
+//         case DUMPLING_HOUSE:
+//             setSpriteViewSpacePosition(0xA3, 104.0f, 84.0f, 8.0f);
+//             break;
 
-        case POND:
-            setSpriteViewSpacePosition(0xA3, -16.0f, 36.0f, 8.0f);
-            break;
+//         case POND:
+//             setSpriteViewSpacePosition(0xA3, -16.0f, 36.0f, 8.0f);
+//             break;
 
-        case ELLI_ROOM:
-        case BAKERY:
-        case VILLAGE_1:
-        case POPURI_ROOM:
-        case FLOWER_SHOP:
-        case CHURCH:
-        case SOUVENIR_SHOP:
-        case RICK_STORE:
-        case TAVERN:
-        case EMPTY_MAP_2:
-            setSpriteViewSpacePosition(0xA3, -20.0f, -24.0f, 8.0f);
-            break;
+//         case ELLI_ROOM:
+//         case BAKERY:
+//         case VILLAGE_1:
+//         case POPURI_ROOM:
+//         case FLOWER_SHOP:
+//         case CHURCH:
+//         case SOUVENIR_SHOP:
+//         case RICK_STORE:
+//         case TAVERN:
+//         case EMPTY_MAP_2:
+//             setSpriteViewSpacePosition(0xA3, -20.0f, -24.0f, 8.0f);
+//             break;
 
-        case VILLAGE_2:
-        case MIDWIFE_HOUSE:
-        case LIBRARY:
-        case MARIA_ROOM:
-        case MAYOR_HOUSE:
-        case POTION_SHOP_BEDROOM:
-        case POTION_SHOP:
-            setSpriteViewSpacePosition(0xA3, -44.0f, -56.0f, 8.0f);
-            break;
+//         case VILLAGE_2:
+//         case MIDWIFE_HOUSE:
+//         case LIBRARY:
+//         case MARIA_ROOM:
+//         case MAYOR_HOUSE:
+//         case POTION_SHOP_BEDROOM:
+//         case POTION_SHOP:
+//             setSpriteViewSpacePosition(0xA3, -44.0f, -56.0f, 8.0f);
+//             break;
 
-        case SQUARE:
-            setSpriteViewSpacePosition(0xA3, -72.0f, -16.0f, 8.0f);
-            break;
+//         case SQUARE:
+//             setSpriteViewSpacePosition(0xA3, -72.0f, -16.0f, 8.0f);
+//             break;
 
-        case RACE_TRACK:
-            setSpriteViewSpacePosition(0xA3, -124.0f, -24.0f, 8.0f);
-            break;
+//         case RACE_TRACK:
+//             setSpriteViewSpacePosition(0xA3, -124.0f, -24.0f, 8.0f);
+//             break;
         
-        case HARVEST_SPRITE_CAVE:
-        case CAVE:
-        case MINE:
-        case MINE_2:
-            setSpriteViewSpacePosition(0xA3, 56.0f, 32.0f, 8.0f);
-            break;
+//         case HARVEST_SPRITE_CAVE:
+//         case CAVE:
+//         case MINE:
+//         case MINE_2:
+//             setSpriteViewSpacePosition(0xA3, 56.0f, 32.0f, 8.0f);
+//             break;
                 
-        case KAREN_ROOM:
-        case VINEYARD:
-        case VINEYARD_HOUSE:
-        case VINEYARD_CELLAR:
-        case VINEYARD_CELLAR_BASEMENT:
-            setSpriteViewSpacePosition(0xA3, 16.0f, -4.0f, 8.0f);
-            break;
+//         case KAREN_ROOM:
+//         case VINEYARD:
+//         case VINEYARD_HOUSE:
+//         case VINEYARD_CELLAR:
+//         case VINEYARD_CELLAR_BASEMENT:
+//             setSpriteViewSpacePosition(0xA3, 16.0f, -4.0f, 8.0f);
+//             break;
 
-        case ROAD:
-            setSpriteViewSpacePosition(0xA3, 24.0f, -44.0f, 8.0f);
-            break;
+//         case ROAD:
+//             setSpriteViewSpacePosition(0xA3, 24.0f, -44.0f, 8.0f);
+//             break;
         
-        case FARM:
-        case GREENHOUSE:
-        case HOUSE:
-        case BARN:
-        case COOP:
-        case KITCHEN:
-        case BATHROOM:
-            setSpriteViewSpacePosition(0xA3, 64.0f, -56.0f, 8.0f);
-            break;
-        
-    }
-    
-    overlayScreenTable.cellIndex = 0;
-    overlayScreenTable.previousCellIndex = 0;
-    overlayScreenTable.pageNumber = 0;
-    overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.screenState = 0;
-    overlayScreenTable.unk_8 = 0;
-    overlayScreenTable.unk_9 = 0;
-    overlayScreenTable.unk_A = 0;
-    overlayScreenTable.unk_B = 0;
-    
-    setMainLoopCallbackFunctionIndex(PAUSE_SCREEN_MAP);
+//         case FARM:
+//         case GREENHOUSE:
+//         case HOUSE:
+//         case BARN:
+//         case COOP:
+//         case KITCHEN:
+//         case BATHROOM:
+//             setSpriteViewSpacePosition(0xA3, 64.0f, -56.0f, 8.0f);
+//             break;
 
-}
+//     }
+    
+//     overlayScreenTable.cellIndex = 0;
+//     overlayScreenTable.previousCellIndex = 0;
+//     overlayScreenTable.pageNumber = 0;
+//     overlayScreenTable.unk_3 = 0xFF;
+//     overlayScreenTable.screenState = 0;
+//     overlayScreenTable.unk_8 = 0;
+//     overlayScreenTable.unk_9 = 0;
+//     overlayScreenTable.unk_A = 0;
+//     overlayScreenTable.unk_B = 0;
+    
+//     setMainLoopCallbackFunctionIndex(PAUSE_SCREEN_MAP);
+
+// }
 
 void pauseScreenMapCallback(void) {    
 

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "yay0.h"
 
 #include "system/spriteDMAManager.h"
 
@@ -48,7 +49,7 @@ void dmaSprites(void) {
 
     for (i = 0; i < MAX_SPRITE_ASSET_DESCRIPTORS; i++) {
         if (spriteAssetDescriptors[i].flags & NEED_DMA) {
-            nuPiReadRom(spriteAssetDescriptors[i].romAddr, spriteAssetDescriptors[i].vaddr, spriteAssetDescriptors[i].length);
+            dmaReadRom((u32)spriteAssetDescriptors[i].romAddr, spriteAssetDescriptors[i].vaddr, spriteAssetDescriptors[i].length);
             spriteAssetDescriptors[i].flags &= ~NEED_DMA;
         }
     }

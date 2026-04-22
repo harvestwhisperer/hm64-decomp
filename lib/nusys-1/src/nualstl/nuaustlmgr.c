@@ -353,9 +353,9 @@ static void nuAuMgr(void)
     s32 temp;
     
     osCreateMesgQueue(&auMesgQ, auMsgBuf, NU_AU_MESG_MAX);
-    
+
     osCreateMesgQueue(&auRtnMesgQ, &auRtnMesgBuf, 1);
-    
+
     nuScAddClient(&auClient, &auMesgQ, NU_SC_RETRACE_MSG | NU_SC_PRENMI_MSG );
     
     temp = (nusched.retraceCount * auGlobal.drvr.maxOutSamples + 59) / 60;
@@ -381,7 +381,7 @@ static void nuAuMgr(void)
     
     while(1){
 	(void)osRecvMesg(&auMesgQ, (OSMesg*)&mesg_type, OS_MESG_BLOCK);
-    
+
 	switch(*mesg_type){
         case NU_SC_RETRACE_MSG:
         status = osAiGetStatus();

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "yay0.h"
 
 #include "system/sprite.h"
 
@@ -334,13 +335,21 @@ bool setBitmapAnchor(u16 index, s16 anchorX, s16 anchorY) {
     
 }
 
-u8* setSpriteDMAInfo(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
+// Loads one compressed frame from a per-frame-compressed spritesheet into
+// `timg` and returns the *decompressed* frame size. Callers that pack
+// multiple layered frames back-to-back in RAM use the returned size as the
+// RAM stride — getTextureLength(spritesheetIndex) returns the compressed
+// length, which is correct for DMA but wrong for the RAM layout.
+u32 setSpriteDMAInfo(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
 
     u32 offset = spritesheetIndex[index];
+    u32 compressedLen = getTextureLength(index, spritesheetIndex);
 
-    setSpriteAssetDescriptors(romAddr + offset, timg, getTextureLength(index, spritesheetIndex));
+    dmaReadRom((u32)romAddr + offset, timg, compressedLen);
 
-    return timg;
+    // Decompressed size lives at bytes 4..7 of the Yay0 header in yay0Scratch.
+    return ((u32)yay0Scratch[4] << 24) | ((u32)yay0Scratch[5] << 16)
+         | ((u32)yay0Scratch[6] << 8)  | (u32)yay0Scratch[7];
 
 }
 

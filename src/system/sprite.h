@@ -113,7 +113,7 @@ extern bool setBitmapScale(u16 index, f32, f32, f32);
 extern bool setBitmapRotation(u16 index, f32, f32, f32);
 extern bool setBitmapRGBA(u16 index, u8 r, u8 g, u8 b, u8 a);
 extern bool setBitmapAnchor(u16 index, s16, s16);
-extern u8 *setSpriteDMAInfo(u16 index, u32 *start, u8 *timg, u8 *romAddr);
+extern u32 setSpriteDMAInfo(u16 index, u32 *start, u8 *timg, u8 *romAddr);
 extern u32 getTextureLength(u16 arg0, u32 arg1[]);
 extern void updateBitmaps(void);
 extern void resetBitmaps(void);

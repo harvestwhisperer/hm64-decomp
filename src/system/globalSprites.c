@@ -1,4 +1,5 @@
 #include "common.h"
+#include "yay0.h"
 
 #include "system/globalSprites.h"
 
@@ -117,7 +118,7 @@ bool dmaSprite(u16 index,
             // spritesheet index in spritesheet
             } else {
 
-                nuPiReadRom(romTextureStart + offset1, texture1Vaddr, offset2 - offset1);
+                dmaReadRom(romTextureStart + offset1, texture1Vaddr, offset2 - offset1);
                 nuPiReadRom(romTextureStart + offset2, paletteVaddr, offset3 - offset2);
                 nuPiReadRom(romTextureStart + offset3, animationVaddr, offset4 - offset3);
                 nuPiReadRom(romTextureStart + offset4, spriteToPaletteVaddr, offset5 - offset4);
@@ -1048,27 +1049,27 @@ inline u16* advanceBitmapMetadataPtr(u16 numFrames, u16* bitmapMetadataPtr) {
 }
 
 void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animationFrameMetadataPtr, u8 animationType) {
-    
-    BitmapMetadata bitmapMetadata; 
-    
+
+    BitmapMetadata bitmapMetadata;
+
     u32 length;
     u16 bitmapIndex;
-    
+
     u32 texturePtr;
     u16 *palettePtr;
-    
+
     f32 viewSpacePositionX;
     f32 viewSpacePositionY;
     f32 viewSpacePositionZ;
-    
+
     u16 objectCount;
-    
+
     u16 i = 0;
-    
+
     objectCount = animationFrameMetadataPtr->objectCount;
-    
+
     length = 0;
-    
+
     // virtual address; destination of DMA
     texturePtr = globalSprites[spriteIndex].texturePtr[gGraphicsBufferIndex];
 
@@ -1081,14 +1082,19 @@ void setBitmapFromSpriteObject(u16 spriteIndex, AnimationFrameMetadata* animatio
                 setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr((objectCount - i) - 1, globalSprites[spriteIndex].bitmapMetadataPtr));
                 
                 texturePtr += length;
-            
-                if (animationType == 2) {
-                    setSpriteDMAInfo(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
-                }
-            
-                length = getTextureLength(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
 
-} else {
+                // Always re-DMA, even when the animation frame hasn't
+                // advanced (animationType would be 1). The "skip DMA"
+                // optimization required getTextureLength to return the
+                // RAM stride — but for per-frame-compressed sprites,
+                // getTextureLength returns the *compressed* length, which
+                // differs from the decompressed stride used when frames
+                // were packed. Mismatched strides give bitmap 2+ in a
+                // layered frame a bogus timg → RDP reads past the buffer
+                // → crash deep in display-list generation.
+                length = setSpriteDMAInfo(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr, texturePtr, globalSprites[spriteIndex].romTexturePtr);
+
+            } else {
                 
                 setBitmapMetadata(&bitmapMetadata, advanceBitmapMetadataPtr(((animationFrameMetadataPtr->objectCount - i) - 1), globalSprites[spriteIndex].bitmapMetadataPtr));
                 texturePtr = getTexturePtr(bitmapMetadata.spritesheetIndex, globalSprites[spriteIndex].spritesheetIndexPtr);
