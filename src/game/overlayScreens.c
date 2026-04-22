@@ -7951,7 +7951,7 @@ skip:
 //         case BATHROOM:
 //             setSpriteViewSpacePosition(0xA3, 64.0f, -56.0f, 8.0f);
 //             break;
-        
+
 //     }
     
 //     overlayScreenTable.cellIndex = 0;
