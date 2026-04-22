@@ -367,16 +367,6 @@ static const Gfx D_8011ECD0 = gsDPSetCombineMode(G_CC_MODULATEIDECALA, G_CC_MODU
 static const Gfx D_8011ECD8 = gsDPSetRenderMode(G_RM_AA_ZB_TEX_EDGE, G_RM_AA_ZB_TEX_EDGE2);
 static const Gfx D_8011ECE0 = gsDPSetRenderMode(G_RM_AA_TEX_EDGE, G_RM_AA_TEX_EDGE2);
 
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECC0);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECC8);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECD0);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECD8);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ECE0);
-
 inline Gfx* setBitmapBlendModeDisplayList(Gfx* dl, u16 flag) {
 
     switch (flag) {
@@ -445,31 +435,17 @@ inline void calculateSceneNodePosition(Vec3f* calculatedPosition, BitmapObject* 
 
 static const Gfx D_8011ED00 = gsSPTexture(0x8000, 0x8000, 0, G_TX_RENDERTILE, G_ON);
 
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED00);
-
 static const Gfx D_8011ED08 = gsDPSetTextureFilter(G_TF_BILERP);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED08);
 
 static const Gfx D_8011ED10 = gsDPSetTextureFilter(G_TF_POINT);
 
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED10);
-
 static const Gfx D_8011ED18 = gsSP2Triangles(0, 2, 1, 0, 0, 3, 2, 0);
-
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED18);
 
 static const Gfx D_8011ED20 = gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0);
 
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED20);
-
 static const Gfx D_8011ED28 = gsDPPipeSync();
 
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED28);
-
 static const Gfx D_8011ED30 = gsSPEndDisplayList();
-
-//INCLUDE_RODATA("asm/nonmatchings/systemsprite", D_8011ED30);
 
 Gfx* generateBitmapDisplayList(Gfx* dl, BitmapObject* bitmap, u16 spriteNumber) {
 

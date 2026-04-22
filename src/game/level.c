@@ -2085,7 +2085,6 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
         case VILLAGE_2:
         case SQUARE:
         case POTION_SHOP_BEDROOM:
-        // unused/cut map
         case CAVE:
         case MINE_2:
         case VINEYARD:

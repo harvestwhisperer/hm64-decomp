@@ -5077,7 +5077,7 @@ void handleCutsceneCompletion(void) {
                         break;
 
                     case FUNERAL:             
-                        transitionCutscenes(1451, 0);
+                        transitionCutscenes(1451, FARM_SPAWN_POINT_1);
                         break;
 
                     case 1451:             
@@ -5626,7 +5626,7 @@ void loadCutscene(bool morningVisit) {
         // how to play
         
         gCameraRotationOffset = 0;
-        setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_SW);
+        setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_S);
         bytecodeSegmentIndex = 35;
         
     } else if (gCutsceneIndex >= 1550) {
@@ -5634,7 +5634,7 @@ void loadCutscene(bool morningVisit) {
         // evaluation/credits
     
         gCameraRotationOffset = 0;
-        setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_SW);
+        setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_S);
         bytecodeSegmentIndex = 31;        
     
     } else if (gCutsceneIndex >= 1500) {
@@ -5642,7 +5642,7 @@ void loadCutscene(bool morningVisit) {
         // demos
              
         gCameraRotationOffset = 0;
-        setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_SW);
+        setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_S);
 
         memcpy(farmFieldTiles, D_80114E50, FIELD_HEIGHT * FIELD_WIDTH);
 
@@ -5654,7 +5654,7 @@ void loadCutscene(bool morningVisit) {
         // mayor tour
         
         gCameraRotationOffset = 0;
-        setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_SW);
+        setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_S);
         
         gSeason = SPRING;
 
@@ -5745,11 +5745,11 @@ void loadCutscene(bool morningVisit) {
 
                 case 220:
                     gCameraRotationOffset = 0;
-                    setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_SW);
+                    setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_S);
                     break;
                 case 228 ... 238:
                     gCameraRotationOffset = 0;
-                    setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_SW);
+                    setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_S);
                     break;
                 default:
                     break;
@@ -5765,7 +5765,7 @@ void loadCutscene(bool morningVisit) {
         // family
         if (gCutsceneIndex == 39) {
             gCameraRotationOffset = 0;
-            setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_SW);
+            setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_S);
         } 
         
     }
