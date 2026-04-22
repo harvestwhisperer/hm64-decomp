@@ -144,7 +144,7 @@ CUTSCENE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.tr
 
 $(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
 	@mkdir -p $(CUTSCENE_ASSETS_DIR)
-	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
+	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices -I src/data/animation/entityAnimationScripts $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
 
 $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
 	$(MKDIR)

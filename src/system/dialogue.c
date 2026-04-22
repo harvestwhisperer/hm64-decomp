@@ -407,7 +407,7 @@ bool closeDialogueSession(u16 index) {
         resetMessageBoxAnimation(dialogues[index].sessionManager.mainMessageBoxIndex);
         cleanupDialogueOverlayBox(0);
         
-        dialogues[index].sessionManager.flags = (1 | 4);
+        dialogues[index].sessionManager.flags = (DIALOGUE_ACTIVE | DIALOGUE_COMPLETED);
         
         result = TRUE;
 

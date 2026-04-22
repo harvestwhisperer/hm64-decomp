@@ -432,7 +432,7 @@ segments:
           - { start: 0xF5FF8, type: animationScriptData, name: data/animation/entityAnimationScripts/spiritFestivalOcarinaPerformer }
           - { start: 0xF6004, type: animationScriptData, name: data/animation/entityAnimationScripts/gourmetJudge }
           - { start: 0xF6028, type: animationScriptData, name: data/animation/entityAnimationScripts/mrsMana }
-          - { start: 0xF6048, type: animationScriptData, name: data/animation/entityAnimationScripts/mrsManaSon }
+          - { start: 0xF6048, type: animationScriptData, name: data/animation/entityAnimationScripts/john }
           - { start: 0xF6068, type: animationScriptData, name: data/animation/entityAnimationScripts/kappa }
           - { start: 0xF606C, type: animationScriptData, name: data/animation/entityAnimationScripts/harvestGoddess }
           - { start: 0xF6090, type: animationScriptData, name: data/animation/entityAnimationScripts/dog }
@@ -1741,21 +1741,21 @@ segments:
     extract: false
     start: 0x593750
 
-  - name: mrsManaSonTexture
+  - name: johnTexture
     type: bin
-    dir: assets/sprites/entitySprites/npc/mrsManaSon
+    dir: assets/sprites/entitySprites/npc/john
     extract: false
     start: 0x593840
 
-  - name: mrsManaSonAssetsIndex
+  - name: johnAssetsIndex
     type: bin
-    dir: assets/sprites/entitySprites/npc/mrsManaSon
+    dir: assets/sprites/entitySprites/npc/john
     extract: false
     start: 0x597040
     
-  - name: mrsManaSonSpritesheetIndex
+  - name: johnSpritesheetIndex
     type: bin
-    dir: assets/sprites/entitySprites/npc/mrsManaSon
+    dir: assets/sprites/entitySprites/npc/john
     extract: false
     start: 0x597060
 
