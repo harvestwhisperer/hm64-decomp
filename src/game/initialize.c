@@ -4,7 +4,8 @@
 
 #include "ld_symbols.h"
 
-#include "data/animationScripts/animationScripts.h"
+#include "data/animation/entityAnimationScripts/entityAnimationScripts.h"
+#include "data/animation/characterAvatars/characterAvatars.h"
 #include "data/audio/sfx.h"
 
 #include "system/audio.h"
@@ -1122,7 +1123,7 @@ void loadMapAddresses(void) {
     setMapDataAddresses(RANCH_AUTUMN, &_ranchFallMapSegmentRomStart, &_ranchFallMapSegmentRomEnd);
     setMapDataAddresses(RANCH_WINTER, &_ranchWinterMapSegmentRomStart, &_ranchWinterMapSegmentRomEnd);
  
-    setMapDataAddresses(ANN_ROOM, &_annsRoomMapSegmentRomStart, &_annsRoomMapSegmentRomEnd);
+    setMapDataAddresses(ANN_ROOM, &_annRoomMapSegmentRomStart, &_annRoomMapSegmentRomEnd);
 
     setMapDataAddresses(RANCH_BARN, &_ranchBarnMapSegmentRomStart, &_ranchBarnMapSegmentRomEnd);
     setMapDataAddresses(RANCH_STORE, &_ranchStoreMapSegmentRomStart, &_ranchStoreMapSegmentRomEnd);
@@ -1168,7 +1169,7 @@ void loadMapAddresses(void) {
     setMapDataAddresses(POND_AUTUMN, &_pondFallMapSegmentRomStart, &_pondFallMapSegmentRomEnd);
     setMapDataAddresses(POND_WINTER, &_pondWinterMapSegmentRomStart, &_pondWinterMapSegmentRomEnd);
 
-    setMapDataAddresses(ELLI_ROOM, &_ellisRoomMapSegmentRomStart, &_ellisRoomMapSegmentRomEnd);
+    setMapDataAddresses(ELLI_ROOM, &_elliRoomMapSegmentRomStart, &_elliRoomMapSegmentRomEnd);
 
     setMapDataAddresses(BAKERY, &_bakeryMapSegmentRomStart, &_bakeryMapSegmentRomEnd);
 
@@ -1182,7 +1183,7 @@ void loadMapAddresses(void) {
     setMapDataAddresses(VILLAGE_2_AUTUMN, &_village2FallMapSegmentRomStart, &_village2FallMapSegmentRomEnd);
     setMapDataAddresses(VILLAGE_2_WINTER, &_village2WinterMapSegmentRomStart, &_village2WinterMapSegmentRomEnd);
 
-    setMapDataAddresses(POPURI_ROOM, &_popurisRoomMapSegmentRomStart, &_popurisRoomMapSegmentRomEnd);
+    setMapDataAddresses(POPURI_ROOM, &_popuriRoomMapSegmentRomStart, &_popuriRoomMapSegmentRomEnd);
 
     setMapDataAddresses(FLOWER_SHOP, &_flowerShopMapSegmentRomStart, &_flowerShopMapSegmentRomEnd);
 
@@ -1197,15 +1198,15 @@ void loadMapAddresses(void) {
 
     setMapDataAddresses(RICK_STORE, &_ricksShopMapSegmentRomStart, &_ricksShopMapSegmentRomEnd);
 
-    setMapDataAddresses(MIDWIFE_HOUSE, &_midwifesHouseMapSegmentRomStart, &_midwifesHouseMapSegmentRomEnd);
+    setMapDataAddresses(MIDWIFE_HOUSE, &_midwifeHouseMapSegmentRomStart, &_midwifeHouseMapSegmentRomEnd);
     
     setMapDataAddresses(TAVERN, &_tavernMapSegmentRomStart, &_tavernMapSegmentRomEnd);
     
     setMapDataAddresses(LIBRARY, &_libraryMapSegmentRomStart, &_libraryMapSegmentRomEnd);
 
-    setMapDataAddresses(MARIA_ROOM, &_mariasRoomMapSegmentRomStart, &_mariasRoomMapSegmentRomEnd);
+    setMapDataAddresses(MARIA_ROOM, &_mariaRoomMapSegmentRomStart, &_mariaRoomMapSegmentRomEnd);
     
-    setMapDataAddresses(MAYOR_HOUSE, &_mayorsHouseMapSegmentRomStart, &_mayorsHouseMapSegmentRomEnd);
+    setMapDataAddresses(MAYOR_HOUSE, &_mayorHouseMapSegmentRomStart, &_mayorHouseMapSegmentRomEnd);
 
     setMapDataAddresses(POTION_SHOP_BEDROOM, &_potionShopBackroomMapSegmentRomStart, &_potionShopBackroomMapSegmentRomEnd);
     setMapDataAddresses(POTION_SHOP, &_potionShopMapSegmentRomStart, &_potionShopMapSegmentRomEnd);
@@ -1215,7 +1216,7 @@ void loadMapAddresses(void) {
     setMapDataAddresses(MINE, &_emptyMineMapSegmentRomStart, &_emptyMineMapSegmentRomEnd);
     setMapDataAddresses(MINE_2, &_mineMapSegmentRomStart, &_mineMapSegmentRomEnd);
 
-    setMapDataAddresses(KAREN_ROOM, &_karensRoomMapSegmentRomStart, &_karensRoomMapSegmentRomEnd);
+    setMapDataAddresses(KAREN_ROOM, &_karenRoomMapSegmentRomStart, &_karenRoomMapSegmentRomEnd);
 
     setMapDataAddresses(VINEYARD_SPRING, &_vineyardSpringMapSegmentRomStart, &_vineyardSpringMapSegmentRomEnd);
     setMapDataAddresses(VINEYARD_SUMMER, &_vineyardSummerMapSegmentRomStart, &_vineyardSummerMapSegmentRomEnd);

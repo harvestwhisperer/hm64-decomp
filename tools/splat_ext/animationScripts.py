@@ -1,10 +1,10 @@
 """
-Custom Splat extension for animation script data extraction.
+Custom Splat extension for entity animation script data extraction.
 
 Generates:
-    - src/data/animationScripts.c (base file containing includes)
-    - src/data/animationScripts/player.inc.c
-    - src/data/animationScripts/maria.inc.c
+    - src/data/animation/entityAnimationScripts/entityAnimationScripts.c (base file containing includes)
+    - src/data/animation/entityAnimationScripts/player.inc.c
+    - src/data/animation/entityAnimationScripts/maria.inc.c
     - etc.
 """
 
@@ -51,13 +51,15 @@ class N64SegAnimationScripts(CommonSegGroup):
         lines = [
             '#include "common.h"',
             "",
-            '#include "animationScripts.h"',
+            '#include "entityAnimationScripts.h"',
             "",
         ]
 
-        # Add includes for each subsegment
+        # Add includes for each subsegment that is extracted into this directory.
+        # Subsegments with `extract: false` (e.g. characterAvatars, which lives in
+        # a sibling directory and is a different data structure) are skipped.
         for sub in self.subsegments:
-            if hasattr(sub, 'type') and sub.type == "animationScriptData":
+            if hasattr(sub, 'type') and sub.type == "animationScriptData" and getattr(sub, 'extract', True):
                 basename = PurePosixPath(sub.name).name
                 lines.append(f'#include "{basename}.inc.c"')
 
