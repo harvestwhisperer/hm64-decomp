@@ -13,13 +13,14 @@ Currently supported modding workflows:
 
 QOL implementations:
 - Time slowed to 1/5th of the original game speed
-- Farm ranking screen accessible in game select menu
+- Farm ranking screen accessible in game select menu (no sprite for this yet)
 - Mayor tour skipped
 - Opening logos skipped
 - Music continues playing unless the entered map contains a different theme
-- Naming screen music doesn't restart during new game naming 
+- Naming screen music doesn't restart across screens during new game naming 
+- Adds compression of map and sprite assets, saving 6.56 MiB, or a total of ~41% of the space of the 16MB cartridge
 
-Replacing other assets (maps, sprites, animations, fonts) is supported in theory, but tooling to create/modify these assets is still in progress.
+Replacing other assets (maps, sprites, animations, fonts, instrument samples) is supported in theory, but tooling to create/modify these assets is still in progress.
 
 For this branch, `make extract` should only be run once. If needed, `make clean-all-dangerous` can be run, which will remove all texts (losing any edits). Note that the original dialogue bytecode relies on hardocded text indexes, so removing or changing existing texts may result in breaking the game. This also applies to hardcoded references to texts in the game code itself as well as the cutscene DSL.
 
