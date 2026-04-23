@@ -339,7 +339,7 @@ inline void initializeCutscene(u16 segmentIndex) {
 
     spawnCutsceneExecutor(cutsceneExecutorIndices[segmentIndex], cutsceneEntryPointAddresses[segmentIndex]);
     
-    togglePauseEntities();
+    unpauseEntities();
     
     gCutsceneBytecodeSegmentIndex = segmentIndex;
 

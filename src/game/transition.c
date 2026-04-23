@@ -528,7 +528,7 @@ void initializeEntityInstances(u8 arg0) {
 //INCLUDE_ASM("asm/nonmatchings/game/transition", resumeGameplay);
 
 void resumeGameplay(void) {
-    togglePauseEntities();
+    unpauseEntities();
     resumeCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 }

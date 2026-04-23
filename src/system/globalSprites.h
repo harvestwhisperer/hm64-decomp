@@ -22,7 +22,7 @@
 #define SPRITE_ANIMATION_PLAYING 0x8
 #define SPRITE_ANIMATION_LOOPS 0x10
 #define SPRITE_ANIMATION_PAUSED 0x20
-#define SPRITE_ANIMATION_STATE_CHANGED 0x40
+#define SPRITE_ANIMATION_CYCLE_ENDED 0x40
 #define SPRITE_ENABLE_BILINEAR_FILTERING 0x80
 #define SPRITE_DIRECT_PALETTE_MODE 0x100
 #define SPRITE_NO_TRANSFORM 0x200
@@ -100,7 +100,7 @@ extern bool setSpriteAlpha(u16, u8);
 extern bool setBilinearFiltering(u16 spriteIndex, bool useBilinearFiltering);     
 extern bool setSpritePaletteIndex(u16, u16);     
 extern bool checkSpriteRGBAUpdateFinished(u16);   
-extern bool checkSpriteAnimationStateChanged(u16);
+extern bool checkSpriteAnimationCycleEnded(u16);
 extern void updateSprites(void);
 extern void deactivateSprites(void);
 

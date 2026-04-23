@@ -65,7 +65,7 @@ void cutsceneHandlerPauseEntity(u16);
 void cutsceneHandlerTogglePauseEntity(u16);
 void cutsceneHandlerFlipEntityDirection(u16);
 void cutsceneHandlerPauseEntities(u16);
-void cutsceneHandlerTogglePauseEntities(u16);
+void cutsceneHandlerUnpauseEntities(u16);
 void cutsceneHandlerFlipEntityAnimation(u16);
 void cutsceneHandlerSetEntityNonCollidable(u16);
 void cutsceneHandlerSetupEntity(u16);
@@ -166,7 +166,7 @@ void (*cutsceneCommandHandlers[])(u16) = {
     cutsceneHandlerTogglePauseEntity,
     cutsceneHandlerFlipEntityDirection,
     cutsceneHandlerPauseEntities,
-    cutsceneHandlerTogglePauseEntities,
+    cutsceneHandlerUnpauseEntities,
     cutsceneHandlerFlipEntityAnimation,
     cutsceneHandlerSetEntityNonCollidable,
     cutsceneHandlerSetupEntity,
@@ -2133,13 +2133,13 @@ void cutsceneHandlerPauseEntities(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerTogglePauseEntities);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerUnpauseEntities);
 
-void cutsceneHandlerTogglePauseEntities(u16 index) {
+void cutsceneHandlerUnpauseEntities(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    togglePauseEntities(index);
+    unpauseEntities(index);
 
 }
 
@@ -2688,7 +2688,7 @@ void cutsceneHandlerWaitEntityAnimation(u16 index) {
 
     if (cutsceneExecutors[index].flags & CUTSCENE_ENTITY_ASSET) {
 
-        if (checkSpriteAnimationStateChanged(entities[cutsceneExecutors[index].assetIndex].globalSpriteIndex)) {
+        if (checkSpriteAnimationCycleEnded(entities[cutsceneExecutors[index].assetIndex].globalSpriteIndex)) {
             cutsceneExecutors[index].bytecodePtr += 2;
         } else {
             cutsceneExecutors[index].waitFrames = 1;
