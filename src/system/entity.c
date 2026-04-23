@@ -531,7 +531,7 @@ bool setEntityAnimation(u16 index, u16 animationIndex) {
             entities[index].animationIndices.animationIndex = animationIndex;
             
             entities[index].flags |= ENTITY_IS_CURRENTLY_ANIMATED;
-            entities[index].flags &= ~ENTITY_ANIMATION_DIRECTION_CHANGE; 
+            entities[index].flags &= ~ENTITY_ANIMATION_TRACKS_DIRECTION; 
 
             globalSprites[entities[index].globalSpriteIndex].stateFlags &= ~SPRITE_ANIMATION_STATE_CHANGED;
             globalSprites[entities[index].globalSpriteIndex].audioTrigger = FALSE;
@@ -545,7 +545,7 @@ bool setEntityAnimation(u16 index, u16 animationIndex) {
     
 }
 
-bool setEntityAnimationWithDirectionChange(u16 index, u16 animationIndex) {
+bool setEntityDirectionalAnimation(u16 index, u16 animationIndex) {
     
     bool result = FALSE;
 
@@ -554,7 +554,7 @@ bool setEntityAnimationWithDirectionChange(u16 index, u16 animationIndex) {
         if ((entities[index].flags & ENTITY_ACTIVE) && (entities[index].flags & ENTITY_INITIALIZED) && !(entities[index].flags & ENTITY_LOAD_PENDING)) {     
         
             entities[index].animationIndices.animationIndex = animationIndex;
-            entities[index].flags |= (8 | ENTITY_ANIMATION_DIRECTION_CHANGE);
+            entities[index].flags |= (ENTITY_IS_CURRENTLY_ANIMATED | ENTITY_ANIMATION_TRACKS_DIRECTION);
     
             globalSprites[entities[index].globalSpriteIndex].stateFlags &= ~SPRITE_ANIMATION_STATE_CHANGED;
     
@@ -2128,7 +2128,7 @@ void updateEntities(void) {
                 
             }
 
-            if (entities[i].flags & ENTITY_ANIMATION_DIRECTION_CHANGE) {
+            if (entities[i].flags & ENTITY_ANIMATION_TRACKS_DIRECTION) {
                 directionalOffset = entities[i].direction;
             } else {
                 directionalOffset = 0;
