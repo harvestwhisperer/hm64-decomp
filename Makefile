@@ -614,7 +614,7 @@ $(BUILD_DIR)/makerom/entry.o: makerom/entry.s
 # Transpile cutscene DSL to assembly
 $(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
 	@mkdir -p $(CUTSCENE_ASSETS_DIR)
-	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
+	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices -I src/data/animation/entityAnimationScripts $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
 
 # Cutscenes: assemble from assets/cutscenes/
 $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s

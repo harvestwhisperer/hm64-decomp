@@ -719,21 +719,21 @@ beginseg
 endseg
 
 beginseg
-    name "mrsManaSonTexture"
+    name "johnTexture"
     flags RAW
-    include "build/assets/sprites/entitySprites/npc/mrsManaSon/mrsManaSonTexture.bin.o"
+    include "build/assets/sprites/entitySprites/npc/john/johnTexture.bin.o"
 endseg
 
 beginseg
-    name "mrsManaSonAssetsIndex"
+    name "johnAssetsIndex"
     flags RAW
-    include "build/assets/sprites/entitySprites/npc/mrsManaSon/mrsManaSonAssetsIndex.bin.o"
+    include "build/assets/sprites/entitySprites/npc/john/johnAssetsIndex.bin.o"
 endseg
 
 beginseg
-    name "mrsManaSonSpritesheetIndex"
+    name "johnSpritesheetIndex"
     flags RAW
-    include "build/assets/sprites/entitySprites/npc/mrsManaSon/mrsManaSonSpritesheetIndex.bin.o"
+    include "build/assets/sprites/entitySprites/npc/john/johnSpritesheetIndex.bin.o"
 endseg
 
 beginseg
