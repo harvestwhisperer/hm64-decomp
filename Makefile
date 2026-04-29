@@ -25,8 +25,9 @@ LD_MAP := $(BASENAME).map
 # Tools
 
 PYTHON ?= python3
+HOST_CC ?= gcc
 
-KMC_PATH := $(TOOLS_DIR)/gcc-2.7.2/
+KMC_PATH ?= $(TOOLS_DIR)/gcc-2.7.2/
 
 CROSS := mips-linux-gnu-
 
@@ -991,6 +992,9 @@ $(BUILD_DIR)/codesegment.o: $(ALL_CODE_OBJECTS)
 # LINKER SCRIPT
 # ==============================================================================
 
+$(MKLDSCRIPT): $(TOOLS_DIR)/build/mkldscript.c $(TOOLS_DIR)/build/spec.c $(TOOLS_DIR)/build/util.c $(TOOLS_DIR)/build/spec.h $(TOOLS_DIR)/build/util.h
+	$(V)$(HOST_CC) -o $@ $(TOOLS_DIR)/build/mkldscript.c $(TOOLS_DIR)/build/spec.c $(TOOLS_DIR)/build/util.c
+
 $(SPEC_PROCESSED): $(SPEC)
 	$(MKDIR)
 	$(V)$(CPP) $(SPEC_CPP_FLAGS) $< > $@
@@ -1007,7 +1011,7 @@ $(BASENAME).elf: $(OBJECTS) $(LD_SCRIPT)
 
 $(TARGET): $(BASENAME).elf
 	$(V)$(OBJCOPY) -O binary --gap-fill=0xFF $< $@
-	$(V)python3 $(TOOLS_DIR)/build/makemask.py $@ --pad
+	$(V)$(PYTHON) $(TOOLS_DIR)/build/makemask.py $@ --pad
 
 # ==============================================================================
 # CLEAN
