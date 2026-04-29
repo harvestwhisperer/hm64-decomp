@@ -382,11 +382,9 @@ All 98 opcodes organized by category. Parameter types: `u8`/`u16`/`u32`/`s8`/`s1
 
 ### Character Movement Sequence
 ```
-    SET_ASSET_ROTATION SOUTHEAST
     SET_COORDINATES -590, 0, 152
     ENTITY_WALK 34, SOUTHEAST, 2       ; Walk 34 units SE at speed 2
     ENTITY_WALK 90, SOUTHEAST, 2       ; Continue walking
-    SET_ASSET_ROTATION NORTHEAST        ; Turn to face NE
 ```
 
 ### Parallel Executor (secondary character actions)
@@ -400,7 +398,6 @@ All 98 opcodes organized by category. Parameter types: `u8`/`u16`/`u32`/`s8`/`s1
     SETUP_ENTITY 31, ENTITY_ASSET_STU, 1
     SET_ENTITY_ANIMATIONS 31, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
-    SET_ASSET_ROTATION SOUTHEAST
     SET_COORDINATES -590, 0, 160
     ENTITY_WALK 34, SOUTHEAST, 2
     EXECUTE_SUBROUTINE .wait_loop

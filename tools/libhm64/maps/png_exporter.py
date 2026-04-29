@@ -17,6 +17,7 @@ from .addresses import (
     get_asset_offsets_array,
     get_texture_offsets_array,
     get_palette_offsets_array,
+    is_placeholder_map,
 )
 
 # Default paths
@@ -56,12 +57,11 @@ def write_tile_textures(output_dir: Path = DEFAULT_OUTPUT_DIR) -> None:
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    for row in get_all_map_addresses():
-        map_name = row[1]
-
-        # Skip empty maps and end marker
-        if map_name.startswith("empty") or map_name == "end":
+    rows = get_all_map_addresses()
+    for idx, row in enumerate(rows):
+        if is_placeholder_map(idx, rows):
             continue
+        map_name = row[1]
 
         map_base = int(row[0], 16)
         asset_offsets = get_asset_offsets_array(row)
@@ -105,12 +105,11 @@ def write_core_object_textures(output_dir: Path = DEFAULT_OUTPUT_DIR) -> None:
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    for row in get_all_map_addresses():
-        map_name = row[1]
-
-        # Skip empty maps and end marker
-        if map_name.startswith("empty") or map_name == "end":
+    rows = get_all_map_addresses()
+    for idx, row in enumerate(rows):
+        if is_placeholder_map(idx, rows):
             continue
+        map_name = row[1]
 
         map_base = int(row[0], 16)
         asset_offsets = get_asset_offsets_array(row)

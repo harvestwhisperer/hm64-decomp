@@ -15,7 +15,7 @@
 #include "game/animals.h"
 #include "game/cutscenes.h"
 #include "game/evaluation.h"
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
@@ -2791,21 +2791,21 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
         if (animalZ <= playerZ) {
             
             if (deltaX <= deltaZ) {
-                direction = (deltaZ / 2) < deltaX ? SOUTH : SOUTHWEST;
+                direction = (deltaZ / 2) < deltaX ? DIRECTION_SE : DIRECTION_S;
             } else {
-                direction = (deltaX / 2) < deltaZ ? SOUTH : SOUTHEAST;
+                direction = (deltaX / 2) < deltaZ ? DIRECTION_SE : DIRECTION_E;
             }
             
         } else if (deltaX <= deltaZ) {
 
-            direction = deltaX > (deltaZ / 2) ? EAST : NORTHEAST;
+            direction = deltaX > (deltaZ / 2) ? DIRECTION_NE : DIRECTION_N;
 
         } else {
 
             if (deltaX / 2 >= deltaZ) {
-                direction = SOUTHEAST;
+                direction = DIRECTION_E;
             } else {
-                direction = EAST;
+                direction = DIRECTION_NE;
             }
 
         }
@@ -2819,22 +2819,22 @@ u8 calculateAnimalDirectionToPlayer(f32 animalX, f32 animalZ, f32 playerX, f32 p
         } else {
 
             if ((deltaX / 2) >= deltaZ) {
-                direction = NORTHWEST;
+                direction = DIRECTION_W;
             } else {
-                direction = WEST;
+                direction = DIRECTION_SW;
             }
         }
         
     } else if (deltaX <= deltaZ) {
         
         if ((deltaZ / 2) >= deltaX) {
-            direction = NORTHEAST;
+            direction = DIRECTION_N;
         } else {
-            direction = NORTH;
+            direction = DIRECTION_NW;
         }
         
     } else {
-        direction = (deltaZ > (deltaX / 2)) ? NORTH : NORTHWEST;
+        direction = (deltaZ > (deltaX / 2)) ? DIRECTION_NW : DIRECTION_W;
     }
     
     return direction;

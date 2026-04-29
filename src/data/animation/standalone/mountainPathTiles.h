@@ -1,0 +1,6 @@
+#ifndef _MOUNTAIN_PATH_TILES_FRAME_MACROS_H_
+#define _MOUNTAIN_PATH_TILES_FRAME_MACROS_H_
+
+#define MOUNTAIN_PATH_TILES_FRAME_0              0
+
+#endif

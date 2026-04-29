@@ -127,11 +127,11 @@
 ; ----- Post-gossip idle stubs (swapped into Kent/Stu slots) -----
 
 .kent_face_south:
-    SET_ASSET_ROTATION SOUTH
+    SET_ASSET_ROTATION 7
     EXECUTE_SUBROUTINE .wait_loop
 
 .stu_face_north:
-    SET_ASSET_ROTATION NORTH
+    SET_ASSET_ROTATION 3
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ============================================================
@@ -154,7 +154,7 @@
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -424, 0, -64
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
 
 .mayor_gate_wait:
     SET_CALLBACK_ROUTINE 0, 32768, .mayor_gate_on_interact
@@ -270,7 +270,7 @@
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -424, 0, -96
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
 
 .sasha_gate_wait:
     SET_CALLBACK_ROUTINE 0, 32768, .sasha_gate_on_interact
@@ -308,7 +308,7 @@
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -424, 0, 160
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
 
 .shipper_gate_wait:
     SET_CALLBACK_ROUTINE 0, 32768, .shipper_gate_on_interact
@@ -346,7 +346,7 @@
     SET_BEHAVIOR_FLAGS 0
     SET_ENTITY_NON_COLLIDABLE
     SET_COORDINATES -424, 0, 192
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
 
 .may_gate_wait:
     SET_CALLBACK_ROUTINE 0, 32768, .may_gate_on_interact
@@ -423,7 +423,7 @@
     INIT_MAP_ADDITION 6, 0
     EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES 0, 0, 0
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     SET_WAIT_FRAMES 32
     SET_U16_VALUE 0, D_80189824
@@ -433,7 +433,7 @@
 
 .executor_41_podium:
     SETUP_MAP_ASSET MAIN_MAP_INDEX
-    SET_ASSET_ROTATION SOUTH
+    SET_ASSET_ROTATION 7
     SET_COORDINATES -96, 96, -48
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -456,7 +456,7 @@
     INIT_MESSAGE_BOX_TYPE1 0, VEGETABLE_FESTIVAL_TEXT_INDEX, 47
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
-    ENTITY_WALK 8, NORTHWEST, 2
+    ENTITY_WALK 8, DIRECTION_W, 2
     SPAWN_EXECUTOR 40, .executor_40_festival_poll
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     DEACTIVATE_SELF
@@ -915,7 +915,7 @@
     EXECUTE_SUBROUTINE .setup_player
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -64, 0, -64
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Maria -----
@@ -927,7 +927,7 @@
     SET_COORDINATES -160, 0, 128
 
 .maria_wait:
-    SET_ASSET_ROTATION SOUTHWEST
+    SET_ASSET_ROTATION 0
     SET_CALLBACK_ROUTINE 0, 32768, .maria_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -963,7 +963,7 @@
 
 .maria_judging_pos:
     SET_COORDINATES -56, 0, 0
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Popuri -----
@@ -975,7 +975,7 @@
     SET_COORDINATES 0, 0, 160
 
 .popuri_wait:
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
     SET_CALLBACK_ROUTINE 0, 32768, .popuri_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1011,7 +1011,7 @@
 
 .popuri_judging_pos:
     SET_COORDINATES -32, 0, -32
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Elli -----
@@ -1023,7 +1023,7 @@
     SET_COORDINATES 64, 0, 128
 
 .elli_wait:
-    SET_ASSET_ROTATION SOUTHWEST
+    SET_ASSET_ROTATION 0
     SET_CALLBACK_ROUTINE 0, 32768, .elli_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1059,7 +1059,7 @@
 
 .elli_judging_pos:
     SET_COORDINATES -48, 0, 24
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Ann -----
@@ -1071,7 +1071,7 @@
     SET_COORDINATES -192, 0, -160
 
 .ann_wait:
-    SET_ASSET_ROTATION NORTHEAST
+    SET_ASSET_ROTATION 4
     SET_CALLBACK_ROUTINE 0, 32768, .ann_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1107,7 +1107,7 @@
 
 .ann_judging_pos:
     SET_COORDINATES -40, 0, -96
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Karen -----
@@ -1119,7 +1119,7 @@
     SET_COORDINATES -224, 0, 192
 
 .karen_wait:
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
     SET_CALLBACK_ROUTINE 0, 32768, .karen_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1155,7 +1155,7 @@
 
 .karen_judging_pos:
     SET_COORDINATES -32, 0, -64
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Mayor (judging phase only) -----
@@ -1165,7 +1165,7 @@
     SET_ENTITY_ANIMATIONS 6, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -160, 0, -64
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Rick -----
@@ -1177,7 +1177,7 @@
     SET_COORDINATES -160, 0, -256
 
 .rick_wait:
-    SET_ASSET_ROTATION SOUTHWEST
+    SET_ASSET_ROTATION 0
     SET_CALLBACK_ROUTINE 0, 32768, .rick_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1200,7 +1200,7 @@
 
 .rick_judging_pos:
     SET_COORDINATES -48, 0, -128
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Potion Shop Dealer -----
@@ -1212,7 +1212,7 @@
     SET_COORDINATES 0, 0, -192
 
 .dealer_wait:
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
     SET_CALLBACK_ROUTINE 0, 32768, .dealer_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1235,7 +1235,7 @@
 
 .dealer_judging_pos:
     SET_COORDINATES -8, 0, -96
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Kent (exec 9) - paired gossip with Stu -----
@@ -1247,7 +1247,7 @@
     SET_COORDINATES 64, 0, -160
 
 .kent_wait:
-    SET_ASSET_ROTATION SOUTHWEST
+    SET_ASSET_ROTATION 0
     SET_CALLBACK_ROUTINE 0, 32768, .kent_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1265,7 +1265,7 @@
     EXECUTE_SUBROUTINE .gossip_kent_dislikes
     SET_OTHER_EXECUTOR_PTR 10, .stu_face_north
     EXECUTE_SUBROUTINE .gossip_stu_rebuttal
-    SET_ASSET_ROTATION SOUTH
+    SET_ASSET_ROTATION 7
     EXECUTE_SUBROUTINE .gossip_kent_boasts
     FLIP_ENTITY_DIRECTION 0
     INIT_DIALOGUE_SESSION 0, DIALOGUE_VEGETABLE_FESTIVAL, 7
@@ -1291,7 +1291,7 @@
 
 .kent_judging_pos:
     SET_COORDINATES -64, 0, -32
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Stu (exec 10) -----
@@ -1303,7 +1303,7 @@
     SET_COORDINATES 96, 0, -128
 
 .stu_wait:
-    SET_ASSET_ROTATION WEST
+    SET_ASSET_ROTATION 1
     SET_CALLBACK_ROUTINE 0, 32768, .stu_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1319,7 +1319,7 @@
     SET_OTHER_EXECUTOR_PTR 9, .stu_route_to_kent_gossip
     PAUSE_ENTITIES
     EXECUTE_SUBROUTINE .gossip_kent_dislikes
-    SET_ASSET_ROTATION NORTH
+    SET_ASSET_ROTATION 3
     EXECUTE_SUBROUTINE .gossip_stu_rebuttal
     SET_OTHER_EXECUTOR_PTR 9, .kent_face_south
     EXECUTE_SUBROUTINE .gossip_kent_boasts
@@ -1347,7 +1347,7 @@
 
 .stu_judging_pos:
     SET_COORDINATES -8, 0, -128
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     EXECUTE_SUBROUTINE .wait_loop
 
 ; ----- Kent/Stu gossip message-box helpers -----
@@ -1386,7 +1386,7 @@
     SET_ENTITY_ANIMATIONS 11, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -64, 0, -160
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
     SET_ENTITY_WANDER 2, 64, 64
 
 .judge_wait:
@@ -1414,7 +1414,7 @@
 .judge_judging_pos:
     SET_COORDINATES -160, 0, 0
     SET_ENTITY_DIRECTIONAL_ANIMATION 0
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
     EXECUTE_SUBROUTINE .wait_loop
 
 .judge_praise_anim:

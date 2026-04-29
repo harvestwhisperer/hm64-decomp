@@ -29,7 +29,7 @@ u16 textBuffer[256];
 
 FontData fontTexturesBuffer[2][256];
 Vtx fontVertices[2][512][4];
-Gfx messageBoxDisplayList[2][3072];
+Gfx messageBoxDisplayList[2][3072] __attribute__((aligned(16)));
 
 u8* characterAvatarsAnimationsPtr;
 

@@ -9,7 +9,7 @@
 #include "system/math.h"
 #include "system/message.h"
 
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStatus.h"
@@ -689,10 +689,10 @@ bool handlePlayerAnimalInteraction(void) {
 
                     if (horseInfo.grown == TRUE) {
 
-                        if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 24, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)) 
-                            && !checkTerrainCollisionInDirection(ENTITY_PLAYER, 16, convertWorldToSpriteDirection(gPlayer.direction, gMainMapIndex))) {
+                        if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 24, convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)) 
+                            && !checkTerrainCollisionInDirection(ENTITY_PLAYER, 16, convertScreenDirectionToWorldDirection(gPlayer.direction, gMainMapIndex))) {
                             
-                            vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                            vec = projectEntityPosition(ENTITY_PLAYER, 32, convertScreenDirectionToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
                              
                             groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
 
@@ -1351,7 +1351,7 @@ void setFarmAnimalLocation(u8 animalIndex) {
         gFarmAnimals[animalIndex].coordinates.x = pregnantCowStartingCoordinates.x;
         gFarmAnimals[animalIndex].coordinates.y = pregnantCowStartingCoordinates.y;
         gFarmAnimals[animalIndex].coordinates.z = pregnantCowStartingCoordinates.z;
-        gFarmAnimals[animalIndex].direction = NORTHEAST;
+        gFarmAnimals[animalIndex].direction = DIRECTION_N;
 
     } else {
 
@@ -1360,9 +1360,9 @@ void setFarmAnimalLocation(u8 animalIndex) {
         gFarmAnimals[animalIndex].coordinates.z = farmAnimalStartingCoordinates[animalIndex].z;
         
         if (animalIndex >= 4) {
-            gFarmAnimals[animalIndex].direction = SOUTHEAST;
+            gFarmAnimals[animalIndex].direction = DIRECTION_E;
         } else {
-            gFarmAnimals[animalIndex].direction = NORTHWEST;
+            gFarmAnimals[animalIndex].direction = DIRECTION_W;
         }
 
     }
@@ -1407,7 +1407,7 @@ void initializeDog(void) {
     dogInfo.location = FARM;
     dogInfo.coordinates.y = 0.0f;
     dogInfo.actionState = 0;
-    dogInfo.direction = SOUTHWEST;
+    dogInfo.direction = DIRECTION_S;
     dogInfo.affection = 0; 
     dogInfo.speed = 0;
     dogInfo.stateTimer = 0;
@@ -1425,7 +1425,7 @@ void initializeHorse(void) {
     horseInfo.location = FARM;
     horseInfo.coordinates.y = 0.0f;
     horseInfo.actionState = 0;
-    horseInfo.direction = SOUTHWEST;
+    horseInfo.direction = DIRECTION_S;
     horseInfo.speed = 0;
     horseInfo.stateTimer = 0;
     horseInfo.unk_1B = 0;
@@ -1464,7 +1464,7 @@ void setDogLocation(u8 mapIndex) {
     if (dogInfo.flags & DOG_ACTIVE && (mapIndex == 0xFF || dogInfo.location == mapIndex)) {
         dogInfo.location = FARM;
         dogInfo.coordinates.y = 0.0f;
-        dogInfo.direction = SOUTHWEST;
+        dogInfo.direction = DIRECTION_S;
         dogInfo.flags &= ~DOG_HELD;
         dogInfo.coordinates.x = -432.0f;
         dogInfo.coordinates.z = 96.0f;
@@ -1479,7 +1479,7 @@ void setHorseLocation(u8 mapIndex) {
     if (horseInfo.flags & HORSE_ACTIVE && (mapIndex == 0xFF || horseInfo.location == mapIndex)) {
         horseInfo.coordinates.y = 0;
         horseInfo.location = FARM;
-        horseInfo.direction = SOUTHWEST;
+        horseInfo.direction = DIRECTION_S;
         horseInfo.coordinates.x = -240.0f;
         horseInfo.coordinates.z = -384.0f;
     }
@@ -1535,13 +1535,13 @@ void spawnWildAnimals(void) {
             if (gSeason != WINTER && gWeather == SUNNY && 5 < gHour && gHour < 9) {
 
                 if (gMiscAnimals[4].spawnVariant == 1) {
-                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, -336.0f, 0.0f, 0.0f);
-                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, -368.0f, 0.0f, 32.0f);
+                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, DIRECTION_S, -336.0f, 0.0f, 0.0f);
+                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, DIRECTION_S, -368.0f, 0.0f, 32.0f);
                 }
 
                 if (gMiscAnimals[4].spawnVariant == 2) {
-                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, 320.0f, 0.0f, -352.0f);
-                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, 288.0f, 0.0f, -352.0f);
+                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, DIRECTION_S, 320.0f, 0.0f, -352.0f);
+                    spawnMiscAnimal(MISC_ANIMAL_SPARROW, DIRECTION_S, 288.0f, 0.0f, -352.0f);
                 }
                 
             }
@@ -1567,15 +1567,15 @@ void spawnWildAnimals(void) {
             }
 
             if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[2].spawnVariant == 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
-                gMiscAnimals[spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, SOUTHWEST, 144.0f, 0.0f, -256.0f)].actionState = 0x10;
+                gMiscAnimals[spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, DIRECTION_S, 144.0f, 0.0f, -256.0f)].actionState = 0x10;
             }
 
             if (gSeason == WINTER && 10 < gHour && gHour < 17 && gMiscAnimals[3].spawnVariant >= 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                spawnMiscAnimal(MISC_ANIMAL_MONKEY, SOUTHEAST, -192.0f, 0.0f, -224.0f);
+                spawnMiscAnimal(MISC_ANIMAL_MONKEY, DIRECTION_E, -192.0f, 0.0f, -224.0f);
             }
 
             if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && gMiscAnimals[4].spawnVariant < 2) {
-                spawnMiscAnimal(MISC_ANIMAL_SNAKE, SOUTHWEST, 96.0f, 0.0f, -64.0f);
+                spawnMiscAnimal(MISC_ANIMAL_SNAKE, DIRECTION_S, 96.0f, 0.0f, -64.0f);
             }
 
             break;
@@ -1583,31 +1583,31 @@ void spawnWildAnimals(void) {
         case MOUNTAIN_1:
 
             if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[1].spawnVariant < 2 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
-                spawnMiscAnimal(MISC_ANIMAL_BUNNY, NORTHWEST, 128.0f, 0.0f, 64.0f);
+                spawnMiscAnimal(MISC_ANIMAL_BUNNY, DIRECTION_W, 128.0f, 0.0f, 64.0f);
             }
 
             if (gSeason == SPRING && 6 < gHour && gHour < 16 && !(gMiscAnimals[2].spawnVariant < 2) && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
-                spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, SOUTHWEST, 256.0f, 0.0f, -416.0f);
+                spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, DIRECTION_S, 256.0f, 0.0f, -416.0f);
             }
             
             if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[2].spawnVariant < 1 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
-                spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, SOUTHWEST, 160.0f, 0.0f, 128.0f);
+                spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, DIRECTION_S, 160.0f, 0.0f, 128.0f);
             }
 
             if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gMiscAnimals[3].spawnVariant == 1 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                spawnMiscAnimal(MISC_ANIMAL_MONKEY, SOUTHWEST, -96.0f, 0.0f, 128.0f);
+                spawnMiscAnimal(MISC_ANIMAL_MONKEY, DIRECTION_S, -96.0f, 0.0f, 128.0f);
             }
 
             if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gMiscAnimals[4].spawnVariant < 2)) {
-                spawnMiscAnimal(MISC_ANIMAL_SNAKE, SOUTHWEST, 160.0f, 0.0f, 128.0f);
+                spawnMiscAnimal(MISC_ANIMAL_SNAKE, DIRECTION_S, 160.0f, 0.0f, 128.0f);
             }
 
             if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && !(gMiscAnimals[5].spawnVariant < 2) && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
-                spawnMiscAnimal(MISC_ANIMAL_DRAGONFLY, SOUTHWEST, 0.0f, 0.0f, -128.0f);
+                spawnMiscAnimal(MISC_ANIMAL_DRAGONFLY, DIRECTION_S, 0.0f, 0.0f, -128.0f);
             }
 
             if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[4].spawnVariant < 2 && gPlayer.heldItem != CRICKET_HELD_ITEM) {
-                spawnMiscAnimal(MISC_ANIMAL_CRICKET, SOUTHWEST, 128.0f, 0.0f, 64.0f);
+                spawnMiscAnimal(MISC_ANIMAL_CRICKET, DIRECTION_S, 128.0f, 0.0f, 64.0f);
             }
             
             break;
@@ -1623,36 +1623,36 @@ void spawnWildAnimals(void) {
             }
             
             if (gSeason == SPRING && 8 < gHour && gHour < 15 && gMiscAnimals[1].spawnVariant < 1 && (u8)(gPlayer.heldItem + 0x65) >= 8) {
-                spawnMiscAnimal(MISC_ANIMAL_BUNNY, NORTHEAST, -192.0f, 0.0f, -192.0f);
+                spawnMiscAnimal(MISC_ANIMAL_BUNNY, DIRECTION_N, -192.0f, 0.0f, -192.0f);
             }
 
             if (gSeason == SPRING && 6 < gHour && gHour < 16 && gMiscAnimals[2].spawnVariant < 2 && (u8)(gPlayer.heldItem + 0x6D) >= 8) {
-                spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, SOUTHWEST, -224.0f, 0.0f, -160.0f);
+                spawnMiscAnimal(MISC_ANIMAL_SQUIRREL, DIRECTION_S, -224.0f, 0.0f, -160.0f);
             }
 
             if (gSeason == SUMMER && 10 < gHour && gHour < 17 && gMiscAnimals[3].spawnVariant < 2 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                spawnMiscAnimal(MISC_ANIMAL_MONKEY, SOUTHWEST, -320.0f, 0.0f, -320.0f);
+                spawnMiscAnimal(MISC_ANIMAL_MONKEY, DIRECTION_S, -320.0f, 0.0f, -320.0f);
             }
 
             if (gSeason == SUMMER && 10 < gHour && gHour < 17 && !(gMiscAnimals[3].spawnVariant < 2) && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                spawnMiscAnimal(MISC_ANIMAL_MONKEY, SOUTHWEST, 0.0f, 0.0f, 288.0f);
+                spawnMiscAnimal(MISC_ANIMAL_MONKEY, DIRECTION_S, 0.0f, 0.0f, 288.0f);
             }
 
             if (gSeason == AUTUMN && 10 < gHour && gHour < 17 && gMiscAnimals[3].spawnVariant == 0 && (u8)(gPlayer.heldItem + 0x5D) >= 8) {
-                gMiscAnimals[spawnMiscAnimal(MISC_ANIMAL_MONKEY, SOUTHWEST, -112.0f, 0.0f, -160.0f)].actionState = 0x10;
+                gMiscAnimals[spawnMiscAnimal(MISC_ANIMAL_MONKEY, DIRECTION_S, -112.0f, 0.0f, -160.0f)].actionState = 0x10;
             }
 
             if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && gMiscAnimals[4].spawnVariant < 2) {
-                spawnMiscAnimal(MISC_ANIMAL_BIRD, SOUTHWEST, -128.0f, 0.0f, 32.0f);
-                spawnMiscAnimal(MISC_ANIMAL_BIRD, SOUTHEAST, -96.0f, 0.0f, 64.0f);
+                spawnMiscAnimal(MISC_ANIMAL_BIRD, DIRECTION_S, -128.0f, 0.0f, 32.0f);
+                spawnMiscAnimal(MISC_ANIMAL_BIRD, DIRECTION_E, -96.0f, 0.0f, 64.0f);
             }
 
             if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gPlayer.heldItem < 0xB4) {
-                spawnMiscAnimal(MISC_ANIMAL_LADYBUG, SOUTHWEST, 96.0f, 0.0f, -96.0f);
+                spawnMiscAnimal(MISC_ANIMAL_LADYBUG, DIRECTION_S, 96.0f, 0.0f, -96.0f);
             }
 
             if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[3].spawnVariant < 2 && gPlayer.heldItem != CICADA_HELD_ITEM) {
-                spawnMiscAnimal(MISC_ANIMAL_CICADA, SOUTHWEST, -112.0f, 0.0f, -160.0f);
+                spawnMiscAnimal(MISC_ANIMAL_CICADA, DIRECTION_S, -112.0f, 0.0f, -160.0f);
             }
             
             break;
@@ -1660,11 +1660,11 @@ void spawnWildAnimals(void) {
         case TOP_OF_MOUNTAIN_1:
 
             if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].spawnVariant < 2 && gPlayer.heldItem != HORNED_BEETLE_HELD_ITEM) {
-                spawnMiscAnimal(MISC_ANIMAL_HORNED_BEETLE, SOUTHWEST, 192.0f, 0.0f, -192.0f);
+                spawnMiscAnimal(MISC_ANIMAL_HORNED_BEETLE, DIRECTION_S, 192.0f, 0.0f, -192.0f);
             }
 
             if (gSeason == SUMMER && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[1].spawnVariant < 2 && gPlayer.heldItem != STAG_BEETLE_HELD_ITEM) {
-                spawnMiscAnimal(MISC_ANIMAL_STAG_BEETLE, SOUTHWEST, 224.0f, 0.0f, 0.0f);
+                spawnMiscAnimal(MISC_ANIMAL_STAG_BEETLE, DIRECTION_S, 224.0f, 0.0f, 0.0f);
             }
 
             break;
@@ -1672,12 +1672,12 @@ void spawnWildAnimals(void) {
         case MOON_MOUNTAIN:
 
             if (gSeason != WINTER && gWeather != RAIN && 7 < gHour && gHour < 16 && !(gMiscAnimals[4].spawnVariant < 2)) {
-                spawnMiscAnimal(MISC_ANIMAL_BIRD, SOUTHWEST, 192.0f, 0.0f, -64.0f);
-                spawnMiscAnimal(MISC_ANIMAL_BIRD, SOUTHEAST, 224.0f, 0.0f, -96.0f);
+                spawnMiscAnimal(MISC_ANIMAL_BIRD, DIRECTION_S, 192.0f, 0.0f, -64.0f);
+                spawnMiscAnimal(MISC_ANIMAL_BIRD, DIRECTION_E, 224.0f, 0.0f, -96.0f);
             }
 
             if (gSeason == AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[5].spawnVariant == 0 && gPlayer.heldItem != RED_DRAGONFLY_HELD_ITEM) {
-                spawnMiscAnimal(MISC_ANIMAL_DRAGONFLY, SOUTHWEST, 128.0f, 0.0f, -256.0f);
+                spawnMiscAnimal(MISC_ANIMAL_DRAGONFLY, DIRECTION_S, 128.0f, 0.0f, -256.0f);
             }
 
             break;
@@ -1685,8 +1685,8 @@ void spawnWildAnimals(void) {
         case SQUARE:
 
             if (gSeason != WINTER && gWeather == SUNNY && 5 < gHour && gHour < 9 && gMiscAnimals[4].spawnVariant == 3) {
-                spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, -128.0f, 0.0f, 0.0f);
-                spawnMiscAnimal(MISC_ANIMAL_SPARROW, SOUTHWEST, -96.0f, 0.0f, -32.0f);
+                spawnMiscAnimal(MISC_ANIMAL_SPARROW, DIRECTION_S, -128.0f, 0.0f, 0.0f);
+                spawnMiscAnimal(MISC_ANIMAL_SPARROW, DIRECTION_S, -96.0f, 0.0f, -32.0f);
             }
 
             break;
@@ -1694,7 +1694,7 @@ void spawnWildAnimals(void) {
         case BEACH:
 
             if (gSeason == SUMMER && gWeather != RAIN && 7 < gHour && gHour < 16) {
-                spawnMiscAnimal(MISC_ANIMAL_CRAB, SOUTHWEST, -256.0f, 0.0f, -64.0f);
+                spawnMiscAnimal(MISC_ANIMAL_CRAB, DIRECTION_S, -256.0f, 0.0f, -64.0f);
             }
 
             break;
@@ -1702,15 +1702,15 @@ void spawnWildAnimals(void) {
         case VILLAGE_1:
                 
             if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].spawnVariant == 0 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
-                spawnMiscAnimal(MISC_ANIMAL_WHITE_BUTTERFLY, SOUTHWEST, 64.0f, 0.0f, -352.0f);
+                spawnMiscAnimal(MISC_ANIMAL_WHITE_BUTTERFLY, DIRECTION_S, 64.0f, 0.0f, -352.0f);
             }
 
             if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[0].spawnVariant == 1 && gPlayer.heldItem != BUTTERFLY_HELD_ITEM) {
-                spawnMiscAnimal(MISC_ANIMAL_WHITE_BUTTERFLY, SOUTHWEST, -448.0f, 0.0f, 0.0f);
+                spawnMiscAnimal(MISC_ANIMAL_WHITE_BUTTERFLY, DIRECTION_S, -448.0f, 0.0f, 0.0f);
             }
 
             if (gSeason < AUTUMN && gWeather != RAIN && 8 < gHour && gHour < 16 && gMiscAnimals[5].spawnVariant == 1 && gPlayer.heldItem < LADYBUG_HELD_ITEM) {
-                spawnMiscAnimal(MISC_ANIMAL_LADYBUG, SOUTHWEST, -448.0f, 0.0f, 64.0f);
+                spawnMiscAnimal(MISC_ANIMAL_LADYBUG, DIRECTION_S, -448.0f, 0.0f, 64.0f);
             }
         
             break;
@@ -1722,11 +1722,11 @@ void spawnWildAnimals(void) {
                 if (gWeather != RAIN && gSeason != WINTER) {
                     
                     if ((u8)(gPlayer.heldItem + 0x55) >= 8) {
-                        spawnMiscAnimal(0, SOUTHWEST, 400.0f, 0.0f, -160.0f);
+                        spawnMiscAnimal(0, DIRECTION_S, 400.0f, 0.0f, -160.0f);
                     }
     
                     if (checkLifeEventBit(PUPPIES) && (u8)(gPlayer.heldItem - 0x7B) >= 8) {
-                        spawnMiscAnimal(1, SOUTHWEST, 432.0f, 0.0f, -160.0f);
+                        spawnMiscAnimal(1, DIRECTION_S, 432.0f, 0.0f, -160.0f);
                     }
                     
                 }
@@ -1734,10 +1734,10 @@ void spawnWildAnimals(void) {
                 if (8 < gHour && gHour < 18 && !(SUNNY < gWeather && gWeather < 4)) {
                     
                     if ((u8)(gPlayer.heldItem + 0x7D) >= 8) {
-                        spawnMiscAnimal(2, SOUTHWEST, 32.0f, 0.0f, -96.0f);
+                        spawnMiscAnimal(2, DIRECTION_S, 32.0f, 0.0f, -96.0f);
                     }
                 
-                    spawnMiscAnimal(2, SOUTHWEST, 0.0f, 0.0f, -64.0f);
+                    spawnMiscAnimal(2, DIRECTION_S, 0.0f, 0.0f, -64.0f);
                 
                 }
                 
@@ -1750,11 +1750,11 @@ void spawnWildAnimals(void) {
             if (gWeather == RAIN || gSeason == WINTER)  {
 
                 if ((u8)(gPlayer.heldItem + 0x55) >= 8) {
-                    spawnMiscAnimal(0, SOUTHWEST, -64.0f, 0.0f, -64.0f);
+                    spawnMiscAnimal(0, DIRECTION_S, -64.0f, 0.0f, -64.0f);
                 }
 
                 if (checkLifeEventBit(PUPPIES) && (u8)(gPlayer.heldItem - 0x7B) >= 8) {
-                    spawnMiscAnimal(1, SOUTHWEST, -96.0f, 0.0f, -64.0f);
+                    spawnMiscAnimal(1, DIRECTION_S, -96.0f, 0.0f, -64.0f);
                 }
                 
             }
@@ -1764,23 +1764,23 @@ void spawnWildAnimals(void) {
         case RANCH:
 
             if (gMiscAnimals[0].spawnVariant < 2 && gWeather != RAIN && gSeason != WINTER) {
-                spawnMiscAnimal(4, NORTHEAST, -384.0f, 0.0f, 32.0f);
+                spawnMiscAnimal(4, DIRECTION_N, -384.0f, 0.0f, 32.0f);
             }
 
             if (gMiscAnimals[1].spawnVariant < 2 && gWeather != RAIN && gSeason != WINTER) {
-                spawnMiscAnimal(3, SOUTHEAST, -320.0f, 0.0f, 0.0f);
+                spawnMiscAnimal(3, DIRECTION_E, -320.0f, 0.0f, 0.0f);
             }
    
             if (gMiscAnimals[2].spawnVariant < 2 && gWeather != RAIN && gSeason != WINTER) {
-                spawnMiscAnimal(3, SOUTHWEST, -288.0f, 0.0f, 96.0f);
+                spawnMiscAnimal(3, DIRECTION_S, -288.0f, 0.0f, 96.0f);
             }         
    
             if (gMiscAnimals[3].spawnVariant < 2 && gWeather != RAIN && gSeason != WINTER) {
-                spawnMiscAnimal(6, NORTHEAST, -288.0f, 0.0f, 128.0f);
+                spawnMiscAnimal(6, DIRECTION_N, -288.0f, 0.0f, 128.0f);
             }         
    
             if (gMiscAnimals[4].spawnVariant < 2 && gWeather != RAIN && gSeason != WINTER) {
-                spawnMiscAnimal(5, SOUTHEAST, -352.0f, 0.0f, 80.0f);
+                spawnMiscAnimal(5, DIRECTION_E, -352.0f, 0.0f, 80.0f);
             }         
 
             break;
@@ -1788,23 +1788,23 @@ void spawnWildAnimals(void) {
         case RANCH_BARN:
 
             if (gMiscAnimals[0].spawnVariant >= 2 || gWeather == RAIN || gSeason == WINTER) {
-                spawnMiscAnimal(4, NORTHWEST, -96.0f, 0.0f, -192.0f);
+                spawnMiscAnimal(4, DIRECTION_W, -96.0f, 0.0f, -192.0f);
             }
 
             if (gMiscAnimals[1].spawnVariant >= 2 || gWeather == RAIN || gSeason == WINTER) {
-                spawnMiscAnimal(3, NORTHWEST, -96.0f, 0.0f, -128.0f);
+                spawnMiscAnimal(3, DIRECTION_W, -96.0f, 0.0f, -128.0f);
             }
 
             if (gMiscAnimals[2].spawnVariant >= 2 || gWeather == RAIN || gSeason == WINTER) {
-                spawnMiscAnimal(3, NORTHWEST, -96.0f, 0.0f, 64.0f);
+                spawnMiscAnimal(3, DIRECTION_W, -96.0f, 0.0f, 64.0f);
             }
 
             if (gMiscAnimals[3].spawnVariant >= 2 || gWeather == RAIN || gSeason == WINTER) {
-                spawnMiscAnimal(6, SOUTHEAST, 0.0f, 0.0f, 64.0f);
+                spawnMiscAnimal(6, DIRECTION_E, 0.0f, 0.0f, 64.0f);
             }
 
             if (gMiscAnimals[4].spawnVariant >= 2 || gWeather == RAIN || gSeason == WINTER) {
-                spawnMiscAnimal(5, SOUTHEAST, 0.0f, 0.0f, 128.0f);
+                spawnMiscAnimal(5, DIRECTION_E, 0.0f, 0.0f, 128.0f);
             }
             
             break;
@@ -2291,7 +2291,7 @@ void initializeDogEntity(void) {
         setEntityYMovement(dogInfo.entityIndex, TRUE);
         setCameraTrackingEntity(dogInfo.entityIndex, FALSE);
         
-        setEntityDirection(dogInfo.entityIndex, convertSpriteToWorldDirection(dogInfo.direction, MAIN_MAP_INDEX));
+        setEntityDirection(dogInfo.entityIndex, convertWorldDirectionToScreenDirection(dogInfo.direction, MAIN_MAP_INDEX));
         setEntityCoordinates(dogInfo.entityIndex, dogInfo.coordinates.x, dogInfo.coordinates.y, dogInfo.coordinates.z);
         
         dogInfo.actionState = 0;
@@ -2338,7 +2338,7 @@ void initializeChickenEntity(u8 chickenIndex) {
         setEntityYMovement(gChickens[chickenIndex].entityIndex, TRUE);
         setCameraTrackingEntity(gChickens[chickenIndex].entityIndex, FALSE);
 
-        setEntityDirection(gChickens[chickenIndex].entityIndex, convertSpriteToWorldDirection(gChickens[chickenIndex].direction, MAIN_MAP_INDEX));        
+        setEntityDirection(gChickens[chickenIndex].entityIndex, convertWorldDirectionToScreenDirection(gChickens[chickenIndex].direction, MAIN_MAP_INDEX));        
         setEntityCoordinates(gChickens[chickenIndex].entityIndex, gChickens[chickenIndex].coordinates.x, gChickens[chickenIndex].coordinates.y, gChickens[chickenIndex].coordinates.z);
         
         gChickens[chickenIndex].actionState = 0;
@@ -2396,7 +2396,7 @@ void initializeFarmAnimalEntity(u8 index) {
         setEntityYMovement(gFarmAnimals[index].entityIndex, TRUE);
         setCameraTrackingEntity(gFarmAnimals[index].entityIndex, FALSE);
 
-        setEntityDirection(gFarmAnimals[index].entityIndex, convertSpriteToWorldDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
+        setEntityDirection(gFarmAnimals[index].entityIndex, convertWorldDirectionToScreenDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
         setEntityCoordinates(gFarmAnimals[index].entityIndex, gFarmAnimals[index].coordinates.x, gFarmAnimals[index].coordinates.y, gFarmAnimals[index].coordinates.z);
     
         setEntityHandlesMultipleCollisions(gFarmAnimals[index].entityIndex, FALSE);
@@ -2437,7 +2437,7 @@ void initializeHorseEntity(void) {
         setEntityYMovement(horseInfo.entityIndex, TRUE);
         setCameraTrackingEntity(horseInfo.entityIndex, FALSE);
         
-        setEntityDirection(horseInfo.entityIndex, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
+        setEntityDirection(horseInfo.entityIndex, convertWorldDirectionToScreenDirection(horseInfo.direction, MAIN_MAP_INDEX));
         setEntityCoordinates(horseInfo.entityIndex, horseInfo.coordinates.x, horseInfo.coordinates.y, horseInfo.coordinates.z);
         
         horseInfo.actionState = 0;
@@ -2571,7 +2571,7 @@ void initializeMiscAnimalEntity(u8 index, u8 arg1) {
         setEntityYMovement(gMiscAnimals[index].entityIndex, TRUE);
         setCameraTrackingEntity(gMiscAnimals[index].entityIndex, FALSE);
         
-        setEntityDirection(gMiscAnimals[index].entityIndex, convertSpriteToWorldDirection(gMiscAnimals[index].direction, MAIN_MAP_INDEX));
+        setEntityDirection(gMiscAnimals[index].entityIndex, convertWorldDirectionToScreenDirection(gMiscAnimals[index].direction, MAIN_MAP_INDEX));
         setEntityCoordinates(gMiscAnimals[index].entityIndex, gMiscAnimals[index].coordinates.x, gMiscAnimals[index].coordinates.y, gMiscAnimals[index].coordinates.z);
         setEntityHandlesMultipleCollisions(gMiscAnimals[index].entityIndex, FALSE);
         
@@ -2604,7 +2604,7 @@ void updateDog(void) {
             
         }
         
-        setEntityDirection(dogInfo.entityIndex, convertSpriteToWorldDirection(dogInfo.direction, MAIN_MAP_INDEX));
+        setEntityDirection(dogInfo.entityIndex, convertWorldDirectionToScreenDirection(dogInfo.direction, MAIN_MAP_INDEX));
         vec = getMovementVectorFromDirection(dogInfo.speed, dogInfo.direction, 0.0f);
         setEntityMovementVector(dogInfo.entityIndex, vec.x, vec.y, vec.z, dogInfo.speed);
 
@@ -3263,7 +3263,7 @@ void updateChicken(u8 index) {
     
         }
 
-        setEntityDirection(gChickens[index].entityIndex, convertSpriteToWorldDirection(gChickens[index].direction, MAIN_MAP_INDEX));
+        setEntityDirection(gChickens[index].entityIndex, convertWorldDirectionToScreenDirection(gChickens[index].direction, MAIN_MAP_INDEX));
         
         vec = getMovementVectorFromDirection(gChickens[index].speed, gChickens[index].direction, 0);
         setEntityMovementVector(gChickens[index].entityIndex, vec.x, vec.y, vec.z, gChickens[index].speed);
@@ -3641,7 +3641,7 @@ void updateFarmAnimal(u8 index) {
 
         }
        
-        setEntityDirection(gFarmAnimals[index].entityIndex, convertSpriteToWorldDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
+        setEntityDirection(gFarmAnimals[index].entityIndex, convertWorldDirectionToScreenDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
         
         vec = getMovementVectorFromDirection(gFarmAnimals[index].speed, gFarmAnimals[index].direction, 0.0f);
         setEntityMovementVector(gFarmAnimals[index].entityIndex, vec.x, vec.y, vec.z, gFarmAnimals[index].speed);
@@ -6661,7 +6661,7 @@ void updateHorse(void) {
             
         }
         
-        setEntityDirection(horseInfo.entityIndex, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
+        setEntityDirection(horseInfo.entityIndex, convertWorldDirectionToScreenDirection(horseInfo.direction, MAIN_MAP_INDEX));
         vec = getMovementVectorFromDirection(horseInfo.speed, horseInfo.direction, 0.0f);
         setEntityMovementVector(horseInfo.entityIndex, vec.x, vec.y, vec.z, horseInfo.speed);
 
@@ -7247,7 +7247,7 @@ void updateMiscAnimal(u8 index) {
 
         }
          
-        setEntityDirection(gMiscAnimals[index].entityIndex, convertSpriteToWorldDirection(gMiscAnimals[index].direction, MAIN_MAP_INDEX));
+        setEntityDirection(gMiscAnimals[index].entityIndex, convertWorldDirectionToScreenDirection(gMiscAnimals[index].direction, MAIN_MAP_INDEX));
         
         vec = getMovementVectorFromDirection(gMiscAnimals[index].zDisplacement, gMiscAnimals[index].direction, 0.0f);
         vec.y = gMiscAnimals[index].yDisplacement;
@@ -9482,7 +9482,7 @@ void updateCrab(u8 index) {
 
             setEntityCollidable(gMiscAnimals[index].entityIndex, 0);
             setEntityYMovement(gMiscAnimals[index].entityIndex, 0);
-            gMiscAnimals[index].direction = SOUTHEAST;
+            gMiscAnimals[index].direction = DIRECTION_E;
             setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
             
             gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;

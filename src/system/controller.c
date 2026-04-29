@@ -231,21 +231,21 @@ void calculateAnalogStickDirection(u8 controllerIndex) {
             
             if ((analogStick.direction / 2) < controllers[controllerIndex].analogStick.magnitude) {
                 if ((analogStick.rawX << 0x18) < 0) {
-                    controllers[controllerIndex].analogStick.direction = NORTHWEST;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_W;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = SOUTHEAST;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_E;
                 }
             } else if ((analogStick.rawY << 0x18) < 0) {
                 if ((analogStick.rawX << 0x18) < 0) {
-                    controllers[controllerIndex].analogStick.direction = WEST;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_SW;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = SOUTH;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_SE;
                 }
             } else {
                 if ((analogStick.rawX << 0x18) < 0) {
-                    controllers[controllerIndex].analogStick.direction = NORTH;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_NW;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = EAST;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_NE;
                 }
     
             }
@@ -258,21 +258,21 @@ void calculateAnalogStickDirection(u8 controllerIndex) {
             
             if ((analogStick.magnitude / 2) < controllers[controllerIndex].analogStick.magnitude) {
                 if ((analogStick.rawY << 24) < 0) {
-                    controllers[controllerIndex].analogStick.direction = SOUTHWEST;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_S;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = NORTHEAST;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_N;
                 } 
             } else if ((analogStick.rawX << 24) < 0) {
                 if ((analogStick.rawY << 24) < 0) {
-                    controllers[controllerIndex].analogStick.direction = WEST;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_SW;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = NORTH;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_NW;
                 }
             } else {
                 if ((analogStick.rawY << 24) < 0) { 
-                    controllers[controllerIndex].analogStick.direction = SOUTH;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_SE;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = EAST;
+                    controllers[controllerIndex].analogStick.direction = DIRECTION_NE;
                 }
             }
     
@@ -282,7 +282,7 @@ void calculateAnalogStickDirection(u8 controllerIndex) {
      }
     
     if (controllers[controllerIndex].analogStick.magnitude >= MAX_DIRECTIONS) {
-        controllers[controllerIndex].analogStick.magnitude = SOUTHEAST;
+        controllers[controllerIndex].analogStick.magnitude = DIRECTION_E;
     }
     
     controllers[controllerIndex].button |= (0x10000 << (controllers[controllerIndex].analogStick.direction)); 

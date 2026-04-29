@@ -14,7 +14,7 @@
 
 #include "game/animals.h"
 #include "game/cutscenes.h"
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameFile.h"
@@ -694,7 +694,7 @@ void startNewDay(void) {
     if (checkLifeEventBit(KAREN_KEIFU_FAIRIES_INVITE) && checkLifeEventBit(FIRST_VINEYARD_WINE_GIFT)) {
     }
     
-    updateFieldObjectsOvernight();
+    updategroundObjectsOvernight();
 
     resetAnimalStatuses();
     updateCropsIfRain();

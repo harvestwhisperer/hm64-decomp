@@ -29,6 +29,9 @@ class SpriteInfo:
     addr_index: int
     label: str
     subdir: str
+    # One of 'entity' (referenced by at least one entity animation script),
+    # 'avatar' (the characterAvatars sprite), or 'standalone' (no script).
+    kind: str = "standalone"
     # Type-1 specific
     spritesheet_index_base: Optional[int] = None
     spritesheet_index_end: Optional[int] = None
@@ -58,8 +61,8 @@ def _load_sprites(csv_path: Path = DEFAULT_CSV_PATH) -> None:
         for row_idx, row in enumerate(reader):
             row = [c.strip() for c in row]
 
-            if len(row) == 6:
-                # Type-1: base, index, spritesheet_index_base, spritesheet_index_end, label, subdir
+            if len(row) == 7:
+                # Type-1: base, index, spritesheet_index_base, spritesheet_index_end, label, subdir, kind
                 info = SpriteInfo(
                     sprite_type='type-1',
                     addr_base=int(row[0], 16),
@@ -68,10 +71,11 @@ def _load_sprites(csv_path: Path = DEFAULT_CSV_PATH) -> None:
                     spritesheet_index_end=int(row[3], 16),
                     label=row[4],
                     subdir=row[5],
-                    csv_row=row_idx
+                    kind=row[6],
+                    csv_row=row_idx,
                 )
-            elif len(row) == 5:
-                # Type-2: base, index, extra, label, subdir
+            elif len(row) == 6:
+                # Type-2: base, index, extra, label, subdir, kind
                 info = SpriteInfo(
                     sprite_type='type-2',
                     addr_base=int(row[0], 16),
@@ -79,7 +83,8 @@ def _load_sprites(csv_path: Path = DEFAULT_CSV_PATH) -> None:
                     addr_extra=int(row[2], 16),
                     label=row[3],
                     subdir=row[4],
-                    csv_row=row_idx
+                    kind=row[5],
+                    csv_row=row_idx,
                 )
             else:
                 continue

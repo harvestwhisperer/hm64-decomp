@@ -1,37 +1,31 @@
 #ifndef _BUNNY_ANIMATION_MACROS_H_
 #define _BUNNY_ANIMATION_MACROS_H_
 
-#define BUNNY_ANIMATION_0   0
-#define BUNNY_ANIMATION_1   1
-#define BUNNY_ANIMATION_2   2
-#define BUNNY_ANIMATION_3   3
-#define BUNNY_ANIMATION_4   4
-#define BUNNY_ANIMATION_5   5
-#define BUNNY_ANIMATION_6   6
-#define BUNNY_ANIMATION_7   7
-#define BUNNY_ANIMATION_8   8
-#define BUNNY_ANIMATION_9   9
-#define BUNNY_ANIMATION_10  10
-#define BUNNY_ANIMATION_11  11
-#define BUNNY_ANIMATION_12  12
-#define BUNNY_ANIMATION_13  13
-#define BUNNY_ANIMATION_14  14
-#define BUNNY_ANIMATION_15  15
-#define BUNNY_ANIMATION_16  16
-#define BUNNY_ANIMATION_17  17
-#define BUNNY_ANIMATION_18  18
-#define BUNNY_ANIMATION_19  19
-#define BUNNY_ANIMATION_20  20
-#define BUNNY_ANIMATION_21  21
-#define BUNNY_ANIMATION_22  22
-#define BUNNY_ANIMATION_23  23
-#define BUNNY_ANIMATION_24  24
-#define BUNNY_ANIMATION_25  25
-#define BUNNY_ANIMATION_26  26
-#define BUNNY_ANIMATION_27  27
-#define BUNNY_ANIMATION_28  28
-#define BUNNY_ANIMATION_29  29
-#define BUNNY_ANIMATION_30  30
-#define BUNNY_ANIMATION_31  31
+#define BUNNY_ANIMATION_0                        0
+#define BUNNY_ANIMATION_1                        1
+#define BUNNY_ANIMATION_2                        2
+#define BUNNY_ANIMATION_3                        3
+#define BUNNY_ANIMATION_4                        4
+#define BUNNY_ANIMATION_5                        5
+#define BUNNY_ANIMATION_6                        6
+#define BUNNY_ANIMATION_7                        7
+#define BUNNY_ANIMATION_8                        8
+#define BUNNY_ANIMATION_9                        9
+#define BUNNY_ANIMATION_10                       10
+#define BUNNY_ANIMATION_11                       11
+#define BUNNY_ANIMATION_12                       12
+#define BUNNY_ANIMATION_13                       13
+#define BUNNY_ANIMATION_14                       14
+#define BUNNY_ANIMATION_15                       15
+#define BUNNY_ANIMATION_16                       16
+#define BUNNY_ANIMATION_17                       17
+#define BUNNY_ANIMATION_18                       18
+#define BUNNY_ANIMATION_19                       19
+#define BUNNY_ANIMATION_20                       20
+#define BUNNY_ANIMATION_21                       21
+#define BUNNY_ANIMATION_22                       22
+#define BUNNY_ANIMATION_23                       23
+#define BUNNY_ANIMATION_24                       24
+#define BUNNY_ANIMATION_25                       25
 
 #endif

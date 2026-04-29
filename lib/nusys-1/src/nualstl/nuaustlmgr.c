@@ -52,7 +52,7 @@ static void nuAuMgr(void);
 u32			    nuAuFrameCounter = 0;	/* flame counter */
 ALHeap		    nuAuHeap;			/* Heap structure */
 N_ALGlobals		auGlobal;
-NUAuSeqPlayer	nuAuSeqPlayer[2];
+NUAuSeqPlayer	nuAuSeqPlayer[4];
 ALBankFile*     nuAuSeqBank_ptr;
 // unused
 // ALSeqFile*      nuAuSeqFile_ptr;

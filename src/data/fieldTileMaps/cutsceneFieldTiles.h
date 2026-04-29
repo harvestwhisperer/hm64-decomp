@@ -1,6 +1,6 @@
 #include "common.h"
 
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 
 extern u8 D_80114E50[FIELD_HEIGHT][FIELD_WIDTH];
 extern u8 D_80115030[FIELD_HEIGHT][FIELD_WIDTH];

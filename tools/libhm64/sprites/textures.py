@@ -137,25 +137,33 @@ def save_texture_png(tex_data: bytes, width: int, height: int,
 
     img.putdata(indices)
 
-    # Build PIL palette (flat RGB list, 768 bytes for 256 colors)
+    # PNG bit depth must match the CI format so downstream importers can
+    # reconstruct CI4 vs CI8 — otherwise PIL defaults CI4 to 8-bit depth.
+    png_bits = 4 if tex_format == 'ci4' else 8
+    max_palette = 1 << png_bits
+
+    # Build PIL palette (flat RGB list), padded to the exact size the PNG
+    # bit-depth allows: 16 entries for CI4, 256 for CI8.
     pil_palette = []
-    for r, g, b, a in palette:
+    for r, g, b, a in palette[:max_palette]:
         pil_palette.extend([r, g, b])
-    # Pad to 256 colors
-    while len(pil_palette) < 768:
+    while len(pil_palette) < max_palette * 3:
         pil_palette.extend([0, 0, 0])
 
     img.putpalette(pil_palette)
 
     # Handle transparency - find transparent color index
     transparent_idx = None
-    for idx, (r, g, b, a) in enumerate(palette):
+    for idx, (r, g, b, a) in enumerate(palette[:max_palette]):
         if a == 0:
             transparent_idx = idx
             break
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    img.save(output_path, transparency=transparent_idx)
+    save_kwargs = {'bits': png_bits}
+    if transparent_idx is not None:
+        save_kwargs['transparency'] = transparent_idx
+    img.save(output_path, **save_kwargs)
 
     return True
 

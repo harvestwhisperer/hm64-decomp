@@ -214,9 +214,9 @@ bool setNumberSpritesAlpha(u16 spriteIndex, u8 a) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", updateOverlayScreenSpriteRGBA);
+//INCLUDE_ASM("asm/nonmatchings/system/numberSprites", updateNumberSpriteRGBA);
 
-bool updateOverlayScreenSpriteRGBA(u16 spriteIndex, u8 r, u8 g, u8 b, u8 a, u16 rate) {
+bool updateNumberSpriteRGBA(u16 spriteIndex, u8 r, u8 g, u8 b, u8 a, u16 rate) {
 
     u8 digitIndex = 0;
     bool result = FALSE;

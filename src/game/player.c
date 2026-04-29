@@ -16,7 +16,7 @@
 #include "game/items.h"
 #include "game/level.h"
 #include "game/levelInteractions.h"
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 #include "game/npc.h"
 #include "game/shop.h"
 #include "game/time.h"
@@ -30,6 +30,8 @@
 #include "assetIndices/maps.h"
 #include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
+
+#include "data/animation/entityAnimationScripts/entityAnimationScripts.h"
 
 // bss
 Player gPlayer;
@@ -165,122 +167,122 @@ Vec3f spawnPointToPlayerCoordinates[] = {
 
 // indexed by gSpawnPointIndex
 u8 playerDefaultStartingDirections[] = {
-    SOUTHWEST, 
-    SOUTHEAST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    SOUTHEAST, 
-    NORTHWEST, 
-    NORTHWEST, 
-    NORTHEAST, 
-    SOUTHEAST, 
-    SOUTHWEST, 
-    NORTHEAST, 
-    NORTHEAST, 
-    NORTHWEST, 
-    SOUTHWEST, 
-    NORTHEAST, 
-    NORTHEAST, 
-    NORTHWEST, 
-    NORTHWEST, 
-    NORTHEAST, 
-    SOUTHWEST, 
-    SOUTHEAST, 
-    SOUTHEAST, 
-    SOUTHWEST, 
-    NORTHEAST, 
-    SOUTHEAST, 
-    SOUTHEAST, 
-    NORTHWEST, 
-    SOUTHWEST, 
-    SOUTHEAST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    NORTHWEST, 
-    NORTHWEST, 
-    SOUTHEAST, 
-    NORTHEAST, 
-    SOUTHWEST, 
-    NORTHEAST, 
-    SOUTHEAST, 
-    SOUTHWEST, 
-    NORTHWEST, 
-    SOUTHWEST, 
-    SOUTHEAST, 
-    SOUTHWEST, 
-    NORTHEAST, 
-    SOUTHWEST, 
-    SOUTHEAST, 
-    NORTHWEST, 
-    NORTHWEST, 
-    NORTHEAST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    SOUTHEAST, 
-    SOUTHEAST, 
-    NORTHEAST, 
-    SOUTHEAST, 
-    NORTHWEST, 
-    SOUTHWEST, 
-    SOUTHEAST, 
-    SOUTHWEST, 
-    SOUTHEAST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    NORTHEAST, 
-    SOUTHWEST, 
-    SOUTHEAST, 
-    NORTHWEST, 
-    NORTHEAST, 
-    NORTHEAST, 
-    NORTHEAST, 
-    SOUTHWEST, 
-    NORTHEAST, 
-    NORTHWEST, 
-    NORTHEAST, 
-    SOUTHEAST, 
-    NORTHEAST, 
-    NORTHWEST, 
-    NORTHWEST, 
-    NORTHWEST, 
-    SOUTHEAST, 
-    NORTHEAST, 
-    SOUTHEAST, 
-    NORTHWEST, 
-    NORTHEAST, 
-    SOUTHEAST, 
-    NORTHWEST, 
-    NORTHWEST, 
-    NORTHEAST, 
-    NORTHEAST, 
-    NORTHEAST, 
-    NORTHEAST, 
-    NORTHWEST, 
-    SOUTHEAST, 
-    NORTHWEST, 
-    NORTHWEST, 
-    NORTHEAST, 
-    SOUTHEAST, 
-    NORTHWEST, 
-    NORTHWEST, 
-    SOUTHEAST, 
-    NORTHWEST, 
-    NORTHEAST, 
-    SOUTHWEST, 
-    NORTHEAST, 
-    NORTHWEST, 
-    SOUTHWEST, 
-    SOUTHWEST, 
-    NORTHWEST, 
-    SOUTHWEST, 
-    SOUTHWEST
+    DIRECTION_S, 
+    DIRECTION_E, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_E, 
+    DIRECTION_W, 
+    DIRECTION_W, 
+    DIRECTION_N, 
+    DIRECTION_E, 
+    DIRECTION_S, 
+    DIRECTION_N, 
+    DIRECTION_N, 
+    DIRECTION_W, 
+    DIRECTION_S, 
+    DIRECTION_N, 
+    DIRECTION_N, 
+    DIRECTION_W, 
+    DIRECTION_W, 
+    DIRECTION_N, 
+    DIRECTION_S, 
+    DIRECTION_E, 
+    DIRECTION_E, 
+    DIRECTION_S, 
+    DIRECTION_N, 
+    DIRECTION_E, 
+    DIRECTION_E, 
+    DIRECTION_W, 
+    DIRECTION_S, 
+    DIRECTION_E, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_W, 
+    DIRECTION_W, 
+    DIRECTION_E, 
+    DIRECTION_N, 
+    DIRECTION_S, 
+    DIRECTION_N, 
+    DIRECTION_E, 
+    DIRECTION_S, 
+    DIRECTION_W, 
+    DIRECTION_S, 
+    DIRECTION_E, 
+    DIRECTION_S, 
+    DIRECTION_N, 
+    DIRECTION_S, 
+    DIRECTION_E, 
+    DIRECTION_W, 
+    DIRECTION_W, 
+    DIRECTION_N, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_E, 
+    DIRECTION_E, 
+    DIRECTION_N, 
+    DIRECTION_E, 
+    DIRECTION_W, 
+    DIRECTION_S, 
+    DIRECTION_E, 
+    DIRECTION_S, 
+    DIRECTION_E, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_N, 
+    DIRECTION_S, 
+    DIRECTION_E, 
+    DIRECTION_W, 
+    DIRECTION_N, 
+    DIRECTION_N, 
+    DIRECTION_N, 
+    DIRECTION_S, 
+    DIRECTION_N, 
+    DIRECTION_W, 
+    DIRECTION_N, 
+    DIRECTION_E, 
+    DIRECTION_N, 
+    DIRECTION_W, 
+    DIRECTION_W, 
+    DIRECTION_W, 
+    DIRECTION_E, 
+    DIRECTION_N, 
+    DIRECTION_E, 
+    DIRECTION_W, 
+    DIRECTION_N, 
+    DIRECTION_E, 
+    DIRECTION_W, 
+    DIRECTION_W, 
+    DIRECTION_N, 
+    DIRECTION_N, 
+    DIRECTION_N, 
+    DIRECTION_N, 
+    DIRECTION_W, 
+    DIRECTION_E, 
+    DIRECTION_W, 
+    DIRECTION_W, 
+    DIRECTION_N, 
+    DIRECTION_E, 
+    DIRECTION_W, 
+    DIRECTION_W, 
+    DIRECTION_E, 
+    DIRECTION_W, 
+    DIRECTION_N, 
+    DIRECTION_S, 
+    DIRECTION_N, 
+    DIRECTION_W, 
+    DIRECTION_S, 
+    DIRECTION_S, 
+    DIRECTION_W, 
+    DIRECTION_S, 
+    DIRECTION_S
 };
 
 // FIXME: probably shouldn't be volatile
@@ -477,7 +479,7 @@ void setupPlayerEntity(u16 spawnPoint, u8 resetPlayer) {
         gPlayer.direction = playerDefaultStartingDirections[spawnPoint];
     }
 
-    setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+    setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
     setEntityCoordinates(ENTITY_PLAYER, gPlayer.coordinates.x, gPlayer.coordinates.y, gPlayer.coordinates.z);
 
     toolUse.stumpHitCounter = 0;
@@ -742,8 +744,8 @@ Vec3f getOffsetTileCoordinates (f32 range, u8 directionalOffset) {
 
     if (tileCoordinates.y != 65535.0f) {
 
-        tileCoordinates.x += buffer[convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)] * range;
-        tileCoordinates.z += buffer2[convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)] * range;
+        tileCoordinates.x += buffer[convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)] * range;
+        tileCoordinates.z += buffer2[convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)] * range;
 
         if (directionalOffset != 8) {
             
@@ -1030,9 +1032,9 @@ void handlePlayerInput(void) {
 
             if ((getAnalogStickMagnitude(CONTROLLER_1) / 1.2f) > 4.6) {
                 
-                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 52, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
+                if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 52, convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX))) {
 
-                    vec3 = projectEntityPosition(ENTITY_PLAYER, 52, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+                    vec3 = projectEntityPosition(ENTITY_PLAYER, 52, convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
                     groundObjectIndex = getGroundObjectIndexFromCoordinates(vec3.x, vec3.z);
 
@@ -1234,7 +1236,7 @@ void handlePlayerInput(void) {
     if (!set) {
         if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && entities[ENTITY_PLAYER].collision != 0xFFFF) {
             gPlayer.animationHandler = ANIM_DEFAULT;
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             set = TRUE;
             temp = 0xFF;
         }
@@ -1253,7 +1255,7 @@ void handlePlayerInput(void) {
 
         if (temp != 0xFF) {
 
-            temp = convertWorldToSpriteDirection(temp, MAIN_MAP_INDEX);
+            temp = convertScreenDirectionToWorldDirection(temp, MAIN_MAP_INDEX);
             
             // running
             if (tempAnalogStickMagnitude >= 4.0f) {
@@ -1269,7 +1271,7 @@ void handlePlayerInput(void) {
                 gPlayer.animationHandler = ANIM_WALKING;
             }
 
-            direction = convertSpriteToWorldDirection(temp, MAIN_MAP_INDEX);
+            direction = convertWorldDirectionToScreenDirection(temp, MAIN_MAP_INDEX);
             setEntityDirection(ENTITY_PLAYER, direction);
 
             // FIXME: likely fake
@@ -1290,7 +1292,7 @@ void handlePlayerInput(void) {
         
     }
 
-    gPlayer.direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
+    gPlayer.direction = convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
     gPlayer.velocity = tempAnalogStickMagnitude;
     
 }
@@ -1307,7 +1309,7 @@ inline void mountHorse(void) {
 
     setDailyEventBit(RIDING_HORSE);
  
-    setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(horseInfo.direction, MAIN_MAP_INDEX));
+    setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(horseInfo.direction, MAIN_MAP_INDEX));
     
 }
 
@@ -1323,11 +1325,11 @@ void dismountHorse(void) {
     
     while (direction < 8 && !set) {
     
-        if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 8, convertWorldToSpriteDirection(direction, gMainMapIndex))) {
+        if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 8, convertScreenDirectionToWorldDirection(direction, gMainMapIndex))) {
 
-            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(direction, gMainMapIndex))) {
+            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertScreenDirectionToWorldDirection(direction, gMainMapIndex))) {
 
-                vec1 = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(direction, MAIN_MAP_INDEX));
+                vec1 = projectEntityPosition(ENTITY_PLAYER, 32, convertScreenDirectionToWorldDirection(direction, MAIN_MAP_INDEX));
                 
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec1.x, vec1.z);
                 
@@ -1350,7 +1352,7 @@ void dismountHorse(void) {
         vec2 = projectEntityPosition(ENTITY_PLAYER, 0, direction);
         
         horseInfo.coordinates = vec2;
-        horseInfo.direction = convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
+        horseInfo.direction = convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
         horseInfo.location = gBaseMapIndex;
         horseInfo.flags &= ~HORSE_BEING_RODE;     
 
@@ -1439,9 +1441,9 @@ void handleItemLevelInteraction(u8 arg0) {
 
         if ((getItemFlags(gPlayer.heldItem) & ITEM_SMALL_ANIMAL) && !set) {
 
-            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
+            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
 
-                vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+                vec = projectEntityPosition(ENTITY_PLAYER, 32, convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
 
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
     
@@ -1477,9 +1479,9 @@ void handleItemLevelInteraction(u8 arg0) {
 
         if ((getItemFlags(gPlayer.heldItem) & ITEM_TOOL) && !set) {
 
-            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
+            if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 32, convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex))) {
 
-                vec = projectEntityPosition(ENTITY_PLAYER, 32, convertWorldToSpriteDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
+                vec = projectEntityPosition(ENTITY_PLAYER, 32, convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX));
     
                 groundObjectIndex = getGroundObjectIndexFromCoordinates(vec.x, vec.z);
     
@@ -2166,7 +2168,7 @@ void handleWalkDownStairsAction(void) {
             gPlayer.animationHandler = ANIM_WALKING;
             gPlayer.direction = gPlayer.savedDirection;
 
-            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+            setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
 
             vec = getMovementVectorFromDirection(1.0f, gPlayer.direction, 0.0f);
 
@@ -2217,14 +2219,14 @@ void handleToiletAction(void) {
             
             activateMapAddition(MAIN_MAP_INDEX, 0, 0);
             
-            gPlayer.direction = NORTHEAST;
+            gPlayer.direction = DIRECTION_N;
             gPlayer.actionTimer = 16;
             gPlayer.actionPhase++;
             
             vec = getMovementVectorFromDirection(4.0f, 4, 0.0f);
             gPlayer.movementVector = vec;
             
-            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+            setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
             gPlayer.animationHandler = ANIM_RUNNING;
             
             break;
@@ -2259,14 +2261,14 @@ void handleToiletAction(void) {
 
                 playSfx(DOOR_OPEN_SFX);
                 
-                gPlayer.direction = SOUTHWEST;
+                gPlayer.direction = DIRECTION_S;
                 gPlayer.actionTimer = 16;
                 gPlayer.actionPhase++;
                 
                 vec2 = getMovementVectorFromDirection(4.0f, 0, 0.0f);
                 gPlayer.movementVector = vec2;
                 
-                setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
                 gPlayer.animationHandler = ANIM_RUNNING;
                 
             } else {
@@ -2336,14 +2338,14 @@ void handleBathingAction(void) {
             setEntityYMovement(ENTITY_PLAYER, FALSE);
             activateMapAddition(MAIN_MAP_INDEX, 1, 0);
             
-            gPlayer.direction = NORTHWEST;
+            gPlayer.direction = DIRECTION_W;
             gPlayer.actionTimer = 16;
             gPlayer.actionPhase++;
             
             vec = getMovementVectorFromDirection(4.0f, 2, 0.0f);
             gPlayer.movementVector = vec;
             
-            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+            setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
             gPlayer.animationHandler = ANIM_RUNNING;
             
             break;
@@ -2354,13 +2356,13 @@ void handleBathingAction(void) {
                 
                 activateMapAddition(MAIN_MAP_INDEX, 3, 0);
                 
-                gPlayer.direction = NORTHEAST;
+                gPlayer.direction = DIRECTION_N;
                 gPlayer.actionTimer = 20;
                 
                 vec2 = getMovementVectorFromDirection(4.0f, 4, 0.0f);
                 gPlayer.movementVector = vec2;
                 
-                setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
                 gPlayer.actionPhase++;
                 
             } else {
@@ -2373,7 +2375,7 @@ void handleBathingAction(void) {
 
             if (gPlayer.actionTimer == 0) {
                 
-                gPlayer.direction = NORTHWEST;
+                gPlayer.direction = DIRECTION_W;
                 
                 resetMovement();
                 startAction(JUMPING, ANIM_JUMPING);
@@ -2390,7 +2392,7 @@ void handleBathingAction(void) {
 
             if (gPlayer.actionPhaseFrameCounter == 60) {
                 
-                gPlayer.direction = SOUTHEAST;
+                gPlayer.direction = DIRECTION_E;
                 startAction(JUMPING, ANIM_JUMPING);
                 gPlayer.flags |= PLAYER_BATH_POSE_3;
 
@@ -2402,7 +2404,7 @@ void handleBathingAction(void) {
 
         case 4:
 
-            gPlayer.direction = SOUTHWEST;
+            gPlayer.direction = DIRECTION_S;
             
             gPlayer.actionTimer = 20;
             gPlayer.actionPhase++;
@@ -2410,7 +2412,7 @@ void handleBathingAction(void) {
             vec2 = getMovementVectorFromDirection(4.0f, 0, 0.0f);
             gPlayer.movementVector = vec2;
 
-            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+            setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
             gPlayer.animationHandler = ANIM_RUNNING;
             
             break;
@@ -2421,13 +2423,13 @@ void handleBathingAction(void) {
 
                 activateMapAddition(MAIN_MAP_INDEX, 1, 0);
                 playSfx(DOOR_OPEN_SFX);
-                gPlayer.direction = SOUTHEAST;
+                gPlayer.direction = DIRECTION_E;
                 gPlayer.actionTimer = 16;
                 vec3 = getMovementVectorFromDirection(4.0f, 6, 0.0f);
 
                 gPlayer.movementVector = vec3;
                 
-                setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
                 gPlayer.actionPhase++;
                 
             } else {
@@ -2497,14 +2499,14 @@ void handleHotSpringAction(void) {
             setEntityYMovement(ENTITY_PLAYER, FALSE);
             activateMapAddition(MAIN_MAP_INDEX, 1, 0);
             
-            gPlayer.direction = NORTHEAST;
+            gPlayer.direction = DIRECTION_N;
             gPlayer.actionTimer = 0x12;
             gPlayer.actionPhase++;
 
             vec = getMovementVectorFromDirection(4.0f, 4, 0.0f);
             gPlayer.movementVector = vec;
             
-            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+            setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
             gPlayer.animationHandler = ANIM_RUNNING;
             
             break;
@@ -2513,7 +2515,7 @@ void handleHotSpringAction(void) {
 
             if (gPlayer.actionTimer == 0) {
                 activateMapAddition(MAIN_MAP_INDEX, 0, 0);
-                gPlayer.direction = EAST;
+                gPlayer.direction = DIRECTION_NE;
                 resetMovement();
                 startAction(JUMPING, ANIM_JUMPING);
                 gPlayer.flags |= PLAYER_HOT_SPRING_POSE_1;
@@ -2526,7 +2528,7 @@ void handleHotSpringAction(void) {
         case 2:
 
             if (gPlayer.actionPhaseFrameCounter == 60) {
-                gPlayer.direction = WEST;
+                gPlayer.direction = DIRECTION_SW;
                 startAction(JUMPING, ANIM_JUMPING);
                 gPlayer.flags |= PLAYER_HOT_SPRING_POSE_3;
             } else {
@@ -2543,14 +2545,14 @@ void handleHotSpringAction(void) {
                 
                 playSfx(DOOR_OPEN_SFX);
                 
-                gPlayer.direction = SOUTHWEST;
+                gPlayer.direction = DIRECTION_S;
                 gPlayer.actionTimer = 18;
                 
                 vec2 = getMovementVectorFromDirection(4.0f, 0, 0.0f);
                 
                 gPlayer.movementVector = vec2;
                 
-                setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
                 
                 gPlayer.animationHandler = ANIM_RUNNING;
                 gPlayer.actionPhase++;
@@ -2761,12 +2763,12 @@ void handleTreeClimbingAction(void) {
             gPlayer.actionPhaseFrameCounter = 0;
             gPlayer.actionPhase++;
             
-            vec = getMovementVectorFromDirection(10.0f, NORTHEAST, 0.0f);
+            vec = getMovementVectorFromDirection(10.0f, DIRECTION_N, 0.0f);
             
             gPlayer.movementVector = vec;
             gPlayer.movementVector.y = entities[ENTITY_PLAYER].coordinates.y;
 
-            setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(NORTHEAST, MAIN_MAP_INDEX));
+            setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(DIRECTION_N, MAIN_MAP_INDEX));
             
         }
 
@@ -2831,16 +2833,16 @@ void handlePlayerAnimation(void) {
         case ANIM_DEFAULT:
             if (!gPlayer.heldItem && !checkDailyEventBit(EGG_FESTIVAL_HOLDING_EGG)) {
                 if ((gPlayer.flags & PLAYER_RIDING_HORSE)) {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 516);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_516);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_2) {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 580);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_580);
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_2) {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 580);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_580);
                 } else {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
                 }
             } else {
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 24);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_24);
             }
             if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
                 if (playerIdleCounter == 1200) {
@@ -2857,12 +2859,12 @@ void handlePlayerAnimation(void) {
         case ANIM_WALKING:
             if (!gPlayer.heldItem && !checkDailyEventBit(EGG_FESTIVAL_HOLDING_EGG)) {
                 if (gPlayer.flags & PLAYER_RIDING_HORSE) {
-                   setEntityDirectionalAnimation(ENTITY_PLAYER, 524);
+                   setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_524);
                 } else {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 8);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_8);
                 }
             } else {
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 32);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_32);
             }
             playerIdleCounter = 0;
             break;
@@ -2873,18 +2875,18 @@ void handlePlayerAnimation(void) {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         playSfx(9);
                     }
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 532);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_532);
                 } else {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                         playSfx(WALKING_SFX);
                     }
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 16);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_16);
                 }
             } else {
                 if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
                     playSfx(WALKING_SFX);
                 }
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 40);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_40);
             }
             playerIdleCounter = 0;
             break;
@@ -3038,7 +3040,7 @@ void handleThrowItemAnimation(void) {
         
         if (gPlayer.actionPhase == 0) {
         
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 421);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_421);
             gPlayer.actionPhase++;
         
         } else {
@@ -3047,6 +3049,7 @@ void handleThrowItemAnimation(void) {
 
         }
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/player", handleShippingAnimation);
@@ -3055,7 +3058,7 @@ void handleShippingAnimation(void) {
     
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
         if (gPlayer.actionPhase == 0) {
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 421);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_421);
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_RAISED);
         } else {
             handleStopHolding();
@@ -3071,7 +3074,7 @@ void handlePickUpAnimation(void) {
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0) {
     
         if (gPlayer.actionPhase == 0) {
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 429);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_429);
         } else {
             resetAction();
 
@@ -3088,14 +3091,14 @@ void handlePlaceItemAnimation(void) {
         switch (gPlayer.actionPhase) {     
 
             case 0:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 439);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_439);
                 setItemState(gPlayer.itemInfoIndex, ITEM_STATE_PLACE);
                 break;
             case 1:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 447);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_447);
                 break;
             case 2:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 439);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_439);
                 break;
             default:
                 handleStopHolding();
@@ -3117,7 +3120,7 @@ void handleEatAnimation(void) {
 
             case 0:
                 // holding
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 24);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_24);
                 break;
             case 1:
                 setItemState(gPlayer.itemInfoIndex, ITEM_STATE_EATING);
@@ -3126,7 +3129,7 @@ void handleEatAnimation(void) {
                 break;
             case 2:
                 // chewing and swallowing
-                setEntityAnimation(ENTITY_PLAYER, 437);
+                setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_437);
                 break;
             default:
                 handleStopHolding();
@@ -3147,16 +3150,16 @@ void handleStaminaExhaustionAnimation(void) {
             
             switch (gPlayer.staminaExhaustionLevel) {       
                 case 1:
-                    setEntityAnimation(ENTITY_PLAYER, 464);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_464);
                     break;
                 case 2:
-                    setEntityAnimation(ENTITY_PLAYER, 465);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_465);
                     break;
                 case 3:
-                    setEntityAnimation(ENTITY_PLAYER, 466);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_466);
                     break;
                 case 4:
-                    setEntityAnimation(ENTITY_PLAYER, 467);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_467);
                     break;
             }
     
@@ -3181,10 +3184,10 @@ void handleFatigueThresholdAnimation(void) {
 
             switch (gPlayer.fatigueThreshold) {                   
                 case 1:
-                    setEntityAnimation(ENTITY_PLAYER, 665);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_665);
                     break;
                 case 2:
-                    setEntityAnimation(ENTITY_PLAYER, 666);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_666);
                     break;
                 case 3:
                     break;
@@ -3210,7 +3213,7 @@ void handleGetIntoBedAnimation(void) {
 
             case 1:
 
-                setEntityAnimation(ENTITY_PLAYER, 468);
+                setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_468);
                 gPlayer.actionPhase++;
 
                 if (checkLifeEventBit(MARRIED) && (19 < gHour && gHour < 22)) {
@@ -3238,12 +3241,12 @@ void handleGetIntoBedAnimation(void) {
                 break;
 
             case 2:
-                setEntityAnimation(ENTITY_PLAYER, 469);
+                setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_469);
                 gPlayer.actionPhase++;
                 break;
 
             case 3:
-                setEntityAnimation(ENTITY_PLAYER, 470);
+                setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_470);
                 gPlayer.actionPhase++;
                 break;             
 
@@ -3272,22 +3275,22 @@ void handleIdleNapAnimation(void) {
         switch (gPlayer.actionPhase) { 
 
             case 0:
-                setEntityAnimation(ENTITY_PLAYER, 480);
+                setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_480);
                 gPlayer.actionPhase++;
                 break;
             case 1:
-                setEntityAnimation(ENTITY_PLAYER, 481);
+                setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_481);
                 gPlayer.actionPhase++;
                 break;
             case 2:
                 playerIdleCounter++;
                 if (playerIdleCounter == 1800) {
-                    setEntityAnimation(ENTITY_PLAYER, 482);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_482);
                     gPlayer.actionPhase++;
                 }
                 break;
             case 4:
-                setEntityAnimation(ENTITY_PLAYER, 483);
+                setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_483);
                 gPlayer.actionPhase++;
                 break;
             default:
@@ -3310,17 +3313,17 @@ void handleTurnOnTVAnimation(void) {
 
         switch (gPlayer.actionPhase) { 
             case 0:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 439);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_439);
                 break;
             case 1:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 447);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_447);
                 gPlayer.actionPhase++;
                 break;
             case 3:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 447);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_447);
                 break;            
             case 4:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 439);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_439);
                 gPlayer.actionPhase++;
                 break;           
             default:
@@ -3340,9 +3343,9 @@ void handleShopAnimation(void) {
         switch (gPlayer.actionPhase) {  
             case 0:
                 if (!checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
                 } else {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 429);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_429);
                 }
                 break;
             case 1:
@@ -3353,12 +3356,12 @@ void handleShopAnimation(void) {
                 break;
             case 2:
                 if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 429);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_429);
                 }
                 break;
             case 3:
                 if (checkCanPickUpShopItem(gPlayer.shopItemIndex)) {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 429);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_429);
                 }
                 break;
             default:
@@ -3378,19 +3381,19 @@ void handleJumpAnimation(void) {
             case 0:
                 
                 if (gPlayer.heldItem != 0) {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 64);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_64);
                 } else if (gPlayer.flags & PLAYER_RIDING_HORSE) {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 548);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_548);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_1) {
-                    setEntityAnimation(ENTITY_PLAYER, 0x23C);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_572);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
-                    setEntityAnimation(ENTITY_PLAYER, 0x241);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_577);
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_1) {
-                    setEntityAnimation(ENTITY_PLAYER, 0x23D);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_573);
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
-                    setEntityAnimation(ENTITY_PLAYER, 0x240);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_576);
                 } else {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 48);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_48);
                 }
                 
                 break;
@@ -3398,19 +3401,19 @@ void handleJumpAnimation(void) {
             case 1:
                 
                 if (gPlayer.heldItem != 0) {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 72);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_72);
                 } else if (gPlayer.flags & PLAYER_RIDING_HORSE) {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 556);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_556);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_1) {
-                    setEntityAnimation(ENTITY_PLAYER, 574);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_574);
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
-                    setEntityAnimation(ENTITY_PLAYER, 579);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_579);
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_1) {
-                    setEntityAnimation(ENTITY_PLAYER, 575);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_575);
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
-                    setEntityAnimation(ENTITY_PLAYER, 578);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_578);
                 } else {
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 56);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_56);
                 }
 
                 break;
@@ -3421,7 +3424,7 @@ void handleJumpAnimation(void) {
                     
                     startAction(BATHING, ANIM_DEFAULT);
 
-                    gPlayer.direction = SOUTHWEST;
+                    gPlayer.direction = DIRECTION_S;
                     
                     gPlayer.flags &= ~PLAYER_BATH_POSE_1; 
                     gPlayer.flags |= PLAYER_BATH_POSE_2;
@@ -3431,7 +3434,7 @@ void handleJumpAnimation(void) {
                     gPlayer.movementVector.z = 0.0f;
                     gPlayer.actionPhase = 3;
 
-                    setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                    setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
                     playSfx(40);
                       
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
@@ -3449,7 +3452,7 @@ void handleJumpAnimation(void) {
                     
                     startAction(USING_HOT_SPRINGS, ANIM_DEFAULT);
 
-                    gPlayer.direction = SOUTHWEST;
+                    gPlayer.direction = DIRECTION_S;
                     
                     gPlayer.flags &= ~PLAYER_HOT_SPRING_POSE_1;
                     gPlayer.flags |= PLAYER_HOT_SPRING_POSE_2;
@@ -3459,7 +3462,7 @@ void handleJumpAnimation(void) {
                     gPlayer.movementVector.z = 0.0f;
                     gPlayer.actionPhase = 2;
                     
-                    setEntityDirection(ENTITY_PLAYER, convertSpriteToWorldDirection(gPlayer.direction, MAIN_MAP_INDEX));
+                    setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
                     playSfx(40);
                                         
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
@@ -3502,7 +3505,7 @@ void handleDialogueSelectionAnimation(void) {
         
         if (gPlayer.actionPhase == 0) {
             
-            setEntityAnimation(ENTITY_PLAYER, 475);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_475);
             
             gPlayer.actionPhase = 1;
             gPlayer.heldItem = 202;
@@ -3524,7 +3527,7 @@ void handlePutFoodInDogBowlAnimation(void) {
         
         if (gPlayer.actionPhase == 0) {
             
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 439);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_439);
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_DOG_BOWL);
             
         } else {
@@ -3543,11 +3546,11 @@ void handleDropItemInWaterAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 421);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_421);
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_RAISED);
         } else {
 
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             gItemBeingHeld = 0xFF;
 
             if (!checkDailyEventBit(HARVEST_GODDESS_OFFERING) && !checkDailyEventBit(KAPPA_FISH_OFFERING_DAILY) && !checkDailyEventBit(KAPPA_LARGE_FISH_OFFERING_DAILY)) {
@@ -3567,7 +3570,7 @@ void handleDrinkAlcoholAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
         if (gPlayer.actionPhase == 0) {
-            setEntityAnimation(ENTITY_PLAYER, 691);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_691);
             gPlayer.actionPhase++;
         } else {
             resetAction();
@@ -3585,11 +3588,11 @@ void handleAcquireMusicBoxAnimation(void) {
         switch (gPlayer.actionPhase) {
 
             case 0:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 24);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_24);
                 break;
             
             case 1:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 618);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_618);
                 setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
                 gPlayer.actionPhase++;
                 break;
@@ -3617,7 +3620,7 @@ void handleMountHorseAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
-             setEntityDirectionalAnimation(ENTITY_PLAYER, 540);
+             setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_540);
         }
 
     }
@@ -3631,7 +3634,7 @@ void handleDismountHorseAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
         
         if (gPlayer.actionPhase == 0) {
-             setEntityDirectionalAnimation(ENTITY_PLAYER, 604);
+             setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_604);
         }
 
     }
@@ -3654,7 +3657,7 @@ void handleWhistleForDogAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
         if (gPlayer.actionPhase == 0) {
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 413);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_413);
             gPlayer.actionPhase++;
         } else {
             resetAction();
@@ -3673,7 +3676,7 @@ void handleWhistleForHorseAnimation(void) {
     if ((checkEntityAnimationStateChanged(ENTITY_PLAYER)) || (gPlayer.actionPhase == 0)) {
 
         if (gPlayer.actionPhase == 0) {
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 413);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_413);
             gPlayer.actionPhase++;
         } else {
             resetAction();
@@ -3693,16 +3696,16 @@ void handleDrinkingAnimation(void) {
 
             case 0:
                 // carrying
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 24);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_24);
                 break;
             
             case 1:
 
                 if (getItemFlags(gPlayer.heldItem) & ITEM_HAS_ALCOHOL) {
-                    setEntityAnimation(ENTITY_PLAYER, 691);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_691);
                     gAlcoholTolerance += adjustValue(gAlcoholTolerance, 1, MAX_ALCOHOL_TOLERANCE);
                 } else {
-                    setEntityAnimation(ENTITY_PLAYER, 438);
+                    setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_438);
                 }
                 
                 gPlayer.heldItem = 0;
@@ -3728,7 +3731,7 @@ void handlePutItemInRucksackAnimation(void) {
         
         if (gPlayer.actionPhase == 0) {
             
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 618);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_618);
             setItemState(gPlayer.itemInfoIndex, ITEM_STATE_CLEANUP);
             gPlayer.heldItem = 0;
             gPlayer.actionPhase++;
@@ -3758,7 +3761,7 @@ void handleFishingRodAnimation(void) {
             
             // cast
             case 0:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 386);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_386);
                 gPlayer.actionPhase++;
                 break;
             
@@ -3787,7 +3790,7 @@ void handleFishingRodAnimation(void) {
 
                     spawnFishingRodEntity(0, 157, vec.x, vec.y, vec.z);
                     playSfx(FISHING_ROD_CAST);
-                    setEntityDirectionalAnimation(ENTITY_PLAYER, 378);
+                    setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_378);
                     gPlayer.actionPhase = 2;
                 
                 } else {
@@ -3800,7 +3803,7 @@ void handleFishingRodAnimation(void) {
             // fish bite/reel in
             case 3:
                 setItemEntityAnimation(0, 158);
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 394);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_394);
                 gPlayer.actionPhase = 4;
                 break;
             
@@ -3868,7 +3871,7 @@ void handleFishingRodAnimation(void) {
             case 6:
             case 8:
                 deactivateItemEntity(0);
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 402);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_402);
                 // catch fish if phase 6, otherwise end
                 gPlayer.actionPhase++;
                 break;
@@ -3899,11 +3902,11 @@ void handleClimbTreeAnimation(void) {
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || gPlayer.actionPhase == 0 || gPlayer.actionPhase == 2) {
         switch (gPlayer.actionPhase) {
             case 1:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 667);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_667);
                 break;
             case 0:
             case 2:
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 48);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_48);
                 break;
         }
     }
@@ -3924,7 +3927,7 @@ void handleToolAcquisitionAnimation(void) {
         switch (gPlayer.actionPhase) {
 
             case 0:
-                setEntityAnimation(ENTITY_PLAYER, 0x171);
+                setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_369);
                 gPlayer.actionPhase = 1;
                 temp = buffer[upgradedToolIndex][upgradedToolLevelIndex - 3];
                 gPlayer.heldItem = temp;
@@ -4452,7 +4455,7 @@ static inline void handleSuccessfulWateringCanAction() {
     switch (gPlayer.actionPhase) {
                     
         case 0:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 320);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_320);
             break;
         
         case 1:
@@ -4535,12 +4538,12 @@ void handleMilkerAnimation(void) {
     switch (gPlayer.actionPhase) {                              
         
         case 0:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             handleFarmAnimalPlayerCollision();
             break;
         
         case 1:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 329);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_329);
             break;
         
         case 2:
@@ -4584,11 +4587,11 @@ void handleBellAnimation(void) {
     switch (gPlayer.actionPhase) {                              
         
         case 0:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 337);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_337);
             break;
         
         case 2:
@@ -4615,13 +4618,13 @@ void handleBrushAnimation(void) {
     switch (gPlayer.actionPhase) {                              
         
         case 0:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             handleFarmAnimalPlayerCollision();
             handleHorsePlayerInteraction();
             break;
         
         case 1:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 345);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_345);
             break;
         
         case 2:
@@ -4648,12 +4651,12 @@ void handleClippersAnimation(void) {
     switch (gPlayer.actionPhase) {                              
         
         case 0:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             handleFarmAnimalPlayerCollision();
             break;
 
         case 1:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 353);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_353);
             break;
     
         case 2:
@@ -4697,11 +4700,11 @@ void handleTurnipSeedsAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         
         case 2:
@@ -4738,11 +4741,11 @@ void handlePotatoSeedsAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         
         case 2:
@@ -4779,11 +4782,11 @@ void handleCabbageSeedsAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         
         case 2:
@@ -4820,11 +4823,11 @@ void handleTomatoSeedsAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         
         case 2:
@@ -4860,11 +4863,11 @@ void handleCornSeedsAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         
         case 2:
@@ -4901,11 +4904,11 @@ void handleEggplantSeedsAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         
         case 2:
@@ -4942,11 +4945,11 @@ void handleStrawberrySeedsAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         
         case 2:
@@ -4983,11 +4986,11 @@ void handleMoonDropSeedsAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         
         case 2:
@@ -5024,11 +5027,11 @@ void handlePinkCatMintSeedsAnimation(void) {
         switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         
         case 2:
@@ -5064,10 +5067,10 @@ void handleBlueMistSeedsAnimation(void) {
 
     switch (gPlayer.actionPhase) {
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         case 2:
             resetToolUseState();
@@ -5098,11 +5101,11 @@ void handleChickenFeedAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
 
         case 1:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 361);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_361);
             break;
 
         case 2:
@@ -5154,11 +5157,11 @@ void handleMiraclePotionAnimation(void) {
 
     switch (gPlayer.actionPhase) {                           
         case 0:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             handleFarmAnimalPlayerCollision();
             break;
         case 1:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 564);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_564);
             break;
         case 2:
             resetToolUseState();
@@ -5187,12 +5190,12 @@ void handleCowMedicineAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             handleFarmAnimalPlayerCollision();
             break;
         
         case 1:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 564);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_564);
             break;
         
         case 2:
@@ -5227,11 +5230,11 @@ void handleGrassSeedsAnimation(void) {
     switch (gPlayer.actionPhase) {
 
         case 0:
-            setEntityAnimation(ENTITY_PLAYER, 0);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             break;
         
         case 1:
-            setEntityAnimation(ENTITY_PLAYER, 328);
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_328);
             break;
         
         case 2:
@@ -5267,12 +5270,12 @@ void handleBlueFeatherAnimation(void) {
 
     switch (gPlayer.actionPhase) {
         case 0:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
             checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, 0);
             findNPCToTalkTo();
             break;
         case 1:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 564);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_564);
             break;
         case 2:
             resetToolUseState();
@@ -5300,7 +5303,7 @@ void handleEmptyBottleAnimation(void) {
 
             if (gPlayer.bottleContents == BOTTLE_CONTENTS_EMPTY) {
                 
-                setEntityDirectionalAnimation(ENTITY_PLAYER, 0);
+                setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_0);
                 handleFarmAnimalPlayerCollision();
                 
             } else {
@@ -5347,7 +5350,7 @@ void handleEmptyBottleAnimation(void) {
 
         // fill up bottle
         case 1:
-            setEntityDirectionalAnimation(ENTITY_PLAYER, 626);
+            setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_626);
             break;
 
         case 2:

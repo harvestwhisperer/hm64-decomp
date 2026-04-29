@@ -106,7 +106,7 @@ segments:
       - [ 0xAAC50, c, game/items]
       - [ 0xB3020, c, game/time]
       - [ 0xB3940, c, game/tv]
-      - [ 0xB4A00, c, game/fieldObjects]
+      - [ 0xB4A00, c, game/groundObjects]
       - [ 0xB7760, c, game/weather]
       - [ 0xB7B50, c, game/shop]
       - [ 0xB97C0, c, game/title]
@@ -350,8 +350,6 @@ segments:
       - [ 0xEBC20, textbin, ../lib/ucode/rspboot]
       - [ 0xEBCF0, textbin, ../lib/ucode/n_aspMain]
       - [ 0xEC950, textbin, ../lib/ucode/gspF3DEX2.fifo]
-      - [ 0xECAB0, .data, system/unknownData]
-      - [ 0xECAC0, .data, system/unknownData2]
       - [ 0xEDD00, .data, system/staticGfx]
       - [ 0xEDE80, .data, system/paddingData]
       - [ 0xEE110, .data, system/map]
@@ -368,7 +366,7 @@ segments:
       - [ 0xF16F0, .data, game/gameAudio]
       - [ 0xF2080, .data, game/overlayScreens]
       - [ 0xF2580, .data, game/items]
-      - [ 0xF3B00, .data, game/fieldObjects]
+      - [ 0xF3B00, .data, game/groundObjects]
       - [ 0xF3F50, .data, game/weather]
       - [ 0xF3F70, .data, game/shop]
       - [ 0xF4B40, .data, game/gameFile]
@@ -545,7 +543,7 @@ segments:
       - [ 0xFD090, .rodata, game/overlayScreens]
       - [ 0xFD6B0, .rodata, game/items]
       - [ 0xFDB60, .rodata, game/tv]
-      - [ 0xFDC58, .rodata, game/fieldObjects]
+      - [ 0xFDC58, .rodata, game/groundObjects]
       - [ 0xFE838, .rodata, game/weather]
       - [ 0xFE860, .rodata, game/shop]
       - [ 0xFEA58, .rodata, game/title]
@@ -757,14 +755,14 @@ segments:
       - { start: 0xFF5C0, type: .bss, vram: 0x8030E000, name: buffers/farmRankingsBuffer }
 
   # referenced in unused cutscene.c array
-  - name: nuAuHeapBuffer
+  - name: unknownBuffer
     type: code
     start: 0xFF5C0
     bss_size: 0x8000
     vram: 0x8030F800
     subsegments:
-      - [ 0xFF5C0, c, buffers/nuAuHeapBuffer]
-      - { start: 0xFF5C0, type: .bss, vram: 0x8030F800, name: buffers/nuAuHeapBuffer }
+      - [ 0xFF5C0, c, buffers/unknownBuffer]
+      - { start: 0xFF5C0, type: .bss, vram: 0x8030F800, name: buffers/unknownBuffer }
 
   # 0x8038F800
   # 0x803B5000
@@ -3209,7 +3207,7 @@ segments:
     dir: maps/unknown
     start: 0xB64E30
 
-  - name: spriteCaveMap
+  - name: harvestSpriteCaveMap
     type: hm64map
     dir: maps/cave
     start: 0xB64E40

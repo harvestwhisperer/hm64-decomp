@@ -695,12 +695,12 @@ void updateCutsceneEntityMovement(u16 index) {
 
                         cutsceneExecutors[index].entityDirectionOrMapRotation = ((s32)temp & 0xFFFE);
 
-                        setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
+                        setEntityDirection(cutsceneExecutors[index].assetIndex, convertWorldDirectionToScreenDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
 
                         if (cutsceneExecutors[index].entityDirectionOrMapRotation) {
-                            vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);    
+                            vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertScreenDirectionToWorldDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);    
                         } else {
-                            vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
+                            vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertScreenDirectionToWorldDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
                         }
                         
                         cutsceneExecutors[index].movementVector.x = vec.x;
@@ -1714,7 +1714,7 @@ void cutsceneHandlerSetAssetRotation(u16 index) {
     }
 
     if (cutsceneExecutors[index].flags & CUTSCENE_ENTITY_ASSET) {
-        setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
+        setEntityDirection(cutsceneExecutors[index].assetIndex, convertWorldDirectionToScreenDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
     } 
     
 }
@@ -1767,13 +1767,13 @@ void cutsceneHandlerEntityWalk(u16 index) {
         setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].walkingAnimation);
     }
 
-    setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
+    setEntityDirection(cutsceneExecutors[index].assetIndex, convertWorldDirectionToScreenDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
     
     // perhaps dead code
     if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
+        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertScreenDirectionToWorldDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
     } else {
-        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
+        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertScreenDirectionToWorldDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
     }
 
     cutsceneExecutors[index].frameDelta.x = vec.x;
@@ -1991,13 +1991,13 @@ void cutsceneHandlerEntityRun(u16 index) {
         setEntityDirectionalAnimation(cutsceneExecutors[index].assetIndex, cutsceneExecutors[index].runningAnimation);
     }
 
-    setEntityDirection(cutsceneExecutors[index].assetIndex, convertSpriteToWorldDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
+    setEntityDirection(cutsceneExecutors[index].assetIndex, convertWorldDirectionToScreenDirection(cutsceneExecutors[index].entityDirectionOrMapRotation, gMainMapIndex));
     
     // possible dead code
     if (cutsceneExecutors[index].behaviorFlags & CUTSCENE_ASSET_BEHAVIOR_HOLDING_ANIMATIONS) {
-        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
+        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertScreenDirectionToWorldDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
     } else {
-        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertWorldToSpriteDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
+        vec = getMovementVectorFromDirection(cutsceneExecutors[index].movementDistance, convertScreenDirectionToWorldDirection(entities[cutsceneExecutors[index].assetIndex].direction, gMainMapIndex), 0.0f);
     }
 
     cutsceneExecutors[index].frameDelta.x = vec.x;
@@ -2844,7 +2844,7 @@ void cutsceneHandlerBranchOnEntityDirection(u16 index) {
     cutsceneExecutors[index].bytecodePtr++;
     cutsceneExecutors[index].bytecodePtr++;
     
-    if (convertWorldToSpriteDirection(entities[entityIndex].direction, gMainMapIndex) == targetDirecton) {
+    if (convertScreenDirectionToWorldDirection(entities[entityIndex].direction, gMainMapIndex) == targetDirecton) {
 
         cutsceneExecutors[index].returnPtr = cutsceneExecutors[index].bytecodePtr + 2;
         cutsceneExecutors[index].bytecodePtr += *(s16*)cutsceneExecutors[index].bytecodePtr;

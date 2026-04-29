@@ -19,6 +19,9 @@
 *.json
 *.mid
 !mozart-sample.mid
+*.wav
+*.aifc
+*.inst
 *.txt
 asm/
 !makerom/entry.s

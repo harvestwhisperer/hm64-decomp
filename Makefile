@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := all
+
 BASENAME := hm64
 TARGET := $(BASENAME).z64
 
@@ -27,682 +29,11 @@ BIN_FILES=$(foreach dir, $(BIN_DIRS), $(wildcard $(dir)/*.bin))
 
 LD_MAP := $(BASENAME).map
 
-# Tools
-
-PYTHON ?= python3
-
-KMC_PATH := $(TOOLS_DIR)/gcc-2.7.2/
-
-CROSS := mips-linux-gnu-
-
-AS := $(CROSS)as
-LD := $(CROSS)ld
-OBJCOPY := $(CROSS)objcopy
-CPP := gcc -E -P -x c
-MKLDSCRIPT := $(TOOLS_DIR)/build/mkldscript
-
-ifeq ($(MODERN_GCC),1)
-  CC := $(CROSS)gcc
-  CC_FLAG :=
-else
-  CC := $(KMC_PATH)gcc
-  CC_FLAG := -B $(KMC_PATH)
-endif
-
-# Common recipe command to create output directory
-MKDIR = @mkdir -p $(dir $@)
-
-SPEC := spec
-SPEC_PROCESSED := $(BUILD_DIR)/spec
-LD_SCRIPT := $(BUILD_DIR)/$(BASENAME).ld
 BSS_LD_SCRIPT := config/$(REGION)/common_bss.ld
 
-# Export BUILD_DIR for mkldscript's $(BUILD_DIR) expansion
-export BUILD_DIR
-
-# Extract object files from the spec file
-# Preprocesses spec, replaces $(BUILD_DIR), extracts .o paths
-BUILD_DIR_REPLACE := sed -e 's|$$(BUILD_DIR)|$(BUILD_DIR)|g'
-SPEC_CPP_FLAGS := -I. -I include -I lib/nusys-1/include -I lib/libultra/include
-SPEC_O_FILES := $(shell $(CPP) $(SPEC_CPP_FLAGS) $(SPEC) | $(BUILD_DIR_REPLACE) | sed -n -E 's/^[[:space:]]*include[[:space:]]+"([^"]+\.o)"/\1/p')
-OBJECTS := $(SPEC_O_FILES)
-
-# Flags
-
-MACROS := -D_LANGUAGE_C -D_MIPS_SZLONG=32 -D_MIPS_SZINT=32 -DSUPPORT_NAUDIO -DNU_SYSTEM -DF3DEX_GBI_2 -DN_MICRO -DLANG_JAPANESE=0 -DUSE_EPI -DNDEBUG -D_AUDIOVISIBLE -DN_AUDIO
-
-# Common flags for both compilers
-CFLAGS_COMMON := -G0 -mgp32 -mfp32 -funsigned-char
-
-ifeq ($(MODERN_GCC),1)
-  # Modern GCC flags for N64/VR4300
-  CFLAGS_COMMON += -march=vr4300 -mtune=vr4300 -mfix4300
-  CFLAGS_COMMON += -mabi=32 -mno-abicalls -fno-PIC -mno-shared
-  CFLAGS_COMMON += -ffreestanding -fno-builtin
-  CFLAGS_COMMON += -EB
-  CFLAGS_COMMON += -Wall -Wno-unused-variable -Wno-unused-parameter -Wno-pointer-sign -Wno-incompatible-pointer-types -Wno-int-conversion
-  MACROS += -DMODERN_GCC
-else
-  # Original KMC GCC 2.7.2 flags
-  CFLAGS_COMMON += -mips3
-  CFLAGS_COMMON += -Wa,-Iinclude
-endif
-
-CFLAGS := $(CFLAGS_COMMON) $(MACROS)
-
-# Assembly flags - note -mabi32 (old) vs -mabi=32 (modern)
-ifeq ($(MODERN_GCC),1)
-  HASM_ASFLAGS := -march=vr4300 -mabi=32 -mno-abicalls -fno-PIC -G 0 -mgp32 -mfp32 -nostdinc
-  # Modern GCC doesn't need -o32 (covered by -mabi=32)
-  OS_ASM_FLAG :=
-else
-  HASM_ASFLAGS := -mips3 -nostdinc -fno-PIC -mno-abicalls -G 0 -mgp32 -mfp32 -mabi32
-  # Old GCC needs -o32 for OS assembly
-  OS_ASM_FLAG := -o32
-endif
-
-ASFLAGS := -G 0 -I include -mips3
-CPPFLAGS := -I. -I include -I src -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libmus/include/PR -I lib/gcc/include
-
-HASM_AS_DEFINES := -D_LANGUAGE_ASSEMBLY -DMIPSEB -D_ULTRA64 -D_MIPS_SIM=1
-
-ifeq ($(MODERN_GCC),1)
-  HASM_AS_DEFINES += -DMODERN_GCC
-endif
-
-LIBULTRA_CPP_FLAGS := -I lib/libultra/include -I lib/libultra/include/PR -I lib/gcc/include
-LIBMUS_CPP_FLAGS := -I lib/libmus/include/PR -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libultra/src/libnaudio
-NUSYS_CPP_FLAGS := -I lib/nusys-1/include -I lib/libultra/include
-NUALSTL_CPP_FLAGS := -I lib/nusys-1/include -I lib/libultra/include -I lib/libultra/include/PR -I lib/libultra/src/libnaudio -I lib/libmus/include/PR
-LIBKMC_CPP_FLAGS := -I include -I lib/libkmc/include -I lib/gcc/include -I lib/nusys-1/include -I lib/libultra/include -I lib/libmus/include/PR
-
-DEBUG_FLAGS := -g2
-OPTFLAGS := -O2
-LIBULTRA_OPTFLAGS := -O3 -g0
-LIBKMC_OPTFLAGS := -O1
-LIBMUS_OPTFLAGS := -O0 -g0
-NU_OPTFLAGS := -O3
-
-ULTRALIBVER := -DBUILD_VERSION=7
-
-LDFLAGS := -G 0  -T config/$(REGION)/undefined_syms.txt -T $(BSS_LD_SCRIPT) -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
-
-# Binary asset matching (cutscenes, dialogues, texts)
-
-# Cutscenes
-# DSL source in src/bytecode/cutscenes/, ASM output to assets/cutscenes/
-
-CUTSCENE_SRC_DIR := $(SRC_DIRS)/bytecode/cutscenes
-CUTSCENE_ASSETS_DIR := assets/cutscenes
-CUTSCENE_BUILD_DIR := $(BUILD_DIR)/assets/cutscenes
-
-CUTSCENE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.transpiler
-
-CUTSCENE_OBJECTS := \
-	$(CUTSCENE_BUILD_DIR)/farmBusiness.bin.o \
-	$(CUTSCENE_BUILD_DIR)/farmVisits.bin.o \
-	$(CUTSCENE_BUILD_DIR)/houseCutscenes.bin.o \
-	$(CUTSCENE_BUILD_DIR)/roadCutscenes.bin.o \
-	$(CUTSCENE_BUILD_DIR)/mountainCutscenes.bin.o \
-	$(CUTSCENE_BUILD_DIR)/ranchCutscenes.bin.o \
-	$(CUTSCENE_BUILD_DIR)/vineyardCutscenes.bin.o \
-	$(CUTSCENE_BUILD_DIR)/village1Cutscenes.bin.o \
-	$(CUTSCENE_BUILD_DIR)/village2Cutscenes.bin.o \
-	$(CUTSCENE_BUILD_DIR)/beachCutscenes.bin.o \
-	$(CUTSCENE_BUILD_DIR)/sowingFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/horseRace.bin.o \
-	$(CUTSCENE_BUILD_DIR)/flowerFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/vegetableFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/fireworksFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/fireflyFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/seaFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/cowFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/harvestFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/eggFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/dogRace.bin.o \
-	$(CUTSCENE_BUILD_DIR)/spiritFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/newYearFestival.bin.o \
-	$(CUTSCENE_BUILD_DIR)/funeralIntro.bin.o \
-	$(CUTSCENE_BUILD_DIR)/evaluationEnding.bin.o \
-	$(CUTSCENE_BUILD_DIR)/demos.bin.o \
-	$(CUTSCENE_BUILD_DIR)/howToPlay.bin.o
-
-# Dialogues
-# DSL source in src/bytecode/dialogues/, ASM output to assets/dialogues/
-
-DIALOGUE_SRC_DIR := $(SRC_DIRS)/bytecode/dialogues
-DIALOGUE_ASSETS_DIR := assets/dialogues
-DIALOGUE_BUILD_DIR := $(BUILD_DIR)/assets/dialogues/bytecode
-
-DIALOGUE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.dialogues.transpiler
-
-DIALOGUE_OBJECTS := \
-	$(DIALOGUE_BUILD_DIR)/text1Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/text1DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/diaryDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/diaryDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/elliDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/elliDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/kaiDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/kaiDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/karenDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/karenDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/cliffDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/cliffDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/jeffDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/jeffDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/harrisDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/harrisDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/popuriDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/popuriDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mariaDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mariaDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/annDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/annDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/grayDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/grayDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/ellenDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/ellenDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/gotzDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/gotzDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/sashaDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/sashaDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/kentDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/kentDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mayDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mayDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/stuDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/stuDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/dougDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/dougDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/basilDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/basilDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/lilliaDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/lilliaDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/saibaraDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/saibaraDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/midwifeDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/midwifeDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/dukeDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/dukeDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/shipperDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/shipperDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/harvestSprites1Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/harvestSprites1DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/harvestSprites2Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/harvestSprites2DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/harvestSprites3Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/harvestSprites3DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/assistantCarpenters1Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/assistantCarpenters1DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/assistantCarpenters2Dialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/assistantCarpenters2DialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/masterCarpenterDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/masterCarpenterDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mayorDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mayorDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/gregDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/gregDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/rickDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/rickDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/barleyDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/barleyDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/sydneyDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/sydneyDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mayorWifeDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mayorWifeDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/pastorDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/pastorDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/potionShopDealerDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/potionShopDealerDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/ranchCutscenesDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/ranchCutscenesDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/fireworksFestivalDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/fireworksFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/flowerFestivalDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/flowerFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/seaFestivalAndEvaluationDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/seaFestivalAndEvaluationDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/cowFestivalDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/cowFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/fireflyFestivalDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/fireflyFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/dogRaceDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/dogRaceDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/vegetableFestivalDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/vegetableFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mountainCutscenesDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mountainCutscenesDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/sowingFestivalDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/sowingFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/harvestFestivalDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/harvestFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/horseRaceDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/horseRaceDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/vineyardCutscenesDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/vineyardCutscenesDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/roadCutscenesDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/roadCutscenesDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/farmVisitsDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/farmVisitsDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/houseCutscenesDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/houseCutscenesDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/eggFestivalDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/eggFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/village1CutscenesDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/village1CutscenesDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/village2CutscenesDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/village2CutscenesDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/namingScreenDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/namingScreenDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/newYearFestivalDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/newYearFestivalDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/beachCutscenesDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/beachCutscenesDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/shopDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/shopDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/festivalOverlaySelectionsDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/festivalOverlaySelectionsDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/babyDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/babyDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mrsManaDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/mrsManaDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/johnDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/johnDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/libraryDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/libraryDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/gourmetJudgeDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/gourmetJudgeDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/npcBabyDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/npcBabyDialogueIndex.bin.o \
-	$(DIALOGUE_BUILD_DIR)/entomologistDialogue.bin.o \
-	$(DIALOGUE_BUILD_DIR)/entomologistDialogueIndex.bin.o
-
-DECOMPILED_TEXTS := text1 \
-	library \
-	diary \
-	recipesJapanese \
-	festivalOverlaySelections \
-	letters \
-	levelInteractions \
-	animalInteractions \
-	tv \
-	text10 \
-	namingScreen \
-	elli \
-	kai \
-	karen \
-	gotz \
-	sasha \
-	cliff \
-	jeff \
-	kent \
-	harris \
-	popuri \
-	maria \
-	may \
-	ann \
-	doug \
-	gray \
-	basil \
-	lillia \
-	duke \
-	shipper \
-	harvestSprites \
-	assistantCarpenters \
-	masterCarpenter \
-	mayor \
-	greg \
-	rick \
-	barley \
-	sydney \
-	potionShopDealer \
-	mayorWife \
-	ellen \
-	stu \
-	midwife \
-	pastor \
-	saibara \
-	ranchCutscenes \
-	funeralIntro \
-	fireworksFestival \
-	flowerFestival \
-	seaFestivalAndEvaluation \
-	cowFestival \
-	fireflyFestival \
-	dogRace \
-	mountainCutscenes \
-	sowingFestival \
-	harvestFestival \
-	newYearFestival \
-	spiritFestival \
-	horseRace \
-	village1Cutscenes \
-	village2Cutscenes \
-	vineyardCutscenes \
-	roadCutscenes \
-	farmVisits \
-	houseCutscenes \
-	eggFestival \
-	beachCutscenes \
-	vegetableFestival \
-	baby \
-	mrsManaAndJohn \
-	additionalNPCs \
-	howToPlay
-
-TEXT_ASSETS_DIR := assets/text
-TEXT_BUILD_DIR := $(BUILD_DIR)/assets/text
-
-TEXT_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.text.transpiler
-TEXT_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.text.extractor
-
-SPRITE_ASSETS_DIR := assets/sprites
-SPRITE_BUILD_DIR := $(BUILD_DIR)/assets/sprites
-SPRITE_ASSEMBLER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.sprites.assembler
-SPRITE_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.sprites.extractor
-
-FONT_ASSETS_DIR := assets/font
-FONT_BUILD_DIR := $(BUILD_DIR)/assets/font
-FONT_ASSEMBLER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.assembler
-FONT_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.extractor
-FONT_PNG_EXPORTER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.png_exporter
-
-ifeq ($(VERBOSE),0)
-V := @
-endif
-
-ifeq ($(PERMUTER),1)
-MACROS += -D_PERMUTER=1
-endif
-
-# Create all output directories upfront
-$(shell mkdir -p $(sort $(dir $(OBJECTS))))
-
-# Flag overrides
-
-build/lib/nusys-1/src/nusys/nuboot.o: NU_OPTFLAGS := -O0
-build/lib/nusys-1/src/sample/nunospak/nupakmenu.o: NU_OPTFLAGS += -g2
-build/lib/nusys-1/src/sample/nunospak/nupakmenuloadfont.o: NU_OPTFLAGS += -g2
-build/lib/libultra/src/io/aisetnextbuf.o: ULTRALIBVER := -DBUILD_VERSION=6
-
-# Targets
-
-ifeq ($(MODERN_GCC),1)
-  $(info Building with modern GCC (non-matching))
-  $(info Compiler: $(CC))
-endif
-
-all: check
-
-jp-%:
-	$(MAKE) -f Makefile.jp $*
-
-jp:
-	$(MAKE) -f Makefile.jp
-
-clean:
-	@rm -rf asm
-	@rm -rf bin
-	@rm -rf build
-# remove transpiled bytecode .s files
-	@find assets -type f -name "*.s" -delete 2>/dev/null || true
-	@rm -f $(LD_SCRIPT)
-	@rm -f $(BASENAME).elf
-	@rm -f $(BASENAME).map
-	@rm -f $(TARGET)
-
-clean-assets:
-	@find assets -type f ! -name "*.spec" -delete 2>/dev/null || true
-# clean up empty directories
-	@find assets -type d -empty -delete 2>/dev/null || true
-
-clean-all: clean clean-assets
-
-split:
-# only extract what's needed and don't generate linker script
-	$(V)$(PYTHON) -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts seq hm64map
-
-setup: clean split extract-sprites extract-fonts
-
-rerun: clean $(LD_SCRIPT) check
-
-# Asset extraction
-
-# For build
-
-extract-sprites:
-# don't delete spec files
-	@find assets/sprites -type f ! -name "*.spec" -delete 2>/dev/null || true
-# clean up empty directories
-	@find assets/sprites -type d -empty -delete 2>/dev/null || true
-	$(V)$(SPRITE_EXTRACTOR) extract_all    
-
-extract-fonts:
-	@rm -f $(FONT_ASSETS_DIR)/*.ci2 $(FONT_ASSETS_DIR)/*.pal 2>/dev/null || true
-	$(V)$(FONT_EXTRACTOR)
-
-assemble-fonts:
-	$(V)$(FONT_ASSEMBLER)
-
-# Extra
-
-
-extract-gifs:
-	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.animations.gif_builder
-
-extract-texts:
-	$(V)$(TEXT_EXTRACTOR) extract_all
-
-extract-map-sprites:
-	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.maps.png_exporter all
-
-extract-cutscenes:
-	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.extractor --all
-
-extract-font:
-	$(V)$(FONT_PNG_EXPORTER) extract_all
-	$(V)$(FONT_PNG_EXPORTER) extract_all_palettes
-
-# Main code segment
-
-$(BUILD_DIR)/src/mainproc.o: src/mainproc.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/src/mainLoop.o: src/mainLoop.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/src/game/%.o: src/game/%.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/src/system/%.o: src/system/%.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/src/buffers/%.o: src/buffers/%.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/src/data/%.o: src/data/%.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(CPPFLAGS) -c -o $@ $<
-
-# Lib
-
-$(BUILD_DIR)/lib/libmus/src/player.o: lib/libmus/src/player.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(LIBMUS_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBMUS_CPP_FLAGS) -c -o $@ $<
-
-# nusys
-
-$(BUILD_DIR)/lib/nusys-1/src/nusys/%.o: lib/nusys-1/src/nusys/%.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUSYS_CPP_FLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/lib/nusys-1/src/nualstl/%.o: lib/nusys-1/src/nualstl/%.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUALSTL_CPP_FLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/lib/nusys-1/src/sample/nunospak/%.o: lib/nusys-1/src/sample/nunospak/%.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(NU_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(NUSYS_CPP_FLAGS) -c -o $@ $<
-
-# libkmc
-
-$(BUILD_DIR)/lib/libkmc/src/%.o: lib/libkmc/src/%.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(LIBKMC_OPTFLAGS) $(CFLAGS) $(LIBKMC_CPP_FLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/lib/libkmc/src/%.o: lib/libkmc/src/%.s
-	$(MKDIR)
-	$(CC) $(CC_FLAG) -c $(LIBKMC_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
-
-# libultra
-
-$(BUILD_DIR)/lib/libultra/src/%.o: lib/libultra/src/%.c
-	$(MKDIR)
-	$(CC) $(CC_FLAG) $(LIBULTRA_OPTFLAGS) $(CFLAGS) $(ULTRALIBVER) $(LIBULTRA_CPP_FLAGS) -c -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/gu/%.o: lib/libultra/src/gu/%.s
-	$(MKDIR)
-	$(CC) $(CC_FLAG) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/libc/%.o: lib/libultra/src/libc/%.s
-	$(MKDIR)
-	$(CC) $(CC_FLAG) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/%.o: lib/libultra/src/os/%.s
-	$(MKDIR)
-	$(CC) $(CC_FLAG) -c $(LIBULTRA_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) $(ULTRALIBVER) $(OS_ASM_FLAG) -x assembler-with-cpp -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/os/unusedPadding.o: lib/libultra/src/os/unusedPadding.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-$(BUILD_DIR)/lib/libultra/src/rmon/%.o: lib/libultra/src/rmon/%.s
-	$(MKDIR)
-	$(CC) $(CC_FLAG) -c -I lib/libultra/include $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
-
-# ucode
-
-$(BUILD_DIR)/lib/ucode/%.o: lib/ucode/%.s
-	$(MKDIR)
-	gcc -E -x assembler-with-cpp -I include $(HASM_AS_DEFINES) $< | $(AS) $(ASFLAGS) -I lib/ucode -o $@ -
-# 	$(CC) -B $(KMC_PATH) -E -I include $(HASM_AS_DEFINES) $< | $(AS) $(ASFLAGS) -o $@ -
-
-# ROM header
-
-$(BUILD_DIR)/config/$(REGION)/header.o: config/$(REGION)/header.s
-	$(MKDIR)
-	$(CC) $(CC_FLAG) -c $(NUSYS_CPP_FLAGS) $(HASM_AS_DEFINES) $(HASM_ASFLAGS) -x assembler-with-cpp -o $@ $<
-
-# Makerom segments
-
-$(BUILD_DIR)/makerom/ipl3.o: bin/makerom/ipl3.bin
-	$(MKDIR)
-	$(OBJCOPY) -I binary -O elf32-tradbigmips -B mips $< $@
-
-$(BUILD_DIR)/makerom/entry.o: makerom/entry.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-# Asset building
-
-# Transpile cutscene DSL to assembly
-$(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
-	@mkdir -p $(CUTSCENE_ASSETS_DIR)
-	$(V)$(CPP) -I src/buffers -I src/game -I src/assetIndices -I src/data/animation/entityAnimationScripts $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
-
-# Cutscenes: assemble from assets/cutscenes/
-$(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-# Transpile dialogue DSL to assembly
-$(DIALOGUE_ASSETS_DIR)/%.s: $(DIALOGUE_SRC_DIR)/%.dialogue
-	@mkdir -p $(DIALOGUE_ASSETS_DIR)
-	$(V)$(DIALOGUE_TRANSPILER) transpile $< -n $* -o $(DIALOGUE_ASSETS_DIR)/
-
-# Mark dependency
-$(DIALOGUE_ASSETS_DIR)/%Index.s: $(DIALOGUE_ASSETS_DIR)/%.s
-	@:
-
-$(DIALOGUE_BUILD_DIR)/%.bin.o: $(DIALOGUE_ASSETS_DIR)/%.s
-	$(MKDIR)
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-# Extract texts to assets directory and transpile to assembly (generates two files: bytecode and index)
-$(TEXT_ASSETS_DIR)/%Text.s:
-	$(V)$(TEXT_EXTRACTOR) extract $*
-	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/
-
-# Mark dependency
-$(TEXT_ASSETS_DIR)/%TextIndex.s: $(TEXT_ASSETS_DIR)/%Text.s
-	@:
-
-$(TEXT_BUILD_DIR)/%Text.bin.o: $(TEXT_ASSETS_DIR)/%Text.s
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-$(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-# Sprites: assemble from assets and compile to .bin.o
-# Each sprite directory produces 3 bin files: <label>Texture.bin, <label>AssetsIndex.bin, <label>SpritesheetIndex.bin
-
-# Secondary files are created by the Texture.bin rule
-$(SPRITE_BUILD_DIR)/%AssetsIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
-	@:
-
-$(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin: $(SPRITE_BUILD_DIR)/%Texture.bin
-	@:
-
-# Compile sprite .bin to .bin.o
-$(SPRITE_BUILD_DIR)/%.bin.o: $(SPRITE_BUILD_DIR)/%.bin
-	$(V)$(LD) -r -b binary -o $@ $<
-
-# Only the Texture.bin rule needs SECONDEXPANSION for $(dir $*) in prerequisite
-.SECONDEXPANSION:
-
-$(SPRITE_BUILD_DIR)/%Texture.bin: $(SPRITE_ASSETS_DIR)/$$(dir $$*)manifest.json
-	@mkdir -p $(dir $@)
-	$(V)$(SPRITE_ASSEMBLER) assemble $(SPRITE_ASSETS_DIR)/$(dir $*) $(dir $@)
-
-# Font assets: assemble from assets/font/ to build/assets/font/
-$(FONT_BUILD_DIR)/fontTexture.bin: $(FONT_ASSETS_DIR)/fontTexture.ci2 $(FONT_ASSETS_DIR)/fontPalette1.pal $(FONT_ASSETS_DIR)/fontPalette2.pal $(FONT_ASSETS_DIR)/fontPalette3.pal
-	@mkdir -p $(dir $@)
-	$(V)$(FONT_ASSEMBLER) --assets-dir $(FONT_ASSETS_DIR) --output-dir $(FONT_BUILD_DIR)
-
-$(FONT_BUILD_DIR)/fontPalette1.bin: $(FONT_BUILD_DIR)/fontTexture.bin
-	@:
-
-$(FONT_BUILD_DIR)/fontPalette2.bin: $(FONT_BUILD_DIR)/fontTexture.bin
-	@:
-
-$(FONT_BUILD_DIR)/fontPalette3.bin: $(FONT_BUILD_DIR)/fontTexture.bin
-	@:
-
-$(FONT_BUILD_DIR)/%.bin.o: $(FONT_BUILD_DIR)/%.bin
-	$(V)$(LD) -r -b binary -o $@ $<
-
-# Rest of code and extracted binary files
-
-$(BUILD_DIR)/%.s.o: %.s
-	$(V)$(AS) $(ASFLAGS) -o $@ $<
-
-$(BUILD_DIR)/%.hm64map.o: %.hm64map
-	$(V)$(LD) -r -b binary -o $@ $<
-
-$(BUILD_DIR)/%.seq.o: %.seq
-	$(V)$(LD) -r -b binary -o $@ $<
-
-$(BUILD_DIR)/%.bin.o: %.bin
-	$(V)$(LD) -r -b binary -o $@ $<
-
-NUBOOT_OBJECTS := \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nuboot.o
+# Cutscene CPP includes — matching build resolves named entityAnimationScripts
+# macros at transpile time.
+CUTSCENE_CPP_INCLUDES := -I src/buffers -I src/game -I src/assetIndices -I src/data/animation/entityAnimationScripts
 
 CODE_OBJECTS := \
 	$(BUILD_DIR)/src/mainproc.o \
@@ -715,8 +46,6 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/system/sprite.o \
 	$(BUILD_DIR)/src/system/globalSprites.o \
 	$(BUILD_DIR)/src/system/entity.o \
-	$(BUILD_DIR)/src/system/unknownData.o \
-	$(BUILD_DIR)/src/system/unknownData2.o \
 	$(BUILD_DIR)/src/system/staticGfx.o \
 	$(BUILD_DIR)/src/system/paddingData.o \
 	$(BUILD_DIR)/src/system/map.o \
@@ -749,7 +78,7 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/game/items.o \
 	$(BUILD_DIR)/src/game/time.o \
 	$(BUILD_DIR)/src/game/tv.o \
-	$(BUILD_DIR)/src/game/fieldObjects.o \
+	$(BUILD_DIR)/src/game/groundObjects.o \
 	$(BUILD_DIR)/src/game/weather.o \
 	$(BUILD_DIR)/src/game/shop.o \
 	$(BUILD_DIR)/src/game/title.o \
@@ -759,89 +88,7 @@ CODE_OBJECTS := \
 	$(BUILD_DIR)/src/game/namingScreen.o \
 	$(BUILD_DIR)/src/game/bssPadding.o
 
-NUSYS_SAMPLE_OBJECTS := \
-	$(BUILD_DIR)/lib/nusys-1/src/sample/nunospak/nupakmenu.o \
-	$(BUILD_DIR)/lib/nusys-1/src/sample/nunospak/nupakmenuloadfont.o
-
-NUALSTL_OBJECTS := \
-	$(BUILD_DIR)/lib/nusys-1/src/nualstl/nuaustlinit.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nualstl/nuaustlbankset.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nualstl/nuaustlplayerinit.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nualstl/nuaustlseqplayersetdata.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nualstl/nuaustlseqplayerplay.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nualstl/nuaustlsndplayerplay.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nualstl/nuauprenmifuncset.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nualstl/nuauprenmiproc.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nualstl/nuaustlmgr.o
-
-LIBMUS_OBJECTS := \
-	$(BUILD_DIR)/lib/libmus/src/player.o
-
-LIBNAUDIO_OBJECTS := \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_sl.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_synaddplayer.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_synallocvoice.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_syndelete.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_synsetfxmix.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_synsetpan.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_synsetpitch.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_synsetvol.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_synstartvoice.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_synstopvoice.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_synthesizer.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_auxbus.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_drvrNew.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_env.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_load.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_resample.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_reverb.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_save.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_synallocfx.o \
-	$(BUILD_DIR)/lib/libultra/src/libnaudio/n_mainbus.o
-
-NUSYS_OBJECTS := \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nusched.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nurdpoutput.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nuyieldbuf.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nudramstack.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxthread.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxtaskmgr.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxfuncset.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxprenmifuncset.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxswapcfbfuncset.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxswapcfb.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxtaskallendwait.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxretracewait.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxsetcfb.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxdisplayoff.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nugfxdisplayon.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontmgr.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontinit.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontdatalock.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontdatareadwait.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontdatareadstart.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontdatagetex.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontdatagetexall.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontqueryread.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakmgr.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakopen.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakgetfree.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakrepairid.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakfileopenjis.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakcodeset.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakfilereadwrite.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakfiledelete.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakfiledeletejis.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakfilestate.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakfilenum.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontrmbmgr.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nupiinit.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nupireadrom.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nusimgr.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nusicallbackadd.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nusicallbackremove.o \
-	$(BUILD_DIR)/lib/nusys-1/src/nusys/nucontpakjiston64.o
-
+# LIBULTRA_OBJECTS — need unusedPadding.o for matching 
 LIBULTRA_OBJECTS := \
 	$(BUILD_DIR)/lib/libultra/src/gu/sqrtf.o \
 	$(BUILD_DIR)/lib/libultra/src/gu/cosf.o \
@@ -1001,43 +248,54 @@ LIBULTRA_OBJECTS := \
 	$(BUILD_DIR)/lib/libultra/src/rmon/rmonbrk.o \
 	$(BUILD_DIR)/lib/libultra/src/libc/ldiv.o
 
-LIBKMC_OBJECTS := \
-	$(BUILD_DIR)/lib/libkmc/src/rand.o \
-	$(BUILD_DIR)/lib/libkmc/src/mmuldi3.o
+include Makefile.common
 
-ALL_CODE_OBJECTS := \
-	$(NUBOOT_OBJECTS) \
-	$(CODE_OBJECTS) \
-	$(NUSYS_SAMPLE_OBJECTS) \
-	$(NUALSTL_OBJECTS) \
-	$(LIBMUS_OBJECTS) \
-	$(LIBNAUDIO_OBJECTS) \
-	$(NUSYS_OBJECTS) \
-	$(LIBULTRA_OBJECTS) \
-	$(LIBKMC_OBJECTS)
+# ==============================================================================
+# Linker flags (include BSS_LD_SCRIPT)
+# ==============================================================================
 
-# Single combined codesegment.o - equivalent to static linking
-$(BUILD_DIR)/codesegment.o: $(ALL_CODE_OBJECTS)
-	$(MKDIR)
-	$(V)$(LD) -r -G 0 -o $@ $^
+LDFLAGS := -G 0 -T config/$(REGION)/undefined_syms.txt -T $(BSS_LD_SCRIPT) -T $(LD_SCRIPT) -Map $(LD_MAP) --no-check-sections
 
-# Linker script generation from spec file
+# ==============================================================================
+# Text rules (extract from ROM then transpile)
+# ==============================================================================
 
-$(SPEC_PROCESSED): $(SPEC)
-	$(MKDIR)
-	$(V)$(CPP) $(SPEC_CPP_FLAGS) $< > $@
+# Extract texts to assets directory and transpile to assembly (generates two
+# files: bytecode and index)
+$(TEXT_ASSETS_DIR)/%Text.s:
+	$(V)$(TEXT_EXTRACTOR) extract $*
+	$(V)$(TEXT_TRANSPILER) transpile $(TEXT_ASSETS_DIR)/$* -n $*Text -o $(TEXT_ASSETS_DIR)/
 
-$(LD_SCRIPT): $(SPEC_PROCESSED) $(MKLDSCRIPT)
-	$(V)$(MKLDSCRIPT) $< $@
+# Mark dependency
+$(TEXT_ASSETS_DIR)/%TextIndex.s: $(TEXT_ASSETS_DIR)/%Text.s
+	@:
 
-# Final binary
+$(TEXT_BUILD_DIR)/%Text.bin.o: $(TEXT_ASSETS_DIR)/%Text.s
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
-$(BASENAME).elf: $(OBJECTS) $(LD_SCRIPT)
-	$(V)$(LD) $(LDFLAGS) -o $@
+$(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
+	$(V)$(AS) $(ASFLAGS) -o $@ $<
 
-$(TARGET): $(BASENAME).elf
-	$(V)$(OBJCOPY) -O binary --gap-fill=0xFF $< $@
-	$(V)$(PYTHON) $(TOOLS_DIR)/build/makemask.py $@ --pad
+# ==============================================================================
+# Targets
+# ==============================================================================
+
+ifeq ($(MODERN_GCC),1)
+  $(info Building with modern GCC (non-matching))
+  $(info Compiler: $(CC))
+endif
+
+all: check
+
+jp-%:
+	$(MAKE) -f Makefile.jp $*
+
+jp:
+	$(MAKE) -f Makefile.jp
+
+setup: clean split extract-sprites extract-fonts
+
+rerun: clean $(LD_SCRIPT) check
 
 check: $(TARGET)
 	$(V)diff $(TARGET) $(BASEROM) && echo "OK"
@@ -1046,20 +304,33 @@ fresh:
 	$(MAKE) setup
 	$(MAKE) -j4
 
-.PHONY: all modern clean clean-assets setup split rerun check codesegment
-.PHONY: extract-sprites extract-animation-metadata extract-animation-scripts
-.PHONY: extract-animation-sprites extract-animations extract-gifs
-.PHONY: extract-texts extract-map-sprites extract-cutscenes
-.PHONY: extract-fonts assemble-fonts extract-font
-.PHONY: fresh
+# ==============================================================================
+# Clean
+# ==============================================================================
 
-CUTSCENE_ASM := $(patsubst $(CUTSCENE_BUILD_DIR)/%.bin.o,$(CUTSCENE_ASSETS_DIR)/%.s,$(CUTSCENE_OBJECTS))
-DIALOGUE_ASM := $(patsubst $(DIALOGUE_BUILD_DIR)/%.bin.o,$(DIALOGUE_ASSETS_DIR)/%.s,$(DIALOGUE_OBJECTS))
-TEXT_ASM := $(foreach bank,$(DECOMPILED_TEXTS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT_ASSETS_DIR)/$(bank)TextIndex.s)
-TEXTURE_BIN := $(patsubst $(SPRITE_BUILD_DIR)/%Texture.bin.o,$(SPRITE_BUILD_DIR)/%AssetsIndex.bin.o, $(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin.o)
+clean:
+	@rm -rf asm
+	@rm -rf bin
+	@rm -rf build
+# remove transpiled bytecode .s files
+	@find assets -type f -name "*.s" -delete 2>/dev/null || true
+	@rm -f $(LD_SCRIPT)
+	@rm -f $(BASENAME).elf
+	@rm -f $(BASENAME).map
+	@rm -f $(TARGET)
 
-# Prevent Make from deleting intermediate .s files
+clean-assets:
+	@find assets -type f ! -name "*.spec" -delete 2>/dev/null || true
+# clean up empty directories
+	@find assets -type d -empty -delete 2>/dev/null || true
+
+clean-all: clean clean-assets
+
+.PHONY: all clean clean-assets clean-all setup split rerun check codesegment
+.PHONY: extract-sprites extract-gifs extract-texts extract-map-sprites
+.PHONY: extract-cutscenes extract-fonts assemble-fonts extract-font
+.PHONY: fresh jp
+
+# Prevent Make from deleting intermediate .s files (matching needs all of them)
 .SECONDARY:
 .PRECIOUS: %.bin
-
-MAKEFLAGS += --no-builtin-rules

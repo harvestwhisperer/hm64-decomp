@@ -1,23 +1,23 @@
 #ifndef _MOUSE_ANIMATION_MACROS_H_
 #define _MOUSE_ANIMATION_MACROS_H_
 
-#define MOUSE_ANIMATION_0   0
-#define MOUSE_ANIMATION_1   1
-#define MOUSE_ANIMATION_2   2
-#define MOUSE_ANIMATION_3   3
-#define MOUSE_ANIMATION_4   4
-#define MOUSE_ANIMATION_5   5
-#define MOUSE_ANIMATION_6   6
-#define MOUSE_ANIMATION_7   7
-#define MOUSE_ANIMATION_8   8
-#define MOUSE_ANIMATION_9   9
-#define MOUSE_ANIMATION_10  10
-#define MOUSE_ANIMATION_11  11
-#define MOUSE_ANIMATION_12  12
-#define MOUSE_ANIMATION_13  13
-#define MOUSE_ANIMATION_14  14
-#define MOUSE_ANIMATION_15  15
-#define MOUSE_ANIMATION_16  16
-#define MOUSE_ANIMATION_17  17
+#define MOUSE_ANIMATION_0                        0
+#define MOUSE_ANIMATION_1                        1
+#define MOUSE_ANIMATION_2                        2
+#define MOUSE_ANIMATION_3                        3
+#define MOUSE_ANIMATION_4                        4
+#define MOUSE_ANIMATION_5                        5
+#define MOUSE_ANIMATION_6                        6
+#define MOUSE_ANIMATION_7                        7
+#define MOUSE_ANIMATION_8                        8
+#define MOUSE_ANIMATION_9                        9
+#define MOUSE_ANIMATION_10                       10
+#define MOUSE_ANIMATION_11                       11
+#define MOUSE_ANIMATION_12                       12
+#define MOUSE_ANIMATION_13                       13
+#define MOUSE_ANIMATION_14                       14
+#define MOUSE_ANIMATION_15                       15
+#define MOUSE_ANIMATION_16                       16
+#define MOUSE_ANIMATION_17                       17
 
 #endif

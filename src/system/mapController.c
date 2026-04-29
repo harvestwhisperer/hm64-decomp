@@ -161,7 +161,7 @@ bool loadMap(u16 index, u16 mapIndex) {
         mapControllers[index].rotation = 0;
         
         setMapControllerViewPosition(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f);
-        setInitialMapRotation(MAIN_MAP_INDEX, SOUTHWEST);
+        setInitialMapRotation(MAIN_MAP_INDEX, MAP_ROTATION_S);
         setMapViewPositionAndCurrentTile(MAIN_MAP_INDEX, 0.0f, 0.0f, 0.0f, 0, 0);
         setMapRGBA(mapControllers[index].mainMapIndex, 0, 0, 0, 0);
         

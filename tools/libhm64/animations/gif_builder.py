@@ -64,7 +64,9 @@ def compose_frame_anchored(
     Compose multiple sprite layers into a single frame.
 
     Args:
-        layer_imgs: List of RGBA images (bottom to top order)
+        layer_imgs: List of RGBA images in JSON `sprites` order. layer_imgs[0]
+                    corresponds to bitmap[0] in the game and ends up on top;
+                    layer_imgs[-1] is the bottom layer.
         anchors: List of (anchor_x, anchor_y) tuples, same order as layer_imgs
         global_bounds: Optional (min_left, min_top, max_right, max_bot) for
                        consistent canvas sizing across all frames
@@ -87,9 +89,11 @@ def compose_frame_anchored(
     W = int(max_right - min_left)
     H = int(max_bot - min_top)
 
-    # Paste each layer shifted so everything is positive
+    # Paste each layer shifted so everything is positive. Iterate in reverse
+    # so layer_imgs[-1] paints first (background) and layer_imgs[0] paints
+    # last (on top), matching the game's bitmap[0]-on-top ordering.
     canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    for im, (left, top, _, _) in zip(layer_imgs, rects):
+    for im, (left, top, _, _) in zip(reversed(layer_imgs), reversed(rects)):
         x = int(left - min_left)
         y = int(top - min_top)
         canvas.paste(im, (x, y), im)  # Use image as mask to respect alpha

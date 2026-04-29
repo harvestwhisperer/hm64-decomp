@@ -12,7 +12,7 @@
 u16 bitmapCounter;
 
 BitmapObject bitmaps[MAX_BITMAPS];
-Gfx spriteDisplayList[2][0x880];
+Gfx spriteDisplayList[2][0x880] __attribute__((aligned(16)));
 Vtx bitmapVertices[2][0x80][4];
 
 //INCLUDE_ASM("asm/nonmatchings/system/sprite", initializeBitmaps);

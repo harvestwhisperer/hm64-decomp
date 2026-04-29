@@ -11,18 +11,39 @@
 
 #define DEGREES_TO_RADIANS_CONSTANT 0.0174532925199432955
 
-#define SOUTHWEST 0
-#define WEST 1
-#define NORTHWEST 2
-#define NORTH 3
-#define NORTHEAST 4
-#define EAST 5
-#define SOUTHEAST 6
-#define SOUTH 7
 #define MAX_DIRECTIONS 7
 
-#define convertSpriteToWorldDirection(direction, mapIndex) ((direction + 8) - getCurrentMapRotation(mapIndex)) % 8  
-#define convertWorldToSpriteDirection(direction, mapIndex) (direction + getCurrentMapRotation(mapIndex)) % 8 
+// Compass direction (CW from S). Used for two distinct things that share the
+// same enumeration:
+//   - World-compass facing: gPlayer.direction, dogInfo/horseInfo .direction,
+//     NPC/animal .direction, analog stick output (fed to getMovementVectorFromDirection
+//     via directionsToYValues[]). DIRECTION_S = world-south
+//   - Animation slot index: entities[].direction. The slot K shows the K-th
+//     screen-relative compass pose (slot 0 always draws the south-on-screen pose
+//     since sprites are billboards). Slot index = (world direction - map rotation) mod 8.
+#define DIRECTION_S   0
+#define DIRECTION_SW  1
+#define DIRECTION_W   2
+#define DIRECTION_NW  3
+#define DIRECTION_N   4
+#define DIRECTION_NE  5
+#define DIRECTION_E   6
+#define DIRECTION_SE  7
+
+// Map rotation index (CCW from S)
+#define MAP_ROTATION_S   0
+#define MAP_ROTATION_SE  1
+#define MAP_ROTATION_E   2
+#define MAP_ROTATION_NE  3
+#define MAP_ROTATION_N   4
+#define MAP_ROTATION_NW  5
+#define MAP_ROTATION_W   6
+#define MAP_ROTATION_SW  7
+
+// World-compass direction <-> animation slot index conversion
+#define convertWorldDirectionToScreenDirection(direction, mapIndex) ((direction + 8) - getCurrentMapRotation(mapIndex)) % 8
+#define convertScreenDirectionToWorldDirection(direction, mapIndex) (direction + getCurrentMapRotation(mapIndex)) % 8
+
 
 typedef struct {
 	Mtx projection;
