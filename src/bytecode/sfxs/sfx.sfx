@@ -1,0 +1,267 @@
+#include "sfxs.h"
+
+.SELECT_1:        sample
+.CLOSE:           play instr=0x5D vol=0x7F note=0x24 length=0x2C
+.MOVE_CURSOR:     play instr=0x5E vol=0x78 note=0x24 length=0x16
+.INVALID_BUZZ:    play instr=0x5F vol=0x7F note=0x27 length=0x0C
+.ITEM_PLUCK_SFX:  play instr=0x60 vol=0x7F note=0x24 length=0x12
+.WALKING_SFX:     play instr=0x61 vol=0x64 note=0x24 length=0x14
+.SFX_6:           play instr=0x62 vol=0x55 note=0x2C length=0x03
+.SELECT_2:        play instr=0x62 vol=0x5F note=0x28 length=0x04
+.MENU_OPEN_SFX:   play instr=0x5D vol=0x7F note=0x24 length=0x2C
+.SFX_9:           play instr=0x6F vol=0x78 note=0x24 length=0x17
+.WHISTLE:         sample
+.SICKLE_SFX:      play instr=0x63 vol=0x7F note=0x24 length=0x69
+.SILVER_SICKLE_SFX: play instr=0x64 vol=0x7F note=0x28 length=0x28
+.GOLDEN_SICKLE_SFX: play instr=0x64 vol=0x7F note=0x24 length=0x28
+.HOE_SFX:         sample
+.SFX_15:          play instr=0x65 vol=0x7F note=0x24 length=0x17
+.SFX_16:          sample
+.AX_SFX:          sample
+.SILVER_AX_SFX:   play instr=0x57 vol=0x6E note=0x26 length=0x46
+.GOLDEN_AX_SFX:   play instr=0x57 vol=0x76 note=0x23 length=0x47
+.HAMMER_SFX:      sample
+.SILVER_HAMMER_SFX: play instr=0x66 vol=0x7F note=0x24 length=0x1C
+.GOLDEN_HAMMER_SFX: play instr=0x66 vol=0x7F note=0x1D length=0x14
+.WATERING_CAN_SFX: play instr=0x67 vol=0x7F note=0x24 length=0x6B
+.SILVER_WATERING_CAN_SFX: sample
+.GOLDEN_WATERING_CAN_SFX: sample
+.SFX_26:          sample
+.SFX_27:          play instr=0x68 vol=0x7F note=0x24 length=0x34
+.SFX_28:          play instr=0x69 vol=0x6B note=0x20 length=0x14
+.SEEDS_SFX:       play instr=0x6A vol=0x7F note=0x18 length=0x1E
+.MILKER_SFX:      sample
+.BRUSH_SFX:       play instr=0x6B vol=0x7F note=0x24 length=0x2E
+.BELL_SFX:        play instr=0x6C vol=0x7F note=0x24 length=0x16
+.SFX_33:          sample
+.CLIPPERS_SFX:    sample
+.SHIMMER_SFX:     play instr=0x6D vol=0x7F note=0x24 length=0x19
+.PICKING_UP_SFX:  sample
+.PUTTING_DOWN_SFX: play instr=0x6E vol=0x7F note=0x1C length=0x0A
+.SFX_38:          play instr=0x6E vol=0x7F note=0x17 length=0x06
+.SFX_39:          play instr=0x5E vol=0x6E note=0x2B length=0x14
+.FISHING_ROD_CAST: sample
+.SFX_41:          play instr=0x70 vol=0x7F note=0x24 length=0x14
+.SFX_42:          sample
+.SFX_43:          play instr=0x71 vol=0x7F note=0x24 length=0x12
+.SFX_44:          sample
+.SFX_45:          sample
+.SFX_46:          play instr=0x00 vol=0x73 note=0x32 length=0x32
+.TV_OFF_SFX:      sample
+.SFX_48:          play instr=0x72 vol=0x7F note=0x24 length=0x07
+.SFX_49:          play instr=0x73 vol=0x5A note=0x24 length=0x40
+.DOOR_OPEN_SFX:   play instr=0x74 vol=0x7F note=0x24 length=0x28
+.SFX_51:          play instr=0x75 vol=0x7F note=0x24 length=0x1C
+.SFX_52:          sample
+.SFX_53:          sample
+.SFX_54:          play instr=0x76 vol=0x69 note=0x24 length=0x37
+.SFX_55:
+    SET_INSTRUMENT  0x77
+    ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
+    PAN             0x7F
+    NOTE_VOL        0x7F
+    NOTE            0x24, 0x93
+    END
+.HORSE_NEIGH:
+    SET_INSTRUMENT  0x78
+    ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
+    PAN             0x7F
+    NOTE_VOL        0x6E
+    NOTE            0x24, 0x89
+    END
+.SFX_57:          play instr=0x79 vol=0x7F note=0x24 length=0x79
+.SFX_58:          play instr=0x7A vol=0x7F note=0x24 length=0x49
+.DOG_BARK:        play instr=0x7B vol=0x6E note=0x24 length=0x4C
+.SFX_60:          play instr=0x7C vol=0x7F note=0x24 length=0x1D
+.SFX_61:          play instr=0x7D vol=0x64 note=0x24 length=0x61
+.SFX_62:          sample
+.ROOSTER:
+    SET_INSTRUMENT  0x7E
+    ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
+    PAN             0x7F
+    NOTE_VOL        0x7F
+    NOTE            0x24, 0xFF
+    END
+.CHICKEN_CLUCK:
+    SET_INSTRUMENT  0x7F
+    ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
+    PAN             0x7F
+    NOTE_VOL        0x7F
+    NOTE            0x24, 0xCD
+    END
+.SFX_65:          play instr=0x80 vol=0x7F note=0x24 length=0x0B
+.BIRD_CHIRP:      play instr=0x81 vol=0x7F note=0x24 length=0x21
+.CAT_MEOW:        play instr=0x82 vol=0x7F note=0x24 length=0x13
+.SFX_68:          play instr=0x83 vol=0x7F note=0x24 length=0x41
+.SFX_69:          play instr=0x84 vol=0x7F note=0x24 length=0x59
+.BIRD_CHIRP_2:    sample
+.SFX_71:          play instr=0x85 vol=0x7F note=0x24 length=0x0F
+.SFX_72:          sample
+.SFX_73:          sample
+.SFX_74:          sample
+.SFX_75:          sample
+.SFX_76:          play instr=0x86 vol=0x7F note=0x24 length=0x6B
+.SFX_77:          play instr=0x87 vol=0x7F note=0x24 length=0x40
+.SFX_78:          play instr=0x88 vol=0x7F note=0x24 length=0x10
+.SFX_79:          sample
+.SFX_80:          sample
+.SFX_81:          sample
+.SFX_82:          sample
+.SFX_83:
+    SET_INSTRUMENT  0x89
+    ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
+    PAN             0x7F
+    NOTE_VOL        0x7F
+    NOTE            0x24, 0xC9
+    END
+.SFX_84:
+    SET_INSTRUMENT  0x89
+    ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
+    PAN             0x7F
+    NOTE_VOL        0x5A
+    NOTE            0x2B, 0x92
+    END
+.SFX_85:
+    SET_INSTRUMENT  0x8E
+    ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
+    PAN             0x7F
+    NOTE_VOL        0x7F
+    NOTE            0x24, 0x10E
+    END
+.SFX_86:          play instr=0x8F vol=0x7F note=0x24 length=0x2F
+.DIALOGUE_BEEP:
+    SET_INSTRUMENT  0x90
+    ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
+    PAN             0x7F
+    NOTE_VOL        0x7F
+    NOTE            0x24, 0xC6
+    END
+.SFX_88:          play instr=0x91 vol=0x73 note=0x24 length=0x0C
+.RUMBLE:
+    SET_INSTRUMENT  0x8A
+    ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
+    PAN             0x7F
+    NOTE_VOL        0x7F
+    NOTE            0x24, 0x111
+    END
+.TOTAL_SFX:       play instr=0x8B vol=0x7F note=0x24 length=0x74
+.SFX_91:          sample
+.SFX_92:          sample
+.SFX_93:          sample
+.SFX_94:          play instr=0x8C vol=0x7F note=0x24 length=0x4C
+.SFX_95:          play instr=0x8D vol=0x7F note=0x24 length=0x1B
+.SFX_96:          sample
+.SFX_97:          sample
+.SFX_98:          sample
+.SFX_99:          sample
+.SFX_100:         sample
+.SFX_101:         sample
+.SFX_102:         sample
+.SFX_103:         sample
+
+priorities {
+    .SELECT_1:        0
+    .CLOSE:           100
+    .MOVE_CURSOR:     100
+    .INVALID_BUZZ:    100
+    .ITEM_PLUCK_SFX:  100
+    .WALKING_SFX:     100
+    .SFX_6:           100
+    .SELECT_2:        100
+    .MENU_OPEN_SFX:   100
+    .SFX_9:           100
+    .WHISTLE:         100
+    .SICKLE_SFX:      100
+    .SILVER_SICKLE_SFX: 100
+    .GOLDEN_SICKLE_SFX: 100
+    .HOE_SFX:         100
+    .SFX_15:          100
+    .SFX_16:          100
+    .AX_SFX:          100
+    .SILVER_AX_SFX:   100
+    .GOLDEN_AX_SFX:   100
+    .HAMMER_SFX:      100
+    .SILVER_HAMMER_SFX: 100
+    .GOLDEN_HAMMER_SFX: 100
+    .WATERING_CAN_SFX: 100
+    .SILVER_WATERING_CAN_SFX: 100
+    .GOLDEN_WATERING_CAN_SFX: 100
+    .SFX_26:          100
+    .SFX_27:          100
+    .SFX_28:          100
+    .SEEDS_SFX:       100
+    .MILKER_SFX:      100
+    .BRUSH_SFX:       100
+    .BELL_SFX:        100
+    .SFX_33:          100
+    .CLIPPERS_SFX:    100
+    .SHIMMER_SFX:     100
+    .PICKING_UP_SFX:  100
+    .PUTTING_DOWN_SFX: 100
+    .SFX_38:          100
+    .SFX_39:          100
+    .FISHING_ROD_CAST: 100
+    .SFX_41:          100
+    .SFX_42:          100
+    .SFX_43:          100
+    .SFX_44:          100
+    .SFX_45:          100
+    .SFX_46:          100
+    .TV_OFF_SFX:      100
+    .SFX_48:          100
+    .SFX_49:          100
+    .DOOR_OPEN_SFX:   100
+    .SFX_51:          100
+    .SFX_52:          100
+    .SFX_53:          100
+    .SFX_54:          100
+    .SFX_55:          100
+    .HORSE_NEIGH:     100
+    .SFX_57:          100
+    .SFX_58:          100
+    .DOG_BARK:        100
+    .SFX_60:          100
+    .SFX_61:          100
+    .SFX_62:          100
+    .ROOSTER:         100
+    .CHICKEN_CLUCK:   100
+    .SFX_65:          100
+    .BIRD_CHIRP:      100
+    .CAT_MEOW:        100
+    .SFX_68:          100
+    .SFX_69:          100
+    .BIRD_CHIRP_2:    100
+    .SFX_71:          100
+    .SFX_72:          100
+    .SFX_73:          100
+    .SFX_74:          100
+    .SFX_75:          100
+    .SFX_76:          100
+    .SFX_77:          100
+    .SFX_78:          100
+    .SFX_79:          100
+    .SFX_80:          100
+    .SFX_81:          100
+    .SFX_82:          100
+    .SFX_83:          100
+    .SFX_84:          100
+    .SFX_85:          100
+    .SFX_86:          100
+    .DIALOGUE_BEEP:   100
+    .SFX_88:          100
+    .RUMBLE:          100
+    .TOTAL_SFX:       100
+    .SFX_91:          100
+    .SFX_92:          100
+    .SFX_93:          100
+    .SFX_94:          100
+    .SFX_95:          100
+    .SFX_96:          100
+    .SFX_97:          100
+    .SFX_98:          100
+    .SFX_99:          100
+    .SFX_100:         100
+    .SFX_101:         100
+    .SFX_102:         100
+    .SFX_103:         100
+}

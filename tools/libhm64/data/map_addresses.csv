@@ -12,7 +12,7 @@
 867150,beachFall
 86F430,beachWinter
 877710,raceTrackSpring
-87F510,emptyMap2
+87F510,raceTrackSummer
 87F520,raceTrackFall
 887320,raceTrackWinter
 88F120,mountain1Spring
@@ -74,7 +74,7 @@ B8B840,vineyardSummer
 B9C0D0,vineyardFall
 BAC960,vineyardWinter
 BBCD10,vineyardHouse
-BC5710,vineyardCellar
+BC5710,vineyardCellar1
 BC9C30,vineyardCellar2
 BD1C80,roadSpring
 BDBD50,roadSummer

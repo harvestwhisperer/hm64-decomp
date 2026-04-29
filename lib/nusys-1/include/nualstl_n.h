@@ -139,7 +139,7 @@ typedef void (*NUAuPreNMIFunc)(NUScMsg,u32);	/* The PRENMI call-back function  *
 /*--------------------------------------*/
 extern u32			nuAuFrameCounter;	/* The frame counter  */
 extern ALHeap		nuAuHeap;		/* The Heap structure  */
-extern NUAuSeqPlayer	nuAuSeqPlayer[2];	
+extern NUAuSeqPlayer	nuAuSeqPlayer[4];	
 extern u8*			nuAuSeqData;
 extern ALBankFile*	nuAuSeqBank_ptr;
 extern ALSeqFile*		nuAuSeqFile_ptr;

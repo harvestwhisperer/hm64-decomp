@@ -59,11 +59,11 @@ u8 globalBobbingFrameCounter;
 u8 gridPositionToX[1596];
 u8 gridPositionToZ[1596];
 
-Gfx mapDisplayList[2][6912];
+Gfx mapDisplayList[2][6912] __attribute__((aligned(16)));
 Vtx tileVertices[2][2560];
 
 Vtx groundObjectVertices[2][320][4];
-Gfx groundObjectBitmapsDisplayList[2][0x1000];
+Gfx groundObjectBitmapsDisplayList[2][0x1000] __attribute__((aligned(16)));
 
 u16 previousGridPositionForTileTexture[MAX_TILE_TEXTURES];
 

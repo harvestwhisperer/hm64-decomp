@@ -514,19 +514,19 @@ bool handleLevelInteraction(u16 mapIndex) {
 
                 switch (getMapForSpawnPoint(gSpawnPointIndex)) {
                     case KAREN_ROOM:
-                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, textIndex, 0, 0);
+                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, textIndex, 0, 0); // "can't enter"-style message selected by getCantEnterTextIndex(gSpawnPointIndex)
                         setPlayerAction(WALKING_DOWN_STAIRS, ANIM_DEFAULT);
                         gPlayer.actionTimer = 32;
-                        gPlayer.savedDirection = SOUTHEAST;
+                        gPlayer.savedDirection = DIRECTION_E;
                         break;
                     case POPURI_ROOM:
                     case MARIA_ROOM:
                     case ANN_ROOM:
                     case ELLI_ROOM:
-                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, textIndex, 0, 0);
+                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, textIndex, 0, 0); // "can't enter"-style message selected by getCantEnterTextIndex(gSpawnPointIndex)
                         break;
                     default:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, textIndex, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, textIndex, 0, 2); // "can't enter"-style message selected by getCantEnterTextIndex(gSpawnPointIndex)
                         break;
                     }
                     
@@ -574,7 +574,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 4:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.direction == NORTHEAST) {
+                if (gPlayer.direction == DIRECTION_N) {
                     result = TRUE;
                     levelInteractionsInfo.mapAdditionsIndex = 9;
                     levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -588,7 +588,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 5:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.direction == NORTHEAST) {
+                if (gPlayer.direction == DIRECTION_N) {
                     result = TRUE;
                     levelInteractionsInfo.mapAdditionsIndex = 0xD;
                     levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -637,7 +637,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 9:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                if (gPlayer.direction == SOUTHEAST) {
+                if (gPlayer.direction == DIRECTION_E) {
                     result = TRUE;
                     levelInteractionsInfo.mapAdditionsIndex = 12;
                     levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
@@ -700,7 +700,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 // no mail
                 } else {
-                    showTextBox(1, LETTERS_TEXT_INDEX, 58, 0, 2);
+                    showTextBox(1, LETTERS_TEXT_INDEX, 58, 0, 2); // "No mail today."
                 }
 
                 result = TRUE;
@@ -713,9 +713,9 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 
-                if (gPlayer.direction == NORTHWEST) {
+                if (gPlayer.direction == DIRECTION_W) {
                     convertNumberToGameVariableString(0x18, gLumber, 0);
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 163, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 163, 0, 2); // "Lumber [LUMBER_AMOUNT] pieces"
                     result = TRUE;
                 }
             }
@@ -727,7 +727,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 convertNumberToGameVariableString(0x17, fodderQuantity, 0);
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 162, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 162, 0, 2); // "Silo / Amount of fodder [FODDER_AMOUNT]"
                 result = TRUE;
             }
 
@@ -737,7 +737,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 21:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 161, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 161, 0, 2); // "Shipping crate / Pick up at 5 in the afternoon."
                 result = TRUE;
             }
 
@@ -749,7 +749,7 @@ bool handleFarmLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
                 if (!checkHaveKeyItem(TREASURE_MAP)) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 167, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 167, 0, 2); // "There's something in that tree hole. / Got the 'Treasure Map'!"
                     acquireKeyItem(TREASURE_MAP);
                     result = TRUE;
                     toolUse.musicBoxTileDigCounter = 0;
@@ -820,7 +820,7 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
         // TV
         case 18:
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == NORTHEAST) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == DIRECTION_N) {
                 loadTVCButtonIcons();
                 initializeTVAssets();
                 setPlayerAction(WATCHING_TV, ANIM_WATCHING_TV);
@@ -969,10 +969,10 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             generateMilkTypeString(0);
                             setGameVariableString(38, gFarmAnimals[0].motherName, 6);
                             func_80061690(gFarmAnimals[0].milkType);
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 229, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 229, 0, 2); // cow/sheep info: "[FARM_ANIMAL_1_NAME] / Milk: [MILK_TYPE] / Born: ... / Parent: [ANIMAL_MOTHER_NAME]"
 
                         } else if (temp < 7) {
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 237, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 237, 0, 2); // just the animal name: "[FARM_ANIMAL_1_NAME]"
                         }
                                     
                     } 
@@ -1011,10 +1011,10 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             generateMilkTypeString(1);
                             setGameVariableString(38, gFarmAnimals[1].motherName, 6);
                             func_80061690(gFarmAnimals[1].milkType);
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 230, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 230, 0, 2); // cow/sheep info: "[FARM_ANIMAL_2_NAME] / Milk: [MILK_TYPE] / Born: ... / Parents: [ANIMAL_MOTHER_NAME]"
 
                         } else if (temp < 7) {
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 238, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 238, 0, 2); // just the animal name: "[FARM_ANIMAL_2_NAME]"
                         }
                         
                     } 
@@ -1056,10 +1056,10 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             setGameVariableString(38, gFarmAnimals[2].motherName, 6);
                             func_80061690(gFarmAnimals[2].milkType);
 
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 231, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 231, 0, 2); // cow/sheep info: "[FARM_ANIMAL_3_NAME] / Milk: [MILK_TYPE] / Born: ... / Parents: [ANIMAL_MOTHER_NAME]"
 
                         } else if (temp < 7) {
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 239, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 239, 0, 2); // just the animal name: "[FARM_ANIMAL_3_NAME]"
                         }
 
                     } 
@@ -1098,10 +1098,10 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             generateMilkTypeString(3);
                             setGameVariableString(38, gFarmAnimals[3].motherName, 6);
                             func_80061690(gFarmAnimals[3].milkType);
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 232, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 232, 0, 2); // cow/sheep info: "[FARM_ANIMAL_4_NAME] / Milk: [MILK_TYPE] / Born: ... / Parents: [ANIMAL_MOTHER_NAME]"
 
                         } else if (temp < 7) {
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 240, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 240, 0, 2); // just the animal name: "[FARM_ANIMAL_4_NAME]"
                         }
 
                     } 
@@ -1140,10 +1140,10 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             generateMilkTypeString(4);
                             setGameVariableString(38, gFarmAnimals[4].motherName, 6);
                             func_80061690(gFarmAnimals[4].milkType);
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 233, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 233, 0, 2); // cow/sheep info: "[FARM_ANIMAL_5_NAME] / Milk: [MILK_TYPE] / Born: ... / Parents: [ANIMAL_MOTHER_NAME]"
 
                         } else if (temp < 7) {
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 241, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 241, 0, 2); // just the animal name: "[FARM_ANIMAL_5_NAME]"
                         }
                         
                         
@@ -1183,10 +1183,10 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             generateMilkTypeString(5);
                             setGameVariableString(38, gFarmAnimals[5].motherName, 6);
                             func_80061690(gFarmAnimals[5].milkType);
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 234, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 234, 0, 2); // cow/sheep info: "[FARM_ANIMAL_6_NAME] / Milk: [MILK_TYPE] / Born: ... / Parents: [ANIMAL_MOTHER_NAME]"
 
                         } else if (temp < 7) {
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 242, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 242, 0, 2); // just the animal name: "[FARM_ANIMAL_6_NAME]"
                         }
                         
                         
@@ -1226,10 +1226,10 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             generateMilkTypeString(6);
                             setGameVariableString(38, gFarmAnimals[6].motherName, 6);
                             func_80061690(gFarmAnimals[6].milkType);
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 235, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 235, 0, 2); // cow/sheep info: "[FARM_ANIMAL_7_NAME] / Milk: [MILK_TYPE] / Born: ... / Parents: [ANIMAL_MOTHER_NAME]"
 
                         } else if (temp < 7) {
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 243, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 243, 0, 2); // just the animal name: "[FARM_ANIMAL_7_NAME]"
                         }
 
                     } 
@@ -1268,10 +1268,10 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             generateMilkTypeString(7);
                             setGameVariableString(38, gFarmAnimals[7].motherName, 6);
                             func_80061690(gFarmAnimals[7].milkType);
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 236, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 236, 0, 2); // cow/sheep info: "[FARM_ANIMAL_8_NAME] / Milk: [MILK_TYPE] / Born: ... / Parents: [ANIMAL_MOTHER_NAME]"
 
                         } else if (temp < 7) {
-                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 244, 0, 2);
+                            showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 244, 0, 2); // just the animal name: "[FARM_ANIMAL_8_NAME]"
                         }
                             
                     } 
@@ -1288,7 +1288,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 convertNumberToGameVariableString(23, fodderQuantity, 0);
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 168, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 168, 0, 2); // "Fodder spout / Amount: [FODDER_AMOUNT]"
                 result = 1;
             }
 
@@ -1298,7 +1298,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 28:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 169, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 169, 0, 2); // "Birthing place"
                 result = 1;
             }
             
@@ -1332,7 +1332,7 @@ bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         // incubator
         case 18:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 170, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 170, 0, 2); // "Egg laying place"
                 result = TRUE;
             }
             break;
@@ -1341,7 +1341,7 @@ bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 19:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gChickens[0].flags & CHICKEN_ACTIVE) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 245, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 245, 0, 2); // chicken name: "[CHICKEN_1_NAME]"
                     result = TRUE;
                 }
             }
@@ -1351,7 +1351,7 @@ bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 20:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gChickens[1].flags & CHICKEN_ACTIVE) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 246, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 246, 0, 2); // chicken name: "[CHICKEN_2_NAME]"
                     result = TRUE;
                 }
             }
@@ -1361,7 +1361,7 @@ bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 21:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gChickens[2].flags & CHICKEN_ACTIVE) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 247, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 247, 0, 2); // chicken name: "[CHICKEN_3_NAME]"
                     result = TRUE;
                 }
             }
@@ -1371,7 +1371,7 @@ bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 22:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gChickens[3].flags & CHICKEN_ACTIVE) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 248, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 248, 0, 2); // chicken name: "[CHICKEN_4_NAME]"
                     result = TRUE;
                 }
             }
@@ -1381,7 +1381,7 @@ bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 23:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gChickens[4].flags & CHICKEN_ACTIVE) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 249, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 249, 0, 2); // chicken name: "[CHICKEN_5_NAME]"
                     result = TRUE;
                 }
             }
@@ -1391,7 +1391,7 @@ bool handleCoopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 24:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (gChickens[5].flags & CHICKEN_ACTIVE) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 250, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 250, 0, 2); // chicken name: "[CHICKEN_6_NAME]"
                     result = TRUE;
                 }
             }
@@ -1571,7 +1571,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
@@ -1590,10 +1590,10 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
-                if (gPlayer.direction == NORTHEAST) {
+                if (gPlayer.direction == DIRECTION_N) {
                     
                     if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                         result = TRUE;
                     } else {
                         levelInteractionsInfo.mapAdditionsIndex = 1;
@@ -1615,7 +1615,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 4;
@@ -1635,7 +1635,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 3;
@@ -1655,7 +1655,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     result = TRUE;
@@ -1674,7 +1674,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     result = TRUE;
@@ -1691,7 +1691,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 9:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_INTERACTION_GUARD)) {
-                if (gPlayer.direction == NORTHWEST) {
+                if (gPlayer.direction == DIRECTION_W) {
                     result = TRUE;
                     setSpawnPoint(SQUARE_SPAWN_POINT_1);
                 }
@@ -1703,7 +1703,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 10:
             
             if (!checkDailyEventBit(FESTIVAL_DAY_INTERACTION_GUARD)) {
-                if (gPlayer.direction == NORTHWEST) {
+                if (gPlayer.direction == DIRECTION_W) {
                     result = TRUE;
                     setSpawnPoint(SQUARE_SPAWN_POINT_3);
                 }
@@ -1715,7 +1715,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 37:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_INTERACTION_GUARD)) {
-                if (gPlayer.direction == WEST) {
+                if (gPlayer.direction == DIRECTION_SW) {
                     result = TRUE;
                     setSpawnPoint(SQUARE_SPAWN_POINT_3);
                 }
@@ -1727,7 +1727,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 38:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_INTERACTION_GUARD)) {
-                if (gPlayer.direction == NORTH) {
+                if (gPlayer.direction == DIRECTION_NW) {
                     result = TRUE;
                     setSpawnPoint(SQUARE_SPAWN_POINT_3);
                 }
@@ -1739,7 +1739,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 39:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_INTERACTION_GUARD)) {
-                if (gPlayer.direction == WEST) {
+                if (gPlayer.direction == DIRECTION_SW) {
                     result = TRUE;
                     setSpawnPoint(SQUARE_SPAWN_POINT_1);
                 }
@@ -1751,7 +1751,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 40:
 
             if (!checkDailyEventBit(FESTIVAL_DAY_INTERACTION_GUARD)) {
-                if (gPlayer.direction == NORTH) {
+                if (gPlayer.direction == DIRECTION_NW) {
                     result = TRUE;
                     setSpawnPoint(SQUARE_SPAWN_POINT_1);
                 }
@@ -1775,7 +1775,7 @@ bool handleVillage1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
 
                 } else {
@@ -1819,7 +1819,7 @@ u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = 1;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
@@ -1836,7 +1836,7 @@ u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         // Lilia interaction
         case 16:
 
-            if (gPlayer.direction == NORTHEAST) {
+            if (gPlayer.direction == DIRECTION_N) {
                 
                 if (gSeason == WINTER && (24 < gDayOfMonth && gDayOfMonth < 30)) {
 
@@ -1846,7 +1846,7 @@ u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                                 setMainLoopCallbackFunctionIndex(LOTTERY_LOAD);
                                 result = 1; 
                             } else {
-                                showTextBox(0, FESTIVALS_TEXT_INDEX, 62, 0, 0);
+                                showTextBox(0, FESTIVALS_TEXT_INDEX, 62, 0, 0); // Lillia: "You can draw 1 lottery ticket for every 10 points on the card..."
                                 result = 1;
                             }
                         }
@@ -1855,7 +1855,7 @@ u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 } else {
                     if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                        showMessageBox(0, DIALOGUE_SHOP, 39, 0x80, 0);
+                        showMessageBox(0, DIALOGUE_SHOP, 39, 0x80, 0); // shop dialogue .segment_39 -> SHOW_TEXT shop/0 Lillia welcome: "Welcome♡..."
                         result = 1;
                     }
                 }
@@ -1871,16 +1871,16 @@ u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 switch (gSeason) {
                     case SPRING:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 14, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 14, 0, 2); // "Selling price: Turnips 60G / Potatoes 80G / Cabbage 90G"
                         break;
                     case SUMMER:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 15, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 15, 0, 2); // "Selling price: Tomatoes 90G / Corn 120G"
                         break;
                     case AUTUMN:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 16, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 16, 0, 2); // "Selling price: Eggplants 60G"
                         break;
                     case WINTER:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 201, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 201, 0, 2); // "Price (per pack): Strawberries 150G"
                         break;
                     
                 }
@@ -1899,16 +1899,16 @@ u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                 switch (gSeason) {
 
                     case SPRING:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 17, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 17, 0, 2); // "It's a calendar. There is a big heart-mark on the 15th of the month."
                         break;
                     case SUMMER:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 18, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 18, 0, 2); // "The memo says: 'Firefly lights coming on 16th'"
                         break;
                     case AUTUMN:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 19, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 19, 0, 2); // "Smiley faces are marked on the 10th to 12th."
                         break;
                     case WINTER:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 20, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 20, 0, 2); // "A raffle will be held between the 25th and 29th."
                         break;
                     
                 }
@@ -2077,7 +2077,7 @@ u8 handleFlowerShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 30:
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showMessageBox(0, DIALOGUE_SHOP, DIALOGUE_SHOP_POPURIS_NOTEBOOK, 0x80, 0);
+                showMessageBox(0, DIALOGUE_SHOP, DIALOGUE_SHOP_POPURIS_NOTEBOOK, 0x80, 0); // shop dialogue .segment_40 -> SHOW_TEXT shop/37 "Popuri's flower notebook♡"
                 result = 1;
             }
         
@@ -2130,7 +2130,7 @@ bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
@@ -2157,7 +2157,7 @@ bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         // jeff interaction
         case 16:
 
-            if (gPlayer.direction == NORTHEAST) {
+            if (gPlayer.direction == DIRECTION_N) {
                 
                 if (gSeason == WINTER && (24 < gDayOfMonth && gDayOfMonth < 30)) {
 
@@ -2167,7 +2167,7 @@ bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                                 setMainLoopCallbackFunctionIndex(LOTTERY_LOAD);
                                 result = TRUE; 
                             } else {
-                                showTextBox(0, FESTIVALS_TEXT_INDEX, 70, 0, 0);
+                                showTextBox(0, FESTIVALS_TEXT_INDEX, 70, 0, 0); // Jeff: "You can draw a lottery ticket when you have 10 points on the card..."
                                 result = TRUE;
                             }
                         }
@@ -2176,7 +2176,7 @@ bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 } else {
                     if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 67, 0, 0);
+                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 67, 0, 0); // Jeff: "May I help you? If you'd like to buy cakes please choose from the case..."
                         result = TRUE;
                     }
                 }
@@ -2190,7 +2190,7 @@ bool handleBakeryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
-                if (gPlayer.direction == NORTHEAST && gPlayer.heldItem == 0) {
+                if (gPlayer.direction == DIRECTION_N && gPlayer.heldItem == 0) {
                     showDialogueTextBox(DIALOGUE_MENU_BAKERY_FOOD);
                     result = TRUE;
                 }
@@ -2261,8 +2261,8 @@ bool handleRickStoreLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
-                if (gPlayer.direction == NORTHEAST) {
-                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 68, 0, 0);
+                if (gPlayer.direction == DIRECTION_N) {
+                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 68, 0, 0); // Rick: "Yes, yes. When you want to buy something, pick it up and select it."
                         result = 1;
                 }
             
@@ -2373,7 +2373,7 @@ bool handleRickStoreLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 24:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 54, 0, 0);
+                showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 54, 0, 0); // Rick: "Those are tools and parts for my inventions..."
                 result = 1;
             }
 
@@ -2436,7 +2436,7 @@ u8 handleSouvenirShopLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
         case 19:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 202, 0, 0);
+                showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 202, 0, 0); // Saibara: "Hey, you. Don't touch"
                 result = 1;
             }
             break;
@@ -2469,7 +2469,7 @@ bool handleChurchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 16:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 192, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 192, 0, 2); // "It says this is a statue of the goddess who guards the earth."
                 result = TRUE;
             }
 
@@ -2479,7 +2479,7 @@ bool handleChurchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 17:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 191, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 191, 0, 2); // "It is an old organ."
                 result = TRUE;
             }
 
@@ -2489,7 +2489,7 @@ bool handleChurchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 19:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 208, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 208, 0, 2); // "It seems to be a coal-burning stove"
                 result = TRUE;
             }
 
@@ -2523,7 +2523,7 @@ bool handleTavernLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
         case 17:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 120, 0, 0);
+                showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 120, 0, 0); // Duke: "Welcome. Please make yourself comfortable."
                 result = TRUE;
             }
 
@@ -2549,16 +2549,16 @@ bool handleTavernLevelInteractions(u16 arg0, u8 levelInteractionIndex) {
                 switch (gSeason) {
 
                     case SPRING:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 203, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 203, 0, 2); // "Month's Events: 8th Planting Festival / 17th Local horse race / 23rd Flower Festival"
                         break;
                     case SUMMER:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 204, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 204, 0, 2); // "Month's Events: 1st Fireworks / 9th Crop Festival / 17th Firefly Festival / 24th Sea Festival"
                         break;
                     case AUTUMN:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 205, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 205, 0, 2); // "Month's Events: 4th Cow Festival / 12th Harvest festival / 20th Egg Festival / 28th Local horse race"
                         break;
                     case WINTER:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 206, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 206, 0, 2); // "Month's Events: 10th Thanksgiving Festival / 19th Dog race / 24th Star Night Festival / 27th Spirit Festival"
                         break;      
 
                 }
@@ -2609,7 +2609,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL) || checkDailyEventBit(MARIA_LOCATION_OVERRIDE)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 1;
@@ -2629,7 +2629,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
@@ -2649,7 +2649,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 3;
@@ -2669,7 +2669,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 2;
@@ -2698,7 +2698,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 184, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 184, 0, 2); // "Flower Bud Library / Enjoy your reading. Obey the rules"
                 result = TRUE;
 
             }
@@ -2710,7 +2710,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 181, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 181, 0, 2); // "Flower Bud Cemetery / Where souls sleep."
                 result = TRUE;
 
             }
@@ -2722,7 +2722,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 352, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 352, 0, 2); // "Grandpa's grave"
                 result = TRUE;
 
             }
@@ -2735,10 +2735,10 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
                 if (checkLifeEventBit(ANIMAL_FUNERAL)) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 351, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 351, 0, 2); // "[DEAD_ANIMAL_NAME]'s grave"
                     result = TRUE;
                 } else {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 359, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 359, 0, 2); // "Seems like a cemetery for animals."
                     result = TRUE;
                 }
             
@@ -2751,7 +2751,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 353, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 353, 0, 2); // "An old grave. Can't read the inscription."
                 result = TRUE;
             
             }
@@ -2763,7 +2763,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 353, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 353, 0, 2); // "An old grave. Can't read the inscription."
                 result = TRUE;
             
             }
@@ -2775,7 +2775,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 354, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 354, 0, 2); // "Deep thoughts are written"
                 result = TRUE;
 
             }
@@ -2787,7 +2787,7 @@ bool handleVillage2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 355, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 355, 0, 2); // "Rest in peace"
                 result = TRUE;
 
             }
@@ -2823,13 +2823,13 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {  
 
-                if (gPlayer.direction == NORTHEAST) {
+                if (gPlayer.direction == DIRECTION_N) {
 
                     if (checkLifeEventBit(MARRIED) && gWife == MARIA) {
-                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 215, 0, 0);
+                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 215, 0, 0); // Mayor Wife: "Hello. Please feel free to read here."
                         result = TRUE;
                     } else {
-                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 214, 0, 0);
+                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 214, 0, 0); // Maria: "Hello. Please feel free to read here."
                         result = TRUE;
                     }
                     
@@ -2847,7 +2847,7 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
 
-                    showTextBox(1, LIBRARY_TEXT_INDEX, 0, 0, 2);
+                    showTextBox(1, LIBRARY_TEXT_INDEX, 0, 0, 2); // "There are lots of difficult books here."
                     result = TRUE;
                     
                 } 
@@ -2863,7 +2863,7 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
 
-                    showTextBox(1, LIBRARY_TEXT_INDEX, 1, 0, 2);
+                    showTextBox(1, LIBRARY_TEXT_INDEX, 1, 0, 2); // "There are lots of illustrated books on animals and plants here."
                     result = TRUE;
                     
                 } 
@@ -2879,7 +2879,7 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
 
-                    showTextBox(1, LIBRARY_TEXT_INDEX, 2, 0, 2);
+                    showTextBox(1, LIBRARY_TEXT_INDEX, 2, 0, 2); // "There are lots of books about various industries here."
                     result = TRUE;
                     
                 } 
@@ -2895,7 +2895,7 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
 
-                    showTextBox(1, LIBRARY_TEXT_INDEX, 3, 0, 2);
+                    showTextBox(1, LIBRARY_TEXT_INDEX, 3, 0, 2); // "There are lots of books on cooking and knitting here."
                     result = TRUE;
                     
                 } 
@@ -2911,7 +2911,7 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
 
-                    showTextBox(1, LIBRARY_TEXT_INDEX, 4, 0, 2);
+                    showTextBox(1, LIBRARY_TEXT_INDEX, 4, 0, 2); // "There are lots of fairy tales and picture books here."
                     result = TRUE;
                     
                 } 
@@ -2927,7 +2927,7 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
 
-                    showTextBox(1, LIBRARY_TEXT_INDEX, 5, 0, 2);
+                    showTextBox(1, LIBRARY_TEXT_INDEX, 5, 0, 2); // "There are lots of art books about music and painting, etc. here."
                     result = TRUE;
                     
                 } 
@@ -2943,7 +2943,7 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
 
-                    showTextBox(1, LIBRARY_TEXT_INDEX, 6, 0, 2);
+                    showTextBox(1, LIBRARY_TEXT_INDEX, 6, 0, 2); // "There are lots of books about space and science here."
                     result = TRUE;
                     
                 } 
@@ -2959,7 +2959,7 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (gPlayer.heldItem == 0) {
 
-                    showTextBox(1, LIBRARY_TEXT_INDEX, 7, 0, 2);
+                    showTextBox(1, LIBRARY_TEXT_INDEX, 7, 0, 2); // "There are lots of books about the mountains and the oceans here."
                     result = TRUE;
                     
                 } 
@@ -2973,9 +2973,9 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                if (gPlayer.direction == NORTHWEST && gPlayer.heldItem == 0) {
+                if (gPlayer.direction == DIRECTION_W && gPlayer.heldItem == 0) {
 
-                    showTextBox(1, LIBRARY_TEXT_INDEX, 8, 0, 2);
+                    showTextBox(1, LIBRARY_TEXT_INDEX, 8, 0, 2); // "There are lots of books about plants here."
                     result = TRUE;
                     
                 } 
@@ -2989,9 +2989,9 @@ bool handleLibraryLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {  
 
-                if (gPlayer.direction == NORTHWEST && gPlayer.heldItem == 0) {
+                if (gPlayer.direction == DIRECTION_W && gPlayer.heldItem == 0) {
 
-                    showTextBox(1, LIBRARY_TEXT_INDEX, 9, 0, 2);
+                    showTextBox(1, LIBRARY_TEXT_INDEX, 9, 0, 2); // "There are lots of books about different countries and customs here."
                     result = TRUE;
                     
                 } 
@@ -3028,7 +3028,7 @@ bool handleMidwifeHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
         case 16:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 209, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 209, 0, 2); // "There are many maternity books"
                 result = TRUE;
             }
 
@@ -3064,7 +3064,7 @@ bool handleMayorHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
@@ -3089,7 +3089,7 @@ bool handleMayorHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     case SUMMER:
                     case AUTUMN:
                     case WINTER:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 207, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 207, 0, 2); // "It's an old stove that's seen many years"
                         break;
 
                 }
@@ -3154,7 +3154,7 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = 1;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
@@ -3178,7 +3178,7 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     switch (checkShopItemShouldBeDisplayed(POTION_SHOP_CURE_ALL_ITEM)) {
 
                         case 0:
-                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 108, 0, 0);
+                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 108, 0, 0); // Potion dealer: "The medicine's not ready. Come back later."
                             result = 1;
                             break;
                         case 1:
@@ -3186,11 +3186,11 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             result = 2;
                             break;
                         case 2:
-                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 111, 0, 0);
+                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 111, 0, 0); // Potion dealer: "What? This bottle isn't open yet."
                             result = 1;
                             break;
                         case 3:
-                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 107, 0, 0);
+                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 107, 0, 0); // Potion dealer: "What? No bottle? You can't take anything home without one..."
                             result = 1;
                             break;
 
@@ -3212,7 +3212,7 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     switch (checkShopItemShouldBeDisplayed(POTION_SHOP_VITAMIN_ITEM)) {
 
                         case 0:
-                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 108, 0, 0);
+                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 108, 0, 0); // Potion dealer (shop text 108): "The medicine's not ready. Come back later."
                             result = 1;
                             break;
                         case 1:
@@ -3220,11 +3220,11 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             result = 2;
                             break;
                         case 2:
-                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 111, 0, 0);
+                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 111, 0, 0); // Potion dealer: "What? This bottle isn't open yet."
                             result = 1;
                             break;
                         case 3:
-                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 107, 0, 0);
+                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 107, 0, 0); // Potion dealer: "What? No bottle? You can't take anything home without one..."
                             result = 1;
                             break;
 
@@ -3246,7 +3246,7 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                     switch (checkShopItemShouldBeDisplayed(POTION_SHOP_STRONG_VITAMINS_ITEM)) {
 
                         case 0:
-                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 108, 0, 0);
+                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 108, 0, 0); // Potion dealer (shop text 108): "The medicine's not ready. Come back later."
                             result = 1;
                             break;
                         case 1:
@@ -3254,11 +3254,11 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             result = 2;
                             break;
                         case 2:
-                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 111, 0, 0);
+                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 111, 0, 0); // Potion dealer: "What? This bottle isn't open yet."
                             result = 1;
                             break;
                         case 3:
-                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 107, 0, 0);
+                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 107, 0, 0); // Potion dealer: "What? No bottle? You can't take anything home without one..."
                             result = 1;
                             break;
 
@@ -3275,7 +3275,7 @@ u8 handlePotionShopLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 112, 0, 0);
+                showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 112, 0, 0); // Potion dealer: "Those are for mixing later. Don't touch."
                 result = 1;
             
             }
@@ -3315,7 +3315,7 @@ bool handlePotionShopBedroomLevelInteractions(u16 mapIndex, u8 levelInteractionI
                     case SUMMER:
                     case AUTUMN:
                     case WINTER:
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 208, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 208, 0, 2); // "It seems to be a coal-burning stove"
                         break;
 
                 }
@@ -3413,7 +3413,7 @@ label4:
                     
                 } else if (checkAlreadyHaveDogRacePrize(0) && checkAlreadyHaveDogRacePrize(1) && checkAlreadyHaveDogRacePrize(2)) {
 label2:
-                    showTextBox(0, FESTIVALS_TEXT_INDEX, 71, 0, 0);
+                    showTextBox(0, FESTIVALS_TEXT_INDEX, 71, 0, 0); // Mayor: "Sorry. No more gifts."
                     
                 } else {
 label:
@@ -3434,14 +3434,14 @@ label:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {  
 
                 if (gRacingContext.playerRaceNumber == gRacingContext.currentRaceIndex) {
-                    showTextBox(0, FESTIVALS_TEXT_INDEX, 10, 0, 0);
+                    showTextBox(0, FESTIVALS_TEXT_INDEX, 10, 0, 0); // Mayor's Wife: "Participants are not allowed to buy tickets."
                 } else if (gRacingContext.currentRaceIndex == 3) {
-                    showTextBox(0, FESTIVALS_TEXT_INDEX, 8, 0, 0);
+                    showTextBox(0, FESTIVALS_TEXT_INDEX, 8, 0, 0); // Mayor's Wife: "No more races today. Please come again."
                 } else if (!gRacingContext.betPlacedFlags[gRacingContext.currentRaceIndex]) {
                     pauseAllCutsceneExecutors();
                     setMainLoopCallbackFunctionIndex(RACE_BETTING_LOAD);
                 } else {
-                    showTextBox(0, FESTIVALS_TEXT_INDEX, 7, 0, 0);
+                    showTextBox(0, FESTIVALS_TEXT_INDEX, 7, 0, 0); // Mayor's Wife: "One ticket per race per person."
                 }
                 
                 result = 1;
@@ -3479,10 +3479,10 @@ label:
                 if (gSeason == SPRING && (18 < gDayOfMonth && gDayOfMonth < 23)) {
 
                     if (gVoteForFlowerFestivalGoddess == 0xFF) {
-                        temp = DIALOGUE_MENU_FLOWER_FESTIVAL_VOTE;
+                        temp = 9;
                         goto label3;
                     } else {
-                        showTextBox(0, FESTIVALS_TEXT_INDEX, 35, 0, 2);
+                        showTextBox(0, FESTIVALS_TEXT_INDEX, 35, 0, 2); // "Thank you for voting!"
                         result = 1;
                         goto label4;
                     }
@@ -3510,7 +3510,7 @@ label5:
                     }
                     
                 } else {
-                    showTextBox(0, FESTIVALS_TEXT_INDEX, 38, 0, 0);
+                    showTextBox(0, FESTIVALS_TEXT_INDEX, 38, 0, 0); // Rick: "Oh, I have nothing to sell anymore."
                 }
 
             }
@@ -3563,7 +3563,7 @@ bool handleMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 19:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 173, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 173, 0, 2); // "Looks like a fisherman's tent."
                 result = TRUE;
             }
 
@@ -3618,11 +3618,11 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
-                if (gPlayer.direction == NORTHEAST) {
+                if (gPlayer.direction == DIRECTION_N) {
                     
                     if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
                         
-                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                         result = 1;
                         
                     } else {
@@ -3633,7 +3633,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                                 
                                 if (gSeason == WINTER) {
                                     if (8 < gDayOfMonth && gDayOfMonth < 17) {
-                                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                                        showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                                         result = 1;
                                     } else {
                                         levelInteractionsInfo.mapAdditionsIndex = 3;
@@ -3647,7 +3647,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                                 }
 
                             } else {
-                                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                                 result = 1;
                             }
                             
@@ -3709,7 +3709,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
-                if (gPlayer.direction == SOUTHWEST) {
+                if (gPlayer.direction == DIRECTION_S) {
                     setDailyEventBit(SUSPEND_TIME_DURING_ANIMATION);
                     setPlayerAction(JUMPING_DOWN, ANIM_JUMPING);
                     result = 2;
@@ -3723,7 +3723,7 @@ u8 handleMountain2LevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 19:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 175, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 175, 0, 2); // "Craftsman's house"
                 result = 1;
             }
 
@@ -3768,7 +3768,7 @@ u8 handleTopOfMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 171, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 171, 0, 2); // "DANGER Bridge out"
                 result = 1;
 
             }
@@ -3801,7 +3801,7 @@ u8 handleTopOfMountain1LevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
         case 20:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 174, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 174, 0, 2); // "'Moonview Hot Spring' Effect: Relieves fatigue..."
                 result = 1;
             }
 
@@ -3834,7 +3834,7 @@ bool handleMoonMountainLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     result = TRUE;
@@ -3851,7 +3851,7 @@ bool handleMoonMountainLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
         case 16:
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 177, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 177, 0, 2); // "Moon Mountain summit Altitude : 800M"
                 result = TRUE;
             }
 
@@ -3936,7 +3936,7 @@ bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 180, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 180, 0, 2); // "Moon Mountain Vineyard"
                 result = TRUE;
 
             }
@@ -3948,7 +3948,7 @@ bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 182, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 182, 0, 2); // "Green Ranch"
                 result = TRUE;
 
             }
@@ -3960,7 +3960,7 @@ bool handleRoadLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 183, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 183, 0, 2); // "Flower Bud Village"
                 result = TRUE;
 
             }
@@ -4001,7 +4001,7 @@ bool handleCarpenterHutLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
                     loadOverlayScreen(1, HOME_EXTENSIONS_SELECT_LOAD);
                     result = TRUE;
                 } else {
-                    showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 110, 0, 0);
+                    showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 110, 0, 0); // Master carpenter: "I'm going now."
                     result = TRUE;
                 }
             
@@ -4013,7 +4013,7 @@ bool handleCarpenterHutLevelInteractions(u16 mapIndex, u8 levelInteractionIndex)
         case 17:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 145, 0, 0);
+                showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 145, 0, 0); // Master carpenter: "Hey, be careful around all the tools there."
                 result = TRUE;
             }
 
@@ -4071,7 +4071,7 @@ bool handleCaveLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     result = TRUE;
@@ -4085,7 +4085,7 @@ bool handleCaveLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 3:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 178, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 178, 0, 2); // "Mine entrance. Closed now."
                 result = TRUE;
                 levelInteractionsInfo.interactionSfxIndex = DOOR_OPEN_SFX;
             }
@@ -4120,10 +4120,10 @@ bool handleHarvestSpriteCaveLevelInteractions(u16 mapIndex, u8 levelInteractionI
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 if (getRandomNumberInRange(0, 1)) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 148, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 148, 0, 2); // "What kind of tools are these?"
                     result = TRUE;
                 } else {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 149, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 149, 0, 2); // "The room is littered with tools."
                     result = TRUE;         
                 }
             }
@@ -4134,7 +4134,7 @@ bool handleHarvestSpriteCaveLevelInteractions(u16 mapIndex, u8 levelInteractionI
         case 17:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 157, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 157, 0, 2); // "It's a triple-decker bed."
                 result = TRUE;
             }
 
@@ -4146,13 +4146,13 @@ bool handleHarvestSpriteCaveLevelInteractions(u16 mapIndex, u8 levelInteractionI
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else if (getRandomNumberInRange(0, 1)) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 152, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 152, 0, 2); // "I don't think we can get in even if we bend down."
                     result = TRUE;
                 } else {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 153, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 153, 0, 2); // "Where on earth does it lead?"
                     result = TRUE;
                 }
                 
@@ -4238,7 +4238,7 @@ bool handleVineyardLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
@@ -4258,7 +4258,7 @@ bool handleVineyardLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 1;
@@ -4310,7 +4310,7 @@ bool handleVineyardHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex
         case 17:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 207, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 207, 0, 2); // "It's an old stove that's seen many years"
                 result = TRUE;
             }
 
@@ -4335,7 +4335,7 @@ bool handleKarenRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         
             if (!checkDailyEventBit(FESTIVAL_DAY_INTERACTION_GUARD)) {
 
-                if (gPlayer.direction == SOUTHEAST) { 
+                if (gPlayer.direction == DIRECTION_E) { 
                     result = TRUE;
                     setSpawnPoint(VINEYARD_HOUSE_SPAWN_POINT_1);
                 }
@@ -4371,7 +4371,7 @@ bool handleVineyardCellarLevelInteractions(u16 mapIndex, u8 levelInteractionInde
          case 2:
 
              if (!checkDailyEventBit(FESTIVAL_DAY_INTERACTION_GUARD)) { 
-                 if (EAST < gPlayer.direction && gPlayer.direction < (MAX_DIRECTIONS + 1) || gPlayer.direction == EAST) {
+                 if (DIRECTION_NE < gPlayer.direction && gPlayer.direction < (MAX_DIRECTIONS + 1) || gPlayer.direction == DIRECTION_NE) {
                     result = TRUE;
                     setSpawnPoint(VINEYARD_CELLAR_BASEMENT_SPAWN_POINT_1);
                  }
@@ -4383,7 +4383,7 @@ bool handleVineyardCellarLevelInteractions(u16 mapIndex, u8 levelInteractionInde
         case 16:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 210, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 210, 0, 2); // "One kind of machine or another."
                 result = TRUE;
             }
 
@@ -4393,7 +4393,7 @@ bool handleVineyardCellarLevelInteractions(u16 mapIndex, u8 levelInteractionInde
         case 17:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 211, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 211, 0, 2); // "Seems to be for making wine."
                 result = TRUE;
             }
             break;
@@ -4426,7 +4426,7 @@ bool handleVineyardCellarBasementLevelInteractions(u16 mapIndex, u8 levelInterac
         case 16:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 212, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 212, 0, 2); // "There are many bottles of wine."
                 result = TRUE;
             }
 
@@ -4532,7 +4532,7 @@ bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
                 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) { 
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 1;
@@ -4553,7 +4553,7 @@ bool handleRanchLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) {
 label:
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = TRUE;
 
                 } else {
@@ -4596,7 +4596,7 @@ bool handleRanchHouseLevelInteractions(u16 mapIndex, u8 collisionIndex) {
         case 16:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 149, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 149, 0, 2); // "The room is littered with tools."
                 result = TRUE;
             }
 
@@ -4606,7 +4606,7 @@ bool handleRanchHouseLevelInteractions(u16 mapIndex, u8 collisionIndex) {
         case 17:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 147, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 147, 0, 2); // "It seems that bed is no longer of use."
                 result = TRUE;
             }
 
@@ -4616,7 +4616,7 @@ bool handleRanchHouseLevelInteractions(u16 mapIndex, u8 collisionIndex) {
         case 18:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 208, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 208, 0, 2); // "It seems to be a coal-burning stove"
                 result = TRUE;
             }
 
@@ -4649,7 +4649,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
                 if (checkDailyEventBit(DAY_CONSUMING_CUTSCENE) || checkDailyEventBit(FESTIVAL)) {
-                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2);
+                    showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 360, 0, 2); // "Looks like it's closed today."
                     result = 1;
                 } else {
                     levelInteractionsInfo.mapAdditionsIndex = 0;
@@ -4665,18 +4665,18 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
         // doug interaction
         case 16:
 
-            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == NORTHWEST) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_A) && gPlayer.direction == DIRECTION_W) {
 
                     if (!checkDailyEventBit(PURCHASED_ANIMAL) && !checkDailyEventBit(ANIMAL_SALE_IN_PROGRESS)) {
 
                          if (checkDailyEventBit(DAILY_ANIMAL_TRANSACTION)) {
-                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 357, 0, 0);
+                            showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 357, 0, 0); // Doug: "No, no. We are closing now."
                         } else {
                             showDialogueTextBox(DIALOGUE_MENU_RANCH_STORE_ANIMALS_ROOT);
                         }
 
                     } else {
-                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 356, 0, 0);
+                        showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 356, 0, 0); // Doug: "What? I'm coming right now."
                     }
 
                 result = 1;   
@@ -4745,7 +4745,7 @@ u8 handleRanchStoreLevelInteractions(u16 mapIndex, u8 collisionIndex) {
         case 21:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
-                showMessageBox(1, DIALOGUE_SHOP, DIALOGUE_SHOP_ANIMAL_NOTEBOOK, 0x80, 2);
+                showMessageBox(1, DIALOGUE_SHOP, DIALOGUE_SHOP_ANIMAL_NOTEBOOK, 0x80, 2); // shop dialogue .segment_41 -> SHOW_TEXT shop/94 "Animal notebook"
                 result = 1;
             }
 
@@ -4779,7 +4779,7 @@ bool handleAnnRoomLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 19:
 
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) { 
-                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 207, 0, 2);
+                showTextBox(1, LEVEL_INTERACTIONS_TEXT_INDEX, 207, 0, 2); // "It's an old stove that's seen many years"
                 result = TRUE;
             }
 

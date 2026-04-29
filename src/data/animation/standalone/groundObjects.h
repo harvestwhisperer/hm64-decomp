@@ -1,0 +1,5 @@
+#ifndef _GROUND_OBJECTS_FRAME_MACROS_H_
+#define _GROUND_OBJECTS_FRAME_MACROS_H_
+
+
+#endif

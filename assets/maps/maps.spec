@@ -395,9 +395,9 @@ beginseg
 endseg
 
 beginseg
-    name "spriteCaveMap"
+    name "harvestSpriteCaveMap"
     flags RAW
-    include "build/assets/maps/cave/spriteCaveMap.hm64map.o"
+    include "build/assets/maps/cave/harvestSpriteCaveMap.hm64map.o"
 endseg
 
 beginseg

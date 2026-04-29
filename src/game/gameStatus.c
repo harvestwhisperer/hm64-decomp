@@ -6,7 +6,7 @@
 #include "game/animals.h"
 #include "game/game.h"
 #include "game/level.h"
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 #include "game/npc.h"
 #include "game/overlayScreens.h"
 #include "game/player.h"

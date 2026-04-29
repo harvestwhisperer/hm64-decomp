@@ -9,7 +9,7 @@
 #include "system/numberSprites.h"
 
 #include "game/animals.h"
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
 #include "game/gameStart.h"
@@ -2834,16 +2834,16 @@ void setupRankingListMessageBoxes(bool noFadeIn) {
         setMessageBoxRGBAWithTransition(3, 255, 255, 255, 255, 24);
         setMessageBoxRGBAWithTransition(4, 255, 255, 255, 255, 24);
         
-        updateOverlayScreenSpriteRGBA(0, 255, 255, 255, 255, 24);
-        updateOverlayScreenSpriteRGBA(1, 255, 255, 255, 255, 24);
-        updateOverlayScreenSpriteRGBA(2, 255, 255, 255, 255, 24);
-        updateOverlayScreenSpriteRGBA(3, 255, 255, 255, 255, 24);
-        updateOverlayScreenSpriteRGBA(4, 255, 255, 255, 255, 24);
-        updateOverlayScreenSpriteRGBA(5, 255, 255, 255, 255, 24);
-        updateOverlayScreenSpriteRGBA(6, 255, 255, 255, 255, 24);
-        updateOverlayScreenSpriteRGBA(7, 255, 255, 255, 255, 24);
-        updateOverlayScreenSpriteRGBA(8, 255, 255, 255, 255, 24);
-        updateOverlayScreenSpriteRGBA(9, 255, 255, 255, 255, 24);
+        updateNumberSpriteRGBA(0, 255, 255, 255, 255, 24);
+        updateNumberSpriteRGBA(1, 255, 255, 255, 255, 24);
+        updateNumberSpriteRGBA(2, 255, 255, 255, 255, 24);
+        updateNumberSpriteRGBA(3, 255, 255, 255, 255, 24);
+        updateNumberSpriteRGBA(4, 255, 255, 255, 255, 24);
+        updateNumberSpriteRGBA(5, 255, 255, 255, 255, 24);
+        updateNumberSpriteRGBA(6, 255, 255, 255, 255, 24);
+        updateNumberSpriteRGBA(7, 255, 255, 255, 255, 24);
+        updateNumberSpriteRGBA(8, 255, 255, 255, 255, 24);
+        updateNumberSpriteRGBA(9, 255, 255, 255, 255, 24);
         
     } else {
         
@@ -3117,16 +3117,16 @@ void farmRankingScreenCallback(void) {
                 setMessageBoxRGBAWithTransition(2, 0, 0, 0, 0, 24);
                 setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 24);
                 setMessageBoxRGBAWithTransition(4, 0, 0, 0, 0, 24);
-                updateOverlayScreenSpriteRGBA(0, 0, 0, 0, 0, 24);
-                updateOverlayScreenSpriteRGBA(1, 0, 0, 0, 0, 24);
-                updateOverlayScreenSpriteRGBA(2, 0, 0, 0, 0, 24);
-                updateOverlayScreenSpriteRGBA(3, 0, 0, 0, 0, 24);
-                updateOverlayScreenSpriteRGBA(4, 0, 0, 0, 0, 24);
-                updateOverlayScreenSpriteRGBA(5, 0, 0, 0, 0, 24);
-                updateOverlayScreenSpriteRGBA(6, 0, 0, 0, 0, 24);
-                updateOverlayScreenSpriteRGBA(7, 0, 0, 0, 0, 24);
-                updateOverlayScreenSpriteRGBA(8, 0, 0, 0, 0, 24);
-                updateOverlayScreenSpriteRGBA(9, 0, 0, 0, 0, 24);
+                updateNumberSpriteRGBA(0, 0, 0, 0, 0, 24);
+                updateNumberSpriteRGBA(1, 0, 0, 0, 0, 24);
+                updateNumberSpriteRGBA(2, 0, 0, 0, 0, 24);
+                updateNumberSpriteRGBA(3, 0, 0, 0, 0, 24);
+                updateNumberSpriteRGBA(4, 0, 0, 0, 0, 24);
+                updateNumberSpriteRGBA(5, 0, 0, 0, 0, 24);
+                updateNumberSpriteRGBA(6, 0, 0, 0, 0, 24);
+                updateNumberSpriteRGBA(7, 0, 0, 0, 0, 24);
+                updateNumberSpriteRGBA(8, 0, 0, 0, 0, 24);
+                updateNumberSpriteRGBA(9, 0, 0, 0, 0, 24);
                 
                 gFarmRankingData.screenState = 5;
                 playSfx(0);

@@ -1,6 +1,6 @@
 #include "common.h"
 
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 
 #include "system/map.h"
 #include "system/mapController.h"
@@ -261,7 +261,7 @@ GroundObjectInfo groundObjectsInfo[MAX_FIELD_OBJECTS] = {
 u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthIndex);
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", setMapGroundObjects);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", setMapGroundObjects);
 
 void setMapGroundObjects(u8 mapIndex) {
 
@@ -373,7 +373,7 @@ void setMapGroundObjects(u8 mapIndex) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", clearForagableObjects);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", clearForagableObjects);
 
 void clearForagableObjects(u8 mapIndex) {
 
@@ -419,7 +419,7 @@ void clearForagableObjects(u8 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", setDefaultGroundObjectsForLevel);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", setDefaultGroundObjectsForLevel);
 
 void setDefaultGroundObjectsForLevel(void) {
 
@@ -768,7 +768,7 @@ void setDefaultGroundObjectsForLevel(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectMapAdditionIndex);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectMapAdditionIndex);
 
 u8 getGroundObjectMapAdditionIndex(u8 index) {
 
@@ -784,7 +784,7 @@ u8 getGroundObjectMapAdditionIndex(u8 index) {
     
 } 
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectSpriteIndex);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectSpriteIndex);
 
 // unused
 u8 getGroundObjectSpriteIndex(u8 index) {
@@ -801,7 +801,7 @@ u8 getGroundObjectSpriteIndex(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getHeldItemIndexFromGroundObject);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getHeldItemIndexFromGroundObject);
 
 u8 getHeldItemIndexFromGroundObject(u8 index) {
 
@@ -817,7 +817,7 @@ u8 getHeldItemIndexFromGroundObject(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectToolInteractionFlags);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectToolInteractionFlags);
 
 u8 getGroundObjectToolInteractionFlags(u8 groundObjectIndex) {
 
@@ -834,7 +834,7 @@ u8 getGroundObjectToolInteractionFlags(u8 groundObjectIndex) {
 }
 
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectPlayerInteractionsFlags);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectPlayerInteractionsFlags);
 
 u8 getGroundObjectPlayerInteractionsFlags(u8 index) {
 
@@ -862,7 +862,7 @@ u8 getGroundObjectPlayerInteractionsFlags(u8 index) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectIndexFromTilePosition);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectIndexFromTilePosition);
 
 u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthIndex) {
     
@@ -986,7 +986,7 @@ u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthInd
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", setFieldTile);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", setFieldTile);
 
 bool setFieldTile(u8 mapIndex, u8 groundObjectIndex, u8 heightIndex, u8 widthIndex) {
 
@@ -1080,7 +1080,7 @@ bool setFieldTile(u8 mapIndex, u8 groundObjectIndex, u8 heightIndex, u8 widthInd
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", addGroundObjectToMap);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", addGroundObjectToMap);
 
 inline void addGroundObjectToMap(u8 mapIndex, u8 groundObjectIndex, u8 x, u8 z) {
     
@@ -1117,7 +1117,7 @@ inline void addGroundObjectToMap(u8 mapIndex, u8 groundObjectIndex, u8 x, u8 z) 
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", addGroundObjectToMapFromPlayerPosition);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", addGroundObjectToMapFromPlayerPosition);
 
 void addGroundObjectToMapFromPlayerPosition(u8 groundObjectIndex, f32 arg1, u8 arg2) {
 
@@ -1165,7 +1165,7 @@ static inline u8 subtractZ(u8 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectIndexFromPlayerPosition);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectIndexFromPlayerPosition);
 
 u8 getGroundObjectIndexFromPlayerPosition(f32 arg0, u8 arg1) {
     
@@ -1189,7 +1189,7 @@ u8 getGroundObjectIndexFromPlayerPosition(f32 arg0, u8 arg1) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGroundObjectIndexFromCoordinates);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGroundObjectIndexFromCoordinates);
 
 u8 getGroundObjectIndexFromCoordinates(f32 x, f32 z) {
 
@@ -1215,9 +1215,9 @@ u8 getGroundObjectIndexFromCoordinates(f32 x, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", updateFieldObjectsOvernight);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", updategroundObjectsOvernight);
 
-void updateFieldObjectsOvernight(void) {
+void updategroundObjectsOvernight(void) {
 
     u8 i, j;
     u8 flags;
@@ -1442,7 +1442,7 @@ void updateFieldObjectsOvernight(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", updateCropsIfRain);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", updateCropsIfRain);
 
 void updateCropsIfRain(void) {
 
@@ -1492,7 +1492,7 @@ void updateCropsIfRain(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", checkAnimalCanEatGrass);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", checkAnimalCanEatGrass);
 
 bool checkAnimalCanEatGrass(void) {
 
@@ -1533,7 +1533,7 @@ bool checkAnimalCanEatGrass(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", randomlyAddWeedsToFarmField);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", randomlyAddWeedsToFarmField);
 
 void randomlyAddWeedsToFarmField(void) {
 
@@ -1551,7 +1551,7 @@ void randomlyAddWeedsToFarmField(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", randomlyBreakLogPieces);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", randomlyBreakLogPieces);
 
 void randomlyBreakLogPieces(u8 randomRange) {
 
@@ -1567,7 +1567,7 @@ void randomlyBreakLogPieces(u8 randomRange) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", randomlyCutGrass);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", randomlyCutGrass);
 
 // randomly cut grass
 void randomlyCutGrass(u8 randomRange) {
@@ -1622,7 +1622,7 @@ void randomlyCutGrass(u8 arg0) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", randomlyDestroyCrops);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", randomlyDestroyCrops);
 
 void randomlyDestroyCrops(u8 randomRange) {
 
@@ -1690,7 +1690,7 @@ label:
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", randomlyResetGreenhouseTiles);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", randomlyResetGreenhouseTiles);
 
 // update greenhouse field after earthquake
 void randomlyResetGreenhouseTiles(u8 randomRange) {
@@ -1761,7 +1761,7 @@ label:
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getFarmGrassTilesSum);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getFarmGrassTilesSum);
 
 u16 getFarmGrassTilesSum(void) {
     
@@ -1820,7 +1820,7 @@ u16 getFarmGrassTilesSum(void) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getFarmMoondropFlowerCount);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getFarmMoondropFlowerCount);
 
 u16 getFarmMoondropFlowerCount(void) {
     
@@ -1879,7 +1879,7 @@ u16 getFarmMoondropFlowerCount(void) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGreenhouseMoondropFlowerCount);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGreenhouseMoondropFlowerCount);
 
 u16 getGreenhouseMoondropFlowerCount(void) {
 
@@ -1938,7 +1938,7 @@ u16 getGreenhouseMoondropFlowerCount(void) {
 }
 */
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getFarmPinkCatMintFlowersCount);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getFarmPinkCatMintFlowersCount);
 
 u16 getFarmPinkCatMintFlowersCount(void) {
 
@@ -1960,7 +1960,7 @@ u16 getFarmPinkCatMintFlowersCount(void) {
     return count;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", getGreenhousePinkCatMintFlowersCount);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", getGreenhousePinkCatMintFlowersCount);
 
 u16 getGreenhousePinkCatMintFlowersCount(void) {
 
@@ -1982,7 +1982,7 @@ u16 getGreenhousePinkCatMintFlowersCount(void) {
     return count;
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/fieldObjects", removePinkCatMintFlowerFromFarm);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", removePinkCatMintFlowerFromFarm);
 
 void removePinkCatMintFlowerFromFarm(void) {
 

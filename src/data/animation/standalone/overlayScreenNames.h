@@ -1,0 +1,8 @@
+#ifndef _OVERLAY_SCREEN_NAMES_FRAME_MACROS_H_
+#define _OVERLAY_SCREEN_NAMES_FRAME_MACROS_H_
+
+#define OVERLAY_SCREEN_NAMES_FRAME_0             0
+#define OVERLAY_SCREEN_NAMES_FRAME_1             1
+#define OVERLAY_SCREEN_NAMES_FRAME_2             2
+
+#endif

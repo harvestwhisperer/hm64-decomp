@@ -57,7 +57,7 @@ hm64-decomp-master/
 ├── spec                  # ROM layout specification (segment definitions)
 ├── Makefile              # Main build (matching, US)
 ├── Makefile.jp           # Japanese version build
-├── Makefile.modding      # Modding build (shiftable, non-matching OK)
+├── Makefile.common       # Shared recipes
 └── docs/                 # Documentation (cutscene readability guide, etc.)
 ```
 
@@ -89,8 +89,8 @@ The ROM is assembled from a `spec` file that defines segments (`header`, `boot`,
 ## Custom Bytecode / DSL Systems
 
 The game uses two custom bytecode systems with their own DSLs:
-- **Cutscene bytecode** (`src/bytecode/cutscenes/*.dsl`): Variable-length opcodes indexing into a handler function table in `system/cutscene.c`. Supports spawning child executors, branching, and subroutine jumps.
-- **Dialogue bytecode** (`src/bytecode/dialogues/*.dsl`): Condition-based branching (affection values, random, status bits), game variable manipulation, and sub-dialogue spawning.
+- **Cutscene bytecode** (`src/bytecode/cutscenes/*.cutscene`): Variable-length opcodes indexing into a handler function table in `system/cutscene.c`. Supports spawning child executors, branching, and subroutine jumps.
+- **Dialogue bytecode** (`src/bytecode/dialogues/*.dialogue`): Condition-based branching (affection values, random, status bits), game variable manipulation, and sub-dialogue spawning.
 - **Text format** (`assets/text/*.txt`): Custom encoding with opcode characters (0-10) and 1-byte bitfields every 8 characters indicating 1-byte vs 2-byte character widths.
 
 ## Common Workflows

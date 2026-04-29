@@ -61,7 +61,7 @@
     DEACTIVATE_SELF
 
 .executor_1_post_hunt_idle:
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
     EXECUTE_SUBROUTINE .wait_loop
 
 .festival_setup:
@@ -102,7 +102,7 @@
 .player_intro:
     EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -384, 0, 32
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
@@ -122,7 +122,7 @@
     SET_ENTITY_ANIMATIONS 1, 0, 8, 0, 0, 0, 0
     SET_BEHAVIOR_FLAGS 0
     SET_COORDINATES -448, 0, 32
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
 
 .mayor_wait:
     SET_CALLBACK_ROUTINE 0, 32768, .mayor_on_interact
@@ -143,7 +143,7 @@
     BRANCH_ON_DIALOGUE 0, 1, .mayor_talk_explain
 
 .mayor_start_hunt:
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
     INIT_MESSAGE_BOX_TYPE1 0, EGG_FESTIVAL_TEXT_INDEX, 3
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
@@ -175,7 +175,7 @@
     EXECUTE_SUBROUTINE .mayor_wait
 
 .mayor_show_egg_wait:
-    SET_ASSET_ROTATION SOUTHEAST
+    SET_ASSET_ROTATION 6
     SET_CALLBACK_ROUTINE 0, 32768, .mayor_eval_choice
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -388,14 +388,14 @@
     DEACTIVATE_SELF
 
 .executor_0_grab_power_nut:
-    SET_ASSET_ROTATION SOUTHWEST
+    SET_ASSET_ROTATION 0
     SPAWN_EXECUTOR 32, .executor_32_power_nut_prop
     SET_ENTITY_DIRECTIONAL_ANIMATION 24
     SET_WAIT_FRAMES 30
     SET_ENTITY_ANIMATION 437
     WAIT_ENTITY_ANIMATION
     SET_ENTITY_DIRECTIONAL_ANIMATION 0
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_SPECIAL_BIT 8, acquiredPowerNutBits
     UPDATE_U8_VALUE 15, 250, gMaximumStamina
     UPDATE_U8_VALUE 2, 255, gHappiness
@@ -489,7 +489,7 @@
     SET_COORDINATES -352, 0, -64
 
 .kent_pre_wait:
-    SET_ASSET_ROTATION WEST
+    SET_ASSET_ROTATION 1
     SET_CALLBACK_ROUTINE 0, 32768, .kent_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -519,7 +519,7 @@
     SET_COORDINATES -320, 0, -32
 
 .stu_pre_wait:
-    SET_ASSET_ROTATION WEST
+    SET_ASSET_ROTATION 1
     SET_CALLBACK_ROUTINE 0, 32768, .stu_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -549,7 +549,7 @@
     SET_COORDINATES -96, 0, 0
 
 .rick_pre_wait:
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_CALLBACK_ROUTINE 0, 32768, .rick_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -579,7 +579,7 @@
     SET_COORDINATES -380, 0, 160
 
 .maria_pre_wait:
-    SET_ASSET_ROTATION NORTHEAST
+    SET_ASSET_ROTATION 4
     SET_CALLBACK_ROUTINE 0, 32768, .maria_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -609,7 +609,7 @@
     SET_COORDINATES -412, 0, 192
 
 .ann_pre_wait:
-    SET_ASSET_ROTATION NORTHEAST
+    SET_ASSET_ROTATION 4
     SET_CALLBACK_ROUTINE 0, 32768, .ann_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -639,7 +639,7 @@
     SET_COORDINATES -256, 0, -96
 
 .harris_pre_wait:
-    SET_ASSET_ROTATION WEST
+    SET_ASSET_ROTATION 1
     SET_CALLBACK_ROUTINE 0, 32768, .harris_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -669,7 +669,7 @@
     SET_COORDINATES -184, 0, 0
 
 .jeff_pre_wait:
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_CALLBACK_ROUTINE 0, 32768, .jeff_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -699,7 +699,7 @@
     SET_COORDINATES -160, 0, 32
 
 .karen_pre_wait:
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_CALLBACK_ROUTINE 0, 32768, .karen_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -729,7 +729,7 @@
     SET_COORDINATES -384, 0, 256
 
 .kai_pre_wait:
-    SET_ASSET_ROTATION NORTHEAST
+    SET_ASSET_ROTATION 4
     SET_CALLBACK_ROUTINE 0, 32768, .kai_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -759,7 +759,7 @@
     SET_COORDINATES -168, 0, -56
 
 .cliff_pre_wait:
-    SET_ASSET_ROTATION WEST
+    SET_ASSET_ROTATION 1
     SET_CALLBACK_ROUTINE 0, 32768, .cliff_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -789,7 +789,7 @@
     SET_COORDINATES -320, 0, 32
 
 .doug_pre_wait:
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_CALLBACK_ROUTINE 0, 32768, .doug_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -819,7 +819,7 @@
     SET_COORDINATES -320, 0, 32
 
 .gray_pre_wait:
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_CALLBACK_ROUTINE 0, 32768, .gray_pre_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -890,7 +890,7 @@
     TOGGLE_PAUSE_ENTITIES
     EXECUTE_SUBROUTINE .setup_player
     BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_true
-    ENTITY_WALK 16, NORTHWEST, 2
+    ENTITY_WALK 16, DIRECTION_W, 2
     BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_false
     SPAWN_EXECUTOR 37, .executor_37_egg_dispatch
     CLEAR_SPECIAL_BIT 9, var0
@@ -901,7 +901,7 @@
     TOGGLE_PAUSE_ENTITIES
     EXECUTE_SUBROUTINE .setup_player
     BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_true
-    ENTITY_WALK 16, NORTHEAST, 2
+    ENTITY_WALK 16, DIRECTION_N, 2
     BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_false
     SPAWN_EXECUTOR 37, .executor_37_egg_dispatch
     CLEAR_SPECIAL_BIT 9, var0
@@ -912,7 +912,7 @@
     TOGGLE_PAUSE_ENTITIES
     EXECUTE_SUBROUTINE .setup_player
     BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_true
-    ENTITY_WALK 16, SOUTHEAST, 2
+    ENTITY_WALK 16, DIRECTION_E, 2
     BRANCH_ON_SPECIAL_BIT 13, dailyEventBits, .set_holding_flag_false
     SPAWN_EXECUTOR 37, .executor_37_egg_dispatch
     CLEAR_SPECIAL_BIT 9, var0
@@ -1288,7 +1288,7 @@
     SET_U16_VALUE 0, playerIdleCounter
     EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -384, 0, 32
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
@@ -1304,17 +1304,17 @@
     SET_U16_VALUE 0, playerIdleCounter
     EXECUTE_SUBROUTINE .setup_player
     SET_COORDINATES -384, 0, 32
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     UPDATE_GLOBAL_RGBA 255, 255, 255, 255, 8
     WAIT_RGBA_FINISHED
     EXECUTE_SUBROUTINE .wait_loop
 
 .executor_2_kent_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .kent_hunt_on_interact
-    ENTITY_RUN 24, NORTHEAST, 4
-    ENTITY_RUN 16, SOUTHEAST, 4
-    ENTITY_RUN 56, NORTHEAST, 4
-    ENTITY_RUN 80, SOUTHEAST, 4
+    ENTITY_RUN 24, DIRECTION_N, 4
+    ENTITY_RUN 16, DIRECTION_E, 4
+    ENTITY_RUN 56, DIRECTION_N, 4
+    ENTITY_RUN 80, DIRECTION_E, 4
     SET_ENTITY_WANDER 2, 48, 48
 
 .kent_hunt_wait:
@@ -1341,9 +1341,9 @@
 
 .executor_3_stu_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .stu_hunt_on_interact
-    ENTITY_WALK 32, SOUTHEAST, 2
-    ENTITY_WALK 32, NORTHEAST, 2
-    ENTITY_WALK 32, SOUTHEAST, 2
+    ENTITY_WALK 32, DIRECTION_E, 2
+    ENTITY_WALK 32, DIRECTION_N, 2
+    ENTITY_WALK 32, DIRECTION_E, 2
     SET_ENTITY_WANDER 2, 48, 48
 
 .stu_hunt_wait:
@@ -1370,8 +1370,8 @@
 
 .executor_4_rick_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .rick_hunt_on_interact
-    ENTITY_WALK 112, SOUTHEAST, 2
-    ENTITY_WALK 16, NORTHEAST, 2
+    ENTITY_WALK 112, DIRECTION_E, 2
+    ENTITY_WALK 16, DIRECTION_N, 2
     SET_ENTITY_WANDER 2, 48, 48
 
 .rick_hunt_wait:
@@ -1398,8 +1398,8 @@
 
 .executor_5_maria_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .maria_hunt_on_interact
-    ENTITY_WALK 48, SOUTHWEST, 2
-    ENTITY_WALK 80, SOUTHEAST, 2
+    ENTITY_WALK 48, DIRECTION_S, 2
+    ENTITY_WALK 80, DIRECTION_E, 2
     SET_ENTITY_WANDER 2, 48, 48
 
 .maria_hunt_wait:
@@ -1426,8 +1426,8 @@
 
 .executor_6_ann_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .ann_hunt_on_interact
-    ENTITY_WALK 48, SOUTHWEST, 2
-    ENTITY_WALK 16, NORTHWEST, 2
+    ENTITY_WALK 48, DIRECTION_S, 2
+    ENTITY_WALK 16, DIRECTION_W, 2
     SET_ENTITY_WANDER 2, 48, 48
 
 .ann_hunt_wait:
@@ -1454,7 +1454,7 @@
 
 .executor_7_harris_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .harris_hunt_on_interact
-    ENTITY_WALK 112, NORTHEAST, 2
+    ENTITY_WALK 112, DIRECTION_N, 2
     SET_ENTITY_WANDER 2, 48, 48
 
 .harris_hunt_wait:
@@ -1481,9 +1481,9 @@
 
 .executor_8_jeff_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .jeff_hunt_on_interact
-    ENTITY_WALK 80, SOUTHEAST, 2
-    ENTITY_WALK 16, NORTHEAST, 2
-    ENTITY_WALK 112, SOUTHEAST, 2
+    ENTITY_WALK 80, DIRECTION_E, 2
+    ENTITY_WALK 16, DIRECTION_N, 2
+    ENTITY_WALK 112, DIRECTION_E, 2
     SET_ENTITY_WANDER 2, 48, 48
 
 .jeff_hunt_wait:
@@ -1510,8 +1510,8 @@
 
 .executor_9_karen_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .karen_hunt_on_interact
-    ENTITY_WALK 80, SOUTHEAST, 2
-    ENTITY_WALK 72, SOUTHWEST, 2
+    ENTITY_WALK 80, DIRECTION_E, 2
+    ENTITY_WALK 72, DIRECTION_S, 2
     SET_ENTITY_WANDER 2, 48, 48
 
 .karen_hunt_wait:
@@ -1538,8 +1538,8 @@
 
 .executor_10_kai_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .kai_hunt_on_interact
-    ENTITY_WALK 32, SOUTHWEST, 2
-    ENTITY_WALK 288, SOUTHEAST, 2
+    ENTITY_WALK 32, DIRECTION_S, 2
+    ENTITY_WALK 288, DIRECTION_E, 2
     SET_ENTITY_WANDER 2, 48, 48
 
 .kai_hunt_wait:
@@ -1566,8 +1566,8 @@
 
 .executor_11_cliff_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .cliff_hunt_on_interact
-    ENTITY_WALK 96, SOUTHEAST, 2
-    ENTITY_WALK 64, NORTHEAST, 2
+    ENTITY_WALK 96, DIRECTION_E, 2
+    ENTITY_WALK 64, DIRECTION_N, 2
     SET_ENTITY_WANDER 2, 48, 48
 
 .cliff_hunt_wait:
@@ -1594,7 +1594,7 @@
 
 .executor_12_gray_or_doug_hunt:
     SET_CALLBACK_ROUTINE 65535, 32768, .gray_or_doug_hunt_on_interact
-    ENTITY_WALK 128, SOUTHEAST, 2
+    ENTITY_WALK 128, DIRECTION_E, 2
     SET_ENTITY_WANDER 2, 64, 64
 
 .gray_or_doug_hunt_wait:
@@ -1636,7 +1636,7 @@
     SET_COORDINATES -352, 0, -64
 
 .kent_post_wait:
-    SET_ASSET_ROTATION WEST
+    SET_ASSET_ROTATION 1
     SET_CALLBACK_ROUTINE 0, 32768, .kent_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1660,7 +1660,7 @@
     SET_COORDINATES -320, 0, -32
 
 .stu_post_wait:
-    SET_ASSET_ROTATION WEST
+    SET_ASSET_ROTATION 1
     SET_CALLBACK_ROUTINE 0, 32768, .stu_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1684,7 +1684,7 @@
     SET_COORDINATES -96, 0, 0
 
 .rick_post_wait:
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_CALLBACK_ROUTINE 0, 32768, .rick_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1708,7 +1708,7 @@
     SET_COORDINATES -380, 0, 160
 
 .maria_post_wait:
-    SET_ASSET_ROTATION NORTHEAST
+    SET_ASSET_ROTATION 4
     SET_CALLBACK_ROUTINE 0, 32768, .maria_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1732,7 +1732,7 @@
     SET_COORDINATES -412, 0, 192
 
 .ann_post_wait:
-    SET_ASSET_ROTATION NORTHEAST
+    SET_ASSET_ROTATION 4
     SET_CALLBACK_ROUTINE 0, 32768, .ann_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1756,7 +1756,7 @@
     SET_COORDINATES -256, 0, -96
 
 .harris_post_wait:
-    SET_ASSET_ROTATION WEST
+    SET_ASSET_ROTATION 1
     SET_CALLBACK_ROUTINE 0, 32768, .harris_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1787,7 +1787,7 @@
     SET_COORDINATES -184, 0, 0
 
 .jeff_post_wait:
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_CALLBACK_ROUTINE 0, 32768, .jeff_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1818,7 +1818,7 @@
     SET_COORDINATES -160, 0, 32
 
 .karen_post_wait:
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_CALLBACK_ROUTINE 0, 32768, .karen_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1842,7 +1842,7 @@
     SET_COORDINATES -384, 0, 256
 
 .kai_post_wait:
-    SET_ASSET_ROTATION NORTHEAST
+    SET_ASSET_ROTATION 4
     SET_CALLBACK_ROUTINE 0, 32768, .kai_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1873,7 +1873,7 @@
     SET_COORDINATES -168, 0, -56
 
 .cliff_post_wait:
-    SET_ASSET_ROTATION WEST
+    SET_ASSET_ROTATION 1
     SET_CALLBACK_ROUTINE 0, 32768, .cliff_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 
@@ -1911,7 +1911,7 @@
     SET_COORDINATES -320, 0, 32
 
 .gray_or_doug_post_wait:
-    SET_ASSET_ROTATION NORTHWEST
+    SET_ASSET_ROTATION 2
     SET_CALLBACK_ROUTINE 0, 32768, .gray_or_doug_post_on_interact
     EXECUTE_SUBROUTINE .wait_loop
 

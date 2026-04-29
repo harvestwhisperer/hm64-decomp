@@ -19,7 +19,7 @@
 
 #include "game/animals.h" 
 #include "game/cutscenes.h"
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 #include "data/fieldTileMaps/fieldTiles.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
@@ -28,7 +28,7 @@
 #include "game/gameStatus.h"
 #include "game/items.h"
 #include "game/level.h" 
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 #include "game/namingScreen.h"
 #include "game/npc.h"
 #include "game/overlayScreens.h"
@@ -93,7 +93,7 @@ static inline void initializePlayer() {
     gPlayer.staminaExhaustionLevel = 0;
     gPlayer.fatigueThreshold= 0;
     gPlayer.shopItemIndex = 0;
-    gPlayer.direction = SOUTHWEST;
+    gPlayer.direction = DIRECTION_S;
     gPlayer.groundObjectIndex = 0;
     gPlayer.actionHandler = 0;
     gPlayer.animationHandler = 0;
@@ -360,7 +360,7 @@ void initializeGameVariables(void) {
         npcs[i].levelIndex = 0;
         npcs[i].animationMode = 0;
         npcs[i].defaultAnimationMode = 0;
-        npcs[i].direction = SOUTHWEST;
+        npcs[i].direction = DIRECTION_S;
         npcs[i].speed = 0;
         npcs[i].animationState = 0;
         npcs[i].animationTimer = 0;
@@ -376,7 +376,7 @@ void initializeGameVariables(void) {
     dogInfo.coordinates.z = 0;
     dogInfo.location = FARM;
     dogInfo.actionState = 0;
-    dogInfo.direction = SOUTHWEST;
+    dogInfo.direction = DIRECTION_S;
     dogInfo.speed = 0;
     dogInfo.stateTimer = 0;
     dogInfo.unk_1B = 0;
@@ -396,7 +396,7 @@ void initializeGameVariables(void) {
     horseInfo.coordinates.z = 0;
     horseInfo.location = FARM;
     horseInfo.actionState = 0;
-    horseInfo.direction = SOUTHWEST;
+    horseInfo.direction = DIRECTION_S;
     horseInfo.speed = 0;
     horseInfo.stateTimer = 0;
     horseInfo.unk_1B = 0;
@@ -414,7 +414,7 @@ void initializeGameVariables(void) {
 
         gChickens[i].location = 0;
         gChickens[i].actionState = 0;
-        gChickens[i].direction = SOUTHWEST;
+        gChickens[i].direction = DIRECTION_S;
         gChickens[i].speed = 0;
         gChickens[i].stateTimer = 0;
         gChickens[i].unk_1B = 0;
@@ -1245,7 +1245,7 @@ void loadMapAddresses(void) {
     // empty, referenced in getCantEnterTextIndex 
     setMapDataAddresses(EMPTY_MAP_2, &_emptyMap2SegmentRomStart, &_emptyMap2SegmentRomEnd);
     
-    setMapDataAddresses(HARVEST_SPRITE_CAVE, &_spriteCaveMapSegmentRomStart, &_spriteCaveMapSegmentRomEnd);
+    setMapDataAddresses(HARVEST_SPRITE_CAVE, &_harvestSpriteCaveMapSegmentRomStart, &_harvestSpriteCaveMapSegmentRomEnd);
     setMapDataAddresses(CAVE, &_caveMapSegmentRomStart, &_caveMapSegmentRomEnd);    
     setMapDataAddresses(MINE, &_emptyMineMapSegmentRomStart, &_emptyMineMapSegmentRomEnd);
     setMapDataAddresses(MINE_2, &_mineMapSegmentRomStart, &_mineMapSegmentRomEnd);

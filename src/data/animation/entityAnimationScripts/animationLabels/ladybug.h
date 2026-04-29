@@ -1,9 +1,9 @@
 #ifndef _LADYBUG_ANIMATION_MACROS_H_
 #define _LADYBUG_ANIMATION_MACROS_H_
 
-#define LADYBUG_ANIMATION_0  0
-#define LADYBUG_ANIMATION_1  1
-#define LADYBUG_ANIMATION_2  2
-#define LADYBUG_ANIMATION_3  3
+#define LADYBUG_ANIMATION_0                      0
+#define LADYBUG_ANIMATION_1                      1
+#define LADYBUG_ANIMATION_2                      2
+#define LADYBUG_ANIMATION_3                      3
 
 #endif

@@ -1,37 +1,31 @@
 #ifndef _SQUIRREL_ANIMATION_MACROS_H_
 #define _SQUIRREL_ANIMATION_MACROS_H_
 
-#define SQUIRREL_ANIMATION_0   0
-#define SQUIRREL_ANIMATION_1   1
-#define SQUIRREL_ANIMATION_2   2
-#define SQUIRREL_ANIMATION_3   3
-#define SQUIRREL_ANIMATION_4   4
-#define SQUIRREL_ANIMATION_5   5
-#define SQUIRREL_ANIMATION_6   6
-#define SQUIRREL_ANIMATION_7   7
-#define SQUIRREL_ANIMATION_8   8
-#define SQUIRREL_ANIMATION_9   9
-#define SQUIRREL_ANIMATION_10  10
-#define SQUIRREL_ANIMATION_11  11
-#define SQUIRREL_ANIMATION_12  12
-#define SQUIRREL_ANIMATION_13  13
-#define SQUIRREL_ANIMATION_14  14
-#define SQUIRREL_ANIMATION_15  15
-#define SQUIRREL_ANIMATION_16  16
-#define SQUIRREL_ANIMATION_17  17
-#define SQUIRREL_ANIMATION_18  18
-#define SQUIRREL_ANIMATION_19  19
-#define SQUIRREL_ANIMATION_20  20
-#define SQUIRREL_ANIMATION_21  21
-#define SQUIRREL_ANIMATION_22  22
-#define SQUIRREL_ANIMATION_23  23
-#define SQUIRREL_ANIMATION_24  24
-#define SQUIRREL_ANIMATION_25  25
-#define SQUIRREL_ANIMATION_26  26
-#define SQUIRREL_ANIMATION_27  27
-#define SQUIRREL_ANIMATION_28  28
-#define SQUIRREL_ANIMATION_29  29
-#define SQUIRREL_ANIMATION_30  30
-#define SQUIRREL_ANIMATION_31  31
+#define SQUIRREL_ANIMATION_0                     0
+#define SQUIRREL_ANIMATION_1                     1
+#define SQUIRREL_ANIMATION_2                     2
+#define SQUIRREL_ANIMATION_3                     3
+#define SQUIRREL_ANIMATION_4                     4
+#define SQUIRREL_ANIMATION_5                     5
+#define SQUIRREL_ANIMATION_6                     6
+#define SQUIRREL_ANIMATION_7                     7
+#define SQUIRREL_ANIMATION_8                     8
+#define SQUIRREL_ANIMATION_9                     9
+#define SQUIRREL_ANIMATION_10                    10
+#define SQUIRREL_ANIMATION_11                    11
+#define SQUIRREL_ANIMATION_12                    12
+#define SQUIRREL_ANIMATION_13                    13
+#define SQUIRREL_ANIMATION_14                    14
+#define SQUIRREL_ANIMATION_15                    15
+#define SQUIRREL_ANIMATION_16                    16
+#define SQUIRREL_ANIMATION_17                    17
+#define SQUIRREL_ANIMATION_18                    18
+#define SQUIRREL_ANIMATION_19                    19
+#define SQUIRREL_ANIMATION_20                    20
+#define SQUIRREL_ANIMATION_21                    21
+#define SQUIRREL_ANIMATION_22                    22
+#define SQUIRREL_ANIMATION_23                    23
+#define SQUIRREL_ANIMATION_24                    24
+#define SQUIRREL_ANIMATION_25                    25
 
 #endif

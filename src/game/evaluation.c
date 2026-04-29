@@ -3,7 +3,7 @@
 #include "game/cutscenes.h"
 #include "game/game.h"
 #include "game/gameStatus.h"
-#include "game/fieldObjects.h"
+#include "game/groundObjects.h"
 #include "game/npc.h"
 
 //INCLUDE_ASM("asm/nonmatchings/game/evaluation", calculateNPCAffectionScore);

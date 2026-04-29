@@ -1,21 +1,21 @@
 #ifndef _SNAKE_ANIMATION_MACROS_H_
 #define _SNAKE_ANIMATION_MACROS_H_
 
-#define SNAKE_ANIMATION_0   0
-#define SNAKE_ANIMATION_1   1
-#define SNAKE_ANIMATION_2   2
-#define SNAKE_ANIMATION_3   3
-#define SNAKE_ANIMATION_4   4
-#define SNAKE_ANIMATION_5   5
-#define SNAKE_ANIMATION_6   6
-#define SNAKE_ANIMATION_7   7
-#define SNAKE_ANIMATION_8   8
-#define SNAKE_ANIMATION_9   9
-#define SNAKE_ANIMATION_10  10
-#define SNAKE_ANIMATION_11  11
-#define SNAKE_ANIMATION_12  12
-#define SNAKE_ANIMATION_13  13
-#define SNAKE_ANIMATION_14  14
-#define SNAKE_ANIMATION_15  15
+#define SNAKE_ANIMATION_0                        0
+#define SNAKE_ANIMATION_1                        1
+#define SNAKE_ANIMATION_2                        2
+#define SNAKE_ANIMATION_3                        3
+#define SNAKE_ANIMATION_4                        4
+#define SNAKE_ANIMATION_5                        5
+#define SNAKE_ANIMATION_6                        6
+#define SNAKE_ANIMATION_7                        7
+#define SNAKE_ANIMATION_8                        8
+#define SNAKE_ANIMATION_9                        9
+#define SNAKE_ANIMATION_10                       10
+#define SNAKE_ANIMATION_11                       11
+#define SNAKE_ANIMATION_12                       12
+#define SNAKE_ANIMATION_13                       13
+#define SNAKE_ANIMATION_14                       14
+#define SNAKE_ANIMATION_15                       15
 
 #endif

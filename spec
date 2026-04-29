@@ -617,7 +617,7 @@ beginwave
     include "potionShopMap"
     include "emptyMap2"
 
-    include "spriteCaveMap"
+    include "harvestSpriteCaveMap"
     include "caveMap"
     include "emptyMineMap"
     include "mineMap"
