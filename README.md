@@ -2,7 +2,41 @@
 
 ## Overview
 
-This is a development branch set up to support modding out-of-the-box. Simply run `./tools/setup.sh`, `make extract`, and `make -j4` to get started.
+This is a development branch set up to support modding out-of-the-box.
+
+## Docker Build
+
+The recommended build path is Docker, so every host uses the same Debian
+toolchain:
+
+```bash
+bash tools/docker.sh make extract
+bash tools/docker.sh make -j4
+```
+
+Put your legally dumped US ROM at `baserom.us.z64` in the repo root before
+running `make extract`. The built ROM is `hm64.z64`.
+
+The Docker image uses Debian Bookworm, the original KMC GCC 2.7.2 toolchain,
+MIPS binutils, and the repo's Python requirements in an image-local virtualenv.
+It also builds as your host UID/GID so generated files stay editable outside
+the container.
+
+For an interactive container shell:
+
+```bash
+bash tools/docker.sh
+```
+
+Inside that shell, the image already sets `PYTHON`, `KMC_PATH`, and
+`MODERN_GCC=0`, so the normal commands are:
+
+```bash
+make extract
+make -j4
+```
+
+Without Docker, run `./tools/setup.sh`, `make extract`, and `make -j4`.
 
 Currently supported modding workflows:
 - All code changes
