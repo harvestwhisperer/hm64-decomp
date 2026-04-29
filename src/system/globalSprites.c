@@ -904,7 +904,7 @@ bool checkSpriteRGBAUpdateFinished(u16 index) {
     
 }
 
-bool checkSpriteAnimationStateChanged(u16 index) {
+bool checkSpriteAnimationCycleEnded(u16 index) {
 
     bool result = FALSE;
 

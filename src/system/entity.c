@@ -922,7 +922,7 @@ bool checkEntityAnimationStateChanged(u16 index) {
     if (index < MAX_ENTITIES) {
 
         if (entities[index].flags & ENTITY_ACTIVE) {
-            result = checkSpriteAnimationStateChanged(entities[index].globalSpriteIndex);
+            result = checkSpriteAnimationCycleEnded(entities[index].globalSpriteIndex);
         }
 
     }
