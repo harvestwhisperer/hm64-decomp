@@ -2480,7 +2480,7 @@ void cutsceneHandlerWaitEntityAnimation(u16 index) {
 
     if (cutsceneExecutors[index].flags & CUTSCENE_ENTITY_ASSET) {
 
-        if (checkSpriteAnimationStateChanged(entities[cutsceneExecutors[index].assetIndex].globalSpriteIndex)) {
+        if (checkSpriteAnimationCycleEnded(entities[cutsceneExecutors[index].assetIndex].globalSpriteIndex)) {
             cutsceneExecutors[index].bytecodePtr += 2;
         } else {
             cutsceneExecutors[index].waitFrames = 1;

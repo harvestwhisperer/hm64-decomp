@@ -920,7 +920,7 @@ bool checkEntityAnimationStateChanged(u16 index) {
     if (index < MAX_ENTITIES) {
 
         if (entities[index].flags & ENTITY_ACTIVE) {
-            result = checkSpriteAnimationStateChanged(entities[index].globalSpriteIndex);
+            result = checkSpriteAnimationCycleEnded(entities[index].globalSpriteIndex);
         }
 
     }
@@ -2197,7 +2197,7 @@ void updateEntities(void) {
                     resetAnimationState(entities[i].shadowSpriteIndex);
                 }
 
-                if ((animationType == 0x4000) && checkSpriteAnimationStateChanged(entities[i].globalSpriteIndex)) {
+                if ((animationType == 0x4000) && checkSpriteAnimationCycleEnded(entities[i].globalSpriteIndex)) {
                     deactivateEntity(i);                   
                 }
                 
