@@ -169,64 +169,76 @@ void updateDogActionState(void);
 void showAnimalExpressionBubble(u8, u8, u8);
 
 void deactivateAnimalEntities(void) {
+    Dog *dog = &dogInfo;
+    Horse *horse = &horseInfo;
+
 
     u8 i;
 
-    if (dogInfo.flags & DOG_ENTITY_LOADED) {
-        deactivateEntity(dogInfo.entityIndex);
+    if (dog->flags & DOG_ENTITY_LOADED) {
+        deactivateEntity(dog->entityIndex);
     }
 
-    dogInfo.actionState = 0;
-    dogInfo.stateTimer = 0;
-    dogInfo.flags &= ~DOG_ENTITY_LOADED;
+    dog->actionState = 0;
+    dog->stateTimer = 0;
+    dog->flags &= ~DOG_ENTITY_LOADED;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
+        Chicken *chicken = &gChickens[i];
 
-        if (gChickens[i].flags & CHICKEN_ENTITY_LOADED) {
-            deactivateEntity(gChickens[i].entityIndex);
+
+        if (chicken->flags & CHICKEN_ENTITY_LOADED) {
+            deactivateEntity(chicken->entityIndex);
         }
 
-        gChickens[i].actionState = 0;
-        gChickens[i].stateTimer = 0;
-        gChickens[i].flags &= ~CHICKEN_ENTITY_LOADED;
+        chicken->actionState = 0;
+        chicken->stateTimer = 0;
+        chicken->flags &= ~CHICKEN_ENTITY_LOADED;
         
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        FarmAnimal *farmAnimal = &gFarmAnimals[i];
 
-        if (gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) {
-            deactivateEntity(gFarmAnimals[i].entityIndex);
+
+        if (farmAnimal->flags & FARM_ANIMAL_ENTITY_LOADED) {
+            deactivateEntity(farmAnimal->entityIndex);
         }
 
-        gFarmAnimals[i].actionState = 0;
-        gFarmAnimals[i].stateTimer = 0;
-        gFarmAnimals[i].flags &= ~FARM_ANIMAL_ENTITY_LOADED;
+        farmAnimal->actionState = 0;
+        farmAnimal->stateTimer = 0;
+        farmAnimal->flags &= ~FARM_ANIMAL_ENTITY_LOADED;
         
     }
 
-    if (horseInfo.flags & HORSE_ENTITY_LOADED) {
-        deactivateEntity(horseInfo.entityIndex);
+    if (horse->flags & HORSE_ENTITY_LOADED) {
+        deactivateEntity(horse->entityIndex);
     }
 
-    horseInfo.actionState = 0;
-    horseInfo.stateTimer = 0;
-    horseInfo.flags &= ~HORSE_ENTITY_LOADED;
+    horse->actionState = 0;
+    horse->stateTimer = 0;
+    horse->flags &= ~HORSE_ENTITY_LOADED;
 
     for (i = 0; i < MAX_MISC_ANIMALS; i++) {
+        MiscAnimal *miscAnimal = &gMiscAnimals[i];
+
         
-        if (gMiscAnimals[i].flags & MISC_ANIMAL_ENTITY_LOADED) {
-            deactivateEntity(gMiscAnimals[i].entityIndex);
+        if (miscAnimal->flags & MISC_ANIMAL_ENTITY_LOADED) {
+            deactivateEntity(miscAnimal->entityIndex);
         }
         
-        gMiscAnimals[i].flags = 0;
-        gMiscAnimals[i].actionState = 0;
-        gMiscAnimals[i].timer = 0;
+        miscAnimal->flags = 0;
+        miscAnimal->actionState = 0;
+        miscAnimal->timer = 0;
         
     }
     
 }
 
 void setAnimalState(u8 animalType, u8 index, u8 type, u8 condition, u8 actionState) {
+    Chicken *chicken = &gChickens[index];
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
 
     switch (animalType) {       
         
@@ -236,44 +248,44 @@ void setAnimalState(u8 animalType, u8 index, u8 type, u8 condition, u8 actionSta
         case 1:
             
             if (type != 0xFF) {
-                gChickens[index].type = type;
-                gChickens[index].typeCounter = 0;
+                chicken->type = type;
+                chicken->typeCounter = 0;
             }
             
             if (condition != 0xFF) {
-                gChickens[index].condition = condition;
-                gChickens[index].conditionCounter = 0;
+                chicken->condition = condition;
+                chicken->conditionCounter = 0;
             }
             
             if (actionState != 0xFF) {
-                gChickens[index].actionState = actionState;
+                chicken->actionState = actionState;
             }
 
-            gChickens[index].speed = 0;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
         
             break;
         
         case 2:
             
             if (type != 0xFF) {
-                gFarmAnimals[index].type = type;
-                gFarmAnimals[index].typeCounter = 0;
+                farmAnimal->type = type;
+                farmAnimal->typeCounter = 0;
             }
             
             if (condition != 0xFF) {
-                gFarmAnimals[index].condition = condition;
-                gFarmAnimals[index].conditionCounter = 0;
+                farmAnimal->condition = condition;
+                farmAnimal->conditionCounter = 0;
             }
             
             if (actionState != 0xFF) {
-                gFarmAnimals[index].actionState = actionState;
+                farmAnimal->actionState = actionState;
             }
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
         
             break;
         
@@ -310,12 +322,14 @@ inline void adjustHorseAffection(s8 amount) {
 }
 
 void adjustFarmAnimalAffection(u8 animalIndex, s8 amount) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[animalIndex];
+
     
     s8 adjusted;
     
-    if (gFarmAnimals[animalIndex].flags & FARM_ANIMAL_ACTIVE) {
+    if (farmAnimal->flags & FARM_ANIMAL_ACTIVE) {
     
-        switch (gFarmAnimals[animalIndex].type) {
+        switch (farmAnimal->type) {
 
             case BABY_COW:
             case CALF:
@@ -326,7 +340,7 @@ void adjustFarmAnimalAffection(u8 animalIndex, s8 amount) {
 
             case ADULT_COW:
 
-                switch (gFarmAnimals[animalIndex].condition) {
+                switch (farmAnimal->condition) {
                     
                     case COW_NORMAL:
                         adjusted = amount;
@@ -350,7 +364,7 @@ void adjustFarmAnimalAffection(u8 animalIndex, s8 amount) {
 
             case SHEARED_SHEEP:
                 
-                switch (gFarmAnimals[animalIndex].condition) {
+                switch (farmAnimal->condition) {
 
                     case SHEEP_NORMAL:
                         adjusted = amount;
@@ -366,7 +380,7 @@ void adjustFarmAnimalAffection(u8 animalIndex, s8 amount) {
 
             case ADULT_SHEEP:
                 
-                switch (gFarmAnimals[animalIndex].condition) {
+                switch (farmAnimal->condition) {
                     
                     case SHEEP_NORMAL:
                         adjusted = amount;
@@ -382,31 +396,33 @@ void adjustFarmAnimalAffection(u8 animalIndex, s8 amount) {
 
         }
 
-        gFarmAnimals[animalIndex].affection += adjustValue(gFarmAnimals[animalIndex].affection, adjusted, MAX_AFFECTION);
+        farmAnimal->affection += adjustValue(farmAnimal->affection, adjusted, MAX_AFFECTION);
     
     }
     
 }
 
 inline u16 getMilkHeldItemIndex(u8 animalIndex, u8 arg1) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[animalIndex];
+
 
     u16 res;
     
-    if (gFarmAnimals[animalIndex].milkType == 0) {
+    if (farmAnimal->milkType == 0) {
 
         res = goldenMilkInfo[arg1];
         
     } else {
 
-        if (gFarmAnimals[animalIndex].affection <= 150) {
+        if (farmAnimal->affection <= 150) {
             res = smallMilkInfo[arg1];
         }
 
-        if (150 < gFarmAnimals[animalIndex].affection && gFarmAnimals[animalIndex].affection < 221) {
+        if (150 < farmAnimal->affection && farmAnimal->affection < 221) {
             res = mediumMilkInfo[arg1];
         }
 
-        if (gFarmAnimals[animalIndex].affection >= 221) {
+        if (farmAnimal->affection >= 221) {
             res = largeMilkInfo[arg1];
         }
         
@@ -417,18 +433,20 @@ inline u16 getMilkHeldItemIndex(u8 animalIndex, u8 arg1) {
 }
 
 inline u16 getWoolHeldItemIndex(u8 animalIndex, u8 arg1) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[animalIndex];
+
 
     u16 res;
 
-    if (gFarmAnimals[animalIndex].affection < 100) {
+    if (farmAnimal->affection < 100) {
         res = sheepWoolInfo.arr[arg1];
     }
 
-    if (99 < gFarmAnimals[animalIndex].affection && gFarmAnimals[animalIndex].affection < 200) {
+    if (99 < farmAnimal->affection && farmAnimal->affection < 200) {
         res = sheepWoolInfo.arr2[arg1];
     }
 
-    if (gFarmAnimals[animalIndex].affection >= 200) {
+    if (farmAnimal->affection >= 200) {
         res = sheepWoolInfo.arr3[arg1];
     }
     
@@ -437,6 +455,9 @@ inline u16 getWoolHeldItemIndex(u8 animalIndex, u8 arg1) {
 }
 
 bool handlePlayerAnimalInteraction(void) {
+    Dog *dog = &dogInfo;
+    Horse *horse = &horseInfo;
+
 
     Vec3f vec;
     
@@ -451,7 +472,7 @@ bool handlePlayerAnimalInteraction(void) {
 
         if (gPlayer.heldItem == 0) {
 
-            if ((dogInfo.flags & DOG_ENTITY_LOADED) && entities[dogInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[dogInfo.entityIndex].buttonPressed == BUTTON_A) {
+            if ((dog->flags & DOG_ENTITY_LOADED) && entities[dog->entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[dog->entityIndex].buttonPressed == BUTTON_A) {
 
                 // ???
                 if (!i) {
@@ -460,17 +481,17 @@ bool handlePlayerAnimalInteraction(void) {
                     gPlayer.heldItem = PUPPY_1_HELD_ITEM;
                 }
                 
-                deactivateEntity(dogInfo.entityIndex);
+                deactivateEntity(dog->entityIndex);
                 setPlayerAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
 
-                dogInfo.flags &= ~(DOG_ENTITY_LOADED | DOG_FOLLOWING);
-                dogInfo.flags |= DOG_HELD;
+                dog->flags &= ~(DOG_ENTITY_LOADED | DOG_FOLLOWING);
+                dog->flags |= DOG_HELD;
 
-                if (!(dogInfo.flags & DOG_HELD_DAILY)) {
+                if (!(dog->flags & DOG_HELD_DAILY)) {
 
                     adjustDogAffection(1);
 
-                    dogInfo.flags |= DOG_HELD_DAILY;
+                    dog->flags |= DOG_HELD_DAILY;
                     
                 }
                 
@@ -479,14 +500,16 @@ bool handlePlayerAnimalInteraction(void) {
             }
 
             for (i = 0; i < MAX_CHICKENS && !set; i++) {
+        Chicken *chicken = &gChickens[i];
 
-                if ((gChickens[i].flags & CHICKEN_ENTITY_LOADED) && entities[gChickens[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[gChickens[i].entityIndex].buttonPressed == BUTTON_A) {
 
-                    if (checkDailyEventBit(ANIMAL_SALE_IN_PROGRESS) && getLevelFlags(gChickens[i].location) & LEVEL_FARM) {
+                if ((chicken->flags & CHICKEN_ENTITY_LOADED) && entities[chicken->entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[chicken->entityIndex].buttonPressed == BUTTON_A) {
 
-                        if (gChickens[i].type == ADULT_CHICKEN) {
+                    if (checkDailyEventBit(ANIMAL_SALE_IN_PROGRESS) && getLevelFlags(chicken->location) & LEVEL_FARM) {
 
-                            setGameVariableString(13, gChickens[i].name, 6);
+                        if (chicken->type == ADULT_CHICKEN) {
+
+                            setGameVariableString(13, chicken->name, 6);
                             showDialogueTextBox(DIALOGUE_MENU_RANCH_STORE_ANIMAL_SELL_CONFIRM);
                             
                             selectedAnimalType = CHICKEN_TYPE;
@@ -502,26 +525,26 @@ bool handlePlayerAnimalInteraction(void) {
                         
                     } else {
 
-                        switch (gChickens[i].type) {
+                        switch (chicken->type) {
 
                             case ADULT_CHICKEN:
                                 gPlayer.heldItem = CHICKEN_HELD_ITEM;
-                                gChickens[i].flags |= CHICKEN_HELD;
+                                chicken->flags |= CHICKEN_HELD;
                                 set = TRUE;
                                 break;
                             
                             case CHICK:
                                 gPlayer.heldItem = CHICK_HELD_ITEM;
-                                gChickens[i].flags |= CHICKEN_HELD;
+                                chicken->flags |= CHICKEN_HELD;
                                 set = TRUE;
                                 break;
                             
                             case CHICKEN_EGG:
 
-                                if (!(gChickens[i].flags & CHICKEN_EGG_INCUBATING)) {
+                                if (!(chicken->flags & CHICKEN_EGG_INCUBATING)) {
                                     set = TRUE;
                                     gPlayer.heldItem = EGG_HELD_ITEM;
-                                    gChickens[i].flags = 0;
+                                    chicken->flags = 0;
                                 }
                                 
                                 break;
@@ -530,12 +553,12 @@ bool handlePlayerAnimalInteraction(void) {
 
                         if (set) {
                             
-                            deactivateEntity(gChickens[i].entityIndex);
+                            deactivateEntity(chicken->entityIndex);
                             
                             setPlayerAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
                             gPlayer.heldAnimalIndex = i;
                             
-                            gChickens[i].flags &= ~CHICKEN_ENTITY_LOADED;
+                            chicken->flags &= ~CHICKEN_ENTITY_LOADED;
                             
                         }
                         
@@ -546,19 +569,21 @@ bool handlePlayerAnimalInteraction(void) {
             }
 
             for (i = 0; i < MAX_FARM_ANIMALS && !set; i++) {
+        FarmAnimal *farmAnimal = &gFarmAnimals[i];
 
-                if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && entities[gFarmAnimals[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER) {
 
-                    if (entities[gFarmAnimals[i].entityIndex].buttonPressed == BUTTON_A) {
+                if ((farmAnimal->flags & FARM_ANIMAL_ENTITY_LOADED) && entities[farmAnimal->entityIndex].entityCollidedWithIndex == ENTITY_PLAYER) {
+
+                    if (entities[farmAnimal->entityIndex].buttonPressed == BUTTON_A) {
                         
-                        if (checkDailyEventBit(ANIMAL_SALE_IN_PROGRESS) && getLevelFlags(gFarmAnimals[i].location) & LEVEL_FARM) {
+                        if (checkDailyEventBit(ANIMAL_SALE_IN_PROGRESS) && getLevelFlags(farmAnimal->location) & LEVEL_FARM) {
 
-                            if ((gFarmAnimals[i].type == ADULT_COW || gFarmAnimals[i].type == ADULT_SHEEP) && (!(COW_HAPPY < gFarmAnimals[i].condition && gFarmAnimals[i].condition < COW_DEAD))) {
+                            if ((farmAnimal->type == ADULT_COW || farmAnimal->type == ADULT_SHEEP) && (!(COW_HAPPY < farmAnimal->condition && farmAnimal->condition < COW_DEAD))) {
                                 
-                                setGameVariableString(13, gFarmAnimals[i].name, 6);
+                                setGameVariableString(13, farmAnimal->name, 6);
                                 showDialogueTextBox(DIALOGUE_MENU_RANCH_STORE_ANIMAL_SELL_CONFIRM);
                                 
-                                if (gFarmAnimals[i].type == ADULT_COW) {
+                                if (farmAnimal->type == ADULT_COW) {
                                     selectedAnimalType = COW_TYPE;
                                 } else {
                                     selectedAnimalType = SHEEP_TYPE;
@@ -574,11 +599,11 @@ bool handlePlayerAnimalInteraction(void) {
                         
                         } else if (checkDailyEventBit(COW_FESTIVAL_ENTRY_DAILY)) {
     
-                            if (gFarmAnimals[i].type == ADULT_COW && !(COW_HAPPY < gFarmAnimals[i].condition && gFarmAnimals[i].condition < COW_DEAD)) {
+                            if (farmAnimal->type == ADULT_COW && !(COW_HAPPY < farmAnimal->condition && farmAnimal->condition < COW_DEAD)) {
                                 
                                 showDialogueTextBox(DIALOGUE_MENU_COW_FESTIVAL_ENTRY_CONFIRM);
                                 
-                                setGameVariableString(13, gFarmAnimals[i].name, 6);
+                                setGameVariableString(13, farmAnimal->name, 6);
                                 gSelectedAnimalIndex = i;
                                 
                             }  else {
@@ -591,9 +616,9 @@ bool handlePlayerAnimalInteraction(void) {
                             setMessageBoxViewSpacePosition(0, 0.0f, -64.0f, 352.0f);
                             setMessageBoxSpriteIndices(0, 1, 0, 0);
                             
-                            setGameVariableString(0xD, gFarmAnimals[i].name, 6);
+                            setGameVariableString(0xD, farmAnimal->name, 6);
     
-                            switch (gFarmAnimals[i].condition) {
+                            switch (farmAnimal->condition) {
     
                                 case 0:
                                     textIndex = 0;
@@ -613,11 +638,11 @@ bool handlePlayerAnimalInteraction(void) {
                                 
                             }
     
-                            if (gFarmAnimals[i].type == PREGNANT_COW) {
+                            if (farmAnimal->type == PREGNANT_COW) {
     
-                                convertNumberToGameVariableString(21, 21 - gFarmAnimals[i].typeCounter, 1);
+                                convertNumberToGameVariableString(21, 21 - farmAnimal->typeCounter, 1);
     
-                                switch (gFarmAnimals[i].typeCounter) {
+                                switch (farmAnimal->typeCounter) {
                                     
                                     case 0:
                                         textIndex = 4;
@@ -635,24 +660,24 @@ bool handlePlayerAnimalInteraction(void) {
     
                             showTextBox(1, ANIMAL_INTERACTIONS_TEXT_INDEX, textIndex, 0, 2);
     
-                            gFarmAnimals[i].flags |= (FARM_ANIMAL_APPROACHING  | FARM_ANIMAL_FOLLOWING);
+                            farmAnimal->flags |= (FARM_ANIMAL_APPROACHING  | FARM_ANIMAL_FOLLOWING);
                             
-                            if (!(gFarmAnimals[i].flags & FARM_ANIMAL_TALKED_TO)) {
+                            if (!(farmAnimal->flags & FARM_ANIMAL_TALKED_TO)) {
                                 
                                 adjustFarmAnimalAffection(i, 1);
                                 setAnimalState(2, i, 0xFF, 0xFF, 17);
     
-                                gFarmAnimals[i].flags |= FARM_ANIMAL_COLLISION_WITH_PLAYER;
+                                farmAnimal->flags |= FARM_ANIMAL_COLLISION_WITH_PLAYER;
                                 
                                 showAnimalExpressionBubble(COW_TYPE, i, 3);
     
-                                gFarmAnimals[i].flags |= FARM_ANIMAL_TALKED_TO;
+                                farmAnimal->flags |= FARM_ANIMAL_TALKED_TO;
                                 
                             }
                             
                         }
     
-                        gFarmAnimals[i].flags &= ~FARM_ANIMAL_LINGERING;
+                        farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
     
                     }
 
@@ -662,11 +687,11 @@ bool handlePlayerAnimalInteraction(void) {
                 
             }
             
-            if (horseInfo.flags & HORSE_ENTITY_LOADED && entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[horseInfo.entityIndex].buttonPressed == BUTTON_A) {
+            if (horse->flags & HORSE_ENTITY_LOADED && entities[horse->entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[horse->entityIndex].buttonPressed == BUTTON_A) {
 
                 if (gPlayer.heldItem == 0) {
 
-                    if (horseInfo.grown == TRUE) {
+                    if (horse->grown == TRUE) {
 
                         if (!checkTerrainCollisionInDirection(ENTITY_PLAYER, 24, convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, gMainMapIndex)) 
                             && !checkTerrainCollisionInDirection(ENTITY_PLAYER, 16, convertScreenDirectionToWorldDirection(gPlayer.direction, gMainMapIndex))) {
@@ -679,11 +704,11 @@ bool handlePlayerAnimalInteraction(void) {
                                 
                                 setPlayerAction(MOUNTING_HORSE, ANIM_MOUNT_HORSE);
 
-                                horseInfo.flags &= ~(HORSE_ENTITY_LOADED | HORSE_FOLLOWING);
+                                horse->flags &= ~(HORSE_ENTITY_LOADED | HORSE_FOLLOWING);
 
-                                if (!(horseInfo.flags & HORSE_RODE_DAILY)) {
+                                if (!(horse->flags & HORSE_RODE_DAILY)) {
                                     adjustHorseAffection(1);
-                                    horseInfo.flags |= HORSE_RODE_DAILY;
+                                    horse->flags |= HORSE_RODE_DAILY;
                                 }
                                 
                                 set = TRUE;
@@ -697,19 +722,19 @@ bool handlePlayerAnimalInteraction(void) {
                         setMessageBoxInterpolationWithFlags(0, -4, 2);
                         setMessageBoxViewSpacePosition(0, 0.0f, -64.0f, 352.0f);
                         setMessageBoxSpriteIndices(0, 1, 0, 0);
-                        setGameVariableString(3, horseInfo.name, 6);
+                        setGameVariableString(3, horse->name, 6);
                         
-                        if (horseInfo.age == 0) {
+                        if (horse->age == 0) {
                             showTextBox(1, ANIMAL_INTERACTIONS_TEXT_INDEX, 7, 0, 2);
                         } else {
                             showTextBox(1, ANIMAL_INTERACTIONS_TEXT_INDEX, 8, 0, 2);
                         }
 
-                        horseInfo.flags |= HORSE_FOLLOWING;
+                        horse->flags |= HORSE_FOLLOWING;
                             
-                        if (!(horseInfo.flags & HORSE_TALKED_TO_DAILY)) {
+                        if (!(horse->flags & HORSE_TALKED_TO_DAILY)) {
 
-                            horseInfo.actionState = 17;
+                            horse->actionState = 17;
 
                             if (checkHaveKeyItem(STAMINA_CARROT)) {
                                 adjustHorseAffection(2);
@@ -717,7 +742,7 @@ bool handlePlayerAnimalInteraction(void) {
                                 adjustHorseAffection(1);
                             }
 
-                            horseInfo.flags |= (HORSE_COLLISION_WITH_PLAYER | HORSE_TALKED_TO_DAILY);
+                            horse->flags |= (HORSE_COLLISION_WITH_PLAYER | HORSE_TALKED_TO_DAILY);
                             
                             showAnimalExpressionBubble(HORSE_TYPE, 0, 3);
                             
@@ -732,12 +757,14 @@ bool handlePlayerAnimalInteraction(void) {
             }
 
             for (i = 0; i < MAX_MISC_ANIMALS && !set; i++) {
+        MiscAnimal *miscAnimal = &gMiscAnimals[i];
 
-                if (gMiscAnimals[i].flags & MISC_ANIMAL_ENTITY_LOADED) {
 
-                    if (entities[gMiscAnimals[i].entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[gMiscAnimals[i].entityIndex].buttonPressed == BUTTON_A) {
+                if (miscAnimal->flags & MISC_ANIMAL_ENTITY_LOADED) {
 
-                        switch (gMiscAnimals[i].animalType) {
+                    if (entities[miscAnimal->entityIndex].entityCollidedWithIndex == ENTITY_PLAYER && entities[miscAnimal->entityIndex].buttonPressed == BUTTON_A) {
+
+                        switch (miscAnimal->animalType) {
 
                             case 0:
                                 gPlayer.heldItem = DOG_2_HELD_ITEM;
@@ -766,7 +793,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             case 9:
 
-                                if (!(15 < gMiscAnimals[i].actionState && gMiscAnimals[i].actionState < 18)) {
+                                if (!(15 < miscAnimal->actionState && miscAnimal->actionState < 18)) {
                                     gPlayer.heldItem = SQUIRREL_HELD_ITEM;
                                     set = TRUE;
                                 }
@@ -775,7 +802,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             case 10:
                                 
-                                if (!(15 < gMiscAnimals[i].actionState && gMiscAnimals[i].actionState < 18)) {
+                                if (!(15 < miscAnimal->actionState && miscAnimal->actionState < 18)) {
                                     gPlayer.heldItem = MONKEY_HELD_ITEM;
                                     set = TRUE;
                                 }
@@ -784,7 +811,7 @@ bool handlePlayerAnimalInteraction(void) {
 
                             case 16:
 
-                                if (gMiscAnimals[i].actionState != 1) {
+                                if (miscAnimal->actionState != 1) {
                                     gPlayer.heldItem = LADYBUG_HELD_ITEM;
                                     set = TRUE;
                                 }
@@ -793,7 +820,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             case 17:
                                                                 
-                                if (gMiscAnimals[i].actionState != 1) {
+                                if (miscAnimal->actionState != 1) {
                                     gPlayer.heldItem = CICADA_HELD_ITEM;
                                     set = TRUE;
                                 }
@@ -802,7 +829,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             case 18:
                                                                 
-                                if (gMiscAnimals[i].actionState != 1) {
+                                if (miscAnimal->actionState != 1) {
                                     gPlayer.heldItem = HORNED_BEETLE_HELD_ITEM;
                                     set = TRUE;
                                 }
@@ -811,7 +838,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             case 19:
                                                                 
-                                if (gMiscAnimals[i].actionState != 1) {
+                                if (miscAnimal->actionState != 1) {
                                     gPlayer.heldItem = STAG_BEETLE_HELD_ITEM;
                                     set = TRUE;
                                 }
@@ -820,7 +847,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             case 21:
                                                                 
-                                if (gMiscAnimals[i].actionState != 1) {
+                                if (miscAnimal->actionState != 1) {
                                     gPlayer.heldItem = CRICKET_HELD_ITEM;
                                     set = TRUE;
                                 }
@@ -829,7 +856,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             case 15:
                                                                 
-                                if (gMiscAnimals[i].actionState != 1) {
+                                if (miscAnimal->actionState != 1) {
                                     gPlayer.heldItem = BUTTERFLY_HELD_ITEM;
                                     set = TRUE;
                                 }
@@ -838,7 +865,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             case 20:
 
-                                if (gMiscAnimals[i].actionState != 1) {
+                                if (miscAnimal->actionState != 1) {
                                     gPlayer.heldItem = RED_DRAGONFLY_HELD_ITEM;
                                     set = TRUE;
                                 }
@@ -849,12 +876,12 @@ bool handlePlayerAnimalInteraction(void) {
 
                         if (set) {
 
-                            deactivateEntity(gMiscAnimals[i].entityIndex);
+                            deactivateEntity(miscAnimal->entityIndex);
                             
                             setPlayerAction(PICKING_UP_ITEM, ANIM_PICKING_UP_ITEM);
                             gPlayer.heldAnimalIndex = i;
 
-                            gMiscAnimals[i].flags = 0;
+                            miscAnimal->flags = 0;
                             
                         }
 
@@ -867,55 +894,55 @@ bool handlePlayerAnimalInteraction(void) {
                             
                     } else {
 
-                        if (entities[gMiscAnimals[i].entityIndex].unk_5E == 0) {
+                        if (entities[miscAnimal->entityIndex].unk_5E == 0) {
                             
-                            switch (gMiscAnimals[i].animalType) {
+                            switch (miscAnimal->animalType) {
 
                                 case 9:
 
-                                    if (15 < gMiscAnimals[i].actionState && gMiscAnimals[i].actionState < 18) {
-                                        gMiscAnimals[i].actionState = 0x11;    
+                                    if (15 < miscAnimal->actionState && miscAnimal->actionState < 18) {
+                                        miscAnimal->actionState = 0x11;    
                                     } else {
-                                        gMiscAnimals[i].actionState = 0x20;
-                                        gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
+                                        miscAnimal->actionState = 0x20;
+                                        miscAnimal->flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     }
                                     
                                     break;
 
                                 case 10:
 
-                                    if (15 < gMiscAnimals[i].actionState && gMiscAnimals[i].actionState < 18) {
-                                        gMiscAnimals[i].actionState = 0x11;
+                                    if (15 < miscAnimal->actionState && miscAnimal->actionState < 18) {
+                                        miscAnimal->actionState = 0x11;
                                     } else {
-                                        gMiscAnimals[i].actionState = 0x20;
-                                        gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
+                                        miscAnimal->actionState = 0x20;
+                                        miscAnimal->flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     }
                                     
                                     break;
 
                                 case 7:
-                                    gMiscAnimals[i].actionState = 0x20;
-                                    gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
+                                    miscAnimal->actionState = 0x20;
+                                    miscAnimal->flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     break;
 
                                 case 8:
-                                    gMiscAnimals[i].actionState = 0x20;
-                                    gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
+                                    miscAnimal->actionState = 0x20;
+                                    miscAnimal->flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     break;
 
                                 case 11:
-                                    gMiscAnimals[i].actionState = 0x20;
-                                    gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
+                                    miscAnimal->actionState = 0x20;
+                                    miscAnimal->flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     break;
 
                                 case 12:
-                                    gMiscAnimals[i].actionState = 0x20;
-                                    gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
+                                    miscAnimal->actionState = 0x20;
+                                    miscAnimal->flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     break;
 
                                 case 13:
-                                    gMiscAnimals[i].actionState = 0x20;
-                                    gMiscAnimals[i].flags |= MISC_ANIMAL_RUNNING_AWAY;
+                                    miscAnimal->actionState = 0x20;
+                                    miscAnimal->flags |= MISC_ANIMAL_RUNNING_AWAY;
                                     break;
 
                                 case 14:
@@ -1019,43 +1046,50 @@ void deactivateAnimalsAfterCutscene(void) {
 }
 
 void updateAnimalCoordinates(void) {
+    Dog *dog = &dogInfo;
+    Horse *horse = &horseInfo;
+
 
     u8 i = 0;
 
-    if ((dogInfo.flags & DOG_ENTITY_LOADED) && (dogInfo.location == gBaseMapIndex)) {
-        dogInfo.coordinates.x = entities[dogInfo.entityIndex].coordinates.x; 
-        dogInfo.coordinates.y = entities[dogInfo.entityIndex].coordinates.y;
-        dogInfo.coordinates.z = entities[dogInfo.entityIndex].coordinates.z;
+    if ((dog->flags & DOG_ENTITY_LOADED) && (dog->location == gBaseMapIndex)) {
+        dog->coordinates.x = entities[dog->entityIndex].coordinates.x; 
+        dog->coordinates.y = entities[dog->entityIndex].coordinates.y;
+        dog->coordinates.z = entities[dog->entityIndex].coordinates.z;
     }
 
     for (i = 0; i < MAX_CHICKENS; i++) {
+        Chicken *chicken = &gChickens[i];
 
-        if ((gChickens[i].flags & CHICKEN_ENTITY_LOADED) && (gChickens[i].location == gBaseMapIndex)) {
 
-            gChickens[i].coordinates.x = entities[gChickens[i].entityIndex].coordinates.x; 
-            gChickens[i].coordinates.y = entities[gChickens[i].entityIndex].coordinates.y;
-            gChickens[i].coordinates.z = entities[gChickens[i].entityIndex].coordinates.z;
+        if ((chicken->flags & CHICKEN_ENTITY_LOADED) && (chicken->location == gBaseMapIndex)) {
+
+            chicken->coordinates.x = entities[chicken->entityIndex].coordinates.x; 
+            chicken->coordinates.y = entities[chicken->entityIndex].coordinates.y;
+            chicken->coordinates.z = entities[chicken->entityIndex].coordinates.z;
             
         }
         
     }
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        FarmAnimal *farmAnimal = &gFarmAnimals[i];
 
-        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ENTITY_LOADED) && (gFarmAnimals[i].location == gBaseMapIndex)) {
 
-            gFarmAnimals[i].coordinates.x = entities[gFarmAnimals[i].entityIndex].coordinates.x; 
-            gFarmAnimals[i].coordinates.y = entities[gFarmAnimals[i].entityIndex].coordinates.y;
-            gFarmAnimals[i].coordinates.z = entities[gFarmAnimals[i].entityIndex].coordinates.z;
+        if ((farmAnimal->flags & FARM_ANIMAL_ENTITY_LOADED) && (farmAnimal->location == gBaseMapIndex)) {
+
+            farmAnimal->coordinates.x = entities[farmAnimal->entityIndex].coordinates.x; 
+            farmAnimal->coordinates.y = entities[farmAnimal->entityIndex].coordinates.y;
+            farmAnimal->coordinates.z = entities[farmAnimal->entityIndex].coordinates.z;
             
         }
         
     }
 
-    if ((horseInfo.flags & HORSE_ENTITY_LOADED) && (horseInfo.location == gBaseMapIndex)) {
-        horseInfo.coordinates.x = entities[horseInfo.entityIndex].coordinates.x; 
-        horseInfo.coordinates.y = entities[horseInfo.entityIndex].coordinates.y;
-        horseInfo.coordinates.z = entities[horseInfo.entityIndex].coordinates.z;
+    if ((horse->flags & HORSE_ENTITY_LOADED) && (horse->location == gBaseMapIndex)) {
+        horse->coordinates.x = entities[horse->entityIndex].coordinates.x; 
+        horse->coordinates.y = entities[horse->entityIndex].coordinates.y;
+        horse->coordinates.z = entities[horse->entityIndex].coordinates.z;
     }
     
 }
@@ -1126,6 +1160,8 @@ void resetAnimalStatuses(void) {
 }
 
 u8 initializeNewChicken(u8 animalType, u8 arg1) {
+    Chicken *chicken = &gChickens[arg1];
+
 
     u8 found;
     u8 i;
@@ -1154,11 +1190,11 @@ u8 initializeNewChicken(u8 animalType, u8 arg1) {
             
         } else {
 
-            gChickens[found].location = gChickens[arg1].location;
+            gChickens[found].location = chicken->location;
 
-            gChickens[found].coordinates.x = gChickens[arg1].coordinates.x;
-            gChickens[found].coordinates.y = gChickens[arg1].coordinates.y;
-            gChickens[found].coordinates.z = gChickens[arg1].coordinates.z;
+            gChickens[found].coordinates.x = chicken->coordinates.x;
+            gChickens[found].coordinates.y = chicken->coordinates.y;
+            gChickens[found].coordinates.z = chicken->coordinates.z;
             
         }
 
@@ -1174,36 +1210,40 @@ u8 initializeNewChicken(u8 animalType, u8 arg1) {
 }
 
 void initializeChicken(u8 chickenIndex) {
+    Chicken *chicken = &gChickens[chickenIndex];
 
-    gChickens[chickenIndex].location = 0;
-    
-    gChickens[chickenIndex].actionState = 0;
-    gChickens[chickenIndex].direction = 0;
-    gChickens[chickenIndex].speed = 0;
-    gChickens[chickenIndex].stateTimer = 0;
-    gChickens[chickenIndex].unk_1B = 0;
 
-    gChickens[chickenIndex].type = 0;
-    gChickens[chickenIndex].condition = 0;
-    gChickens[chickenIndex].typeCounter = 0;
-    gChickens[chickenIndex].conditionCounter = 0;
+    chicken->location = 0;
+    
+    chicken->actionState = 0;
+    chicken->direction = 0;
+    chicken->speed = 0;
+    chicken->stateTimer = 0;
+    chicken->unk_1B = 0;
 
-    gChickens[chickenIndex].coordinates.x = 0;
-    gChickens[chickenIndex].coordinates.y = 0;
-    gChickens[chickenIndex].coordinates.z = 0;
+    chicken->type = 0;
+    chicken->condition = 0;
+    chicken->typeCounter = 0;
+    chicken->conditionCounter = 0;
+
+    chicken->coordinates.x = 0;
+    chicken->coordinates.y = 0;
+    chicken->coordinates.z = 0;
     
-    gChickens[chickenIndex].flags = 0;
+    chicken->flags = 0;
     
-    gChickens[chickenIndex].name[0] = 0;
-    gChickens[chickenIndex].name[1] = 0;
-    gChickens[chickenIndex].name[2] = 0;
-    gChickens[chickenIndex].name[3] = 0;
-    gChickens[chickenIndex].name[4] = 0;
-    gChickens[chickenIndex].name[5] = 0;
+    chicken->name[0] = 0;
+    chicken->name[1] = 0;
+    chicken->name[2] = 0;
+    chicken->name[3] = 0;
+    chicken->name[4] = 0;
+    chicken->name[5] = 0;
     
 }
 
 u8 initializeNewFarmAnimal(u8 animalType, u8 arg1) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[arg1];
+
 
     u8 index = 0xFF;
     u8 i = 0;
@@ -1232,12 +1272,12 @@ u8 initializeNewFarmAnimal(u8 animalType, u8 arg1) {
 
         if (animalType == 0) {
 
-            gFarmAnimals[index].motherName[0] = gFarmAnimals[arg1].name[0];
-            gFarmAnimals[index].motherName[1] = gFarmAnimals[arg1].name[1];
-            gFarmAnimals[index].motherName[2] = gFarmAnimals[arg1].name[2];
-            gFarmAnimals[index].motherName[3] = gFarmAnimals[arg1].name[3];
-            gFarmAnimals[index].motherName[4] = gFarmAnimals[arg1].name[4];
-            gFarmAnimals[index].motherName[5] = gFarmAnimals[arg1].name[5];
+            gFarmAnimals[index].motherName[0] = farmAnimal->name[0];
+            gFarmAnimals[index].motherName[1] = farmAnimal->name[1];
+            gFarmAnimals[index].motherName[2] = farmAnimal->name[2];
+            gFarmAnimals[index].motherName[3] = farmAnimal->name[3];
+            gFarmAnimals[index].motherName[4] = farmAnimal->name[4];
+            gFarmAnimals[index].motherName[5] = farmAnimal->name[5];
             
         } else {
 
@@ -1293,92 +1333,100 @@ void initializeWatchedCows(void) {
 }
 
 void setFarmAnimalLocation(u8 animalIndex) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[animalIndex];
 
-    gFarmAnimals[animalIndex].location = BARN;
 
-    if (gFarmAnimals[animalIndex].type == PREGNANT_COW) {
+    farmAnimal->location = BARN;
+
+    if (farmAnimal->type == PREGNANT_COW) {
         
-        gFarmAnimals[animalIndex].coordinates.x = pregnantCowStartingCoordinates.x;
-        gFarmAnimals[animalIndex].coordinates.y = pregnantCowStartingCoordinates.y;
-        gFarmAnimals[animalIndex].coordinates.z = pregnantCowStartingCoordinates.z;
-        gFarmAnimals[animalIndex].direction = DIRECTION_N;
+        farmAnimal->coordinates.x = pregnantCowStartingCoordinates.x;
+        farmAnimal->coordinates.y = pregnantCowStartingCoordinates.y;
+        farmAnimal->coordinates.z = pregnantCowStartingCoordinates.z;
+        farmAnimal->direction = DIRECTION_N;
 
     } else {
 
-        gFarmAnimals[animalIndex].coordinates.x = farmAnimalStartingCoordinates[animalIndex].x;
-        gFarmAnimals[animalIndex].coordinates.y = farmAnimalStartingCoordinates[animalIndex].y;
-        gFarmAnimals[animalIndex].coordinates.z = farmAnimalStartingCoordinates[animalIndex].z;
+        farmAnimal->coordinates.x = farmAnimalStartingCoordinates[animalIndex].x;
+        farmAnimal->coordinates.y = farmAnimalStartingCoordinates[animalIndex].y;
+        farmAnimal->coordinates.z = farmAnimalStartingCoordinates[animalIndex].z;
         
         if (animalIndex >= 4) {
-            gFarmAnimals[animalIndex].direction = DIRECTION_E;
+            farmAnimal->direction = DIRECTION_E;
         } else {
-            gFarmAnimals[animalIndex].direction = DIRECTION_W;
+            farmAnimal->direction = DIRECTION_W;
         }
 
     }
 }
 
 void initializeFarmAnimal(u8 animalIndex) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[animalIndex];
 
-    gFarmAnimals[animalIndex].location = 0;
-    
-    gFarmAnimals[animalIndex].actionState = 0;
-    gFarmAnimals[animalIndex].direction = 0;
-    gFarmAnimals[animalIndex].speed = 0;
-    gFarmAnimals[animalIndex].stateTimer = 0;
-    gFarmAnimals[animalIndex].unk_1E = 0;
-    
-    gFarmAnimals[animalIndex].type = 0;
-    gFarmAnimals[animalIndex].condition = 0;
-    gFarmAnimals[animalIndex].typeCounter = 0;
-    gFarmAnimals[animalIndex].conditionCounter = 0;
 
-    gFarmAnimals[animalIndex].coordinates.x = 0;
-    gFarmAnimals[animalIndex].coordinates.y = 0;
-    gFarmAnimals[animalIndex].coordinates.z = 0;
-
-    gFarmAnimals[animalIndex].flags = 0;
+    farmAnimal->location = 0;
     
-    gFarmAnimals[animalIndex].name[0] = 0;
-    gFarmAnimals[animalIndex].name[1] = 0;
-    gFarmAnimals[animalIndex].name[2] = 0;
-    gFarmAnimals[animalIndex].name[3] = 0;
-    gFarmAnimals[animalIndex].name[4] = 0;
-    gFarmAnimals[animalIndex].name[5] = 0;
+    farmAnimal->actionState = 0;
+    farmAnimal->direction = 0;
+    farmAnimal->speed = 0;
+    farmAnimal->stateTimer = 0;
+    farmAnimal->unk_1E = 0;
+    
+    farmAnimal->type = 0;
+    farmAnimal->condition = 0;
+    farmAnimal->typeCounter = 0;
+    farmAnimal->conditionCounter = 0;
+
+    farmAnimal->coordinates.x = 0;
+    farmAnimal->coordinates.y = 0;
+    farmAnimal->coordinates.z = 0;
+
+    farmAnimal->flags = 0;
+    
+    farmAnimal->name[0] = 0;
+    farmAnimal->name[1] = 0;
+    farmAnimal->name[2] = 0;
+    farmAnimal->name[3] = 0;
+    farmAnimal->name[4] = 0;
+    farmAnimal->name[5] = 0;
     
 }
 
 void initializeDog(void) {
+    Dog *dog = &dogInfo;
 
-    dogInfo.location = FARM;
-    dogInfo.coordinates.y = 0.0f;
-    dogInfo.actionState = 0;
-    dogInfo.direction = DIRECTION_S;
-    dogInfo.affection = 0; 
-    dogInfo.speed = 0;
-    dogInfo.stateTimer = 0;
-    dogInfo.unk_1B = 0;
-    dogInfo.flags = DOG_ACTIVE;
-    dogInfo.coordinates.x = -432.0f;
-    dogInfo.coordinates.z = 96.0f;
+
+    dog->location = FARM;
+    dog->coordinates.y = 0.0f;
+    dog->actionState = 0;
+    dog->direction = DIRECTION_S;
+    dog->affection = 0; 
+    dog->speed = 0;
+    dog->stateTimer = 0;
+    dog->unk_1B = 0;
+    dog->flags = DOG_ACTIVE;
+    dog->coordinates.x = -432.0f;
+    dog->coordinates.z = 96.0f;
     
 }
 
 void initializeHorse(void) {
+    Horse *horse = &horseInfo;
+
     
-    horseInfo.location = FARM;
-    horseInfo.coordinates.y = 0.0f;
-    horseInfo.actionState = 0;
-    horseInfo.direction = DIRECTION_S;
-    horseInfo.speed = 0;
-    horseInfo.stateTimer = 0;
-    horseInfo.unk_1B = 0;
-    horseInfo.grown = 0;
-    horseInfo.age = 0;
-    horseInfo.affection = 0;
-    horseInfo.flags = HORSE_ACTIVE;
-    horseInfo.coordinates.x = -240.0f;
-    horseInfo.coordinates.z = -384.0f;
+    horse->location = FARM;
+    horse->coordinates.y = 0.0f;
+    horse->actionState = 0;
+    horse->direction = DIRECTION_S;
+    horse->speed = 0;
+    horse->stateTimer = 0;
+    horse->unk_1B = 0;
+    horse->grown = 0;
+    horse->age = 0;
+    horse->affection = 0;
+    horse->flags = HORSE_ACTIVE;
+    horse->coordinates.x = -240.0f;
+    horse->coordinates.z = -384.0f;
 
 }
 
@@ -1400,26 +1448,30 @@ void setAnimalLocations(u8 mapIndex) {
 }
 
 void setDogLocation(u8 mapIndex) {
+    Dog *dog = &dogInfo;
 
-    if (dogInfo.flags & DOG_ACTIVE && (mapIndex == 0xFF || dogInfo.location == mapIndex)) {
-        dogInfo.location = FARM;
-        dogInfo.coordinates.y = 0.0f;
-        dogInfo.direction = DIRECTION_S;
-        dogInfo.flags &= ~DOG_HELD;
-        dogInfo.coordinates.x = -432.0f;
-        dogInfo.coordinates.z = 96.0f;
+
+    if (dog->flags & DOG_ACTIVE && (mapIndex == 0xFF || dog->location == mapIndex)) {
+        dog->location = FARM;
+        dog->coordinates.y = 0.0f;
+        dog->direction = DIRECTION_S;
+        dog->flags &= ~DOG_HELD;
+        dog->coordinates.x = -432.0f;
+        dog->coordinates.z = 96.0f;
     }
 
 }
 
 void setHorseLocation(u8 mapIndex) {
+    Horse *horse = &horseInfo;
 
-    if (horseInfo.flags & HORSE_ACTIVE && (mapIndex == 0xFF || horseInfo.location == mapIndex)) {
-        horseInfo.coordinates.y = 0;
-        horseInfo.location = FARM;
-        horseInfo.direction = DIRECTION_S;
-        horseInfo.coordinates.x = -240.0f;
-        horseInfo.coordinates.z = -384.0f;
+
+    if (horse->flags & HORSE_ACTIVE && (mapIndex == 0xFF || horse->location == mapIndex)) {
+        horse->coordinates.y = 0;
+        horse->location = FARM;
+        horse->direction = DIRECTION_S;
+        horse->coordinates.x = -240.0f;
+        horse->coordinates.z = -384.0f;
     }
 
 }
@@ -1433,26 +1485,28 @@ void resetFarmAnimalLocation(u8 mapIndex, u8 animalIndex) {
 }
 
 void resetChickenLocation(u8 mapIndex, u8 chickenIndex) {
+    Chicken *chicken = &gChickens[chickenIndex];
 
-    if ((gChickens[chickenIndex].flags & FARM_ANIMAL_ACTIVE) && (mapIndex == 0xFF || gChickens[chickenIndex].location == mapIndex)) {
 
-        gChickens[chickenIndex].location = COOP;
+    if ((chicken->flags & FARM_ANIMAL_ACTIVE) && (mapIndex == 0xFF || chicken->location == mapIndex)) {
 
-        if (gChickens[chickenIndex].flags & CHICKEN_EGG_INCUBATING) {
+        chicken->location = COOP;
 
-            gChickens[chickenIndex].coordinates.x = 96.0f;
-            gChickens[chickenIndex].coordinates.y = 0;
-            gChickens[chickenIndex].coordinates.z = -144.0f;
+        if (chicken->flags & CHICKEN_EGG_INCUBATING) {
+
+            chicken->coordinates.x = 96.0f;
+            chicken->coordinates.y = 0;
+            chicken->coordinates.z = -144.0f;
             
         } else {
 
-            gChickens[chickenIndex].coordinates.x = chickenStartingCoordinates[chickenIndex].x;
-            gChickens[chickenIndex].coordinates.y = chickenStartingCoordinates[chickenIndex].y;
-            gChickens[chickenIndex].coordinates.z = chickenStartingCoordinates[chickenIndex].z;
+            chicken->coordinates.x = chickenStartingCoordinates[chickenIndex].x;
+            chicken->coordinates.y = chickenStartingCoordinates[chickenIndex].y;
+            chicken->coordinates.z = chickenStartingCoordinates[chickenIndex].z;
             
         }
 
-        gChickens[chickenIndex].flags &= ~CHICKEN_HELD;
+        chicken->flags &= ~CHICKEN_HELD;
         
     }
     
@@ -1793,50 +1847,52 @@ void updateDogAffectionIfFed(void) {
 }
 
 void updateChickenStartOfDay(u8 index) {
+    Chicken *chicken = &gChickens[index];
+
     
-    if ((gChickens[index].flags & CHICKEN_ACTIVE) && !(gChickens[index].flags & CHICKEN_NEWBORN)) {
+    if ((chicken->flags & CHICKEN_ACTIVE) && !(chicken->flags & CHICKEN_NEWBORN)) {
         
-        if (gChickens[index].flags & 0x80) {
+        if (chicken->flags & 0x80) {
             
-            gChickens[index].flags &= ~CHICKEN_FED;
+            chicken->flags &= ~CHICKEN_FED;
 
         } else {
 
-            if (gChickens[index].location != COOP) {
-                gChickens[index].flags &= ~CHICKEN_FED;
+            if (chicken->location != COOP) {
+                chicken->flags &= ~CHICKEN_FED;
             }
 
-            if (gChickens[index].location == FARM) {
+            if (chicken->location == FARM) {
                 
                 if (gSeason != WINTER) {
-                    gChickens[index].flags |= CHICKEN_FED;
+                    chicken->flags |= CHICKEN_FED;
                 } 
 
             } 
 
         }
 
-        switch (gChickens[index].type) {
+        switch (chicken->type) {
         
             case CHICKEN_EGG:
                 
-                if (gChickens[index].flags & CHICKEN_EGG_INCUBATING) {
+                if (chicken->flags & CHICKEN_EGG_INCUBATING) {
                     
-                    gChickens[index].typeCounter++;
+                    chicken->typeCounter++;
                     
-                    if (gChickens[index].typeCounter == CHICKEN_EGG_INCUBATION_DURATION) {
+                    if (chicken->typeCounter == CHICKEN_EGG_INCUBATION_DURATION) {
                         
                         bornChickenIndex = initializeNewChicken(1, 0xFF);
                         
                         if (bornChickenIndex != 0xFF) {
 
                             gChickens[bornChickenIndex].flags |= CHICKEN_NEWBORN;
-                            gChickens[index].flags &= ~CHICKEN_ACTIVE;
+                            chicken->flags &= ~CHICKEN_ACTIVE;
 
                             setLifeEventBit(CHICKEN_BORN);
                             
                         } else {                        
-                            gChickens[index].typeCounter--;
+                            chicken->typeCounter--;
                         }
                         
                     }
@@ -1847,9 +1903,9 @@ void updateChickenStartOfDay(u8 index) {
             
             case CHICK:
                 
-                gChickens[index].typeCounter++;
+                chicken->typeCounter++;
                 
-                if (gChickens[index].typeCounter == CHICK_DURATION) {
+                if (chicken->typeCounter == CHICK_DURATION) {
                     setAnimalState(1, index, ADULT_CHICKEN, 0, 0);
                 }
                 
@@ -1857,11 +1913,11 @@ void updateChickenStartOfDay(u8 index) {
             
             case ADULT_CHICKEN:
                 
-                switch (gChickens[index].condition) {
+                switch (chicken->condition) {
                     
                     case CHICKEN_NORMAL:
                         
-                        if ((gChickens[index].flags & CHICKEN_FED)) {
+                        if ((chicken->flags & CHICKEN_FED)) {
                             initializeNewChicken(0, index);
                         } else {
                             setAnimalState(1, index, 0xFF, CHICKEN_STARVED, 0);
@@ -1871,26 +1927,26 @@ void updateChickenStartOfDay(u8 index) {
                     
                     case CHICKEN_STARVED:
                         
-                        if (gChickens[index].flags & CHICKEN_FED) {
+                        if (chicken->flags & CHICKEN_FED) {
                             setAnimalState(1, index, 0xFF, CHICKEN_NORMAL, 0);
                         } else {
                             
-                            gChickens[index].conditionCounter++;
+                            chicken->conditionCounter++;
                             
-                            if (gChickens[index].conditionCounter == 3) {
+                            if (chicken->conditionCounter == 3) {
                                 
                                 setAnimalState(1, index, 0xFF, CHICKEN_DEAD, 0xFF);
                                 
-                                gChickens[index].flags = 0;
+                                chicken->flags = 0;
 
                                 setLifeEventBit(ANIMAL_DIED);
                                 
-                                gDeadAnimalName[0] = gChickens[index].name[0];
-                                gDeadAnimalName[1] = gChickens[index].name[1];
-                                gDeadAnimalName[2] = gChickens[index].name[2];
-                                gDeadAnimalName[3] = gChickens[index].name[3];
-                                gDeadAnimalName[4] = gChickens[index].name[4];
-                                gDeadAnimalName[5] = gChickens[index].name[5];
+                                gDeadAnimalName[0] = chicken->name[0];
+                                gDeadAnimalName[1] = chicken->name[1];
+                                gDeadAnimalName[2] = chicken->name[2];
+                                gDeadAnimalName[3] = chicken->name[3];
+                                gDeadAnimalName[4] = chicken->name[4];
+                                gDeadAnimalName[5] = chicken->name[5];
 
                             }
                             
@@ -1909,19 +1965,21 @@ void updateChickenStartOfDay(u8 index) {
 }
 
 void updateFarmAnimalStartOfDay(u8 index) {
-    
-    if ((gFarmAnimals[index].flags & FARM_ANIMAL_ACTIVE) && !(gFarmAnimals[index].flags & FARM_ANIMAL_NEWBORN)) {
-        
-        if (gFarmAnimals[index].flags & 0x4000) {
-            
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
 
-        } else if (gFarmAnimals[index].location == FARM) {
+    
+    if ((farmAnimal->flags & FARM_ANIMAL_ACTIVE) && !(farmAnimal->flags & FARM_ANIMAL_NEWBORN)) {
+        
+        if (farmAnimal->flags & 0x4000) {
             
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
+            farmAnimal->flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
+
+        } else if (farmAnimal->location == FARM) {
+            
+            farmAnimal->flags &= ~(FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
             
             if (checkAnimalCanEatGrass()) {
-                gFarmAnimals[index].flags |= (FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
+                farmAnimal->flags |= (FARM_ANIMAL_FED | FARM_ANIMAL_ATE_GRASS);
             }
             
         } else {
@@ -1936,21 +1994,21 @@ void updateFarmAnimalStartOfDay(u8 index) {
             
         }
 
-        switch (gFarmAnimals[index].type) {
+        switch (farmAnimal->type) {
             
             case BABY_COW:
-                gFarmAnimals[index].typeCounter++;
+                farmAnimal->typeCounter++;
                 
-                if (gFarmAnimals[index].typeCounter == COW_INFANCY_DURATION) {
+                if (farmAnimal->typeCounter == COW_INFANCY_DURATION) {
                     setAnimalState(2, index, CALF, 0xFF, 0);
                 }
                 
                 break;
             
             case CALF:
-                gFarmAnimals[index].typeCounter++;
+                farmAnimal->typeCounter++;
                 
-                if (gFarmAnimals[index].typeCounter == COW_YOUTH_DURATION) {
+                if (farmAnimal->typeCounter == COW_YOUTH_DURATION) {
                     setAnimalState(2, index, ADULT_COW, 0xFF, 0);
                 }
                 
@@ -1958,11 +2016,11 @@ void updateFarmAnimalStartOfDay(u8 index) {
             
             case ADULT_COW:
                 
-                switch (gFarmAnimals[index].condition) {
+                switch (farmAnimal->condition) {
                     
                     case COW_NORMAL:
                         
-                        if (!(gFarmAnimals[index].flags & FARM_ANIMAL_FED)) {
+                        if (!(farmAnimal->flags & FARM_ANIMAL_FED)) {
                             
                             adjustFarmAnimalAffection(index, -8);
                             
@@ -1972,7 +2030,7 @@ void updateFarmAnimalStartOfDay(u8 index) {
                                 gHappiness += adjustValue(gHappiness, -10, 0xFF);
                             }
         
-                        } else if (gFarmAnimals[index].location == FARM) {
+                        } else if (farmAnimal->location == FARM) {
                             
                             if (!(getRandomNumberInRange(0, 3))) {
                                 setAnimalState(2, index, 0xFF, COW_HAPPY, 0);
@@ -1982,7 +2040,7 @@ void updateFarmAnimalStartOfDay(u8 index) {
                             
                         }
                         
-                        if (gFarmAnimals[index].flags & FARM_ANIMAL_PREGNANT) {
+                        if (farmAnimal->flags & FARM_ANIMAL_PREGNANT) {
                             setAnimalState(2, index, PREGNANT_COW, 0xFF, 0);
                         }
                         
@@ -1990,9 +2048,9 @@ void updateFarmAnimalStartOfDay(u8 index) {
 
                     case COW_HAPPY:
 
-                        gFarmAnimals[index].conditionCounter++;
+                        farmAnimal->conditionCounter++;
                             
-                        if (gFarmAnimals[index].conditionCounter == 3) {
+                        if (farmAnimal->conditionCounter == 3) {
                             setAnimalState(2, index, 0xFF, COW_NORMAL, 0);
                         }
                         
@@ -2000,13 +2058,13 @@ void updateFarmAnimalStartOfDay(u8 index) {
                     
                     case COW_MAD:
                         
-                        if (gFarmAnimals[index].flags & FARM_ANIMAL_FED) {
+                        if (farmAnimal->flags & FARM_ANIMAL_FED) {
                             
                             adjustFarmAnimalAffection(index, -8);
                             
-                            gFarmAnimals[index].conditionCounter++;
+                            farmAnimal->conditionCounter++;
                             
-                            if (gFarmAnimals[index].conditionCounter == 3) {
+                            if (farmAnimal->conditionCounter == 3) {
                                 setAnimalState(2, index, 0xFF, COW_NORMAL, 0);
                             }
                             
@@ -2016,22 +2074,22 @@ void updateFarmAnimalStartOfDay(u8 index) {
 
                     case COW_SICK:
                         
-                        gFarmAnimals[index].conditionCounter++;
+                        farmAnimal->conditionCounter++;
                         
-                        if (gFarmAnimals[index].conditionCounter == ANIMAL_DEATH_COUNT) {
+                        if (farmAnimal->conditionCounter == ANIMAL_DEATH_COUNT) {
                             
                             setAnimalState(2, index, 0xFF, COW_DEAD, 0xFF);
 
-                            gFarmAnimals[index].flags = 0;
+                            farmAnimal->flags = 0;
                             
                             setLifeEventBit(ANIMAL_DIED);
                             
-                            gDeadAnimalName[0] = gFarmAnimals[index].name[0];
-                            gDeadAnimalName[1] = gFarmAnimals[index].name[1];
-                            gDeadAnimalName[2] = gFarmAnimals[index].name[2];
-                            gDeadAnimalName[3] = gFarmAnimals[index].name[3];
-                            gDeadAnimalName[4] = gFarmAnimals[index].name[4];
-                            gDeadAnimalName[5] = gFarmAnimals[index].name[5];
+                            gDeadAnimalName[0] = farmAnimal->name[0];
+                            gDeadAnimalName[1] = farmAnimal->name[1];
+                            gDeadAnimalName[2] = farmAnimal->name[2];
+                            gDeadAnimalName[3] = farmAnimal->name[3];
+                            gDeadAnimalName[4] = farmAnimal->name[4];
+                            gDeadAnimalName[5] = farmAnimal->name[5];
                             
                         }
                         
@@ -2043,22 +2101,22 @@ void updateFarmAnimalStartOfDay(u8 index) {
             
             case PREGNANT_COW:
                 
-                gFarmAnimals[index].typeCounter++;
+                farmAnimal->typeCounter++;
                 
-                if (gFarmAnimals[index].typeCounter == COW_PREGNANCY_DURATION) {
+                if (farmAnimal->typeCounter == COW_PREGNANCY_DURATION) {
                     
                     bornAnimalIndex = initializeNewFarmAnimal(0, index);
                     
                     if (bornAnimalIndex != 0xFF) {
     
                         gFarmAnimals[bornAnimalIndex].flags |= FARM_ANIMAL_NEWBORN;
-                        gFarmAnimals[bornAnimalIndex].affection = gFarmAnimals[index].affection / 2;
+                        gFarmAnimals[bornAnimalIndex].affection = farmAnimal->affection / 2;
                         
                         setAnimalState(2, index, ADULT_COW, 0xFF, 0);
                         setLifeEventBit(FARM_ANIMAL_BORN);
                     
                     } else {
-                        gFarmAnimals[index].typeCounter--;
+                        farmAnimal->typeCounter--;
                     }
                     
                 }
@@ -2067,9 +2125,9 @@ void updateFarmAnimalStartOfDay(u8 index) {
             
             case BABY_SHEEP:
                 
-                gFarmAnimals[index].typeCounter++;
+                farmAnimal->typeCounter++;
                 
-                if (gFarmAnimals[index].typeCounter == SHEEP_YOUTH_DURATION) {
+                if (farmAnimal->typeCounter == SHEEP_YOUTH_DURATION) {
                     setAnimalState(2, index, ADULT_SHEEP, 0xFF, 0);
                 }
     
@@ -2077,17 +2135,17 @@ void updateFarmAnimalStartOfDay(u8 index) {
             
             case SHEARED_SHEEP:
                 
-                gFarmAnimals[index].typeCounter++;
+                farmAnimal->typeCounter++;
                 
-                if (gFarmAnimals[index].typeCounter == WOOL_REGROW_DURATION) {
+                if (farmAnimal->typeCounter == WOOL_REGROW_DURATION) {
                     setAnimalState(2, index, ADULT_SHEEP, 0xFF, 0);
                 }
                 
-                switch (gFarmAnimals[index].condition) {
+                switch (farmAnimal->condition) {
                     
                     case SHEEP_NORMAL:
                         
-                        if (!(gFarmAnimals[index].flags & FARM_ANIMAL_FED)) {
+                        if (!(farmAnimal->flags & FARM_ANIMAL_FED)) {
                             
                             adjustFarmAnimalAffection(index, -8);
                             
@@ -2106,21 +2164,21 @@ void updateFarmAnimalStartOfDay(u8 index) {
                     
                     case SHEEP_SICK:
                         
-                        gFarmAnimals[index].conditionCounter++;
+                        farmAnimal->conditionCounter++;
                         
-                        if (gFarmAnimals[index].conditionCounter == ANIMAL_DEATH_COUNT) {
+                        if (farmAnimal->conditionCounter == ANIMAL_DEATH_COUNT) {
                             
                             setAnimalState(2, index, 0xFF, SHEEP_DEAD, 0xFF);
-                            gFarmAnimals[index].flags = 0;
+                            farmAnimal->flags = 0;
                             
                             setLifeEventBit(ANIMAL_DIED);
                             
-                            gDeadAnimalName[0] = gFarmAnimals[index].name[0];
-                            gDeadAnimalName[1] = gFarmAnimals[index].name[1];
-                            gDeadAnimalName[2] = gFarmAnimals[index].name[2];
-                            gDeadAnimalName[3] = gFarmAnimals[index].name[3];
-                            gDeadAnimalName[4] = gFarmAnimals[index].name[4];
-                            gDeadAnimalName[5] = gFarmAnimals[index].name[5];
+                            gDeadAnimalName[0] = farmAnimal->name[0];
+                            gDeadAnimalName[1] = farmAnimal->name[1];
+                            gDeadAnimalName[2] = farmAnimal->name[2];
+                            gDeadAnimalName[3] = farmAnimal->name[3];
+                            gDeadAnimalName[4] = farmAnimal->name[4];
+                            gDeadAnimalName[5] = farmAnimal->name[5];
                             
                         }
                         
@@ -2132,11 +2190,11 @@ void updateFarmAnimalStartOfDay(u8 index) {
             
             case ADULT_SHEEP:
                 
-                switch (gFarmAnimals[index].condition) {
+                switch (farmAnimal->condition) {
                     
                     case SHEEP_NORMAL:
 
-                        if (!(gFarmAnimals[index].flags & FARM_ANIMAL_FED)) {
+                        if (!(farmAnimal->flags & FARM_ANIMAL_FED)) {
                             
                             adjustFarmAnimalAffection(index, -8);
                             
@@ -2153,21 +2211,21 @@ void updateFarmAnimalStartOfDay(u8 index) {
     
                     case SHEEP_SICK:
                         
-                        gFarmAnimals[index].conditionCounter++;
+                        farmAnimal->conditionCounter++;
                         
-                        if (gFarmAnimals[index].conditionCounter == ANIMAL_DEATH_COUNT) {
+                        if (farmAnimal->conditionCounter == ANIMAL_DEATH_COUNT) {
                             
                             setAnimalState(2, index, 0xFF, SHEEP_DEAD, 0xFF);
-                            gFarmAnimals[index].flags = 0;
+                            farmAnimal->flags = 0;
                             
                             setLifeEventBit(ANIMAL_DIED);
                             
-                            gDeadAnimalName[0] = gFarmAnimals[index].name[0];
-                            gDeadAnimalName[1] = gFarmAnimals[index].name[1];
-                            gDeadAnimalName[2] = gFarmAnimals[index].name[2];
-                            gDeadAnimalName[3] = gFarmAnimals[index].name[3];
-                            gDeadAnimalName[4] = gFarmAnimals[index].name[4];
-                            gDeadAnimalName[5] = gFarmAnimals[index].name[5];
+                            gDeadAnimalName[0] = farmAnimal->name[0];
+                            gDeadAnimalName[1] = farmAnimal->name[1];
+                            gDeadAnimalName[2] = farmAnimal->name[2];
+                            gDeadAnimalName[3] = farmAnimal->name[3];
+                            gDeadAnimalName[4] = farmAnimal->name[4];
+                            gDeadAnimalName[5] = farmAnimal->name[5];
                             
                         }
                         
@@ -2184,13 +2242,15 @@ void updateFarmAnimalStartOfDay(u8 index) {
 }
 
 void updateHorseAge(void) {
+    Horse *horse = &horseInfo;
 
-    if ((horseInfo.flags & HORSE_ACTIVE) && horseInfo.grown == FALSE) {
+
+    if ((horse->flags & HORSE_ACTIVE) && horse->grown == FALSE) {
         
-        horseInfo.age++;
+        horse->age++;
     
-        if (horseInfo.age == 20) {
-            horseInfo.grown = TRUE;
+        if (horse->age == 20) {
+            horse->grown = TRUE;
             setLifeEventBit(HORSE_GROWN);
         }
     
@@ -2199,22 +2259,24 @@ void updateHorseAge(void) {
 }
 
 void initializeDogEntity(void) {
+    Dog *dog = &dogInfo;
+
     
-    if ((dogInfo.flags & DOG_ACTIVE) && (dogInfo.location == gBaseMapIndex) && !(dogInfo.flags & DOG_HELD)) {
+    if ((dog->flags & DOG_ACTIVE) && (dog->location == gBaseMapIndex) && !(dog->flags & DOG_HELD)) {
         
-        dogInfo.entityIndex = 1;
+        dog->entityIndex = 1;
         
         loadEntity(1, ENTITY_ASSET_PLAYER_DOG, TRUE);
-        setEntityCollidable(dogInfo.entityIndex, TRUE);
-        setEntityYMovement(dogInfo.entityIndex, TRUE);
-        setCameraTrackingEntity(dogInfo.entityIndex, FALSE);
+        setEntityCollidable(dog->entityIndex, TRUE);
+        setEntityYMovement(dog->entityIndex, TRUE);
+        setCameraTrackingEntity(dog->entityIndex, FALSE);
         
-        setEntityDirection(dogInfo.entityIndex, convertWorldDirectionToScreenDirection(dogInfo.direction, MAIN_MAP_INDEX));
-        setEntityCoordinates(dogInfo.entityIndex, dogInfo.coordinates.x, dogInfo.coordinates.y, dogInfo.coordinates.z);
+        setEntityDirection(dog->entityIndex, convertWorldDirectionToScreenDirection(dog->direction, MAIN_MAP_INDEX));
+        setEntityCoordinates(dog->entityIndex, dog->coordinates.x, dog->coordinates.y, dog->coordinates.z);
         
-        dogInfo.actionState = 0;
-        dogInfo.stateTimer = 0;
-        dogInfo.flags |= DOG_ENTITY_LOADED;
+        dog->actionState = 0;
+        dog->stateTimer = 0;
+        dog->flags |= DOG_ENTITY_LOADED;
         
     }
     
@@ -2223,26 +2285,28 @@ void initializeDogEntity(void) {
 }
 
 void initializeChickenEntity(u8 chickenIndex) {
+    Chicken *chicken = &gChickens[chickenIndex];
 
-    if ((gChickens[chickenIndex].flags & CHICKEN_ACTIVE) && (gChickens[chickenIndex].location == gBaseMapIndex) && !(gChickens[chickenIndex].flags & CHICKEN_HELD)) {
+
+    if ((chicken->flags & CHICKEN_ACTIVE) && (chicken->location == gBaseMapIndex) && !(chicken->flags & CHICKEN_HELD)) {
     
-        gChickens[chickenIndex].entityIndex = chickenIndex + 2;
+        chicken->entityIndex = chickenIndex + 2;
         
-        switch (gChickens[chickenIndex].type) {
+        switch (chicken->type) {
 
             case ADULT_CHICKEN:
                 initializeAnimalEntity(chickenIndex + 2, (u16*)ENTITY_SLOTS_2_7_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_2_7_ANIM_METADATA, (u32*)ENTITY_SLOTS_2_7_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_2_7_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gChickens[chickenIndex].entityIndex, 0x44, TRUE);
+                loadEntity(chicken->entityIndex, 0x44, TRUE);
                 break;         
             
             case CHICK:
                 initializeAnimalEntity(chickenIndex + 2, (u16*)ENTITY_CHICK_PALETTE, (AnimationFrameMetadata*)ENTITY_CHICK_ANIM_METADATA, (u32*)ENTITY_CHICK_SPRITESHEET_INDEX, (u32*)ENTITY_CHICK_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gChickens[chickenIndex].entityIndex, 0x43, TRUE);
+                loadEntity(chicken->entityIndex, 0x43, TRUE);
                 break;
             
             case CHICKEN_EGG:
                 initializeAnimalEntity(chickenIndex + 2, (u16*)ENTITY_SLOTS_8_13_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_8_13_ANIM_METADATA, (u32*)ENTITY_SLOTS_8_13_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_8_13_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gChickens[chickenIndex].entityIndex, 0x5D, TRUE);
+                loadEntity(chicken->entityIndex, 0x5D, TRUE);
                 break;
             
             default:
@@ -2250,15 +2314,15 @@ void initializeChickenEntity(u8 chickenIndex) {
             
         }
 
-        setEntityCollidable(gChickens[chickenIndex].entityIndex, TRUE);
-        setEntityYMovement(gChickens[chickenIndex].entityIndex, TRUE);
-        setCameraTrackingEntity(gChickens[chickenIndex].entityIndex, FALSE);
+        setEntityCollidable(chicken->entityIndex, TRUE);
+        setEntityYMovement(chicken->entityIndex, TRUE);
+        setCameraTrackingEntity(chicken->entityIndex, FALSE);
 
-        setEntityDirection(gChickens[chickenIndex].entityIndex, convertWorldDirectionToScreenDirection(gChickens[chickenIndex].direction, MAIN_MAP_INDEX));        
-        setEntityCoordinates(gChickens[chickenIndex].entityIndex, gChickens[chickenIndex].coordinates.x, gChickens[chickenIndex].coordinates.y, gChickens[chickenIndex].coordinates.z);
+        setEntityDirection(chicken->entityIndex, convertWorldDirectionToScreenDirection(chicken->direction, MAIN_MAP_INDEX));        
+        setEntityCoordinates(chicken->entityIndex, chicken->coordinates.x, chicken->coordinates.y, chicken->coordinates.z);
         
-        gChickens[chickenIndex].actionState = 0;
-        gChickens[chickenIndex].flags |= CHICKEN_ENTITY_LOADED;
+        chicken->actionState = 0;
+        chicken->flags |= CHICKEN_ENTITY_LOADED;
         
     }
     
@@ -2267,61 +2331,63 @@ void initializeChickenEntity(u8 chickenIndex) {
 }
 
 void initializeFarmAnimalEntity(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
 
-    if ((gFarmAnimals[index].flags & FARM_ANIMAL_ACTIVE) && (gCowFestivalEnteredCowIndex!= index) && (gFarmAnimals[index].location == gBaseMapIndex)) {
+
+    if ((farmAnimal->flags & FARM_ANIMAL_ACTIVE) && (gCowFestivalEnteredCowIndex!= index) && (farmAnimal->location == gBaseMapIndex)) {
         
-        gFarmAnimals[index].entityIndex = index + 21;
+        farmAnimal->entityIndex = index + 21;
         
-        switch (gFarmAnimals[index].type) {
+        switch (farmAnimal->type) {
 
             case BABY_COW:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_BABY_COW_PALETTE, (AnimationFrameMetadata*)ENTITY_BABY_COW_ANIM_METADATA, (u32*)ENTITY_BABY_COW_SPRITESHEET_INDEX, (u32*)ENTITY_BABY_COW_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x45, TRUE);
+                initializeAnimalEntity(farmAnimal->entityIndex, (u16*)ENTITY_BABY_COW_PALETTE, (AnimationFrameMetadata*)ENTITY_BABY_COW_ANIM_METADATA, (u32*)ENTITY_BABY_COW_SPRITESHEET_INDEX, (u32*)ENTITY_BABY_COW_TEXTURE_TO_PALETTE_LOOKUP);
+                loadEntity(farmAnimal->entityIndex, 0x45, TRUE);
                 break;
             case CALF:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_CALF_PALETTE, (AnimationFrameMetadata*)ENTITY_CALF_ANIM_METADATA, (u32*)ENTITY_CALF_SPRITESHEET_INDEX, (u32*)ENTITY_CALF_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x46, TRUE);
+                initializeAnimalEntity(farmAnimal->entityIndex, (u16*)ENTITY_CALF_PALETTE, (AnimationFrameMetadata*)ENTITY_CALF_ANIM_METADATA, (u32*)ENTITY_CALF_SPRITESHEET_INDEX, (u32*)ENTITY_CALF_TEXTURE_TO_PALETTE_LOOKUP);
+                loadEntity(farmAnimal->entityIndex, 0x46, TRUE);
                 break;
             case ADULT_COW:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_SLOTS_21_28_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_21_28_ANIM_METADATA, (u32*)ENTITY_SLOTS_21_28_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_21_28_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x47, TRUE);
+                initializeAnimalEntity(farmAnimal->entityIndex, (u16*)ENTITY_SLOTS_21_28_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_21_28_ANIM_METADATA, (u32*)ENTITY_SLOTS_21_28_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_21_28_TEXTURE_TO_PALETTE_LOOKUP);
+                loadEntity(farmAnimal->entityIndex, 0x47, TRUE);
                 break;
             case PREGNANT_COW:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_PREGNANT_COW_PALETTE, (AnimationFrameMetadata*)ENTITY_PREGNANT_COW_ANIM_METADATA, (u32*)ENTITY_PREGNANT_COW_SPRITESHEET_INDEX, (u32*)ENTITY_PREGNANT_COW_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x57, TRUE);
+                initializeAnimalEntity(farmAnimal->entityIndex, (u16*)ENTITY_PREGNANT_COW_PALETTE, (AnimationFrameMetadata*)ENTITY_PREGNANT_COW_ANIM_METADATA, (u32*)ENTITY_PREGNANT_COW_SPRITESHEET_INDEX, (u32*)ENTITY_PREGNANT_COW_TEXTURE_TO_PALETTE_LOOKUP);
+                loadEntity(farmAnimal->entityIndex, 0x57, TRUE);
                 break;
             case BABY_SHEEP:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_BABY_SHEEP_PALETTE, (AnimationFrameMetadata*)ENTITY_BABY_SHEEP_ANIM_METADATA, (u32*)ENTITY_BABY_SHEEP_SPRITESHEET_INDEX, (u32*)ENTITY_BABY_SHEEP_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x48, TRUE);
+                initializeAnimalEntity(farmAnimal->entityIndex, (u16*)ENTITY_BABY_SHEEP_PALETTE, (AnimationFrameMetadata*)ENTITY_BABY_SHEEP_ANIM_METADATA, (u32*)ENTITY_BABY_SHEEP_SPRITESHEET_INDEX, (u32*)ENTITY_BABY_SHEEP_TEXTURE_TO_PALETTE_LOOKUP);
+                loadEntity(farmAnimal->entityIndex, 0x48, TRUE);
                 break;
             case ADULT_SHEEP:
             case SHEARED_SHEEP:
-                initializeAnimalEntity(gFarmAnimals[index].entityIndex, (u16*)ENTITY_ADULT_SHEEP_PALETTE, (AnimationFrameMetadata*)ENTITY_ADULT_SHEEP_ANIM_METADATA, (u32*)ENTITY_ADULT_SHEEP_SPRITESHEET_INDEX, (u32*)ENTITY_ADULT_SHEEP_TEXTURE_TO_PALETTE_LOOKUP);
-                loadEntity(gFarmAnimals[index].entityIndex, 0x49, TRUE);
+                initializeAnimalEntity(farmAnimal->entityIndex, (u16*)ENTITY_ADULT_SHEEP_PALETTE, (AnimationFrameMetadata*)ENTITY_ADULT_SHEEP_ANIM_METADATA, (u32*)ENTITY_ADULT_SHEEP_SPRITESHEET_INDEX, (u32*)ENTITY_ADULT_SHEEP_TEXTURE_TO_PALETTE_LOOKUP);
+                loadEntity(farmAnimal->entityIndex, 0x49, TRUE);
                 break;
 
         }
 
-        if (gFarmAnimals[index].location == BARN) {
+        if (farmAnimal->location == BARN) {
             setFarmAnimalLocation(index);
         }
         
-        setEntityCollidable(gFarmAnimals[index].entityIndex, TRUE);
-        setEntityYMovement(gFarmAnimals[index].entityIndex, TRUE);
-        setCameraTrackingEntity(gFarmAnimals[index].entityIndex, FALSE);
+        setEntityCollidable(farmAnimal->entityIndex, TRUE);
+        setEntityYMovement(farmAnimal->entityIndex, TRUE);
+        setCameraTrackingEntity(farmAnimal->entityIndex, FALSE);
 
-        setEntityDirection(gFarmAnimals[index].entityIndex, convertWorldDirectionToScreenDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
-        setEntityCoordinates(gFarmAnimals[index].entityIndex, gFarmAnimals[index].coordinates.x, gFarmAnimals[index].coordinates.y, gFarmAnimals[index].coordinates.z);
+        setEntityDirection(farmAnimal->entityIndex, convertWorldDirectionToScreenDirection(farmAnimal->direction, MAIN_MAP_INDEX));
+        setEntityCoordinates(farmAnimal->entityIndex, farmAnimal->coordinates.x, farmAnimal->coordinates.y, farmAnimal->coordinates.z);
     
-        setEntityHandlesMultipleCollisions(gFarmAnimals[index].entityIndex, FALSE);
+        setEntityHandlesMultipleCollisions(farmAnimal->entityIndex, FALSE);
     
-        gFarmAnimals[index].flags |= FARM_ANIMAL_ENTITY_LOADED;
-        gFarmAnimals[index].flags &= ~(FARM_ANIMAL_APPROACHING | FARM_ANIMAL_LINGERING);
+        farmAnimal->flags |= FARM_ANIMAL_ENTITY_LOADED;
+        farmAnimal->flags &= ~(FARM_ANIMAL_APPROACHING | FARM_ANIMAL_LINGERING);
         
-        if ((gWeather == SUNNY) || !(getLevelFlags(gFarmAnimals[index].location) & LEVEL_OUTDOORS)) {
-            gFarmAnimals[index].actionState = 0;
+        if ((gWeather == SUNNY) || !(getLevelFlags(farmAnimal->location) & LEVEL_OUTDOORS)) {
+            farmAnimal->actionState = 0;
         } else {
-            gFarmAnimals[index].actionState = 19;
+            farmAnimal->actionState = 19;
         }
     
     }
@@ -2331,12 +2397,14 @@ void initializeFarmAnimalEntity(u8 index) {
 }
 
 void initializeHorseEntity(void) {
+    Horse *horse = &horseInfo;
 
-    if ((horseInfo.flags & HORSE_ACTIVE) && (horseInfo.location == gBaseMapIndex) && !(horseInfo.flags & 8)) {
+
+    if ((horse->flags & HORSE_ACTIVE) && (horse->location == gBaseMapIndex) && !(horse->flags & 8)) {
         
-        horseInfo.entityIndex = 38;
+        horse->entityIndex = 38;
         
-        switch (horseInfo.grown) {                      
+        switch (horse->grown) {                      
             case FALSE:
                 loadEntity(38, ENTITY_ASSET_HORSE_PONY, TRUE);
                 break;
@@ -2345,15 +2413,15 @@ void initializeHorseEntity(void) {
                 break;
         }
         
-        setEntityCollidable(horseInfo.entityIndex, TRUE);
-        setEntityYMovement(horseInfo.entityIndex, TRUE);
-        setCameraTrackingEntity(horseInfo.entityIndex, FALSE);
+        setEntityCollidable(horse->entityIndex, TRUE);
+        setEntityYMovement(horse->entityIndex, TRUE);
+        setCameraTrackingEntity(horse->entityIndex, FALSE);
         
-        setEntityDirection(horseInfo.entityIndex, convertWorldDirectionToScreenDirection(horseInfo.direction, MAIN_MAP_INDEX));
-        setEntityCoordinates(horseInfo.entityIndex, horseInfo.coordinates.x, horseInfo.coordinates.y, horseInfo.coordinates.z);
+        setEntityDirection(horse->entityIndex, convertWorldDirectionToScreenDirection(horse->direction, MAIN_MAP_INDEX));
+        setEntityCoordinates(horse->entityIndex, horse->coordinates.x, horse->coordinates.y, horse->coordinates.z);
         
-        horseInfo.actionState = 0;
-        horseInfo.flags |= HORSE_ENTITY_LOADED;
+        horse->actionState = 0;
+        horse->flags |= HORSE_ENTITY_LOADED;
 
     }
     
@@ -2362,19 +2430,21 @@ void initializeHorseEntity(void) {
 }
 
 void initializeMiscAnimalEntity(u8 index, u8 arg1) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
 
-    if ((gMiscAnimals[index].flags & MISC_ANIMAL_ACTIVE) && (index < 7)) {
+
+    if ((miscAnimal->flags & MISC_ANIMAL_ACTIVE) && (index < 7)) {
         
         // initialize entity objects if needed
-        switch (gMiscAnimals[index].animalType) {
+        switch (miscAnimal->animalType) {
 
             case MISC_ANIMAL_PLAYER_DOG:
-                initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOTS_1_20_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_1_20_ANIM_METADATA, (u32*)ENTITY_SLOTS_1_20_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_1_20_TEXTURE_TO_PALETTE_LOOKUP);
-                setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 2);
+                initializeAnimalEntity(miscAnimal->entityIndex, (u16*)ENTITY_SLOTS_1_20_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_1_20_ANIM_METADATA, (u32*)ENTITY_SLOTS_1_20_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_1_20_TEXTURE_TO_PALETTE_LOOKUP);
+                setEntityPaletteIndex(miscAnimal->entityIndex, 2);
                 break;
 
             case MISC_ANIMAL_COW:
-                initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOTS_21_28_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_21_28_ANIM_METADATA, (u32*)ENTITY_SLOTS_21_28_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_21_28_TEXTURE_TO_PALETTE_LOOKUP);
+                initializeAnimalEntity(miscAnimal->entityIndex, (u16*)ENTITY_SLOTS_21_28_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOTS_21_28_ANIM_METADATA, (u32*)ENTITY_SLOTS_21_28_SPRITESHEET_INDEX, (u32*)ENTITY_SLOTS_21_28_TEXTURE_TO_PALETTE_LOOKUP);
                 break;
 
             default:
@@ -2382,111 +2452,111 @@ void initializeMiscAnimalEntity(u8 index, u8 arg1) {
                 switch (index) {
 
                     case 0:
-                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOT_14_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_14_ANIM_METADATA, (u32*)ENTITY_SLOT_14_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_14_TEXTURE_TO_PALETTE_LOOKUP);
+                        initializeAnimalEntity(miscAnimal->entityIndex, (u16*)ENTITY_SLOT_14_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_14_ANIM_METADATA, (u32*)ENTITY_SLOT_14_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_14_TEXTURE_TO_PALETTE_LOOKUP);
                         break;
                     case 1:
-                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOT_15_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_15_ANIM_METADATA, (u32*)ENTITY_SLOT_15_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_15_TEXTURE_TO_PALETTE_LOOKUP);
+                        initializeAnimalEntity(miscAnimal->entityIndex, (u16*)ENTITY_SLOT_15_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_15_ANIM_METADATA, (u32*)ENTITY_SLOT_15_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_15_TEXTURE_TO_PALETTE_LOOKUP);
                         break;
                     case 2:
-                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOT_16_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_16_ANIM_METADATA, (u32*)ENTITY_SLOT_16_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_16_TEXTURE_TO_PALETTE_LOOKUP);
+                        initializeAnimalEntity(miscAnimal->entityIndex, (u16*)ENTITY_SLOT_16_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_16_ANIM_METADATA, (u32*)ENTITY_SLOT_16_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_16_TEXTURE_TO_PALETTE_LOOKUP);
                         break;
                     case 3:
-                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOT_17_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_17_ANIM_METADATA, (u32*)ENTITY_SLOT_17_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_17_TEXTURE_TO_PALETTE_LOOKUP);
+                        initializeAnimalEntity(miscAnimal->entityIndex, (u16*)ENTITY_SLOT_17_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_17_ANIM_METADATA, (u32*)ENTITY_SLOT_17_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_17_TEXTURE_TO_PALETTE_LOOKUP);
                         break;
                     case 4:
-                        initializeAnimalEntity(gMiscAnimals[index].entityIndex, (u16*)ENTITY_SLOT_18_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_18_ANIM_METADATA, (u32*)ENTITY_SLOT_18_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_18_TEXTURE_TO_PALETTE_LOOKUP);
+                        initializeAnimalEntity(miscAnimal->entityIndex, (u16*)ENTITY_SLOT_18_PALETTE, (AnimationFrameMetadata*)ENTITY_SLOT_18_ANIM_METADATA, (u32*)ENTITY_SLOT_18_SPRITESHEET_INDEX, (u32*)ENTITY_SLOT_18_TEXTURE_TO_PALETTE_LOOKUP);
                         break;
 
                 }
 
                 // set different palette for horse 2
-                if (gMiscAnimals[index].animalType == MISC_ANIMAL_HORSE_2) {
-                    setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 0);
+                if (miscAnimal->animalType == MISC_ANIMAL_HORSE_2) {
+                    setEntityPaletteIndex(miscAnimal->entityIndex, 0);
                 }
 
                 break;
 
         }
         
-        switch (gMiscAnimals[index].animalType) {
+        switch (miscAnimal->animalType) {
 
             case MISC_ANIMAL_PLAYER_DOG:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_PLAYER_DOG, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_PLAYER_DOG, TRUE);
                 break;
             case MISC_ANIMAL_NPC_DOG:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DOG_VILLAGE, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_DOG_VILLAGE, TRUE);
                 break;
             case MISC_ANIMAL_CAT:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CAT, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_CAT, TRUE);
                 break;
             case MISC_ANIMAL_HORSE:
             case MISC_ANIMAL_HORSE_2:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_HORSE_UNBRIDLED, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_HORSE_UNBRIDLED, TRUE);
                 break;
             case MISC_ANIMAL_SHEEP:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_SHEEP, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_SHEEP, TRUE);
                 break;
             case MISC_ANIMAL_COW:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_COW, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_COW, TRUE);
                 break;
             case MISC_ANIMAL_FOX:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_FOX, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_FOX, TRUE);
                 break;
             case MISC_ANIMAL_BUNNY:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BUNNY, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_BUNNY, TRUE);
                 break;
             case MISC_ANIMAL_SQUIRREL:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_SQUIRREL, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_SQUIRREL, TRUE);
                 break;
             case MISC_ANIMAL_MONKEY:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_MONKEY, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_MONKEY, TRUE);
                 break;
             case MISC_ANIMAL_SPARROW:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BIRD, TRUE);
-                setEntityPaletteIndex(gMiscAnimals[index].entityIndex, 0);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_BIRD, TRUE);
+                setEntityPaletteIndex(miscAnimal->entityIndex, 0);
                 break;
             case MISC_ANIMAL_BIRD:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BIRD, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_BIRD, TRUE);
                 break;
             case MISC_ANIMAL_CRAB:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CRAB, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_CRAB, TRUE);
                 break;
             case MISC_ANIMAL_SNAKE:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_SNAKE, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_SNAKE, TRUE);
                 break;
             case MISC_ANIMAL_WHITE_BUTTERFLY:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_WHITE_BUTTERFLY, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_WHITE_BUTTERFLY, TRUE);
                 break;
             case MISC_ANIMAL_LADYBUG:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_LADYBUG, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_LADYBUG, TRUE);
                 break;
             case MISC_ANIMAL_CICADA:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_CICADA, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_CICADA, TRUE);
                 break;
             case MISC_ANIMAL_HORNED_BEETLE:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_HORNED_BEETLE, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_HORNED_BEETLE, TRUE);
                 break;
             case MISC_ANIMAL_STAG_BEETLE:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_STAG_BEETLE, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_STAG_BEETLE, TRUE);
                 break;
             case MISC_ANIMAL_DRAGONFLY:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_DRAGONFLY, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_DRAGONFLY, TRUE);
                 break;
             case MISC_ANIMAL_CRICKET:
-                loadEntity(gMiscAnimals[index].entityIndex, ENTITY_ASSET_BELL_RING_CRICKET, TRUE);
+                loadEntity(miscAnimal->entityIndex, ENTITY_ASSET_BELL_RING_CRICKET, TRUE);
                 break;
         }
 
-        setEntityCollidable(gMiscAnimals[index].entityIndex, TRUE);
-        setEntityYMovement(gMiscAnimals[index].entityIndex, TRUE);
-        setCameraTrackingEntity(gMiscAnimals[index].entityIndex, FALSE);
+        setEntityCollidable(miscAnimal->entityIndex, TRUE);
+        setEntityYMovement(miscAnimal->entityIndex, TRUE);
+        setCameraTrackingEntity(miscAnimal->entityIndex, FALSE);
         
-        setEntityDirection(gMiscAnimals[index].entityIndex, convertWorldDirectionToScreenDirection(gMiscAnimals[index].direction, MAIN_MAP_INDEX));
-        setEntityCoordinates(gMiscAnimals[index].entityIndex, gMiscAnimals[index].coordinates.x, gMiscAnimals[index].coordinates.y, gMiscAnimals[index].coordinates.z);
-        setEntityHandlesMultipleCollisions(gMiscAnimals[index].entityIndex, FALSE);
+        setEntityDirection(miscAnimal->entityIndex, convertWorldDirectionToScreenDirection(miscAnimal->direction, MAIN_MAP_INDEX));
+        setEntityCoordinates(miscAnimal->entityIndex, miscAnimal->coordinates.x, miscAnimal->coordinates.y, miscAnimal->coordinates.z);
+        setEntityHandlesMultipleCollisions(miscAnimal->entityIndex, FALSE);
         
-        gMiscAnimals[index].actionState = arg1;
-        gMiscAnimals[index].flags |= MISC_ANIMAL_ENTITY_LOADED;
+        miscAnimal->actionState = arg1;
+        miscAnimal->flags |= MISC_ANIMAL_ENTITY_LOADED;
     
     }
     
@@ -2495,197 +2565,201 @@ void initializeMiscAnimalEntity(u8 index, u8 arg1) {
 }
 
 void updateDog(void) {
+    Dog *dog = &dogInfo;
+
 
     Vec3f vec;
 
-    if ((dogInfo.flags & DOG_ACTIVE) && (dogInfo.flags & DOG_ENTITY_LOADED)) {
+    if ((dog->flags & DOG_ACTIVE) && (dog->flags & DOG_ENTITY_LOADED)) {
         
-        if (checkEntityAnimationStateChanged(dogInfo.entityIndex) || dogInfo.flags & DOG_COLLISION_WITH_PLAYER) {
+        if (checkEntityAnimationStateChanged(dog->entityIndex) || dog->flags & DOG_COLLISION_WITH_PLAYER) {
 
-            if (dogInfo.stateTimer == 0) {
+            if (dog->stateTimer == 0) {
                 updateDogActionState();
             } else {
-                dogInfo.stateTimer--;
+                dog->stateTimer--;
             }
             
-            dogInfo.flags &= ~DOG_COLLISION_WITH_PLAYER;
+            dog->flags &= ~DOG_COLLISION_WITH_PLAYER;
             
         }
         
-        setEntityDirection(dogInfo.entityIndex, convertWorldDirectionToScreenDirection(dogInfo.direction, MAIN_MAP_INDEX));
-        vec = getMovementVectorFromDirection(dogInfo.speed, dogInfo.direction, 0.0f);
-        setEntityMovementVector(dogInfo.entityIndex, vec.x, vec.y, vec.z, dogInfo.speed);
+        setEntityDirection(dog->entityIndex, convertWorldDirectionToScreenDirection(dog->direction, MAIN_MAP_INDEX));
+        vec = getMovementVectorFromDirection(dog->speed, dog->direction, 0.0f);
+        setEntityMovementVector(dog->entityIndex, vec.x, vec.y, vec.z, dog->speed);
 
     } 
     
 }
 
 void updateDogActionState(void) {
+    Dog *dog = &dogInfo;
+
 
     u16 temp;
     
-    switch (dogInfo.actionState) {
+    switch (dog->actionState) {
 
         case 0:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 10;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 10;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0);
+            setEntityDirectionalAnimation(dog->entityIndex, 0);
             
-            if (dogInfo.flags & DOG_FOLLOWING) {
+            if (dog->flags & DOG_FOLLOWING) {
                 
-                dogInfo.direction = calculateAnimalDirectionToPlayer(entities[dogInfo.entityIndex].coordinates.x, entities[dogInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
-                dogInfo.actionState = 4;
+                dog->direction = calculateAnimalDirectionToPlayer(entities[dog->entityIndex].coordinates.x, entities[dog->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                dog->actionState = 4;
                 
             } else {
 
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    dogInfo.actionState = 0;
+                    dog->actionState = 0;
                 } else {
     
                     temp = getRandomNumberInRange(0, 20);
                     
                     if (temp < 7) {
-                        dogInfo.direction = temp;
+                        dog->direction = temp;
                     }
                     
                     temp = getRandomNumberInRange(0, 10);
     
                     if (temp == 0) {
-                        dogInfo.actionState = 1;
+                        dog->actionState = 1;
                     }
                     if (temp == 1) {
-                        dogInfo.actionState = 2;
+                        dog->actionState = 2;
                     }
                     if (temp == 2) {
-                        dogInfo.actionState = 3;
+                        dog->actionState = 3;
                     }
                     if (temp == 3) {
-                        dogInfo.actionState = 4;
+                        dog->actionState = 4;
                     }
                     if (temp == 4) {
-                        dogInfo.actionState = 5;
+                        dog->actionState = 5;
                     }
                     if (temp == 5) {
-                        dogInfo.actionState = 6;
+                        dog->actionState = 6;
                     }
                     if (temp == 6) {
-                        dogInfo.actionState = 7;
+                        dog->actionState = 7;
                     }
                     if (temp == 7) {
-                        dogInfo.actionState = 8;
+                        dog->actionState = 8;
                     }
                     if (temp == 8) {
-                        dogInfo.actionState = 10;
+                        dog->actionState = 10;
                     }
                     if (temp == 9) {
-                        dogInfo.actionState = 24;
+                        dog->actionState = 24;
                     }
                     if (temp == 10) {
-                        dogInfo.actionState = 25;
+                        dog->actionState = 25;
                     }
                     
                 }
                     
             } 
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 1:
     
-            dogInfo.speed = 1;
-            dogInfo.stateTimer = 10;
-            dogInfo.unk_1B = 0;
+            dog->speed = 1;
+            dog->stateTimer = 10;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 8);
+            setEntityDirectionalAnimation(dog->entityIndex, 8);
             
             temp = getRandomNumberInRange(0, 19);
             
             if (temp < 10) {
-                dogInfo.actionState = 1;
+                dog->actionState = 1;
             } else if (temp >= 15) {
-                dogInfo.actionState = 4;
+                dog->actionState = 4;
             } else {
-                dogInfo.actionState = 0;
+                dog->actionState = 0;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 2:
 
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 48);
-            dogInfo.actionState = 16;
+            setEntityDirectionalAnimation(dog->entityIndex, 48);
+            dog->actionState = 16;
             
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 3:
 
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 10;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 10;
+            dog->unk_1B = 0;
 
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 32);
+            setEntityDirectionalAnimation(dog->entityIndex, 32);
     
             temp = getRandomNumberInRange(0, 20);
             
             if (temp < 10) {
                 
-                dogInfo.actionState = 3;
+                dog->actionState = 3;
                 
             } else {
 
                 if (9 < temp && temp < 12) {
-                    dogInfo.actionState = 0;
+                    dog->actionState = 0;
                 }
 
                 if (11 < temp && temp < 14) {
-                    dogInfo.actionState = 11;
+                    dog->actionState = 11;
                 }
 
                 if (13 < temp && temp < 16) {
-                    dogInfo.actionState = 12;
+                    dog->actionState = 12;
                 }
                 
                 if (15 < temp && temp < 18) {
-                    dogInfo.actionState = 13;
+                    dog->actionState = 13;
                 }
                 
                 if (17 < temp && temp < 20) {
-                    dogInfo.actionState = 14;
+                    dog->actionState = 14;
                 }
                
             }
             
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
 
             break;
         
         case 4:
             
-            dogInfo.speed = 2;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 2;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x10);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x10);
             
-            if (dogInfo.flags & DOG_FOLLOWING) {
+            if (dog->flags & DOG_FOLLOWING) {
                 
-                dogInfo.direction = calculateAnimalDirectionToPlayer(entities[dogInfo.entityIndex].coordinates.x, entities[dogInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                dog->direction = calculateAnimalDirectionToPlayer(entities[dog->entityIndex].coordinates.x, entities[dog->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (!(getRandomNumberInRange(0, 20))) {
-                    dogInfo.flags &= ~DOG_FOLLOWING;
+                    dog->flags &= ~DOG_FOLLOWING;
                 }
                 
             } else {
@@ -2694,431 +2768,431 @@ void updateDogActionState(void) {
 
                 if (temp < 10) {
                     
-                    dogInfo.actionState = 4;
+                    dog->actionState = 4;
                     
                 } else {
     
                     if (9 < temp && temp < 13) {
-                        dogInfo.actionState = 0;
+                        dog->actionState = 0;
                     }
     
                     if (12 < temp && temp < 16) {
-                        dogInfo.actionState = 1;
+                        dog->actionState = 1;
                     }
     
                     if (15 < temp && temp < 19) {
-                        dogInfo.actionState = 21;
+                        dog->actionState = 21;
                     }
                    
                 }
             
             }
             
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
 
             break;
 
         case 5:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x90);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x90);
             
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 5;
+                dog->actionState = 5;
             } else {
-                dogInfo.actionState = 3;
+                dog->actionState = 3;
             }
     
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
 
             break;
 
 case 6:
 
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0xA0);
+            setEntityDirectionalAnimation(dog->entityIndex, 0xA0);
             
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 6;
+                dog->actionState = 6;
             } else {
-                dogInfo.actionState = 0;
+                dog->actionState = 0;
             }
     
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 7:
 
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0xA8);
+            setEntityDirectionalAnimation(dog->entityIndex, 0xA8);
             
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 7;
+                dog->actionState = 7;
             } else {
-                dogInfo.actionState = 0;
+                dog->actionState = 0;
             }
     
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
         
         case 8:
 
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0xB0);
+            setEntityDirectionalAnimation(dog->entityIndex, 0xB0);
             
             if (getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 0;
+                dog->actionState = 0;
             } else {
-                dogInfo.actionState = 8;
+                dog->actionState = 8;
             }
     
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
         
         case 9:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0xB8);
+            setEntityDirectionalAnimation(dog->entityIndex, 0xB8);
             
-            dogInfo.actionState = 26;
+            dog->actionState = 26;
             
             break;
         
         case 10:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 10;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 10;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0xC8);
+            setEntityDirectionalAnimation(dog->entityIndex, 0xC8);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 10;
+                dog->actionState = 10;
             } else {
-                dogInfo.actionState = 0;
+                dog->actionState = 0;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
                 
         case 11:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 10;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 10;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x28);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x28);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 11;
+                dog->actionState = 11;
             } else {
-                dogInfo.actionState = 3;
+                dog->actionState = 3;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
                         
         case 12:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 10;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 10;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x50);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x50);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 12;
+                dog->actionState = 12;
             } else {
-                dogInfo.actionState = 3;
+                dog->actionState = 3;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
                         
         case 13:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x58);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x58);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 13;
+                dog->actionState = 13;
             } else {
-                dogInfo.actionState = 3;
+                dog->actionState = 3;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
                         
         case 14:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x60);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x60);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 14;
+                dog->actionState = 14;
             } else {
-                dogInfo.actionState = 3;
+                dog->actionState = 3;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 16:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 10;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 10;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x28);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x28);
 
             temp = getRandomNumberInRange(0, 14);
 
             if (temp < 10) {
-                dogInfo.actionState = 16;
+                dog->actionState = 16;
             }
             if (temp == 10) {
-                dogInfo.actionState = 27;
+                dog->actionState = 27;
             }
             if (temp == 11) {
-                dogInfo.actionState = 17;
+                dog->actionState = 17;
             }
             if (temp == 12) {
-                dogInfo.actionState = 18;
+                dog->actionState = 18;
             }
             if (temp == 13) {
-                dogInfo.actionState = 19;
+                dog->actionState = 19;
             }
             if (temp == 14) {
-                dogInfo.actionState = 20;
+                dog->actionState = 20;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
                         
         case 17:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x68);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x68);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 17;
+                dog->actionState = 17;
             } else {
-                dogInfo.actionState = 16;
+                dog->actionState = 16;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
                         
         case 18:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x70);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x70);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 18;
+                dog->actionState = 18;
             } else {
-                dogInfo.actionState = 16;
+                dog->actionState = 16;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 19:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x78);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x78);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 19;
+                dog->actionState = 19;
             } else {
-                dogInfo.actionState = 16;
+                dog->actionState = 16;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
 
 case 20:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 10;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 10;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x80);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x80);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 20;
+                dog->actionState = 20;
             } else {
-                dogInfo.actionState = 16;
+                dog->actionState = 16;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 21:
             
-            dogInfo.speed = 1;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 1;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x38);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x38);
             
-            dogInfo.actionState = 22;
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->actionState = 22;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;        
         
         case 22:
             
-            dogInfo.speed = 2;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 2;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x40);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x40);
             
-            dogInfo.actionState = 23;
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->actionState = 23;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;     
         
         case 23:
             
-            dogInfo.speed = 1;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 1;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x48);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x48);
             
-            dogInfo.actionState = 0;
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->actionState = 0;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;     
                                 
         case 24:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x88);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x88);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 24;
+                dog->actionState = 24;
             } else {
-                dogInfo.actionState = 0;
+                dog->actionState = 0;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
                                 
         case 25:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x98);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x98);
 
             if (!getRandomNumberInRange(0, 2)) {
-                dogInfo.actionState = 25;
+                dog->actionState = 25;
             } else {
-                dogInfo.actionState = 0;
+                dog->actionState = 0;
             }
 
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;
 
         case 26:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0xC0);
+            setEntityDirectionalAnimation(dog->entityIndex, 0xC0);
             
-            dogInfo.actionState = 0;
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->actionState = 0;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;     
         
         case 27:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 48);
+            setEntityDirectionalAnimation(dog->entityIndex, 48);
             
-            dogInfo.actionState = 0;
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->actionState = 0;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;     
         
         case 32:
             
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0);
+            setEntityDirectionalAnimation(dog->entityIndex, 0);
             
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->flags |= DOG_STATE_CHANGED;
             
             break;     
 
         case 34:
-            dogInfo.speed = 0;
-            dogInfo.stateTimer = 0;
-            dogInfo.unk_1B = 0;
+            dog->speed = 0;
+            dog->stateTimer = 0;
+            dog->unk_1B = 0;
             
-            setEntityDirectionalAnimation(dogInfo.entityIndex, 0x98);
+            setEntityDirectionalAnimation(dog->entityIndex, 0x98);
             
-            dogInfo.actionState = 0;
-            dogInfo.flags |= DOG_STATE_CHANGED;
+            dog->actionState = 0;
+            dog->flags |= DOG_STATE_CHANGED;
             
             playSfx(0x3C);
             
@@ -3129,18 +3203,20 @@ case 20:
 }
 
 void updateChicken(u8 index) {
+    Chicken *chicken = &gChickens[index];
+
     
     Vec3f vec;
 
-    if (gChickens[index].flags & CHICKEN_ACTIVE && gChickens[index].flags & CHICKEN_ENTITY_LOADED) {
+    if (chicken->flags & CHICKEN_ACTIVE && chicken->flags & CHICKEN_ENTITY_LOADED) {
     
-        if ((checkEntityAnimationStateChanged(gChickens[index].entityIndex) || gChickens[index].flags & CHICKEN_COLLISION_WITH_PLAYER)) {
+        if ((checkEntityAnimationStateChanged(chicken->entityIndex) || chicken->flags & CHICKEN_COLLISION_WITH_PLAYER)) {
     
-            switch(gChickens[index].type) {
+            switch(chicken->type) {
     
                 case ADULT_CHICKEN:
     
-                    switch(gChickens[index].condition) {
+                    switch(chicken->condition) {
                         case CHICKEN_NORMAL:
                             updateAdultChickenNormal(index);
                             break;
@@ -3161,146 +3237,148 @@ void updateChicken(u8 index) {
     
                 }
 
-            gChickens[index].flags &= ~CHICKEN_COLLISION_WITH_PLAYER;
+            chicken->flags &= ~CHICKEN_COLLISION_WITH_PLAYER;
     
         }
 
-        setEntityDirection(gChickens[index].entityIndex, convertWorldDirectionToScreenDirection(gChickens[index].direction, MAIN_MAP_INDEX));
+        setEntityDirection(chicken->entityIndex, convertWorldDirectionToScreenDirection(chicken->direction, MAIN_MAP_INDEX));
         
-        vec = getMovementVectorFromDirection(gChickens[index].speed, gChickens[index].direction, 0);
-        setEntityMovementVector(gChickens[index].entityIndex, vec.x, vec.y, vec.z, gChickens[index].speed);
+        vec = getMovementVectorFromDirection(chicken->speed, chicken->direction, 0);
+        setEntityMovementVector(chicken->entityIndex, vec.x, vec.y, vec.z, chicken->speed);
     
     }
 
 }
 
 void updateAdultChickenNormal(u8 index) {
+    Chicken *chicken = &gChickens[index];
+
 
     u16 temp;
 
-    switch (gChickens[index].actionState) {
+    switch (chicken->actionState) {
         
         case 0:
             
-            gChickens[index].speed = 0;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
 
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 0);
+            setEntityDirectionalAnimation(chicken->entityIndex, 0);
 
             if (getRandomNumberInRange(0, 100) < 40) {
-                gChickens[index].actionState = 0;
+                chicken->actionState = 0;
             } else {
 
                 temp = getRandomNumberInRange(0, 10);
                 
                 if (temp < 7) {
-                    gChickens[index].direction = temp;
+                    chicken->direction = temp;
                 }
                 
                 temp = getRandomNumberInRange(0, 60);
                 
                 if (temp < 20) {
-                    gChickens[index].actionState = 1;
+                    chicken->actionState = 1;
                 }
                 if (19 < temp && temp < 40) {
-                    gChickens[index].actionState = 2;
+                    chicken->actionState = 2;
                 }
                 if (39 < temp && temp < 60) {
-                    gChickens[index].actionState = 3;
+                    chicken->actionState = 3;
                 }
             
             }
 
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
             
             break;
             
         case 1:
-            gChickens[index].speed  = 1;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed  = 1;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
             
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 8);
+            setEntityDirectionalAnimation(chicken->entityIndex, 8);
             
             if (getRandomNumberInRange(0, 20) < 10) {
-                gChickens[index].actionState = 1;
+                chicken->actionState = 1;
             } else {
-                gChickens[index].actionState = 0;
+                chicken->actionState = 0;
             }
             
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
             playSfx(0x40);
             
             break;
 
         case 2:
-            gChickens[index].speed = 0;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
             
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 0x10);
+            setEntityDirectionalAnimation(chicken->entityIndex, 0x10);
 
-            gChickens[index].actionState = 0;
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->actionState = 0;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
             
             break;
 
         case 3:
 
-            gChickens[index].speed = 0;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
 
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 0x20);
+            setEntityDirectionalAnimation(chicken->entityIndex, 0x20);
         
             if (getRandomNumberInRange(0,19) < 10) {
-                gChickens[index].actionState = 0;      
+                chicken->actionState = 0;      
             } else {
-                gChickens[index].actionState = 4;
+                chicken->actionState = 4;
             }
 
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
             
             break;
 
         case 4:
-            gChickens[index].speed = 0;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
 
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(chicken->entityIndex, 0x18);
             
             if (getRandomNumberInRange(0, 19) < 10) {
-                gChickens[index].actionState = 4;
+                chicken->actionState = 4;
             } else {
-                gChickens[index].actionState = 3;
+                chicken->actionState = 3;
             }
         
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
             
             break;
         
         case 16:
-            gChickens[index].speed = 0;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
 
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 0);
+            setEntityDirectionalAnimation(chicken->entityIndex, 0);
             
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
 
             break;
 
         case 17:
-            gChickens[index].speed = 0;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
 
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 48);
+            setEntityDirectionalAnimation(chicken->entityIndex, 48);
             
-            gChickens[index].actionState = 0;
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->actionState = 0;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
             
             playSfx(0x41);
             
@@ -3311,102 +3389,106 @@ void updateAdultChickenNormal(u8 index) {
 }
 
 void updateAdultChickenStarved(u8 chickenIndex) {
+    Chicken *chicken = &gChickens[chickenIndex];
+
 
     u16 temp;
     
-    gChickens[chickenIndex].speed = 0;
-    gChickens[chickenIndex].stateTimer = 0;
-    gChickens[chickenIndex].unk_1B = 0;
+    chicken->speed = 0;
+    chicken->stateTimer = 0;
+    chicken->unk_1B = 0;
 
-    setEntityDirectionalAnimation(gChickens[chickenIndex].entityIndex, 0x28);
+    setEntityDirectionalAnimation(chicken->entityIndex, 0x28);
 
     temp = getRandomNumberInRange(0, 1000);
     
     if (temp < 7) {
-        gChickens[chickenIndex].direction = temp;
+        chicken->direction = temp;
     }
     
-    gChickens[chickenIndex].actionState = 0;
-    gChickens[chickenIndex].flags |= CHICKEN_STATE_CHANGED;
+    chicken->actionState = 0;
+    chicken->flags |= CHICKEN_STATE_CHANGED;
     
 }
 
 void updateChick(u8 index) {
+    Chicken *chicken = &gChickens[index];
+
 
     u16 temp ;
 
-    switch (gChickens[index].actionState) {
+    switch (chicken->actionState) {
 
         case 0:
-            gChickens[index].speed = 0;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
 
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 0);
+            setEntityDirectionalAnimation(chicken->entityIndex, 0);
 
             if (getRandomNumberInRange(0, 100) < 40) {
-                gChickens[index].actionState = 0;
+                chicken->actionState = 0;
             } else {
                 
                 temp = getRandomNumberInRange(0, 10);
                 
                 if (temp  < 7) {
-                    gChickens[index].direction = temp;
+                    chicken->direction = temp;
                 }
                 
                 temp = getRandomNumberInRange(0, 40);
 
                 if (temp  < 20) {
-                    gChickens[index].actionState = 1;
+                    chicken->actionState = 1;
                 }
                 if (19 < temp  && temp  < 40) {
-                    gChickens[index].actionState = 2;
+                    chicken->actionState = 2;
                 }
             }
             
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
 
             break;
 
         case 1:
-            gChickens[index].speed = 1;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 1;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
             
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 8);
+            setEntityDirectionalAnimation(chicken->entityIndex, 8);
             
             if (getRandomNumberInRange(0, 20) < 10) {
-                gChickens[index].actionState = 1;
+                chicken->actionState = 1;
             } else {
-                gChickens[index].actionState = 0;
+                chicken->actionState = 0;
             }
             
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
             
             playSfx(0x42);
             
             break;
 
         case 2:
-            gChickens[index].speed = 0;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
         
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 16);
+            setEntityDirectionalAnimation(chicken->entityIndex, 16);
         
-            gChickens[index].actionState = 0;
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->actionState = 0;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
         
             break;
 
         case 16:
-            gChickens[index].speed = 0;
-            gChickens[index].stateTimer = 0;
-            gChickens[index].unk_1B = 0;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
             
-            setEntityDirectionalAnimation(gChickens[index].entityIndex, 0);
+            setEntityDirectionalAnimation(chicken->entityIndex, 0);
 
-            gChickens[index].flags |= CHICKEN_STATE_CHANGED;
+            chicken->flags |= CHICKEN_STATE_CHANGED;
         
             break;
         
@@ -3415,45 +3497,49 @@ void updateChick(u8 index) {
 }
 
 void updateChickenEgg(u8 chickenIndex) {
+    Chicken *chicken = &gChickens[chickenIndex];
 
-    switch (gChickens[chickenIndex].actionState) {
+
+    switch (chicken->actionState) {
 
         case 0:
         case 16:
-            gChickens[chickenIndex].speed = 0;
-            gChickens[chickenIndex].stateTimer = 0;
-            gChickens[chickenIndex].unk_1B = 0;
-            setEntityAnimation(gChickens[chickenIndex].entityIndex, 0x13);
-            gChickens[chickenIndex].flags |= CHICKEN_STATE_CHANGED;
+            chicken->speed = 0;
+            chicken->stateTimer = 0;
+            chicken->unk_1B = 0;
+            setEntityAnimation(chicken->entityIndex, 0x13);
+            chicken->flags |= CHICKEN_STATE_CHANGED;
             
     }
     
 }
 
 void updateFarmAnimal(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
 
     Vec3f vec;
     u8 levelInteractionIndex;
 
-    if ((gFarmAnimals[index].flags & FARM_ANIMAL_ACTIVE) && (gFarmAnimals[index].flags & FARM_ANIMAL_ENTITY_LOADED)) {
+    if ((farmAnimal->flags & FARM_ANIMAL_ACTIVE) && (farmAnimal->flags & FARM_ANIMAL_ENTITY_LOADED)) {
 
-        if ((checkEntityAnimationStateChanged(gFarmAnimals[index].entityIndex)) || (gFarmAnimals[index].flags & FARM_ANIMAL_COLLISION_WITH_PLAYER)) {
+        if ((checkEntityAnimationStateChanged(farmAnimal->entityIndex)) || (farmAnimal->flags & FARM_ANIMAL_COLLISION_WITH_PLAYER)) {
             
-            if (entities[gFarmAnimals[index].entityIndex].unk_5E == 0) {
+            if (entities[farmAnimal->entityIndex].unk_5E == 0) {
 
-                if (!(gFarmAnimals[index].flags & FARM_ANIMAL_FOLLOWING)) {
+                if (!(farmAnimal->flags & FARM_ANIMAL_FOLLOWING)) {
 
-                    gFarmAnimals[index].direction = gPlayer.direction;
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->direction = gPlayer.direction;
+                    farmAnimal->actionState = 1;
 
-                    gFarmAnimals[index].flags &= ~(FARM_ANIMAL_APPROACHING);
-                    gFarmAnimals[index].flags |= (FARM_ANIMAL_LINGERING | FARM_ANIMAL_FOLLOWING);
+                    farmAnimal->flags &= ~(FARM_ANIMAL_APPROACHING);
+                    farmAnimal->flags |= (FARM_ANIMAL_LINGERING | FARM_ANIMAL_FOLLOWING);
 
                 }
 
             }
             
-            switch (gFarmAnimals[index].type) {
+            switch (farmAnimal->type) {
 
                 case BABY_COW:
                     updateBabyCow(index);
@@ -3465,7 +3551,7 @@ void updateFarmAnimal(u8 index) {
 
                 case ADULT_COW:
 
-                    switch(gFarmAnimals[index].condition) {
+                    switch(farmAnimal->condition) {
 
                         case COW_NORMAL:
                             updateAdultCowNormal(index);
@@ -3497,7 +3583,7 @@ void updateFarmAnimal(u8 index) {
 
                 case ADULT_SHEEP:
 
-                    switch(gFarmAnimals[index].condition) {
+                    switch(farmAnimal->condition) {
 
                         case SHEEP_NORMAL:
                             updateAdultSheepNormal(index);
@@ -3513,7 +3599,7 @@ void updateFarmAnimal(u8 index) {
 
                 case SHEARED_SHEEP:
 
-                    switch(gFarmAnimals[index].condition) {
+                    switch(farmAnimal->condition) {
 
                         case SHEEP_NORMAL:
                             updateShearedSheepNormal(index);
@@ -3529,27 +3615,27 @@ void updateFarmAnimal(u8 index) {
 
                 }
 
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_FOLLOWING | FARM_ANIMAL_COLLISION_WITH_PLAYER);
+            farmAnimal->flags &= ~(FARM_ANIMAL_FOLLOWING | FARM_ANIMAL_COLLISION_WITH_PLAYER);
 
         }
        
-        setEntityDirection(gFarmAnimals[index].entityIndex, convertWorldDirectionToScreenDirection(gFarmAnimals[index].direction, MAIN_MAP_INDEX));
+        setEntityDirection(farmAnimal->entityIndex, convertWorldDirectionToScreenDirection(farmAnimal->direction, MAIN_MAP_INDEX));
         
-        vec = getMovementVectorFromDirection(gFarmAnimals[index].speed, gFarmAnimals[index].direction, 0.0f);
-        setEntityMovementVector(gFarmAnimals[index].entityIndex, vec.x, vec.y, vec.z, gFarmAnimals[index].speed);
+        vec = getMovementVectorFromDirection(farmAnimal->speed, farmAnimal->direction, 0.0f);
+        setEntityMovementVector(farmAnimal->entityIndex, vec.x, vec.y, vec.z, farmAnimal->speed);
        
-        levelInteractionIndex = getLevelInteractionIndexFromEntityPosition(gFarmAnimals[index].entityIndex, 0, 32);
+        levelInteractionIndex = getLevelInteractionIndexFromEntityPosition(farmAnimal->entityIndex, 0, 32);
         
-        switch(gFarmAnimals[index].location) {
+        switch(farmAnimal->location) {
 
             case FARM_SPRING:
 
                 if (levelInteractionIndex == 6) {
 
-                    gFarmAnimals[index].location = BARN;
-                    deactivateEntity(gFarmAnimals[index].entityIndex);
+                    farmAnimal->location = BARN;
+                    deactivateEntity(farmAnimal->entityIndex);
 
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_ENTITY_LOADED;
+                    farmAnimal->flags &= ~FARM_ANIMAL_ENTITY_LOADED;
                     activateMapAddition(MAIN_MAP_INDEX, 0x1B, 0);  
 
                 }
@@ -3560,13 +3646,13 @@ void updateFarmAnimal(u8 index) {
 
                 if (levelInteractionIndex == 1) {
 
-                    gFarmAnimals[index].location = FARM_SPRING;
-                    deactivateEntity(gFarmAnimals[index].entityIndex);
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_ENTITY_LOADED;
+                    farmAnimal->location = FARM_SPRING;
+                    deactivateEntity(farmAnimal->entityIndex);
+                    farmAnimal->flags &= ~FARM_ANIMAL_ENTITY_LOADED;
 
-                    gFarmAnimals[index].coordinates.x = -128.0f;
-                    gFarmAnimals[index].coordinates.y = 0.0f;
-                    gFarmAnimals[index].coordinates.z = -288.0f;
+                    farmAnimal->coordinates.x = -128.0f;
+                    farmAnimal->coordinates.y = 0.0f;
+                    farmAnimal->coordinates.z = -288.0f;
 
                 }
                 
@@ -3579,277 +3665,279 @@ void updateFarmAnimal(u8 index) {
 }
 
 void updateAdultCowNormal(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
     
     u16 temp;
 
-    switch (gFarmAnimals[index].actionState) {
+    switch (farmAnimal->actionState) {
         
         case 0:
         
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
             
-            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
+            if ((farmAnimal->flags & FARM_ANIMAL_APPROACHING) || (farmAnimal->flags & FARM_ANIMAL_LINGERING)) {
                 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
-                gFarmAnimals[index].actionState = 1;
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(entities[farmAnimal->entityIndex].coordinates.x, entities[farmAnimal->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                farmAnimal->actionState = 1;
                 
             } else {
                 
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 } else {
                     
                     temp = getRandomNumberInRange(0, 20);
                     
                     if (temp < 7) {
-                        gFarmAnimals[index].direction = temp;
+                        farmAnimal->direction = temp;
                     }
         
                     temp = getRandomNumberInRange(0, 5);
                     
                     if (temp == 0) {
-                        gFarmAnimals[index].actionState = 1;
+                        farmAnimal->actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].actionState = 2;
+                        farmAnimal->actionState = 2;
                     }
                     
                     if (temp == 2) {
-                        gFarmAnimals[index].actionState = 3;
+                        farmAnimal->actionState = 3;
                     }
                     
                     if (temp == 3) {
-                        gFarmAnimals[index].actionState = 4;
+                        farmAnimal->actionState = 4;
                     }
                     
                     if (temp == 4) {
-                        gFarmAnimals[index].actionState = 5;
+                        farmAnimal->actionState = 5;
                     }
                     
                     if (temp == 5) {
-                        gFarmAnimals[index].actionState = 6;
+                        farmAnimal->actionState = 6;
                     }
                     
                 }
                     
             }
                 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
                 
             break;
             
         case 1:
             
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            gFarmAnimals[index].speed = 1.0f;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            farmAnimal->speed = 1.0f;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 8);
             
-            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING) {
             
-                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(entities[farmAnimal->entityIndex].coordinates.x, entities[farmAnimal->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (!(getRandomNumberInRange(0, 20))) {
-                    gFarmAnimals[index].flags &= ~(FARM_ANIMAL_APPROACHING);
+                    farmAnimal->flags &= ~(FARM_ANIMAL_APPROACHING);
                 }
                 
-            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
+            } else if (farmAnimal->flags & FARM_ANIMAL_LINGERING) {
                 
                 if (!(getRandomNumberInRange(0, 40))) {
-                    gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+                    farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
                 }
                 
             } else {
                 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } else {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 }
             
             }
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 2:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 32);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 32);
             
             temp = getRandomNumberInRange(0, 2);
             
             if (temp == 0) {
-                gFarmAnimals[index].actionState = 2;
+                farmAnimal->actionState = 2;
             }
             
             if (temp == 1) {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
             
             if (temp == 2) {
-                gFarmAnimals[index].actionState = 9;
+                farmAnimal->actionState = 9;
             }
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 3:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x10);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x10);
             
-            gFarmAnimals[index].actionState = 7;
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->actionState = 7;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 4:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x38);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x38);
             
-            gFarmAnimals[index].actionState = 0;
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->actionState = 0;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 5:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x40);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x40);
             
-            gFarmAnimals[index].actionState = 0;
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->actionState = 0;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 6:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x48);
             
-            gFarmAnimals[index].actionState = 0;
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->actionState = 0;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 7:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x18);
             
             temp = getRandomNumberInRange(0, 11);
             
             if (temp < 10) {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
             if (temp == 10) {
-                gFarmAnimals[index].actionState = 8;
+                farmAnimal->actionState = 8;
             }
             if (temp == 11) {
-                gFarmAnimals[index].actionState = 10;
+                farmAnimal->actionState = 10;
             }
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 8:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x28);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x28);
             
             if (getRandomNumberInRange(0, 4) < 4) {
-                gFarmAnimals[index].actionState = 8;
+                farmAnimal->actionState = 8;
             } else {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 9:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 48);
             
-            gFarmAnimals[index].actionState = 2;
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->actionState = 2;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 10:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x10);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x10);
             
-            gFarmAnimals[index].actionState = 0;
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->actionState = 0;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
             
         case 16:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
             
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
         
         case 17:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x50);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x50);
             
-            gFarmAnimals[index].actionState = 0;
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->actionState = 0;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
             playSfx(0x36);
             
@@ -3857,16 +3945,16 @@ void updateAdultCowNormal(u8 index) {
             
         case 18:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x58);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x58);
             
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
             
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
             playSfx(0x37);
             
@@ -3874,15 +3962,15 @@ void updateAdultCowNormal(u8 index) {
             
         case 19:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
             
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x60);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x60);
             
-            gFarmAnimals[index].actionState = 19;
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->actionState = 19;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
         
@@ -3891,287 +3979,289 @@ void updateAdultCowNormal(u8 index) {
 }
 
 void updateAdultCowHappy(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].actionState) {
+    switch (farmAnimal->actionState) {
 
         case 0:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xB0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xB0);
 
-            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
+            if ((farmAnimal->flags & FARM_ANIMAL_APPROACHING) || (farmAnimal->flags & FARM_ANIMAL_LINGERING)) {
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].actionState = 1;
+                farmAnimal->actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
                 
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
 
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
 
                     if (tempDirection < 7) {
-                        gFarmAnimals[index].direction = tempDirection;
+                        farmAnimal->direction = tempDirection;
                     }
 
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].actionState = 1;
+                        farmAnimal->actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].actionState = 2;
+                        farmAnimal->actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].actionState = 3;
+                        farmAnimal->actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].actionState = 4;
+                        farmAnimal->actionState = 4;
                     }
 
                     if (temp == 4) {
-                        gFarmAnimals[index].actionState = 5;
+                        farmAnimal->actionState = 5;
                     }
 
                     if (temp == 5) {
-                        gFarmAnimals[index].actionState = 6;
+                        farmAnimal->actionState = 6;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
         
         case 1:
 
-            gFarmAnimals[index].speed = 1.0f;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 1.0f;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xB8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xB8);
 
-            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
+            } else if (farmAnimal->flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } else {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xD0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xD0);
 
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].actionState = 2;
+                farmAnimal->actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].actionState = 9;
+                farmAnimal->actionState = 9;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xC0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xC0);
             
-            gFarmAnimals[index].actionState = 7;
+            farmAnimal->actionState = 7;
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 4:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xE8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xE8);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xF0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xF0);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xF8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xF8);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xC8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xC8);
 
             temp = getRandomNumberInRange(0, 11);
 
             if (temp < 10) {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
 
             if (temp == 10) {
-                gFarmAnimals[index].actionState = 8;
+                farmAnimal->actionState = 8;
             }
 
             if (temp == 11) {
-                gFarmAnimals[index].actionState = 10;
+                farmAnimal->actionState = 10;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xD8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xD8);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             } else {
-                gFarmAnimals[index].actionState = 8;
+                farmAnimal->actionState = 8;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 9:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xE0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xE0);
 
-            gFarmAnimals[index].actionState = 2;
+            farmAnimal->actionState = 2;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 10:
                     
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xC0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xC0);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
         
         case 16:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xB0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xB0);
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x50);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x50);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -4179,16 +4269,16 @@ void updateAdultCowHappy(u8 index) {
         
         case 18:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x100);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x100);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x37);
 
@@ -4196,16 +4286,16 @@ void updateAdultCowHappy(u8 index) {
         
         case 19:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x60);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x60);
 
-            gFarmAnimals[index].actionState = 19;
+            farmAnimal->actionState = 19;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -4214,255 +4304,257 @@ void updateAdultCowHappy(u8 index) {
 }
 
 void updateAdultCowMad(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].actionState) {
+    switch (farmAnimal->actionState) {
 
         case 0:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x68);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x68);
 
             temp = getRandomNumberInRange(0, 60);
 
-            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
+            if ((farmAnimal->flags & FARM_ANIMAL_APPROACHING) || (farmAnimal->flags & FARM_ANIMAL_LINGERING)) {
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].actionState = 1;
+                farmAnimal->actionState = 1;
                 
             } else {
         
                 if (temp < 40) {
                 
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
 
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
 
                     if (tempDirection < 7) {
-                        gFarmAnimals[index].direction = tempDirection;
+                        farmAnimal->direction = tempDirection;
                     }
 
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].actionState = 1;
+                        farmAnimal->actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].actionState = 2;
+                        farmAnimal->actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].actionState = 3;
+                        farmAnimal->actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].actionState = 4;
+                        farmAnimal->actionState = 4;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
 case 1:
 
-            gFarmAnimals[index].speed = 0.5f;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0.5f;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x70);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x70);
 
-            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
+            } else if (farmAnimal->flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } else {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x88);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x88);
 
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].actionState = 2;
+                farmAnimal->actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x78);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x78);
             
-            gFarmAnimals[index].actionState = 5;
+            farmAnimal->actionState = 5;
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 4:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xA8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xA8);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x80);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x80);
 
             temp = getRandomNumberInRange(0, 11);
 
             if (temp < 10) {
-                gFarmAnimals[index].actionState = 5;
+                farmAnimal->actionState = 5;
             }
 
             if (temp == 10) {
-                gFarmAnimals[index].actionState = 6;
+                farmAnimal->actionState = 6;
             }
 
             if (temp == 11) {
-                gFarmAnimals[index].actionState = 8;
+                farmAnimal->actionState = 8;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x90);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x90);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].actionState = 5;
+                farmAnimal->actionState = 5;
             } else {
-                gFarmAnimals[index].actionState = 6;
+                farmAnimal->actionState = 6;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x98);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x98);
 
-            gFarmAnimals[index].actionState = 2;
+            farmAnimal->actionState = 2;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x78);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x78);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 16:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x68);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x68);
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x50);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x50);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -4470,16 +4562,16 @@ case 1:
         
         case 18:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0xA0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0xA0);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x37);
 
@@ -4487,16 +4579,16 @@ case 1:
         
         case 19:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x60);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x60);
 
-            gFarmAnimals[index].actionState = 19;
+            farmAnimal->actionState = 19;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -4505,236 +4597,238 @@ case 1:
 }
 
 void updateAdultCowSick(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].actionState) {
+    switch (farmAnimal->actionState) {
 
         case 0:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x108);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x108);
 
-            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
+            if ((farmAnimal->flags & FARM_ANIMAL_APPROACHING) || (farmAnimal->flags & FARM_ANIMAL_LINGERING)) {
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].actionState = 1;
+                farmAnimal->actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
                 
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
 
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
 
                     if (tempDirection < 7) {
-                        gFarmAnimals[index].direction = tempDirection;
+                        farmAnimal->direction = tempDirection;
                     }
 
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].actionState = 1;
+                        farmAnimal->actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].actionState = 2;
+                        farmAnimal->actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].actionState = 3;
+                        farmAnimal->actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].actionState = 4;
+                        farmAnimal->actionState = 4;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
 case 1:
 
-            gFarmAnimals[index].speed = 0.5f;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0.5f;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x110);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x110);
 
-            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
+            } else if (farmAnimal->flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } else {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x128);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x128);
 
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].actionState = 2;
+                farmAnimal->actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].actionState = 6;
+                farmAnimal->actionState = 6;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x118);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x118);
             
-            gFarmAnimals[index].actionState = 5;
+            farmAnimal->actionState = 5;
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             
             break;
 
         case 4:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x138);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x138);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x120);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x120);
 
             temp = getRandomNumberInRange(0, 11);
 
             if (temp < 10) {
-                gFarmAnimals[index].actionState = 5;
+                farmAnimal->actionState = 5;
             }
 
             if (temp == 10) {
-                gFarmAnimals[index].actionState = 6;
+                farmAnimal->actionState = 6;
             }
 
             if (temp == 11) {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x130);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x130);
 
-            gFarmAnimals[index].actionState = 2;
+            farmAnimal->actionState = 2;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x118);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x118);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 16:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x108);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x108);
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x50);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x50);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -4742,31 +4836,31 @@ case 1:
         
         case 18:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x108);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x108);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             break;
         
         case 19:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x60);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x60);
 
-            gFarmAnimals[index].actionState = 19;
+            farmAnimal->actionState = 19;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -4775,257 +4869,259 @@ case 1:
 }
 
 void updateCalf(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
     
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].actionState) {
+    switch (farmAnimal->actionState) {
         
         case 0:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
+            if ((farmAnimal->flags & FARM_ANIMAL_APPROACHING) || (farmAnimal->flags & FARM_ANIMAL_LINGERING)) {
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].actionState = 1;
+                farmAnimal->actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
 
                     if (tempDirection < 7) {
-                        gFarmAnimals[index].direction = tempDirection;
+                        farmAnimal->direction = tempDirection;
                     }
 
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].actionState = 1;
+                        farmAnimal->actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].actionState = 2;
+                        farmAnimal->actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].actionState = 3;
+                        farmAnimal->actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].actionState = 4;
+                        farmAnimal->actionState = 4;
                     }
                     
                     if (temp == 4) {
-                        gFarmAnimals[index].actionState = 5;
+                        farmAnimal->actionState = 5;
                     }
 
                     if (temp == 5) {
-                        gFarmAnimals[index].actionState = 6;
+                        farmAnimal->actionState = 6;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
 case 1:
 
-            gFarmAnimals[index].speed = 1.0f;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 1.0f;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 8);
 
-            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
+            } else if (farmAnimal->flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } else {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x10);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x10);
 
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].actionState = 2;
+                farmAnimal->actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].actionState = 8;
+                farmAnimal->actionState = 8;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x18);
 
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].actionState = 3;
+                farmAnimal->actionState = 3;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             
             break;
 
         case 4:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 48);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x38);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x38);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x40);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x40);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x20);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x20);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].actionState = 3;
+                farmAnimal->actionState = 3;
             } else {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x28);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x28);
 
-            gFarmAnimals[index].actionState = 2;
+            farmAnimal->actionState = 2;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
     
         case 16:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x48);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -5033,16 +5129,16 @@ case 1:
         
         case 18:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x50);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x50);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x37);
             
@@ -5050,16 +5146,16 @@ case 1:
         
         case 19:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x58);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x58);
 
-            gFarmAnimals[index].actionState = 19;
+            farmAnimal->actionState = 19;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -5068,257 +5164,259 @@ case 1:
 }
 
 void updateBabyCow(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].actionState) {
+    switch (farmAnimal->actionState) {
         
         case 0:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
+            if ((farmAnimal->flags & FARM_ANIMAL_APPROACHING) || (farmAnimal->flags & FARM_ANIMAL_LINGERING)) {
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].actionState = 1;
+                farmAnimal->actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
 
                     if (tempDirection < 7) {
-                        gFarmAnimals[index].direction = tempDirection;
+                        farmAnimal->direction = tempDirection;
                     }
 
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].actionState = 1;
+                        farmAnimal->actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].actionState = 2;
+                        farmAnimal->actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].actionState = 3;
+                        farmAnimal->actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].actionState = 4;
+                        farmAnimal->actionState = 4;
                     }
                     
                     if (temp == 4) {
-                        gFarmAnimals[index].actionState = 5;
+                        farmAnimal->actionState = 5;
                     }
 
                     if (temp == 5) {
-                        gFarmAnimals[index].actionState = 6;
+                        farmAnimal->actionState = 6;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
 case 1:
 
-            gFarmAnimals[index].speed = 1.0f;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 1.0f;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 8);
 
-            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
+            } else if (farmAnimal->flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } else {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x10);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x10);
 
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].actionState = 2;
+                farmAnimal->actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].actionState = 8;
+                farmAnimal->actionState = 8;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x18);
 
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].actionState = 3;
+                farmAnimal->actionState = 3;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             
             break;
 
         case 4:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 48);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x38);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x38);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x40);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x40);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x20);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x20);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].actionState = 3;
+                farmAnimal->actionState = 3;
             } else {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x28);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x28);
 
-            gFarmAnimals[index].actionState = 2;
+            farmAnimal->actionState = 2;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
     
         case 16:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x48);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -5326,16 +5424,16 @@ case 1:
         
         case 18:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x50);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x50);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x37);
             
@@ -5343,16 +5441,16 @@ case 1:
         
         case 19:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x58);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x58);
 
-            gFarmAnimals[index].actionState = 19;
+            farmAnimal->actionState = 19;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -5361,269 +5459,271 @@ case 1:
 }
 
 void updatePregnantCow(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].actionState) {
+    switch (farmAnimal->actionState) {
         
         case 0:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
+            if ((farmAnimal->flags & FARM_ANIMAL_APPROACHING) || (farmAnimal->flags & FARM_ANIMAL_LINGERING)) {
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].actionState = 1;
+                farmAnimal->actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
 
                     if (tempDirection < 7) {
-                        gFarmAnimals[index].direction = tempDirection;
+                        farmAnimal->direction = tempDirection;
                     }
 
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].actionState = 1;
+                        farmAnimal->actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].actionState = 2;
+                        farmAnimal->actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].actionState = 3;
+                        farmAnimal->actionState = 3;
                     }
 
                     if (temp == 3) {
-                        gFarmAnimals[index].actionState = 4;
+                        farmAnimal->actionState = 4;
                     }
                     
                     if (temp == 4) {
-                        gFarmAnimals[index].actionState = 5;
+                        farmAnimal->actionState = 5;
                     }
 
                     if (temp == 5) {
-                        gFarmAnimals[index].actionState = 6;
+                        farmAnimal->actionState = 6;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
         
         case 1:
 
-            gFarmAnimals[index].speed = 0.5f;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0.5f;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 8);
 
-            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
+            } else if (farmAnimal->flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } else {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x20);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x20);
 
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].actionState = 2;
+                farmAnimal->actionState = 2;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
             if (temp == 2) {
-                gFarmAnimals[index].actionState = 8;
+                farmAnimal->actionState = 8;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 3:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x10);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x10);
 
-            gFarmAnimals[index].actionState = 9;
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->actionState = 9;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             
             break;
 
         case 4:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x38);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x38);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x40);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x40);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x48);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 7:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x28);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].actionState = 3;
+                farmAnimal->actionState = 3;
             } else {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 48);
 
-            gFarmAnimals[index].actionState = 2;
+            farmAnimal->actionState = 2;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
         
         case 9:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x18);
 
             temp = getRandomNumberInRange(0, 2); 
             
             if (temp == 0) {
-                gFarmAnimals[index].actionState = 9;
+                farmAnimal->actionState = 9;
             } 
             if (temp == 1) {
-                gFarmAnimals[index].actionState = 3;
+                farmAnimal->actionState = 3;
             }
             if (temp == 2) {
-                gFarmAnimals[index].actionState = 7;
+                farmAnimal->actionState = 7;
             }
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
     
         case 16:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x50);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x50);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x36);
             
@@ -5631,16 +5731,16 @@ void updatePregnantCow(u8 index) {
         
         case 18:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x58);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x58);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x37);
             
@@ -5648,16 +5748,16 @@ void updatePregnantCow(u8 index) {
         
         case 19:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x60);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x60);
 
-            gFarmAnimals[index].actionState = 19;
+            farmAnimal->actionState = 19;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -5666,216 +5766,218 @@ void updatePregnantCow(u8 index) {
 }
 
 void updateAdultSheepNormal(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
 
     u16 temp;
     u16 tempDirection;
     
-    switch (gFarmAnimals[index].actionState) {
+    switch (farmAnimal->actionState) {
         
         case 0:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            if ((gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) || (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING)) {
+            if ((farmAnimal->flags & FARM_ANIMAL_APPROACHING) || (farmAnimal->flags & FARM_ANIMAL_LINGERING)) {
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[index].actionState = 1;
+                farmAnimal->actionState = 1;
                 
             } else {
         
                 if (getRandomNumberInRange(0, 60) < 40) {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 } else {
 
                     tempDirection = getRandomNumberInRange(0, 20);
 
                     if (tempDirection < 7) {
-                        gFarmAnimals[index].direction = tempDirection;
+                        farmAnimal->direction = tempDirection;
                     }
 
                     temp = getRandomNumberInRange(0, 2);
 
                     if (temp == 0) {
-                        gFarmAnimals[index].actionState = 1;
+                        farmAnimal->actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        gFarmAnimals[index].actionState = 2;
+                        farmAnimal->actionState = 2;
                     }
 
                     if (temp == 2) {
-                        gFarmAnimals[index].actionState = 3;
+                        farmAnimal->actionState = 3;
                     }
 
                 }
                 
             }
         
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 1:
 
-            gFarmAnimals[index].speed = 1.0f;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 1.0f;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 8);
 
-            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(
-                    entities[gFarmAnimals[index].entityIndex].coordinates.x,
-                    entities[gFarmAnimals[index].entityIndex].coordinates.z,
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(
+                    entities[farmAnimal->entityIndex].coordinates.x,
+                    entities[farmAnimal->entityIndex].coordinates.z,
                     entities[ENTITY_PLAYER].coordinates.x, 
                     entities[ENTITY_PLAYER].coordinates.z);
 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_APPROACHING;
                 } 
                 
-            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
+            } else if (farmAnimal->flags & FARM_ANIMAL_LINGERING) {
 
                  if (getRandomNumberInRange(0, 40) == 0) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
                 } 
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } else {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;            
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;            
             break;
 
         case 2:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x10);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x10);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                gFarmAnimals[index].actionState = 2;
+                farmAnimal->actionState = 2;
             } else {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
 
             break;
 
         case 3:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x18);
 
-            gFarmAnimals[index].actionState = 4;
+            farmAnimal->actionState = 4;
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             
             break;
 
 case 4:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x20);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x20);
 
             temp = getRandomNumberInRange(0, 11);
 
             if (temp < 10) {
-                gFarmAnimals[index].actionState = 4;
+                farmAnimal->actionState = 4;
             }
 
             if (temp == 10) {
-                gFarmAnimals[index].actionState = 4;
+                farmAnimal->actionState = 4;
             }
 
             if (temp == 11) {
-                gFarmAnimals[index].actionState = 6;
+                farmAnimal->actionState = 6;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;  
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;  
             break;
 
         case 5:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x28);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].actionState = 4;
+                farmAnimal->actionState = 4;
             } else {
-                gFarmAnimals[index].actionState = 5;
+                farmAnimal->actionState = 5;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x18);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
     
         case 16:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x3A);
             
@@ -5883,16 +5985,16 @@ case 4:
         
         case 18:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 48);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
             playSfx(0x3A);
             
@@ -5900,16 +6002,16 @@ case 4:
         
         case 19:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 48);
 
-            gFarmAnimals[index].actionState = 19;
+            farmAnimal->actionState = 19;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
@@ -5918,76 +6020,78 @@ case 4:
 }
 
 void updateAdultSheepSick(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
 
-    switch (gFarmAnimals[index].actionState) {
+
+    switch (farmAnimal->actionState) {
         
         case 0:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x28);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x28);
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
     
         case 16:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 17:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 18:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 48);
 
-            gFarmAnimals[index].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
         
         case 19:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 48);
 
-            gFarmAnimals[index].actionState = 19;
+            farmAnimal->actionState = 19;
 
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~(FARM_ANIMAL_LINGERING);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
             
             break;
     
@@ -5996,209 +6100,211 @@ void updateAdultSheepSick(u8 index) {
 }
 
 void updateShearedSheepNormal(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
 
     u16 temp;
 
-    switch(gFarmAnimals[index].actionState) {
+    switch(farmAnimal->actionState) {
         
         case 0:
             
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x38);
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x38);
 
-            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING || gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING || farmAnimal->flags & FARM_ANIMAL_LINGERING) {
                 
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
-                gFarmAnimals[index].actionState = 1;
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(entities[farmAnimal->entityIndex].coordinates.x, entities[farmAnimal->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                farmAnimal->actionState = 1;
             
             } else if (getRandomNumberInRange(0, 60) < 40) {
             
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
                     
             } else {
                 
                 temp = getRandomNumberInRange(0, 20);
                 
                 if (temp < 7) {
-                    gFarmAnimals[index].direction = temp;
+                    farmAnimal->direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } 
                 
                 if (temp == 1) {
-                    gFarmAnimals[index].actionState = 2;
+                    farmAnimal->actionState = 2;
                 } 
                 
                 if (temp == 2) {
-                    gFarmAnimals[index].actionState = 3;
+                    farmAnimal->actionState = 3;
                 }
                 
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 1:
             
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            gFarmAnimals[index].speed = 1.0f;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x40);
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            farmAnimal->speed = 1.0f;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x40);
 
-            if (gFarmAnimals[index].flags & FARM_ANIMAL_APPROACHING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
-                gFarmAnimals[index].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[index].entityIndex].coordinates.x, entities[gFarmAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(entities[farmAnimal->entityIndex].coordinates.x, entities[farmAnimal->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
                 if (!getRandomNumberInRange(0, 20)) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_APPROACHING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_APPROACHING;
                 }
                 
-            } else if (gFarmAnimals[index].flags & FARM_ANIMAL_LINGERING) {
+            } else if (farmAnimal->flags & FARM_ANIMAL_LINGERING) {
 
                 if (!getRandomNumberInRange(0, 40)) {
-                    gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
                 }
                 
             } else {
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[index].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } else {
-                    gFarmAnimals[index].actionState = 0;
+                    farmAnimal->actionState = 0;
                 }
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 2:
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x48);
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x48);
             
             if (!getRandomNumberInRange(0, 2)) {
-                gFarmAnimals[index].actionState = 2;
+                farmAnimal->actionState = 2;
             } else {
-                gFarmAnimals[index].actionState = 0;
+                farmAnimal->actionState = 0;
             }
             
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 3:
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x50);
-            gFarmAnimals[index].actionState = 4;
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x50);
+            farmAnimal->actionState = 4;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             break;
 
         case 4:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x58);
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x58);
 
             temp = getRandomNumberInRange(0, 11);
 
             if (temp < 10) {
-                gFarmAnimals[index].actionState = 4;
+                farmAnimal->actionState = 4;
             } 
             
             if (temp == 10) {
-                gFarmAnimals[index].actionState = 4;
+                farmAnimal->actionState = 4;
             } 
             
             if (temp == 11) {
-                gFarmAnimals[index].actionState = 6;
+                farmAnimal->actionState = 6;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 5:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x60);
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x60);
 
             if (getRandomNumberInRange(0, 4) >= 4) {
-                gFarmAnimals[index].actionState = 4;
+                farmAnimal->actionState = 4;
             } else {
-                gFarmAnimals[index].actionState = 5;
+                farmAnimal->actionState = 5;
             }
 
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 6:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x50);
-            gFarmAnimals[index].actionState = 0;
-            gFarmAnimals[index].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x50);
+            farmAnimal->actionState = 0;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 16:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x38);
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x38);
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             break;
 
         case 17:
 
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x38);
-            gFarmAnimals[index].actionState = 0;
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x38);
+            farmAnimal->actionState = 0;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             playSfx(0x3A);
         
             break;
 
         case 18:
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x68);
-            gFarmAnimals[index].actionState = 0;
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x68);
+            farmAnimal->actionState = 0;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             playSfx(0x3A);
             break;
 
         case 19:
-            gFarmAnimals[index].speed = 0;
-            gFarmAnimals[index].stateTimer = 0;
-            gFarmAnimals[index].unk_1E = 0;
-            setEntityDirectionalAnimation(gFarmAnimals[index].entityIndex, 0x68);
-            gFarmAnimals[index].actionState = 19;
-            gFarmAnimals[index].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[index].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x68);
+            farmAnimal->actionState = 19;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             break;
 
     }
@@ -6206,73 +6312,75 @@ void updateShearedSheepNormal(u8 index) {
 }
 
 void updateShearedSheepSick(u8 farmAnimalIndex) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[farmAnimalIndex];
+
 
     u16 temp;
     
-    switch (gFarmAnimals[farmAnimalIndex].actionState) {
+    switch (farmAnimal->actionState) {
         
         case 0:
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0x60);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x60);
 
-            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 16:    
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0x60);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x60);
 
-            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
 
         case 17:
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0x60);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x60);
 
-            gFarmAnimals[farmAnimalIndex].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
         
         case 18:
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0x68);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x68);
 
-            gFarmAnimals[farmAnimalIndex].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
 
         case 19:    
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0x68);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x68);
 
-            gFarmAnimals[farmAnimalIndex].actionState = 19;
+            farmAnimal->actionState = 19;
 
-            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
 
@@ -6281,219 +6389,221 @@ void updateShearedSheepSick(u8 farmAnimalIndex) {
 }
 
 void updateBabySheep(u8 farmAnimalIndex) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[farmAnimalIndex];
+
 
     u16 temp;
     
-    switch (gFarmAnimals[farmAnimalIndex].actionState) {
+    switch (farmAnimal->actionState) {
         
         case 0:
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            if (gFarmAnimals[farmAnimalIndex].flags & FARM_ANIMAL_APPROACHING || gFarmAnimals[farmAnimalIndex].flags & FARM_ANIMAL_LINGERING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING || farmAnimal->flags & FARM_ANIMAL_LINGERING) {
 
-                gFarmAnimals[farmAnimalIndex].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[farmAnimalIndex].entityIndex].coordinates.x, 
-                                   entities[gFarmAnimals[farmAnimalIndex].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(entities[farmAnimal->entityIndex].coordinates.x, 
+                                   entities[farmAnimal->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
-                gFarmAnimals[farmAnimalIndex].actionState = 1;
+                farmAnimal->actionState = 1;
                 
             } else if (getRandomNumberInRange(0, 60) < 40) {
 
-                gFarmAnimals[farmAnimalIndex].actionState = 0;
+                farmAnimal->actionState = 0;
                 
             } else {
 
                 temp = getRandomNumberInRange(0, 20);
 
                 if (temp < 7) {
-                    gFarmAnimals[farmAnimalIndex].direction = temp;
+                    farmAnimal->direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gFarmAnimals[farmAnimalIndex].actionState = 1;
+                    farmAnimal->actionState = 1;
                 }
 
                 if (temp == 1) {
-                    gFarmAnimals[farmAnimalIndex].actionState = 2;
+                    farmAnimal->actionState = 2;
                 }
 
                 if (temp == 2) {
-                    gFarmAnimals[farmAnimalIndex].actionState = 3;
+                    farmAnimal->actionState = 3;
                 }
                 
             }
 
-            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 1:
-            gFarmAnimals[farmAnimalIndex].speed = 1.0f;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 1.0f;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
 
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 8);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 8);
 
-            if (gFarmAnimals[farmAnimalIndex].flags & FARM_ANIMAL_APPROACHING) {
+            if (farmAnimal->flags & FARM_ANIMAL_APPROACHING) {
 
-                gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
+                farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
 
-                gFarmAnimals[farmAnimalIndex].direction = calculateAnimalDirectionToPlayer(entities[gFarmAnimals[farmAnimalIndex].entityIndex].coordinates.x, 
-                                   entities[gFarmAnimals[farmAnimalIndex].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                farmAnimal->direction = calculateAnimalDirectionToPlayer(entities[farmAnimal->entityIndex].coordinates.x, 
+                                   entities[farmAnimal->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
                 if (!getRandomNumberInRange(0, 20)) {
-                    gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_APPROACHING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_APPROACHING;
                 }
                 
-            } else if (gFarmAnimals[farmAnimalIndex].flags & FARM_ANIMAL_LINGERING) {
+            } else if (farmAnimal->flags & FARM_ANIMAL_LINGERING) {
 
                 if (!getRandomNumberInRange(0, 40)) {
-                    gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
+                    farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
                 }
                 
             } else {
 
                 if (getRandomNumberInRange(0, 20) < 10) {
-                    gFarmAnimals[farmAnimalIndex].actionState = 1;
+                    farmAnimal->actionState = 1;
                 } else {
-                    gFarmAnimals[farmAnimalIndex].actionState = 0;
+                    farmAnimal->actionState = 0;
                 }
                 
             }
 
-            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 2:    
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0x10);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x10);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gFarmAnimals[farmAnimalIndex].actionState = 2;
+                farmAnimal->actionState = 2;
             } else {
-                gFarmAnimals[farmAnimalIndex].actionState = 0;
+                farmAnimal->actionState = 0;
             }
 
-            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
         
         case 3:    
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0x20);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x20);
 
-            gFarmAnimals[farmAnimalIndex].actionState = 4;
+            farmAnimal->actionState = 4;
 
-            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
         
         case 4:    
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0x28);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x28);
 
             temp = getRandomNumberInRange(0, 11); 
 
             if (temp < 10) {
-                gFarmAnimals[farmAnimalIndex].actionState = 4;
+                farmAnimal->actionState = 4;
             } 
             
             if (temp == 10) {
-                gFarmAnimals[farmAnimalIndex].actionState = 4;
+                farmAnimal->actionState = 4;
             } 
             
             if (temp == 11) {
-                gFarmAnimals[farmAnimalIndex].actionState = 6;
+                farmAnimal->actionState = 6;
             } 
 
-            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
     
         case 5:    
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0x18);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x18);
 
             if (getRandomNumberInRange(0, 4) < 4) {
-                gFarmAnimals[farmAnimalIndex].actionState = 5;
+                farmAnimal->actionState = 5;
             } else {
-                gFarmAnimals[farmAnimalIndex].actionState = 4;
+                farmAnimal->actionState = 4;
             }
 
-            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 6:    
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0x20);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0x20);
 
-            gFarmAnimals[farmAnimalIndex].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[farmAnimalIndex].flags |= FARM_ANIMAL_STATE_CHANGED;
+            farmAnimal->flags |= FARM_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 16:    
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
 
         case 17:
         case 18:
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            gFarmAnimals[farmAnimalIndex].actionState = 0;
+            farmAnimal->actionState = 0;
 
-            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             playSfx(0x3A);
             
             break;
 
         case 19:    
-            gFarmAnimals[farmAnimalIndex].speed = 0;
-            gFarmAnimals[farmAnimalIndex].stateTimer = 0;
-            gFarmAnimals[farmAnimalIndex].unk_1E = 0;
+            farmAnimal->speed = 0;
+            farmAnimal->stateTimer = 0;
+            farmAnimal->unk_1E = 0;
     
-            setEntityDirectionalAnimation(gFarmAnimals[farmAnimalIndex].entityIndex, 0);
+            setEntityDirectionalAnimation(farmAnimal->entityIndex, 0);
 
-            gFarmAnimals[farmAnimalIndex].actionState = 19;
+            farmAnimal->actionState = 19;
 
-            gFarmAnimals[farmAnimalIndex].flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
-            gFarmAnimals[farmAnimalIndex].flags &= ~FARM_ANIMAL_LINGERING;
+            farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
+            farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
             break;
 
@@ -6502,14 +6612,16 @@ void updateBabySheep(u8 farmAnimalIndex) {
 }
 
 void updateHorse(void) {
+    Horse *horse = &horseInfo;
+
 
     Vec3f vec;
 
-    if ((horseInfo.flags & HORSE_ACTIVE) && (horseInfo.flags & HORSE_ENTITY_LOADED)) {
+    if ((horse->flags & HORSE_ACTIVE) && (horse->flags & HORSE_ENTITY_LOADED)) {
 
-        if (checkEntityAnimationStateChanged(horseInfo.entityIndex) || horseInfo.flags & HORSE_COLLISION_WITH_PLAYER) {
+        if (checkEntityAnimationStateChanged(horse->entityIndex) || horse->flags & HORSE_COLLISION_WITH_PLAYER) {
             
-            switch (horseInfo.grown) {
+            switch (horse->grown) {
                 case FALSE:
                     updateHorseNotGrown();
                     break;                    
@@ -6518,252 +6630,254 @@ void updateHorse(void) {
                     break;
             }
             
-            horseInfo.flags &= ~(HORSE_COLLISION_WITH_PLAYER  | 0x80);
+            horse->flags &= ~(HORSE_COLLISION_WITH_PLAYER  | 0x80);
             
         }
         
-        setEntityDirection(horseInfo.entityIndex, convertWorldDirectionToScreenDirection(horseInfo.direction, MAIN_MAP_INDEX));
-        vec = getMovementVectorFromDirection(horseInfo.speed, horseInfo.direction, 0.0f);
-        setEntityMovementVector(horseInfo.entityIndex, vec.x, vec.y, vec.z, horseInfo.speed);
+        setEntityDirection(horse->entityIndex, convertWorldDirectionToScreenDirection(horse->direction, MAIN_MAP_INDEX));
+        vec = getMovementVectorFromDirection(horse->speed, horse->direction, 0.0f);
+        setEntityMovementVector(horse->entityIndex, vec.x, vec.y, vec.z, horse->speed);
 
     } 
 }
 
 void updateHorseGrown(void) {
+    Horse *horse = &horseInfo;
+
 
     u16 tempDirection;
     u16 temp;
     
-    switch (horseInfo.actionState) {
+    switch (horse->actionState) {
 
         case 0:
             
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0);
+            setEntityDirectionalAnimation(horse->entityIndex, 0);
             
-            if (horseInfo.flags & HORSE_FOLLOWING) {
+            if (horse->flags & HORSE_FOLLOWING) {
 
-                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
-                horseInfo.actionState = 4;
+                horse->direction = calculateAnimalDirectionToPlayer(entities[horse->entityIndex].coordinates.x, entities[horse->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                horse->actionState = 4;
                 
             } else {
 
                 if (getRandomNumberInRange(0, 60) < 40)  {
                     
-                    horseInfo.actionState = 0;
+                    horse->actionState = 0;
                     
                 } else {
                         
                     tempDirection = getRandomNumberInRange(0, 20);
 
                     if (tempDirection < 7) {
-                        horseInfo.direction = tempDirection;
+                        horse->direction = tempDirection;
                     }
 
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        horseInfo.actionState = 1;
+                        horse->actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        horseInfo.actionState = 2;
+                        horse->actionState = 2;
                     }
 
                     if (temp == 2) {
-                        horseInfo.actionState = 3;
+                        horse->actionState = 3;
                     }
 
                     if (temp == 3) {
-                        horseInfo.actionState = 4;
+                        horse->actionState = 4;
                     }
 
                     if (temp == 4) {
-                        horseInfo.actionState = 5;
+                        horse->actionState = 5;
                     }
 
                     if (temp == 5) {
-                        horseInfo.actionState = 6;
+                        horse->actionState = 6;
                     }
                     
                 }
 
             } 
             
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 1:
 
-            horseInfo.speed = 1;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 1;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 8);
+            setEntityDirectionalAnimation(horse->entityIndex, 8);
             
             if (getRandomNumberInRange(0, 20) < 10) {
-                horseInfo.actionState = 1;
+                horse->actionState = 1;
             } else {
-                horseInfo.actionState = 0;
+                horse->actionState = 0;
             }
 
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 2:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x20);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x20);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.actionState = 2;
+                horse->actionState = 2;
             } else {   
-                horseInfo.actionState = 0;    
+                horse->actionState = 0;    
             }       
             
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 3:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x18);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x18);
             
-            horseInfo.actionState = 7;
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->actionState = 7;
+            horse->flags |= HORSE_STATE_CHANGED;
             
             break;
 
         case 4:
 
-            horseInfo.speed = 2;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 2;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x10);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x10);
 
-            if (horseInfo.flags & HORSE_FOLLOWING) {
+            if (horse->flags & HORSE_FOLLOWING) {
                 
-                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                horse->direction = calculateAnimalDirectionToPlayer(entities[horse->entityIndex].coordinates.x, entities[horse->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    horseInfo.flags &= ~(HORSE_FOLLOWING);
+                    horse->flags &= ~(HORSE_FOLLOWING);
                 }
                 
             } else {
                 
                 if (getRandomNumberInRange(0, 19) < 10) {
-                    horseInfo.actionState = 4;
+                    horse->actionState = 4;
                 } else {                
-                    horseInfo.actionState = 0;    
+                    horse->actionState = 0;    
                 }
                 
             }
         
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 5:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x48);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x48);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.actionState = 5;
+                horse->actionState = 5;
             } else {   
-                horseInfo.actionState = 0;    
+                horse->actionState = 0;    
             }
            
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 6:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x50);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x50);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.actionState = 6;
+                horse->actionState = 6;
             } else {
-                horseInfo.actionState = 0;    
+                horse->actionState = 0;    
             }
            
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 7:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x28);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.actionState = 7;
+                horse->actionState = 7;
             } else {
-                horseInfo.actionState = 0;    
+                horse->actionState = 0;    
             }
            
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 8:
             
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 48);
+            setEntityDirectionalAnimation(horse->entityIndex, 48);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.actionState = 8;
+                horse->actionState = 8;
             } else {
-                horseInfo.actionState = 0;    
+                horse->actionState = 0;    
             }
            
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
 case 16:
             
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0);
+            setEntityDirectionalAnimation(horse->entityIndex, 0);
             
-            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
-            horseInfo.flags &= ~(0x40);
+            horse->flags |= (HORSE_STATE_CHANGED | 0x80); 
+            horse->flags &= ~(0x40);
             
             break;
 
         case 17:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x48);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x48);
             
-            horseInfo.actionState = 0;
-            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
-            horseInfo.flags &= ~(0x40);
+            horse->actionState = 0;
+            horse->flags |= (HORSE_STATE_CHANGED | 0x80); 
+            horse->flags &= ~(0x40);
             
             playSfx(0x39);
             
@@ -6771,15 +6885,15 @@ case 16:
 
         case 18:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0);
+            setEntityDirectionalAnimation(horse->entityIndex, 0);
             
-            horseInfo.actionState = 0;
-            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
-            horseInfo.flags &= ~(0x40);
+            horse->actionState = 0;
+            horse->flags |= (HORSE_STATE_CHANGED | 0x80); 
+            horse->flags &= ~(0x40);
             
             playSfx(0x38);
             
@@ -6793,202 +6907,204 @@ case 16:
 }
 
 void updateHorseNotGrown(void) {
+    Horse *horse = &horseInfo;
+
 
     u16 tempDirection;
     u16 temp;
     
-    switch (horseInfo.actionState) {
+    switch (horse->actionState) {
 
         case 0:
             
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0);
+            setEntityDirectionalAnimation(horse->entityIndex, 0);
             
-            if (horseInfo.flags & HORSE_FOLLOWING) {
+            if (horse->flags & HORSE_FOLLOWING) {
 
-                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
-                horseInfo.actionState = 4;
+                horse->direction = calculateAnimalDirectionToPlayer(entities[horse->entityIndex].coordinates.x, entities[horse->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                horse->actionState = 4;
                 
             } else {
 
                 if (getRandomNumberInRange(0, 60) < 40)  {
                     
-                    horseInfo.actionState = 0;
+                    horse->actionState = 0;
                     
                 } else {
                         
                     tempDirection = getRandomNumberInRange(0, 20);
 
                     if (tempDirection < 7) {
-                        horseInfo.direction = tempDirection;
+                        horse->direction = tempDirection;
                     }
 
                     temp = getRandomNumberInRange(0, 5);
 
                     if (temp == 0) {
-                        horseInfo.actionState = 1;
+                        horse->actionState = 1;
                     }
                     
                     if (temp == 1) {
-                        horseInfo.actionState = 2;
+                        horse->actionState = 2;
                     }
 
                     if (temp == 2) {
-                        horseInfo.actionState = 3;
+                        horse->actionState = 3;
                     }
 
                     if (temp == 3) {
-                        horseInfo.actionState = 4;
+                        horse->actionState = 4;
                     }
 
                     if (temp == 4) {
-                        horseInfo.actionState = 5;
+                        horse->actionState = 5;
                     }
                     
                 }
 
             } 
             
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 1:
 
-            horseInfo.speed = 1;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 1;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 8);
+            setEntityDirectionalAnimation(horse->entityIndex, 8);
             
             if (getRandomNumberInRange(0, 20) < 10) {
-                horseInfo.actionState = 1;
+                horse->actionState = 1;
             } else {
-                horseInfo.actionState = 0;
+                horse->actionState = 0;
             }
 
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 2:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x20U);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x20U);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.actionState = 2;
+                horse->actionState = 2;
             } else {   
-                horseInfo.actionState = 0;    
+                horse->actionState = 0;    
             }       
             
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 3:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x18);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x18);
             
-            horseInfo.actionState = 6;
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->actionState = 6;
+            horse->flags |= HORSE_STATE_CHANGED;
             
             break;
 
         case 4:
 
-            horseInfo.speed = 2;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 2;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x10);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x10);
 
-            if (horseInfo.flags & HORSE_FOLLOWING) {
+            if (horse->flags & HORSE_FOLLOWING) {
                 
-                horseInfo.direction = calculateAnimalDirectionToPlayer(entities[horseInfo.entityIndex].coordinates.x, entities[horseInfo.entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+                horse->direction = calculateAnimalDirectionToPlayer(entities[horse->entityIndex].coordinates.x, entities[horse->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
                 
                 if (getRandomNumberInRange(0, 20) == 0) {
-                    horseInfo.flags &= ~HORSE_FOLLOWING;
+                    horse->flags &= ~HORSE_FOLLOWING;
                 }
                 
             } else {
                 
                 if (getRandomNumberInRange(0, 2) == 0) {
-                    horseInfo.actionState = 4;
+                    horse->actionState = 4;
                 } else {                
-                    horseInfo.actionState = 0;    
+                    horse->actionState = 0;    
                 }
                 
             }
         
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 5:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 48);
+            setEntityDirectionalAnimation(horse->entityIndex, 48);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.actionState = 5;
+                horse->actionState = 5;
             } else {   
-                horseInfo.actionState = 0;    
+                horse->actionState = 0;    
             }
            
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
 
         case 6:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0x28);
+            setEntityDirectionalAnimation(horse->entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 2) == 0) {
-                horseInfo.actionState = 6;
+                horse->actionState = 6;
             } else {
-                horseInfo.actionState = 0;    
+                horse->actionState = 0;    
             }
            
-            horseInfo.flags |= HORSE_STATE_CHANGED;
+            horse->flags |= HORSE_STATE_CHANGED;
             break;
         
         case 16:
             
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0);
+            setEntityDirectionalAnimation(horse->entityIndex, 0);
             
-            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
-            horseInfo.flags &= ~(0x40);
+            horse->flags |= (HORSE_STATE_CHANGED | 0x80); 
+            horse->flags &= ~(0x40);
             
             break;
 
         case 17:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 48);
+            setEntityDirectionalAnimation(horse->entityIndex, 48);
             
-            horseInfo.actionState = 0;
-            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
-            horseInfo.flags &= ~(0x40);
+            horse->actionState = 0;
+            horse->flags |= (HORSE_STATE_CHANGED | 0x80); 
+            horse->flags &= ~(0x40);
             
             playSfx(0x39);
             
@@ -6996,15 +7112,15 @@ void updateHorseNotGrown(void) {
 
         case 18:
 
-            horseInfo.speed = 0;
-            horseInfo.stateTimer = 0;
-            horseInfo.unk_1B = 0;
+            horse->speed = 0;
+            horse->stateTimer = 0;
+            horse->unk_1B = 0;
             
-            setEntityDirectionalAnimation(horseInfo.entityIndex, 0);
+            setEntityDirectionalAnimation(horse->entityIndex, 0);
             
-            horseInfo.actionState = 0;
-            horseInfo.flags |= (HORSE_STATE_CHANGED | 0x80); 
-            horseInfo.flags &= ~(0x40);
+            horse->actionState = 0;
+            horse->flags |= (HORSE_STATE_CHANGED | 0x80); 
+            horse->flags &= ~(0x40);
             
             playSfx(0x38);
             
@@ -7018,14 +7134,16 @@ void updateHorseNotGrown(void) {
 }
 
 void updateMiscAnimal(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     Vec3f vec;
 
-    if ((gMiscAnimals[index].flags & MISC_ANIMAL_ACTIVE) && (gMiscAnimals[index].flags & MISC_ANIMAL_ENTITY_LOADED)) {
+    if ((miscAnimal->flags & MISC_ANIMAL_ACTIVE) && (miscAnimal->flags & MISC_ANIMAL_ENTITY_LOADED)) {
 
-        if (checkEntityAnimationStateChanged(gMiscAnimals[index].entityIndex) || gMiscAnimals[index].actionState == 0x20) {
+        if (checkEntityAnimationStateChanged(miscAnimal->entityIndex) || miscAnimal->actionState == 0x20) {
 
-            switch (gMiscAnimals[index].animalType) {
+            switch (miscAnimal->animalType) {
 
                 case MISC_ANIMAL_PLAYER_DOG:
                     updateMiscDog(index);
@@ -7101,524 +7219,526 @@ void updateMiscAnimal(u8 index) {
 
         }
          
-        setEntityDirection(gMiscAnimals[index].entityIndex, convertWorldDirectionToScreenDirection(gMiscAnimals[index].direction, MAIN_MAP_INDEX));
+        setEntityDirection(miscAnimal->entityIndex, convertWorldDirectionToScreenDirection(miscAnimal->direction, MAIN_MAP_INDEX));
         
-        vec = getMovementVectorFromDirection(gMiscAnimals[index].zDisplacement, gMiscAnimals[index].direction, 0.0f);
-        vec.y = gMiscAnimals[index].yDisplacement;
+        vec = getMovementVectorFromDirection(miscAnimal->zDisplacement, miscAnimal->direction, 0.0f);
+        vec.y = miscAnimal->yDisplacement;
         
-        setEntityMovementVector(gMiscAnimals[index].entityIndex, vec.x, vec.y, vec.z, gMiscAnimals[index].zDisplacement);
+        setEntityMovementVector(miscAnimal->entityIndex, vec.x, vec.y, vec.z, miscAnimal->zDisplacement);
         
     }
     
 }
 
 void updateMiscDog(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
     
     u16 temp;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
          case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 10;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 10;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
              if (getRandomNumberInRange(0, 60) < 40) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
                  
                 temp = getRandomNumberInRange(0, 20);
 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 11);
 
                 if (temp == 0) {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
                 if (temp == 1) {
-                    gMiscAnimals[index].actionState = 2;
+                    miscAnimal->actionState = 2;
                 }
                 
                 if (temp == 2) {
-                    gMiscAnimals[index].actionState = 3;
+                    miscAnimal->actionState = 3;
                 }
 
                 if (temp == 3) {
-                    gMiscAnimals[index].actionState = 4;
+                    miscAnimal->actionState = 4;
                 }
                  
                 if (temp == 4) {
-                    gMiscAnimals[index].actionState = 5;
+                    miscAnimal->actionState = 5;
                 }
                 
                 if (temp == 5) {
-                    gMiscAnimals[index].actionState = 6;
+                    miscAnimal->actionState = 6;
                 }
                 
                 if (temp == 6) {
-                    gMiscAnimals[index].actionState = 7;
+                    miscAnimal->actionState = 7;
                 }
 
                 if (temp == 9) {
-                    gMiscAnimals[index].actionState = 10;
+                    miscAnimal->actionState = 10;
                 }
                  
                 if (temp == 10) {
-                    gMiscAnimals[index].actionState = 24;
+                    miscAnimal->actionState = 24;
                 }
                  
                 if (temp == 11) {
-                    gMiscAnimals[index].actionState = 25;
+                    miscAnimal->actionState = 25;
                 }             
                  
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 1:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 10;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 10;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             temp = getRandomNumberInRange(0, 19);
             
             if (temp < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else if (temp < 15) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
-                gMiscAnimals[index].actionState = 4;
+                miscAnimal->actionState = 4;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
         case 2:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 48);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 48);
             
-            gMiscAnimals[index].actionState = 16;
+            miscAnimal->actionState = 16;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 3:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 10;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x20);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 10;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x20);
 
             temp = getRandomNumberInRange(0, 20);
             
             if (temp < 10) {
 
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
 
             } else {
 
                 if (9 < temp && temp < 12) {
-                    gMiscAnimals[index].actionState = 0;
+                    miscAnimal->actionState = 0;
                 } 
                 if (11 < temp && temp < 14) {
-                    gMiscAnimals[index].actionState = 11;
+                    miscAnimal->actionState = 11;
                 }
                 if (13 < temp && temp < 16) {
-                    gMiscAnimals[index].actionState = 12;   
+                    miscAnimal->actionState = 12;   
                 }
                 if (15 < temp && temp < 18) {
-                    gMiscAnimals[index].actionState = 13;   
+                    miscAnimal->actionState = 13;   
                 }
                 if (17 < temp && temp < 20) {
-                    gMiscAnimals[index].actionState = 14;   
+                    miscAnimal->actionState = 14;   
                 }
 
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 4:
-            gMiscAnimals[index].zDisplacement = 2;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x10);
+            miscAnimal->zDisplacement = 2;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x10);
 
             temp = getRandomNumberInRange(0, 19);
             
             if (temp >= 10) {
 
                 if (9 < temp && temp < 13) {
-                    gMiscAnimals[index].actionState = 0;
+                    miscAnimal->actionState = 0;
                 } 
                 if (12 < temp && temp < 16) {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 if (15 < temp && temp < 19) {
-                    gMiscAnimals[index].actionState = 21;   
+                    miscAnimal->actionState = 21;   
                 }
 
             } else {
-                gMiscAnimals[index].actionState = 4;
+                miscAnimal->actionState = 4;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 5:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x90);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x90);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 5;
+                miscAnimal->actionState = 5;
             } else {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0xA0);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0xA0);
 
             if (getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
-                gMiscAnimals[index].actionState = 6;
+                miscAnimal->actionState = 6;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 7:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0xA8);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0xA8);
 
             if (getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
-                gMiscAnimals[index].actionState = 7;
+                miscAnimal->actionState = 7;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0xB0);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0xB0);
 
             if (getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
-                gMiscAnimals[index].actionState = 8;
+                miscAnimal->actionState = 8;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 9:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0xB8);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0xB8);
 
-            gMiscAnimals[index].actionState = 26;
+            miscAnimal->actionState = 26;
             
             break;
 
         case 10:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 10;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 10;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0xC8);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0xC8);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 10;
+                miscAnimal->actionState = 10;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 11:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 10;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 10;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x28);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x28);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 11;
+                miscAnimal->actionState = 11;
             } else {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 12:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 10;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x50);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 10;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x50);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 12;
+                miscAnimal->actionState = 12;
             } else {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
      
         case 13:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x58);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x58);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 13;
+                miscAnimal->actionState = 13;
             } else {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 14:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x60);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x60);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 14;
+                miscAnimal->actionState = 14;
             } else {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 16:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 10;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 10;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x28);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x28);
 
             temp = getRandomNumberInRange(0, 14);
             
             if (temp < 10) {
-                gMiscAnimals[index].actionState = 16;
+                miscAnimal->actionState = 16;
             } 
             if (temp == 10) {
-                gMiscAnimals[index].actionState = 27;
+                miscAnimal->actionState = 27;
             } 
             if (temp == 11) {
-                gMiscAnimals[index].actionState = 17;
+                miscAnimal->actionState = 17;
             }  
             if (temp == 12) {
-                gMiscAnimals[index].actionState = 18;
+                miscAnimal->actionState = 18;
             }
             if (temp == 13) {
-                gMiscAnimals[index].actionState = 19;
+                miscAnimal->actionState = 19;
             }
             if (temp == 14) {
-                gMiscAnimals[index].actionState = 20;
+                miscAnimal->actionState = 20;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 17:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x68);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x68);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 17;
+                miscAnimal->actionState = 17;
             } else {
-                gMiscAnimals[index].actionState = 16;
+                miscAnimal->actionState = 16;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
                 
         case 18:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x70);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x70);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 18;
+                miscAnimal->actionState = 18;
             } else {
-                gMiscAnimals[index].actionState = 16;
+                miscAnimal->actionState = 16;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
                 
         case 19:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x78);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x78);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 19;
+                miscAnimal->actionState = 19;
             } else {
-                gMiscAnimals[index].actionState = 16;
+                miscAnimal->actionState = 16;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
                 
         case 20:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 10;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 10;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x80);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x80);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 20;
+                miscAnimal->actionState = 20;
             } else {
-                gMiscAnimals[index].actionState = 16;
+                miscAnimal->actionState = 16;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
                  
         case 21:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x38);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x38);
 
-            gMiscAnimals[index].actionState = 22;
+            miscAnimal->actionState = 22;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;       
                  
         case 22:
-            gMiscAnimals[index].zDisplacement = 2;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 2;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x40);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x40);
 
-            gMiscAnimals[index].actionState = 23;
+            miscAnimal->actionState = 23;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;       
 
         case 23:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x48);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x48);
 
-            gMiscAnimals[index].actionState = 0;
+            miscAnimal->actionState = 0;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;      
 
         case 24:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x88);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x88);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 24;
+                miscAnimal->actionState = 24;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;      
 
         case 25:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x98);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x98);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 25;
+                miscAnimal->actionState = 25;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;      
 
         case 26:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0xC0);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0xC0);
 
-            gMiscAnimals[index].actionState = 0;
+            miscAnimal->actionState = 0;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;      
 
         case 27:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 48);
 
-            gMiscAnimals[index].actionState = 0;
+            miscAnimal->actionState = 0;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;      
         
      }
@@ -7626,330 +7746,332 @@ void updateMiscDog(u8 index) {
 }
 
 void updateVillageDog(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     u16 temp;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
          case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
              if (getRandomNumberInRange(0, 60) < 40) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
                  
                 temp = getRandomNumberInRange(0, 20);
 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 8);
 
                 if (temp == 0) {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
                 if (temp == 1) {
-                    gMiscAnimals[index].actionState = 2;
+                    miscAnimal->actionState = 2;
                 }
                 
                 if (temp == 2) {
-                    gMiscAnimals[index].actionState = 3;
+                    miscAnimal->actionState = 3;
                 }
 
                 if (temp == 3) {
-                    gMiscAnimals[index].actionState = 4;
+                    miscAnimal->actionState = 4;
                 }
                  
                 if (temp == 4) {
-                    gMiscAnimals[index].actionState = 5;
+                    miscAnimal->actionState = 5;
                 }
                 
                 if (temp == 5) {
-                    gMiscAnimals[index].actionState = 6;
+                    miscAnimal->actionState = 6;
                 }
                 
                 if (temp == 6) {
-                    gMiscAnimals[index].actionState = 7;
+                    miscAnimal->actionState = 7;
                 }
 
                 if (temp == 7) {
-                    gMiscAnimals[index].actionState = 8;
+                    miscAnimal->actionState = 8;
                 }
                  
                 if (temp == 8) {
-                    gMiscAnimals[index].actionState = 9;
+                    miscAnimal->actionState = 9;
                 }
                  
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 1:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             temp = getRandomNumberInRange(0, 19);
             
             if (temp < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else if (temp < 15) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
-                gMiscAnimals[index].actionState = 4;
+                miscAnimal->actionState = 4;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
         case 2:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 48);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 48);
             
-            gMiscAnimals[index].actionState = 12;
+            miscAnimal->actionState = 12;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 3:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x20);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x20);
 
             temp = getRandomNumberInRange(0, 20);
             
             if (temp >= 10) {
 
                 if (9 < temp && temp < 13) {
-                    gMiscAnimals[index].actionState = 0;
+                    miscAnimal->actionState = 0;
                 } 
                 if (13 < temp && temp < 17) {
-                    gMiscAnimals[index].actionState = 10;
+                    miscAnimal->actionState = 10;
                 }
                 if (16 < temp && temp < 20) {
-                    gMiscAnimals[index].actionState = 11;   
+                    miscAnimal->actionState = 11;   
                 }
                 
             } else {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 4:
-            gMiscAnimals[index].zDisplacement = 2;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x10);
+            miscAnimal->zDisplacement = 2;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x10);
 
             temp = getRandomNumberInRange(0, 19);
             
             if (temp < 10) {
-                gMiscAnimals[index].actionState = 4;
+                miscAnimal->actionState = 4;
             } else if (temp < 15) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 5:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x50);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x50);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 5;
+                miscAnimal->actionState = 5;
             } else {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 6:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x58);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x58);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 6;
+                miscAnimal->actionState = 6;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 7:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x60);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x60);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 7;
+                miscAnimal->actionState = 7;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 8:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x70);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x70);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 8;
+                miscAnimal->actionState = 8;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 9:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x68);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x68);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 9;
+                miscAnimal->actionState = 9;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 10:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x18);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 10;
+                miscAnimal->actionState = 10;
             } else {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 11:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x38);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x38);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 11;
+                miscAnimal->actionState = 11;
             } else {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 12:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x28);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x28);
 
             temp = getRandomNumberInRange(0, 12);
             
             if (temp < 10) {
-                gMiscAnimals[index].actionState = 12;
+                miscAnimal->actionState = 12;
             } 
             if (temp == 10) {
-                gMiscAnimals[index].actionState = 15;
+                miscAnimal->actionState = 15;
             } 
             if (temp == 11) {
-                gMiscAnimals[index].actionState = 13;
+                miscAnimal->actionState = 13;
             }  
             if (temp == 12) {
-                gMiscAnimals[index].actionState = 14;
+                miscAnimal->actionState = 14;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
      
         case 13:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x40);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x40);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 13;
+                miscAnimal->actionState = 13;
             } else {
-                gMiscAnimals[index].actionState = 14;
+                miscAnimal->actionState = 14;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 14:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x48);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x48);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 14;
+                miscAnimal->actionState = 14;
             } else {
-                gMiscAnimals[index].actionState = 14;
+                miscAnimal->actionState = 14;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 15:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 48);
 
-            gMiscAnimals[index].actionState = 0;
+            miscAnimal->actionState = 0;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
      }
@@ -7957,22 +8079,24 @@ void updateVillageDog(u8 index) {
 }
 
 void updateCat(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
     
     u32 temp;
     u16 temp2;
     u16 temp3;
     u8 tempDirection;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
 
                 temp = getRandomNumberInRange(0, 10);
@@ -7980,167 +8104,167 @@ void updateCat(u8 index) {
                 if (temp < 7) {
                     temp &= 0xFFFE;
                     temp2 = temp;
-                    gMiscAnimals[index].direction = temp2;
+                    miscAnimal->direction = temp2;
                 }
 
                 temp = getRandomNumberInRange(0, 4);
 
                 if (temp == 0) {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
                 if (temp == 1) {
-                    gMiscAnimals[index].actionState = 2;
+                    miscAnimal->actionState = 2;
                 }
                 
                 if (temp == 2) {
-                    gMiscAnimals[index].actionState = 3;
+                    miscAnimal->actionState = 3;
                 }
 
                 if (temp == 3) {
-                    gMiscAnimals[index].actionState = 4;
+                    miscAnimal->actionState = 4;
                 }
 
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 1:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             temp2 = getRandomNumberInRange(0, 19);
             
             if (temp2 < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else if (temp2 < 15) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
-                gMiscAnimals[index].actionState = 5;
+                miscAnimal->actionState = 5;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             playSfx(0x43);
             break;
 
         case 2:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x20);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x20);
 
             temp3 = getRandomNumberInRange(0, 20);
             
             if (temp3 >= 10) {
 
                 if (9 < temp3 && temp3 < 13) {
-                    gMiscAnimals[index].actionState = 0;
+                    miscAnimal->actionState = 0;
                 } 
                 if (13 < temp3 && temp3 < 17) {
-                    gMiscAnimals[index].actionState = 6;
+                    miscAnimal->actionState = 6;
                 }
                 if (16 < temp3 && temp3 < 20) {
-                    gMiscAnimals[index].actionState = 7;   
+                    miscAnimal->actionState = 7;   
                 }
                 
             } else {
-                gMiscAnimals[index].actionState = 2;
+                miscAnimal->actionState = 2;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 3:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x18);
 
             temp = getRandomNumberInRange(0, 19);
 
             if (temp >= 10) {
 
                 if (temp >= 15) {
-                    gMiscAnimals[index].actionState = 2;
+                    miscAnimal->actionState = 2;
                 } else {
-                    gMiscAnimals[index].actionState = 0;
+                    miscAnimal->actionState = 0;
                 }
                 
             } else {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 4:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 0x38);
+            setEntityAnimation(miscAnimal->entityIndex, 0x38);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 4;
+                miscAnimal->actionState = 4;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 5:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x10);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x10);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 5;
+                miscAnimal->actionState = 5;
             } else {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
        case 6:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 48);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 6;
+                miscAnimal->actionState = 6;
             } else {
-                gMiscAnimals[index].actionState = 2;
+                miscAnimal->actionState = 2;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;     
 
         case 7:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 0x39);
+            setEntityAnimation(miscAnimal->entityIndex, 0x39);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 7;
+                miscAnimal->actionState = 7;
             } else {
-                gMiscAnimals[index].actionState = 2;
+                miscAnimal->actionState = 2;
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
     }
@@ -8148,49 +8272,51 @@ void updateCat(u8 index) {
 }
 
 void updateRanchHorse(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     u16 temp;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
          case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
              if (getRandomNumberInRange(0, 60) < 56) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
                  
                 temp = getRandomNumberInRange(0, 8);
 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
-                 gMiscAnimals[index].actionState = 1;
+                 miscAnimal->actionState = 1;
                  
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 1:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
             
             if (getRandomNumberInRange(0, 19) < 4) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
@@ -8199,141 +8325,143 @@ void updateRanchHorse(u8 index) {
 }
 
 void updateRanchSheep(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     u16 temp;
     u8 tempDirection;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
 
                 temp = getRandomNumberInRange(0, 20);
 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
                 if (temp == 1) {
-                    gMiscAnimals[index].actionState = 2;
+                    miscAnimal->actionState = 2;
                 }
                 
                 if (temp == 2) {
-                    gMiscAnimals[index].actionState = 3;
+                    miscAnimal->actionState = 3;
                 }
 
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 1:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 2:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x10);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x10);
 
             if (!getRandomNumberInRange(0, 2)) {
-                gMiscAnimals[index].actionState = 2;
+                miscAnimal->actionState = 2;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 3:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x18);
 
-            gMiscAnimals[index].actionState = 4;
+            miscAnimal->actionState = 4;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 4:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x20);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x20);
 
             temp = getRandomNumberInRange(0, 11);
             
             if (temp < 10) {
-                gMiscAnimals[index].actionState = 4;
+                miscAnimal->actionState = 4;
             }
             
             if (temp == 10) {
-                gMiscAnimals[index].actionState = 4;
+                miscAnimal->actionState = 4;
             }
             
             if (temp == 11) {
-                gMiscAnimals[index].actionState = 6;
+                miscAnimal->actionState = 6;
             }
 
-gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 5:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x28);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 4) < 4) {
-                gMiscAnimals[index].actionState = 5;
+                miscAnimal->actionState = 5;
             } else {
-                gMiscAnimals[index].actionState = 4;
+                miscAnimal->actionState = 4;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
        case 6:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x18);
 
-            gMiscAnimals[index].actionState = 0;
+            miscAnimal->actionState = 0;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;     
 
     }
@@ -8341,209 +8469,211 @@ gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
 }
 
 void updateRanchCow(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     u16 temp;
     u8 tempDirection;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
 
                 temp = getRandomNumberInRange(0, 20);
 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 5);
 
                 if (temp == 0) {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
                 if (temp == 1) {
-                    gMiscAnimals[index].actionState = 2;
+                    miscAnimal->actionState = 2;
                 }
                 
                 if (temp == 2) {
-                    gMiscAnimals[index].actionState = 3;
+                    miscAnimal->actionState = 3;
                 }
                 
                 if (temp == 3) {
-                    gMiscAnimals[index].actionState = 4;
+                    miscAnimal->actionState = 4;
                 }
 
                 if (temp == 4) {
-                    gMiscAnimals[index].actionState = 5;
+                    miscAnimal->actionState = 5;
                 }
                 
                 if (temp == 5) {
-                    gMiscAnimals[index].actionState = 6;
+                    miscAnimal->actionState = 6;
                 }
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 1:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 2:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x20);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x20);
 
             temp = getRandomNumberInRange(0, 2);
             
             if (temp == 0) {
-                gMiscAnimals[index].actionState = 2;
+                miscAnimal->actionState = 2;
             }
             
             if (temp == 1) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
             if (temp == 2) {
-                gMiscAnimals[index].actionState = 9;
+                miscAnimal->actionState = 9;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 3:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x10);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x10);
 
-            gMiscAnimals[index].actionState = 7;
+            miscAnimal->actionState = 7;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 4:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x38);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x38);
 
-            gMiscAnimals[index].actionState = 0;
+            miscAnimal->actionState = 0;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
         case 5:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x40);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x40);
 
-            gMiscAnimals[index].actionState = 0;
+            miscAnimal->actionState = 0;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
         
        case 6:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x48);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x48);
 
-            gMiscAnimals[index].actionState = 0;
+            miscAnimal->actionState = 0;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;     
 
         case 7:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x18);
 
             temp = getRandomNumberInRange(0, 11);
             
             if (temp < 10) {
-                gMiscAnimals[index].actionState = 7;
+                miscAnimal->actionState = 7;
             }
             
             if (temp == 10) {
-                gMiscAnimals[index].actionState = 8;
+                miscAnimal->actionState = 8;
             }
             
             if (temp == 11) {
-                gMiscAnimals[index].actionState = 10;
+                miscAnimal->actionState = 10;
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 8:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x28);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x28);
 
             if (getRandomNumberInRange(0, 4) < 4) {
-                 gMiscAnimals[index].actionState = 8;
+                 miscAnimal->actionState = 8;
             } else {
-                 gMiscAnimals[index].actionState = 7;
+                 miscAnimal->actionState = 7;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
        
         case 9:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 48);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 48);
 
-            gMiscAnimals[index].actionState = 2;
+            miscAnimal->actionState = 2;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 10:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x10);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x10);
 
-            gMiscAnimals[index].actionState = 0;
+            miscAnimal->actionState = 0;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
 }
@@ -8551,112 +8681,114 @@ void updateRanchCow(u8 index) {
 }
 
 void updateFox(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
     
     u16 temp;
     u8 tempDirection;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
                 
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
                 
             } else {
                 temp = getRandomNumberInRange(0, 10);
 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
                 if (temp == 1) {
-                    gMiscAnimals[index].actionState = 2;
+                    miscAnimal->actionState = 2;
                 }
                 
                 if (temp == 2) {
-                    gMiscAnimals[index].actionState = 3;
+                    miscAnimal->actionState = 3;
                 }
                 
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 1:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 2:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x10);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x10);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gMiscAnimals[index].actionState = 2;
+                miscAnimal->actionState = 2;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 3:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x18);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x18);
             
             if (getRandomNumberInRange(0, 19) < 10) {
-                gMiscAnimals[index].actionState = 3;
+                miscAnimal->actionState = 3;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 32:
-            gMiscAnimals[index].zDisplacement = 4;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 4;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
-            tempDirection = calculateAnimalDirectionToPlayer(entities[gMiscAnimals[index].entityIndex].coordinates.x, entities[gMiscAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+            tempDirection = calculateAnimalDirectionToPlayer(entities[miscAnimal->entityIndex].coordinates.x, entities[miscAnimal->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
-            gMiscAnimals[index].direction = (tempDirection + 4) % 8;
+            miscAnimal->direction = (tempDirection + 4) % 8;
             
             if (!getRandomNumberInRange(0, 30)) {
-                gMiscAnimals[index].flags &= ~MISC_ANIMAL_RUNNING_AWAY;
+                miscAnimal->flags &= ~MISC_ANIMAL_RUNNING_AWAY;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
 
@@ -8665,111 +8797,113 @@ void updateFox(u8 index) {
 }
 
 void updateBunny(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     u16 temp;
     u8 tempDirection;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             } else {
 
                 temp = getRandomNumberInRange(0, 10);
 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
                 if (temp == 1) {
-                    gMiscAnimals[index].actionState = 2;
+                    miscAnimal->actionState = 2;
                 }
                 
                 if (temp == 2) {
-                    gMiscAnimals[index].actionState = 3;
+                    miscAnimal->actionState = 3;
                 }
                 
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 1:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
         case 2:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x10);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x10);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gMiscAnimals[index].actionState = 2;
+                miscAnimal->actionState = 2;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 3:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
             if (getRandomNumberInRange(0, 1)) {
-                setEntityAnimation(gMiscAnimals[index].entityIndex, 0x18);
+                setEntityAnimation(miscAnimal->entityIndex, 0x18);
             } else {
-                setEntityAnimation(gMiscAnimals[index].entityIndex, 0x19);
+                setEntityAnimation(miscAnimal->entityIndex, 0x19);
             }
 
-            gMiscAnimals[index].actionState = 0;
+            miscAnimal->actionState = 0;
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
         case 32:
-            gMiscAnimals[index].zDisplacement = 4;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 4;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
-            tempDirection = calculateAnimalDirectionToPlayer(entities[gMiscAnimals[index].entityIndex].coordinates.x, entities[gMiscAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+            tempDirection = calculateAnimalDirectionToPlayer(entities[miscAnimal->entityIndex].coordinates.x, entities[miscAnimal->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
-            gMiscAnimals[index].direction = (tempDirection + 4) % 8;
+            miscAnimal->direction = (tempDirection + 4) % 8;
             
             if (!getRandomNumberInRange(0, 30)) {
-                gMiscAnimals[index].flags &= ~MISC_ANIMAL_RUNNING_AWAY;
+                miscAnimal->flags &= ~MISC_ANIMAL_RUNNING_AWAY;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
 
@@ -8778,123 +8912,125 @@ void updateBunny(u8 index) {
 }
 
 void updateSquirrel(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     u16 temp;
     u8 tempDirection;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) < 40) {
                 
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
                 
             } else {
                 
                 temp = getRandomNumberInRange(0, 10);
 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 1);
 
                 if (temp == 0) {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
                 if (temp == 1) {
-                    gMiscAnimals[index].actionState = 2;
+                    miscAnimal->actionState = 2;
                 }
                 
             } 
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
 case 1:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
         
         case 2:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x10);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x10);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gMiscAnimals[index].actionState = 2;
+                miscAnimal->actionState = 2;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
 case 16:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
-            gMiscAnimals[index].actionState = 0x10;
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->actionState = 0x10;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 17:
-            setEntityCollidable(gMiscAnimals[index].entityIndex, 0);
-            setEntityYMovement(gMiscAnimals[index].entityIndex, 0);
-            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
+            setEntityCollidable(miscAnimal->entityIndex, 0);
+            setEntityYMovement(miscAnimal->entityIndex, 0);
+            setEntityShadow(miscAnimal->entityIndex, 0xFF);
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].yDisplacement = 2;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->yDisplacement = 2;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 0x19);
+            setEntityAnimation(miscAnimal->entityIndex, 0x19);
 
-            gMiscAnimals[index].timer++;
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->timer++;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            if (gMiscAnimals[index].timer == 6) {
-                deactivateEntity(gMiscAnimals[index].entityIndex);
-                gMiscAnimals[index].flags = 0;
+            if (miscAnimal->timer == 6) {
+                deactivateEntity(miscAnimal->entityIndex);
+                miscAnimal->flags = 0;
             }
             
             break;
         
        case 32:
-            gMiscAnimals[index].zDisplacement = 4;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 4;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
             
-            tempDirection = calculateAnimalDirectionToPlayer(entities[gMiscAnimals[index].entityIndex].coordinates.x, entities[gMiscAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+            tempDirection = calculateAnimalDirectionToPlayer(entities[miscAnimal->entityIndex].coordinates.x, entities[miscAnimal->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
-            gMiscAnimals[index].direction = (tempDirection + 4) % 8;
+            miscAnimal->direction = (tempDirection + 4) % 8;
             
             if (!getRandomNumberInRange(0, 30)) {
-                gMiscAnimals[index].flags &= ~MISC_ANIMAL_RUNNING_AWAY;
+                miscAnimal->flags &= ~MISC_ANIMAL_RUNNING_AWAY;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
     }
@@ -8902,137 +9038,139 @@ case 16:
 }
 
 void updateMonkey(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     u16 temp;
     u8 tempDirection;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
             if (getRandomNumberInRange(0, 60) >= 40) {
 
                 temp = getRandomNumberInRange(0, 10);
 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
                 temp = getRandomNumberInRange(0, 2);
 
                 if (temp == 0) {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
                 if (temp == 1) {
-                    gMiscAnimals[index].actionState = 2;
+                    miscAnimal->actionState = 2;
                 }
                 
                 if (temp == 2) {
-                    gMiscAnimals[index].actionState = 3;
+                    miscAnimal->actionState = 3;
                 }
                 
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
         
             break;
 
 case 1:
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
 case 2:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0x10);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0x10);
 
             if (getRandomNumberInRange(0, 20) < 10) {
-                gMiscAnimals[index].actionState = 2;
+                miscAnimal->actionState = 2;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             playSfx(0x4D);
             
             break;
 
 case 3:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 0x22);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityAnimation(miscAnimal->entityIndex, 0x22);
 
-            gMiscAnimals[index].actionState = 0;
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->actionState = 0;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
     
         case 16:
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
 
-            gMiscAnimals[index].actionState = 0x10;
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->actionState = 0x10;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
 
         case 17:
 
-            setEntityCollidable(gMiscAnimals[index].entityIndex, 0);
-            setEntityYMovement(gMiscAnimals[index].entityIndex, 0);
-            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
+            setEntityCollidable(miscAnimal->entityIndex, 0);
+            setEntityYMovement(miscAnimal->entityIndex, 0);
+            setEntityShadow(miscAnimal->entityIndex, 0xFF);
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].yDisplacement = 2;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->yDisplacement = 2;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 0x1D);
+            setEntityAnimation(miscAnimal->entityIndex, 0x1D);
 
-            gMiscAnimals[index].timer++;
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->timer++;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            if (gMiscAnimals[index].timer == 6) {
-                deactivateEntity(gMiscAnimals[index].entityIndex);
-                gMiscAnimals[index].flags = 0;
+            if (miscAnimal->timer == 6) {
+                deactivateEntity(miscAnimal->entityIndex);
+                miscAnimal->flags = 0;
             }
             
             break;
         
        case 32:
-            gMiscAnimals[index].zDisplacement = 4;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            miscAnimal->zDisplacement = 4;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
             
-            tempDirection = calculateAnimalDirectionToPlayer(entities[gMiscAnimals[index].entityIndex].coordinates.x, entities[gMiscAnimals[index].entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
+            tempDirection = calculateAnimalDirectionToPlayer(entities[miscAnimal->entityIndex].coordinates.x, entities[miscAnimal->entityIndex].coordinates.z, entities[ENTITY_PLAYER].coordinates.x, entities[ENTITY_PLAYER].coordinates.z);
 
-            gMiscAnimals[index].direction = (tempDirection + 4) % 8;
+            miscAnimal->direction = (tempDirection + 4) % 8;
             
             if (!getRandomNumberInRange(0, 30)) {
-                gMiscAnimals[index].flags &= ~MISC_ANIMAL_RUNNING_AWAY;
+                miscAnimal->flags &= ~MISC_ANIMAL_RUNNING_AWAY;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             break;
 
 }
@@ -9040,75 +9178,77 @@ case 3:
 }
 
 void updateSparrow(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     u16 temp;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
             
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
             
             if (getRandomNumberInRange(0, 60) < 40) {
 
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             
             } else {
                 
                 temp = getRandomNumberInRange(0, 10);
                 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
                 if (getRandomNumberInRange(0, 30) >= 28) {
-                    gMiscAnimals[index].actionState = 32;
+                    miscAnimal->actionState = 32;
                 } else {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 1:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
             temp = getRandomNumberInRange(0, 3); 
 
             switch (temp) {
 
                 case 0:
-                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x10);
+                    setEntityAnimation(miscAnimal->entityIndex, 0x10);
                     break;
                 case 1:
-                    setEntityAnimation(gMiscAnimals[index].entityIndex, 17);
+                    setEntityAnimation(miscAnimal->entityIndex, 17);
                     break;
                 case 2:
-                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x12);
+                    setEntityAnimation(miscAnimal->entityIndex, 0x12);
                     break;
                 
                 case 3:
-                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x13);
+                    setEntityAnimation(miscAnimal->entityIndex, 0x13);
                     break;
             } 
                 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             playSfx(0x46);
             
@@ -9116,25 +9256,25 @@ void updateSparrow(u8 index) {
 
         case 32:
 
-            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
-            enableEntityMovement(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityYMovement(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
+            setEntityCollidable(miscAnimal->entityIndex, FALSE);
+            setEntityTracksCollisions(miscAnimal->entityIndex, FALSE);
+            enableEntityMovement(miscAnimal->entityIndex, FALSE);
+            setEntityYMovement(miscAnimal->entityIndex, FALSE);
+            setEntityShadow(miscAnimal->entityIndex, 0xFF);
             
-            entities[gMiscAnimals[index].entityIndex].yOffset = 0;
+            entities[miscAnimal->entityIndex].yOffset = 0;
             
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            if (gMiscAnimals[index].timer < 129) {
-                gMiscAnimals[index].zDisplacement = 4;
-                gMiscAnimals[index].yDisplacement = 2;
-                gMiscAnimals[index].timer++;
+            if (miscAnimal->timer < 129) {
+                miscAnimal->zDisplacement = 4;
+                miscAnimal->yDisplacement = 2;
+                miscAnimal->timer++;
             } else {
-                deactivateEntity(gMiscAnimals[index].entityIndex);
-                gMiscAnimals[index].flags = 0;
+                deactivateEntity(miscAnimal->entityIndex);
+                miscAnimal->flags = 0;
             }
             
     }
@@ -9142,75 +9282,77 @@ void updateSparrow(u8 index) {
 }
 
 void updateBird(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
     
     u16 temp;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
             
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
             
             if (getRandomNumberInRange(0, 60) < 40) {
 
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             
             } else {
                 
                 temp = getRandomNumberInRange(0, 10);
                 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
 
                 if (getRandomNumberInRange(0, 30) >= 28) {
-                    gMiscAnimals[index].actionState = 32;
+                    miscAnimal->actionState = 32;
                 } else {
-                    gMiscAnimals[index].actionState = 1;
+                    miscAnimal->actionState = 1;
                 }
                 
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 1:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
             temp = getRandomNumberInRange(0, 3); 
 
             switch (temp) {
 
                 case 0:
-                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x10);
+                    setEntityAnimation(miscAnimal->entityIndex, 0x10);
                     break;
                 case 1:
-                    setEntityAnimation(gMiscAnimals[index].entityIndex, 17);
+                    setEntityAnimation(miscAnimal->entityIndex, 17);
                     break;
                 case 2:
-                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x12);
+                    setEntityAnimation(miscAnimal->entityIndex, 0x12);
                     break;
                 
                 case 3:
-                    setEntityAnimation(gMiscAnimals[index].entityIndex, 0x13);
+                    setEntityAnimation(miscAnimal->entityIndex, 0x13);
                     break;
             } 
                 
             if (getRandomNumberInRange(0, 60) < 40) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (!getRandomNumberInRange(0, 1)) {
                 playSfx(0x48);
@@ -9222,19 +9364,19 @@ void updateBird(u8 index) {
 
         case 32:
 
-            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
-            enableEntityMovement(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityYMovement(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
-            entities[gMiscAnimals[index].entityIndex].yOffset = 0;
+            setEntityCollidable(miscAnimal->entityIndex, FALSE);
+            setEntityTracksCollisions(miscAnimal->entityIndex, FALSE);
+            enableEntityMovement(miscAnimal->entityIndex, FALSE);
+            setEntityYMovement(miscAnimal->entityIndex, FALSE);
+            setEntityShadow(miscAnimal->entityIndex, 0xFF);
+            entities[miscAnimal->entityIndex].yOffset = 0;
             
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
-            gMiscAnimals[index].zDisplacement = 4;
-            gMiscAnimals[index].yDisplacement = 2;
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
-            gMiscAnimals[index].timer++;
+            miscAnimal->zDisplacement = 4;
+            miscAnimal->yDisplacement = 2;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->timer++;
                     
             break;
 
@@ -9243,19 +9385,21 @@ void updateBird(u8 index) {
 }
 
 void updateCrab(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
     
     u32 temp;
     u16 temp2;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
             
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
             
             if (getRandomNumberInRange(0, 60) >= 40) {
 
@@ -9265,53 +9409,53 @@ void updateCrab(u8 index) {
                     // ???
                     temp &= ~3;
                     temp2 = temp;
-                    gMiscAnimals[index].direction = temp2;
+                    miscAnimal->direction = temp2;
                 } 
                 
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 1:
 
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
             
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 32:
 
-            setEntityCollidable(gMiscAnimals[index].entityIndex, 0);
-            setEntityYMovement(gMiscAnimals[index].entityIndex, 0);
-            gMiscAnimals[index].direction = DIRECTION_E;
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            setEntityCollidable(miscAnimal->entityIndex, 0);
+            setEntityYMovement(miscAnimal->entityIndex, 0);
+            miscAnimal->direction = DIRECTION_E;
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            if (gMiscAnimals[index].timer < 17) {
-                gMiscAnimals[index].zDisplacement = 4;
-                gMiscAnimals[index].yDisplacement = 0;
-                gMiscAnimals[index].timer++;
+            if (miscAnimal->timer < 17) {
+                miscAnimal->zDisplacement = 4;
+                miscAnimal->yDisplacement = 0;
+                miscAnimal->timer++;
             } else {
-                deactivateEntity(gMiscAnimals[index].entityIndex);
-                gMiscAnimals[index].flags = 0;
+                deactivateEntity(miscAnimal->entityIndex);
+                miscAnimal->flags = 0;
             }
                     
             break;
@@ -9320,68 +9464,70 @@ void updateCrab(u8 index) {
 }
 
 void updateSnake(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     u16 temp;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
             
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 0);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 0);
             
             if (getRandomNumberInRange(0, 60) >= 40) {
                 
                 temp = getRandomNumberInRange(0, 10);
                 
                 if (temp < 7) {
-                    gMiscAnimals[index].direction = temp;
+                    miscAnimal->direction = temp;
                 }
                 
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 1:
 
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
             
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
 
             if (getRandomNumberInRange(0, 19) < 10) {
-                gMiscAnimals[index].actionState = 1;
+                miscAnimal->actionState = 1;
             } else {
-                gMiscAnimals[index].actionState = 0;
+                miscAnimal->actionState = 0;
             }
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
 
         case 32:
 
-            setEntityDirectionalAnimation(gMiscAnimals[index].entityIndex, 8);
+            setEntityDirectionalAnimation(miscAnimal->entityIndex, 8);
             
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            if (gMiscAnimals[index].timer < 33) {
-                gMiscAnimals[index].zDisplacement = 4;
-                gMiscAnimals[index].yDisplacement = 0;
-                gMiscAnimals[index].timer++;
+            if (miscAnimal->timer < 33) {
+                miscAnimal->zDisplacement = 4;
+                miscAnimal->yDisplacement = 0;
+                miscAnimal->timer++;
             } else {
-                deactivateEntity(gMiscAnimals[index].entityIndex);
-                gMiscAnimals[index].flags = 0;
+                deactivateEntity(miscAnimal->entityIndex);
+                miscAnimal->flags = 0;
             }
                     
             break;
@@ -9391,26 +9537,28 @@ void updateSnake(u8 index) {
 }
 
 void updateWhiteButterfly(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
 
-    switch (gMiscAnimals[index].actionState) {
+
+    switch (miscAnimal->actionState) {
 
         case 0:
         case 1:
 
-            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityCollidable(miscAnimal->entityIndex, FALSE);
+            setEntityTracksCollisions(miscAnimal->entityIndex, FALSE);
     
-            entities[gMiscAnimals[index].entityIndex].yOffset = 0x20;
+            entities[miscAnimal->entityIndex].yOffset = 0x20;
     
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
     
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 2);
+            setEntityAnimation(miscAnimal->entityIndex, 2);
     
-            gMiscAnimals[index].direction = getRandomNumberInRange(0, 7);
-            gMiscAnimals[index].actionState = 0;
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->direction = getRandomNumberInRange(0, 7);
+            miscAnimal->actionState = 0;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;
         
@@ -9422,20 +9570,22 @@ void updateWhiteButterfly(u8 index) {
 }
 
 void updateLadybug(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
 
-    switch (gMiscAnimals[index].actionState) {
+
+    switch (miscAnimal->actionState) {
 
         case 0:
         case 1:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
     
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
+            setEntityAnimation(miscAnimal->entityIndex, 0);
 
-            gMiscAnimals[index].actionState = 0;
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->actionState = 0;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
@@ -9447,20 +9597,22 @@ void updateLadybug(u8 index) {
 }
 
 void updateCicada(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
 
-    switch (gMiscAnimals[index].actionState) {
+
+    switch (miscAnimal->actionState) {
 
         case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
+            setEntityAnimation(miscAnimal->entityIndex, 0);
 
-            entities[gMiscAnimals[index].entityIndex].yOffset = 64;
+            entities[miscAnimal->entityIndex].yOffset = 64;
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (!(5 < gHour && gHour < 16)) {
                 playSfx(0x51);
@@ -9472,22 +9624,22 @@ void updateCicada(u8 index) {
         
         case 1:
 
-            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
-            enableEntityMovement(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityYMovement(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
+            setEntityCollidable(miscAnimal->entityIndex, FALSE);
+            setEntityTracksCollisions(miscAnimal->entityIndex, FALSE);
+            enableEntityMovement(miscAnimal->entityIndex, FALSE);
+            setEntityYMovement(miscAnimal->entityIndex, FALSE);
+            setEntityShadow(miscAnimal->entityIndex, 0xFF);
 
-            entities[gMiscAnimals[index].entityIndex].yOffset = 0;
+            entities[miscAnimal->entityIndex].yOffset = 0;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 2);
+            setEntityAnimation(miscAnimal->entityIndex, 2);
 
-            gMiscAnimals[index].zDisplacement = 4;
-            gMiscAnimals[index].yDisplacement = 2;
+            miscAnimal->zDisplacement = 4;
+            miscAnimal->yDisplacement = 2;
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            gMiscAnimals[index].timer++;
+            miscAnimal->timer++;
             
             break;    
         
@@ -9496,39 +9648,41 @@ void updateCicada(u8 index) {
 }
 
 void updateHornedBeetle(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
 
-     switch (gMiscAnimals[index].actionState) {
+
+     switch (miscAnimal->actionState) {
 
         case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
+            setEntityAnimation(miscAnimal->entityIndex, 0);
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
         case 1:
 
-            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
-            enableEntityMovement(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityYMovement(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
+            setEntityCollidable(miscAnimal->entityIndex, FALSE);
+            setEntityTracksCollisions(miscAnimal->entityIndex, FALSE);
+            enableEntityMovement(miscAnimal->entityIndex, FALSE);
+            setEntityYMovement(miscAnimal->entityIndex, FALSE);
+            setEntityShadow(miscAnimal->entityIndex, 0xFF);
 
-            entities[gMiscAnimals[index].entityIndex].yOffset = 0;
+            entities[miscAnimal->entityIndex].yOffset = 0;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 4);
+            setEntityAnimation(miscAnimal->entityIndex, 4);
 
-            gMiscAnimals[index].zDisplacement = 4;
-            gMiscAnimals[index].yDisplacement = 2;
+            miscAnimal->zDisplacement = 4;
+            miscAnimal->yDisplacement = 2;
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            gMiscAnimals[index].timer++;
+            miscAnimal->timer++;
             
             break;    
         
@@ -9537,39 +9691,41 @@ void updateHornedBeetle(u8 index) {
 }
 
 void updateStagBeetle(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
 
-    switch (gMiscAnimals[index].actionState) {
+
+    switch (miscAnimal->actionState) {
 
         case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
+            setEntityAnimation(miscAnimal->entityIndex, 0);
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
         case 1:
 
-            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
-            enableEntityMovement(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityYMovement(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityShadow(gMiscAnimals[index].entityIndex, 0xFF);
+            setEntityCollidable(miscAnimal->entityIndex, FALSE);
+            setEntityTracksCollisions(miscAnimal->entityIndex, FALSE);
+            enableEntityMovement(miscAnimal->entityIndex, FALSE);
+            setEntityYMovement(miscAnimal->entityIndex, FALSE);
+            setEntityShadow(miscAnimal->entityIndex, 0xFF);
 
-            entities[gMiscAnimals[index].entityIndex].yOffset = 0;
+            entities[miscAnimal->entityIndex].yOffset = 0;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 4);
+            setEntityAnimation(miscAnimal->entityIndex, 4);
 
-            gMiscAnimals[index].zDisplacement = 4;
-            gMiscAnimals[index].yDisplacement = 2;
+            miscAnimal->zDisplacement = 4;
+            miscAnimal->yDisplacement = 2;
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            gMiscAnimals[index].timer++;
+            miscAnimal->timer++;
             
             break;    
         
@@ -9578,33 +9734,35 @@ void updateStagBeetle(u8 index) {
 }
 
 void updateDragonfly(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
 
     u16 temp;
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
         case 1:
 
-            setEntityCollidable(gMiscAnimals[index].entityIndex, FALSE);
-            setEntityTracksCollisions(gMiscAnimals[index].entityIndex, FALSE);
+            setEntityCollidable(miscAnimal->entityIndex, FALSE);
+            setEntityTracksCollisions(miscAnimal->entityIndex, FALSE);
                         
-            entities[gMiscAnimals[index].entityIndex].yOffset = 0x20;
+            entities[miscAnimal->entityIndex].yOffset = 0x20;
 
-            gMiscAnimals[index].zDisplacement = 1;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 1;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 2);
+            setEntityAnimation(miscAnimal->entityIndex, 2);
 
             temp = getRandomNumberInRange(0, 20);
 
             if (temp < 7) {
-                gMiscAnimals[index].direction = temp;
+                miscAnimal->direction = temp;
             }
             
-            gMiscAnimals[index].actionState = 0;
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->actionState = 0;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
             
             break;    
         
@@ -9613,33 +9771,35 @@ void updateDragonfly(u8 index) {
 }
 
 void updateCricket(u8 index) {
+    MiscAnimal *miscAnimal = &gMiscAnimals[index];
+
     
-    switch (gMiscAnimals[index].actionState) {
+    switch (miscAnimal->actionState) {
 
         case 0:
 
-            gMiscAnimals[index].zDisplacement = 0;
-            gMiscAnimals[index].timer = 0;
-            gMiscAnimals[index].unk_14 = 0;
+            miscAnimal->zDisplacement = 0;
+            miscAnimal->timer = 0;
+            miscAnimal->unk_14 = 0;
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 0);
+            setEntityAnimation(miscAnimal->entityIndex, 0);
 
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             break;
         
         case 1:
 
-            setEntityAnimation(gMiscAnimals[index].entityIndex, 2);
-            gMiscAnimals[index].flags |= MISC_ANIMAL_STATE_CHANGED;
+            setEntityAnimation(miscAnimal->entityIndex, 2);
+            miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            if (gMiscAnimals[index].timer < 33) {
-                gMiscAnimals[index].zDisplacement = 2;
-                gMiscAnimals[index].yDisplacement = 0;
-                gMiscAnimals[index].timer++;
+            if (miscAnimal->timer < 33) {
+                miscAnimal->zDisplacement = 2;
+                miscAnimal->yDisplacement = 0;
+                miscAnimal->timer++;
             } else {
-                deactivateEntity(gMiscAnimals[index].entityIndex);
-                gMiscAnimals[index].flags = 0;
+                deactivateEntity(miscAnimal->entityIndex);
+                miscAnimal->flags = 0;
             }
             
             break;    
@@ -9693,17 +9853,21 @@ void handleChickenPlayerCollision(void) {
 }
 
 void handleDogPlayerCollision(void) {
+    Dog *dog = &dogInfo;
+
 
     checkEntityProximity(ENTITY_PLAYER, 0.0f, 8.0f, 0);
     
-    if ((dogInfo.flags & DOG_ENTITY_LOADED) && (entities[dogInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
-        dogInfo.actionState = 0x20;
-        dogInfo.flags |= DOG_COLLISION_WITH_PLAYER;
+    if ((dog->flags & DOG_ENTITY_LOADED) && (entities[dog->entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
+        dog->actionState = 0x20;
+        dog->flags |= DOG_COLLISION_WITH_PLAYER;
     }
     
 }
 
 bool handleHorsePlayerInteraction(void) {
+    Horse *horse = &horseInfo;
+
     
     bool result;
 
@@ -9711,10 +9875,10 @@ bool handleHorsePlayerInteraction(void) {
     
     result = FALSE;
 
-    if ((horseInfo.flags & HORSE_ENTITY_LOADED) && (entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
+    if ((horse->flags & HORSE_ENTITY_LOADED) && (entities[horse->entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
         result = TRUE;
-        horseInfo.actionState = 16;
-        horseInfo.flags |= HORSE_COLLISION_WITH_PLAYER;
+        horse->actionState = 16;
+        horse->flags |= HORSE_COLLISION_WITH_PLAYER;
     }
     
     return result;
@@ -9722,12 +9886,14 @@ bool handleHorsePlayerInteraction(void) {
 }
 
 bool handleHorseGrownPlayerInteraction(void) {
+    Horse *horse = &horseInfo;
+
     
     bool result = FALSE;
 
-    if ((horseInfo.flags & HORSE_ENTITY_LOADED) && (horseInfo.grown == TRUE) && (entities[horseInfo.entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
-        horseInfo.actionState = 16;
-        horseInfo.flags |=  HORSE_COLLISION_WITH_PLAYER;
+    if ((horse->flags & HORSE_ENTITY_LOADED) && (horse->grown == TRUE) && (entities[horse->entityIndex].entityCollidedWithIndex == ENTITY_PLAYER)) {
+        horse->actionState = 16;
+        horse->flags |=  HORSE_COLLISION_WITH_PLAYER;
         result = TRUE;
     }
     
@@ -9784,22 +9950,24 @@ bool handleBrushFarmAnimal(void) {
 }
 
 bool handleBrushHorse(void) {
+    Horse *horse = &horseInfo;
+
 
     bool result = FALSE;
     
-    if (horseInfo.flags & HORSE_ENTITY_LOADED) {
+    if (horse->flags & HORSE_ENTITY_LOADED) {
 
-        if (horseInfo.actionState == 16) {
+        if (horse->actionState == 16) {
             
-            horseInfo.actionState = 0;
+            horse->actionState = 0;
             
-            if (!(horseInfo.flags & HORSE_BRUSHED_DAILY)) {
+            if (!(horse->flags & HORSE_BRUSHED_DAILY)) {
                 
-                horseInfo.actionState = 17;
+                horse->actionState = 17;
                 
                 adjustHorseAffection(2);
             
-                horseInfo.flags |= (HORSE_COLLISION_WITH_PLAYER | HORSE_BRUSHED_DAILY);
+                horse->flags |= (HORSE_COLLISION_WITH_PLAYER | HORSE_BRUSHED_DAILY);
                 showAnimalExpressionBubble(HORSE_TYPE, 0, 3);
                 result = TRUE;
             
@@ -9813,13 +9981,15 @@ bool handleBrushHorse(void) {
 }
 
 bool handleHorseShippingItem(void) {
+    Horse *horse = &horseInfo;
+
 
     bool result = FALSE;
     
-    if ((horseInfo.flags & HORSE_ENTITY_LOADED) && (horseInfo.actionState == 16)) {
+    if ((horse->flags & HORSE_ENTITY_LOADED) && (horse->actionState == 16)) {
         
-        horseInfo.actionState = 0;
-        horseInfo.flags |= HORSE_COLLISION_WITH_PLAYER;
+        horse->actionState = 0;
+        horse->flags |= HORSE_COLLISION_WITH_PLAYER;
         showAnimalExpressionBubble(HORSE_TYPE, 0, 1);
         
         result = TRUE;
@@ -10139,18 +10309,20 @@ bool handleHitChickenWithTool(void) {
 }
 
 bool handleHitDogWithTool(void) {
+    Dog *dog = &dogInfo;
+
 
     bool result = FALSE;
     
-    if (dogInfo.flags & DOG_ENTITY_LOADED) {
+    if (dog->flags & DOG_ENTITY_LOADED) {
 
-        if (dogInfo.actionState == 0x20) {
+        if (dog->actionState == 0x20) {
 
-            dogInfo.actionState = 34;
+            dog->actionState = 34;
 
             adjustDogAffection(-8);
 
-            dogInfo.flags |= DOG_COLLISION_WITH_PLAYER;
+            dog->flags |= DOG_COLLISION_WITH_PLAYER;
             showAnimalExpressionBubble(DOG_TYPE, 0, 0);
             result = TRUE;
             
@@ -10163,18 +10335,20 @@ bool handleHitDogWithTool(void) {
 }
 
 bool handleHitHorseWithTool(void) {
+    Horse *horse = &horseInfo;
+
     
     bool result = FALSE;
     
-    if (horseInfo.flags & HORSE_ENTITY_LOADED) {
+    if (horse->flags & HORSE_ENTITY_LOADED) {
 
-        if (horseInfo.actionState == 16) {
+        if (horse->actionState == 16) {
 
-            horseInfo.actionState = 18;
+            horse->actionState = 18;
 
             adjustHorseAffection(-8);
 
-            horseInfo.flags |= HORSE_COLLISION_WITH_PLAYER;
+            horse->flags |= HORSE_COLLISION_WITH_PLAYER;
             showAnimalExpressionBubble(HORSE_TYPE, 0, 0);
             result = TRUE;
             
@@ -10187,31 +10361,35 @@ bool handleHitHorseWithTool(void) {
 }
 
 void handleWhistleForDog(void) {
+    Dog *dog = &dogInfo;
 
-    if (dogInfo.flags & DOG_ENTITY_LOADED) {
-        dogInfo.flags |= DOG_FOLLOWING;
-        dogInfo.actionState = 0;
+
+    if (dog->flags & DOG_ENTITY_LOADED) {
+        dog->flags |= DOG_FOLLOWING;
+        dog->actionState = 0;
         playSfx(DOG_BARK);
     }
 
-    if (!(dogInfo.flags & DOG_WHISTLED_FOR_DAILY)) {
+    if (!(dog->flags & DOG_WHISTLED_FOR_DAILY)) {
         adjustDogAffection(1);
-        dogInfo.flags |= DOG_WHISTLED_FOR_DAILY;
+        dog->flags |= DOG_WHISTLED_FOR_DAILY;
     }
     
 }
 
 void handleWhistleForHorse(void) {
+    Horse *horse = &horseInfo;
+
     
-    if (horseInfo.flags & HORSE_ENTITY_LOADED) {
-        horseInfo.flags |= HORSE_FOLLOWING;
-        horseInfo.actionState = 0;
+    if (horse->flags & HORSE_ENTITY_LOADED) {
+        horse->flags |= HORSE_FOLLOWING;
+        horse->actionState = 0;
         playSfx(HORSE_NEIGH);
     }
     
-    if (!(horseInfo.flags & HORSE_WHISTLED_DAILY)) {
+    if (!(horse->flags & HORSE_WHISTLED_DAILY)) {
         adjustHorseAffection(1);
-        horseInfo.flags |= HORSE_WHISTLED_DAILY;
+        horse->flags |= HORSE_WHISTLED_DAILY;
     }
     
 }
@@ -10321,12 +10499,14 @@ u8 getCowWithHighestAffection(void) {
     u8 temp = 0;
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
-        
-        if ((gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) && gFarmAnimals[i].type == ADULT_COW) {
+        FarmAnimal *farmAnimal = &gFarmAnimals[i];
 
-            if (gFarmAnimals[i].affection >= temp) {
+        
+        if ((farmAnimal->flags & FARM_ANIMAL_ACTIVE) && farmAnimal->type == ADULT_COW) {
+
+            if (farmAnimal->affection >= temp) {
                 found = i;
-                temp = gFarmAnimals[i].affection;
+                temp = farmAnimal->affection;
             }
     
         }
@@ -10342,10 +10522,12 @@ u8 getTotalSheepCount(void) {
     u8 count = 0;
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        FarmAnimal *farmAnimal = &gFarmAnimals[i];
+
         
-        if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) {
+        if (farmAnimal->flags & FARM_ANIMAL_ACTIVE) {
             
-            if (PREGNANT_COW < gFarmAnimals[i].type && gFarmAnimals[i].type < SHEARED_SHEEP || gFarmAnimals[i].type == SHEARED_SHEEP) {
+            if (PREGNANT_COW < farmAnimal->type && farmAnimal->type < SHEARED_SHEEP || farmAnimal->type == SHEARED_SHEEP) {
                 count++;
             }
     
@@ -10362,14 +10544,16 @@ u8 getTotalChickenCount(void) {
     u8 count = 0;
 
     for (i = 0; i < MAX_CHICKENS; i++) {
+        Chicken *chicken = &gChickens[i];
 
-        if (gChickens[i].flags & CHICKEN_ACTIVE) {
+
+        if (chicken->flags & CHICKEN_ACTIVE) {
             
-            if (0 < gChickens[i].type && gChickens[i].type < 3) {
+            if (0 < chicken->type && chicken->type < 3) {
                 count++;
             }
 
-            if (gChickens[i].type == CHICKEN_EGG && (gChickens[i].flags & CHICKEN_EGG_INCUBATING)) {
+            if (chicken->type == CHICKEN_EGG && (chicken->flags & CHICKEN_EGG_INCUBATING)) {
                 count++;
             }
             
@@ -10477,15 +10661,17 @@ u8 func_8009B828(u8 arg0) {
     u8 count = 0;
     
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
+        FarmAnimal *farmAnimal = &gFarmAnimals[i];
 
-        if (gFarmAnimals[i].flags & FARM_ANIMAL_ACTIVE) {
 
-            switch (gFarmAnimals[i].type) {
+        if (farmAnimal->flags & FARM_ANIMAL_ACTIVE) {
+
+            switch (farmAnimal->type) {
                 case BABY_COW:
                 case CALF:
                 case ADULT_COW:
                 case PREGNANT_COW:
-                    if (gFarmAnimals[i].location == FARM && (arg0 == 0 || gFarmAnimals[i].milkType == 0)) {
+                    if (farmAnimal->location == FARM && (arg0 == 0 || farmAnimal->milkType == 0)) {
                         count++;
                     }
                     break;
@@ -10573,26 +10759,28 @@ void setgAnimalSalePrice() {
 }
 
 void generateMilkTypeString(u8 index) {
+    FarmAnimal *farmAnimal = &gFarmAnimals[index];
+
 
     u16 temp;
 
-    if (CALF < gFarmAnimals[index].type && gFarmAnimals[index].type < BABY_SHEEP) {
+    if (CALF < farmAnimal->type && farmAnimal->type < BABY_SHEEP) {
 
-        if (gFarmAnimals[index].milkType == 0) {
+        if (farmAnimal->milkType == 0) {
             
             temp = goldenMilkInfo[0];
             
         } else {
 
-            if (gFarmAnimals[index].affection < 151) {
+            if (farmAnimal->affection < 151) {
                 temp = smallMilkInfo[0];
             }
             
-            if (150 < gFarmAnimals[index].affection && gFarmAnimals[index].affection < 221) {
+            if (150 < farmAnimal->affection && farmAnimal->affection < 221) {
                 temp = mediumMilkInfo[0];
             }
 
-            if (gFarmAnimals[index].affection >= 221) {
+            if (farmAnimal->affection >= 221) {
                 temp = largeMilkInfo[0];
             }
             

@@ -3749,24 +3749,26 @@ void clearAllItemContextSlots(void) {
     u8 i;
 
     for (i = 0; i < 10; i++) {
+        ItemContext *item = &itemInfo[i];
 
-        itemInfo[i].position.x = 0;
-        itemInfo[i].position.y = 0;
-        itemInfo[i].position.z = 0;
 
-        itemInfo[i].movement.x = 0;
-        itemInfo[i].movement.y = 0;
-        itemInfo[i].movement.z = 0;
+        item->position.x = 0;
+        item->position.y = 0;
+        item->position.z = 0;
 
-        itemInfo[i].attachmentOffset.x = 0;
-        itemInfo[i].attachmentOffset.y = 0;
-        itemInfo[i].attachmentOffset.z = 0;
+        item->movement.x = 0;
+        item->movement.y = 0;
+        item->movement.z = 0;
 
-        itemInfo[i].unk_24 = 0;
-        itemInfo[i].itemAnimationFrameCounter = 0;
-        itemInfo[i].heldItemIndex = 0;
-        itemInfo[i].stateIndex = 0;
-        itemInfo[i].flags = 0;
+        item->attachmentOffset.x = 0;
+        item->attachmentOffset.y = 0;
+        item->attachmentOffset.z = 0;
+
+        item->unk_24 = 0;
+        item->itemAnimationFrameCounter = 0;
+        item->heldItemIndex = 0;
+        item->stateIndex = 0;
+        item->flags = 0;
 
     }
 
@@ -3785,11 +3787,13 @@ void loadActiveItemEntities(void) {
 }
 
 inline u8 initializeHeldItem(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment) {
+    ItemContext *item = &itemInfo[index];
 
-    itemInfo[index].stateIndex = stateIndex;
-    itemInfo[index].heldItemIndex = heldItemIndex;
-    itemInfo[index].itemAnimationFrameCounter = 0;
-    itemInfo[index].flags = hasDirectionFrame | (useAttachment | 1);
+
+    item->stateIndex = stateIndex;
+    item->heldItemIndex = heldItemIndex;
+    item->itemAnimationFrameCounter = 0;
+    item->flags = hasDirectionFrame | (useAttachment | 1);
     
     gItemBeingHeld = getHeldItemDialogueItemIndex(heldItemIndex);
     
@@ -3823,12 +3827,14 @@ u8 allocateThrownItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDir
 }
 
 u8 allocateGroundItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment) {
+    ItemContext *item = &itemInfo[index];
+
     
     u8 found = FALSE;
     
     while (index < 10 && !found) {
 
-        if (!(itemInfo[index].flags & ITEM_CONTEXT_ACTIVE)) {
+        if (!(item->flags & ITEM_CONTEXT_ACTIVE)) {
           found = TRUE;
         }
         else {
@@ -3839,10 +3845,10 @@ u8 allocateGroundItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDir
 
     if (found) {
         
-        itemInfo[index].stateIndex = stateIndex;
-        itemInfo[index].heldItemIndex = heldItemIndex;
-        itemInfo[index].flags = hasDirectionFrame | (useAttachment | 1);
-        itemInfo[index].itemAnimationFrameCounter = 0;
+        item->stateIndex = stateIndex;
+        item->heldItemIndex = heldItemIndex;
+        item->flags = hasDirectionFrame | (useAttachment | 1);
+        item->itemAnimationFrameCounter = 0;
 
     } else {
         index = 0xff;
@@ -3875,31 +3881,37 @@ void setItemState(u8 index, u8 stateIndex) {
 }
 
 void setItemPosition(u8 index, f32 x, f32 y, f32 z) {
+    ItemContext *item = &itemInfo[index];
 
-    itemInfo[index].position.x = x;
-    itemInfo[index].position.y = y;
-    itemInfo[index].position.z = z;
-    itemInfo[index].flags |= ITEM_CONTEXT_USE_POSITION;
+
+    item->position.x = x;
+    item->position.y = y;
+    item->position.z = z;
+    item->flags |= ITEM_CONTEXT_USE_POSITION;
 
 }
 
 void setItemAttachmentOffset(u8 index, f32 x, f32 y, f32 z) {
+    ItemContext *item = &itemInfo[index];
 
-    itemInfo[index].attachmentOffset.x = x;
-    itemInfo[index].attachmentOffset.y = y;
-    itemInfo[index].attachmentOffset.z = z;
-    itemInfo[index].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+
+    item->attachmentOffset.x = x;
+    item->attachmentOffset.y = y;
+    item->attachmentOffset.z = z;
+    item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
      
 }
 
 void loadHeldItemEntity(u8 itemIndex, u16 heldItemIndex) {
+    ItemContext *item = &itemInfo[itemIndex];
 
-    itemInfo[itemIndex].heldItemIndex = heldItemIndex;
+
+    item->heldItemIndex = heldItemIndex;
 
     loadEntity(ENTITY_ITEM_BASE_INDEX + itemIndex, itemEntityMetadata[heldItemIndex][0], TRUE);
     setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + itemIndex, FALSE);
 
-    if (itemInfo[itemIndex].flags & ITEM_CONTEXT_USE_ATTACHMENT){
+    if (item->flags & ITEM_CONTEXT_USE_ATTACHMENT){
         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemIndex, 0, 0xFF);
     } else {
         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xFFFF, 0xFF);
@@ -3914,7 +3926,7 @@ void loadHeldItemEntity(u8 itemIndex, u16 heldItemIndex) {
 
     setEntityAttachmentOffset(ENTITY_ITEM_BASE_INDEX + itemIndex, 0, 0, 0);
 
-    if (itemInfo[itemIndex].flags & ITEM_CONTEXT_HAS_DIRECTION_FRAME) {
+    if (item->flags & ITEM_CONTEXT_HAS_DIRECTION_FRAME) {
         setEntityDirectionalAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, itemEntityMetadata[heldItemIndex][gSeason]);
     } else {
         setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, itemEntityMetadata[heldItemIndex][gSeason]);
@@ -3926,7 +3938,7 @@ void loadHeldItemEntity(u8 itemIndex, u16 heldItemIndex) {
 
     setEntityShadow(ENTITY_ITEM_BASE_INDEX + itemIndex, 2);
 
-    itemInfo[itemIndex].stateIndex = ITEM_STATE_INACTIVE;
+    item->stateIndex = ITEM_STATE_INACTIVE;
 
 }
 
@@ -4438,15 +4450,17 @@ static inline void setVec3f(u8 index, f32 x, f32 y, f32 z) {
 }
 
 void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
+    ItemContext *item = &itemInfo[itemIndex];
+
 
     u8 temp;
     u8 temp2;
     u8 flags;
     
-    itemInfo[itemIndex].attachmentOffset.x = 0;
-    itemInfo[itemIndex].attachmentOffset.y = 0;
-    itemInfo[itemIndex].attachmentOffset.z = 0;
-    itemInfo[itemIndex].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+    item->attachmentOffset.x = 0;
+    item->attachmentOffset.y = 0;
+    item->attachmentOffset.z = 0;
+    item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
     setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + itemIndex, 0.0f, 0.0f, 0.0f, 0.0f);
     setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xFFFF, 0xFF);
@@ -4462,7 +4476,7 @@ void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
         
         if (26 < temp && temp2 < 28 || temp == 29) {
             setVec3f(itemIndex, 288.0f, 80.0f, -404.0f);
-            itemInfo[itemIndex].flags |= ITEM_CONTEXT_USE_POSITION;
+            item->flags |= ITEM_CONTEXT_USE_POSITION;
             setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xE9);
         } 
 
@@ -4474,19 +4488,19 @@ void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
         
         if (temp == 0x10 || temp == 0x14) {
             setVec3f(itemIndex, 160.0f, 64.0f, -128.0f);
-            itemInfo[itemIndex].flags |= ITEM_CONTEXT_USE_POSITION;
+            item->flags |= ITEM_CONTEXT_USE_POSITION;
             setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 0xE9);
         }
         
         if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
 
             if (!checkLifeEventBit(MET_KAPPA) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY)
-                && (itemInfo[itemIndex].heldItemIndex == SMALL_FISH_HELD_ITEM || itemInfo[itemIndex].heldItemIndex == MEDIUM_FISH_HELD_ITEM)
+                && (item->heldItemIndex == SMALL_FISH_HELD_ITEM || item->heldItemIndex == MEDIUM_FISH_HELD_ITEM)
                 && 8 < gHour && gHour < 17) {
                 setDailyEventBit(KAPPA_FISH_OFFERING_DAILY);
             }
 
-            if (!checkLifeEventBit(KAPPA_POWER_NUT_GIFT) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY) && itemInfo[itemIndex].heldItemIndex == LARGE_FISH_HELD_ITEM && 8 < gHour && gHour < 17) {
+            if (!checkLifeEventBit(KAPPA_POWER_NUT_GIFT) && !checkDailyEventBit(MOUNTAIN_1_CUTSCENE_DAILY) && item->heldItemIndex == LARGE_FISH_HELD_ITEM && 8 < gHour && gHour < 17) {
                 setDailyEventBit(KAPPA_LARGE_FISH_OFFERING_DAILY);
             }
 
@@ -4500,12 +4514,12 @@ void handleItemDroppedInWater(u8 arg0, u8 itemIndex) {
         
         if (temp == 0x10) {
             setVec3f(itemIndex, -16.0f, 80.0f, -224.0f);
-            itemInfo[itemIndex].flags |= ITEM_CONTEXT_USE_POSITION;
+            item->flags |= ITEM_CONTEXT_USE_POSITION;
             setEntityAnimation(ENTITY_ITEM_BASE_INDEX + itemIndex, 233);
         }
         
         if (!(gCutsceneFlags & CUTSCENE_ACTIVE)) {
-            if (!checkDailyEventBit(HARVEST_GODDESS_INTERACTION) && (itemFlags[itemInfo[itemIndex].heldItemIndex] & ITEM_HARVEST_GODDESS_OFFERABLE) && 8 < gHour && gHour < 17) {
+            if (!checkDailyEventBit(HARVEST_GODDESS_INTERACTION) && (itemFlags[item->heldItemIndex] & ITEM_HARVEST_GODDESS_OFFERABLE) && 8 < gHour && gHour < 17) {
                 setDailyEventBit(HARVEST_GODDESS_OFFERING);    
             }
         }
@@ -4526,8 +4540,10 @@ void updateHeldItemState(void) {
     f32 z3;
 
     for (i = 0; i < 10; i++) {
+        ItemContext *item = &itemInfo[i];
 
-        if (itemInfo[i].flags & ITEM_CONTEXT_ACTIVE) {
+
+        if (item->flags & ITEM_CONTEXT_ACTIVE) {
             
             do {
 
@@ -4541,41 +4557,41 @@ void updateHeldItemState(void) {
 
                 set = FALSE;
                 
-                switch (itemInfo[i].stateIndex) {
+                switch (item->stateIndex) {
 
                     case ITEM_STATE_HELD:
-                        loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
-                        itemInfo[i].attachmentOffset.x = 0;
-                        itemInfo[i].attachmentOffset.y = y;
-                        itemInfo[i].attachmentOffset.z = z;
-                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+                        loadHeldItemEntity(i, item->heldItemIndex);
+                        item->attachmentOffset.x = 0;
+                        item->attachmentOffset.y = y;
+                        item->attachmentOffset.z = z;
+                        item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
 
                     case ITEM_STATE_DIALOGUE_SELECTION:
-                        loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
+                        loadHeldItemEntity(i, item->heldItemIndex);
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
-                        itemInfo[i].attachmentOffset.x = x;
-                        itemInfo[i].attachmentOffset.y = 24.0f;
-                        itemInfo[i].attachmentOffset.z = z3;
-                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+                        item->attachmentOffset.x = x;
+                        item->attachmentOffset.y = 24.0f;
+                        item->attachmentOffset.z = z3;
+                        item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
 
                     case ITEM_STATE_TOOL_ACQUIRED:
-                        loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
+                        loadHeldItemEntity(i, item->heldItemIndex);
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
-                        itemInfo[i].attachmentOffset.x = x;
-                        itemInfo[i].attachmentOffset.y = 64.0f;
-                        itemInfo[i].attachmentOffset.z = z3;
-                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+                        item->attachmentOffset.x = x;
+                        item->attachmentOffset.y = 64.0f;
+                        item->attachmentOffset.z = z3;
+                        item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
 
                     case ITEM_STATE_THROW_START:
-                        loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
-                        itemInfo[i].attachmentOffset.x = 0.0f;
-                        itemInfo[i].attachmentOffset.y = y2;
-                        itemInfo[i].attachmentOffset.z = z2;
-                        itemInfo[i].stateIndex = ITEM_STATE_THROW_MOTION;
-                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+                        loadHeldItemEntity(i, item->heldItemIndex);
+                        item->attachmentOffset.x = 0.0f;
+                        item->attachmentOffset.y = y2;
+                        item->attachmentOffset.z = z2;
+                        item->stateIndex = ITEM_STATE_THROW_MOTION;
+                        item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
 
                     case ITEM_STATE_THROW_MOTION:
@@ -4584,12 +4600,12 @@ void updateHeldItemState(void) {
 
                         vec = getMovementVectorFromDirection(4.0f, convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX), 0.0f);
 
-                        itemInfo[i].movement = vec;
+                        item->movement = vec;
 
-                        itemInfo[i].movement.y = entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y;
+                        item->movement.y = entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y;
 
-                        itemInfo[i].itemAnimationFrameCounter = 0;
-                        itemInfo[i].stateIndex = ITEM_STATE_THROW_FLIGHT;
+                        item->itemAnimationFrameCounter = 0;
+                        item->stateIndex = ITEM_STATE_THROW_FLIGHT;
 
                         break;
 
@@ -4597,9 +4613,9 @@ void updateHeldItemState(void) {
                         
                         if (entities[ENTITY_ITEM_BASE_INDEX + i].flags & 0x800) {
                             
-                            itemInfo[i].movement.x = 0;
-                            itemInfo[i].movement.y = 0;
-                            itemInfo[i].movement.z = 0;
+                            item->movement.x = 0;
+                            item->movement.y = 0;
+                            item->movement.z = 0;
                             
                             setCameraTrackingEntity(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                             setEntityCollidable(ENTITY_ITEM_BASE_INDEX + i, FALSE);
@@ -4607,15 +4623,15 @@ void updateHeldItemState(void) {
                             setEntityTracksCollisions(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                             enableEntityMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
 
-                            itemInfo[i].stateIndex = ITEM_STATE_THROW_LANDED;
+                            item->stateIndex = ITEM_STATE_THROW_LANDED;
 
                             set = TRUE;
 
                         } else {
 
                             // parabolic equation for throwing items
-                            entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y = itemInfo[i].movement.y + (f32)(itemInfo[i].itemAnimationFrameCounter * itemInfo[i].itemAnimationFrameCounter) * -0.5f;
-                            itemInfo[i].itemAnimationFrameCounter++;
+                            entities[ENTITY_ITEM_BASE_INDEX + i].coordinates.y = item->movement.y + (f32)(item->itemAnimationFrameCounter * item->itemAnimationFrameCounter) * -0.5f;
+                            item->itemAnimationFrameCounter++;
 
                         }
 
@@ -4636,11 +4652,11 @@ void updateHeldItemState(void) {
                         setEntityYMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                         setEntityTracksCollisions(ENTITY_ITEM_BASE_INDEX + i, FALSE);
                         enableEntityMovement(ENTITY_ITEM_BASE_INDEX + i, FALSE);
-                        setEntityAnimation(ENTITY_ITEM_BASE_INDEX + i, itemSpriteAnimations[itemInfo[i].heldItemIndex][gSeason-1]);
+                        setEntityAnimation(ENTITY_ITEM_BASE_INDEX + i, itemSpriteAnimations[item->heldItemIndex][gSeason-1]);
 
-                        itemInfo[i].stateIndex = ITEM_STATE_CLEANUP;
+                        item->stateIndex = ITEM_STATE_CLEANUP;
 
-                        if (itemFlags[itemInfo[i].heldItemIndex] & ITEM_EATABLE) {
+                        if (itemFlags[item->heldItemIndex] & ITEM_EATABLE) {
                             gHappiness += adjustValue(gHappiness, -1, MAX_HAPPINESS);
                         }
 
@@ -4648,32 +4664,32 @@ void updateHeldItemState(void) {
 
                     case ITEM_STATE_PICKUP:
 
-                        itemInfo[i].attachmentOffset.x = 0;
-                        itemInfo[i].attachmentOffset.y = z3;
-                        itemInfo[i].attachmentOffset.z = z;
+                        item->attachmentOffset.x = 0;
+                        item->attachmentOffset.y = z3;
+                        item->attachmentOffset.z = z;
 
-                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+                        item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
-                        loadHeldItemEntity(i, itemInfo[i].heldItemIndex);
+                        loadHeldItemEntity(i, item->heldItemIndex);
 
                         break;
 
                     case ITEM_STATE_PICKUP_DONE:
-                        itemInfo[i].attachmentOffset.x = 0;
-                        itemInfo[i].attachmentOffset.y = y;
-                        itemInfo[i].attachmentOffset.z = z;
-                        itemInfo[i].stateIndex = ITEM_STATE_INACTIVE;
+                        item->attachmentOffset.x = 0;
+                        item->attachmentOffset.y = y;
+                        item->attachmentOffset.z = z;
+                        item->stateIndex = ITEM_STATE_INACTIVE;
 
-                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+                        item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
                         break;
 
                     case ITEM_STATE_PLACE:
-                        itemInfo[i].attachmentOffset.x = 0;
-                        itemInfo[i].attachmentOffset.y = z3;
-                        itemInfo[i].attachmentOffset.z = z;
+                        item->attachmentOffset.x = 0;
+                        item->attachmentOffset.y = z3;
+                        item->attachmentOffset.z = z;
 
-                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+                        item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
                         break;
 
@@ -4681,10 +4697,10 @@ void updateHeldItemState(void) {
 
                         handlePutDownHeldItem(i);
 
-                        if (itemInfo[i].flags & ITEM_CONTEXT_ACTIVE) {
+                        if (item->flags & ITEM_CONTEXT_ACTIVE) {
                             deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
-                            itemInfo[i].stateIndex = ITEM_STATE_INACTIVE;
-                            itemInfo[i].flags = 0;
+                            item->stateIndex = ITEM_STATE_INACTIVE;
+                            item->flags = 0;
                         }
 
                         break;
@@ -4693,16 +4709,16 @@ void updateHeldItemState(void) {
                         
                         setEntityTrackingTarget(ENTITY_ITEM_BASE_INDEX + i, 0, 0);
                         
-                        itemInfo[i].attachmentOffset.x = x;
-                        itemInfo[i].attachmentOffset.y = y2;
-                        itemInfo[i].attachmentOffset.z = z3;
-                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+                        item->attachmentOffset.x = x;
+                        item->attachmentOffset.y = y2;
+                        item->attachmentOffset.z = z3;
+                        item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
 
                         break;
 
                     case ITEM_STATE_SHIP:
 
-                        processItemShipping(itemInfo[i].heldItemIndex);
+                        processItemShipping(item->heldItemIndex);
 
                         switch (gBaseMapIndex) {
 
@@ -4730,49 +4746,49 @@ void updateHeldItemState(void) {
                         }
 
                         deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
-                        itemInfo[i].stateIndex = ITEM_STATE_CLEANUP;
+                        item->stateIndex = ITEM_STATE_CLEANUP;
 
                         break;
 
                     case ITEM_STATE_DOG_BOWL:
-                        itemInfo[i].attachmentOffset.x = 0.0f;
-                        itemInfo[i].attachmentOffset.y = 8.0f;
-                        itemInfo[i].attachmentOffset.z = z;
-                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+                        item->attachmentOffset.x = 0.0f;
+                        item->attachmentOffset.y = 8.0f;
+                        item->attachmentOffset.z = z;
+                        item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
 
                     case ITEM_STATE_FEED_DOG:
                         handleFeedDog();
                         deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
-                        itemInfo[i].stateIndex = ITEM_STATE_CLEANUP;
+                        item->stateIndex = ITEM_STATE_CLEANUP;
                         break;
 
                     case ITEM_STATE_RAISED:
                     case ITEM_STATE_RAISED_ALT:
-                        itemInfo[i].attachmentOffset.x = 0.0f;
-                        itemInfo[i].attachmentOffset.y = y2;
-                        itemInfo[i].attachmentOffset.z = z2;
-                        itemInfo[i].flags |= ITEM_CONTEXT_USE_ATTACHMENT;
+                        item->attachmentOffset.x = 0.0f;
+                        item->attachmentOffset.y = y2;
+                        item->attachmentOffset.z = z2;
+                        item->flags |= ITEM_CONTEXT_USE_ATTACHMENT;
                         break;
 
                     case ITEM_STATE_DROP_IN_WATER:
-                        handleItemDroppedInWater(itemInfo[i].heldItemIndex, i);
+                        handleItemDroppedInWater(item->heldItemIndex, i);
                         playSfx(FISHING_ROD_CAST);
-                        itemInfo[i].stateIndex = ITEM_STATE_CLEANUP;
+                        item->stateIndex = ITEM_STATE_CLEANUP;
                         break;
 
                     // after throwing item
                     case ITEM_STATE_CLEANUP:
 
                         // wait 30 frames before removing item
-                        if (checkEntityAnimationStateChanged(ENTITY_ITEM_BASE_INDEX + i) || !(itemInfo[i].itemAnimationFrameCounter < 30)) {
+                        if (checkEntityAnimationStateChanged(ENTITY_ITEM_BASE_INDEX + i) || !(item->itemAnimationFrameCounter < 30)) {
 
-                            if (itemInfo[i].flags & ITEM_CONTEXT_ACTIVE) {
+                            if (item->flags & ITEM_CONTEXT_ACTIVE) {
 
                                 deactivateEntity(ENTITY_ITEM_BASE_INDEX + i);
 
-                                itemInfo[i].stateIndex = ITEM_STATE_INACTIVE;
-                                itemInfo[i].flags = 0;
+                                item->stateIndex = ITEM_STATE_INACTIVE;
+                                item->flags = 0;
 
                             }
                             
@@ -4805,7 +4821,7 @@ void updateHeldItemState(void) {
                             } 
                             
                         } else {
-                            itemInfo[i].itemAnimationFrameCounter++;
+                            item->itemAnimationFrameCounter++;
                         }
                         
                         break;
@@ -4814,15 +4830,15 @@ void updateHeldItemState(void) {
                 
             } while (set);
 
-            if (itemInfo[i].flags & ITEM_CONTEXT_USE_POSITION) {
-                setEntityCoordinates(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].position.x, itemInfo[i].position.y, itemInfo[i].position.z);
+            if (item->flags & ITEM_CONTEXT_USE_POSITION) {
+                setEntityCoordinates(ENTITY_ITEM_BASE_INDEX + i, item->position.x, item->position.y, item->position.z);
             }
             
-            if (itemInfo[i].flags & ITEM_CONTEXT_USE_ATTACHMENT) {
-                setEntityAttachmentOffset(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].attachmentOffset.x, itemInfo[i].attachmentOffset.y, itemInfo[i].attachmentOffset.z);
+            if (item->flags & ITEM_CONTEXT_USE_ATTACHMENT) {
+                setEntityAttachmentOffset(ENTITY_ITEM_BASE_INDEX + i, item->attachmentOffset.x, item->attachmentOffset.y, item->attachmentOffset.z);
             }
             
-            setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + i, itemInfo[i].movement.x, 0.0f, itemInfo[i].movement.z, 4.0f);
+            setEntityMovementVector(ENTITY_ITEM_BASE_INDEX + i, item->movement.x, 0.0f, item->movement.z, 4.0f);
             setEntityDirection(ENTITY_ITEM_BASE_INDEX + i, entities[ENTITY_PLAYER].direction);
             
         }

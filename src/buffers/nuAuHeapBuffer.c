@@ -1,3 +1,3 @@
 #include "common.h"
 
-u8 nuAuHeapBuffer[0x80000];
+u8 nuAuHeapBuffer[0x70000];

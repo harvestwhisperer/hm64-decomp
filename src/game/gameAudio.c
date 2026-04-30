@@ -211,7 +211,7 @@ Addresses sfxRomAddresses[] = {
     { 0, 0 },
 };
 
-// for sfx; sfx can either be raw audio data from `/data/audio/sfx.c` or sequences that use the game's wavetable
+// for sfx; sfx can either be raw audio data from `/data/audio/sfx.inc.c` or sequences that use the game's wavetable
 u8 audioTypeTable[] = {
     SFX_TYPE, SFX_TYPE, SFX_TYPE, SFX_TYPE, SFX_TYPE, SFX_TYPE, 
     SFX_TYPE, SFX_TYPE, SFX_TYPE, SEQUENCE_TYPE,SFX_TYPE, SFX_TYPE, 

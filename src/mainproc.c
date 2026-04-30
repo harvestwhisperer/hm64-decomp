@@ -45,7 +45,6 @@ volatile u32 gGraphicsBufferIndex;
 volatile u8 gfxTaskNo;
 volatile u8 frameCount;
 
-volatile u32 D_801C3B68[4];
 volatile u8 loopStepsPerCycle;
 volatile u8 framebufferCount;
 volatile u8 currentFramebufferIndex;
@@ -163,20 +162,6 @@ void initializeMainProcess(void) {
     mainLoopUpdateRate = 1;
     #else
     D_80222B72 = 1;
-    #endif
-
-    #ifndef JP
-
-    D_801C3B68[0] = 0;
-    D_801C3B68[1] = 0;
-    D_801C3B68[2] = 0;
-    D_801C3B68[3] = 0;
-
-    #else
-    D_801C4008[0] = 0;
-    D_801C4008[1] = 0;
-    D_801C4008[2] = 0;
-    D_801C4008[3] = 0;
     #endif
 
     gGraphicsBufferIndex = 0;

@@ -12,6 +12,7 @@
 
 extern void loadMapAtSpawnPoint(u16);  
 extern void setLevelAudio(u16, u8, u8);     
+extern u8 getMusicIndexForMap(u8, u8, u8);
 extern Vec4f* getDefaultLevelLighting(Vec4f*, u16);      
 extern void setChickenFeedSprite(u8); 
 extern void setBarnFodderSprite(u8 itemIndex);

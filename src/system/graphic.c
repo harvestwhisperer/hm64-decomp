@@ -48,15 +48,16 @@ void graphicsInit(void) {
     setCameraLookAt(&gCamera, 0.0f, 0.0f, 400.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.0f);
 
     for (i = 0; i < 2; i++) {
-        sceneMatrices[i].translation.x = 0.0f;
-        sceneMatrices[i].translation.y = 0.0f;
-        sceneMatrices[i].translation.z = 0.0f;
-        sceneMatrices[i].scaling.x = 1.0f;
-        sceneMatrices[i].scaling.y = 1.0f;
-        sceneMatrices[i].scaling.z = 1.0f;
-        sceneMatrices[i].rotation.x = 0.0f;
-        sceneMatrices[i].rotation.y = 0.0f;
-        sceneMatrices[i].rotation.z = 0.0f;
+        SceneMatrices *sm = &sceneMatrices[i];
+        sm->translation.x = 0.0f;
+        sm->translation.y = 0.0f;
+        sm->translation.z = 0.0f;
+        sm->scaling.x = 1.0f;
+        sm->scaling.y = 1.0f;
+        sm->scaling.z = 1.0f;
+        sm->rotation.x = 0.0f;
+        sm->rotation.y = 0.0f;
+        sm->rotation.z = 0.0f;
     }
 
     setInitialWorldRotationAngles(45.0f, 315.0f, 0.0f);  
@@ -560,6 +561,8 @@ f32 evaluatePlaneEquation(f32 arg0, f32 arg1, f32 arg2, Plane coordinates) {
 }
 */
 
+//INCLUDE_RODATA("asm/nonmatchings/systemgraphic", directionsToYValues);
+
 // Indexed by world-compass direction (DIRECTION_*, CW from S). The Y angle is
 // applied to (0, y, +Z) to produce a movement vector in world coordinates;
 // world Y rotation is then added at render time so the on-screen direction
@@ -574,6 +577,8 @@ static const f32 directionsToYValues[8] = {
     90.0f,  // DIRECTION_E  (+X)
     45.0f   // DIRECTION_SE
 };
+
+//INCLUDE_ASM("asm/nonmatchings/system/graphic", getMovementVectorFromDirection);
 
 // Alternate: Vec3f* getMovementVectorFromDirection(Vec3f *outputVec, f32 zDisplacement, u8 direction, f32 yOffset)
 

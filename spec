@@ -153,9 +153,16 @@ beginseg
 endseg
 
 beginseg
-    name "nuAuHeapBuffer"
+    name "yay0ScratchBuffer"
     flags OBJECT
     address 0x8030F800
+    include "build/src/buffers/yay0ScratchBuffer.o"
+endseg
+
+beginseg
+    name "nuAuHeapBuffer"
+    flags OBJECT
+    address 0x8031F800
     include "build/src/buffers/nuAuHeapBuffer.o"
 endseg
 
@@ -207,6 +214,7 @@ beginwave
     include "dialogueBytecodeBuffer"
     include "sramBuffer"
     include "farmRankingsBuffer"
+    include "yay0ScratchBuffer"
     include "nuAuHeapBuffer"
     include "frameBuffer"
 
@@ -557,7 +565,6 @@ beginwave
     include "beachWinterMap"
 
     include "raceTrackSpringMap"
-    include "raceTrackSummerMap"
     include "raceTrackFallMap"
     include "raceTrackWinterMap"
 

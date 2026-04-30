@@ -526,7 +526,7 @@ inline void pauseGameplay(void) {
     pauseAllCutsceneExecutors();
     setEntityMapSpaceIndependent(ENTITY_PLAYER, FALSE);
 }
- 
+
 void exitOverlayScreen(void) {
 
     loadAllPendingEntities();
@@ -671,8 +671,8 @@ void startNewDay(void) {
     setForecast();
     
     // dead code
-    // if (checkLifeEventBit(KAREN_KEIFU_FAIRIES_INVITE) && checkLifeEventBit(FIRST_VINEYARD_WINE_GIFT)) {
-    // }
+    if (checkLifeEventBit(KAREN_KEIFU_FAIRIES_INVITE) && checkLifeEventBit(FIRST_VINEYARD_WINE_GIFT)) {
+    }
     
     updateGroundObjectsOvernight();
 

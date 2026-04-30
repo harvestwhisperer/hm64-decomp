@@ -40,30 +40,33 @@ void initializeDialogueSessionManagers(void) {
     u16 i;
  
     for (i = 0; i < MAX_DIALOGUES; i++) {
-        dialogues[i].sessionManager.dialogueIndex = 0;
-        dialogues[i].sessionManager.dialogueBytecodeAddressesIndex = 0;
-        dialogues[i].sessionManager.mainMessageBoxIndex = 0;
-        dialogues[i].sessionManager.scrollSfxIndex = 0xFF;
-        dialogues[i].sessionManager.closeSfxIndex = 0xFF;
-        dialogues[i].sessionManager.buttonPressSfxIndex = 0xFF;
-        dialogues[i].sessionManager.flags = 0;
+        Dialogue *d = &dialogues[i];
+        d->sessionManager.dialogueIndex = 0;
+        d->sessionManager.dialogueBytecodeAddressesIndex = 0;
+        d->sessionManager.mainMessageBoxIndex = 0;
+        d->sessionManager.scrollSfxIndex = 0xFF;
+        d->sessionManager.closeSfxIndex = 0xFF;
+        d->sessionManager.buttonPressSfxIndex = 0xFF;
+        d->sessionManager.flags = 0;
     }
 
 } 
 
 bool initializeDialogueSessionManager(u16 index, u16 mainMessageBoxIndex, u16 overlayMessageBoxIndex) {
 
+    Dialogue *d = &dialogues[index];
+
     bool result = FALSE;
  
-    if (index == 0 && !(dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE)) {
+    if (index == 0 && !(d->sessionManager.flags & DIALOGUE_ACTIVE)) {
 
-        dialogues[index].sessionManager.scrollSfxIndex = 0xFF;
-        dialogues[index].sessionManager.closeSfxIndex = 0xFF;
-        dialogues[index].sessionManager.buttonPressSfxIndex = 0xFF;
-        dialogues[index].sessionManager.mainMessageBoxIndex = mainMessageBoxIndex;
-        dialogues[index].sessionManager.overlayMessageBoxIndex = overlayMessageBoxIndex;
+        d->sessionManager.scrollSfxIndex = 0xFF;
+        d->sessionManager.closeSfxIndex = 0xFF;
+        d->sessionManager.buttonPressSfxIndex = 0xFF;
+        d->sessionManager.mainMessageBoxIndex = mainMessageBoxIndex;
+        d->sessionManager.overlayMessageBoxIndex = overlayMessageBoxIndex;
 
-        dialogues[index].sessionManager.flags = 1;
+        d->sessionManager.flags = 1;
         
         result = TRUE;
         
@@ -75,17 +78,19 @@ bool initializeDialogueSessionManager(u16 index, u16 mainMessageBoxIndex, u16 ov
 
 bool setDialogueBytecodeAddressInfo(u16 index, u16 textAddressesIndex, u16 selectionMenuTextAddressesIndex, u32 romIndexStart, u32 romIndexEnd, u32* vaddrIndex, u32 romStart, void* vaddr) {
 
+    DialogueBytecodeAddressInfo *dba = &dialogueBytecodeAddresses[index];
+
     bool result = FALSE;
-    
+
     if (index < MAX_BYTECODE_ADDRESSES) {
 
-        dialogueBytecodeAddresses[index].textAddressesIndex = textAddressesIndex;
-        dialogueBytecodeAddresses[index].selectionMenuTextAddressesIndex = selectionMenuTextAddressesIndex;
-        dialogueBytecodeAddresses[index].romIndexStart = romIndexStart;
-        dialogueBytecodeAddresses[index].romIndexEnd = romIndexEnd;
-        dialogueBytecodeAddresses[index].vaddrIndex = vaddrIndex;
-        dialogueBytecodeAddresses[index].romStart = romStart;
-        dialogueBytecodeAddresses[index].vaddr = vaddr;
+        dba->textAddressesIndex = textAddressesIndex;
+        dba->selectionMenuTextAddressesIndex = selectionMenuTextAddressesIndex;
+        dba->romIndexStart = romIndexStart;
+        dba->romIndexEnd = romIndexEnd;
+        dba->vaddrIndex = vaddrIndex;
+        dba->romStart = romStart;
+        dba->vaddr = vaddr;
         
         result = TRUE;
 
@@ -97,15 +102,17 @@ bool setDialogueBytecodeAddressInfo(u16 index, u16 textAddressesIndex, u16 selec
 
 bool setDialogueVariable(u16 index, void *value, u8 type, s32 max) {
 
+    DialogueVariable *dv = &dialogueVariables[index];
+
     bool result = FALSE;
 
     if (index < TOTAL_GAME_VARIABLES) {
 
         if (type < 5) {
 
-            dialogueVariables[index].value = value;
-            dialogueVariables[index].type = type;
-            dialogueVariables[index].maxValue = max;
+            dv->value = value;
+            dv->type = type;
+            dv->maxValue = max;
 
             result = TRUE;
 
@@ -124,13 +131,15 @@ bool setSpecialDialogueBitsPointer(u32* dialogueBitsPointer) {
 
 bool setDialogueSfxIndices(u16 index, u32 scrollSfxIndex, u32 closeSfxIndex, u32 sfxIndex) {
 
+    Dialogue *d = &dialogues[index];
+
     bool result = FALSE;
 
-    if (index == 0 && dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE) {
+    if (index == 0 && d->sessionManager.flags & DIALOGUE_ACTIVE) {
         
-        dialogues[index].sessionManager.scrollSfxIndex = scrollSfxIndex;
-        dialogues[index].sessionManager.closeSfxIndex = closeSfxIndex;
-        dialogues[index].sessionManager.buttonPressSfxIndex = sfxIndex;
+        d->sessionManager.scrollSfxIndex = scrollSfxIndex;
+        d->sessionManager.closeSfxIndex = closeSfxIndex;
+        d->sessionManager.buttonPressSfxIndex = sfxIndex;
         
         result = TRUE;
 
@@ -144,28 +153,30 @@ bool setDialogueButtonIcon1(u16 index, u16 spriteIndex, u32 romTextureStart, u32
     u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
+    Dialogue *d = &dialogues[index];
+
     bool result = FALSE;
 
-    if (index == 0 && (dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE)) {
+    if (index == 0 && (d->sessionManager.flags & DIALOGUE_ACTIVE)) {
   
-        dialogues[index].dialogueButtonIcon1.romTextureStart = romTextureStart;
-        dialogues[index].dialogueButtonIcon1.romTextureEnd = romTextureEnd;
-        dialogues[index].dialogueButtonIcon1.romIndexStart = romIndexStart;
-        dialogues[index].dialogueButtonIcon1.romIndexEnd = romIndexEnd;
+        d->dialogueButtonIcon1.romTextureStart = romTextureStart;
+        d->dialogueButtonIcon1.romTextureEnd = romTextureEnd;
+        d->dialogueButtonIcon1.romIndexStart = romIndexStart;
+        d->dialogueButtonIcon1.romIndexEnd = romIndexEnd;
   
-        dialogues[index].dialogueButtonIcon1.vaddrTexture = vaddrTexture;
-        dialogues[index].dialogueButtonIcon1.vaddrPalette = vaddrTextureEnd;
-        dialogues[index].dialogueButtonIcon1.vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
-        dialogues[index].dialogueButtonIcon1.vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
-        dialogues[index].dialogueButtonIcon1.unk_20 = argA;
+        d->dialogueButtonIcon1.vaddrTexture = vaddrTexture;
+        d->dialogueButtonIcon1.vaddrPalette = vaddrTextureEnd;
+        d->dialogueButtonIcon1.vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
+        d->dialogueButtonIcon1.vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
+        d->dialogueButtonIcon1.unk_20 = argA;
  
-        dialogues[index].dialogueButtonIcon1.spriteIndex = spriteIndex;
-        dialogues[index].dialogueButtonIcon1.spriteOffset = spriteOffset;
-        dialogues[index].dialogueButtonIcon1.flag = flag;
+        d->dialogueButtonIcon1.spriteIndex = spriteIndex;
+        d->dialogueButtonIcon1.spriteOffset = spriteOffset;
+        d->dialogueButtonIcon1.flag = flag;
 
-        dialogues[index].dialogueButtonIcon1.coordinates.x = x;
-        dialogues[index].dialogueButtonIcon1.coordinates.y = y;
-        dialogues[index].dialogueButtonIcon1.coordinates.z = z;
+        d->dialogueButtonIcon1.coordinates.x = x;
+        d->dialogueButtonIcon1.coordinates.y = y;
+        d->dialogueButtonIcon1.coordinates.z = z;
         
         result = TRUE;
         
@@ -179,28 +190,30 @@ bool setDialogueButtonIcon2(u16 index, u16 spriteIndex, u32 romTextureStart, u32
     u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
+    Dialogue *d = &dialogues[index];
+
     bool result = FALSE;
 
-    if (index == 0 && (dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE)) {
+    if (index == 0 && (d->sessionManager.flags & DIALOGUE_ACTIVE)) {
   
-        dialogues[index].dialogueButtonIcon2.romTextureStart = romTextureStart;
-        dialogues[index].dialogueButtonIcon2.romTextureEnd = romTextureEnd;
-        dialogues[index].dialogueButtonIcon2.romIndexStart = romIndexStart;
-        dialogues[index].dialogueButtonIcon2.romIndexEnd = romIndexEnd;
+        d->dialogueButtonIcon2.romTextureStart = romTextureStart;
+        d->dialogueButtonIcon2.romTextureEnd = romTextureEnd;
+        d->dialogueButtonIcon2.romIndexStart = romIndexStart;
+        d->dialogueButtonIcon2.romIndexEnd = romIndexEnd;
   
-        dialogues[index].dialogueButtonIcon2.vaddrTexture = vaddrTexture;
-        dialogues[index].dialogueButtonIcon2.vaddrPalette = vaddrTextureEnd;
-        dialogues[index].dialogueButtonIcon2.vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
-        dialogues[index].dialogueButtonIcon2.vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
-        dialogues[index].dialogueButtonIcon2.unk_20 = argA;
+        d->dialogueButtonIcon2.vaddrTexture = vaddrTexture;
+        d->dialogueButtonIcon2.vaddrPalette = vaddrTextureEnd;
+        d->dialogueButtonIcon2.vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
+        d->dialogueButtonIcon2.vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
+        d->dialogueButtonIcon2.unk_20 = argA;
  
-        dialogues[index].dialogueButtonIcon2.spriteIndex = spriteIndex;
-        dialogues[index].dialogueButtonIcon2.spriteOffset = spriteOffset;
-        dialogues[index].dialogueButtonIcon2.flag = flag;
+        d->dialogueButtonIcon2.spriteIndex = spriteIndex;
+        d->dialogueButtonIcon2.spriteOffset = spriteOffset;
+        d->dialogueButtonIcon2.flag = flag;
 
-        dialogues[index].dialogueButtonIcon2.coordinates.x = x;
-        dialogues[index].dialogueButtonIcon2.coordinates.y = y;
-        dialogues[index].dialogueButtonIcon2.coordinates.z = z;
+        d->dialogueButtonIcon2.coordinates.x = x;
+        d->dialogueButtonIcon2.coordinates.y = y;
+        d->dialogueButtonIcon2.coordinates.z = z;
         
         result = TRUE;
         
@@ -214,28 +227,30 @@ bool setDialogueButtonIcon3(u16 index, u16 spriteIndex, u32 romTextureStart, u32
     u8* vaddrTexture, u8* vaddrTextureEnd, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, 
     u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
+    Dialogue *d = &dialogues[index];
+
     bool result = FALSE;
 
-    if (index == 0 && (dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE)) {
+    if (index == 0 && (d->sessionManager.flags & DIALOGUE_ACTIVE)) {
         
-        dialogues[index].dialogueButtonIcon3.romTextureStart = romTextureStart;
-        dialogues[index].dialogueButtonIcon3.romTextureEnd = romTextureEnd;
-        dialogues[index].dialogueButtonIcon3.romIndexStart = romIndexStart;
-        dialogues[index].dialogueButtonIcon3.romIndexEnd = romIndexEnd;
+        d->dialogueButtonIcon3.romTextureStart = romTextureStart;
+        d->dialogueButtonIcon3.romTextureEnd = romTextureEnd;
+        d->dialogueButtonIcon3.romIndexStart = romIndexStart;
+        d->dialogueButtonIcon3.romIndexEnd = romIndexEnd;
   
-        dialogues[index].dialogueButtonIcon3.vaddrTexture = vaddrTexture;
-        dialogues[index].dialogueButtonIcon3.vaddrPalette = vaddrTextureEnd;
-        dialogues[index].dialogueButtonIcon3.vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
-        dialogues[index].dialogueButtonIcon3.vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
-        dialogues[index].dialogueButtonIcon3.unk_20 = argA;
+        d->dialogueButtonIcon3.vaddrTexture = vaddrTexture;
+        d->dialogueButtonIcon3.vaddrPalette = vaddrTextureEnd;
+        d->dialogueButtonIcon3.vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
+        d->dialogueButtonIcon3.vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
+        d->dialogueButtonIcon3.unk_20 = argA;
  
-        dialogues[index].dialogueButtonIcon3.spriteIndex = spriteIndex;
-        dialogues[index].dialogueButtonIcon3.spriteOffset = spriteOffset;
-        dialogues[index].dialogueButtonIcon3.flag = flag;
+        d->dialogueButtonIcon3.spriteIndex = spriteIndex;
+        d->dialogueButtonIcon3.spriteOffset = spriteOffset;
+        d->dialogueButtonIcon3.flag = flag;
 
-        dialogues[index].dialogueButtonIcon3.coordinates.x = x;
-        dialogues[index].dialogueButtonIcon3.coordinates.y = y;
-        dialogues[index].dialogueButtonIcon3.coordinates.z = z;
+        d->dialogueButtonIcon3.coordinates.x = x;
+        d->dialogueButtonIcon3.coordinates.y = y;
+        d->dialogueButtonIcon3.coordinates.z = z;
         
         result = TRUE;
         
@@ -247,128 +262,130 @@ bool setDialogueButtonIcon3(u16 index, u16 spriteIndex, u32 romTextureStart, u32
 
 bool initializeDialogueSession(u16 index, u16 dialogueBytecodeAddressesIndex, u16 dialogueIndex, u16 flag) {
 
+    Dialogue *d = &dialogues[index];
+
     bool result = FALSE;
 
     u32 romAddr;
 
-    if (index == 0 && dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE) {
+    if (index == 0 && d->sessionManager.flags & DIALOGUE_ACTIVE) {
 
-        dmaSprite(dialogues[index].dialogueButtonIcon1.spriteIndex, 
-            dialogues[index].dialogueButtonIcon1.romTextureStart, 
-            dialogues[index].dialogueButtonIcon1.romTextureEnd, 
-            dialogues[index].dialogueButtonIcon1.romIndexStart, 
-            dialogues[index].dialogueButtonIcon1.romIndexEnd, 
+        dmaSprite(d->dialogueButtonIcon1.spriteIndex, 
+            d->dialogueButtonIcon1.romTextureStart, 
+            d->dialogueButtonIcon1.romTextureEnd, 
+            d->dialogueButtonIcon1.romIndexStart, 
+            d->dialogueButtonIcon1.romIndexEnd, 
             NULL, 
             NULL, 
-            dialogues[index].dialogueButtonIcon1.vaddrTexture,
+            d->dialogueButtonIcon1.vaddrTexture,
             NULL,
-            dialogues[index].dialogueButtonIcon1.vaddrPalette,
-            dialogues[index].dialogueButtonIcon1.vaddrAnimationFrameMetadata,
-            dialogues[index].dialogueButtonIcon1.vaddrTextureToPaletteLookup,
-            dialogues[index].dialogueButtonIcon1.unk_20,
+            d->dialogueButtonIcon1.vaddrPalette,
+            d->dialogueButtonIcon1.vaddrAnimationFrameMetadata,
+            d->dialogueButtonIcon1.vaddrTextureToPaletteLookup,
+            d->dialogueButtonIcon1.unk_20,
             0,
             0);
  
-        setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
-        setSpriteScale(dialogues[index].dialogueButtonIcon1.spriteIndex, 1.0f, 1.0f, 1.0f);
-        setSpriteRotation(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
-        setBilinearFiltering(dialogues[index].dialogueButtonIcon1.spriteIndex, TRUE);
-        setSpriteColor(dialogues[index].dialogueButtonIcon1.spriteIndex, 255, 255, 255, 255);
-        setSpriteAnchorAlignment(dialogues[index].dialogueButtonIcon1.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-        setSpriteBlendMode(dialogues[index].dialogueButtonIcon1.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
+        setSpriteViewSpacePosition(d->dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setSpriteScale(d->dialogueButtonIcon1.spriteIndex, 1.0f, 1.0f, 1.0f);
+        setSpriteRotation(d->dialogueButtonIcon1.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setBilinearFiltering(d->dialogueButtonIcon1.spriteIndex, TRUE);
+        setSpriteColor(d->dialogueButtonIcon1.spriteIndex, 255, 255, 255, 255);
+        setSpriteAnchorAlignment(d->dialogueButtonIcon1.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+        setSpriteBlendMode(d->dialogueButtonIcon1.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
 
-        dmaSprite(dialogues[index].dialogueButtonIcon2.spriteIndex, 
-            dialogues[index].dialogueButtonIcon2.romTextureStart, 
-            dialogues[index].dialogueButtonIcon2.romTextureEnd, 
-            dialogues[index].dialogueButtonIcon2.romIndexStart, 
-            dialogues[index].dialogueButtonIcon2.romIndexEnd, 
+        dmaSprite(d->dialogueButtonIcon2.spriteIndex, 
+            d->dialogueButtonIcon2.romTextureStart, 
+            d->dialogueButtonIcon2.romTextureEnd, 
+            d->dialogueButtonIcon2.romIndexStart, 
+            d->dialogueButtonIcon2.romIndexEnd, 
             NULL, 
             NULL, 
-            dialogues[index].dialogueButtonIcon2.vaddrTexture,
+            d->dialogueButtonIcon2.vaddrTexture,
             NULL,
-            dialogues[index].dialogueButtonIcon2.vaddrPalette,
-            dialogues[index].dialogueButtonIcon2.vaddrAnimationFrameMetadata,
-            dialogues[index].dialogueButtonIcon2.vaddrTextureToPaletteLookup,
-            dialogues[index].dialogueButtonIcon2.unk_20,
+            d->dialogueButtonIcon2.vaddrPalette,
+            d->dialogueButtonIcon2.vaddrAnimationFrameMetadata,
+            d->dialogueButtonIcon2.vaddrTextureToPaletteLookup,
+            d->dialogueButtonIcon2.unk_20,
             0,
             0);
 
-        setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
-        setSpriteScale(dialogues[index].dialogueButtonIcon2.spriteIndex, 1.0f, 1.0f, 1.0f);
-        setSpriteRotation(dialogues[index].dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
-        setBilinearFiltering(dialogues[index].dialogueButtonIcon2.spriteIndex, TRUE);
-        setSpriteColor(dialogues[index].dialogueButtonIcon2.spriteIndex, 255, 255, 255, 255);
-        setSpriteAnchorAlignment(dialogues[index].dialogueButtonIcon2.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-        setSpriteBlendMode(dialogues[index].dialogueButtonIcon2.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
+        setSpriteViewSpacePosition(d->dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setSpriteScale(d->dialogueButtonIcon2.spriteIndex, 1.0f, 1.0f, 1.0f);
+        setSpriteRotation(d->dialogueButtonIcon2.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setBilinearFiltering(d->dialogueButtonIcon2.spriteIndex, TRUE);
+        setSpriteColor(d->dialogueButtonIcon2.spriteIndex, 255, 255, 255, 255);
+        setSpriteAnchorAlignment(d->dialogueButtonIcon2.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+        setSpriteBlendMode(d->dialogueButtonIcon2.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
 
-        dmaSprite(dialogues[index].dialogueButtonIcon3.spriteIndex, 
-            dialogues[index].dialogueButtonIcon3.romTextureStart, 
-            dialogues[index].dialogueButtonIcon3.romTextureEnd, 
-            dialogues[index].dialogueButtonIcon3.romIndexStart, 
-            dialogues[index].dialogueButtonIcon3.romIndexEnd, 
+        dmaSprite(d->dialogueButtonIcon3.spriteIndex, 
+            d->dialogueButtonIcon3.romTextureStart, 
+            d->dialogueButtonIcon3.romTextureEnd, 
+            d->dialogueButtonIcon3.romIndexStart, 
+            d->dialogueButtonIcon3.romIndexEnd, 
             NULL, 
             NULL, 
-            dialogues[index].dialogueButtonIcon3.vaddrTexture,
+            d->dialogueButtonIcon3.vaddrTexture,
             NULL,
-            dialogues[index].dialogueButtonIcon3.vaddrPalette,
-            dialogues[index].dialogueButtonIcon3.vaddrAnimationFrameMetadata,
-            dialogues[index].dialogueButtonIcon3.vaddrTextureToPaletteLookup,
-            dialogues[index].dialogueButtonIcon3.unk_20,
+            d->dialogueButtonIcon3.vaddrPalette,
+            d->dialogueButtonIcon3.vaddrAnimationFrameMetadata,
+            d->dialogueButtonIcon3.vaddrTextureToPaletteLookup,
+            d->dialogueButtonIcon3.unk_20,
             0,
             0);
 
-        setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
-        setSpriteScale(dialogues[index].dialogueButtonIcon3.spriteIndex, 1.0f, 1.0f, 1.0f);
-        setSpriteRotation(dialogues[index].dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
-        setBilinearFiltering(dialogues[index].dialogueButtonIcon3.spriteIndex, TRUE);
-        setSpriteColor(dialogues[index].dialogueButtonIcon3.spriteIndex, 255, 255, 255, 255);
-        setSpriteAnchorAlignment(dialogues[index].dialogueButtonIcon3.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-        setSpriteBlendMode(dialogues[index].dialogueButtonIcon3.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
+        setSpriteViewSpacePosition(d->dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setSpriteScale(d->dialogueButtonIcon3.spriteIndex, 1.0f, 1.0f, 1.0f);
+        setSpriteRotation(d->dialogueButtonIcon3.spriteIndex, 0.0f, 0.0f, 0.0f);
+        setBilinearFiltering(d->dialogueButtonIcon3.spriteIndex, TRUE);
+        setSpriteColor(d->dialogueButtonIcon3.spriteIndex, 255, 255, 255, 255);
+        setSpriteAnchorAlignment(d->dialogueButtonIcon3.spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+        setSpriteBlendMode(d->dialogueButtonIcon3.spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
         
-        dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
-        dialogues[index].sessionManager.dialogueBytecodeAddressesIndex = dialogueBytecodeAddressesIndex;
-        dialogues[index].sessionManager.dialogueIndex = dialogueIndex;
+        d->bytecodeExecutor.currentOpcode = 0xFF;
+        d->sessionManager.dialogueBytecodeAddressesIndex = dialogueBytecodeAddressesIndex;
+        d->sessionManager.dialogueIndex = dialogueIndex;
 
         nuPiReadRom(dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].romIndexStart, dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].vaddrIndex, dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].romIndexEnd - dialogueBytecodeAddresses[dialogueBytecodeAddressesIndex].romIndexStart);
 
-        romAddr = getDialogueBytecodeAddress(0, dialogues[index].sessionManager.dialogueIndex);
+        romAddr = getDialogueBytecodeAddress(0, d->sessionManager.dialogueIndex);
 
-        nuPiReadRom(romAddr, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].vaddr, getDialogueBytecodeAddress(0, dialogues[index].sessionManager.dialogueIndex + 1) - romAddr);
+        nuPiReadRom(romAddr, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].vaddr, getDialogueBytecodeAddress(0, d->sessionManager.dialogueIndex + 1) - romAddr);
 
-        dialogues[index].dialogueBytecodePointer = dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].vaddr;
+        d->dialogueBytecodePointer = dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].vaddr;
         
-        dialogues[index].sessionManager.totalMenuRows = 0;
-        dialogues[index].sessionManager.selectedMenuRow = 0;
+        d->sessionManager.totalMenuRows = 0;
+        d->sessionManager.selectedMenuRow = 0;
  
-        dialogues[index].bytecodeExecutor.textIndex = 0;
-        dialogues[index].bytecodeExecutor.branchingDialogueIndex = 0;
-        dialogues[index].bytecodeExecutor.minimumDialogueVariableValue = 0;
-        dialogues[index].bytecodeExecutor.maximumDialogueVariableValue = 0;
-        dialogues[index].bytecodeExecutor.randomValue = 0;
-        dialogues[index].bytecodeExecutor.dialogueVariableValue = 0;
-        dialogues[index].bytecodeExecutor.specialDialogueBit = 0;
-        dialogues[index].bytecodeExecutor.updatedDialogueVariableAdjustment = 0;
-        dialogues[index].bytecodeExecutor.textOffset = 0;
-        dialogues[index].bytecodeExecutor.dialogueVariablesIndex = 0;
-        dialogues[index].bytecodeExecutor.randomMinimumValue = 0;
-        dialogues[index].bytecodeExecutor.randomMaximumValue = 0;
-        dialogues[index].bytecodeExecutor.unusedField = 0;
-        dialogues[index].bytecodeExecutor.selectionMenuRowsCount = 0;
-        dialogues[index].bytecodeExecutor.targetMenuRow = 0;
+        d->bytecodeExecutor.textIndex = 0;
+        d->bytecodeExecutor.branchingDialogueIndex = 0;
+        d->bytecodeExecutor.minimumDialogueVariableValue = 0;
+        d->bytecodeExecutor.maximumDialogueVariableValue = 0;
+        d->bytecodeExecutor.randomValue = 0;
+        d->bytecodeExecutor.dialogueVariableValue = 0;
+        d->bytecodeExecutor.specialDialogueBit = 0;
+        d->bytecodeExecutor.updatedDialogueVariableAdjustment = 0;
+        d->bytecodeExecutor.textOffset = 0;
+        d->bytecodeExecutor.dialogueVariablesIndex = 0;
+        d->bytecodeExecutor.randomMinimumValue = 0;
+        d->bytecodeExecutor.randomMaximumValue = 0;
+        d->bytecodeExecutor.unusedField = 0;
+        d->bytecodeExecutor.selectionMenuRowsCount = 0;
+        d->bytecodeExecutor.targetMenuRow = 0;
         
-        dialogues[index].sessionManager.flags &= ~4;
-        dialogues[index].sessionManager.flags |= DIALOGUE_INITIALIZED;
+        d->sessionManager.flags &= ~4;
+        d->sessionManager.flags |= DIALOGUE_INITIALIZED;
 
         if (flag == 0x40) {
-            dialogues[index].sessionManager.flags |= (DIALOGUE_INITIALIZED | 0x40);
+            d->sessionManager.flags |= (DIALOGUE_INITIALIZED | 0x40);
         }  else {
-            dialogues[index].sessionManager.flags &= ~(0x40);
+            d->sessionManager.flags &= ~(0x40);
         }
 
         if (flag == 0x80) {
-            dialogues[index].sessionManager.flags |= 0x80;
+            d->sessionManager.flags |= 0x80;
         } else {
-            dialogues[index].sessionManager.flags &= ~0x80;
+            d->sessionManager.flags &= ~0x80;
         }
 
         result = TRUE;
@@ -396,18 +413,20 @@ bool checkAllDialoguesCompleted(void) {
 
 bool closeDialogueSession(u16 index) {
 
+    Dialogue *d = &dialogues[index];
+
     bool result = FALSE;
 
-    if (index == 0 && dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE) {
+    if (index == 0 && d->sessionManager.flags & DIALOGUE_ACTIVE) {
 
-        if (!(dialogues[index].sessionManager.flags & 0x40)) {
-            messageBoxes[dialogues[index].sessionManager.mainMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
+        if (!(d->sessionManager.flags & 0x40)) {
+            messageBoxes[d->sessionManager.mainMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
         }
 
-        resetMessageBoxAnimation(dialogues[index].sessionManager.mainMessageBoxIndex);
+        resetMessageBoxAnimation(d->sessionManager.mainMessageBoxIndex);
         cleanupDialogueOverlayBox(0);
         
-        dialogues[index].sessionManager.flags = (DIALOGUE_ACTIVE | DIALOGUE_COMPLETED);
+        d->sessionManager.flags = (DIALOGUE_ACTIVE | DIALOGUE_COMPLETED);
         
         result = TRUE;
 
@@ -419,41 +438,49 @@ bool closeDialogueSession(u16 index) {
 
 void cleanupDialogueOverlayBox(u16 index) {
 
-    messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
+    Dialogue *d = &dialogues[index];
+
+    messageBoxes[d->sessionManager.overlayMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
     
-    resetMessageBoxAnimation(dialogues[index].sessionManager.overlayMessageBoxIndex);
+    resetMessageBoxAnimation(d->sessionManager.overlayMessageBoxIndex);
     
-    resetAnimationState(dialogues[index].dialogueButtonIcon1.spriteIndex);
-    resetAnimationState(dialogues[index].dialogueButtonIcon2.spriteIndex);
-    resetAnimationState(dialogues[index].dialogueButtonIcon3.spriteIndex);
+    resetAnimationState(d->dialogueButtonIcon1.spriteIndex);
+    resetAnimationState(d->dialogueButtonIcon2.spriteIndex);
+    resetAnimationState(d->dialogueButtonIcon3.spriteIndex);
     
-    dialogues[index].sessionManager.flags &= ~DIALOGUE_PAUSE_FOR_USER_INPUT;
+    d->sessionManager.flags &= ~DIALOGUE_PAUSE_FOR_USER_INPUT;
     
 }
 
 u8 getSelectedMenuRow(u16 index) {
-    return dialogues[index].sessionManager.selectedMenuRow;
+
+    Dialogue *d = &dialogues[index];
+    return d->sessionManager.selectedMenuRow;
 }
 
 u32 getDialogueBytecodeAddress(u16 index, u16 dialogueOffset) {
 
-    u32 ptr = dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].romStart;
+    Dialogue *d = &dialogues[index];
+
+    u32 ptr = dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].romStart;
     
-    return ptr + dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].vaddrIndex[dialogueOffset];
+    return ptr + dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].vaddrIndex[dialogueOffset];
     
 }
 
 inline void setDialogueVariableValue(u16 index, u16 value) {
 
-    switch (dialogueVariables[index].type) {
+    DialogueVariable *dv = &dialogueVariables[index];
+
+    switch (dv->type) {
         case UNSIGNED_CHAR:
-            *(u8*)dialogueVariables[index].value = value;
+            *(u8*)dv->value = value;
             break;
         case UNSIGNED_SHORT:
-            *(u16*)dialogueVariables[index].value = value;
+            *(u16*)dv->value = value;
             break;
         case UNSIGNED_INT:
-            *(u32*)dialogueVariables[index].value = value;
+            *(u32*)dv->value = value;
             break;
     }
     
@@ -461,17 +488,19 @@ inline void setDialogueVariableValue(u16 index, u16 value) {
 
 inline u32 getDialogueVariableValue(u16 index) {
 
+    DialogueVariable *dv = &dialogueVariables[index];
+
     u32 value;
     
-    switch (dialogueVariables[index].type) {
+    switch (dv->type) {
         case UNSIGNED_CHAR:
-            value = *(u8*)dialogueVariables[index].value;
+            value = *(u8*)dv->value;
             break;
         case UNSIGNED_SHORT:
-            value = *(u16*)dialogueVariables[index].value;
+            value = *(u16*)dv->value;
             break;
         case UNSIGNED_INT:
-            value = *(u32*)dialogueVariables[index].value;
+            value = *(u32*)dv->value;
             break;
     }
 
@@ -503,154 +532,156 @@ inline u32 checkSpecialDialogueBitFromPointer(u16 bitIndex) {
 
 void parseDialogueBytecode(u16 index) {
 
+    Dialogue *d = &dialogues[index];
+
     Swap16 byteswap;
 
-    dialogues[index].bytecodeExecutor.currentOpcode = *(u8*)dialogues[index].dialogueBytecodePointer++;
+    d->bytecodeExecutor.currentOpcode = *(u8*)d->dialogueBytecodePointer++;
 
-    switch (dialogues[index].bytecodeExecutor.currentOpcode) {
+    switch (d->bytecodeExecutor.currentOpcode) {
         
         case DIALOGUE_OPCODE_SHOW_TEXT:
                         
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;            
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;            
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.textIndex = byteswap.halfword;
+            d->bytecodeExecutor.textIndex = byteswap.halfword;
             
             break;
         
         case DIALOGUE_OPCODE_DIALOGUE_VARIABLE_BRANCH:
             
-            dialogues[index].bytecodeExecutor.dialogueVariablesIndex = *(u8*)dialogues[index].dialogueBytecodePointer++;  
+            d->bytecodeExecutor.dialogueVariablesIndex = *(u8*)d->dialogueBytecodePointer++;  
 
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.minimumDialogueVariableValue = byteswap.halfword;
+            d->bytecodeExecutor.minimumDialogueVariableValue = byteswap.halfword;
             
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.maximumDialogueVariableValue = byteswap.halfword;
+            d->bytecodeExecutor.maximumDialogueVariableValue = byteswap.halfword;
             
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.textIndex = byteswap.halfword;
+            d->bytecodeExecutor.textIndex = byteswap.halfword;
             
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;
+            d->bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;
             
             break;
         
         case DIALOGUE_OPCODE_UPDATE_DIALOGUE_VARIABLE:
             
-            dialogues[index].bytecodeExecutor.dialogueVariablesIndex = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            d->bytecodeExecutor.dialogueVariablesIndex = *(u8*)d->dialogueBytecodePointer++;
 
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.updatedDialogueVariableAdjustment = byteswap.halfword;
+            d->bytecodeExecutor.updatedDialogueVariableAdjustment = byteswap.halfword;
             
             break;
         
         case DIALOGUE_OPCODE_SET_DIALOGUE_VARIABLE:
             
-            dialogues[index].bytecodeExecutor.dialogueVariablesIndex = *(u8*)dialogues[index].dialogueBytecodePointer++;  
+            d->bytecodeExecutor.dialogueVariablesIndex = *(u8*)d->dialogueBytecodePointer++;  
 
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
 
-            dialogues[index].bytecodeExecutor.dialogueVariableValue = byteswap.halfword;
+            d->bytecodeExecutor.dialogueVariableValue = byteswap.halfword;
             
             break;
         
         case DIALOGUE_OPCODE_SPECIAL_DIALOGUE_BIT_BRANCH:
             
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.specialDialogueBit = byteswap.halfword;
+            d->bytecodeExecutor.specialDialogueBit = byteswap.halfword;
                         
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.textIndex = byteswap.halfword;
+            d->bytecodeExecutor.textIndex = byteswap.halfword;
                         
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;
+            d->bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;
             
             break;
         
         case DIALOGUE_OPCODE_SET_SPECIAL_DIALOGUE_BIT:
             
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.specialDialogueBit = byteswap.halfword;  
+            d->bytecodeExecutor.specialDialogueBit = byteswap.halfword;  
             
             break;
 
         case DIALOGUE_OPCODE_CLEAR_SPECIAL_DIALOGUE_BIT:
                     
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.specialDialogueBit = byteswap.halfword;
+            d->bytecodeExecutor.specialDialogueBit = byteswap.halfword;
             
             break;
 
         case DIALOGUE_OPCODE_RANDOM_BRANCH:
             
-            dialogues[index].bytecodeExecutor.randomMinimumValue = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            dialogues[index].bytecodeExecutor.randomMaximumValue = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            d->bytecodeExecutor.randomMinimumValue = *(u8*)d->dialogueBytecodePointer++;
+            d->bytecodeExecutor.randomMaximumValue = *(u8*)d->dialogueBytecodePointer++;
             
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.textIndex = byteswap.halfword;
+            d->bytecodeExecutor.textIndex = byteswap.halfword;
                         
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
     
-            dialogues[index].bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;
+            d->bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;
             
-            dialogues[index].bytecodeExecutor.randomValue = getRandomNumberInRange(0, 99);  
+            d->bytecodeExecutor.randomValue = getRandomNumberInRange(0, 99);  
             
             break;
 
         case DIALOGUE_OPCODE_BRANCH:
              
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;  
+            d->bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;  
             
             break;
         
         case DIALOGUE_OPCODE_SHOW_SELECTION_MENU:
             
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.textOffset = byteswap.halfword;
+            d->bytecodeExecutor.textOffset = byteswap.halfword;
             // unused
-            dialogues[index].bytecodeExecutor.selectionMenuRowsCount = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            d->bytecodeExecutor.selectionMenuRowsCount = *(u8*)d->dialogueBytecodePointer++;
             
             break;
     
         case DIALOGUE_OPCODE_HANDLE_MENU_SELECTION_BRANCH:
             
             // row
-            dialogues[index].bytecodeExecutor.targetMenuRow = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            d->bytecodeExecutor.targetMenuRow = *(u8*)d->dialogueBytecodePointer++;
             
-            byteswap.byte[1] = *(u8*)dialogues[index].dialogueBytecodePointer++;
-            byteswap.byte[0] = *(u8*)dialogues[index].dialogueBytecodePointer++;
+            byteswap.byte[1] = *(u8*)d->dialogueBytecodePointer++;
+            byteswap.byte[0] = *(u8*)d->dialogueBytecodePointer++;
             
-            dialogues[index].bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;  
+            d->bytecodeExecutor.branchingDialogueIndex = byteswap.halfword;  
             
             break;
 
@@ -663,84 +694,91 @@ void parseDialogueBytecode(u16 index) {
 
 void setOverlayMessageBoxSprite(u16 index) {
 
+    Dialogue *d = &dialogues[index];
+
     f32 xPosition, yPosition;
 
-    // pain
-    xPosition = -((messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxLineCharWidth * messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].fontContext.characterCellWidth) / 2) 
-        - ((messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxLineCharWidth * messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].characterSpacing) / 2) 
-        - dialogues[index].dialogueButtonIcon1.coordinates.x;
+    xPosition = -((messageBoxes[d->sessionManager.overlayMessageBoxIndex].textBoxLineCharWidth * messageBoxes[d->sessionManager.overlayMessageBoxIndex].fontContext.characterCellWidth) / 2) 
+        - ((messageBoxes[d->sessionManager.overlayMessageBoxIndex].textBoxLineCharWidth * messageBoxes[d->sessionManager.overlayMessageBoxIndex].characterSpacing) / 2) 
+        - d->dialogueButtonIcon1.coordinates.x;
 
-    yPosition = ((messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight) / 2) 
-        + ((messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].lineSpacing) / 2) 
-        + dialogues[index].dialogueButtonIcon1.coordinates.y;
+    yPosition = ((messageBoxes[d->sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * messageBoxes[d->sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight) / 2) 
+        + ((messageBoxes[d->sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * messageBoxes[d->sessionManager.overlayMessageBoxIndex].lineSpacing) / 2) 
+        + d->dialogueButtonIcon1.coordinates.y;
 
-    setSpriteScale(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 
-       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine * 0.5f, 
-       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * 0.6f, 
+    setSpriteScale(dialogueWindows[messageBoxes[d->sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 
+       messageBoxes[d->sessionManager.overlayMessageBoxIndex].maxCharsPerLine * 0.5f, 
+       messageBoxes[d->sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * 0.6f, 
        1.0f);
 
-    setSpriteBlendMode(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
-    setSpriteColor(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 255, 255, 255, 192);
-    setBilinearFiltering(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
-    startSpriteAnimation(dialogues[index].dialogueButtonIcon1.spriteIndex, dialogues[index].dialogueButtonIcon1.spriteOffset, dialogues[index].dialogueButtonIcon1.flag);
-    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 
-       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.x + xPosition, 
-       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.y + yPosition, 
-       messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.z);
+    setSpriteBlendMode(dialogueWindows[messageBoxes[d->sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
+    setSpriteColor(dialogueWindows[messageBoxes[d->sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 255, 255, 255, 192);
+    setBilinearFiltering(dialogueWindows[messageBoxes[d->sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
+    startSpriteAnimation(d->dialogueButtonIcon1.spriteIndex, d->dialogueButtonIcon1.spriteOffset, d->dialogueButtonIcon1.flag);
+    setSpriteViewSpacePosition(d->dialogueButtonIcon1.spriteIndex, 
+       messageBoxes[d->sessionManager.overlayMessageBoxIndex].viewSpacePosition.x + xPosition, 
+       messageBoxes[d->sessionManager.overlayMessageBoxIndex].viewSpacePosition.y + yPosition, 
+       messageBoxes[d->sessionManager.overlayMessageBoxIndex].viewSpacePosition.z);
 
 }
 
 void updateDialogueButtonIcon2Display(u16 index) {
 
-    f32 tempX = dialogues[index].dialogueButtonIcon2.coordinates.x;
-    f32 tempY = dialogues[index].dialogueButtonIcon2.coordinates.y;
+    Dialogue *d = &dialogues[index];
 
-    setSpriteScale(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine * 0.5f, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * 0.6f, 1.0f);
+    f32 tempX = d->dialogueButtonIcon2.coordinates.x;
+    f32 tempY = d->dialogueButtonIcon2.coordinates.y;
+
+    setSpriteScale(dialogueWindows[messageBoxes[d->sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, messageBoxes[d->sessionManager.overlayMessageBoxIndex].maxCharsPerLine * 0.5f, messageBoxes[d->sessionManager.overlayMessageBoxIndex].textBoxVisibleRows * 0.6f, 1.0f);
     
-    setSpriteBlendMode(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
-    setBilinearFiltering(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
+    setSpriteBlendMode(dialogueWindows[messageBoxes[d->sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
+    setBilinearFiltering(dialogueWindows[messageBoxes[d->sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
 
-    startSpriteAnimation(dialogues[index].dialogueButtonIcon2.spriteIndex, dialogues[index].dialogueButtonIcon2.spriteOffset, dialogues[index].dialogueButtonIcon2.flag);
-    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon2.spriteIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.x + tempX, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.y + tempY, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.z);
+    startSpriteAnimation(d->dialogueButtonIcon2.spriteIndex, d->dialogueButtonIcon2.spriteOffset, d->dialogueButtonIcon2.flag);
+    setSpriteViewSpacePosition(d->dialogueButtonIcon2.spriteIndex, messageBoxes[d->sessionManager.overlayMessageBoxIndex].viewSpacePosition.x + tempX, messageBoxes[d->sessionManager.overlayMessageBoxIndex].viewSpacePosition.y + tempY, messageBoxes[d->sessionManager.overlayMessageBoxIndex].viewSpacePosition.z);
 
 }
 
 void updateDialogueButtonIcon3Display(u16 index) {
+
+    Dialogue *d = &dialogues[index];
  
-    f32 tempX = dialogues[index].dialogueButtonIcon3.coordinates.x;
-    f32 tempY = dialogues[index].dialogueButtonIcon3.coordinates.y;
+    f32 tempX = d->dialogueButtonIcon3.coordinates.x;
+    f32 tempY = d->dialogueButtonIcon3.coordinates.y;
 
-    setSpriteBlendMode(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
-    setBilinearFiltering(dialogueWindows[messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 1);
+    setSpriteBlendMode(dialogueWindows[messageBoxes[d->sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
+    setBilinearFiltering(dialogueWindows[messageBoxes[d->sessionManager.overlayMessageBoxIndex].dialogueWindowIndex].spriteIndex, 1);
 
-    startSpriteAnimation(dialogues[index].dialogueButtonIcon3.spriteIndex, dialogues[index].dialogueButtonIcon3.spriteOffset, dialogues[index].dialogueButtonIcon3.flag);
-    setSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon3.spriteIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.x + tempX, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.y + tempY, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].viewSpacePosition.z);
+    startSpriteAnimation(d->dialogueButtonIcon3.spriteIndex, d->dialogueButtonIcon3.spriteOffset, d->dialogueButtonIcon3.flag);
+    setSpriteViewSpacePosition(d->dialogueButtonIcon3.spriteIndex, messageBoxes[d->sessionManager.overlayMessageBoxIndex].viewSpacePosition.x + tempX, messageBoxes[d->sessionManager.overlayMessageBoxIndex].viewSpacePosition.y + tempY, messageBoxes[d->sessionManager.overlayMessageBoxIndex].viewSpacePosition.z);
 
 }
 
 void handleMenuNavigation(u16 index) {
 
+    Dialogue *d = &dialogues[index];
+
     bool set = FALSE;
 
-    if (!(messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) { 
+    if (!(messageBoxes[d->sessionManager.overlayMessageBoxIndex].flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) { 
 
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
 
-            if (dialogues[index].sessionManager.selectedMenuRow < (dialogues[index].sessionManager.totalMenuRows - 1)) {
+            if (d->sessionManager.selectedMenuRow < (d->sessionManager.totalMenuRows - 1)) {
 
-                dialogues[index].sessionManager.selectedMenuRow++;
+                d->sessionManager.selectedMenuRow++;
 
-                if (dialogues[index].sessionManager.visibleMenuCursorRow != messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows - 1) {
-                    dialogues[index].sessionManager.visibleMenuCursorRow++;
-                    adjustSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, -messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight - messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].lineSpacing, 0.0f);
+                if (d->sessionManager.visibleMenuCursorRow != messageBoxes[d->sessionManager.overlayMessageBoxIndex].textBoxVisibleRows - 1) {
+                    d->sessionManager.visibleMenuCursorRow++;
+                    adjustSpriteViewSpacePosition(d->dialogueButtonIcon1.spriteIndex, 0.0f, -messageBoxes[d->sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight - messageBoxes[d->sessionManager.overlayMessageBoxIndex].lineSpacing, 0.0f);
                 } else {
-                    scrollMessageBoxDown(dialogues[index].sessionManager.overlayMessageBoxIndex);
-                    dialogues[index].sessionManager.menuScrollOffset++;
+                    scrollMessageBoxDown(d->sessionManager.overlayMessageBoxIndex);
+                    d->sessionManager.menuScrollOffset++;
                 }
 
-                if (dialogues[index].sessionManager.scrollSfxIndex != 0xFF) {
-                    setSfx(dialogues[index].sessionManager.scrollSfxIndex + 1);
-                    setSfxVolume(dialogues[index].sessionManager.scrollSfxIndex + 1, DIALOGUE_SFX_VOLUME);
+                if (d->sessionManager.scrollSfxIndex != 0xFF) {
+                    setSfx(d->sessionManager.scrollSfxIndex + 1);
+                    setSfxVolume(d->sessionManager.scrollSfxIndex + 1, DIALOGUE_SFX_VOLUME);
                 }
                 
                 set = TRUE;
@@ -753,21 +791,21 @@ void handleMenuNavigation(u16 index) {
 
             if (!set) {
 
-                if (dialogues[index].sessionManager.selectedMenuRow) {
+                if (d->sessionManager.selectedMenuRow) {
 
-                    dialogues[index].sessionManager.selectedMenuRow--;
+                    d->sessionManager.selectedMenuRow--;
                     
-                    if (dialogues[index].sessionManager.visibleMenuCursorRow) {
-                        dialogues[index].sessionManager.visibleMenuCursorRow--;
-                        adjustSpriteViewSpacePosition(dialogues[index].dialogueButtonIcon1.spriteIndex, 0.0f, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight + messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].lineSpacing, 0.0f);
+                    if (d->sessionManager.visibleMenuCursorRow) {
+                        d->sessionManager.visibleMenuCursorRow--;
+                        adjustSpriteViewSpacePosition(d->dialogueButtonIcon1.spriteIndex, 0.0f, messageBoxes[d->sessionManager.overlayMessageBoxIndex].fontContext.characterCellHeight + messageBoxes[d->sessionManager.overlayMessageBoxIndex].lineSpacing, 0.0f);
                     } else {
-                        scrollMessageBoxUp(dialogues[index].sessionManager.overlayMessageBoxIndex);
-                        dialogues[index].sessionManager.menuScrollOffset--;
+                        scrollMessageBoxUp(d->sessionManager.overlayMessageBoxIndex);
+                        d->sessionManager.menuScrollOffset--;
                     }
 
-                    if (dialogues[index].sessionManager.scrollSfxIndex != 0xFF) {
-                        setSfx(dialogues[index].sessionManager.scrollSfxIndex + 1);
-                        setSfxVolume(dialogues[index].sessionManager.scrollSfxIndex + 1, DIALOGUE_SFX_VOLUME);
+                    if (d->sessionManager.scrollSfxIndex != 0xFF) {
+                        setSfx(d->sessionManager.scrollSfxIndex + 1);
+                        setSfxVolume(d->sessionManager.scrollSfxIndex + 1, DIALOGUE_SFX_VOLUME);
                         
                     }
                     
@@ -779,18 +817,18 @@ void handleMenuNavigation(u16 index) {
 
         }
 
-        if (dialogues[index].sessionManager.totalMenuRows > messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows) { 
+        if (d->sessionManager.totalMenuRows > messageBoxes[d->sessionManager.overlayMessageBoxIndex].textBoxVisibleRows) { 
 
-            if (messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].textBoxVisibleRows < (dialogues[index].sessionManager.totalMenuRows - dialogues[index].sessionManager.menuScrollOffset)) {
+            if (messageBoxes[d->sessionManager.overlayMessageBoxIndex].textBoxVisibleRows < (d->sessionManager.totalMenuRows - d->sessionManager.menuScrollOffset)) {
                 updateDialogueButtonIcon3Display(index);
             } else {
-                resetAnimationState(dialogues[index].dialogueButtonIcon3.spriteIndex);
+                resetAnimationState(d->dialogueButtonIcon3.spriteIndex);
             }
 
-            if (dialogues[index].sessionManager.menuScrollOffset) {
+            if (d->sessionManager.menuScrollOffset) {
                 updateDialogueButtonIcon2Display(index);
             } else {
-                resetAnimationState(dialogues[index].dialogueButtonIcon2.spriteIndex);
+                resetAnimationState(d->dialogueButtonIcon2.spriteIndex);
             }
 
         }
@@ -800,11 +838,11 @@ void handleMenuNavigation(u16 index) {
             if (!set) {
                 
                 cleanupDialogueOverlayBox(index);
-                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                d->bytecodeExecutor.currentOpcode = 0xFF;
                 
-                if (dialogues[index].sessionManager.closeSfxIndex != 0xFF) {
-                    setSfx(dialogues[index].sessionManager.closeSfxIndex + 1);
-                    setSfxVolume(dialogues[index].sessionManager.closeSfxIndex + 1, DIALOGUE_SFX_VOLUME);
+                if (d->sessionManager.closeSfxIndex != 0xFF) {
+                    setSfx(d->sessionManager.closeSfxIndex + 1);
+                    setSfxVolume(d->sessionManager.closeSfxIndex + 1, DIALOGUE_SFX_VOLUME);
                     set = TRUE;
                 }
                 
@@ -817,6 +855,8 @@ void handleMenuNavigation(u16 index) {
 }
 
 void updateCurrentDialogue(u16 index) {
+
+    Dialogue *d = &dialogues[index];
     
     u16 finishCurrentDialogueBlockProcessing = FALSE;
     
@@ -832,199 +872,199 @@ void updateCurrentDialogue(u16 index) {
     while (!finishCurrentDialogueBlockProcessing) {
         
         // currentOpcode is reset to 0xFF after processing
-        if (dialogues[index].bytecodeExecutor.currentOpcode == 0xFF) {
+        if (d->bytecodeExecutor.currentOpcode == 0xFF) {
             parseDialogueBytecode(index);
         }
         
-        switch (dialogues[index].bytecodeExecutor.currentOpcode) {
+        switch (d->bytecodeExecutor.currentOpcode) {
         
             case DIALOGUE_OPCODE_SHOW_TEXT:
 
-                if (dialogues[index].sessionManager.flags & 0x80) {
-                    initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, dialogues[index].bytecodeExecutor.textIndex, 0);
+                if (d->sessionManager.flags & 0x80) {
+                    initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, d->bytecodeExecutor.textIndex, 0);
                 } else {
-                    initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, dialogues[index].bytecodeExecutor.textIndex, MESSAGE_BOX_MODE_UNKNOWN);
+                    initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, d->bytecodeExecutor.textIndex, MESSAGE_BOX_MODE_UNKNOWN);
                 }
                 
                 finishCurrentDialogueBlockProcessing = TRUE;
 
-                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
-                dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
+                d->bytecodeExecutor.currentOpcode = 0xFF;
+                d->sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                 
                 break;
 
             case DIALOGUE_OPCODE_DIALOGUE_VARIABLE_BRANCH:
                 
-                dialogueVariableValue = getDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex);
+                dialogueVariableValue = getDialogueVariableValue(d->bytecodeExecutor.dialogueVariablesIndex);
                 
-                if ((dialogueVariableValue >= dialogues[index].bytecodeExecutor.minimumDialogueVariableValue) && (dialogues[index].bytecodeExecutor.maximumDialogueVariableValue >= dialogueVariableValue)) {
+                if ((dialogueVariableValue >= d->bytecodeExecutor.minimumDialogueVariableValue) && (d->bytecodeExecutor.maximumDialogueVariableValue >= dialogueVariableValue)) {
                 
-                    textOrDialogueIndex = dialogues[index].bytecodeExecutor.textIndex;
+                    textOrDialogueIndex = d->bytecodeExecutor.textIndex;
                     
                     // if a specific text is set, branch to that; otherwise, branch to another bytecode segment
                     if (textOrDialogueIndex != 0xFFFF) {
 
-                        if (dialogues[index].sessionManager.flags & 0x80) {
-                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0);
+                        if (d->sessionManager.flags & 0x80) {
+                            initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0);
                         } else {
-                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0x8000);
+                            initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0x8000);
                         }
                         
                         finishCurrentDialogueBlockProcessing = TRUE;
                         
-                        dialogues[index].bytecodeExecutor.textIndex = 0xFFFF;
-                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
+                        d->bytecodeExecutor.textIndex = 0xFFFF;
+                        d->sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                         
                     // branch to another bytecode segment
                     } else {
                         
-                        textOrDialogueIndex = dialogues[index].bytecodeExecutor.branchingDialogueIndex;
+                        textOrDialogueIndex = d->bytecodeExecutor.branchingDialogueIndex;
                         
                         if (textOrDialogueIndex != 0xFFFF) {
-                            initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, textOrDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
+                            initializeDialogueSession(index, d->sessionManager.dialogueBytecodeAddressesIndex, textOrDialogueIndex, d->sessionManager.flags & (0x40 | 0x80));
                         } else {
-                            dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                            d->bytecodeExecutor.currentOpcode = 0xFF;
                         }
                         
                     }
                     
                 } else {
-                    dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                    d->bytecodeExecutor.currentOpcode = 0xFF;
                 }
                 
                 break;
 
             case DIALOGUE_OPCODE_UPDATE_DIALOGUE_VARIABLE:
 
-                dialogueVariableValue = getDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex);
-                dialogueVariableValue += adjustValue(dialogueVariableValue, dialogues[index].bytecodeExecutor.updatedDialogueVariableAdjustment, dialogueVariables[dialogues[index].bytecodeExecutor.dialogueVariablesIndex].maxValue);
-                setDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex, dialogueVariableValue);
+                dialogueVariableValue = getDialogueVariableValue(d->bytecodeExecutor.dialogueVariablesIndex);
+                dialogueVariableValue += adjustValue(dialogueVariableValue, d->bytecodeExecutor.updatedDialogueVariableAdjustment, dialogueVariables[d->bytecodeExecutor.dialogueVariablesIndex].maxValue);
+                setDialogueVariableValue(d->bytecodeExecutor.dialogueVariablesIndex, dialogueVariableValue);
 
-                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                d->bytecodeExecutor.currentOpcode = 0xFF;
 
                 break;
 
             case DIALOGUE_OPCODE_SET_DIALOGUE_VARIABLE:
-                setDialogueVariableValue(dialogues[index].bytecodeExecutor.dialogueVariablesIndex, dialogues[index].bytecodeExecutor.dialogueVariableValue);
-                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                setDialogueVariableValue(d->bytecodeExecutor.dialogueVariablesIndex, d->bytecodeExecutor.dialogueVariableValue);
+                d->bytecodeExecutor.currentOpcode = 0xFF;
                 break;
 
             case DIALOGUE_OPCODE_SPECIAL_DIALOGUE_BIT_BRANCH:
                 
-                if (checkSpecialDialogueBitFromPointer(dialogues[index].bytecodeExecutor.specialDialogueBit)) {
+                if (checkSpecialDialogueBitFromPointer(d->bytecodeExecutor.specialDialogueBit)) {
                     
-                    textOrDialogueIndex = dialogues[index].bytecodeExecutor.textIndex;
+                    textOrDialogueIndex = d->bytecodeExecutor.textIndex;
                 
                     // if specific text is set, branch to that; otherwise branch to another bytecode segment
                     if (textOrDialogueIndex != 0xFFFF) {
                         
-                        if (dialogues[index].sessionManager.flags & 0x80) {
-                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0);
+                        if (d->sessionManager.flags & 0x80) {
+                            initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0);
                         } else {
-                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0x8000);
+                            initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0x8000);
                         }
                         
                         finishCurrentDialogueBlockProcessing = TRUE;
-                        dialogues[index].bytecodeExecutor.textIndex = 0xFFFF;
-                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
+                        d->bytecodeExecutor.textIndex = 0xFFFF;
+                        d->sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                     
                     // branch to another bytecode segment
                     } else {
                         
-                        textOrDialogueIndex = dialogues[index].bytecodeExecutor.branchingDialogueIndex;
+                        textOrDialogueIndex = d->bytecodeExecutor.branchingDialogueIndex;
 
                         if (textOrDialogueIndex != 0xFFFF) {
-                            initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, textOrDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
+                            initializeDialogueSession(index, d->sessionManager.dialogueBytecodeAddressesIndex, textOrDialogueIndex, d->sessionManager.flags & (0x40 | 0x80));
                         } else {
-                            dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                            d->bytecodeExecutor.currentOpcode = 0xFF;
                         }
 
                     }
                     
                 } else {
-                    dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                    d->bytecodeExecutor.currentOpcode = 0xFF;
                 }
                 
                 break;
 
             case DIALOGUE_OPCODE_SET_SPECIAL_DIALOGUE_BIT:
-                setSpecialDialogueBitFromPointer(dialogues[index].bytecodeExecutor.specialDialogueBit);
-                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                setSpecialDialogueBitFromPointer(d->bytecodeExecutor.specialDialogueBit);
+                d->bytecodeExecutor.currentOpcode = 0xFF;
                 break;
 
             case DIALOGUE_OPCODE_CLEAR_SPECIAL_DIALOGUE_BIT:
-                clearSpecialDialogueBitFromPointer(dialogues[index].bytecodeExecutor.specialDialogueBit);
-                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                clearSpecialDialogueBitFromPointer(d->bytecodeExecutor.specialDialogueBit);
+                d->bytecodeExecutor.currentOpcode = 0xFF;
                 break;
 
             case DIALOGUE_OPCODE_RANDOM_BRANCH:
                 
-                randomValue = dialogues[index].bytecodeExecutor.randomValue;
+                randomValue = d->bytecodeExecutor.randomValue;
 
-                if ((randomValue >= dialogues[index].bytecodeExecutor.randomMinimumValue) && (dialogues[index].bytecodeExecutor.randomMaximumValue >= randomValue)) {
+                if ((randomValue >= d->bytecodeExecutor.randomMinimumValue) && (d->bytecodeExecutor.randomMaximumValue >= randomValue)) {
                 
-                    textOrDialogueIndex = dialogues[index].bytecodeExecutor.textIndex;
+                    textOrDialogueIndex = d->bytecodeExecutor.textIndex;
                     
                     if (textOrDialogueIndex != 0xFFFF) {
 
-                        if (dialogues[index].sessionManager.flags & 0x80) {
-                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0);
+                        if (d->sessionManager.flags & 0x80) {
+                            initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0);
                         } else {
-                            initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0x8000);
+                            initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, textOrDialogueIndex, 0x8000);
                         }
                         
                         finishCurrentDialogueBlockProcessing = TRUE;
 
-                        dialogues[index].bytecodeExecutor.textIndex = 0xFFFF;
-                        dialogues[index].sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
+                        d->bytecodeExecutor.textIndex = 0xFFFF;
+                        d->sessionManager.flags |= DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                         
                     } else {
                         
-                        textOrDialogueIndex = dialogues[index].bytecodeExecutor.branchingDialogueIndex;
+                        textOrDialogueIndex = d->bytecodeExecutor.branchingDialogueIndex;
                         
                         if (textOrDialogueIndex != 0xFFFF) {
-                            initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, textOrDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
+                            initializeDialogueSession(index, d->sessionManager.dialogueBytecodeAddressesIndex, textOrDialogueIndex, d->sessionManager.flags & (0x40 | 0x80));
                         } else {
-                            dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                            d->bytecodeExecutor.currentOpcode = 0xFF;
                         }
                     }
                     
                 } else {
-                    dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                    d->bytecodeExecutor.currentOpcode = 0xFF;
                 }
                 
                 break;
 
             case DIALOGUE_OPCODE_BRANCH:
-                initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, dialogues[index].bytecodeExecutor.branchingDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
+                initializeDialogueSession(index, d->sessionManager.dialogueBytecodeAddressesIndex, d->bytecodeExecutor.branchingDialogueIndex, d->sessionManager.flags & (0x40 | 0x80));
                 break;
 
             case DIALOGUE_OPCODE_SHOW_SELECTION_MENU:
                 
-                dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
-                dialogues[index].sessionManager.selectedMenuRow = 0;
-                dialogues[index].sessionManager.visibleMenuCursorRow = 0;
-                dialogues[index].sessionManager.menuScrollOffset = 0;
-                dialogues[index].sessionManager.overlayTextOffset = dialogues[index].bytecodeExecutor.textOffset;
-                dialogues[index].sessionManager.flags |= DIALOGUE_PAUSE_FOR_USER_INPUT;
+                d->bytecodeExecutor.currentOpcode = 0xFF;
+                d->sessionManager.selectedMenuRow = 0;
+                d->sessionManager.visibleMenuCursorRow = 0;
+                d->sessionManager.menuScrollOffset = 0;
+                d->sessionManager.overlayTextOffset = d->bytecodeExecutor.textOffset;
+                d->sessionManager.flags |= DIALOGUE_PAUSE_FOR_USER_INPUT;
                 
-                initializeMessageBox(dialogues[index].sessionManager.overlayMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].selectionMenuTextAddressesIndex, dialogues[index].sessionManager.overlayTextOffset, 0);
+                initializeMessageBox(d->sessionManager.overlayMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].selectionMenuTextAddressesIndex, d->sessionManager.overlayTextOffset, 0);
                 
-                totalLines = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].totalLines;
+                totalLines = messageBoxes[d->sessionManager.overlayMessageBoxIndex].totalLines;
 
                 if (totalLines >= 5) {
-                    setMessageBoxLineAndRowSizes(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine, 4);
+                    setMessageBoxLineAndRowSizes(d->sessionManager.overlayMessageBoxIndex, messageBoxes[d->sessionManager.overlayMessageBoxIndex].maxCharsPerLine, 4);
                 } else {
-                    setMessageBoxLineAndRowSizes(dialogues[index].sessionManager.overlayMessageBoxIndex, messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].maxCharsPerLine, totalLines);
+                    setMessageBoxLineAndRowSizes(d->sessionManager.overlayMessageBoxIndex, messageBoxes[d->sessionManager.overlayMessageBoxIndex].maxCharsPerLine, totalLines);
                 }
                 
-                dialogues[index].sessionManager.totalMenuRows = messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].totalLines;
+                d->sessionManager.totalMenuRows = messageBoxes[d->sessionManager.overlayMessageBoxIndex].totalLines;
                 
                 setOverlayMessageBoxSprite(index);
                 
-                if (dialogues[index].sessionManager.buttonPressSfxIndex != 0xFF) {
-                    setSfx(dialogues[index].sessionManager.buttonPressSfxIndex + 1);
-                    setSfxVolume(dialogues[index].sessionManager.buttonPressSfxIndex + 1, DIALOGUE_SFX_VOLUME);
+                if (d->sessionManager.buttonPressSfxIndex != 0xFF) {
+                    setSfx(d->sessionManager.buttonPressSfxIndex + 1);
+                    setSfxVolume(d->sessionManager.buttonPressSfxIndex + 1, DIALOGUE_SFX_VOLUME);
                 }
                 
                 finishCurrentDialogueBlockProcessing = TRUE;
@@ -1036,16 +1076,16 @@ void updateCurrentDialogue(u16 index) {
 
             case DIALOGUE_OPCODE_HANDLE_MENU_SELECTION_BRANCH:
                 
-                selectedMenuRow = dialogues[index].sessionManager.selectedMenuRow;
+                selectedMenuRow = d->sessionManager.selectedMenuRow;
 
-                if (dialogues[index].bytecodeExecutor.targetMenuRow == selectedMenuRow) {
+                if (d->bytecodeExecutor.targetMenuRow == selectedMenuRow) {
 
-                    initializeDialogueSession(index, dialogues[index].sessionManager.dialogueBytecodeAddressesIndex, dialogues[index].bytecodeExecutor.branchingDialogueIndex, dialogues[index].sessionManager.flags & (0x40 | 0x80));
+                    initializeDialogueSession(index, d->sessionManager.dialogueBytecodeAddressesIndex, d->bytecodeExecutor.branchingDialogueIndex, d->sessionManager.flags & (0x40 | 0x80));
                     // preserve across session re-init
-                    dialogues[index].sessionManager.selectedMenuRow = selectedMenuRow;
+                    d->sessionManager.selectedMenuRow = selectedMenuRow;
 
                 } else {
-                    dialogues[index].bytecodeExecutor.currentOpcode = 0xFF;
+                    d->bytecodeExecutor.currentOpcode = 0xFF;
                 }
                 
                 break;
@@ -1066,32 +1106,33 @@ void updateDialogues(void) {
     bool skipDialogueUpdate;
 
     for (i = 0; i < MAX_DIALOGUES; i++) {
-        
-        if ((dialogues[i].sessionManager.flags & DIALOGUE_ACTIVE) && (dialogues[i].sessionManager.flags & DIALOGUE_INITIALIZED)) {
-            
+        Dialogue *d = &dialogues[i];
+
+        if ((d->sessionManager.flags & DIALOGUE_ACTIVE) && (d->sessionManager.flags & DIALOGUE_INITIALIZED)) {
+
             skipDialogueUpdate = FALSE;
-            
-            if (dialogues[i].sessionManager.flags & DIALOGUE_WAIT_FOR_MESSAGE_BOX) {
-                
-                if ((messageBoxes[dialogues[i].sessionManager.mainMessageBoxIndex].flags & MESSAGE_BOX_TEXT_COMPLETE) || (messageBoxes[dialogues[i].sessionManager.mainMessageBoxIndex].flags & 0x20000)) {
-                    dialogues[i].sessionManager.flags &= ~DIALOGUE_WAIT_FOR_MESSAGE_BOX;
+
+            if (d->sessionManager.flags & DIALOGUE_WAIT_FOR_MESSAGE_BOX) {
+
+                if ((messageBoxes[d->sessionManager.mainMessageBoxIndex].flags & MESSAGE_BOX_TEXT_COMPLETE) || (messageBoxes[d->sessionManager.mainMessageBoxIndex].flags & 0x20000)) {
+                    d->sessionManager.flags &= ~DIALOGUE_WAIT_FOR_MESSAGE_BOX;
                 }
-                
+
                 skipDialogueUpdate = TRUE;
 
             }
-            
-            if (dialogues[i].sessionManager.flags & DIALOGUE_PAUSE_FOR_USER_INPUT) {
+
+            if (d->sessionManager.flags & DIALOGUE_PAUSE_FOR_USER_INPUT) {
                 handleMenuNavigation(i);
                 skipDialogueUpdate = TRUE;
             }
-            
+
             if (!skipDialogueUpdate) {
                 updateCurrentDialogue(i);
             }
 
         }
-    
+
     }
     
 }

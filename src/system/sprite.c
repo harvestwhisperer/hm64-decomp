@@ -1,4 +1,5 @@
 #include "common.h"
+#include "yay0.h"
 
 #include "system/sprite.h"
 
@@ -20,23 +21,24 @@ void initializeBitmaps(void) {
     u16 i, j, k;
 
     for (i = 0; i < MAX_BITMAPS; i++) {
-        bitmaps[i].flags = 0;
-        bitmaps[i].renderingFlags = 0;
-        bitmaps[i].spriteNumber = 0;
-        bitmaps[i].vtxIndex = 0;
-        bitmaps[i].viewSpacePosition.x = 0;
-        bitmaps[i].viewSpacePosition.y = 0;
-        bitmaps[i].viewSpacePosition.z = 0;
-        bitmaps[i].scaling.x = 1.0f;
-        bitmaps[i].scaling.y = 1.0f;
-        bitmaps[i].scaling.z = 1.0f;
-        bitmaps[i].rotation.x = 0;
-        bitmaps[i].rotation.y = 0;
-        bitmaps[i].rotation.z = 0;
-        bitmaps[i].rgba.r = 255.0f;
-        bitmaps[i].rgba.g = 255.0f;
-        bitmaps[i].rgba.b = 255.0f;
-        bitmaps[i].rgba.a = 255.0f;
+        BitmapObject *bm = &bitmaps[i];
+        bm->flags = 0;
+        bm->renderingFlags = 0;
+        bm->spriteNumber = 0;
+        bm->vtxIndex = 0;
+        bm->viewSpacePosition.x = 0;
+        bm->viewSpacePosition.y = 0;
+        bm->viewSpacePosition.z = 0;
+        bm->scaling.x = 1.0f;
+        bm->scaling.y = 1.0f;
+        bm->scaling.z = 1.0f;
+        bm->rotation.x = 0;
+        bm->rotation.y = 0;
+        bm->rotation.z = 0;
+        bm->rgba.r = 255.0f;
+        bm->rgba.g = 255.0f;
+        bm->rgba.b = 255.0f;
+        bm->rgba.a = 255.0f;
     }
 
     for (j = 0; j < 2; j++) {
@@ -95,10 +97,11 @@ u16 setBitmap(u8 *timg, u16 *pal, u16 flags) {
     u16 bitmapIndex = bitmapCounter;
     
     if (bitmapCounter < MAX_BITMAPS) {
-        bitmaps[bitmapCounter].flags = flags | 1;
-        bitmaps[bitmapCounter].renderingFlags = 0;
-        bitmaps[bitmapCounter].timg = timg;
-        bitmaps[bitmapCounter].pal = pal;
+        BitmapObject *bm = &bitmaps[bitmapCounter];
+        bm->flags = flags | 1;
+        bm->renderingFlags = 0;
+        bm->timg = timg;
+        bm->pal = pal;
         bitmapCounter++;
     } else {
         bitmapIndex = 0xFFFF;
@@ -109,6 +112,8 @@ u16 setBitmap(u8 *timg, u16 *pal, u16 flags) {
 }
 
 bool setBitmapAnchorAlignment(u16 index, u16 arg1, u16 arg2) {
+
+    BitmapObject *bm = &bitmaps[index];
     
     bool result = FALSE;
 
@@ -117,15 +122,15 @@ bool setBitmapAnchorAlignment(u16 index, u16 arg1, u16 arg2) {
 
     if (index < MAX_BITMAPS) {
 
-        if (bitmaps[index].flags & BITMAP_ACTIVE) {
+        if (bm->flags & BITMAP_ACTIVE) {
 
-            bitmaps[index].renderingFlags &= ~BITMAP_ANCHOR_MASK;
+            bm->renderingFlags &= ~BITMAP_ANCHOR_MASK;
 
             temp1 = arg1 << 3;
-            bitmaps[index].renderingFlags |= temp1;
+            bm->renderingFlags |= temp1;
 
             temp2 = arg2 << 5;
-            bitmaps[index].renderingFlags |= temp2;
+            bm->renderingFlags |= temp2;
 
             result = TRUE;
 
@@ -137,17 +142,19 @@ bool setBitmapAnchorAlignment(u16 index, u16 arg1, u16 arg2) {
 }
 
 bool setBitmapAxisMapping(u16 index, u16 mode) {
+
+    BitmapObject *bm = &bitmaps[index];
     
     bool result = FALSE;
     int temp;
     
     if (index < MAX_BITMAPS) {
 
-        if (bitmaps[index].flags & BITMAP_ACTIVE) {
+        if (bm->flags & BITMAP_ACTIVE) {
             
-            bitmaps[index].renderingFlags &= ~BITMAP_AXIS_MAPPING_MASK;
+            bm->renderingFlags &= ~BITMAP_AXIS_MAPPING_MASK;
             temp = mode << 7;
-            bitmaps[index].renderingFlags |= temp;
+            bm->renderingFlags |= temp;
             
             result = TRUE;
 
@@ -160,16 +167,18 @@ bool setBitmapAxisMapping(u16 index, u16 mode) {
 
 bool setBitmapTriangleWinding(u16 index, u16 arg1) {
 
+    BitmapObject *bm = &bitmaps[index];
+
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & BITMAP_ACTIVE) {
+        if (bm->flags & BITMAP_ACTIVE) {
             
             if (arg1) {
-                bitmaps[index].renderingFlags |= SPRITE_RENDERING_REVERSE_WINDING;
+                bm->renderingFlags |= SPRITE_RENDERING_REVERSE_WINDING;
             } else {
-                bitmaps[index].renderingFlags &= ~SPRITE_RENDERING_REVERSE_WINDING;
+                bm->renderingFlags &= ~SPRITE_RENDERING_REVERSE_WINDING;
             }
             
             result = TRUE;
@@ -182,19 +191,21 @@ bool setBitmapTriangleWinding(u16 index, u16 arg1) {
 }
 
 bool setBitmapFlip(u16 index, bool flipHorizontal, bool flipVertical) {
+
+    BitmapObject *bm = &bitmaps[index];
     
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
 
-        if (bitmaps[index].flags & BITMAP_ACTIVE) {
+        if (bm->flags & BITMAP_ACTIVE) {
     
             if (flipHorizontal) {
-                bitmaps[index].renderingFlags |= BITMAP_RENDERING_FLIP_HORIZONTAL;
+                bm->renderingFlags |= BITMAP_RENDERING_FLIP_HORIZONTAL;
             }
             
             if (flipVertical) {
-               bitmaps[index].renderingFlags |= BITMAP_RENDERING_FLIP_VERTICAL;
+               bm->renderingFlags |= BITMAP_RENDERING_FLIP_VERTICAL;
             }
             
             result = TRUE;
@@ -208,16 +219,18 @@ bool setBitmapFlip(u16 index, bool flipHorizontal, bool flipVertical) {
 
 bool setBitmapBlendMode(u16 index, u16 flag) {
 
+    BitmapObject *bm = &bitmaps[index];
+
     bool result = FALSE;
     int temp;
     
     if (index < MAX_BITMAPS) {
 
-        if (bitmaps[index].flags & BITMAP_ACTIVE) {
+        if (bm->flags & BITMAP_ACTIVE) {
             
-            bitmaps[index].renderingFlags &= ~BITMAP_BLEND_MODE_MASK;
+            bm->renderingFlags &= ~BITMAP_BLEND_MODE_MASK;
             temp = flag << 10;
-            bitmaps[index].renderingFlags |= temp;
+            bm->renderingFlags |= temp;
             
             result = TRUE;
 
@@ -230,16 +243,18 @@ bool setBitmapBlendMode(u16 index, u16 flag) {
 }
 
 bool setBitmapViewSpacePosition(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+
+    BitmapObject *bm = &bitmaps[index];
     
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & BITMAP_ACTIVE) {
+        if (bm->flags & BITMAP_ACTIVE) {
             
-            bitmaps[index].viewSpacePosition.x = arg1;
-            bitmaps[index].viewSpacePosition.y = arg2;
-            bitmaps[index].viewSpacePosition.z = arg3;
+            bm->viewSpacePosition.x = arg1;
+            bm->viewSpacePosition.y = arg2;
+            bm->viewSpacePosition.z = arg3;
             
             result = TRUE;
 
@@ -251,16 +266,18 @@ bool setBitmapViewSpacePosition(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 }
 
 bool setBitmapScale(u16 index, f32 arg1, f32 arg2, f32 arg3) {
+
+    BitmapObject *bm = &bitmaps[index];
     
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & BITMAP_ACTIVE) {
+        if (bm->flags & BITMAP_ACTIVE) {
             
-            bitmaps[index].scaling.x = arg1;
-            bitmaps[index].scaling.y = arg2;
-            bitmaps[index].scaling.z = arg3;
+            bm->scaling.x = arg1;
+            bm->scaling.y = arg2;
+            bm->scaling.z = arg3;
             
             result = TRUE;
 
@@ -273,15 +290,17 @@ bool setBitmapScale(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
 bool setBitmapRotation(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 
+    BitmapObject *bm = &bitmaps[index];
+
     bool result = FALSE;
 
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & BITMAP_ACTIVE) {
+        if (bm->flags & BITMAP_ACTIVE) {
             
-            bitmaps[index].rotation.x = arg1;
-            bitmaps[index].rotation.y = arg2;
-            bitmaps[index].rotation.z = arg3;
+            bm->rotation.x = arg1;
+            bm->rotation.y = arg2;
+            bm->rotation.z = arg3;
             
             result = TRUE;
 
@@ -293,17 +312,19 @@ bool setBitmapRotation(u16 index, f32 arg1, f32 arg2, f32 arg3) {
 }
 
 bool setBitmapRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
+
+    BitmapObject *bm = &bitmaps[index];
     
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & BITMAP_ACTIVE) {
+        if (bm->flags & BITMAP_ACTIVE) {
             
-            bitmaps[index].rgba.r = r;
-            bitmaps[index].rgba.g = g;
-            bitmaps[index].rgba.b = b;
-            bitmaps[index].rgba.a = a;
+            bm->rgba.r = r;
+            bm->rgba.g = g;
+            bm->rgba.b = b;
+            bm->rgba.a = a;
             
             result = TRUE;
 
@@ -316,14 +337,16 @@ bool setBitmapRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
 bool setBitmapAnchor(u16 index, s16 anchorX, s16 anchorY) {
 
+    BitmapObject *bm = &bitmaps[index];
+
     bool result = FALSE;
     
     if (index < MAX_BITMAPS) {
         
-        if (bitmaps[index].flags & BITMAP_ACTIVE) {
+        if (bm->flags & BITMAP_ACTIVE) {
             
-            bitmaps[index].anchorX = anchorX;
-            bitmaps[index].anchorY = anchorY;
+            bm->anchorX = anchorX;
+            bm->anchorY = anchorY;
             
             result = TRUE;
 
@@ -334,13 +357,21 @@ bool setBitmapAnchor(u16 index, s16 anchorX, s16 anchorY) {
     
 }
 
-u8* setSpriteDMAInfo(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
+// Loads one compressed frame from a per-frame-compressed spritesheet into
+// `timg` and returns the *decompressed* frame size. Callers that pack
+// multiple layered frames back-to-back in RAM use the returned size as the
+// RAM stride — getTextureLength(spritesheetIndex) returns the compressed
+// length, which is correct for DMA but wrong for the RAM layout.
+u32 setSpriteDMAInfo(u16 index, u32 *spritesheetIndex, u8 *timg, u8 *romAddr) {
 
     u32 offset = spritesheetIndex[index];
+    u32 compressedLen = getTextureLength(index, spritesheetIndex);
 
-    setSpriteAssetDescriptors(romAddr + offset, timg, getTextureLength(index, spritesheetIndex));
+    dmaReadRom((u32)romAddr + offset, timg, compressedLen);
 
-    return timg;
+    // Decompressed size lives at bytes 4..7 of the Yay0 header in yay0Scratch.
+    return ((u32)yay0Scratch[4] << 24) | ((u32)yay0Scratch[5] << 16)
+         | ((u32)yay0Scratch[6] << 8)  | (u32)yay0Scratch[7];
 
 }
 
@@ -582,19 +613,20 @@ void updateBitmaps(void) {
     u16 spriteNumber = 0;
     
     for (i = 0; i < MAX_BITMAPS; i++) {
-        
-        if (bitmaps[i].flags & BITMAP_ACTIVE) {
-    
-            setBitmapFormat(&bitmaps[i], bitmaps[i].timg, bitmaps[i].pal);
+        BitmapObject *bm = &bitmaps[i];
+
+        if (bm->flags & BITMAP_ACTIVE) {
+
+            setBitmapFormat(bm, bm->timg, bm->pal);
 
             dlStartPosition = dl;
-            dl = generateBitmapDisplayList(dl, &bitmaps[i], spriteNumber);
+            dl = generateBitmapDisplayList(dl, bm, spriteNumber);
 
-            processBitmapSceneNode(&bitmaps[i], dlStartPosition); 
-            
-            spriteNumber += bitmaps[i].vtxIndex;
-            bitmaps[i].flags &= ~1;
-            
+            processBitmapSceneNode(bm, dlStartPosition);
+
+            spriteNumber += bm->vtxIndex;
+            bm->flags &= ~1;
+
        }
    }
     

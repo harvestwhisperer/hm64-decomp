@@ -852,7 +852,7 @@ void closeOverlayScreen(void) {
     }
 
 }
- 
+
 void loadClockSprites(void) {
 
     // clock and background
@@ -930,13 +930,13 @@ static inline void fadeOutClock() {
 // unused or inline
 // void loadMoneySprites(f32 x, f32 y, f32 z, u16 renderingLayer, u32 arg4) {
 
-//     // background and "g"
-//     dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)GOLD_UI_TEXTURE_BUFFER, NULL, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-//     setSpriteViewSpacePosition(0x8E, x, y, z);
-//     setBilinearFiltering(0x8E, TRUE);
-//     setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
-//     setSpriteBlendMode(0x8E, renderingLayer);
-//     startSpriteAnimation(0x8E, 0, 0);
+    // background and "g"
+    // dmaSprite(0x8E, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)GOLD_UI_TEXTURE_BUFFER, NULL, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    // setSpriteViewSpacePosition(0x8E, x, y, z);
+    // setBilinearFiltering(0x8E, TRUE);
+    // setSpriteColor(0x8E, 0xFF, 0xFF, 0xFF, 0);
+    // setSpriteBlendMode(0x8E, renderingLayer);
+    // startSpriteAnimation(0x8E, 0, 0);
 
 //     setNumberSprites(1, 0x91, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, 
 //         (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 
@@ -1144,7 +1144,6 @@ void updateShopQuantityArrows(u8 arg0) {
 
 /* end shop functions */
 
-
 /* load game/select game functions */
 
 void loadDiarySelectScreen(void) {
@@ -1181,6 +1180,14 @@ void loadDiarySelectScreen(void) {
         setSpriteBlendMode(0x84, SPRITE_BLEND_ALPHA_DECAL);
         setBilinearFiltering(0x84, TRUE);
         startSpriteAnimation(0x84, 1, 0);
+
+        // Ranking button
+        dmaSprite(0xA2, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+        setSpriteViewSpacePosition(0xA2, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0xA2, 0, 0, 0, 0);
+        setSpriteBlendMode(0xA2, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xA2, TRUE);
+        startSpriteAnimation(0xA2, 6, 0);
         
         // diary book 1
         dmaSprite(0xA3, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
@@ -1421,6 +1428,7 @@ void fadeInLoadGameScreen(void) {
     updateSpriteRGBA(0x82, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0x83, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0x84, 255, 255, 255, 255, 24);
+    updateSpriteRGBA(0xA2, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0xA3, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0xA4, 255, 255, 255, 255, 24);
     updateSpriteRGBA(0xA5, 255, 255, 255, 255, 24);
@@ -1463,6 +1471,7 @@ void fadeOutLoadGameScreen(void) {
     updateSpriteRGBA(0x82, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0x83, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0x84, 0, 0, 0, 0, 24);
+    updateSpriteRGBA(0xA2, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0xA3, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0xA4, 0, 0, 0, 0, 24);
     updateSpriteRGBA(0xA5, 0, 0, 0, 0, 24);
@@ -2190,6 +2199,7 @@ void loadAlbumScreenCallback(void) {
 
 /* pause screen functions */
 
+// pause screen load callback
 void loadPauseScreenCallback(void) {
     openOverlayScreen();
     initializePauseScreenBackground();
@@ -3196,7 +3206,7 @@ void loadToolboxScreenCallback(void) {
 }
 
 void loadToolboxScreenSprites(void) {
-    
+
     loadClockSprites();
     
     setMoneySprites();
@@ -3847,7 +3857,7 @@ void resetToolboxSpriteColors(void) {
         }
         
     }
-    
+
 }
 
 // swap tools
@@ -3896,7 +3906,6 @@ void swapToolboxTools(void) {
 }
 
 /* end toolbox funcs */
-
 
 /* freezer */
 
@@ -4133,7 +4142,6 @@ void fadeOutFreezerSprites(void) {
     
 }
 
-// freezer callback function
 void freezerScreenCallback(void) {
 
     bool set = FALSE;
@@ -4453,7 +4461,7 @@ void freezerScreenCallback(void) {
                     } else {
                         playSfx(3);
                     }
-                    
+
                 }
     
                 set = TRUE;
@@ -4882,6 +4890,7 @@ void fadeOutCabinetSprites(void) {
     
 }
 
+// cabinet screen main loop callback
 void cabinetScreenCallback(void) {
 
     bool set = FALSE;
@@ -5072,8 +5081,8 @@ void cabinetScreenCallback(void) {
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
             
                 if (!set) {
-                    
-                    if (overlayScreenTable.cellIndex != 8) {
+
+if (overlayScreenTable.cellIndex != 8) {
 
                         if (overlayScreenTable.cellIndex >= 4) {
                             overlayScreenTable.cellIndex -= 4;
@@ -5250,7 +5259,6 @@ void cabinetScreenCallback(void) {
     }
     
 }
-
 
 f32 getCabinetItemXCoordinate(u8 arg0, u8 arg1) {
 
@@ -5812,7 +5820,6 @@ void loadEstimateScreenSprites(void) {
     
 }
 
-
 void fadeInEstimateSprites(void) {
 
     fadeInClock();
@@ -6012,8 +6019,8 @@ u8 findPowerNutCellIndex(u8 cellIndex, u8 arg1) {
                 temp--;
             
             }
-                
-            break;
+
+break;
         
     }
 
@@ -6107,7 +6114,7 @@ void kitchenPictureScreenCallback(void) {
             }
             break;
 
-        case 5:
+case 5:
 
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
                 
@@ -6148,8 +6155,8 @@ void kitchenPictureScreenCallback(void) {
                             playSfx(2);
                             
                         }
-                
-                    }
+
+}
                 
                     set = TRUE;
                     
@@ -6266,8 +6273,8 @@ void loadCalendarStickers(void) {
         } 
     
     }
-    
-    for (k = 0; k < 10; k++) {
+
+for (k = 0; k < 10; k++) {
 
         if (D_80205640[k] != 0xFF) {
 
@@ -6628,8 +6635,8 @@ void calendarScreenCallback(void) {
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-                    
-                        playSfx(2);
+
+playSfx(2);
                         
                     }
                 
@@ -6656,8 +6663,8 @@ void calendarScreenCallback(void) {
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-                        
-                        playSfx(2);
+
+playSfx(2);
                         
                     }
                 
@@ -6684,8 +6691,8 @@ void calendarScreenCallback(void) {
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-                        
-                        playSfx(2);
+
+playSfx(2);
                         
                     }
                 
@@ -6712,8 +6719,8 @@ void calendarScreenCallback(void) {
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-                        
-                        playSfx(2);
+
+playSfx(2);
                         
                     }
                 
@@ -7072,7 +7079,7 @@ void recipeBookScreenCallback(void) {
                 }
             }
 
-            if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
+if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
                 
                 if (!set) {
                     
@@ -7085,8 +7092,8 @@ void recipeBookScreenCallback(void) {
                     set = TRUE;
                
                 }
-                
-            }
+
+}
             
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
 
@@ -7116,8 +7123,8 @@ void recipeBookScreenCallback(void) {
             }
 
             break;
-    
-    }
+
+}
 
     if (overlayScreenTable.screenState >= 5 && checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
         hideRightArrow();
@@ -7409,6 +7416,8 @@ void fadeOutAlbumSprites(void) {
 
 }
 
+//INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_80121E34);
+
 static const u8 D_80121E34[20] = { 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, 0x21, 0x22, 0x2D, 0x2E, 0, 0, 0, 0 };
 
 void albumScreenCallback(void) {
@@ -7533,7 +7542,7 @@ void albumScreenCallback(void) {
             
             }
 
-            if ((checkButtonPressed(0, BUTTON_A))) {
+            if ((checkButtonPressed(CONTROLLER_1, BUTTON_A))) {
 
                 if (!set) {
 
@@ -7595,6 +7604,7 @@ void albumScreenCallback(void) {
     }
     
 }
+
 /* end of album functions */
 
 // misc. recipe helpers
@@ -7841,132 +7851,132 @@ skip:
 
 // main loop callback 30
 // seems like load village map (cut from NA release) 
-void loadPauseScreenMapScreenCallback(void) {
+// void loadPauseScreenMapScreenCallback(void) {
     
-    dmaSprite(0x82, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 0.0f);
-    setSpriteScale(0x82, 1.0f, 1.0f, 1.0f);
-    setBilinearFiltering(0x82, TRUE);
-    setSpriteColor(0x82, 0, 0, 0, 0);
-    startSpriteAnimation(0x82, 0, 0);
+    // dmaSprite(0x82, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    // setSpriteViewSpacePosition(0x82, 0.0f, 0.0f, 0.0f);
+    // setSpriteScale(0x82, 1.0f, 1.0f, 1.0f);
+    // setBilinearFiltering(0x82, TRUE);
+    // setSpriteColor(0x82, 0, 0, 0, 0);
+    // startSpriteAnimation(0x82, 0, 0);
     
-    dmaSprite(0xA3, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-    setSpriteScale(0xA3, 1.0f, 1.0f, 1.0f);
-    setBilinearFiltering(0xA3, TRUE);
-    setSpriteColor(0xA3, 0, 0, 0, 0);
-    startSpriteAnimation(0xA3, 1, 0xFE);
+    // dmaSprite(0xA3, (u32)&_villageMapScreenTextureSegmentRomStart, (u32)&_villageMapScreenTextureSegmentRomEnd, (u32)&_villageMapScreenAssetsIndexSegmentRomStart, (u32)&_villageMapScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_PAUSE_SCREEN_MAP_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+    // setSpriteScale(0xA3, 1.0f, 1.0f, 1.0f);
+    // setBilinearFiltering(0xA3, TRUE);
+    // setSpriteColor(0xA3, 0, 0, 0, 0);
+    // startSpriteAnimation(0xA3, 1, 0xFE);
     
-    switch (gBaseMapIndex) {
+//     switch (gBaseMapIndex) {
         
-        case RANCH:
-        case ANN_ROOM:
-        case RANCH_BARN:
-        case RANCH_STORE:
-        case RANCH_HOUSE:
-            setSpriteViewSpacePosition(0xA3, 0.0f, -72.0f, 8.0f);
-            break;
+//         case RANCH:
+//         case ANN_ROOM:
+//         case RANCH_BARN:
+//         case RANCH_STORE:
+//         case RANCH_HOUSE:
+//             setSpriteViewSpacePosition(0xA3, 0.0f, -72.0f, 8.0f);
+//             break;
 
-        case BEACH:
-            setSpriteViewSpacePosition(0xA3, 56.0f, -96.0f, 8.0f);
-            break;
+//         case BEACH:
+//             setSpriteViewSpacePosition(0xA3, 56.0f, -96.0f, 8.0f);
+//             break;
 
-        case MOUNTAIN_1:
-            setSpriteViewSpacePosition(0xA3, 88.0f, 12.0f, 8.0f);
-            break;
+//         case MOUNTAIN_1:
+//             setSpriteViewSpacePosition(0xA3, 88.0f, 12.0f, 8.0f);
+//             break;
 
-        case MOUNTAIN_2:
-        case CARPENTER_HUT:
-            setSpriteViewSpacePosition(0xA3, 32.0f, 20.0f, 8.0f);
-            break;
+//         case MOUNTAIN_2:
+//         case CARPENTER_HUT:
+//             setSpriteViewSpacePosition(0xA3, 32.0f, 20.0f, 8.0f);
+//             break;
         
-        case TOP_OF_MOUNTAIN_1:
-            setSpriteViewSpacePosition(0xA3, 104.0f, 48.0f, 8.0f);
-            break;
+//         case TOP_OF_MOUNTAIN_1:
+//             setSpriteViewSpacePosition(0xA3, 104.0f, 48.0f, 8.0f);
+//             break;
 
-        case MOON_MOUNTAIN:
-        case DUMPLING_HOUSE:
-            setSpriteViewSpacePosition(0xA3, 104.0f, 84.0f, 8.0f);
-            break;
+//         case MOON_MOUNTAIN:
+//         case DUMPLING_HOUSE:
+//             setSpriteViewSpacePosition(0xA3, 104.0f, 84.0f, 8.0f);
+//             break;
 
-        case POND:
-            setSpriteViewSpacePosition(0xA3, -16.0f, 36.0f, 8.0f);
-            break;
+//         case POND:
+//             setSpriteViewSpacePosition(0xA3, -16.0f, 36.0f, 8.0f);
+//             break;
 
-        case ELLI_ROOM:
-        case BAKERY:
-        case VILLAGE_1:
-        case POPURI_ROOM:
-        case FLOWER_SHOP:
-        case CHURCH:
-        case SOUVENIR_SHOP:
-        case RICK_STORE:
-        case TAVERN:
-        case EMPTY_MAP_2:
-            setSpriteViewSpacePosition(0xA3, -20.0f, -24.0f, 8.0f);
-            break;
+//         case ELLI_ROOM:
+//         case BAKERY:
+//         case VILLAGE_1:
+//         case POPURI_ROOM:
+//         case FLOWER_SHOP:
+//         case CHURCH:
+//         case SOUVENIR_SHOP:
+//         case RICK_STORE:
+//         case TAVERN:
+//         case EMPTY_MAP_2:
+//             setSpriteViewSpacePosition(0xA3, -20.0f, -24.0f, 8.0f);
+//             break;
 
-        case VILLAGE_2:
-        case MIDWIFE_HOUSE:
-        case LIBRARY:
-        case MARIA_ROOM:
-        case MAYOR_HOUSE:
-        case POTION_SHOP_BEDROOM:
-        case POTION_SHOP:
-            setSpriteViewSpacePosition(0xA3, -44.0f, -56.0f, 8.0f);
-            break;
+//         case VILLAGE_2:
+//         case MIDWIFE_HOUSE:
+//         case LIBRARY:
+//         case MARIA_ROOM:
+//         case MAYOR_HOUSE:
+//         case POTION_SHOP_BEDROOM:
+//         case POTION_SHOP:
+//             setSpriteViewSpacePosition(0xA3, -44.0f, -56.0f, 8.0f);
+//             break;
 
-        case SQUARE:
-            setSpriteViewSpacePosition(0xA3, -72.0f, -16.0f, 8.0f);
-            break;
+//         case SQUARE:
+//             setSpriteViewSpacePosition(0xA3, -72.0f, -16.0f, 8.0f);
+//             break;
 
-        case RACE_TRACK:
-            setSpriteViewSpacePosition(0xA3, -124.0f, -24.0f, 8.0f);
-            break;
+//         case RACE_TRACK:
+//             setSpriteViewSpacePosition(0xA3, -124.0f, -24.0f, 8.0f);
+//             break;
         
-        case HARVEST_SPRITE_CAVE:
-        case CAVE:
-        case MINE:
-        case MINE_2:
-            setSpriteViewSpacePosition(0xA3, 56.0f, 32.0f, 8.0f);
-            break;
+//         case HARVEST_SPRITE_CAVE:
+//         case CAVE:
+//         case MINE:
+//         case MINE_2:
+//             setSpriteViewSpacePosition(0xA3, 56.0f, 32.0f, 8.0f);
+//             break;
                 
-        case KAREN_ROOM:
-        case VINEYARD:
-        case VINEYARD_HOUSE:
-        case VINEYARD_CELLAR:
-        case VINEYARD_CELLAR_BASEMENT:
-            setSpriteViewSpacePosition(0xA3, 16.0f, -4.0f, 8.0f);
-            break;
+//         case KAREN_ROOM:
+//         case VINEYARD:
+//         case VINEYARD_HOUSE:
+//         case VINEYARD_CELLAR:
+//         case VINEYARD_CELLAR_BASEMENT:
+//             setSpriteViewSpacePosition(0xA3, 16.0f, -4.0f, 8.0f);
+//             break;
 
-        case ROAD:
-            setSpriteViewSpacePosition(0xA3, 24.0f, -44.0f, 8.0f);
-            break;
+//         case ROAD:
+//             setSpriteViewSpacePosition(0xA3, 24.0f, -44.0f, 8.0f);
+//             break;
         
-        case FARM:
-        case GREENHOUSE:
-        case HOUSE:
-        case BARN:
-        case COOP:
-        case KITCHEN:
-        case BATHROOM:
-            setSpriteViewSpacePosition(0xA3, 64.0f, -56.0f, 8.0f);
-            break;
-        
-    }
-    
-    overlayScreenTable.cellIndex = 0;
-    overlayScreenTable.previousCellIndex = 0;
-    overlayScreenTable.pageNumber = 0;
-    overlayScreenTable.unk_3 = 0xFF;
-    overlayScreenTable.screenState = 0;
-    overlayScreenTable.unk_8 = 0;
-    overlayScreenTable.unk_9 = 0;
-    overlayScreenTable.unk_A = 0;
-    overlayScreenTable.unk_B = 0;
-    
-    setMainLoopCallbackFunctionIndex(PAUSE_SCREEN_MAP);
+//         case FARM:
+//         case GREENHOUSE:
+//         case HOUSE:
+//         case BARN:
+//         case COOP:
+//         case KITCHEN:
+//         case BATHROOM:
+//             setSpriteViewSpacePosition(0xA3, 64.0f, -56.0f, 8.0f);
+//             break;
 
-}
+//     }
+    
+//     overlayScreenTable.cellIndex = 0;
+//     overlayScreenTable.previousCellIndex = 0;
+//     overlayScreenTable.pageNumber = 0;
+//     overlayScreenTable.unk_3 = 0xFF;
+//     overlayScreenTable.screenState = 0;
+//     overlayScreenTable.unk_8 = 0;
+//     overlayScreenTable.unk_9 = 0;
+//     overlayScreenTable.unk_A = 0;
+//     overlayScreenTable.unk_B = 0;
+    
+//     setMainLoopCallbackFunctionIndex(PAUSE_SCREEN_MAP);
+
+// }
 
 void pauseScreenMapCallback(void) {    
 
@@ -8409,8 +8419,8 @@ void raceBettingScreenCallback(void) {
                 }
                 
                 set = TRUE;
-                
-            }
+
+}
             
             if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST) && !set) {
                 
@@ -8460,8 +8470,8 @@ void raceBettingScreenCallback(void) {
                         }
                         
                     }
-                    
-                    setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
+
+setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     
                     set = TRUE;
                     
@@ -8481,7 +8491,7 @@ void raceBettingScreenCallback(void) {
                             playSfx(2);
                         }
                     }
-                    
+
                     setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
                         
@@ -9341,6 +9351,8 @@ void fadeOutRaceGiftsSprites(void) {
     deactivateNumberSprites(2);
 }
 
+//INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_801221CC);
+
 static const u16 D_801221CC[6] = { 3000, 1000, 500, 0, 0, 0 };
 
 void raceGiftsScreenCallback(void) {
@@ -9720,7 +9732,7 @@ void lotteryScreenCallback(void) {
                 setMessageBoxSpriteIndices(0, 0, 0, 0);
                 setMessageBoxInterpolationWithFlags(0, -4, 0);
                 
-                if (gBaseMapIndex == FLOWER_SHOP) {
+                if (gBaseMapIndex == 0x32) {
                     initializeDialogueSession(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 4, 0x40);
                 } else {
                     initializeDialogueSession(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 10, 0x40);
@@ -9751,7 +9763,7 @@ void lotteryScreenCallback(void) {
                         bakeryCardPoints += adjustValue(bakeryCardPoints, -10, 100);
                     }
 
-                } else {
+} else {
                     
                     if (gBaseMapIndex == FLOWER_SHOP) {
                         initializeMessageBox(0, FESTIVALS_TEXT_INDEX, 0x3D, 0);
@@ -9762,8 +9774,8 @@ void lotteryScreenCallback(void) {
                     overlayScreenTable.screenState = 3;
 
                 }
-                
-            }
+
+}
             
             break;
         

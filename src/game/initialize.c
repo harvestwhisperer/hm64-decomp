@@ -103,10 +103,10 @@ static inline void initializePlayer() {
     gPlayer.velocity = 0.0f;
     gPlayer.toolHeldCounter = 0;
     gPlayer.currentToolLevel = 0;
-    gPlayer.bottleContents = BOTTLE_CONTENTS_EMPTY;
+    gPlayer.bottleContents = 0;
     gPlayer.toolLevels[0] = 0;
-    gPlayer.toolSlots[0] = HOE;
-    gPlayer.toolSlots[3] = HAMMER;
+    gPlayer.toolSlots[0] = 2;
+    gPlayer.toolSlots[3] = 4;
     gPlayer.toolLevels[1] = 0;
     gPlayer.toolLevels[2] = 0;
     gPlayer.toolLevels[3] = 0;
@@ -117,9 +117,9 @@ static inline void initializePlayer() {
     gPlayer.toolUseCounters[2] = 0;
     gPlayer.toolUseCounters[3] = 0;
     gPlayer.toolUseCounters[4] = 0;
-    gPlayer.toolSlots[1] = SICKLE;
-    gPlayer.toolSlots[2] = AX;
-    gPlayer.toolSlots[4] = WATERING_CAN;
+    gPlayer.toolSlots[1] = 1;
+    gPlayer.toolSlots[2] = 3;
+    gPlayer.toolSlots[4] = 5;
     gPlayer.toolSlots[5] = 0;
     gPlayer.toolSlots[6] = 0;
     gPlayer.toolSlots[7] = 0;
@@ -237,6 +237,7 @@ static inline void initializeToolboxSlots() {
        
 }
 
+
 void initializeAll(void) {
     
     volatile musConfig c;
@@ -263,6 +264,7 @@ void initializeAll(void) {
     initializeWaveTable(0);
 
 }
+
 
 // TODO: there might be some static inlines for each group being initialized
 void initializeGameVariables(void) {
@@ -634,6 +636,7 @@ void initializeGameVariables(void) {
 
 }
 
+
 void registerMainLoopCallbacks(void) {
 
     // game.c
@@ -672,7 +675,7 @@ void registerMainLoopCallbacks(void) {
     registerMainLoopCallback(CALENDAR_LOAD, loadCalendarScreenCallback);
     registerMainLoopCallback(RECIPE_BOOK_LOAD, loadRecipeBookScreenCallback);
     registerMainLoopCallback(ALBUM_LOAD, loadAlbumScreenCallback);
-    registerMainLoopCallback(PAUSE_SCREEN_MAP_LOAD, loadPauseScreenMapScreenCallback);
+    // registerMainLoopCallback(PAUSE_SCREEN_MAP_LOAD, loadPauseScreenMapScreenCallback);
     registerMainLoopCallback(RACE_BETTING_LOAD, loadRaceBettingScreenCallback);
     registerMainLoopCallback(RACE_RESULTS_LOAD, loadRaceResultsScreenCallback);
     registerMainLoopCallback(RACE_GIFTS_LOAD, loadRaceGiftsScreenCallback);

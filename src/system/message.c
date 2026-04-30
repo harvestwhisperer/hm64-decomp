@@ -74,57 +74,59 @@ void initializeMessageBoxes(void) {
 
     for (i = 0; i < MAX_MESSAGE_BOXES; i++) {
 
-        messageBoxes[i].flags = 0;
+        MessageBox *mb = &messageBoxes[i];
+
+        mb->flags = 0;
         
-        messageBoxes[i].textIndex = 0;
+        mb->textIndex = 0;
         
-        messageBoxes[i].currentCompressionControlByte = 0;
-        messageBoxes[i].compressionBitIndex = 0;
+        mb->currentCompressionControlByte = 0;
+        mb->compressionBitIndex = 0;
          
-        messageBoxes[i].unk_7C = 0;
+        mb->unk_7C = 0;
 
-        messageBoxes[i].scrollCount = 0;
-        messageBoxes[i].totalLinesToPrint = 0;
-        messageBoxes[i].currentCharCountOnLine = 0;
-        messageBoxes[i].currentLineBeingPrinted = 0;
+        mb->scrollCount = 0;
+        mb->totalLinesToPrint = 0;
+        mb->currentCharCountOnLine = 0;
+        mb->currentLineBeingPrinted = 0;
 
-        messageBoxes[i].characterSpacing = 0;
-        messageBoxes[i].lineSpacing = 0;
+        mb->characterSpacing = 0;
+        mb->lineSpacing = 0;
 
-        messageBoxes[i].characterPrintSfx = 0xFF;
-        messageBoxes[i].unk_74 = 0xFF;
-        messageBoxes[i].messageCloseSfx = 0xFF;
+        mb->characterPrintSfx = 0xFF;
+        mb->unk_74 = 0xFF;
+        mb->messageCloseSfx = 0xFF;
 
-        messageBoxes[i].totalCharactersProcessed = 0;
-        messageBoxes[i].charactersProcessedPerLine = 0;
-        messageBoxes[i].defaultScrollSpeed = 0;
-        messageBoxes[i].buttonMask = 0;
-        messageBoxes[i].textAddressesIndex = 0;
+        mb->totalCharactersProcessed = 0;
+        mb->charactersProcessedPerLine = 0;
+        mb->defaultScrollSpeed = 0;
+        mb->buttonMask = 0;
+        mb->textAddressesIndex = 0;
  
-        messageBoxes[i].fontContext.characterCellWidth = 0;
-        messageBoxes[i].fontContext.characterCellHeight = 0;
+        mb->fontContext.characterCellWidth = 0;
+        mb->fontContext.characterCellHeight = 0;
 
-        messageBoxes[i].viewSpacePosition.x = 0;
-        messageBoxes[i].viewSpacePosition.y = 0;
-        messageBoxes[i].viewSpacePosition.z = 0;
+        mb->viewSpacePosition.x = 0;
+        mb->viewSpacePosition.y = 0;
+        mb->viewSpacePosition.z = 0;
 
-        messageBoxes[i].textBoxLineCharWidth = 0;
-        messageBoxes[i].textBoxVisibleRows = 0;
+        mb->textBoxLineCharWidth = 0;
+        mb->textBoxVisibleRows = 0;
 
-        messageBoxes[i].targetRGBA.r = 255.0f;
-        messageBoxes[i].targetRGBA.g = 255.0f;
-        messageBoxes[i].targetRGBA.b = 255.0f;
-        messageBoxes[i].targetRGBA.a = 255.0f;
+        mb->targetRGBA.r = 255.0f;
+        mb->targetRGBA.g = 255.0f;
+        mb->targetRGBA.b = 255.0f;
+        mb->targetRGBA.a = 255.0f;
 
-        messageBoxes[i].currentRGBA.r = 255.0f;
-        messageBoxes[i].currentRGBA.g = 255.0f;
-        messageBoxes[i].currentRGBA.b = 255.0f;
-        messageBoxes[i].currentRGBA.a = 255.0f;
+        mb->currentRGBA.r = 255.0f;
+        mb->currentRGBA.g = 255.0f;
+        mb->currentRGBA.b = 255.0f;
+        mb->currentRGBA.a = 255.0f;
        
-        initializeInterpolator((Interpolator*)&messageBoxes[i].unk_64, 0, 0);
-        initializeInterpolator((Interpolator*)&messageBoxes[i].scrollInterpolator, 0, 0);
+        initializeInterpolator((Interpolator*)&mb->unk_64, 0, 0);
+        initializeInterpolator((Interpolator*)&mb->scrollInterpolator, 0, 0);
          
-        messageBoxes[i].unk_9D = 0;
+        mb->unk_9D = 0;
         
     }
 
@@ -137,30 +139,32 @@ void initializeMessageBoxes(void) {
 }
 
 bool initializeEmptyMessageBox(u16 messageBoxIndex, u8* textBufferAddr) {
+
+    MessageBox *mb = &messageBoxes[messageBoxIndex];
  
     bool set = FALSE;
     
     if (messageBoxIndex < MAX_MESSAGE_BOXES) {
 
-        if (!(messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_ACTIVE)) {
+        if (!(mb->flags & MESSAGE_BOX_ACTIVE)) {
 
-            messageBoxes[messageBoxIndex].currentCompressionControlByte = 0;
-            messageBoxes[messageBoxIndex].compressionBitIndex = 0;
+            mb->currentCompressionControlByte = 0;
+            mb->compressionBitIndex = 0;
  
-            messageBoxes[messageBoxIndex].scrollCount = 0;
-            messageBoxes[messageBoxIndex].totalLinesToPrint = 0;
-            messageBoxes[messageBoxIndex].currentCharCountOnLine = 0;
-            messageBoxes[messageBoxIndex].currentLineBeingPrinted = 0;
+            mb->scrollCount = 0;
+            mb->totalLinesToPrint = 0;
+            mb->currentCharCountOnLine = 0;
+            mb->currentLineBeingPrinted = 0;
 
-            messageBoxes[messageBoxIndex].characterPrintSfx = 0xFF;
-            messageBoxes[messageBoxIndex].unk_74 = 0xFF;
-            messageBoxes[messageBoxIndex].messageCloseSfx = 0xFF;
+            mb->characterPrintSfx = 0xFF;
+            mb->unk_74 = 0xFF;
+            mb->messageCloseSfx = 0xFF;
 
-            messageBoxes[messageBoxIndex].textBufferBase = textBufferAddr;
+            mb->textBufferBase = textBufferAddr;
             
-            messageBoxes[messageBoxIndex].flags = MESSAGE_BOX_ACTIVE;
+            mb->flags = MESSAGE_BOX_ACTIVE;
 
-            initializeInterpolator((Interpolator*)&messageBoxes[messageBoxIndex].scrollInterpolator, 0, 0);
+            initializeInterpolator((Interpolator*)&mb->scrollInterpolator, 0, 0);
             setMessageBoxBaseRGBA(messageBoxIndex, 255, 255, 255, 255);
             
             set = TRUE;        
@@ -175,20 +179,22 @@ bool initializeEmptyMessageBox(u16 messageBoxIndex, u8* textBufferAddr) {
 
 bool deactivateMessageBox(u16 index) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
     
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
             
-            messageBoxes[index].flags &= ~MESSAGE_BOX_ACTIVE;
+            mb->flags &= ~MESSAGE_BOX_ACTIVE;
             
-            if (messageBoxes[index].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) {
-                resetAnimationState(dialogueWindows[messageBoxes[index].dialogueWindowIndex].spriteIndex);
+            if (mb->flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) {
+                resetAnimationState(dialogueWindows[mb->dialogueWindowIndex].spriteIndex);
             }
             
-            if (messageBoxes[index].flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
-                resetAnimationState(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex);
+            if (mb->flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
+                resetAnimationState(characterAvatars[mb->characterAvatarIndex].spriteIndex);
             }
             
             result = TRUE;
@@ -203,6 +209,8 @@ bool deactivateMessageBox(u16 index) {
 
 bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textIndex, u32 mode) {
 
+    MessageBox *mb = &messageBoxes[messageBoxIndex];
+
     bool result = FALSE;
 
     u16 tempTextIndex;
@@ -212,76 +220,80 @@ bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textI
     
     if (messageBoxIndex < MAX_MESSAGE_BOXES) {
         
-        if (messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
+            TextAddresses *ta = &textAddresses[textAddressesIndex];
 
-            messageBoxes[messageBoxIndex].textIndex = textIndex;
-            messageBoxes[messageBoxIndex].textAddressesIndex = textAddressesIndex;
+            mb->textIndex = textIndex;
+            mb->textAddressesIndex = textAddressesIndex;
+
+            nuPiReadRom(ta->romIndexStart, ta->indexVaddr, ta->romIndexEnd - ta->romIndexStart);
+
+            textAddress = getTextAddress(messageBoxIndex, mb->textIndex);
+            nuPiReadRom(textAddress, mb->textBufferBase, getTextAddress(messageBoxIndex, mb->textIndex + 1) - textAddress);
             
-            nuPiReadRom(textAddresses[textAddressesIndex].romIndexStart, textAddresses[textAddressesIndex].indexVaddr, textAddresses[textAddressesIndex].romIndexEnd - textAddresses[textAddressesIndex].romIndexStart);
+            mb->totalLinesToPrint = countTextLines(messageBoxIndex, tempTextIndex);
+            mb->currentCompressionControlByte = 0;
+            mb->compressionBitIndex = 0;
+            mb->scrollCount = 0;
+            mb->currentCharCountOnLine = 0;
+            mb->currentLineBeingPrinted = 0;
+            mb->unk_9D = 0;
 
-            textAddress = getTextAddress(messageBoxIndex, messageBoxes[messageBoxIndex].textIndex);
-            nuPiReadRom(textAddress, messageBoxes[messageBoxIndex].textBufferBase, getTextAddress(messageBoxIndex, messageBoxes[messageBoxIndex].textIndex + 1) - textAddress);
-            
-            messageBoxes[messageBoxIndex].totalLinesToPrint = countTextLines(messageBoxIndex, tempTextIndex);
-            messageBoxes[messageBoxIndex].currentCompressionControlByte = 0;
-            messageBoxes[messageBoxIndex].compressionBitIndex = 0;
-            messageBoxes[messageBoxIndex].scrollCount = 0;
-            messageBoxes[messageBoxIndex].currentCharCountOnLine = 0;
-            messageBoxes[messageBoxIndex].currentLineBeingPrinted = 0;
-            messageBoxes[messageBoxIndex].unk_9D = 0;
+            mb->currentCharPtr = mb->textBufferBase;
 
-            messageBoxes[messageBoxIndex].currentCharPtr = messageBoxes[messageBoxIndex].textBufferBase;
+            mb->flags &= ~MESSAGE_BOX_TEXT_COMPLETE;
+            mb->flags &= ~0x4000;
+            mb->flags |= MESSAGE_BOX_INITIALIZED;
 
-            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_TEXT_COMPLETE;
-            messageBoxes[messageBoxIndex].flags &= ~0x4000;
-            messageBoxes[messageBoxIndex].flags |= MESSAGE_BOX_INITIALIZED;
-
-            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
-            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_KEEP_ANIMATION;
-            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_NO_INPUT;
-            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_SILENT;
-            messageBoxes[messageBoxIndex].flags &= ~0x20000;
+            mb->flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
+            mb->flags &= ~MESSAGE_BOX_MODE_KEEP_ANIMATION;
+            mb->flags &= ~MESSAGE_BOX_MODE_NO_INPUT;
+            mb->flags &= ~MESSAGE_BOX_SILENT;
+            mb->flags &= ~0x20000;
 
             if (mode == MESSAGE_BOX_MODE_UNKNOWN) {
-                messageBoxes[messageBoxIndex].flags |= MESSAGE_BOX_MODE_UNKNOWN;
+                mb->flags |= MESSAGE_BOX_MODE_UNKNOWN;
             }
             
             if (mode == MESSAGE_BOX_MODE_KEEP_ANIMATION) {
-                messageBoxes[messageBoxIndex].flags |= mode;
+                mb->flags |= mode;
             }
 
             if (mode == MESSAGE_BOX_MODE_NO_INPUT) {
-                messageBoxes[messageBoxIndex].flags |= mode;
+                mb->flags |= mode;
             }
 
             if (mode == MESSAGE_BOX_SILENT) {
-                messageBoxes[messageBoxIndex].flags |= mode;
+                mb->flags |= mode;
             }
 
-            if (messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_HAS_OVERLAY_ICON) {
-                dmaSprite(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romTextureStart, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romTextureEnd, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romIndexStart, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].romIndexEnd, NULL, NULL, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrTexture, NULL, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrPalette, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrAnimationFrameMetadata, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].vaddrTextureToPaletteLookup, overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].unk_20, 0, 0);
-                setBilinearFiltering(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, TRUE);
-                setSpriteColor(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, 255, 255, 255, 255);
-                setSpriteAnchorAlignment(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-                setSpriteBlendMode(overlayIcons[messageBoxes[messageBoxIndex].overlayIconIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
+            if (mb->flags & MESSAGE_BOX_HAS_OVERLAY_ICON) {
+                OverlayIcon *oi = &overlayIcons[mb->overlayIconIndex];
+                dmaSprite(oi->spriteIndex, oi->romTextureStart, oi->romTextureEnd, oi->romIndexStart, oi->romIndexEnd, NULL, NULL, oi->vaddrTexture, NULL, oi->vaddrPalette, oi->vaddrAnimationFrameMetadata, oi->vaddrTextureToPaletteLookup, oi->unk_20, 0, 0);
+                setBilinearFiltering(oi->spriteIndex, TRUE);
+                setSpriteColor(oi->spriteIndex, 255, 255, 255, 255);
+                setSpriteAnchorAlignment(oi->spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+                setSpriteBlendMode(oi->spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
             }
 
-            if (messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
-                dmaSprite(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romTextureStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romTextureEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romAssetsIndexStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romAssetsIndexEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romSpritesheetIndexStart, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].romSpritesheetIndexEnd, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrTexture1, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrTexture2, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrPalette, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrAnimation, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrSpriteToPalette, characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].vaddrSpritesheetIndex, 1, 0);
-                setBilinearFiltering(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, TRUE);
-                setSpriteColor(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, 255, 255, 255, 255);
-                setSpriteAnchorAlignment(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-                setSpriteBlendMode(characterAvatars[messageBoxes[messageBoxIndex].characterAvatarIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
+            if (mb->flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
+                CharacterAvatar *ca = &characterAvatars[mb->characterAvatarIndex];
+                dmaSprite(ca->spriteIndex, ca->romTextureStart, ca->romTextureEnd, ca->romAssetsIndexStart, ca->romAssetsIndexEnd, ca->romSpritesheetIndexStart, ca->romSpritesheetIndexEnd, ca->vaddrTexture1, ca->vaddrTexture2, ca->vaddrPalette, ca->vaddrAnimation, ca->vaddrSpriteToPalette, ca->vaddrSpritesheetIndex, 1, 0);
+                setBilinearFiltering(ca->spriteIndex, TRUE);
+                setSpriteColor(ca->spriteIndex, 255, 255, 255, 255);
+                setSpriteAnchorAlignment(ca->spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+                setSpriteBlendMode(ca->spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
             }
 
-            if (messageBoxes[messageBoxIndex].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) {
-                dmaSprite(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romTextureStart, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romTextureEnd, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romIndexStart, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].romIndexEnd, NULL, NULL, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrTexture, NULL, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrPalette, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrAnimationFrameMetadata, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].vaddrTextureToPaletteLookup, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].unk_20, 0, 0);
-                setBilinearFiltering(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, TRUE);
-                setSpriteColor(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, 255, 255, 255, 255);
-                setSpriteAnchorAlignment(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
-                setSpriteBlendMode(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
-                startSpriteAnimation(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteOffset, dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].flag);
-                setSpriteViewSpacePosition(dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].spriteIndex, messageBoxes[messageBoxIndex].viewSpacePosition.x + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.x, messageBoxes[messageBoxIndex].viewSpacePosition.y + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.y, (messageBoxes[messageBoxIndex].viewSpacePosition.z + dialogueWindows[messageBoxes[messageBoxIndex].dialogueWindowIndex].coordinates.z) - 2.0f);
+            if (mb->flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) {
+                DialogueWindow *dw = &dialogueWindows[mb->dialogueWindowIndex];
+                dmaSprite(dw->spriteIndex, dw->romTextureStart, dw->romTextureEnd, dw->romIndexStart, dw->romIndexEnd, NULL, NULL, dw->vaddrTexture, NULL, dw->vaddrPalette, dw->vaddrAnimationFrameMetadata, dw->vaddrTextureToPaletteLookup, dw->unk_20, 0, 0);
+                setBilinearFiltering(dw->spriteIndex, TRUE);
+                setSpriteColor(dw->spriteIndex, 255, 255, 255, 255);
+                setSpriteAnchorAlignment(dw->spriteIndex, SPRITE_ANCHOR_CENTER, SPRITE_ANCHOR_CENTER);;
+                setSpriteBlendMode(dw->spriteIndex, SPRITE_BLEND_ALPHA_DECAL);
+                startSpriteAnimation(dw->spriteIndex, dw->spriteOffset, dw->flag);
+                setSpriteViewSpacePosition(dw->spriteIndex, mb->viewSpacePosition.x + dw->coordinates.x, mb->viewSpacePosition.y + dw->coordinates.y, (mb->viewSpacePosition.z + dw->coordinates.z) - 2.0f);
             }
 
             setMessageBoxRGBA(messageBoxIndex, 255, 255, 255, 255);
@@ -297,21 +309,23 @@ bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textI
 
 bool setMessageBoxRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
     
     if (index < MAX_MESSAGE_BOXES) { 
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
             
-            messageBoxes[index].targetRGBA.r = (messageBoxes[index].baseRGBA.r * r) / 255.0f;
-            messageBoxes[index].targetRGBA.g = (messageBoxes[index].baseRGBA.g * g) / 255.0f;
-            messageBoxes[index].targetRGBA.b = (messageBoxes[index].baseRGBA.b * b) / 255.0f;
-            messageBoxes[index].targetRGBA.a = (messageBoxes[index].baseRGBA.a * a) / 255.0f;
+            mb->targetRGBA.r = (mb->baseRGBA.r * r) / 255.0f;
+            mb->targetRGBA.g = (mb->baseRGBA.g * g) / 255.0f;
+            mb->targetRGBA.b = (mb->baseRGBA.b * b) / 255.0f;
+            mb->targetRGBA.a = (mb->baseRGBA.a * a) / 255.0f;
     
-            messageBoxes[index].currentRGBA.r = (messageBoxes[index].baseRGBA.r * r) / 255.0f;
-            messageBoxes[index].currentRGBA.g = (messageBoxes[index].baseRGBA.g * g) / 255.0f;
-            messageBoxes[index].currentRGBA.b = (messageBoxes[index].baseRGBA.b * b) / 255.0f;
-            messageBoxes[index].currentRGBA.a = (messageBoxes[index].baseRGBA.a * a) / 255.0f;
+            mb->currentRGBA.r = (mb->baseRGBA.r * r) / 255.0f;
+            mb->currentRGBA.g = (mb->baseRGBA.g * g) / 255.0f;
+            mb->currentRGBA.b = (mb->baseRGBA.b * b) / 255.0f;
+            mb->currentRGBA.a = (mb->baseRGBA.a * a) / 255.0f;
     
             result = TRUE;
      
@@ -325,16 +339,18 @@ bool setMessageBoxRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
 bool adjustMessageBoxTargetRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
     
     if (index < MAX_MESSAGE_BOXES) { 
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].targetRGBA.r += r;
-            messageBoxes[index].targetRGBA.g += g;
-            messageBoxes[index].targetRGBA.b += b;
-            messageBoxes[index].targetRGBA.a += a;
+            mb->targetRGBA.r += r;
+            mb->targetRGBA.g += g;
+            mb->targetRGBA.b += b;
+            mb->targetRGBA.a += a;
             
             result = TRUE;
             
@@ -347,6 +363,8 @@ bool adjustMessageBoxTargetRGBA(u16 index, s8 r, s8 g, s8 b, s8 a) {
 
 bool setMessageBoxRGBAWithTransition(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     f32 tempF;
     s16 temp = getAbsoluteValue(rate);
 
@@ -354,59 +372,59 @@ bool setMessageBoxRGBAWithTransition(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate
     
     if (index < MAX_MESSAGE_BOXES) { 
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].currentRGBA.r = (messageBoxes[index].baseRGBA.r * r) / 255.0f;
-            messageBoxes[index].currentRGBA.g = (messageBoxes[index].baseRGBA.g * g) / 255.0f;
-            messageBoxes[index].currentRGBA.b = (messageBoxes[index].baseRGBA.b * b) / 255.0f;
-            messageBoxes[index].currentRGBA.a = (messageBoxes[index].baseRGBA.a * a) / 255.0f;
+            mb->currentRGBA.r = (mb->baseRGBA.r * r) / 255.0f;
+            mb->currentRGBA.g = (mb->baseRGBA.g * g) / 255.0f;
+            mb->currentRGBA.b = (mb->baseRGBA.b * b) / 255.0f;
+            mb->currentRGBA.a = (mb->baseRGBA.a * a) / 255.0f;
             
-            messageBoxes[index].flags &= ~MESSAGE_BOX_RGBA_COMPLETE;
+            mb->flags &= ~MESSAGE_BOX_RGBA_COMPLETE;
 
-            if (messageBoxes[index].currentRGBA.r < messageBoxes[index].targetRGBA.r) {
-                tempF = messageBoxes[index].targetRGBA.r - messageBoxes[index].currentRGBA.r;
+            if (mb->currentRGBA.r < mb->targetRGBA.r) {
+                tempF = mb->targetRGBA.r - mb->currentRGBA.r;
             } else {
-                tempF = messageBoxes[index].currentRGBA.r - messageBoxes[index].targetRGBA.r;
+                tempF = mb->currentRGBA.r - mb->targetRGBA.r;
             }
 
-            messageBoxes[index].deltaRGBA.r = (tempF * temp) / messageBoxes[index].baseRGBA.r;
+            mb->deltaRGBA.r = (tempF * temp) / mb->baseRGBA.r;
             
-            if (messageBoxes[index].currentRGBA.g < messageBoxes[index].targetRGBA.g) {
-                tempF = messageBoxes[index].targetRGBA.g - messageBoxes[index].currentRGBA.g;
+            if (mb->currentRGBA.g < mb->targetRGBA.g) {
+                tempF = mb->targetRGBA.g - mb->currentRGBA.g;
             } else {
-                tempF = messageBoxes[index].currentRGBA.g - messageBoxes[index].targetRGBA.g;
+                tempF = mb->currentRGBA.g - mb->targetRGBA.g;
             }
 
-            messageBoxes[index].deltaRGBA.g = (tempF * temp) / messageBoxes[index].baseRGBA.g;
+            mb->deltaRGBA.g = (tempF * temp) / mb->baseRGBA.g;
             
-            if (messageBoxes[index].currentRGBA.b < messageBoxes[index].targetRGBA.b) {
-                tempF = messageBoxes[index].targetRGBA.b - messageBoxes[index].currentRGBA.b;
+            if (mb->currentRGBA.b < mb->targetRGBA.b) {
+                tempF = mb->targetRGBA.b - mb->currentRGBA.b;
             } else {
-                tempF = messageBoxes[index].currentRGBA.b - messageBoxes[index].targetRGBA.b;
+                tempF = mb->currentRGBA.b - mb->targetRGBA.b;
             }
 
-            messageBoxes[index].deltaRGBA.b = (tempF * temp) / messageBoxes[index].baseRGBA.b;
+            mb->deltaRGBA.b = (tempF * temp) / mb->baseRGBA.b;
 
-            if (messageBoxes[index].currentRGBA.a < messageBoxes[index].targetRGBA.a) {
-                tempF = messageBoxes[index].targetRGBA.a - messageBoxes[index].currentRGBA.a;
+            if (mb->currentRGBA.a < mb->targetRGBA.a) {
+                tempF = mb->targetRGBA.a - mb->currentRGBA.a;
             } else {
-                tempF = messageBoxes[index].currentRGBA.a - messageBoxes[index].targetRGBA.a;
+                tempF = mb->currentRGBA.a - mb->targetRGBA.a;
             }
 
-            messageBoxes[index].deltaRGBA.a = (tempF * temp) / messageBoxes[index].baseRGBA.a;
+            mb->deltaRGBA.a = (tempF * temp) / mb->baseRGBA.a;
         
-            if (messageBoxes[index].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) {
-                updateSpriteRGBA(dialogueWindows[messageBoxes[index].dialogueWindowIndex].spriteIndex, 
+            if (mb->flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) {
+                updateSpriteRGBA(dialogueWindows[mb->dialogueWindowIndex].spriteIndex, 
                     r, g, b, a, temp);
             }
 
-            if (messageBoxes[index].flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
-                updateSpriteRGBA(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex, 
+            if (mb->flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
+                updateSpriteRGBA(characterAvatars[mb->characterAvatarIndex].spriteIndex, 
                     r, g, b, a, temp);
             }
 
-            if (messageBoxes[index].flags & MESSAGE_BOX_HAS_OVERLAY_ICON) {
-                updateSpriteRGBA(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, 
+            if (mb->flags & MESSAGE_BOX_HAS_OVERLAY_ICON) {
+                updateSpriteRGBA(overlayIcons[mb->overlayIconIndex].spriteIndex, 
                     r, g, b, a, temp);
             }
             
@@ -459,12 +477,14 @@ bool setMessageBoxRGBAWithTransition(u16 index, u8 r, u8 g, u8 b, u8 a, s16 rate
 
 bool checkMessageBoxRGBAComplete(u16 index) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
 
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
-            result = (messageBoxes[index].flags >> 0x15) & 1;
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
+            result = (mb->flags >> 0x15) & 1;
         }
         
     }
@@ -475,16 +495,18 @@ bool checkMessageBoxRGBAComplete(u16 index) {
 
 bool setMessageBoxBaseRGBA(u16 index, u8 r, u8 g, u8 b, u8 a) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
     
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].baseRGBA.r = r;
-            messageBoxes[index].baseRGBA.g = g;
-            messageBoxes[index].baseRGBA.b = b;
-            messageBoxes[index].baseRGBA.a = a;
+            mb->baseRGBA.r = r;
+            mb->baseRGBA.g = g;
+            mb->baseRGBA.b = b;
+            mb->baseRGBA.a = a;
 
             result = TRUE;
             
@@ -515,22 +537,24 @@ bool checkAnyMessageBoxTextFinished(void) {
 
 bool resetMessageBoxAnimation(u16 index) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
     
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
 
-            if (!(messageBoxes[index].flags & MESSAGE_BOX_MODE_UNKNOWN) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_KEEP_ANIMATION) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
-                messageBoxes[index].flags &= ~(MESSAGE_BOX_INITIALIZED | MESSAGE_BOX_TEXT_END_REACHED);
+            if (!(mb->flags & MESSAGE_BOX_MODE_UNKNOWN) && !(mb->flags & MESSAGE_BOX_MODE_KEEP_ANIMATION) && !(mb->flags & MESSAGE_BOX_MODE_NO_INPUT)) {
+                mb->flags &= ~(MESSAGE_BOX_INITIALIZED | MESSAGE_BOX_TEXT_END_REACHED);
             }
 
-            if ((messageBoxes[index].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_UNKNOWN) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_KEEP_ANIMATION) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
+            if ((mb->flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) && !(mb->flags & MESSAGE_BOX_MODE_UNKNOWN) && !(mb->flags & MESSAGE_BOX_MODE_KEEP_ANIMATION) && !(mb->flags & MESSAGE_BOX_MODE_NO_INPUT)) {
 
-                resetAnimationState(dialogueWindows[messageBoxes[index].dialogueWindowIndex].spriteIndex);
+                resetAnimationState(dialogueWindows[mb->dialogueWindowIndex].spriteIndex);
 
-                if (messageBoxes[index].flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
-                    resetAnimationState(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex);        
+                if (mb->flags & MESSAGE_BOX_HAS_CHARACTER_AVATAR) {
+                    resetAnimationState(characterAvatars[mb->characterAvatarIndex].spriteIndex);        
                 }
             
             }
@@ -566,35 +590,39 @@ bool resetMessageBoxAnimation(u16 index) {
 
 bool setTextAddresses(u16 textAddressesIndex, u32 romIndexStart, u32 romIndexEnd, u32 romTextStart, u32 indexVaddr) {
 
+    TextAddresses *ta = &textAddresses[textAddressesIndex];
+
     bool result = FALSE;
 
     if (textAddressesIndex < TOTAL_TEXTS) {
 
-        textAddresses[textAddressesIndex].romIndexStart = romIndexStart;
-        textAddresses[textAddressesIndex].romIndexEnd = romIndexEnd;
-        textAddresses[textAddressesIndex].indexVaddr = indexVaddr;
-        textAddresses[textAddressesIndex].romTextStart = romTextStart;
-        
+        ta->romIndexStart = romIndexStart;
+        ta->romIndexEnd = romIndexEnd;
+        ta->indexVaddr = indexVaddr;
+        ta->romTextStart = romTextStart;
+
         result = TRUE;
-        
+
     }
-    
+
     return result;
-    
+
 }
 
 bool setMessageBoxInterpolationWithFlags(u16 index, s16 rate, u8 interpolationMode) {
+
+    MessageBox *mb = &messageBoxes[index];
     
     bool result = FALSE;
     
     if (index < MAX_MESSAGE_BOXES) {
         
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].unk_7C = rate;
-            initializeInterpolator((Interpolator*)&messageBoxes[index].unk_64, rate, 0);
+            mb->unk_7C = rate;
+            initializeInterpolator((Interpolator*)&mb->unk_64, rate, 0);
 
-            messageBoxes[index].flags &= ~(MESSAGE_BOX_INTERPOLATION_MODE_1 | MESSAGE_BOX_INTERPOLATION_MODE_2);
+            mb->flags &= ~(MESSAGE_BOX_INTERPOLATION_MODE_1 | MESSAGE_BOX_INTERPOLATION_MODE_2);
 
             switch (interpolationMode) {
 
@@ -602,15 +630,15 @@ bool setMessageBoxInterpolationWithFlags(u16 index, s16 rate, u8 interpolationMo
                     break;
                 
                 case 1:
-                    messageBoxes[index].flags |= MESSAGE_BOX_INTERPOLATION_MODE_1;
+                    mb->flags |= MESSAGE_BOX_INTERPOLATION_MODE_1;
                     break;
 
                 case 2:
-                    messageBoxes[index].flags |= MESSAGE_BOX_INTERPOLATION_MODE_2;
+                    mb->flags |= MESSAGE_BOX_INTERPOLATION_MODE_2;
                     break;                    
 
                 case 3:
-                    messageBoxes[index].flags |= (MESSAGE_BOX_INTERPOLATION_MODE_1 | MESSAGE_BOX_INTERPOLATION_MODE_2);
+                    mb->flags |= (MESSAGE_BOX_INTERPOLATION_MODE_1 | MESSAGE_BOX_INTERPOLATION_MODE_2);
                     break;               
                 
             }
@@ -626,17 +654,19 @@ bool setMessageBoxInterpolationWithFlags(u16 index, s16 rate, u8 interpolationMo
 }
 
 bool setMessageBoxFont(u16 index, u8 arg1, u8 arg2, u8* compressedCI2FontData, u16* fontPalettePtr) {
+
+    MessageBox *mb = &messageBoxes[index];
     
     bool result = FALSE;
     
     if (index < MAX_MESSAGE_BOXES) {
         
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
             
-            messageBoxes[index].fontContext.characterCellWidth = arg1;
-            messageBoxes[index].fontContext.characterCellHeight = arg2;
-            messageBoxes[index].fontContext.compressedCI2FontData = compressedCI2FontData;
-            messageBoxes[index].fontContext.fontPalettePtr = fontPalettePtr;
+            mb->fontContext.characterCellWidth = arg1;
+            mb->fontContext.characterCellHeight = arg2;
+            mb->fontContext.compressedCI2FontData = compressedCI2FontData;
+            mb->fontContext.fontPalettePtr = fontPalettePtr;
              
             result = TRUE;
             
@@ -650,15 +680,17 @@ bool setMessageBoxFont(u16 index, u8 arg1, u8 arg2, u8* compressedCI2FontData, u
 
 bool setMessageBoxSfx(u16 index, u32 arg1, u32 arg2, u32 arg3) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
 
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].characterPrintSfx = arg1;
-            messageBoxes[index].unk_74 = arg2;
-            messageBoxes[index].messageCloseSfx = arg3;
+            mb->characterPrintSfx = arg1;
+            mb->unk_74 = arg2;
+            mb->messageCloseSfx = arg3;
             
             result = TRUE;
         
@@ -672,15 +704,17 @@ bool setMessageBoxSfx(u16 index, u32 arg1, u32 arg2, u32 arg3) {
 
 bool setMessageBoxViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
 
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
             
-            messageBoxes[index].viewSpacePosition.x = x;
-            messageBoxes[index].viewSpacePosition.y = y;
-            messageBoxes[index].viewSpacePosition.z = z;
+            mb->viewSpacePosition.x = x;
+            mb->viewSpacePosition.y = y;
+            mb->viewSpacePosition.z = z;
             
             result = TRUE;
 
@@ -694,14 +728,16 @@ bool setMessageBoxViewSpacePosition(u16 index, f32 x, f32 y, f32 z) {
 
 bool setMessageBoxLineAndRowSizes(u16 index, u8 arg1, u8 arg2) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
     
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].textBoxLineCharWidth = arg1;
-            messageBoxes[index].textBoxVisibleRows = arg2;
+            mb->textBoxLineCharWidth = arg1;
+            mb->textBoxVisibleRows = arg2;
             
             result = TRUE;
             
@@ -714,14 +750,16 @@ bool setMessageBoxLineAndRowSizes(u16 index, u8 arg1, u8 arg2) {
 
 bool setMessageBoxSpacing(u16 index, u8 charSpacing, u8 lineSpacing) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
     
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
 
-            messageBoxes[index].characterSpacing = charSpacing;
-            messageBoxes[index].lineSpacing = lineSpacing;
+            mb->characterSpacing = charSpacing;
+            mb->lineSpacing = lineSpacing;
             
             result = TRUE;
             
@@ -735,32 +773,34 @@ bool setMessageBoxSpacing(u16 index, u8 charSpacing, u8 lineSpacing) {
 
 bool setMessageBoxSpriteIndices(u16 index, u8 dialogueWindowIndex, u8 overlayIconIndex, u8 characterAvatarIndex) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
     
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) { 
+        if (mb->flags & MESSAGE_BOX_ACTIVE) { 
             
-            messageBoxes[index].dialogueWindowIndex = dialogueWindowIndex;
-            messageBoxes[index].overlayIconIndex = overlayIconIndex;
-            messageBoxes[index].characterAvatarIndex = characterAvatarIndex;
+            mb->dialogueWindowIndex = dialogueWindowIndex;
+            mb->overlayIconIndex = overlayIconIndex;
+            mb->characterAvatarIndex = characterAvatarIndex;
  
-            if (messageBoxes[index].dialogueWindowIndex != 0xFF) {
-                messageBoxes[index].flags |= MESSAGE_BOX_HAS_DIALOGUE_WINDOW;
+            if (mb->dialogueWindowIndex != 0xFF) {
+                mb->flags |= MESSAGE_BOX_HAS_DIALOGUE_WINDOW;
             } else {
-                messageBoxes[index].flags &= ~MESSAGE_BOX_HAS_DIALOGUE_WINDOW;
+                mb->flags &= ~MESSAGE_BOX_HAS_DIALOGUE_WINDOW;
             }
 
-            if (messageBoxes[index].overlayIconIndex != 0xFF) {
-                messageBoxes[index].flags |= MESSAGE_BOX_HAS_OVERLAY_ICON;
+            if (mb->overlayIconIndex != 0xFF) {
+                mb->flags |= MESSAGE_BOX_HAS_OVERLAY_ICON;
             } else {
-                messageBoxes[index].flags &= ~MESSAGE_BOX_HAS_OVERLAY_ICON;
+                mb->flags &= ~MESSAGE_BOX_HAS_OVERLAY_ICON;
             }
 
-            if (messageBoxes[index].characterAvatarIndex != 0xFF) {
-                messageBoxes[index].flags |= MESSAGE_BOX_HAS_CHARACTER_AVATAR;
+            if (mb->characterAvatarIndex != 0xFF) {
+                mb->flags |= MESSAGE_BOX_HAS_CHARACTER_AVATAR;
             } else {
-                messageBoxes[index].flags &= ~MESSAGE_BOX_HAS_CHARACTER_AVATAR;
+                mb->flags &= ~MESSAGE_BOX_HAS_CHARACTER_AVATAR;
             }
 
             result = TRUE;
@@ -775,30 +815,32 @@ bool setMessageBoxSpriteIndices(u16 index, u8 dialogueWindowIndex, u8 overlayIco
 
 bool setDialogueWindowSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romIndexStart, u32 romIndexEnd, u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, u32 argA, u16 spriteOffset, u8 flag, f32 x, f32 y, f32 z) {
 
+    DialogueWindow *dw = &dialogueWindows[index];
+
     bool result = FALSE;
 
     if (index < 3) {
 
-        dialogueWindows[index].romTextureStart = romTextureStart;
-        dialogueWindows[index].romTextureEnd = romTextureEnd;
-        dialogueWindows[index].romIndexStart = romIndexStart;
-        dialogueWindows[index].romIndexEnd = romIndexEnd;
+        dw->romTextureStart = romTextureStart;
+        dw->romTextureEnd = romTextureEnd;
+        dw->romIndexStart = romIndexStart;
+        dw->romIndexEnd = romIndexEnd;
 
-        dialogueWindows[index].vaddrTexture = vaddrTexture;
-        dialogueWindows[index].vaddrPalette = vaddrPalette;
-        dialogueWindows[index].vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
-        dialogueWindows[index].vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
+        dw->vaddrTexture = vaddrTexture;
+        dw->vaddrPalette = vaddrPalette;
+        dw->vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
+        dw->vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
 
-        dialogueWindows[index].unk_20 = argA;
+        dw->unk_20 = argA;
 
-        dialogueWindows[index].spriteIndex = spriteIndex;
-        dialogueWindows[index].spriteOffset = spriteOffset;
+        dw->spriteIndex = spriteIndex;
+        dw->spriteOffset = spriteOffset;
 
-        dialogueWindows[index].flag= flag;
+        dw->flag= flag;
 
-        dialogueWindows[index].coordinates.x = x;
-        dialogueWindows[index].coordinates.y = y;
-        dialogueWindows[index].coordinates.z = z;
+        dw->coordinates.x = x;
+        dw->coordinates.y = y;
+        dw->coordinates.z = z;
         
         result = TRUE;
         
@@ -812,30 +854,32 @@ bool setOverlayIconSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u32 r
     u8* vaddrTexture, u16* vaddrPalette, AnimationFrameMetadata* vaddrAnimationFrameMetadata, u8* vaddrTextureToPaletteLookup, 
     u32 argA, u16 offset, u8 flag, f32 x, f32 y, f32 z) {
 
+    OverlayIcon *oi = &overlayIcons[index];
+
     bool result = FALSE;
     
     if (index < 2) {
 
-        overlayIcons[index].romTextureStart = romTextureStart;
-        overlayIcons[index].romTextureEnd = romTextureEnd;
-        overlayIcons[index].romIndexStart = romIndexStart;
-        overlayIcons[index].romIndexEnd = romIndexEnd;
+        oi->romTextureStart = romTextureStart;
+        oi->romTextureEnd = romTextureEnd;
+        oi->romIndexStart = romIndexStart;
+        oi->romIndexEnd = romIndexEnd;
 
-        overlayIcons[index].vaddrTexture = vaddrTexture;
-        overlayIcons[index].vaddrPalette = vaddrPalette;
-        overlayIcons[index].vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
-        overlayIcons[index].vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
+        oi->vaddrTexture = vaddrTexture;
+        oi->vaddrPalette = vaddrPalette;
+        oi->vaddrAnimationFrameMetadata = vaddrAnimationFrameMetadata;
+        oi->vaddrTextureToPaletteLookup = vaddrTextureToPaletteLookup;
 
-        overlayIcons[index].unk_20 = argA;
-        overlayIcons[index].spriteIndex = spriteIndex;
+        oi->unk_20 = argA;
+        oi->spriteIndex = spriteIndex;
 
-        overlayIcons[index].spriteOffset = offset;
+        oi->spriteOffset = offset;
         
-        overlayIcons[index].flag = flag;
+        oi->flag = flag;
 
-        overlayIcons[index].coordinates.x = x;
-        overlayIcons[index].coordinates.y = y;
-        overlayIcons[index].coordinates.z = z;
+        oi->coordinates.x = x;
+        oi->coordinates.y = y;
+        oi->coordinates.z = z;
         
         result = TRUE;
         
@@ -853,29 +897,31 @@ bool setCharacterAvatarSprite(u16 index, u16 spriteIndex, u32 romTextureStart, u
     void* vaddrSpriteToPalette, void* vaddrSpritesheetIndex, 
     f32 x, f32 y, f32 z) {
 
+    CharacterAvatar *ca = &characterAvatars[index];
+
     bool result = FALSE;
 
     if (index == 0) {
         
-        characterAvatars[index].romTextureStart = romTextureStart;
-        characterAvatars[index].romTextureEnd = romTextureEnd;
-        characterAvatars[index].romAssetsIndexStart = romAssetsIndexStart;
-        characterAvatars[index].romAssetsIndexEnd = romAssetsIndexEnd;
-        characterAvatars[index].romSpritesheetIndexStart = romSpritesheetIndexStart;
-        characterAvatars[index].romSpritesheetIndexEnd = romSpritesheetIndexEnd;
+        ca->romTextureStart = romTextureStart;
+        ca->romTextureEnd = romTextureEnd;
+        ca->romAssetsIndexStart = romAssetsIndexStart;
+        ca->romAssetsIndexEnd = romAssetsIndexEnd;
+        ca->romSpritesheetIndexStart = romSpritesheetIndexStart;
+        ca->romSpritesheetIndexEnd = romSpritesheetIndexEnd;
   
-        characterAvatars[index].vaddrTexture1 = vaddrTexture1;
-        characterAvatars[index].vaddrTexture2 = vaddrTexture2;
-        characterAvatars[index].vaddrPalette = vaddrPalette;
-        characterAvatars[index].vaddrAnimation = vaddrAnimation;
-        characterAvatars[index].vaddrSpriteToPalette = vaddrSpriteToPalette;
-        characterAvatars[index].vaddrSpritesheetIndex = vaddrSpritesheetIndex;
+        ca->vaddrTexture1 = vaddrTexture1;
+        ca->vaddrTexture2 = vaddrTexture2;
+        ca->vaddrPalette = vaddrPalette;
+        ca->vaddrAnimation = vaddrAnimation;
+        ca->vaddrSpriteToPalette = vaddrSpriteToPalette;
+        ca->vaddrSpritesheetIndex = vaddrSpritesheetIndex;
 
-        characterAvatars[index].spriteIndex = spriteIndex;
+        ca->spriteIndex = spriteIndex;
 
-        characterAvatars[index].coordinates.x = x;
-        characterAvatars[index].coordinates.y = y;
-        characterAvatars[index].coordinates.z = z;
+        ca->coordinates.x = x;
+        ca->coordinates.y = y;
+        ca->coordinates.z = z;
 
         result = TRUE;
         
@@ -891,11 +937,13 @@ void setCharacterAvatarAnimationsPtr(u8* arg0) {
 
 bool setMessageBoxButtonMask(u16 index, u16 arg1) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
 
     if (index < MAX_MESSAGE_BOXES) {
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
-            messageBoxes[index].buttonMask = arg1;
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
+            mb->buttonMask = arg1;
             result = TRUE;
         }
     }
@@ -906,12 +954,14 @@ bool setMessageBoxButtonMask(u16 index, u16 arg1) {
 
 bool setMessageBoxScrollSpeed(u16 index, s16 speed) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
 
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
-            messageBoxes[index].defaultScrollSpeed = speed;
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
+            mb->defaultScrollSpeed = speed;
             result = TRUE;
         }
     }
@@ -939,48 +989,50 @@ bool setGameVariableString(u16 index, u8* ptr, s8 length) {
 
 // set number string for game variables based on their current quantity
 bool convertNumberToGameVariableString(u16 index, u32 number, u8 terminatorType) {
-    
+
+    GameVariableString *gvs = &gameVariableStrings[index];
+
     u8 digitPosition;
     u8 position;
     bool startedOutputting;
-    
+
     u32 divisor;
     u32 extractedDigit;
     u32 unprocessedDigits;
-    
+
     unprocessedDigits = number;
     position = 0;
     startedOutputting = 0;
-    
-    digitPosition = gameVariableStrings[index].maxLength - 1;
-    
+
+    digitPosition = gvs->maxLength - 1;
+
     do {
 
         divisor = powersOfTen[digitPosition];
         extractedDigit = unprocessedDigits / divisor;
         unprocessedDigits %= divisor;
-        
+
         // first non-zero significant digit or force output of a 0 if no value
         if (extractedDigit != 0 || digitPosition == 0) {
             startedOutputting = TRUE;
             goto writeDigitChar;
         }
-        
+
         if (startedOutputting) goto writeDigitChar;
-        
+
         if (digitPosition) goto writePaddingChar;
-        
+
 writeDigitChar:
-            gameVariableStrings[index].ptr[position] = digitCharacterCodes[extractedDigit];
-            
+            gvs->ptr[position] = digitCharacterCodes[extractedDigit];
+
             goto advancePosition;
-            
+
             // leading zeros
 writePaddingChar:
             if (terminatorType == STANDALONE) {
-                gameVariableStrings[index].ptr[position] = char_SPACE;
+                gvs->ptr[position] = char_SPACE;
             } else {
-                gameVariableStrings[index].ptr[position] = char_TERMINATOR;
+                gvs->ptr[position] = char_TERMINATOR;
             }
 
 advancePosition:
@@ -1004,6 +1056,8 @@ void clearTextBuffer(void) {
 
 bool clearMessageBoxTextBuffer(u16 index) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     u16 i;
     u16 cellCount;
     u32 temp2;
@@ -1012,16 +1066,16 @@ bool clearMessageBoxTextBuffer(u16 index) {
 
     if (index < MAX_MESSAGE_BOXES) {
 
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
 
-            cellCount = messageBoxes[index].textBoxLineCharWidth * messageBoxes[index].textBoxVisibleRows;
+            cellCount = mb->textBoxLineCharWidth * mb->textBoxVisibleRows;
 
-            if (((messageBoxes[index].flags >> 4) & 3) / 3) {
-                cellCount += messageBoxes[index].textBoxLineCharWidth;
+            if (((mb->flags >> 4) & 3) / 3) {
+                cellCount += mb->textBoxLineCharWidth;
             }
 
             for (i = 0; i < cellCount; i++) {
-                textBuffer[messageBoxes[index].totalCharactersProcessed + i] = char_SPACE;
+                textBuffer[mb->totalCharactersProcessed + i] = char_SPACE;
             }
         
             result = TRUE;
@@ -1036,25 +1090,27 @@ bool clearMessageBoxTextBuffer(u16 index) {
 
 bool scrollMessageBoxDown(u16 index) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
 
     if (index < MAX_MESSAGE_BOXES) { 
 
-        if ((messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) && (messageBoxes[index].flags & MESSAGE_BOX_INITIALIZED) && !(messageBoxes[index].flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) {
+        if ((mb->flags & MESSAGE_BOX_ACTIVE) && (mb->flags & MESSAGE_BOX_INITIALIZED) && !(mb->flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) {
 
-            if (messageBoxes[index].totalLinesToPrint + 1 != messageBoxes[index].scrollCount + messageBoxes[index].textBoxVisibleRows) {
+            if (mb->totalLinesToPrint + 1 != mb->scrollCount + mb->textBoxVisibleRows) {
  
-                initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, messageBoxes[index].defaultScrollSpeed, 0);
+                initializeInterpolator((Interpolator*)&mb->scrollInterpolator, mb->defaultScrollSpeed, 0);
 
-                messageBoxes[index].flags |= MESSAGE_BOX_SCROLLING_DOWN;
-                messageBoxes[index].flags &= ~MESSAGE_BOX_TEXT_END_REACHED;
+                mb->flags |= MESSAGE_BOX_SCROLLING_DOWN;
+                mb->flags &= ~MESSAGE_BOX_TEXT_END_REACHED;
 
-                messageBoxes[index].currentLineBeingPrinted++;
+                mb->currentLineBeingPrinted++;
                 
                 // handle next line/scroll
-                advanceToLine(index, messageBoxes[index].scrollCount + messageBoxes[index].textBoxVisibleRows + 1);
+                advanceToLine(index, mb->scrollCount + mb->textBoxVisibleRows + 1);
                 
-                messageBoxes[index].currentCharPtr--;
+                mb->currentCharPtr--;
                 
                 result = TRUE ;
                 
@@ -1068,26 +1124,28 @@ bool scrollMessageBoxDown(u16 index) {
 
 bool scrollMessageBoxUp(u16 index) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
 
     if (index < MAX_MESSAGE_BOXES) { 
 
-        if ((messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) && (messageBoxes[index].flags & MESSAGE_BOX_INITIALIZED) && !(messageBoxes[index].flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) {
+        if ((mb->flags & MESSAGE_BOX_ACTIVE) && (mb->flags & MESSAGE_BOX_INITIALIZED) && !(mb->flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) {
 
-            if (messageBoxes[index].scrollCount) {
+            if (mb->scrollCount) {
 
-                initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, messageBoxes[index].defaultScrollSpeed, 0);
+                initializeInterpolator((Interpolator*)&mb->scrollInterpolator, mb->defaultScrollSpeed, 0);
 
-                messageBoxes[index].flags |= MESSAGE_BOX_SCROLLING_UP;
-                messageBoxes[index].flags &= ~MESSAGE_BOX_TEXT_END_REACHED;
+                mb->flags |= MESSAGE_BOX_SCROLLING_UP;
+                mb->flags &= ~MESSAGE_BOX_TEXT_END_REACHED;
 
-                messageBoxes[index].scrollCount--;
-                messageBoxes[index].currentLineBeingPrinted++;
+                mb->scrollCount--;
+                mb->currentLineBeingPrinted++;
                 
                 // handle next line/scroll
-                advanceToLine(index, messageBoxes[index].scrollCount + messageBoxes[index].textBoxVisibleRows + 1);
+                advanceToLine(index, mb->scrollCount + mb->textBoxVisibleRows + 1);
                 
-                messageBoxes[index].currentCharPtr--;
+                mb->currentCharPtr--;
                 
                 result = TRUE;
                 
@@ -1103,12 +1161,14 @@ bool scrollMessageBoxUp(u16 index) {
 
 bool checkMoreLinesToPrint(u16 index) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     bool result = FALSE;
 
     if (index < MAX_MESSAGE_BOXES) { 
 
-        if ((messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) && (messageBoxes[index].flags & MESSAGE_BOX_INITIALIZED)) {
-            result = messageBoxes[index].totalLinesToPrint + 1 != messageBoxes[index].scrollCount + messageBoxes[index].textBoxVisibleRows;
+        if ((mb->flags & MESSAGE_BOX_ACTIVE) && (mb->flags & MESSAGE_BOX_INITIALIZED)) {
+            result = mb->totalLinesToPrint + 1 != mb->scrollCount + mb->textBoxVisibleRows;
         }
         
     }
@@ -1119,11 +1179,13 @@ bool checkMoreLinesToPrint(u16 index) {
 
 u8 checkMessageBoxScrolled(u16 index) {
 
+    MessageBox *mb = &messageBoxes[index];
+
     u8 count = 0;
 
     if (index < MAX_MESSAGE_BOXES) {
-        if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE && messageBoxes[index].flags & MESSAGE_BOX_INITIALIZED) {
-            count = messageBoxes[index].scrollCount != 0;
+        if (mb->flags & MESSAGE_BOX_ACTIVE && mb->flags & MESSAGE_BOX_INITIALIZED) {
+            count = mb->scrollCount != 0;
         }
     }
 
@@ -1133,17 +1195,19 @@ u8 checkMessageBoxScrolled(u16 index) {
 
 void updateScrollDownAnimation(u16 index) {
 
-    calculateInterpolatorStep((Interpolator*)&messageBoxes[index].scrollInterpolator);
+    MessageBox *mb = &messageBoxes[index];
+
+    calculateInterpolatorStep((Interpolator*)&mb->scrollInterpolator);
 
     // FIXME: probably a u16 return value
-    if ((u16)getInterpolatorValue((Interpolator*)&messageBoxes[index].scrollInterpolator) >= messageBoxes[index].fontContext.characterCellHeight + messageBoxes[index].lineSpacing) {
+    if ((u16)getInterpolatorValue((Interpolator*)&mb->scrollInterpolator) >= mb->fontContext.characterCellHeight + mb->lineSpacing) {
 
-        messageBoxes[index].flags &= ~MESSAGE_BOX_SCROLLING_DOWN;
+        mb->flags &= ~MESSAGE_BOX_SCROLLING_DOWN;
          
-        initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, 0, 0);
+        initializeInterpolator((Interpolator*)&mb->scrollInterpolator, 0, 0);
  
-        messageBoxes[index].scrollCount++;
-        messageBoxes[index].currentLineBeingPrinted--;
+        mb->scrollCount++;
+        mb->currentLineBeingPrinted--;
         
     }
        
@@ -1151,15 +1215,17 @@ void updateScrollDownAnimation(u16 index) {
 
 void updateScrollUpAnimation(u16 index) {
 
-    calculateInterpolatorStep((Interpolator*)&messageBoxes[index].scrollInterpolator);
+    MessageBox *mb = &messageBoxes[index];
 
-    if ((u16)getInterpolatorValue((Interpolator*)&messageBoxes[index].scrollInterpolator) >= messageBoxes[index].fontContext.characterCellHeight + messageBoxes[index].lineSpacing) {
+    calculateInterpolatorStep((Interpolator*)&mb->scrollInterpolator);
 
-        messageBoxes[index].flags &= ~MESSAGE_BOX_SCROLLING_UP;
+    if ((u16)getInterpolatorValue((Interpolator*)&mb->scrollInterpolator) >= mb->fontContext.characterCellHeight + mb->lineSpacing) {
+
+        mb->flags &= ~MESSAGE_BOX_SCROLLING_UP;
         
-        initializeInterpolator((Interpolator*)&messageBoxes[index].scrollInterpolator, 0, 0);
+        initializeInterpolator((Interpolator*)&mb->scrollInterpolator, 0, 0);
 
-        messageBoxes[index].currentLineBeingPrinted--;
+        mb->currentLineBeingPrinted--;
         
     }
 
@@ -1179,6 +1245,8 @@ static const u8 digitCharacterCodes[16] = {
 //INCLUDE_RODATA("asm/nonmatchings/systemmessage", digitCharacterCodes);
 
 u8 countTextLines(u16 index, u16 textIndex) {
+
+    MessageBox *mb = &messageBoxes[index];
     
     u8 result = 0;
     
@@ -1190,11 +1258,11 @@ u8 countTextLines(u16 index, u16 textIndex) {
     u8 i;
     u8 gameVariableStringIndex;
     
-    messageBoxes[index].currentCompressionControlByte = 0;
-    messageBoxes[index].compressionBitIndex = 0;
-    messageBoxes[index].maxCharsPerLine = 0;
-    messageBoxes[index].totalLines = 0;
-    messageBoxes[index].currentCharPtr = messageBoxes[index].textBufferBase;
+    mb->currentCompressionControlByte = 0;
+    mb->compressionBitIndex = 0;
+    mb->maxCharsPerLine = 0;
+    mb->totalLines = 0;
+    mb->currentCharPtr = mb->textBufferBase;
     
     do {
 
@@ -1202,8 +1270,8 @@ u8 countTextLines(u16 index, u16 textIndex) {
 
             case CHARACTER_CONTROL_LINEBREAK:
 
-                if (messageBoxes[index].maxCharsPerLine < count2) {
-                    messageBoxes[index].maxCharsPerLine = count2;
+                if (mb->maxCharsPerLine < count2) {
+                    mb->maxCharsPerLine = count2;
                 }
 
                 count2 = 0;
@@ -1219,8 +1287,8 @@ u8 countTextLines(u16 index, u16 textIndex) {
 
             case CHARACTER_CONTROL_TEXT_END:
 
-                if (messageBoxes[index].maxCharsPerLine < count2) {
-                    messageBoxes[index].maxCharsPerLine = count2;
+                if (mb->maxCharsPerLine < count2) {
+                    mb->maxCharsPerLine = count2;
                 }
 
                 done = TRUE;
@@ -1228,16 +1296,19 @@ u8 countTextLines(u16 index, u16 textIndex) {
 
                 break;
 
-            case CHARACTER_CONTROL_INSERT_GAME_VARIABLE:
+            case CHARACTER_CONTROL_INSERT_GAME_VARIABLE: {
+                GameVariableString *gvs;
 
-                gameVariableStringIndex = *messageBoxes[index].currentCharPtr;
-                messageBoxes[index].currentCharPtr++;
-                
-                if (gameVariableStrings[gameVariableStringIndex].ptr[0] != char_TERMINATOR) {
-                    
+                gameVariableStringIndex = *mb->currentCharPtr;
+                mb->currentCharPtr++;
+
+                gvs = &gameVariableStrings[gameVariableStringIndex];
+
+                if (gvs->ptr[0] != char_TERMINATOR) {
+
                     i = 0;
-                    
-                    while ((gameVariableStrings[gameVariableStringIndex].ptr[i] != char_TERMINATOR) && (i < gameVariableStrings[gameVariableStringIndex].maxLength)) {
+
+                    while ((gvs->ptr[i] != char_TERMINATOR) && (i < gvs->maxLength)) {
                         i++;
                         // get length of string
                         count2++;
@@ -1246,10 +1317,11 @@ u8 countTextLines(u16 index, u16 textIndex) {
                 }
 
                 break;
+            }
 
             case CHARACTER_CONTROL_WAIT:
             case CHARACTER_CONTROL_CHARACTER_AVATAR:
-                messageBoxes[index].currentCharPtr++;
+                mb->currentCharPtr++;
                 break;
 
             default:
@@ -1260,13 +1332,15 @@ u8 countTextLines(u16 index, u16 textIndex) {
 
     } while (!done);
     
-    messageBoxes[index].totalLines = count;
+    mb->totalLines = count;
     
     return result;
     
 }
 
 void advanceToLine(u16 index, u8 linesToSkip) {
+
+    MessageBox *mb = &messageBoxes[index];
     
     u8 i;
     u8 position;
@@ -1276,33 +1350,34 @@ void advanceToLine(u16 index, u8 linesToSkip) {
 
     i = 0;
     
-    messageBoxes[index].currentCompressionControlByte = 0;
-    messageBoxes[index].compressionBitIndex = 0;
+    mb->currentCompressionControlByte = 0;
+    mb->compressionBitIndex = 0;
 
-    messageBoxes[index].currentCharPtr = messageBoxes[index].textBufferBase;
+    mb->currentCharPtr = mb->textBufferBase;
     
     if (linesToSkip != 0) {
         
         do {
 
             if (done) {
-                
+                GameVariableString *gvs = &gameVariableStrings[mb->gameVariableStringIndex];
+
                 position++;
-                
-                if (gameVariableStrings[messageBoxes[index].gameVariableStringIndex].ptr[position] == char_TERMINATOR) {
-                    
-                    while ((gameVariableStrings[messageBoxes[index].gameVariableStringIndex].ptr[position] == char_TERMINATOR) && (position < gameVariableStrings[messageBoxes[index].gameVariableStringIndex].maxLength)) {
+
+                if (gvs->ptr[position] == char_TERMINATOR) {
+
+                    while ((gvs->ptr[position] == char_TERMINATOR) && (position < gvs->maxLength)) {
                         position++;
                     }
 
                 }
-                
+
                 character = char_SPACE;
-                
-                if (position == gameVariableStrings[messageBoxes[index].gameVariableStringIndex].maxLength) {
+
+                if (position == gvs->maxLength) {
                     done = FALSE;
                 }
-                
+
             } else {
                 // loop back to here until done
                 character = readCompressedCharacter(index);
@@ -1321,11 +1396,11 @@ void advanceToLine(u16 index, u8 linesToSkip) {
                 case CHARACTER_CONTROL_INSERT_GAME_VARIABLE:
                     position = 0;
                     done = TRUE;
-                    messageBoxes[index].currentCharPtr++;
+                    mb->currentCharPtr++;
                     break;
                 case CHARACTER_CONTROL_WAIT:
                 case CHARACTER_CONTROL_CHARACTER_AVATAR:
-                    messageBoxes[index].currentCharPtr++;
+                    mb->currentCharPtr++;
                     break;
                 default:
                     break;
@@ -1339,6 +1414,8 @@ void advanceToLine(u16 index, u8 linesToSkip) {
 }
 
 void processText(u16 index) {
+
+    MessageBox *mb = &messageBoxes[index];
     
     u8* originalCharPtr;
     
@@ -1354,7 +1431,7 @@ void processText(u16 index) {
     u8 renderMode;
     u16 bufferPosition;
     
-    switch ((messageBoxes[index].flags >> 4) & 3) {
+    switch ((mb->flags >> 4) & 3) {
             
         case 0:
             renderMode = 0;
@@ -1371,24 +1448,25 @@ void processText(u16 index) {
 
     }
 
-    originalCharPtr = messageBoxes[index].currentCharPtr;
+    originalCharPtr = mb->currentCharPtr;
     
     characterPositionOnLine = 0;
     
-    advanceToLine(index, messageBoxes[index].scrollCount);
+    advanceToLine(index, mb->scrollCount);
 
     currentLine = 0;
     processingGameVariableString = FALSE;
 
-    while (messageBoxes[index].currentCharPtr < originalCharPtr || processingGameVariableString) {
+    while (mb->currentCharPtr < originalCharPtr || processingGameVariableString) {
         
         if (processingGameVariableString) {
+            GameVariableString *gvs = &gameVariableStrings[gameVariableStringIndex];
 
-            character = gameVariableStrings[gameVariableStringIndex].ptr[gameVariableStringPosition];
+            character = gvs->ptr[gameVariableStringPosition];
             gameVariableStringPosition++;
-            
-            while (gameVariableStrings[gameVariableStringIndex].ptr[gameVariableStringPosition] == char_TERMINATOR && 
-                   gameVariableStringPosition < gameVariableStrings[gameVariableStringIndex].maxLength) {
+
+            while (gvs->ptr[gameVariableStringPosition] == char_TERMINATOR &&
+                   gameVariableStringPosition < gvs->maxLength) {
                 gameVariableStringPosition++;
             }
             
@@ -1425,10 +1503,10 @@ void processText(u16 index) {
 
                 if (renderMode == 3) {
                     
-                    messageBoxes[index].currentCharPtr--;
+                    mb->currentCharPtr--;
                     
-                } else if (!(messageBoxes[index].flags & 0x4000) || 
-                          (messageBoxes[index].savedCharPtr != messageBoxes[index].currentCharPtr)) {
+                } else if (!(mb->flags & 0x4000) || 
+                          (mb->savedCharPtr != mb->currentCharPtr)) {
                     
                     characterPositionOnLine = 0;
                     currentLine++;
@@ -1438,23 +1516,23 @@ void processText(u16 index) {
                 break;
 
             case CHARACTER_CONTROL_WAIT:
-                messageBoxes[index].currentCharPtr++;
+                mb->currentCharPtr++;
                 break;
 
             // set up game variable printing
             case CHARACTER_CONTROL_INSERT_GAME_VARIABLE:
                 
-                if (messageBoxes[index].gameVariableStringPtr == messageBoxes[index].currentCharPtr) {
+                if (mb->gameVariableStringPtr == mb->currentCharPtr) {
                     
-                    messageBoxes[index].currentCharPtr++;
-                    gameVariableStringIndex = messageBoxes[index].gameVariableStringIndex;
-                    gameVariableStringLength = messageBoxes[index].gameVariableStringLength;
+                    mb->currentCharPtr++;
+                    gameVariableStringIndex = mb->gameVariableStringIndex;
+                    gameVariableStringLength = mb->gameVariableStringLength;
                     processingGameVariableString = 2;
                     
                 } else {
                     
-                    gameVariableStringIndex = *messageBoxes[index].currentCharPtr;
-                    messageBoxes[index].currentCharPtr++;
+                    gameVariableStringIndex = *mb->currentCharPtr;
+                    mb->currentCharPtr++;
                     gameVariableStringLength = gameVariableStrings[gameVariableStringIndex].maxLength;
                     processingGameVariableString = TRUE;
                 }
@@ -1464,13 +1542,13 @@ void processText(u16 index) {
                 break;
 
             case CHARACTER_CONTROL_CHARACTER_AVATAR:
-                messageBoxes[index].currentCharPtr++;
+                mb->currentCharPtr++;
                 break;
             
             // update text buffer, converting from ROM char to font index 
             default:
-                textBuffer[messageBoxes[index].totalCharactersProcessed + 
-                                   (currentLine * messageBoxes[index].textBoxLineCharWidth) + 
+                textBuffer[mb->totalCharactersProcessed + 
+                                   (currentLine * mb->textBoxLineCharWidth) + 
                                    characterPositionOnLine] = character - 0xB;
                 
                 characterPositionOnLine++;
@@ -1487,6 +1565,8 @@ void processText(u16 index) {
 }
 
 void updateMessageBoxText(u16 index) {
+
+    MessageBox *mb = &messageBoxes[index];
     
     Swap16 swap;
 
@@ -1502,7 +1582,7 @@ void updateMessageBoxText(u16 index) {
         
     bool continueProcessing;
         
-    switch ((messageBoxes[index].flags >> 4) & 3) {
+    switch ((mb->flags >> 4) & 3) {
                 
         case 0:
             renderMode = 0;
@@ -1519,13 +1599,13 @@ void updateMessageBoxText(u16 index) {
                 
     }
 
-    temp = (((messageBoxes[index].flags >> 4) & 3) / 3) ^ 1;
+    temp = (((mb->flags >> 4) & 3) / 3) ^ 1;
     
     continueProcessing = FALSE;
     
     while (!continueProcessing) {
         
-        if (messageBoxes[index].flags & MESSAGE_BOX_PROCESSING_GAME_VARIABLE) {
+        if (mb->flags & MESSAGE_BOX_PROCESSING_GAME_VARIABLE) {
             
             character = readGameVariableChar(index);
             
@@ -1535,9 +1615,9 @@ void updateMessageBoxText(u16 index) {
                 character += 0xB;
             }
             
-        } else if ((messageBoxes[index].flags & MESSAGE_BOX_WAITING_WITH_ICON) || (messageBoxes[index].flags & 0x4000)) {
+        } else if ((mb->flags & MESSAGE_BOX_WAITING_WITH_ICON) || (mb->flags & 0x4000)) {
             
-            if (messageBoxes[index].flags & MESSAGE_BOX_WAITING_WITH_ICON) {
+            if (mb->flags & MESSAGE_BOX_WAITING_WITH_ICON) {
                 character = 4;
             } else {
                 character = 2;
@@ -1551,26 +1631,26 @@ void updateMessageBoxText(u16 index) {
             
             case CHARACTER_CONTROL_LINEBREAK:
                 
-                currentLine = messageBoxes[index].currentLineBeingPrinted;
+                currentLine = mb->currentLineBeingPrinted;
                 
                 // Check if need to scroll
-                if (currentLine >= (messageBoxes[index].textBoxVisibleRows - temp)) {
+                if (currentLine >= (mb->textBoxVisibleRows - temp)) {
                     
                     if (renderMode != 3) {
                                 
-                        if (checkButtonHeld(CONTROLLER_1, messageBoxes[index].buttonMask) || (renderMode == 2)) {
+                        if (checkButtonHeld(CONTROLLER_1, mb->buttonMask) || (renderMode == 2)) {
                             // fast scroll if button held
-                            initializeInterpolator(&messageBoxes[index].scrollInterpolator, 4, 0);
+                            initializeInterpolator(&mb->scrollInterpolator, 4, 0);
                         } else {
                             // default scroll speed
-                            initializeInterpolator(&messageBoxes[index].scrollInterpolator, messageBoxes[index].defaultScrollSpeed, 0);
+                            initializeInterpolator(&mb->scrollInterpolator, mb->defaultScrollSpeed, 0);
                         }
                         
-                        messageBoxes[index].flags |= MESSAGE_BOX_SCROLLING_DOWN;
-                        messageBoxes[index].currentLineBeingPrinted++;
+                        mb->flags |= MESSAGE_BOX_SCROLLING_DOWN;
+                        mb->currentLineBeingPrinted++;
                                 
                     } else {
-                        messageBoxes[index].flags |= MESSAGE_BOX_TEXT_END_REACHED;
+                        mb->flags |= MESSAGE_BOX_TEXT_END_REACHED;
                     }
                         
                     temp2 = renderMode;
@@ -1581,10 +1661,10 @@ void updateMessageBoxText(u16 index) {
                     }
                         
                 } else {
-                    messageBoxes[index].currentLineBeingPrinted++;
+                    mb->currentLineBeingPrinted++;
                 }   
             
-                messageBoxes[index].currentCharCountOnLine = 0;
+                mb->currentCharCountOnLine = 0;
                 
                 if (renderMode < 2) {
                     continueProcessing = TRUE;
@@ -1596,9 +1676,9 @@ void updateMessageBoxText(u16 index) {
                     
                 clearMessageBoxTextBuffer(index);
                 
-                messageBoxes[index].currentCharCountOnLine = 0;
-                messageBoxes[index].scrollCount += messageBoxes[index].currentLineBeingPrinted + 1;
-                messageBoxes[index].currentLineBeingPrinted = 0;
+                mb->currentCharCountOnLine = 0;
+                mb->scrollCount += mb->currentLineBeingPrinted + 1;
+                mb->currentLineBeingPrinted = 0;
                 
                 continueProcessing = TRUE;
                 
@@ -1607,86 +1687,88 @@ void updateMessageBoxText(u16 index) {
             case CHARACTER_CONTROL_TEXT_END:
                 
                 if (renderMode == 3) {
-                    messageBoxes[index].flags |= MESSAGE_BOX_TEXT_END_REACHED;
+                    mb->flags |= MESSAGE_BOX_TEXT_END_REACHED;
                 } else {
                 
-                    messageBoxes[index].flags |= 0x4000;
-                    messageBoxes[index].savedCharPtr = messageBoxes[index].currentCharPtr;
+                    mb->flags |= 0x4000;
+                    mb->savedCharPtr = mb->currentCharPtr;
                     
-                    if ((messageBoxes[index].flags & MESSAGE_BOX_HAS_OVERLAY_ICON) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
-                        
-                        startSpriteAnimation(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, 
-                                overlayIcons[messageBoxes[index].overlayIconIndex + 1].spriteOffset, 
-                                overlayIcons[messageBoxes[index].overlayIconIndex + 1].flag
+                    if ((mb->flags & MESSAGE_BOX_HAS_OVERLAY_ICON) && !(mb->flags & MESSAGE_BOX_MODE_NO_INPUT)) {
+                        OverlayIcon *oi = &overlayIcons[mb->overlayIconIndex];
+
+                        startSpriteAnimation(oi->spriteIndex,
+                                overlayIcons[mb->overlayIconIndex + 1].spriteOffset,
+                                overlayIcons[mb->overlayIconIndex + 1].flag
                         );
-                        
-                        setSpriteViewSpacePosition(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, 
-                        messageBoxes[index].viewSpacePosition.x + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.x,
-                            messageBoxes[index].viewSpacePosition.y + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.y,
-                            messageBoxes[index].viewSpacePosition.z + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.z + 1.0f);
-                            
+
+                        setSpriteViewSpacePosition(oi->spriteIndex,
+                        mb->viewSpacePosition.x + oi->coordinates.x,
+                            mb->viewSpacePosition.y + oi->coordinates.y,
+                            mb->viewSpacePosition.z + oi->coordinates.z + 1.0f);
+
                     }
                     
-                    if ((messageBoxes[index].flags & MESSAGE_BOX_BUTTON_PRESSED) || (messageBoxes[index].flags & MESSAGE_BOX_SILENT)) {
+                    if ((mb->flags & MESSAGE_BOX_BUTTON_PRESSED) || (mb->flags & MESSAGE_BOX_SILENT)) {
                         
-                        messageBoxes[index].flags &= ~0x4000;
-                        messageBoxes[index].flags |= MESSAGE_BOX_TEXT_COMPLETE;
+                        mb->flags &= ~0x4000;
+                        mb->flags |= MESSAGE_BOX_TEXT_COMPLETE;
                         
-                        if (!(messageBoxes[index].flags & MESSAGE_BOX_MODE_KEEP_ANIMATION)) {
+                        if (!(mb->flags & MESSAGE_BOX_MODE_KEEP_ANIMATION)) {
                             resetMessageBoxAnimation(index);
                         }
                         
-                        resetAnimationState(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex);
+                        resetAnimationState(overlayIcons[mb->overlayIconIndex].spriteIndex);
                         
                         // play close sound effect
-                        if (!(messageBoxes[index].flags & MESSAGE_BOX_SILENT) && (messageBoxes[index].characterPrintSfx != 0xFF)) {
-                            setSfx(messageBoxes[index].messageCloseSfx + 1);
-                            setSfxVolume(messageBoxes[index].messageCloseSfx + 1, 0x80);
+                        if (!(mb->flags & MESSAGE_BOX_SILENT) && (mb->characterPrintSfx != 0xFF)) {
+                            setSfx(mb->messageCloseSfx + 1);
+                            setSfxVolume(mb->messageCloseSfx + 1, 0x80);
                         }
                         
                     }
                 }
                 
-                messageBoxes[index].currentCharCountOnLine = 0;
+                mb->currentCharCountOnLine = 0;
                 continueProcessing = TRUE;
                 
                 break;
                 
             case CHARACTER_CONTROL_WAIT:
                 
-                initializeInterpolator(&messageBoxes[index].unk_64, -(s16)*messageBoxes[index].currentCharPtr, 0);
+                initializeInterpolator(&mb->unk_64, -(s16)*mb->currentCharPtr, 0);
                 
-                messageBoxes[index].currentCharPtr++;
-                messageBoxes[index].flags |= MESSAGE_BOX_NEEDS_INTERPOLATOR_INIT;
+                mb->currentCharPtr++;
+                mb->flags |= MESSAGE_BOX_NEEDS_INTERPOLATOR_INIT;
                 continueProcessing = TRUE;
                 
                 break;
                 
             case CHARACTER_CONTROL_WAIT_WITH_ICON:
                 
-                messageBoxes[index].flags |= MESSAGE_BOX_WAITING_WITH_ICON;
-                messageBoxes[index].savedCharPtr = messageBoxes[index].currentCharPtr;
+                mb->flags |= MESSAGE_BOX_WAITING_WITH_ICON;
+                mb->savedCharPtr = mb->currentCharPtr;
                 
-                if (messageBoxes[index].flags & MESSAGE_BOX_HAS_OVERLAY_ICON) {
-                    
-                    startSpriteAnimation(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex, overlayIcons[messageBoxes[index].overlayIconIndex].spriteOffset, overlayIcons[messageBoxes[index].overlayIconIndex].flag);
-                    setSpriteViewSpacePosition(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex,
-                    messageBoxes[index].viewSpacePosition.x + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.x,
-                    messageBoxes[index].viewSpacePosition.y + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.y,
-                    messageBoxes[index].viewSpacePosition.z + overlayIcons[messageBoxes[index].overlayIconIndex].coordinates.z + 1.0f);
-                
+                if (mb->flags & MESSAGE_BOX_HAS_OVERLAY_ICON) {
+                    OverlayIcon *oi = &overlayIcons[mb->overlayIconIndex];
+
+                    startSpriteAnimation(oi->spriteIndex, oi->spriteOffset, oi->flag);
+                    setSpriteViewSpacePosition(oi->spriteIndex,
+                    mb->viewSpacePosition.x + oi->coordinates.x,
+                    mb->viewSpacePosition.y + oi->coordinates.y,
+                    mb->viewSpacePosition.z + oi->coordinates.z + 1.0f);
+
                 }
                 
-                if (messageBoxes[index].flags & MESSAGE_BOX_BUTTON_PRESSED) {
+                if (mb->flags & MESSAGE_BOX_BUTTON_PRESSED) {
                     
-                    messageBoxes[index].flags &= ~MESSAGE_BOX_BUTTON_PRESSED;
-                    messageBoxes[index].flags &= ~MESSAGE_BOX_WAITING_WITH_ICON;
+                    mb->flags &= ~MESSAGE_BOX_BUTTON_PRESSED;
+                    mb->flags &= ~MESSAGE_BOX_WAITING_WITH_ICON;
                     
-                    resetAnimationState(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex);
+                    resetAnimationState(overlayIcons[mb->overlayIconIndex].spriteIndex);
                     
-                    if (messageBoxes[index].characterPrintSfx != 0xFF) {
-                        setSfx(messageBoxes[index].unk_74 + 1);
-                        setSfxVolume(messageBoxes[index].unk_74 + 1, 0x80);
+                    if (mb->characterPrintSfx != 0xFF) {
+                        setSfx(mb->unk_74 + 1);
+                        setSfxVolume(mb->unk_74 + 1, 0x80);
                     }
                     
                 } else {
@@ -1698,22 +1780,22 @@ void updateMessageBoxText(u16 index) {
             case CHARACTER_CONTROL_LOAD_TEXT:
                 
                 // Read dialogue index (2 bytes, little endian)
-                swap.byte[1] = *messageBoxes[index].currentCharPtr;
-                messageBoxes[index].currentCharPtr++;
-                swap.byte[0] = *messageBoxes[index].currentCharPtr;
-                messageBoxes[index].currentCharPtr++;
+                swap.byte[1] = *mb->currentCharPtr;
+                mb->currentCharPtr++;
+                swap.byte[0] = *mb->currentCharPtr;
+                mb->currentCharPtr++;
                 
-                messageBoxes[index].textIndex = swap.halfword;
+                mb->textIndex = swap.halfword;
                 
                 // Reset text state
-                messageBoxes[index].currentCompressionControlByte = 0;
-                messageBoxes[index].compressionBitIndex = 0;
-                messageBoxes[index].currentCharCountOnLine = 0;
-                messageBoxes[index].currentLineBeingPrinted = 0;
-                messageBoxes[index].scrollCount = 0;
-                messageBoxes[index].totalLinesToPrint = 0;
+                mb->currentCompressionControlByte = 0;
+                mb->compressionBitIndex = 0;
+                mb->currentCharCountOnLine = 0;
+                mb->currentLineBeingPrinted = 0;
+                mb->scrollCount = 0;
+                mb->totalLinesToPrint = 0;
                 
-                messageBoxes[index].currentCharPtr = messageBoxes[index].textBufferBase;
+                mb->currentCharPtr = mb->textBufferBase;
                 
                 break;
                 
@@ -1722,47 +1804,49 @@ void updateMessageBoxText(u16 index) {
             
             case CHARACTER_CONTROL_INSERT_GAME_VARIABLE:
 
-                messageBoxes[index].gameVariableStringPtr = messageBoxes[index].currentCharPtr;
+                mb->gameVariableStringPtr = mb->currentCharPtr;
                 
-                swap.byte[0] = *messageBoxes[index].currentCharPtr;
+                swap.byte[0] = *mb->currentCharPtr;
                 
-                messageBoxes[index].currentCharPtr++;
+                mb->currentCharPtr++;
                 
-                messageBoxes[index].gameVariableStringIndex = swap.byte[0];
+                mb->gameVariableStringIndex = swap.byte[0];
                 
-                messageBoxes[index].gameVariableStringLength = 0;
+                mb->gameVariableStringLength = 0;
                 
-                messageBoxes[index].flags |= MESSAGE_BOX_PROCESSING_GAME_VARIABLE;
+                mb->flags |= MESSAGE_BOX_PROCESSING_GAME_VARIABLE;
                 
                 break;
                 
             case CHARACTER_CONTROL_WAIT_ALTERNATE: 
             
-                messageBoxes[index].flags |= 0x4000;
-                messageBoxes[index].savedCharPtr = messageBoxes[index].currentCharPtr;
+                mb->flags |= 0x4000;
+                mb->savedCharPtr = mb->currentCharPtr;
                 
-                if (messageBoxes[index].flags & MESSAGE_BOX_BUTTON_PRESSED) {
-                    messageBoxes[index].flags = (messageBoxes[index].flags & ~0x4000) | MESSAGE_BOX_TEXT_COMPLETE;
+                if (mb->flags & MESSAGE_BOX_BUTTON_PRESSED) {
+                    mb->flags = (mb->flags & ~0x4000) | MESSAGE_BOX_TEXT_COMPLETE;
                 } else {
                     continueProcessing = TRUE;
                 }
             
                 break;
                 
-            case CHARACTER_CONTROL_CHARACTER_AVATAR:
-                
-                animationIndex = *messageBoxes[index].currentCharPtr;
-                messageBoxes[index].currentCharPtr++;
-                
-                resetAnimationState(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex);
-                startSpriteAnimation(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex, characterAvatarsAnimationsPtr[animationIndex], 0);
-                
-                setSpriteViewSpacePosition(characterAvatars[messageBoxes[index].characterAvatarIndex].spriteIndex,
-                    messageBoxes[index].viewSpacePosition.x + characterAvatars[messageBoxes[index].characterAvatarIndex].coordinates.x,
-                    messageBoxes[index].viewSpacePosition.y + characterAvatars[messageBoxes[index].characterAvatarIndex].coordinates.y,
-                    messageBoxes[index].viewSpacePosition.z + characterAvatars[messageBoxes[index].characterAvatarIndex].coordinates.z - 1.0f);
-                    
+            case CHARACTER_CONTROL_CHARACTER_AVATAR: {
+                CharacterAvatar *ca = &characterAvatars[mb->characterAvatarIndex];
+
+                animationIndex = *mb->currentCharPtr;
+                mb->currentCharPtr++;
+
+                resetAnimationState(ca->spriteIndex);
+                startSpriteAnimation(ca->spriteIndex, characterAvatarsAnimationsPtr[animationIndex], 0);
+
+                setSpriteViewSpacePosition(ca->spriteIndex,
+                    mb->viewSpacePosition.x + ca->coordinates.x,
+                    mb->viewSpacePosition.y + ca->coordinates.y,
+                    mb->viewSpacePosition.z + ca->coordinates.z - 1.0f);
+
                 break;
+            }
                 
             case 0xFFFF:
                 break;
@@ -1772,21 +1856,21 @@ void updateMessageBoxText(u16 index) {
                 
             default:
                 
-                textBuffer[messageBoxes[index].totalCharactersProcessed + 
-                    (messageBoxes[index].currentLineBeingPrinted * messageBoxes[index].textBoxLineCharWidth) + 
-                    messageBoxes[index].currentCharCountOnLine] = character - 0xB;
+                textBuffer[mb->totalCharactersProcessed + 
+                    (mb->currentLineBeingPrinted * mb->textBoxLineCharWidth) + 
+                    mb->currentCharCountOnLine] = character - 0xB;
                 
-                messageBoxes[index].currentCharCountOnLine++;
+                mb->currentCharCountOnLine++;
                 
                 if (renderMode != 0) break;
                 
-                if (messageBoxes[index].characterPrintSfx != 0xFF) {
+                if (mb->characterPrintSfx != 0xFF) {
                     
                     // skip space characters
                     if ((character - 0xB) != 0xEE) {
                             
-                        setSfx(messageBoxes[index].characterPrintSfx + 1);
-                        setSfxVolume(messageBoxes[index].characterPrintSfx + 1, 0x80);
+                        setSfx(mb->characterPrintSfx + 1);
+                        setSfxVolume(mb->characterPrintSfx + 1, 0x80);
                         
                     }
             
@@ -1800,11 +1884,13 @@ void updateMessageBoxText(u16 index) {
             
     } 
     
-    calculateInterpolatorStep((Interpolator*)&messageBoxes[index].unk_64);
+    calculateInterpolatorStep((Interpolator*)&mb->unk_64);
     
 }
 
 u16 readCompressedCharacter(u16 index) {
+
+    MessageBox *mb = &messageBoxes[index];
     
     u16 character;
     
@@ -1812,29 +1898,29 @@ u16 readCompressedCharacter(u16 index) {
     u32 higher;
     
     // every 8 characters, store control byte (which determines how to read 8 character stream)
-    if ((messageBoxes[index].compressionBitIndex % 8) == 0) {
-        messageBoxes[index].currentCompressionControlByte = *messageBoxes[index].currentCharPtr;        
-        messageBoxes[index].currentCharPtr++;
+    if ((mb->compressionBitIndex % 8) == 0) {
+        mb->currentCompressionControlByte = *mb->currentCharPtr;        
+        mb->currentCharPtr++;
     }
     
     // get two-byte value if needed
-    if (messageBoxes[index].currentCompressionControlByte & controlByteBitMasks[messageBoxes[index].compressionBitIndex % 8]) {
+    if (mb->currentCompressionControlByte & controlByteBitMasks[mb->compressionBitIndex % 8]) {
         
-        lower = *messageBoxes[index].currentCharPtr;
-        messageBoxes[index].currentCharPtr++;
+        lower = *mb->currentCharPtr;
+        mb->currentCharPtr++;
         
-        higher = *messageBoxes[index].currentCharPtr;
-        messageBoxes[index].currentCharPtr++;
+        higher = *mb->currentCharPtr;
+        mb->currentCharPtr++;
         
         character = (lower | (higher << 8));
         
     } else {
-        character = *messageBoxes[index].currentCharPtr; 
-        messageBoxes[index].currentCharPtr++;
+        character = *mb->currentCharPtr; 
+        mb->currentCharPtr++;
     }
 
     // only reset on new text
-    messageBoxes[index].compressionBitIndex++;
+    mb->compressionBitIndex++;
 
     return character;
     
@@ -1842,21 +1928,24 @@ u16 readCompressedCharacter(u16 index) {
 
 u8 readGameVariableChar(u16 index) {
 
+    MessageBox *mb = &messageBoxes[index];
+    GameVariableString *gvs = &gameVariableStrings[mb->gameVariableStringIndex];
+
     u8 result;
 
-    result = gameVariableStrings[messageBoxes[index].gameVariableStringIndex].ptr[messageBoxes[index].gameVariableStringLength];
-    
-    messageBoxes[index].gameVariableStringLength++;
-    
-    while (gameVariableStrings[messageBoxes[index].gameVariableStringIndex].ptr[messageBoxes[index].gameVariableStringLength] == char_TERMINATOR 
-        && messageBoxes[index].gameVariableStringLength < gameVariableStrings[messageBoxes[index].gameVariableStringIndex].maxLength) {
-       
-        messageBoxes[index].gameVariableStringLength++;
-    
-    } 
+    result = gvs->ptr[mb->gameVariableStringLength];
 
-    if (messageBoxes[index].gameVariableStringLength == gameVariableStrings[messageBoxes[index].gameVariableStringIndex].maxLength) {
-        messageBoxes[index].flags &= ~MESSAGE_BOX_PROCESSING_GAME_VARIABLE;
+    mb->gameVariableStringLength++;
+
+    while (gvs->ptr[mb->gameVariableStringLength] == char_TERMINATOR
+        && mb->gameVariableStringLength < gvs->maxLength) {
+
+        mb->gameVariableStringLength++;
+
+    }
+
+    if (mb->gameVariableStringLength == gvs->maxLength) {
+        mb->flags &= ~MESSAGE_BOX_PROCESSING_GAME_VARIABLE;
     }
 
     return result;
@@ -1866,9 +1955,11 @@ u8 readGameVariableChar(u16 index) {
 // returns rom address for text
 u32 getTextAddress(u16 index, u16 textIndex) {
 
-    u32 result = textAddresses[messageBoxes[index].textAddressesIndex].romTextStart;
+    MessageBox *mb = &messageBoxes[index];
 
-    result += textAddresses[messageBoxes[index].textAddressesIndex].indexVaddr[textIndex];
+    u32 result = textAddresses[mb->textAddressesIndex].romTextStart;
+
+    result += textAddresses[mb->textAddressesIndex].indexVaddr[textIndex];
 
     return result;
     
@@ -2130,100 +2221,102 @@ static const Gfx D_8011EEC0 = gsSPEndDisplayList();
 //INCLUDE_RODATA("asm/nonmatchings/systemmessage", D_8011EEC0);
 
 static inline u8 updateMessageBoxRGBA(u16 i) {
+
+    MessageBox *mb = &messageBoxes[i];
     
     // bug: never initialized
     u8 count;
 
-    if (messageBoxes[i].targetRGBA.r < messageBoxes[i].currentRGBA.r) {
+    if (mb->targetRGBA.r < mb->currentRGBA.r) {
 
-        messageBoxes[i].targetRGBA.r += messageBoxes[i].deltaRGBA.r;
+        mb->targetRGBA.r += mb->deltaRGBA.r;
         
-            if (messageBoxes[i].targetRGBA.r >= messageBoxes[i].currentRGBA.r) {
-                messageBoxes[i].targetRGBA.r = messageBoxes[i].currentRGBA.r;
+            if (mb->targetRGBA.r >= mb->currentRGBA.r) {
+                mb->targetRGBA.r = mb->currentRGBA.r;
             } else {
                 count++;
         }
 
     }
 
-    if (messageBoxes[i].targetRGBA.r > messageBoxes[i].currentRGBA.r) {
+    if (mb->targetRGBA.r > mb->currentRGBA.r) {
         
-        messageBoxes[i].targetRGBA.r -= messageBoxes[i].deltaRGBA.r;
+        mb->targetRGBA.r -= mb->deltaRGBA.r;
 
-        if (messageBoxes[i].targetRGBA.r <= messageBoxes[i].currentRGBA.r) {
-                messageBoxes[i].targetRGBA.r = messageBoxes[i].currentRGBA.r;
-            } else {
-                count++;
-            }
-            
-    }
-    
-    if (messageBoxes[i].targetRGBA.g < messageBoxes[i].currentRGBA.g) {
-        
-        messageBoxes[i].targetRGBA.g += messageBoxes[i].deltaRGBA.g;
-        
-        if (messageBoxes[i].targetRGBA.g >= messageBoxes[i].currentRGBA.g) {
-            messageBoxes[i].targetRGBA.g = messageBoxes[i].currentRGBA.g;
+        if (mb->targetRGBA.r <= mb->currentRGBA.r) {
+                mb->targetRGBA.r = mb->currentRGBA.r;
             } else {
                 count++;
             }
             
     }
+    
+    if (mb->targetRGBA.g < mb->currentRGBA.g) {
+        
+        mb->targetRGBA.g += mb->deltaRGBA.g;
+        
+        if (mb->targetRGBA.g >= mb->currentRGBA.g) {
+            mb->targetRGBA.g = mb->currentRGBA.g;
+            } else {
+                count++;
+            }
+            
+    }
 
-    if (messageBoxes[i].targetRGBA.g > messageBoxes[i].currentRGBA.g) {
+    if (mb->targetRGBA.g > mb->currentRGBA.g) {
         
-        messageBoxes[i].targetRGBA.g -= messageBoxes[i].deltaRGBA.g;
+        mb->targetRGBA.g -= mb->deltaRGBA.g;
         
-        if (messageBoxes[i].targetRGBA.g <= messageBoxes[i].currentRGBA.g) {
-            messageBoxes[i].targetRGBA.g = messageBoxes[i].currentRGBA.g;
+        if (mb->targetRGBA.g <= mb->currentRGBA.g) {
+            mb->targetRGBA.g = mb->currentRGBA.g;
         } else {
             count++;
         }
         
     }
 
-    if (messageBoxes[i].targetRGBA.b < messageBoxes[i].currentRGBA.b) {
+    if (mb->targetRGBA.b < mb->currentRGBA.b) {
         
-        messageBoxes[i].targetRGBA.b += messageBoxes[i].deltaRGBA.b;
+        mb->targetRGBA.b += mb->deltaRGBA.b;
         
-        if (messageBoxes[i].targetRGBA.b >= messageBoxes[i].currentRGBA.b) {
-            messageBoxes[i].targetRGBA.b = messageBoxes[i].currentRGBA.b;
+        if (mb->targetRGBA.b >= mb->currentRGBA.b) {
+            mb->targetRGBA.b = mb->currentRGBA.b;
         } else {
             count++;
         }
     
     }
 
-    if (messageBoxes[i].targetRGBA.b > messageBoxes[i].currentRGBA.b) {
+    if (mb->targetRGBA.b > mb->currentRGBA.b) {
         
-        messageBoxes[i].targetRGBA.b -= messageBoxes[i].deltaRGBA.b;
+        mb->targetRGBA.b -= mb->deltaRGBA.b;
         
-        if (messageBoxes[i].targetRGBA.b <= messageBoxes[i].currentRGBA.b) {
-            messageBoxes[i].targetRGBA.b = messageBoxes[i].currentRGBA.b;
+        if (mb->targetRGBA.b <= mb->currentRGBA.b) {
+            mb->targetRGBA.b = mb->currentRGBA.b;
         } else {
             count++;
         }
         
     }
     
-    if (messageBoxes[i].targetRGBA.a < messageBoxes[i].currentRGBA.a) {
+    if (mb->targetRGBA.a < mb->currentRGBA.a) {
 
-    messageBoxes[i].targetRGBA.a += messageBoxes[i].deltaRGBA.a;
+    mb->targetRGBA.a += mb->deltaRGBA.a;
 
-        if (messageBoxes[i].targetRGBA.a >= messageBoxes[i].currentRGBA.a) {
-            messageBoxes[i].targetRGBA.a = messageBoxes[i].currentRGBA.a;
+        if (mb->targetRGBA.a >= mb->currentRGBA.a) {
+            mb->targetRGBA.a = mb->currentRGBA.a;
         } else {
             count++;
         }
         
     }
     
-    if (messageBoxes[i].targetRGBA.a > messageBoxes[i].currentRGBA.a) {
+    if (mb->targetRGBA.a > mb->currentRGBA.a) {
         
-        messageBoxes[i].targetRGBA.a -= messageBoxes[i].deltaRGBA.a;
+        mb->targetRGBA.a -= mb->deltaRGBA.a;
 
-        if (messageBoxes[i].targetRGBA.a <= messageBoxes[i].currentRGBA.a) {
-            messageBoxes[i].targetRGBA.a = messageBoxes[i].currentRGBA.a;
+        if (mb->targetRGBA.a <= mb->currentRGBA.a) {
+            mb->targetRGBA.a = mb->currentRGBA.a;
         } else {
             count++;
     }
@@ -2254,93 +2347,95 @@ void updateMessageBox(void) {
     
     for (i = 0; i < MAX_MESSAGE_BOXES; i++) {
 
-        if (messageBoxes[i].flags & MESSAGE_BOX_ACTIVE) {
+        MessageBox *mb = &messageBoxes[i];
+
+        if (mb->flags & MESSAGE_BOX_ACTIVE) {
 
             if (updateMessageBoxRGBA(i) == 0) {
-                messageBoxes[i].flags |= MESSAGE_BOX_RGBA_COMPLETE;
+                mb->flags |= MESSAGE_BOX_RGBA_COMPLETE;
             } 
 
-            messageBoxes[i].totalCharactersProcessed = totalProcessedCharacterCount;
+            mb->totalCharactersProcessed = totalProcessedCharacterCount;
 
-            if (!(messageBoxes[i].flags & MESSAGE_BOX_TEXT_COMPLETE) && (messageBoxes[i].flags & MESSAGE_BOX_INITIALIZED)) {
+            if (!(mb->flags & MESSAGE_BOX_TEXT_COMPLETE) && (mb->flags & MESSAGE_BOX_INITIALIZED)) {
 
-                if (!(messageBoxes[i].flags & MESSAGE_BOX_TEXT_END_REACHED)) {
+                if (!(mb->flags & MESSAGE_BOX_TEXT_END_REACHED)) {
 
                     // reset message buffer
                     clearMessageBoxTextBuffer(i);
 
-                    if (messageBoxes[i].flags & MESSAGE_BOX_SCROLLING_DOWN) {
+                    if (mb->flags & MESSAGE_BOX_SCROLLING_DOWN) {
                         updateScrollDownAnimation(i);
                     }                    
 
-                    if (messageBoxes[i].flags & MESSAGE_BOX_SCROLLING_UP) {
+                    if (mb->flags & MESSAGE_BOX_SCROLLING_UP) {
                         updateScrollUpAnimation(i);
                     }    
 
                     processText(i);
 
-                    if (!(messageBoxes[i].flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) {
+                    if (!(mb->flags & (MESSAGE_BOX_SCROLLING_DOWN | MESSAGE_BOX_SCROLLING_UP))) {
 
-                        temp = calculateInterpolatorStep((Interpolator*)&messageBoxes[i].unk_64);
+                        temp = calculateInterpolatorStep((Interpolator*)&mb->unk_64);
                         j = 0;
                         
-                        if (checkButtonPressed(CONTROLLER_1, messageBoxes[i].buttonMask)) {
+                        if (checkButtonPressed(CONTROLLER_1, mb->buttonMask)) {
 
-                            if (!(messageBoxes[i].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
-                                messageBoxes[i].flags |= MESSAGE_BOX_BUTTON_PRESSED;
+                            if (!(mb->flags & MESSAGE_BOX_MODE_NO_INPUT)) {
+                                mb->flags |= MESSAGE_BOX_BUTTON_PRESSED;
                             }
                             
                         }
 
-                        if (checkButtonHeld(CONTROLLER_1, messageBoxes[i].buttonMask) && !(messageBoxes[i].flags & MESSAGE_BOX_SILENT)) {
+                        if (checkButtonHeld(CONTROLLER_1, mb->buttonMask) && !(mb->flags & MESSAGE_BOX_SILENT)) {
                             temp = 1;
                         }
 
                         while (j < temp) {
 
-                            if (messageBoxes[i].flags & MESSAGE_BOX_NEEDS_INTERPOLATOR_INIT) {
-                                initializeInterpolator((Interpolator*)&messageBoxes[i].unk_64, messageBoxes[i].unk_7C, 0);
-                                messageBoxes[i].flags &= ~MESSAGE_BOX_NEEDS_INTERPOLATOR_INIT;    
+                            if (mb->flags & MESSAGE_BOX_NEEDS_INTERPOLATOR_INIT) {
+                                initializeInterpolator((Interpolator*)&mb->unk_64, mb->unk_7C, 0);
+                                mb->flags &= ~MESSAGE_BOX_NEEDS_INTERPOLATOR_INIT;    
                             }
 
                             updateMessageBoxText(i);
-                            messageBoxes[i].flags &= ~MESSAGE_BOX_BUTTON_PRESSED;    
+                            mb->flags &= ~MESSAGE_BOX_BUTTON_PRESSED;    
                             j++;
                             
                         }
                         
                     }
 
-}
+        }
                 
             }
 
-            messageBoxes[i].charactersProcessedPerLine = 0;
+            mb->charactersProcessedPerLine = 0;
 
             // divide by max lines per text box
-            extraLines = ((messageBoxes[i].flags >> 4) & 3) / 3;
+            extraLines = ((mb->flags >> 4) & 3) / 3;
 
             dlStartingPosition = dl;
-            dl = setupMessageBoxScissor(dl, &messageBoxes[i]);
+            dl = setupMessageBoxScissor(dl, mb);
 
             k = 0;
             
-            if (messageBoxes[i].textBoxVisibleRows + extraLines) {
+            if (mb->textBoxVisibleRows + extraLines) {
 
                 do {
 
-                    dl = renderMessageBoxLine(dl, &messageBoxes[i], k, totalProcessedCharacterCount);
-                    addMessageCharSceneNode(&messageBoxes[i], k, dlStartingPosition);
+                    dl = renderMessageBoxLine(dl, mb, k, totalProcessedCharacterCount);
+                    addMessageCharSceneNode(mb, k, dlStartingPosition);
                     
                     dlStartingPosition = dl;
                     k++;
                     
-                } while (k < messageBoxes[i].textBoxVisibleRows + extraLines);
+                } while (k < mb->textBoxVisibleRows + extraLines);
                 
             }
 
             // updated by renderMessageBoxLine
-            totalProcessedCharacterCount += messageBoxes[i].charactersProcessedPerLine;
+            totalProcessedCharacterCount += mb->charactersProcessedPerLine;
             
         }
         

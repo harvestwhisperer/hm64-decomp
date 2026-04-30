@@ -12,7 +12,7 @@ u16 buttonRepeatRate;
 u16 buttonRepeatModeTriggerDelayFrames;
 u8 contPattern;
 
-NUContDataPatch contData[NU_CONT_MAXCONTROLLERS];
+NUContData contData[NU_CONT_MAXCONTROLLERS];
 
 // nucontmgr.c
 extern OSContStatus nuContStatus[NU_CONT_MAXCONTROLLERS];
@@ -28,37 +28,39 @@ void controllerInit(void) {
     u8 i, j;
 
     for (i = 0; i < NU_CONT_MAXCONTROLLERS; i++) {
-        
-        controllers[i].button = 0;
-        controllers[i].buttonHeld = 0;
-        controllers[i].buttonPressed = 0;
-        controllers[i].buttonReleased = 0;
-        controllers[i].buttonRepeat = 0;
-        controllers[i].buttonRepeatState = 0;
-        
-        controllers[i].analogStick.rawX = 0;
-        controllers[i].analogStick.rawY = 0;
-        controllers[i].analogStick.direction = 0;
-        controllers[i].analogStick.magnitude = 0;
+        Controller *c = &controllers[i];
+        Controller *gc = &gControllers[i];
+
+        c->button = 0;
+        c->buttonHeld = 0;
+        c->buttonPressed = 0;
+        c->buttonReleased = 0;
+        c->buttonRepeat = 0;
+        c->buttonRepeatState = 0;
+
+        c->analogStick.rawX = 0;
+        c->analogStick.rawY = 0;
+        c->analogStick.direction = 0;
+        c->analogStick.magnitude = 0;
 
         for (j = 0; j < 24; j++) {
-            controllers[i].buttonFrameCounters[j] = 0;
+            c->buttonFrameCounters[j] = 0;
         }
 
-        gControllers[i].button = 0;
-        gControllers[i].buttonHeld = 0;
-        gControllers[i].buttonPressed = 0;
-        gControllers[i].buttonReleased = 0;
-        gControllers[i].buttonRepeat = 0;
-        gControllers[i].buttonRepeatState = 0;
-        
-        gControllers[i].analogStick.rawX = 0;
-        gControllers[i].analogStick.rawY = 0;
-        gControllers[i].analogStick.direction = 0;
-        gControllers[i].analogStick.magnitude = 0;
+        gc->button = 0;
+        gc->buttonHeld = 0;
+        gc->buttonPressed = 0;
+        gc->buttonReleased = 0;
+        gc->buttonRepeat = 0;
+        gc->buttonRepeatState = 0;
+
+        gc->analogStick.rawX = 0;
+        gc->analogStick.rawY = 0;
+        gc->analogStick.direction = 0;
+        gc->analogStick.magnitude = 0;
 
         for (j = 0; j < 24; j++) {
-            gControllers[i].buttonFrameCounters[j] = 0;
+            gc->buttonFrameCounters[j] = 0;
         }
     }
     
@@ -77,73 +79,76 @@ void readControllerData(void) {
     nuContDataGetExAll(contData);
     
     for (i = 0; i < NU_CONT_MAXCONTROLLERS; i++) {
-        
+        Controller *c = &controllers[i];
+        Controller *gc = &gControllers[i];
+        NUContData *cd = &contData[i];
+
         if (!nuContStatus[i].errno) {
-            
+
             if ((frameCount % mainLoopUpdateRate) == 0) {
-                
-                controllers[i].analogStick.rawX = contData[i].stick_x;
-                controllers[i].analogStick.rawY = contData[i].stick_y;
-                
-                controllers[i].button = contData[i].button;
-                
+
+                c->analogStick.rawX = cd->stick_x;
+                c->analogStick.rawY = cd->stick_y;
+
+                c->button = cd->button;
+
                 calculateAnalogStickDirection(i);
-                
-                controllers[i].buttonPressed = (controllers[i].button ^ controllers[i].buttonHeld) & controllers[i].button;
-                controllers[i].buttonReleased =  (controllers[i].button ^ controllers[i].buttonHeld) & controllers[i].buttonHeld;
-                controllers[i].buttonHeld = controllers[i].button;
-                
+
+                c->buttonPressed = (c->button ^ c->buttonHeld) & c->button;
+                c->buttonReleased =  (c->button ^ c->buttonHeld) & c->buttonHeld;
+                c->buttonHeld = c->button;
+
                 for (j = 0; j < 24; j++) {
-                    
+
                     // if bit set
-                    if ((controllers[i].button >> j) & 1) {
-                        
+                    if ((c->button >> j) & 1) {
+
                         // check button mask is in button repeat mode
-                        if ((controllers[i].buttonRepeatState >> j) & 1) {
-                            
+                        if ((c->buttonRepeatState >> j) & 1) {
+
                             // > 4
                             // in button repeat mode
-                            if (controllers[i].buttonFrameCounters[j] > buttonRepeatRate) {
-                                controllers[i].buttonRepeat |= ((controllers[i].button >> j) & 1) << j;
-                                controllers[i].buttonFrameCounters[j] = 0;
+                            if (c->buttonFrameCounters[j] > buttonRepeatRate) {
+                                c->buttonRepeat |= ((c->button >> j) & 1) << j;
+                                c->buttonFrameCounters[j] = 0;
                             } else {
-                                controllers[i].buttonRepeat &= ~(1 << j);
+                                c->buttonRepeat &= ~(1 << j);
                             }
-                            
+
                         // > 16
                         // 16 frame delay to trigger button repeat
-                        } else if (controllers[i].buttonFrameCounters[j] > buttonRepeatModeTriggerDelayFrames) {
+                        } else if (c->buttonFrameCounters[j] > buttonRepeatModeTriggerDelayFrames) {
                             // enable button repeat mode for specific button bit
-                            controllers[i].buttonRepeat |= ((controllers[i].button >> j) & 1) << j;
-                            controllers[i].buttonRepeatState |= ((controllers[i].button >> j) & 1) << j;
-                            controllers[i].buttonFrameCounters[j] = 0;
+                            c->buttonRepeat |= ((c->button >> j) & 1) << j;
+                            c->buttonRepeatState |= ((c->button >> j) & 1) << j;
+                            c->buttonFrameCounters[j] = 0;
                         } else {
-                            controllers[i].buttonRepeat = controllers[i].buttonPressed;
+                            c->buttonRepeat = c->buttonPressed;
                         }
-                        
+
                         // increment bit counter
-                        controllers[i].buttonFrameCounters[j]++;
-                        
+                        c->buttonFrameCounters[j]++;
+
                     } else {
-                        controllers[i].buttonFrameCounters[j] = 0;
-                        controllers[i].buttonRepeat &= ~(1 << j);
-                        controllers[i].buttonRepeatState &= ~(1 << j);
+                        c->buttonFrameCounters[j] = 0;
+                        c->buttonRepeat &= ~(1 << j);
+                        c->buttonRepeatState &= ~(1 << j);
                     }
-                
+
                 }
 
             } else {
 
-                gControllers[i].button = contData[i].button;
+                gc->button = cd->button;
 
-                gControllers[i].buttonPressed = (gControllers[i].button ^ gControllers[i].buttonHeld) & gControllers[i].button;
-                gControllers[i].buttonReleased = (gControllers[i].button ^ gControllers[i].buttonHeld) & gControllers[i].buttonHeld;
-                
-                gControllers[i].buttonHeld = gControllers[i].button;
-                
-                gControllers[i].analogStick.rawX = contData[i].stick_x;
-                gControllers[i].analogStick.rawY = contData[i].stick_y;
-                
+                gc->buttonPressed = (gc->button ^ gc->buttonHeld) & gc->button;
+                gc->buttonReleased = (gc->button ^ gc->buttonHeld) & gc->buttonHeld;
+
+                gc->buttonHeld = gc->button;
+
+                gc->analogStick.rawX = cd->stick_x;
+                gc->analogStick.rawY = cd->stick_y;
+
             }
         }
     }
@@ -183,109 +188,113 @@ u8 getAnalogStickMagnitude(u8 contIndex) {
 
 void calculateAnalogStickDirection(u8 controllerIndex) {
 
+    Controller *c = &controllers[controllerIndex];
+
     volatile AnalogStick analogStick;
 
-    analogStick.rawX = controllers[controllerIndex].analogStick.rawX;
-    analogStick.rawY = controllers[controllerIndex].analogStick.rawY;
+    analogStick.rawX = c->analogStick.rawX;
+    analogStick.rawY = c->analogStick.rawY;
 
     // deadzone
     analogStick.direction = (s16)(getAbsoluteValue(analogStick.rawX)) / 10;
     analogStick.magnitude = (s16)(getAbsoluteValue(analogStick.rawY)) / 10;
     
-    controllers[controllerIndex].analogStick.direction = 0;
+    c->analogStick.direction = 0;
 
     if (analogStick.direction < 3 && analogStick.magnitude < 3) {
         
-        controllers[controllerIndex].analogStick.direction = 0xFF;
+        c->analogStick.direction = 0xFF;
         
     } else {
         
         if (analogStick.direction > analogStick.magnitude) {
                     
-            controllers[controllerIndex].analogStick.magnitude = analogStick.direction - analogStick.magnitude;
+            c->analogStick.magnitude = analogStick.direction - analogStick.magnitude;
             
-            if ((analogStick.direction / 2) < controllers[controllerIndex].analogStick.magnitude) {
+            if ((analogStick.direction / 2) < c->analogStick.magnitude) {
                 if ((analogStick.rawX << 0x18) < 0) {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_W;
+                    c->analogStick.direction = DIRECTION_W;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_E;
+                    c->analogStick.direction = DIRECTION_E;
                 }
             } else if ((analogStick.rawY << 0x18) < 0) {
                 if ((analogStick.rawX << 0x18) < 0) {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_SW;
+                    c->analogStick.direction = DIRECTION_SW;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_SE;
+                    c->analogStick.direction = DIRECTION_SE;
                 }
             } else {
                 if ((analogStick.rawX << 0x18) < 0) {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_NW;
+                    c->analogStick.direction = DIRECTION_NW;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_NE;
+                    c->analogStick.direction = DIRECTION_NE;
                 }
     
             }
             
-            controllers[controllerIndex].analogStick.magnitude = analogStick.direction;
+            c->analogStick.magnitude = analogStick.direction;
             
         } else {
 
-            controllers[controllerIndex].analogStick.magnitude = analogStick.magnitude - analogStick.direction;
+            c->analogStick.magnitude = analogStick.magnitude - analogStick.direction;
             
-            if ((analogStick.magnitude / 2) < controllers[controllerIndex].analogStick.magnitude) {
+            if ((analogStick.magnitude / 2) < c->analogStick.magnitude) {
                 if ((analogStick.rawY << 24) < 0) {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_S;
+                    c->analogStick.direction = DIRECTION_S;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_N;
+                    c->analogStick.direction = DIRECTION_N;
                 } 
             } else if ((analogStick.rawX << 24) < 0) {
                 if ((analogStick.rawY << 24) < 0) {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_SW;
+                    c->analogStick.direction = DIRECTION_SW;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_NW;
+                    c->analogStick.direction = DIRECTION_NW;
                 }
             } else {
                 if ((analogStick.rawY << 24) < 0) { 
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_SE;
+                    c->analogStick.direction = DIRECTION_SE;
                 } else {
-                    controllers[controllerIndex].analogStick.direction = DIRECTION_NE;
+                    c->analogStick.direction = DIRECTION_NE;
                 }
             }
     
-            controllers[controllerIndex].analogStick.magnitude = analogStick.magnitude;
+            c->analogStick.magnitude = analogStick.magnitude;
             
         }
      }
     
-    if (controllers[controllerIndex].analogStick.magnitude >= MAX_DIRECTIONS) {
-        controllers[controllerIndex].analogStick.magnitude = DIRECTION_E;
+    if (c->analogStick.magnitude >= MAX_DIRECTIONS) {
+        c->analogStick.magnitude = DIRECTION_E;
     }
     
-    controllers[controllerIndex].button |= (0x10000 << (controllers[controllerIndex].analogStick.direction)); 
+    c->button |= (0x10000 << (c->analogStick.direction)); 
    
 }
 
 bool func_8004D788(u8 contIndex) {
+
+    Controller *c = &controllers[contIndex];
     
     bool result;
     u32 error;
     
     bool temp;
     
-    nuContPakOpen(&controllers[contIndex].pak, contIndex);
+    nuContPakOpen(&c->pak, contIndex);
     
-    result = controllers[contIndex].pak.type != 2;
+    result = c->pak.type != 2;
     
     error = 2;
     
-    if (controllers[contIndex].pak.error) {
+    if (c->pak.error) {
         
-        temp = controllers[contIndex].pak.error == 2;
+        temp = c->pak.error == 2;
 
         result = FALSE;
         
-        if (controllers[contIndex].pak.error == 10)  {
-            nuContPakRepairId(&controllers[contIndex].pak);
-            if (controllers[contIndex].pak.error == error) {
+        if (c->pak.error == 10)  {
+            nuContPakRepairId(&c->pak);
+            if (c->pak.error == error) {
                 temp = TRUE;
             }
         }
@@ -307,8 +316,10 @@ s32 func_8004D87C(u8 contIndex) {
 }
 
 u32 func_8004D8B4(u8 contIndex, s32 *max_files, s32 *used_files) {
-    nuContPakFileNum(&controllers[contIndex].pak, max_files, used_files);
-    return controllers[contIndex].pak.error == 0;
+
+    Controller *c = &controllers[contIndex];
+    nuContPakFileNum(&c->pak, max_files, used_files);
+    return c->pak.error == 0;
 }
 
 u32 func_8004D904(u8 contIndex, u8 *companyCode, u8 *gameCode) {
@@ -323,11 +334,13 @@ u32 func_8004D954(u8 contIndex, u8* noteName, u8 *extName) {
 
 u32 func_8004D9AC(u8 contIndex, u8 *noteName, u8 *extName, s32 offset, s32 size, s32 buf) {
 
-    nuContPakFileOpenJis(&controllers[contIndex].pak, noteName, extName, NU_CONT_PAK_MODE_NOCREATE, 0);
+    Controller *c = &controllers[contIndex];
 
-    if (!controllers[contIndex].pak.error) {
-        nuContPakFileReadWrite(&controllers[contIndex].pak, offset, size, buf, 0);
-        return !controllers[contIndex].pak.error;
+    nuContPakFileOpenJis(&c->pak, noteName, extName, NU_CONT_PAK_MODE_NOCREATE, 0);
+
+    if (!c->pak.error) {
+        nuContPakFileReadWrite(&c->pak, offset, size, buf, 0);
+        return !c->pak.error;
     }
     
     return 0;
@@ -336,11 +349,13 @@ u32 func_8004D9AC(u8 contIndex, u8 *noteName, u8 *extName, s32 offset, s32 size,
 
 u32 func_8004DA48(u8 contIndex, u8* noteName, u8* extName, s32 offset, s32 size, u8* buf) {
 
-    nuContPakFileOpenJis(&controllers[contIndex].pak, noteName, extName, 1, size);
+    Controller *c = &controllers[contIndex];
 
-    if (!controllers[contIndex].pak.error) {
-        nuContPakFileReadWrite(&controllers[contIndex].pak, offset, size, buf, NU_CONT_PAK_MODE_CREATE);
-        return !controllers[contIndex].pak.error;
+    nuContPakFileOpenJis(&c->pak, noteName, extName, 1, size);
+
+    if (!c->pak.error) {
+        nuContPakFileReadWrite(&c->pak, offset, size, buf, NU_CONT_PAK_MODE_CREATE);
+        return !c->pak.error;
     }
 
     return 0;
@@ -348,12 +363,14 @@ u32 func_8004DA48(u8 contIndex, u8* noteName, u8* extName, s32 offset, s32 size,
 }
 
 u32 func_8004DAF4(u8 contIndex, u8 *noteName, u8 *extName) {
-    
-    nuContPakFileOpenJis(&controllers[contIndex].pak, noteName, extName, NU_CONT_PAK_MODE_NOCREATE, 0);
 
-    if (!controllers[contIndex].pak.error) {
-        nuContPakFileDeleteJis(&controllers[contIndex].pak, noteName, extName);
-        return !controllers[contIndex].pak.error;
+    Controller *c = &controllers[contIndex];
+    
+    nuContPakFileOpenJis(&c->pak, noteName, extName, NU_CONT_PAK_MODE_NOCREATE, 0);
+
+    if (!c->pak.error) {
+        nuContPakFileDeleteJis(&c->pak, noteName, extName);
+        return !c->pak.error;
     }
     
     return 0;

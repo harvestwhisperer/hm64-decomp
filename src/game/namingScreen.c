@@ -155,9 +155,12 @@ inline void initializeNamingScreen(u8* arg0, u8 arg1) {
     
     namingScreenContext.dialogueIndex = arg1;
     
-    stopCurrentAudioSequence(NAMING_SCREEN_THEME);
-    setCurrentAudioSequence(NAMING_SCREEN_THEME);
-    setAudioSequenceVolume(NAMING_SCREEN_THEME, SEQUENCE_VOLUME);
+    if (gCurrentAudioSequenceIndex != NAMING_SCREEN_THEME) {
+        stopCurrentAudioSequence(NAMING_SCREEN_THEME);
+        setCurrentAudioSequence(NAMING_SCREEN_THEME);
+        setAudioSequenceVolume(NAMING_SCREEN_THEME, SEQUENCE_VOLUME);
+        gCurrentAudioSequenceIndex = NAMING_SCREEN_THEME;
+    }
     
     setMainLoopCallbackFunctionIndex(NAMING_SCREEN);
     
@@ -415,7 +418,7 @@ void namingScreenCallback(void) {
                                 updateSpriteRGBA(0x8E, 0, 0, 0, 0, 8);
                                 updateSpriteRGBA(0x91, 0, 0, 0, 0, 8);
     
-                                if (namingScreenContext.screenType != NAMING_SCREEN_TYPE_FARM) {
+                                if (namingScreenContext.screenType >= NAMING_SCREEN_TYPE_DOG) {
 
                                     stopAudioSequenceWithDefaultFadeOut(NAMING_SCREEN_THEME);
 

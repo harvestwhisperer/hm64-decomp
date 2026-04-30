@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a development branch set up to support modding out-of-the-box. Simply run `./tools/setup.sh`, `make extract`, and `make -j4` to get started. 
+This is a development branch set up to support modding out-of-the-box with some additional QOL changes already implemented. On Linux (Debian/Ubuntu)/WSL/Posix, simply run `./tools/setup.sh`, `make extract`, and `make -j4` to get started.
 
 Currently supported modding workflows:
 - All code changes
@@ -10,7 +10,14 @@ Currently supported modding workflows:
 - Cutscene editing and new cutscenes
 - Dialogue logic editing and additional dialogues
 - Audio sequence replacement
-- Instrument/SFX samples adding/modifying (.aifc files)
+
+QOL implementations:
+- Time slowed to 1/5th of the original game speed
+- Farm ranking screen accessible in game select menu
+- Music continues playing unless the entered map contains a different theme
+- Naming screen music doesn't restart across screens during new game naming 
+- Adds compression of map and sprite assets, saving 6.56 MiB, or a total of ~41% of the space of the 16MB cartridge
+- Use cached pointers wherever possible, reducing up to 50% of RAM lookups across translation units
 
 Replacing other assets (maps, sprites, animations, fonts) is fully supported in theory, but tooling to create/modify these assets is still in progress.
 

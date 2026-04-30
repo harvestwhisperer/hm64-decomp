@@ -113,7 +113,7 @@ extern bool updateEntityRGBA(u16 entityIndex, u8 r, u8 g, u8 b, u8 a, s16 rate);
 extern bool setEntityAnimation(u16, u16); 
 extern bool setEntityDirection(u16, u8);   
 extern void pauseEntities();    
-extern void unpauseEntities();       
+extern void unpauseEntities();               
 extern void rotateAllEntities(s16); 
 extern void setEntitiesRGBA(u8, u8, u8, u8);               
 extern void setEntitiesRGBAWithTransition(u8 r, u8 g, u8 b, u8 a, s16);

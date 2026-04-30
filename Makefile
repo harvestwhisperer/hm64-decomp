@@ -30,6 +30,13 @@ TEXT_EXTRACT_ARGS := --modding
 # Modding wavetable pipeline: omit HM64-specific SDK padding from repacked .bin.
 WAVETABLE_REPACKER_ARGS := --modding
 
+# Yay0 runtime decoder objects — slotted into ALL_CODE_OBJECTS by common
+# (between CODE_OBJECTS and NUSYS_SAMPLE_OBJECTS).
+LIB_COMPRESSION_OBJECTS := \
+	$(BUILD_DIR)/lib/yay0/yay0.o \
+	$(BUILD_DIR)/lib/yay0/yay0Decode.o
+
+# CODE_OBJECTS — dev list (no padding objects).
 CODE_OBJECTS := \
 	$(BUILD_DIR)/src/mainproc.o \
 	$(BUILD_DIR)/src/mainLoop.o \
@@ -242,6 +249,12 @@ LIBULTRA_OBJECTS := \
 include Makefile.common
 
 # ==============================================================================
+# Compression-specific CPP flags
+# ==============================================================================
+
+CPPFLAGS += -I lib/yay0
+
+# ==============================================================================
 # Linker flags
 # ==============================================================================
 
@@ -258,6 +271,104 @@ SEQ_DIR := bin/audio
 
 SPRITES_DIR := assets/sprites
 TEXTS_DIR := assets/text
+
+# ==============================================================================
+# Sprite compression
+#
+# Transform raw .bin files from the assembler into Yay0-compressed
+# equivalents. Each sprite's 2-or-3 .bin files compress in a single tool
+# invocation, producing .bin.yay0 siblings. Final wrap produces .bin.yay0.o,
+# mirroring the map convention (.hm64map.yay0.o).
+# ==============================================================================
+
+SPRITE_COMPRESSOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.yay0.compress_sprite
+
+# Sprites that have a SpritesheetIndex on disk but are DMA'd as a whole blob at
+# runtime (see globalSprites.c assetType-2 path) must be compressed whole-blob.
+WHOLE_BLOB_SPRITES := festivalFlowers
+
+# Preserve the stamp + .bin.yay0 intermediates across builds so Make
+# doesn't recompress every sprite on every incremental build.
+.PRECIOUS: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
+.PRECIOUS: $(SPRITE_BUILD_DIR)/%Texture.bin.yay0
+.PRECIOUS: $(SPRITE_BUILD_DIR)/%AssetsIndex.bin.yay0
+.PRECIOUS: $(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin.yay0
+
+# Stamp file routes all 2-or-3 .bin.yay0 outputs through a single
+# pattern-rule dependency. Avoids Make's implicit-chain "Circular dependency
+# dropped" warnings that arise when each sibling points at Texture.bin.yay0.
+$(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp: $(SPRITE_BUILD_DIR)/%Texture.bin $(SPRITE_BUILD_DIR)/%AssetsIndex.bin
+	@mode=auto; \
+	 case " $(WHOLE_BLOB_SPRITES) " in *" $(notdir $*) "*) mode=whole-blob ;; esac; \
+	 sht=$(SPRITE_BUILD_DIR)/$*SpritesheetIndex.bin; \
+	 if [ -f "$$sht" ]; then \
+	   $(SPRITE_COMPRESSOR) --mode $$mode \
+	     --texture-in $(SPRITE_BUILD_DIR)/$*Texture.bin --assets-index-in $(SPRITE_BUILD_DIR)/$*AssetsIndex.bin --sheet-index-in $$sht \
+	     --texture-out $(SPRITE_BUILD_DIR)/$*Texture.bin.yay0 --assets-index-out $(SPRITE_BUILD_DIR)/$*AssetsIndex.bin.yay0 \
+	     --sheet-index-out $(SPRITE_BUILD_DIR)/$*SpritesheetIndex.bin.yay0; \
+	 else \
+	   $(SPRITE_COMPRESSOR) --mode $$mode \
+	     --texture-in $(SPRITE_BUILD_DIR)/$*Texture.bin --assets-index-in $(SPRITE_BUILD_DIR)/$*AssetsIndex.bin \
+	     --texture-out $(SPRITE_BUILD_DIR)/$*Texture.bin.yay0 --assets-index-out $(SPRITE_BUILD_DIR)/$*AssetsIndex.bin.yay0; \
+	 fi
+	@touch $@
+
+$(SPRITE_BUILD_DIR)/%Texture.bin.yay0: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
+	@:
+
+$(SPRITE_BUILD_DIR)/%AssetsIndex.bin.yay0: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
+	@:
+
+$(SPRITE_BUILD_DIR)/%SpritesheetIndex.bin.yay0: $(SPRITE_BUILD_DIR)/%.sprite-yay0.stamp
+	@:
+
+# Sprite .bin.yay0.o wraps the Yay0-compressed bytes.
+$(SPRITE_BUILD_DIR)/%.bin.yay0.o: $(SPRITE_BUILD_DIR)/%.bin.yay0
+	$(V)$(LD) -r -b binary -o $@ $<
+
+# ==============================================================================
+# Yay0 compression pipeline
+#
+# .bin.o --(objcopy -j .data)--> .bin --(yay0 encoder)--> .yay0 --(ld -r -b binary)--> .yay0.o
+# ==============================================================================
+
+# Must be defined before rules that reference it (compressed_ranges.h prereq).
+SPEC_INCLUDES := $(shell find assets -name '*.spec' 2>/dev/null)
+
+$(BUILD_DIR)/assets/%.bin: $(BUILD_DIR)/assets/%.bin.o
+	$(V)$(OBJCOPY) -O binary -j .data $< $@
+
+$(BUILD_DIR)/assets/%.yay0: $(BUILD_DIR)/assets/%.bin
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.yay0.encoder $< $@
+
+$(BUILD_DIR)/assets/%.yay0.o: $(BUILD_DIR)/assets/%.yay0
+	$(V)$(LD) -r -b binary -o $@ $<
+
+# Parallel pipeline for maps (.hm64map.o extension).
+$(BUILD_DIR)/assets/%.hm64map.raw: $(BUILD_DIR)/assets/%.hm64map.o
+	$(V)$(OBJCOPY) -O binary -j .data $< $@
+
+$(BUILD_DIR)/assets/%.hm64map.yay0: $(BUILD_DIR)/assets/%.hm64map.raw
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.yay0.encoder $< $@
+
+$(BUILD_DIR)/assets/%.hm64map.yay0.o: $(BUILD_DIR)/assets/%.hm64map.yay0
+	$(V)$(LD) -r -b binary -o $@ $<
+
+# ==============================================================================
+# lib/yay0 (runtime decoder)
+# ==============================================================================
+
+$(BUILD_DIR)/lib/yay0/%.o: lib/yay0/%.c
+	$(MKDIR)
+	$(CC) $(CC_FLAG) $(OPTFLAGS) $(CFLAGS) $(DEBUG_FLAGS) $(CPPFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/lib/yay0/%.o: lib/yay0/%.s
+	$(MKDIR)
+	$(AS) $(ASFLAGS) -o $@ $<
+
+# Spec processing: re-run when any asset .spec file changes
+# (compressed_ranges.h depends on the spec set).
+$(SPEC_PROCESSED): $(SPEC_INCLUDES)
 
 # ==============================================================================
 # Texts (modding pipeline)
@@ -396,5 +507,3 @@ TEXT_ASM := $(foreach bank,$(TEXT_BANKS),$(TEXT_ASSETS_DIR)/$(bank)Text.s $(TEXT
 # Prevent Make from deleting intermediate .s files (scoped: only the
 # transpiled asm files we care about, not every implicit .bin or .o).
 .SECONDARY: $(CUTSCENE_ASM) $(DIALOGUE_ASM) $(TEXT_ASM)
-
-MAKEFLAGS += --no-builtin-rules

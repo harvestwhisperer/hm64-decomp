@@ -30,7 +30,13 @@ void setupGameStart(void) {
     initializeAll(); 
     
     if (contPattern & 1) {
+#if TESTING
+        initializeNewGameState();
+        initializeGameVariables();
+        startGame();
+#else
         launchIntroCutscene(OPENING_LOGOS, SQUARE_SPAWN_POINT_1, 1);
+#endif
     } else {
 
         setMainLoopCallbackFunctionIndex(NO_OP);
@@ -55,7 +61,11 @@ void startGame(void) {
     setDailyEventBit(EAT_BREAKFAST);
     setDailyEventBit(DEFAULT_MORNING);
 
+#if TESTING
+    gHour = 9;
+#else
     gHour = 6;
+#endif
 
     setMainLoopCallbackFunctionIndex(MAP_LOAD);
     

@@ -779,8 +779,8 @@ split:
 CUTSCENE_ASM := $(patsubst $(CUTSCENE_BUILD_DIR)/%.bin.o,$(CUTSCENE_ASSETS_DIR)/%.s,$(CUTSCENE_OBJECTS))
 DIALOGUE_ASM := $(patsubst $(DIALOGUE_BUILD_DIR)/%.bin.o,$(DIALOGUE_ASSETS_DIR)/%.s,$(DIALOGUE_OBJECTS))
 
-.PHONY: extract-sprites extract-fonts extract-texts extract-gifs
-.PHONY: extract-map-sprites extract-cutscenes extract-wavetable repack-wavetable
-.PHONY: extract-font assemble-fonts split
+.PHONY: extract-map-sprites extract-cutscenes extract-wavetable repack-wavetable extract-font assemble-fonts
+.PHONY: extract-map-sprites extract-cutscenes extract-font assemble-fonts
+.PHONY: split
 
 MAKEFLAGS += --no-builtin-rules
