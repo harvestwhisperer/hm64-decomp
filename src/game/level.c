@@ -1804,20 +1804,20 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
 
             if (!checkLifeEventBit(MARRIED) || gWife != ANN) {
                 if (!checkLifeEventBit(ANN_CLIFF_MARRIED)) {
-                    index = 0xE2;
+                    index = 226;
                     break;
                 }
             }
             
-            index = 0xD8;
+            index = 216;
             break;
 
         case RANCH_BARN:
             
             if (gDayOfWeek != THURSDAY) {
-                index = (7 < gHour && gHour < 17) == 0 ? 0xBC : 0xFFFF;
+                index = (7 < gHour && gHour < 17) == 0 ? 188 : 0xFFFF;
             } else {
-                index = 0xBC;
+                index = 188;
             }
 
             break;
@@ -1825,20 +1825,20 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
         case RANCH_STORE:
 
             if (gDayOfWeek != THURSDAY) {
-                index = (7 < gHour && gHour < 17) == 0 ? 0xC7 : 0xFFFF;
+                index = (7 < gHour && gHour < 17) == 0 ? 199 : 0xFFFF;
             } else {
-                index = 0xC7;
+                index = 199;
             }
             
             break;
 
         case RANCH_HOUSE:
-            index = (7 < gHour && gHour < 17) == 0 ? 0xBC : 0xFFFF;
+            index = (7 < gHour && gHour < 17) == 0 ? 188 : 0xFFFF;
             break;
 
         case RACE_TRACK:
 
-            index = 0xBB;
+            index = 187;
             
             if (9 < gHour && gHour < 18) {
 
@@ -1865,7 +1865,7 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
 
         case CARPENTER_HUT:
 
-            index = 0xB0;
+            index = 176;
             
             if (gDayOfWeek != TUESDAY) {
                 
@@ -1883,27 +1883,27 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
             break;
 
         case DUMPLING_HOUSE:
-            index = (7 < gHour && gHour < 17) == 0 ? 0xBD : 0xFFFF;
+            index = (7 < gHour && gHour < 17) == 0 ? 189 : 0xFFFF;
             break;
 
         case ELLI_ROOM:
 
             if (!checkLifeEventBit(MARRIED) || gWife != ELLI) {
                 if (!checkLifeEventBit(ELLI_JEFF_MARRIED)) {
-                    index = 0xE1;
+                    index = 225;
                     break;
                 }
             }
 
-            index = 0xD8;            
+            index = 216;
             break;
 
         case BAKERY:
 
             if (gDayOfWeek != MONDAY) {
-                index = (8 < gHour && gHour < 17) == 0 ? 0xC2 : 0xFFFF;
+                index = (8 < gHour && gHour < 17) == 0 ? 194 : 0xFFFF;
             } else {
-                index = 0xC2;
+                index = 194;
             }
             
             break;
@@ -1912,34 +1912,34 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
             
             if (!checkLifeEventBit(MARRIED) || gWife != POPURI) {
                 if (!checkLifeEventBit(POPURI_GRAY_MARRIED)) {
-                    index = 0xE0;
+                    index = 224;
                     break;
                 }
             }
-            
-            index = 0xD8;
+
+            index = 216;
             break;
 
         case FLOWER_SHOP:
 
             if (gDayOfWeek != SUNDAY) {
-                index = (8 < gHour && gHour < 17) == 0 ? 0xC1 : 0xFFFF;
+                index = (8 < gHour && gHour < 17) == 0 ? 193 : 0xFFFF;
             } else {
-                index = 0xC1;
+                index = 193;
             }
 
             break;
 
         case CHURCH:
-            index = (7 < gHour && gHour < 17) == 0 ? 0xBC : 0xFFFF;
+            index = (7 < gHour && gHour < 17) == 0 ? 188 : 0xFFFF;
             break;
         
         case SOUVENIR_SHOP:
             
             if (gDayOfWeek != 1) {
-                index = (8 < gHour && gHour < 17) == 0 ? 0xC4 : 0xFFFF;
+                index = (8 < gHour && gHour < 17) == 0 ? 196 : 0xFFFF;
             } else {
-                index = 0xC4;
+                index = 196;
             }
             
             break;
@@ -1947,30 +1947,30 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
         case RICK_STORE:
             
             if (gWeather == SUNNY && gDayOfWeek != WEDNESDAY && gDayOfWeek != SATURDAY && gDayOfWeek != SUNDAY) {
-                index = (9 < gHour && gHour < 18) == 0 ? 0xC3 : 0xFFFF;
+                index = (9 < gHour && gHour < 18) == 0 ? 195 : 0xFFFF;
             } else {
-                index = 0xC3;
+                index = 195;
             }
         
             break;
         
         case MIDWIFE_HOUSE:
-            index = (8 < gHour && gHour < 17) == 0 ? 0xBD : 0xFFFF;
+            index = (8 < gHour && gHour < 17) == 0 ? 189 : 0xFFFF;
             break;
         
         case TAVERN:
             
             if (gDayOfWeek != SUNDAY) {
-                index = NIGHTTIME == 0 ? 0xC5 : 0xFFFF;
+                index = NIGHTTIME == 0 ? 197 : 0xFFFF;
             } else {
-                index = 0xC5;
+                index = 197;
             }
             
             break;
         
         case LIBRARY:
 
-            index = 0xC6;
+            index = 198;
             
             if (gDayOfWeek != MONDAY) {
                 
@@ -2002,21 +2002,21 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
             if (!checkLifeEventBit(MARRIED) || gWife != 0) {
               
                 if (!checkLifeEventBit(MARIA_HARRIS_MARRIED)) {
-                    index = 0xDF;
+                    index = 223;
                     break;
                 }
             }
-            
-            index = 0xD8;
-            
+
+            index = 216;
+
             break;
 
         case MAYOR_HOUSE:
 
             if (gDayOfWeek != SUNDAY && gDayOfWeek != FRIDAY) {
-                index = (7 < gHour && gHour < 17) == 0 ? 0xBC : 0xFFFF;
+                index = (7 < gHour && gHour < 17) == 0 ? 188 : 0xFFFF;
             } else {
-                index = 0xBC;
+                index = 188;
             }
             
             break;
@@ -2024,23 +2024,23 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
         case POTION_SHOP:
             
             if (gDayOfWeek != SATURDAY && gDayOfWeek != SUNDAY) {
-                index = (8 < gHour && gHour < 17) == 0 ? 0xE4 : 0xFFFF;
+                index = (8 < gHour && gHour < 17) == 0 ? 228 : 0xFFFF;
             } else {
-                index = 0xE4;
+                index = 228;
             }
             
             break;
 
         case HARVEST_SPRITE_CAVE:
-            index = (6 < gHour && gHour < 19) == 0 ? 0xBD : 0xFFFF;
+            index = (6 < gHour && gHour < 19) == 0 ? 189 : 0xFFFF;
             break;
 
         case MINE:
 
             if (gSeason == WINTER && (7 < gDayOfMonth && gDayOfMonth < 31)) {
-                index = (8 < gHour && gHour < 17) == 0 ? 0xB2 : 0xFFFF;
+                index = (8 < gHour && gHour < 17) == 0 ? 178 : 0xFFFF;
             } else {
-                index = 0xB2;
+                index = 178;
             }
 
             break;
@@ -2049,21 +2049,21 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
 
             if (!checkLifeEventBit(MARRIED) || gWife != KAREN) {
                 if (!checkLifeEventBit(KAREN_KAI_MARRIED)) {                
-                    index = 0xE3;
+                    index = 227;
                     break;
                 }
-            } 
-            
-            index = 0xD8;
+            }
+
+            index = 216;
             
             break;
 
         case VINEYARD_HOUSE:
 
-            index = 0xBC;   
-            
+            index = 188;
+
             if (gSeason != AUTUMN || !(7 < gDayOfMonth && gDayOfMonth < 11)) {
-                if (7 < gHour && gHour < 17) {   
+                if (7 < gHour && gHour < 17) {
                     index = 0xFFFF;
                 }   
             }
@@ -2071,7 +2071,7 @@ u16 getCantEnterTextIndex(u16 spawnPoint) {
             break;
 
         case VINEYARD_CELLAR:
-            index = (7 < gHour && gHour < 18) == 0 ? 0xBC : 0xFFFF;
+            index = (7 < gHour && gHour < 18) == 0 ? 188 : 0xFFFF;
             break;
         
         case RANCH:

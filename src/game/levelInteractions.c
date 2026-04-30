@@ -478,7 +478,7 @@ bool handleLevelInteraction(u16 mapIndex) {
 
             }
 
-            if ((gSpawnPointIndex == 0x59 || gSpawnPointIndex == 0x5B) && !checkLifeEventBit(MARRIED) && gSeason == SUMMER && gDayOfMonth == 1 && (18 < gHour && gHour < 21)) {
+            if ((gSpawnPointIndex == COOP || gSpawnPointIndex == BATHROOM) && !checkLifeEventBit(MARRIED) && gSeason == SUMMER && gDayOfMonth == 1 && (18 < gHour && gHour < 21)) {
                 textIndex = 0xFFFF;
             }
     
