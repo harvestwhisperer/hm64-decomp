@@ -220,7 +220,7 @@ void loadLevel(u8 arg0) {
         if (!(*ptr & (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS))) {
             
             if (!checkDailyEventBit(FESTIVAL)) {
-                spawnWildAnimals();
+                spawnMiscAnimals();
             }
 
             if (!(*ptr & (CUTSCENE_SUPPRESS_NPC_SETUP | CUTSCENE_SUPPRESS_FARM_ANIMALS))) {

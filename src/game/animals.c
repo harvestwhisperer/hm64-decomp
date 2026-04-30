@@ -148,7 +148,7 @@ void updatePlayerDog(u8);
 void updateVillageDog(u8);
 void updateCat(u8);
 void updateRanchHorse(u8);
-void updateWildSheep(u8);
+void updateRanchSheep(u8);
 void updateRanchCow(u8);
 void updateFox(u8);
 void updateBunny(u8);
@@ -1524,9 +1524,9 @@ void resetChickenLocation(u8 mapIndex, u8 chickenIndex) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", spawnWildAnimals);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", spawnMiscAnimals);
 
-void spawnWildAnimals(void) {
+void spawnMiscAnimals(void) {
 
     switch (gBaseMapIndex) {
         
@@ -7191,7 +7191,7 @@ void updateMiscAnimal(u8 index) {
                     break;
 
                 case MISC_ANIMAL_SHEEP:
-                    updateWildSheep(index);
+                    updateRanchSheep(index);
                     break;
 
                 case MISC_ANIMAL_COW:
@@ -8352,9 +8352,9 @@ void updateRanchHorse(u8 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", updateWildSheep);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", updateRanchSheep);
 
-void updateWildSheep(u8 index) {
+void updateRanchSheep(u8 index) {
 
     u16 temp;
     u8 tempDirection;
