@@ -7923,9 +7923,9 @@ void addRecipe(u16 bitIndex) {
     recipesBits[temp >> 5] |= 1 << (temp & 0x1F);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", toggleRecipe);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", clearRecipe);
 
-void toggleRecipe(u16 bitIndex) {
+void clearRecipe(u16 bitIndex) {
     u32 temp = bitIndex;
     recipesBits[temp >> 5] &= ~(1 << (temp & 0x1F));
 }

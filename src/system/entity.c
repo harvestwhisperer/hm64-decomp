@@ -220,7 +220,6 @@ void deactivateSprites(void) {
         
             deactivateSprite(entities[i].globalSpriteIndex);
             
-            // toggle flag on shadow sprite
             if (entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex != 0xFF) {
                 deactivateSprite(entities[i].shadowSpriteIndex);
             } 
