@@ -41,7 +41,7 @@ typedef struct {
 typedef struct {
     u16 functionIndex;
     u16 executorIndex;
-} CutsceneTogglePauseExecutorCmd;
+} CutsceneUnpauseExecutorCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -49,7 +49,7 @@ typedef struct {
 
 typedef struct {
     u16 functionIndex;
-} CutsceneTogglePauseAllChildrenCmd;
+} CutsceneUnpauseAllChildrenCmd;
 
 typedef struct {
     u16 functionIndex;
@@ -347,7 +347,7 @@ typedef struct {
 typedef struct {
     u16 functionIndex;
     u16 entityIndex;
-} CutsceneTogglePauseEntityCmd;
+} CutsceneUnpauseEntityCmd;
 
 typedef struct {
     u16 functionIndex;

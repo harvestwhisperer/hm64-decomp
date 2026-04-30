@@ -191,7 +191,7 @@ bool dmaSprite(u16 index,
                 globalSprites[index].stateFlags |= SPRITE_NO_TRANSFORM;
             }
 
-            globalSprites[index].stateFlags |= SPRITE_ANIMATION_STATE_CHANGED;
+            globalSprites[index].stateFlags |= SPRITE_ANIMATION_CYCLE_ENDED;
 
             result = TRUE;
 
@@ -383,7 +383,7 @@ bool setupSpriteAnimation(u16 spriteIndex, u8 animationModeOrFrameIndex, u16* an
         globalSprites[spriteIndex].frameTickCounter = 0;
         globalSprites[spriteIndex].audioTrigger = FALSE;
 
-        globalSprites[spriteIndex].stateFlags &= ~SPRITE_ANIMATION_STATE_CHANGED;
+        globalSprites[spriteIndex].stateFlags &= ~SPRITE_ANIMATION_CYCLE_ENDED;
         globalSprites[spriteIndex].stateFlags |= SPRITE_ANIMATION_HEADER_PROCESSED;
 
         switch (animationModeOrFrameIndex) {
@@ -518,7 +518,7 @@ u16 getSpriteAnimationStateChangedFlag(u16 index) {
     if (index < MAX_SPRITES) {
 
         if (globalSprites[index].stateFlags & SPRITE_ACTIVE) {
-            result = globalSprites[index].stateFlags & SPRITE_ANIMATION_STATE_CHANGED;
+            result = globalSprites[index].stateFlags & SPRITE_ANIMATION_CYCLE_ENDED;
         }
 
     }
@@ -1037,14 +1037,14 @@ bool checkSpriteRGBAUpdateFinished(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", checkSpriteAnimationStateChanged);
+//INCLUDE_ASM("asm/nonmatchings/system/globalSprites", checkSpriteAnimationCycleEnded);
 
-bool checkSpriteAnimationStateChanged(u16 index) {
+bool checkSpriteAnimationCycleEnded(u16 index) {
 
     bool result = FALSE;
 
     if (index < MAX_SPRITES) {
-        // flag 0x40, SPRITE_ANIMATION_STATE_CHANGED
+        // flag 0x40, SPRITE_ANIMATION_CYCLE_ENDED
         result = (globalSprites[index].stateFlags >> 6) & 1;
     }
 
@@ -1491,7 +1491,7 @@ void updateSprites(void) {
                                 globalSprites[i].currentAnimationFrame = globalSprites[i].animationFrameMetadata.objectCount - 1;
                             }
     
-                            globalSprites[i].stateFlags |= SPRITE_ANIMATION_STATE_CHANGED;
+                            globalSprites[i].stateFlags |= SPRITE_ANIMATION_CYCLE_ENDED;
                             
                         } 
 
@@ -1502,7 +1502,7 @@ void updateSprites(void) {
                         globalSprites[i].bitmapMetadataPtr = ptr + 2;
                         
                     } else {
-                        globalSprites[i].stateFlags |= SPRITE_ANIMATION_STATE_CHANGED;
+                        globalSprites[i].stateFlags |= SPRITE_ANIMATION_CYCLE_ENDED;
                     }
                     
                 }

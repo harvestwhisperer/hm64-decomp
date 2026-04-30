@@ -8,8 +8,11 @@
 #include "system/map.h"
 #include "system/mapController.h"
 
-#include "mainproc.h"
 #include "game/npc.h"
+
+#include "mainproc.h"
+
+#include "data/animation/entityAnimationScripts/entityAnimationScripts.h"
 
 // bss
 Entity entities[MAX_ENTITIES];
@@ -220,7 +223,6 @@ void deactivateSprites(void) {
         
             deactivateSprite(entities[i].globalSpriteIndex);
             
-            // toggle flag on shadow sprite
             if (entityAssetDescriptors[entities[i].entityAssetIndex].shadowSpriteIndex != 0xFF) {
                 deactivateSprite(entities[i].shadowSpriteIndex);
             } 
@@ -567,7 +569,7 @@ bool setEntityAnimation(u16 index, u16 animationIndex) {
             entities[index].flags |= ENTITY_IS_CURRENTLY_ANIMATED;
             entities[index].flags &= ~ENTITY_ANIMATION_TRACKS_DIRECTION; 
 
-            globalSprites[entities[index].globalSpriteIndex].stateFlags &= ~SPRITE_ANIMATION_STATE_CHANGED;
+            globalSprites[entities[index].globalSpriteIndex].stateFlags &= ~SPRITE_ANIMATION_CYCLE_ENDED;
             globalSprites[entities[index].globalSpriteIndex].audioTrigger = FALSE;
             
             result = TRUE;
@@ -592,7 +594,7 @@ bool setEntityDirectionalAnimation(u16 index, u16 animationIndex) {
             entities[index].animationIndices.animationIndex = animationIndex;
             entities[index].flags |= (ENTITY_IS_CURRENTLY_ANIMATED | ENTITY_ANIMATION_TRACKS_DIRECTION);
     
-            globalSprites[entities[index].globalSpriteIndex].stateFlags &= ~SPRITE_ANIMATION_STATE_CHANGED;
+            globalSprites[entities[index].globalSpriteIndex].stateFlags &= ~SPRITE_ANIMATION_CYCLE_ENDED;
     
             result = TRUE;
     
@@ -699,9 +701,9 @@ void pauseEntities(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/entity", togglePauseEntities);
+//INCLUDE_ASM("asm/nonmatchings/system/entity", unpauseEntities);
 
-void togglePauseEntities(void) {
+void unpauseEntities(void) {
 
     u16 i;
 
@@ -995,7 +997,7 @@ bool checkEntityAnimationStateChanged(u16 index) {
     if (index < MAX_ENTITIES) {
 
         if (entities[index].flags & ENTITY_ACTIVE) {
-            result = checkSpriteAnimationStateChanged(entities[index].globalSpriteIndex);
+            result = checkSpriteAnimationCycleEnded(entities[index].globalSpriteIndex);
         }
 
     }
@@ -2331,15 +2333,15 @@ void updateEntities(void) {
 
                     switch (animationType) {
 
-                        case 0:
+                        case ANIM_TYPE_ONE_SHOT:
                             startSpriteAnimation(entities[i].globalSpriteIndex, animationMetadataIndex, 0xFF);
                             break;
 
-                        case 0x2000: 
+                        case ANIM_TYPE_LOOP: 
                             startSpriteAnimation(entities[i].globalSpriteIndex, animationMetadataIndex, 0xFE);
                             break;
                         
-                        case 0x4000:
+                        case ANIM_TYPE_DESTROY_ON_END:
                             startSpriteAnimation(entities[i].globalSpriteIndex, animationMetadataIndex, 0xFD);
                             break;
 
@@ -2378,7 +2380,7 @@ void updateEntities(void) {
                     resetAnimationState(entities[i].shadowSpriteIndex);
                 }
 
-                if ((animationType == 0x4000) && checkSpriteAnimationStateChanged(entities[i].globalSpriteIndex)) {
+                if ((animationType == ANIM_TYPE_DESTROY_ON_END) && checkSpriteAnimationCycleEnded(entities[i].globalSpriteIndex)) {
                     deactivateEntity(i);                   
                 }
                 

@@ -1049,7 +1049,7 @@ inline u32 checkLetterInMailBox(u16 bitIndex) {
     return mailboxBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
-static inline void toggleLetterBit(u32 i, u32 mailBox) {
+static inline void clearLetterBit(u32 i, u32 mailBox) {
     mailboxBits[i / 32] &= ~mailBox;
 }
 
@@ -1079,7 +1079,7 @@ u8 readMail(void) {
         
         if (mailBox & letterBit) {
 
-            toggleLetterBit(i, letterBit);
+            clearLetterBit(i, letterBit);
             setReadMail(i, letterBit);
             
             result = i;

@@ -18,7 +18,7 @@
                     
 // forward declarations           
 void setGlobalSeasonName(u8);
-void toggleMonthlyLetterBits(void);
+void clearMonthlyLetterBits(void);
 void setupNewYear(void);
 void updateClock(u8);
 
@@ -127,7 +127,7 @@ void updateClock(u8 incrementSeconds) {
     if (gDayOfMonth >= 31) {
         gDayOfMonth = 1;
         gSeason++;
-        toggleMonthlyLetterBits();
+        clearMonthlyLetterBits();
     }
 
     if (gSeason >= 5) {
@@ -203,9 +203,9 @@ void setupNewYear(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/time", toggleMonthlyLetterBits);
+//INCLUDE_ASM("asm/nonmatchings/game/time", clearMonthlyLetterBits);
 
-void toggleMonthlyLetterBits(void) {
+void clearMonthlyLetterBits(void) {
     // unused
     clearReadLetterBit(60);
     clearReadLetterBit(MAIL_MOUNTAIN_CARPENTERS_AD);

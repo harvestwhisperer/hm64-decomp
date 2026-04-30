@@ -694,7 +694,7 @@ static inline void updateDogTitleAnimation() {
 
 void handleDogAnimation(void) {
 
-    if (checkSpriteAnimationStateChanged(DOG_TITLE_SPRITE)) {
+    if (checkSpriteAnimationCycleEnded(DOG_TITLE_SPRITE)) {
         resetAnimationState(DOG_TITLE_SPRITE);
         updateDogTitleAnimation();
     }
@@ -705,7 +705,7 @@ void handleDogAnimation(void) {
 /*
 void handleDogAnimation(void) {
 
-    if (checkSpriteAnimationStateChanged(0x44)) {
+    if (checkSpriteAnimationCycleEnded(0x44)) {
         
         resetAnimationState(0x44);
 
@@ -756,7 +756,7 @@ void handleDogAnimation(void) {
 
 void updateGrassAnimation(void) {
 
-    if (checkSpriteAnimationStateChanged(FAR_GRASS_3_1)) {
+    if (checkSpriteAnimationCycleEnded(FAR_GRASS_3_1)) {
         
         if (getRandomNumberInRange(0, 1)) {
             

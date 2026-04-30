@@ -62,10 +62,10 @@ void cutsceneHandlerSetEntityAnimation(u16);
 void cutsceneHandlerSetEntityDirectionalAnimation(u16);
 void cutsceneHandlerSetCallbackBytecodePtr(u16);
 void cutsceneHandlerPauseEntity(u16);
-void cutsceneHandlerTogglePauseEntity(u16);
+void cutsceneHandlerUnpauseEntity(u16);
 void cutsceneHandlerFlipEntityDirection(u16);
 void cutsceneHandlerPauseEntities(u16);
-void cutsceneHandlerTogglePauseEntities(u16);
+void cutsceneHandlerUnpauseEntities(u16);
 void cutsceneHandlerFlipEntityAnimation(u16);
 void cutsceneHandlerSetEntityNonCollidable(u16);
 void cutsceneHandlerSetupEntity(u16);
@@ -103,9 +103,9 @@ void cutsceneHandlerInitMapAddition(u16);
 void cutsceneHandlerBranchOnRandom(u16);
 void cutsceneHandlerBranchIfU16PtrInRange(u16);
 void cutsceneHandlerPauseExecutor(u16);
-void cutsceneHandlerTogglePauseExecutor(u16);
+void cutsceneHandlerUnpauseExecutor(u16);
 void cutsceneHandlerPauseAllChildExecutors(u16);
-void cutsceneHandlerTogglePauseAllChildExecutors(u16);
+void cutsceneHandlerUnpauseAllChildExecutors(u16);
 void cutsceneHandlerSetSpritePalette(u16);
 void cutsceneHandlerBranchIfU8PtrInRange(u16);
 void cutsceneHandlerSetAudioSequence(u16);
@@ -163,10 +163,10 @@ void (*cutsceneCommandHandlers[])(u16) = {
     cutsceneHandlerSetEntityDirectionalAnimation,
     cutsceneHandlerSetCallbackBytecodePtr,
     cutsceneHandlerPauseEntity,
-    cutsceneHandlerTogglePauseEntity,
+    cutsceneHandlerUnpauseEntity,
     cutsceneHandlerFlipEntityDirection,
     cutsceneHandlerPauseEntities,
-    cutsceneHandlerTogglePauseEntities,
+    cutsceneHandlerUnpauseEntities,
     cutsceneHandlerFlipEntityAnimation,
     cutsceneHandlerSetEntityNonCollidable,
     cutsceneHandlerSetupEntity,
@@ -204,9 +204,9 @@ void (*cutsceneCommandHandlers[])(u16) = {
     cutsceneHandlerBranchOnRandom,
     cutsceneHandlerBranchIfU16PtrInRange,
     cutsceneHandlerPauseExecutor,
-    cutsceneHandlerTogglePauseExecutor,
+    cutsceneHandlerUnpauseExecutor,
     cutsceneHandlerPauseAllChildExecutors,
-    cutsceneHandlerTogglePauseAllChildExecutors,
+    cutsceneHandlerUnpauseAllChildExecutors,
     cutsceneHandlerSetSpritePalette,
     cutsceneHandlerBranchIfU8PtrInRange,
     cutsceneHandlerSetAudioSequence,
@@ -2086,11 +2086,11 @@ void cutsceneHandlerPauseEntity(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerTogglePauseEntity);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerUnpauseEntity);
 
-void cutsceneHandlerTogglePauseEntity(u16 index) {
+void cutsceneHandlerUnpauseEntity(u16 index) {
     
-    CutsceneTogglePauseEntityCmd* ptr = (CutsceneTogglePauseEntityCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneUnpauseEntityCmd* ptr = (CutsceneUnpauseEntityCmd*)cutsceneExecutors[index].bytecodePtr;
     
     u16 entityIndex;
 
@@ -2133,13 +2133,13 @@ void cutsceneHandlerPauseEntities(u16 index) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerTogglePauseEntities);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerUnpauseEntities);
 
-void cutsceneHandlerTogglePauseEntities(u16 index) {
+void cutsceneHandlerUnpauseEntities(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 4;
 
-    togglePauseEntities(index);
+    unpauseEntities(index);
 
 }
 
@@ -2688,7 +2688,7 @@ void cutsceneHandlerWaitEntityAnimation(u16 index) {
 
     if (cutsceneExecutors[index].flags & CUTSCENE_ENTITY_ASSET) {
 
-        if (checkSpriteAnimationStateChanged(entities[cutsceneExecutors[index].assetIndex].globalSpriteIndex)) {
+        if (checkSpriteAnimationCycleEnded(entities[cutsceneExecutors[index].assetIndex].globalSpriteIndex)) {
             cutsceneExecutors[index].bytecodePtr += 2;
         } else {
             cutsceneExecutors[index].waitFrames = 1;
@@ -3139,11 +3139,11 @@ void cutsceneHandlerPauseExecutor(u16 index) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerTogglePauseExecutor);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerUnpauseExecutor);
 
-void cutsceneHandlerTogglePauseExecutor(u16 index) {
+void cutsceneHandlerUnpauseExecutor(u16 index) {
 
-    CutsceneTogglePauseExecutorCmd* ptr = (CutsceneTogglePauseExecutorCmd*)cutsceneExecutors[index].bytecodePtr;
+    CutsceneUnpauseExecutorCmd* ptr = (CutsceneUnpauseExecutorCmd*)cutsceneExecutors[index].bytecodePtr;
     u16 executorIndex;
     
     cutsceneExecutors[index].bytecodePtr += 2;
@@ -3180,9 +3180,9 @@ void cutsceneHandlerPauseAllChildExecutors(u16 index) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerTogglePauseAllChildExecutors);
+//INCLUDE_ASM("asm/nonmatchings/system/cutscene", cutsceneHandlerUnpauseAllChildExecutors);
 
-void cutsceneHandlerTogglePauseAllChildExecutors(u16 index) {
+void cutsceneHandlerUnpauseAllChildExecutors(u16 index) {
 
     u16 i;
 

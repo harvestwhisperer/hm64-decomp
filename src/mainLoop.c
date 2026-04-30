@@ -132,9 +132,9 @@ bool registerMainLoopCallback(u16 index, void *(func)()) {
 
 //INCLUDE_ASM("asm/nonmatchings/mainLoop", setMainLoopCallbackFunctionIndex);
 
-u32 setMainLoopCallbackFunctionIndex(u16 index) {
+bool setMainLoopCallbackFunctionIndex(u16 index) {
     
-    u32 result = FALSE;
+    bool result = FALSE;
 
     volatile int *temp;
     

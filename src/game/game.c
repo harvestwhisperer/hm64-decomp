@@ -1042,7 +1042,7 @@ void setLevelLighting(s16 rate, u16 callbackFunctionIndex) {
     
     if (callbackFunctionIndex) {
         setMainLoopCallbackFunctionIndex(LEVEL_LOAD);
-        togglePauseEntities();
+        unpauseEntities();
         resumeCutsceneExecutors();
     }
     
@@ -1130,7 +1130,7 @@ void setOverlayScreenCallbackWithDelay(void) {
 void handleRotationCallback(void) {
 
     if (!(mapControllers[MAIN_MAP_INDEX].flags & (MAP_CONTROLLER_ROTATING_COUNTERCLOCKWISE | MAP_CONTROLLER_ROTATING_CLOCKWISE))) {
-        togglePauseEntities();
+        unpauseEntities();
         resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
@@ -1159,7 +1159,7 @@ void handleDialogueCallback(void) {
         
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
         
-        togglePauseEntities();
+        unpauseEntities();
         resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
@@ -1225,7 +1225,7 @@ void messageBoxCallback(void) {
 
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
 
-        togglePauseEntities();
+        unpauseEntities();
         resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
@@ -1242,7 +1242,7 @@ void endCutsceneCallback(void) {
     if (D_801FB686 == 0) {
 
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
-        togglePauseEntities();
+        unpauseEntities();
         // cutscene executor flags
         resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
@@ -1501,7 +1501,7 @@ void dialogueMenuCallback() {
 
     if (dialogues[0].sessionManager.flags & 4) {
         
-        togglePauseEntities();
+        unpauseEntities();
         resumeCutsceneExecutors();
         setEntityMapSpaceIndependent(ENTITY_PLAYER, TRUE);
 
