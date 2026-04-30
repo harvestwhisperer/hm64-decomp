@@ -494,7 +494,7 @@ bool handlePlayerAnimalInteraction(void) {
                             
                             setgAnimalSalePrice();
 
-                        } else {
+} else {
                             showTextBox(0, LEVEL_INTERACTIONS_TEXT_INDEX, 92, 0, 2);
                         }
                         
