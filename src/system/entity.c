@@ -8,8 +8,11 @@
 #include "system/map.h"
 #include "system/mapController.h"
 
-#include "mainproc.h"
 #include "game/npc.h"
+
+#include "mainproc.h"
+
+#include "data/animation/entityAnimationScripts/entityAnimationScripts.h"
 
 // bss
 Entity entities[MAX_ENTITIES];
@@ -2330,15 +2333,15 @@ void updateEntities(void) {
 
                     switch (animationType) {
 
-                        case 0:
+                        case ANIM_TYPE_ONE_SHOT:
                             startSpriteAnimation(entities[i].globalSpriteIndex, animationMetadataIndex, 0xFF);
                             break;
 
-                        case 0x2000: 
+                        case ANIM_TYPE_LOOP: 
                             startSpriteAnimation(entities[i].globalSpriteIndex, animationMetadataIndex, 0xFE);
                             break;
                         
-                        case 0x4000:
+                        case ANIM_TYPE_DESTROY_ON_END:
                             startSpriteAnimation(entities[i].globalSpriteIndex, animationMetadataIndex, 0xFD);
                             break;
 
@@ -2377,7 +2380,7 @@ void updateEntities(void) {
                     resetAnimationState(entities[i].shadowSpriteIndex);
                 }
 
-                if ((animationType == 0x4000) && checkSpriteAnimationCycleEnded(entities[i].globalSpriteIndex)) {
+                if ((animationType == ANIM_TYPE_DESTROY_ON_END) && checkSpriteAnimationCycleEnded(entities[i].globalSpriteIndex)) {
                     deactivateEntity(i);                   
                 }
                 
