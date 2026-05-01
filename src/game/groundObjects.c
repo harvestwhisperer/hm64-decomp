@@ -529,7 +529,7 @@ void setDefaultGroundObjectsForLevel(void) {
             }
     
             if (gBaseMapIndex != RANCH && npcAffection[GRAY] >= 150) {
-                memcpy((u32)&ranchFieldTiles, (u32)D_80113940, FIELD_WIDTH * FIELD_HEIGHT);
+                memcpy((u32)&ranchFieldTiles, (u32)ranchMoondropPatchFieldTiles, FIELD_WIDTH * FIELD_HEIGHT);
             }
 
         break;
@@ -623,7 +623,7 @@ void setDefaultGroundObjectsForLevel(void) {
             }
     
             if (gBaseMapIndex != RANCH && npcAffection[GRAY] >= 150) {
-                memcpy((u32)&ranchFieldTiles, (u32)D_80113940, FIELD_WIDTH * FIELD_HEIGHT);
+                memcpy((u32)&ranchFieldTiles, (u32)ranchMoondropPatchFieldTiles, FIELD_WIDTH * FIELD_HEIGHT);
             }
 
             break;
@@ -855,7 +855,7 @@ u8 getGroundObjectPlayerInteractionsFlags(u8 index) {
 u8 getGroundObjectPlayerInteractionsFlags(u8 index) {
 
     if (index < MAX_FIELD_OBJECTS) {
-		return D_80118704[index][0];
+		return groundObjectsInfo[index][0];
     }
     
     return 0;

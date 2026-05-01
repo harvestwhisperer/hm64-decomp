@@ -1,5 +1,5 @@
 ; ============================================
-; Bank 12 - Horse Race
+; Bank 19 - Horse Race
 ; ============================================
 ;
 ; Five cutscenes, dispatched by gCutsceneIndex at .dispatch:
@@ -9,24 +9,27 @@
 ;   903: race (player is riding) -> .cs_race_player  (runs winner ceremony)
 ;   904: end-of-day closing      -> .cs_end_of_day
 ;
-; D_801C3F78 race-state bits (usage from bytecode only):
-;   bit 0: race has completed  (gates the post-race NPC variants)
-;   bit 1: player horse placed 1st
-;   bit 2: set in .race_final_cleanup
-;   bit 3: toggled at .cs_race start; also set at .cs_race_player_after_finish
-;   bit 4: between-races announcer message already played
-;   bit 5: unused here
-;   bit 10: set after player-race ceremony finishes
-; Bit numbers above are observations of sets/toggles -- semantics beyond
-; that are not verified.
+; raceStateFlags bits used here (see cutscenes.h for the canonical definitions):
+;   PLAYER_PLACED        (bit 0): set after the resolver runs in .cs_race_player_main
+;                                 (the player-riding race only). Cleared at .cs_race / .cs_race_player_main start.
+;                                 Gates the post-race variants in NPC dispatchers.
+;   PLAYER_WON           (bit 1): set in .race_player_after_finish (1st-place horse ID == 3, i.e. player
+;                                 horse -- the player horse occupies horse-3 slot via .player_horse_setup).
+;   RACE_FINALIZED       (bit 2): set in .race_final_cleanup (post-race NPC dialogue gate)
+;   BETWEEN_RACES_SHOWN  (bit 4): set in .announcer_between_races (announcer one-shot already played)
+;   PLAYER_IN_RACE       (bit 5): set by C code; not branched on in this bank.
+;   PLAYER_CEREMONY_DONE (bit 10): set at end of .race_player_after_finish (winner ceremony complete).
 ;
-; gRaceFinishOrder[0..5]: finishing order (placement codes 1..6).
+; gRaceFinishOrder[i] holds the horse ID (1..6) that placed (i+1)-th. The race-tick state machines
+; fill [0]/[1] as horses cross the finish line in .race_track_finishers; .race_resolve_finish_order
+; fills [2..5] for the remaining horses.
 ; horse1Progress..horse6Progress: per-horse position counters.
 ; finishLine, progressCeiling: scratch for the finish-order resolver.
 
 #include "entities.h"
 #include "texts.h"
 #include "dialogues.h"
+#include "raceStateFlags.h"
 
 #define MAIN_MAP_INDEX 0
 
@@ -198,7 +201,7 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_129B18
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_129B18
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_129A70
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_129A3C
 
@@ -271,7 +274,7 @@
 
 .branch_129B18:
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_129B3C
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_129B58
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_129B58
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 45
     EXECUTE_SUBROUTINE .sub_129A54
 
@@ -404,7 +407,7 @@
     SPAWN_EXECUTOR 4, .rick_setup
     SPAWN_EXECUTOR 5, .popuri_setup
     SPAWN_EXECUTOR 6, .gray_setup
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_129E58
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_129E58
 
 .branch_129D5C:
     SPAWN_EXECUTOR 7, .ann_setup
@@ -439,7 +442,7 @@
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 254, 254, 254, 254, 0
     SET_WAIT_FRAMES 32
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_129E44
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_129E44
     CLEAR_SPECIAL_BIT 12, gCutsceneCompletionFlags
     SPAWN_EXECUTOR 41, .announcer_tick
     DEACTIVATE_SELF
@@ -455,7 +458,7 @@
 
 .branch_129E58:
     BRANCH_ON_SPECIAL_BIT 19, lifeEventBits[2], .branch_129D5C
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_129D64
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_129D64
     EXECUTE_SUBROUTINE .branch_129D5C
 
 ; ------------------------------------------------------------
@@ -499,8 +502,8 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_129F8C
-    BRANCH_ON_SPECIAL_BIT 2, D_801C3F78, .branch_129FB0
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_129F8C
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_RACE_FINALIZED, raceStateFlags, .branch_129FB0
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[NPC_KENT], .branch_129F68
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gYear, .branch_129F3C
 
@@ -534,7 +537,7 @@
     EXECUTE_SUBROUTINE .sub_129F58
 
 .branch_129F8C:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_129FA4
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_129FA4
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 29
     EXECUTE_SUBROUTINE .sub_129F58
 
@@ -561,8 +564,8 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A068
-    BRANCH_ON_SPECIAL_BIT 2, D_801C3F78, .branch_12A08C
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12A068
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_RACE_FINALIZED, raceStateFlags, .branch_12A08C
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[NPC_STU], .branch_12A044
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_12A050
 
@@ -585,7 +588,7 @@
     EXECUTE_SUBROUTINE .sub_12A034
 
 .branch_12A068:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12A080
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12A080
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 35
     EXECUTE_SUBROUTINE .sub_12A034
 
@@ -612,8 +615,8 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A150
-    BRANCH_ON_SPECIAL_BIT 2, D_801C3F78, .branch_12A174
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12A150
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_RACE_FINALIZED, raceStateFlags, .branch_12A174
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[NPC_POTION_SHOP_DEALER], .branch_12A120
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_12A12C
 
@@ -638,7 +641,7 @@
     EXECUTE_SUBROUTINE .sub_12A110
 
 .branch_12A150:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12A168
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12A168
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 12
     EXECUTE_SUBROUTINE .sub_12A110
 
@@ -669,7 +672,7 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A268
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12A268
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[NPC_RICK], .branch_12A22C
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_12A244
 
@@ -707,7 +710,7 @@
     EXECUTE_SUBROUTINE .sub_12A234
 
 .branch_12A268:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12A280
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12A280
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 21
     EXECUTE_SUBROUTINE .sub_12A234
 
@@ -736,7 +739,7 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A3F0
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12A3F0
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_12A3BC
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12A32C
 
@@ -813,7 +816,7 @@
     RETURN_FROM_SUBROUTINE
 
 .branch_12A418:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12A430
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12A430
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 57
     EXECUTE_SUBROUTINE .sub_12A368
 
@@ -852,7 +855,7 @@
     EXECUTE_SUBROUTINE .sub_12A49C
 
 .branch_12A4B8:
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A50C
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12A50C
     BRANCH_ON_SPECIAL_BIT 17, lifeEventBits[2], .branch_12A4E8
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[GRAY], .branch_12A4AC
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 4
@@ -868,7 +871,7 @@
     EXECUTE_SUBROUTINE .sub_12A49C
 
 .branch_12A50C:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12A53C
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12A53C
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[GRAY], .branch_12A530
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 5
     EXECUTE_SUBROUTINE .sub_12A49C
@@ -903,7 +906,7 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A6D0
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12A6D0
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_12A654
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12A5FC
 
@@ -946,7 +949,7 @@
     EXECUTE_SUBROUTINE .sub_12A638
 
 .branch_12A654:
-    BRANCH_ON_SPECIAL_BIT 5, D_801C3F78, .branch_12A68C
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_IN_RACE, raceStateFlags, .branch_12A68C
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .branch_12A670
     EXECUTE_SUBROUTINE .sub_12A5D0
 
@@ -978,7 +981,7 @@
     EXECUTE_SUBROUTINE .sub_12A6A0
 
 .branch_12A6D0:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12A6E8
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12A6E8
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 73
     EXECUTE_SUBROUTINE .sub_12A638
 
@@ -1003,7 +1006,7 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A788
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12A788
     BRANCH_U8_VAR_WITHIN_RANGE 80, 119, npcAffection[JEFF], .branch_12A770
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 96
     WAIT_MESSAGE_BOX_CLOSED 0
@@ -1021,7 +1024,7 @@
     EXECUTE_SUBROUTINE .jeff_wait
 
 .branch_12A788:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12A7A0
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12A7A0
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 98
     EXECUTE_SUBROUTINE .sub_12A778
 
@@ -1046,7 +1049,7 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A860
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12A860
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_12A828
 
 .sub_12A810:
@@ -1073,7 +1076,7 @@
     EXECUTE_SUBROUTINE .sub_12A818
 
 .branch_12A860:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12A878
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12A878
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 63
     EXECUTE_SUBROUTINE .sub_12A818
 
@@ -1098,7 +1101,7 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A918
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12A918
     BRANCH_U8_VAR_WITHIN_RANGE 80, 119, npcAffection[HARRIS], .branch_12A900
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 91
     WAIT_MESSAGE_BOX_CLOSED 0
@@ -1116,7 +1119,7 @@
     EXECUTE_SUBROUTINE .harris_wait
 
 .branch_12A918:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12A930
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12A930
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 93
     EXECUTE_SUBROUTINE .sub_12A908
 
@@ -1141,7 +1144,7 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12A9D0
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12A9D0
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_12A9B8
 
 .branch_12A9A0:
@@ -1159,7 +1162,7 @@
     EXECUTE_SUBROUTINE .sub_12A9A8
 
 .branch_12A9D0:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12A9E8
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12A9E8
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 103
     EXECUTE_SUBROUTINE .sub_12A9A8
 
@@ -1173,7 +1176,7 @@
     EXECUTE_SUBROUTINE .sub_12A9A8
 
 .branch_12AA0C:
-    BRANCH_ON_SPECIAL_BIT 10, D_801C3F78, .branch_12AA00
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_CEREMONY_DONE, raceStateFlags, .branch_12AA00
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 102
     EXECUTE_SUBROUTINE .sub_12A9A8
 
@@ -1192,7 +1195,7 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12AA88
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12AA88
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 106
 
 .sub_12AA78:
@@ -1202,7 +1205,7 @@
     EXECUTE_SUBROUTINE .kai_wait
 
 .branch_12AA88:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12AAA0
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12AAA0
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 108
     EXECUTE_SUBROUTINE .sub_12AA78
 
@@ -1227,7 +1230,7 @@
     PAUSE_ENTITIES
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12AB4C
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12AB4C
     BRANCH_ON_SPECIAL_BIT 5, lifeEventBits[0], .branch_12AB28
 
 .branch_12AB10:
@@ -1247,7 +1250,7 @@
     EXECUTE_SUBROUTINE .sub_12AB18
 
 .branch_12AB4C:
-    BRANCH_ON_SPECIAL_BIT 1, D_801C3F78, .branch_12AB64
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .branch_12AB64
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 88
     EXECUTE_SUBROUTINE .sub_12AB18
 
@@ -1279,7 +1282,7 @@
 .elderly_on_interact:
     PAUSE_ENTITIES
     EXECUTE_SUBROUTINE .setup_message_box
-    BRANCH_ON_SPECIAL_BIT 0, D_801C3F78, .branch_12AC08
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags, .branch_12AC08
     INIT_MESSAGE_BOX_TYPE1 0, HORSE_RACE_TEXT_INDEX, 110
 
 .sub_12ABF8:
@@ -1299,11 +1302,11 @@
 ; (10h/13h/16h) shows its race text then calls
 ; .announcer_race_cleanup, which deactivates all NPC slots and
 ; fades to black. .announcer_between_races shows a fill text
-; once, gated by bit 4 of D_801C3F78. .announcer_end_day fires
+; once, gated by bit 4 of raceStateFlags. .announcer_end_day fires
 ; at 18h to close out the festival.
 
 .announcer_between_races:
-    BRANCH_ON_SPECIAL_BIT 4, D_801C3F78, .announcer_tick
+    BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_BETWEEN_RACES_SHOWN, raceStateFlags, .announcer_tick
     PAUSE_ENTITIES
     SET_MESSAGE_INTERPOLATION -4, 0, 0
     SET_MESSAGE_BOX_ASSETS 0, 1, 0, 0
@@ -1314,7 +1317,7 @@
     SET_MESSAGE_BOX_ASSETS 0, 0, 0, 0
     SET_MESSAGE_BOX_VIEW_POSITION 0, 24, -64, 352
     TOGGLE_PAUSE_ENTITIES
-    SET_SPECIAL_BIT 4, D_801C3F78
+    SET_SPECIAL_BIT RACE_STATE_BIT_BETWEEN_RACES_SHOWN, raceStateFlags
     EXECUTE_SUBROUTINE .announcer_tick
 
 .announcer_race1_start:
@@ -1412,7 +1415,7 @@
 ;      .race_final_cleanup.
 
 .cs_race:
-    CLEAR_SPECIAL_BIT 0, D_801C3F78
+    CLEAR_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags
     SET_U8_VALUE 0, gRaceFinishOrder
     SET_U8_VALUE 0, gRaceFinishOrder[1]
     SET_U8_VALUE 0, gRaceFinishOrder[2]
@@ -1538,7 +1541,7 @@
     STOP_SEQUENCE_WITH_FADE 0, 1
     IDLE_WHILE_SEQUENCE_PLAYING 0
     SET_U8_VALUE 1, gMinutes
-    SET_SPECIAL_BIT 2, D_801C3F78
+    SET_SPECIAL_BIT RACE_STATE_BIT_RACE_FINALIZED, raceStateFlags
     SET_SPECIAL_BIT 1, gCutsceneCompletionFlags
     EXECUTE_SUBROUTINE .exit_cutscene
 
@@ -4021,7 +4024,7 @@
 ;     .race_player_after_finish which spawns the winner
 ;     celebration (slot 1 player, 2 horse, 3 Doug, 4 mayor,
 ;     5 photographer, 6 Ann) and shows texts 78/80.
-;   - Sets bit 10 of D_801C3F78 once ceremony completes.
+;   - Sets bit 10 of raceStateFlags once ceremony completes.
 
 .cs_race_player:
     EXECUTE_SUBROUTINE .setup_player
@@ -4030,7 +4033,7 @@
     DEACTIVATE_SELF
 
 .cs_race_player_main:
-    CLEAR_SPECIAL_BIT 0, D_801C3F78
+    CLEAR_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags
     SET_U8_VALUE 0, gRaceFinishOrder
     SET_U8_VALUE 0, gRaceFinishOrder[1]
     SET_U8_VALUE 0, gRaceFinishOrder[2]
@@ -4125,8 +4128,8 @@
     RESET_MESSAGE_BOX_AVATAR 0
     DEACTIVATE_EXECUTOR 26
     SET_WAIT_FRAMES 20
-    SET_SPECIAL_BIT 0, D_801C3F78
-    SET_SPECIAL_BIT 10, D_801C3F78
+    SET_SPECIAL_BIT RACE_STATE_BIT_PLAYER_PLACED, raceStateFlags
+    SET_SPECIAL_BIT RACE_STATE_BIT_PLAYER_CEREMONY_DONE, raceStateFlags
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gRaceFinishOrder, .race_player_after_finish
     SET_OTHER_EXECUTOR_PTR 30, .race_end_fade_black_exit
     SET_OTHER_EXECUTOR_PTR 31, .race_end_fade_black_exit
@@ -4141,7 +4144,7 @@
     DEACTIVATE_SELF
 
 .race_player_after_finish:
-    SET_SPECIAL_BIT 1, D_801C3F78
+    SET_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags
     SET_OTHER_EXECUTOR_PTR 32, .race_end_fade_black_exit
     SET_OTHER_EXECUTOR_PTR 34, .race_end_fade_black_exit
     SET_OTHER_EXECUTOR_PTR 30, .race_end_fade_black

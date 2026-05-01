@@ -838,7 +838,7 @@ bool deactivateMapObject(u16 mapIndex, u8 index) {
 
 // load and set texture for map spawnable sprite
 // called by level.c
-bool loadGroundObjects(u16 mapIndex, u8 x, u8 z, u32* textureIndex, u32* paletteIndex, u8* spriteToPaletteIndex, u32 romTextureStart, u32 arg7, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u8 argA) {
+bool loadGroundObjects(u16 mapIndex, u8 x, u8 z, u32* textureIndex, u32* paletteIndex, u8* spriteToPaletteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u8 y) {
 
     bool result = FALSE;
     
@@ -860,7 +860,7 @@ bool loadGroundObjects(u16 mapIndex, u8 x, u8 z, u32* textureIndex, u32* palette
         mainMap[mapIndex].groundObjects.x = x;
         mainMap[mapIndex].groundObjects.z = z;
 
-        mainMap[mapIndex].groundObjects.unk_12 = argA;
+        mainMap[mapIndex].groundObjects.y = y;
         
         nuPiReadRom(romAssetsIndexStart, assetIndex, romAssetsIndexEnd - romAssetsIndexStart);
         
@@ -3459,7 +3459,7 @@ void renderGroundObjects(MainMap* mainMap) {
     
     dl = groundObjectBitmapsDisplayList[index];
 
-     if (mainMap->groundObjects.unk_12) {
+     if (mainMap->groundObjects.y) {
 
         for (i = 0; i < MAX_GROUND_OBJECTS; i++) {
 
@@ -3479,7 +3479,7 @@ void renderGroundObjects(MainMap* mainMap) {
 
                          addGroundObjectToSceneGraph(mainMap, 
                             temp1 + (gridIndexToTileIndexX[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.x, 
-                            mainMap->groundObjects.unk_12 + mainMap->groundObjectBitmaps[i].coordinates.y, 
+                            mainMap->groundObjects.y + mainMap->groundObjectBitmaps[i].coordinates.y, 
                             temp2 + (gridIndexToTileIndexZ[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.z, 
                             arr[6], arr[7], startingPositionDl);
                          

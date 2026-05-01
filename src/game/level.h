@@ -3,10 +3,10 @@
 
 #include "common.h"
 
-#define LEVEL_TIME_FLOWS        0x01
-#define LEVEL_OUTDOORS          0x02
-#define LEVEL_WEATHER_LIGHTING  0x04
-#define LEVEL_HAS_SEASON_MAP    0x08
+#define LEVEL_TIME_FLOWS        1
+#define LEVEL_OUTDOORS          2
+#define LEVEL_WEATHER_LIGHTING  4
+#define LEVEL_HAS_SEASON_MAP    8
 #define LEVEL_INDOOR_BUILDING   0x10
 #define LEVEL_FARM              0x20
 

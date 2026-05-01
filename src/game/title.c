@@ -607,7 +607,7 @@ void titleScreenMainLoopCallback(void) {
                 if (titleScreenContext.rowHighlighted == 0) {
                     initializeLoadGameScreen(FALSE);
                 } else {
-                    launchIntroCutscene(HOW_TO_PLAY_CUTSCENE, FARM_SPAWN_POINT_1, 0);
+                    launchIntroCutscene(CUTSCENE_HOW_TO_PLAY_INTRO, FARM_SPAWN_POINT_1, 0);
                 }
             }
 
@@ -621,13 +621,13 @@ void titleScreenMainLoopCallback(void) {
  
                 switch (demoCutsceneIndex) {
                     case 0:
-                        launchIntroCutscene(DEMO_CUTSCENE_1, FARM_SPAWN_POINT_1, 1);
+                        launchIntroCutscene(CUTSCENE_DEMO_1, FARM_SPAWN_POINT_1, 1);
                         break;
                     case 1:
-                        launchIntroCutscene(DEMO_CUTSCENE_2, MOUNTAIN_2_SPAWN_POINT_1, 1);
+                        launchIntroCutscene(CUTSCENE_DEMO_2, MOUNTAIN_2_SPAWN_POINT_1, 1);
                         break;
                     case 2:
-                        launchIntroCutscene(DEMO_CUTSCENE_3, VILLAGE_1_SPAWN_POINT_1, 1);
+                        launchIntroCutscene(CUTSCENE_DEMO_3, VILLAGE_1_SPAWN_POINT_1, 1);
                         break;
                     default:
                         break;
@@ -777,9 +777,9 @@ void updateGrassAnimation(void) {
             resetAnimationState(BACK_GRASS_3_2);
             resetAnimationState(FRONT_GRASS_2_2);
 
-            startSpriteAnimation(FAR_GRASS_3_1, 0xD, 0xFE);
+            startSpriteAnimation(FAR_GRASS_3_1, 13, 0xFE);
             startSpriteAnimation(FRONT_GRASS_2_1, 0xF, 0xFE);
-            startSpriteAnimation(BACK_GRASS_3_2, 0xD, 0xFE);
+            startSpriteAnimation(BACK_GRASS_3_2, 13, 0xFE);
             startSpriteAnimation(FRONT_GRASS_2_2, 0xF, 0xFE);
 
         }

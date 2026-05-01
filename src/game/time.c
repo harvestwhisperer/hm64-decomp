@@ -4,6 +4,7 @@
 
 #include "system/message.h"
 
+#include "game/cutsceneCompletionFlags.h"
 #include "game/cutscenes.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
@@ -18,7 +19,7 @@
                     
 // forward declarations           
 void setGlobalSeasonName(u8);
-void clearMonthlyLetterBits(void);
+void toggleMonthlyLetterBits(void);
 void setupNewYear(void);
 void updateClock(u8);
 
@@ -61,7 +62,7 @@ void handleTimeUpdates(void) {
         
         clearDailyEventBit(DAY_START_6AM_GUARD);
 
-        if (gCutsceneCompletionFlags >= 0) {
+        if (!(gCutsceneCompletionFlags & CUTSCENE_COMPLETION_OWN_AUDIO_LIGHTING)) {
             setLevelLighting(1, NO_OP);
         }
 
@@ -127,7 +128,7 @@ void updateClock(u8 incrementSeconds) {
     if (gDayOfMonth >= 31) {
         gDayOfMonth = 1;
         gSeason++;
-        clearMonthlyLetterBits();
+        toggleMonthlyLetterBits();
     }
 
     if (gSeason >= 5) {
@@ -203,9 +204,9 @@ void setupNewYear(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/time", clearMonthlyLetterBits);
+//INCLUDE_ASM("asm/nonmatchings/game/time", toggleMonthlyLetterBits);
 
-void clearMonthlyLetterBits(void) {
+void toggleMonthlyLetterBits(void) {
     // unused
     clearReadLetterBit(60);
     clearReadLetterBit(MAIL_MOUNTAIN_CARPENTERS_AD);

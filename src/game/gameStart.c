@@ -32,7 +32,7 @@ void setupGameStart(void) {
     initializeAll(); 
     
     if (contPattern & 1) {
-        launchIntroCutscene(OPENING_LOGOS, SQUARE_SPAWN_POINT_1, 1);
+        launchIntroCutscene(CUTSCENE_OPENING_LOGOS, SQUARE_SPAWN_POINT_1, 1);
     } else {
 
         setMainLoopCallbackFunctionIndex(NO_OP);
