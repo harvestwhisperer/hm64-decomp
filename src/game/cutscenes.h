@@ -4,6 +4,8 @@
 #include "common.h"
 
 #include "game/game.h"
+#include "game/cutsceneCompletionFlags.h"
+#include "game/raceStateFlags.h"
 
 #define CUTSCENE_ACTIVE 1
 #define CUTSCENE_SUPPRESS_NPC_SETUP                  0x02
@@ -27,7 +29,7 @@ typedef struct {
     u8 finishOrder[6]; // 0x801C3E06
     u8 currentRaceIndex;
     u8 playerRaceNumber;
-    u8 unk_6E; // race index
+    u8 rivalEntryRaceIndex; // race index 0..2 where the rival featured entry appears
     u8 betPlacedFlags[3];
 } RacingContext;
 
@@ -51,7 +53,7 @@ extern u16 D_801886D2;
 extern u8 cutsceneLevelInteractionIndex;
 extern u8 interactedWithLevelInteractionIndex;
 
-extern u32 D_801C3F78;
+extern u32 raceStateFlags;
 extern u8 gRaceFinishOrder[6];
 
 extern RacingContext gRacingContext;

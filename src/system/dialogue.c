@@ -420,7 +420,7 @@ bool closeDialogueSession(u16 index) {
     if (index == 0 && d->sessionManager.flags & DIALOGUE_ACTIVE) {
 
         if (!(d->sessionManager.flags & 0x40)) {
-            messageBoxes[d->sessionManager.mainMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
+            messageBoxes[d->sessionManager.mainMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_NO_AUTO_RESET;
         }
 
         resetMessageBoxAnimation(d->sessionManager.mainMessageBoxIndex);
@@ -440,7 +440,7 @@ void cleanupDialogueOverlayBox(u16 index) {
 
     Dialogue *d = &dialogues[index];
 
-    messageBoxes[d->sessionManager.overlayMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
+    messageBoxes[d->sessionManager.overlayMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_NO_AUTO_RESET;
     
     resetMessageBoxAnimation(d->sessionManager.overlayMessageBoxIndex);
     
@@ -883,7 +883,7 @@ void updateCurrentDialogue(u16 index) {
                 if (d->sessionManager.flags & 0x80) {
                     initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, d->bytecodeExecutor.textIndex, 0);
                 } else {
-                    initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, d->bytecodeExecutor.textIndex, MESSAGE_BOX_MODE_UNKNOWN);
+                    initializeMessageBox(d->sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[d->sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, d->bytecodeExecutor.textIndex, MESSAGE_BOX_MODE_NO_AUTO_RESET);
                 }
                 
                 finishCurrentDialogueBlockProcessing = TRUE;

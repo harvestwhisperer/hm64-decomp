@@ -488,7 +488,7 @@ void updateFarmStatusTyphoon(void) {
 
         if (!getRandomNumberInRange(0, 3)) {
 
-            memcpy(greenhouseFieldTiles, D_80113760, FIELD_HEIGHT * FIELD_WIDTH);
+            memcpy(greenhouseFieldTiles, greenhouseResetFieldTiles, FIELD_HEIGHT * FIELD_WIDTH);
 
             setLifeEventBit(GREENHOUSE_DESTROYED);
             clearLifeEventBit(HAVE_GREENHOUSE);

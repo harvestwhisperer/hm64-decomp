@@ -1512,7 +1512,7 @@ void resetChickenLocation(u8 mapIndex, u8 chickenIndex) {
     
 }
 
-void spawnMiscAnimals(void) {
+void spawnWildAnimals(void) {
 
     switch (gBaseMapIndex) {
         

@@ -455,7 +455,7 @@ u8 levelToMusicMappings[TOTAL_MAPS][8] = {
     { SPRING_THEME, SUMMER_THEME, AUTUMN_THEME, WINTER_THEME, NIGHT_AMBIENCE_SPRING, NIGHT_AMBIENCE_SUMMER, NIGHT_AMBIENCE_AUTUMN, 0xFF }, // BATHROOM
 };
 
- u8 spawnPointToMap[] = {
+u8 spawnPointToMap[] = {
     FARM,                     // FARM_SPAWN_POINT_1
     FARM,                     // FARM_SPAWN_POINT_2
     FARM,                     // FARM_SPAWN_POINT_3
@@ -752,7 +752,7 @@ void loadLevelGroundObjects(u16 mapIndex) {
         case FARM:
             groundObjectsGridX = 0xE;
             groundObjectsGridZ = 0xB;
-            loadGroundObjects(MAIN_MAP_INDEX, 0xE, 0xB, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 0x60); 
+            loadGroundObjects(MAIN_MAP_INDEX, 14, 11, (u8*)GROUND_OBJECTS_TEXTURE_BUFFER, (u16*)GROUND_OBJECTS_PALETTE_BUFFER, (u32*)GROUND_OBJECTS_SPRITE_TO_PALETTE_LOOKUP_BUFFER, &_groundObjectsTextureSegmentRomStart, &_groundObjectsTextureSegmentRomEnd, &_groundObjectsAssetsIndexSegmentRomStart, &_groundObjectsAssetsIndexSegmentRomEnd, 96); 
             break;
         case GREENHOUSE:
             groundObjectsGridX = 1;
@@ -851,8 +851,8 @@ void loadLevelGroundObjects(u16 mapIndex) {
             setGroundObjectBitmap(MAIN_MAP_INDEX, 0xA, 9, 0, 8.0f, 0);
             setGroundObjectBitmap(MAIN_MAP_INDEX, 0xB, 0x3F, 0, 8.0f, 0);
             setGroundObjectBitmap(MAIN_MAP_INDEX, 0xC, 0x40, 0, 8.0f, 0);
-            setGroundObjectBitmap(MAIN_MAP_INDEX, 0xD, 0x41, 0, 8.0f, 0);
-            setGroundObjectBitmap(MAIN_MAP_INDEX, 0xE, 0xD, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 13, 0x41, 0, 8.0f, 0);
+            setGroundObjectBitmap(MAIN_MAP_INDEX, 0xE, 13, 0, 8.0f, 0);
             setGroundObjectBitmap(MAIN_MAP_INDEX, 0xF, 1, 0, 8.0f, 0);
             setGroundObjectBitmap(MAIN_MAP_INDEX, 0x10, 0x2C, 0, 8.0f, 0);
             setGroundObjectBitmap(MAIN_MAP_INDEX, 0x11, 0x2D, 0, 8.0f, 0);
@@ -1286,11 +1286,11 @@ void loadLevelMapObjects(u16 levelIndex) {
                     setSpriteBlendMode(MAP_OBJECT_2, SPRITE_BLEND_ALPHA_DECAL);
                     setSpriteBaseRGBA(MAP_OBJECT_2, 255, 255, 255, 255);
                     setSpriteColor(MAP_OBJECT_2, 255, 255, 255, 255);
-                    setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 0xD, 80.0f, 128.0f, 208.0f, 0xFF, 0xFF, 0, 0);
+                    setMapObject(MAIN_MAP_INDEX, 1, MAP_OBJECT_2, 13, 80.0f, 128.0f, 208.0f, 0xFF, 0xFF, 0, 0);
                 }
 
                 // sowing festival
-                if ((849 < gCutsceneIndex && gCutsceneIndex < 853) || gCutsceneIndex == FLOWER_FESTIVAL) {
+                if ((CUTSCENE_SOWING_FESTIVAL_POTION_SHOP_DEALER <= gCutsceneIndex && gCutsceneIndex <= CUTSCENE_SOWING_FESTIVAL_BACHELOR) || gCutsceneIndex == CUTSCENE_FLOWER_FESTIVAL) {
                     
                    for (j = 4; j < 12; j++) {
                     
@@ -1583,10 +1583,10 @@ void initializeMapAdditionsForLevel(u16 levelIndex) {
             setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xA, 1, 3, 2);
             setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xB, 0, 4, 1);
             setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xC, 0, 1, 1);
-            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xD, 0, 0xC, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 13, 0, 0xC, 1);
             setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xE, 0, 0xA, 1);
             setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0xF, 0, 0xB, 1);
-            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x10, 0, 0xD, 1);
+            setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x10, 0, 13, 1);
             setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x11, 0, 9, 1);
             setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x13, 0, 0xE, 1);
             setMapAdditionSequenceStep(MAIN_MAP_INDEX, 0x14, 0, 0xF, 1);
@@ -1929,8 +1929,7 @@ void setAdditionalMapAdditionsForLevel(u16 mapIndex) {
             activateMapAddition(MAIN_MAP_INDEX, MAIN_MAP_INDEX, 1);
             break;
         case VINEYARD_CELLAR:
-            // karen yellow heart event
-            if (0x2C2 < gCutsceneIndex && gCutsceneIndex < 0x2C5) {
+            if (CUTSCENE_VINEYARD_KAREN_CELLAR < gCutsceneIndex && gCutsceneIndex < CUTSCENE_VINEYARD_KAREN_RETURN) {
                 setStaticMapAddition(MAIN_MAP_INDEX, 0);
             }
             break;

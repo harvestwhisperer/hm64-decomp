@@ -168,16 +168,12 @@ extern void raceGiftsScreenCallback();
 extern void loadLotteryScreenCallback();
 extern void lotteryScreenCallback();
 
-extern u8 D_801890E8[32];
-// calendar
-// TODO: label
-extern u8 D_80189108[5][7];
-// refrigerator/freezer
-// TODO: label
+extern u8 cabinetItemSlots[32];
+extern u8 calendarStickerGrid[5][7];
 // FIXME: should be 2D array with [4][8]
-extern u8 D_80237420[32];
+extern u8 freezerItemSlots[32];
 
-extern u32 D_80205204;
+extern u32 medalBalance;
 
 extern OverlayScreenTable overlayScreenTable;
 

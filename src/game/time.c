@@ -4,6 +4,7 @@
 
 #include "system/message.h"
 
+#include "game/cutsceneCompletionFlags.h"
 #include "game/cutscenes.h"
 #include "game/game.h"
 #include "game/gameAudio.h"
@@ -59,7 +60,7 @@ void handleTimeUpdates(void) {
         
         clearDailyEventBit(DAY_START_6AM_GUARD);
 
-        if (gCutsceneCompletionFlags >= 0) {
+        if (!(gCutsceneCompletionFlags & CUTSCENE_COMPLETION_OWN_AUDIO_LIGHTING)) {
             setLevelLighting(1, NO_OP);
         }
 

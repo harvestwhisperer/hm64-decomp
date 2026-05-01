@@ -1,5 +1,5 @@
 ; ============================================
-; Bank 25 - Evaluation
+; Bank 32 - Evaluation
 ; ============================================
 ; Cutscene indices 1550 - 1553: evaluation/credits sequence.
 ;   1550 = EVALUATION (current map, then loads map 0)

@@ -97,11 +97,23 @@
 /* Fireworks festival */
 #define FIREWORKS_FESTIVAL_EMPTY_BOTTLE_ITEM     55
 
+// shopContext.mode -- shop dialogue state machine, driven by shopDialogueCallback.
+// Transitions documented at shopDialogueCallback in shop.c.
+#define SHOP_MODE_OPEN_DESCRIPTION                  0  // open the item-description message box
+#define SHOP_MODE_OPEN_PURCHASE_PROMPT              1  // after description closed, bring up the quantity widget + purchase prompt
+#define SHOP_MODE_AWAIT_QUANTITY_INPUT              2  // player adjusts quantity / picks Yes / No
+#define SHOP_MODE_COMMIT_PURCHASE                   3  // run handlePurchase() and route to a cleanup mode based on outcome
+#define SHOP_MODE_DECLINE_PURCHASE                  4  // show the decline message
+#define SHOP_MODE_EXIT_DEFAULT                      5  // wait for message box closed, exit overlay, actionPhase = playerShopActionPhase[i]
+#define SHOP_MODE_EXIT_SKIP_HELD_DISPLAY            6  // same as EXIT_DEFAULT but actionPhase = 3 (selected by D_801194D8)
+#define SHOP_MODE_EXIT_AFTER_INSUFFICIENT_FUNDS     7  // exit after "not enough money" message; actionPhase = playerShopEndActionPhase[i]
+#define SHOP_MODE_DONE                           0xFF  // idle / no-op (default-case fall-through)
+
 // D_8023740A
 typedef struct {
     u16 itemTextIndex;
     u8 quantity;
-    u8 mode; // index into dialogues for shops: 1 = item description, 2 = purchasing, 5 = decline/accept, 7 = not enough money, 0xFF = done
+    u8 mode; // SHOP_MODE_* state
     u8 storeItemIndex;
     u8 buySelected;
 } ShopContext;

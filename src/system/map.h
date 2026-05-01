@@ -107,7 +107,7 @@ typedef struct {
     u8 *spriteToPaletteIndex; // 0xCA0
     u8 x; // 0xCA4
     u8 z; // 0xCA5
-    u8 unk_12; // 0xCA6
+    u8 y; // 0xCA6 - fixed world-space Y baseline; 0 = sample terrain height instead
     u16 spriteIndexToGrid[MAX_GROUND_OBJECTS]; // 0xCA8
     u16 gridToSpriteIndex[0x1E0];
     u16 previousGridToSpriteIndex[0x1E0];
@@ -240,7 +240,7 @@ extern bool setMapObject(u16 mapIndex, u8 index, u16 spriteIndex, u16 arg3, f32 
 extern bool setMapWeatherSprite(u16 arg0, u8 arg1, u16 arg2, u16 arg3);
 extern bool setMapObjectAnimation(u16, u8, u16);
 extern bool deactivateMapObject(u16, u8);     
-extern bool loadGroundObjects(u16 mapIndex, u8 arg1, u8 arg2, u32* arg3, u32* arg4, u8* arg5, u32 arg6, u32 arg7, u32 arg8, u32 arg9, u8 argA);
+extern bool loadGroundObjects(u16 mapIndex, u8 x, u8 z, u32* textureIndex, u32* paletteIndex, u8* spriteToPaletteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u8 y);
 extern bool setMapGroundObjectSpriteIndex(u16 arg0, u16 arg1, u8 arg2, u8 arg3); 
 extern bool setGroundObjectBitmap(u16 mapIndex, u16 bitmapIndex, u16 arg2, f32 arg3, f32 arg4, f32 arg5);
 extern f32 getTerrainHeightAtPosition(u16 mapIndex, f32, f32);      

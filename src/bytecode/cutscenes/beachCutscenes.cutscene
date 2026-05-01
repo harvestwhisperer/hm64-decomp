@@ -1,5 +1,5 @@
 ; ============================================================
-; Bank 10 - Beach Cutscenes
+; Bank 17 - Beach Cutscenes
 ; ============================================================
 ; Dispatcher for beach-side scripted cutscenes indexed 750..756.
 ; Dispatched from setBeachCutscenes in src/game/cutscenes.c (no

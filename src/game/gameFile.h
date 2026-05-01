@@ -17,34 +17,54 @@
 
 #define GAME_SLOT_ACTIVE 2
 
+#define LOAD_GAME_ACTION_FADE_IN_DIARY      0
+#define LOAD_GAME_ACTION_SELECT_DIARY       1
+#define LOAD_GAME_ACTION_SELECT_COLUMN      2
+#define LOAD_GAME_ACTION_PICK_DELETE_TARGET 3
+#define LOAD_GAME_ACTION_PICK_MOVE_SOURCE   4
+#define LOAD_GAME_ACTION_PICK_MOVE_DEST     5
+#define LOAD_GAME_ACTION_LOAD_DIARY         6
+#define LOAD_GAME_ACTION_RETURN_TO_TITLE    7
+#define LOAD_GAME_ACTION_CONFIRM_DELETE     8
+#define LOAD_GAME_ACTION_CONFIRM_MOVE       9
+#define LOAD_GAME_ACTION_OPEN_RANKING       10
+#define LOAD_GAME_ACTION_FADE_IN_COLUMN     11
+
+#define FARM_RANKING_STATE_FADE_IN        0
+#define FARM_RANKING_STATE_LIST           1
+#define FARM_RANKING_STATE_OPEN_DETAIL    2
+#define FARM_RANKING_STATE_DETAIL         3
+#define FARM_RANKING_STATE_RETURN_TO_LIST 4
+#define FARM_RANKING_STATE_EXIT           5
+
 // D_801D6238
 typedef struct {
     u8 gamePakNoteNameA[15]; // "HARVESTMOON" + padding
-    u8 numGamePaks; // 0xF, D_801D624C
+    u8 numGamePaks;
     u32 unk_10;
-    u8 controllerPakStatus; // 0x14
-    u8 gamePakNoteNameB[20]; // D_801D624D
-    u8 unk_29; // D_801D6261
-    u8 gamePakExtension[6]; // D_801D6262, "E9NYWE"
+    u8 controllerPakStatus;
+    u8 gamePakNoteNameB[20];
+    u8 unk_29;
+    u8 gamePakExtension[6]; // "E9NYWE"
     u8 unk_30;
     u32 unk_34;
     u16 unk_38;
     u16 unk_3A;
     u8 unk_3C;
-    u8 gamePakEnabled; // 0x3D, D_801D6275
+    u8 gamePakEnabled;
     u8 unk_3E;
     u8 unk_3F;
-    u8 playerNames[4][6]; // D_801D6278
-    u8 dateNumbers[4][2]; // D_801D6290
-    u8 seasonNames[4][6]; // D_801D6298
-    u8 dateEndings[4][2];  // "st" or "rd" strings /* 0x78 */ D_801D62B0
-    u8 flags[4]; // D_801D62B8
-    u8 diaryHighlighted; /* 0x84 */  // D_801D62BC
-    u8 actionColumnHighlighted; /* 0x85 */ // D_801D62BD
+    u8 playerNames[4][6];  
+    u8 dateNumbers[4][2]; 
+    u8 seasonNames[4][6];
+    u8 dateEndings[4][2];  // "st" or "rd" strings
+    u8 flags[4];
+    u8 diaryHighlighted;
+    u8 actionColumnHighlighted;
     u8 unk_86;
-    u8 showControllerPakScreen; /* 0x87 */
+    u8 showControllerPakScreen;
     u8 unk_88;
-    u8 action; // move/delete /* 0x89 */
+    u8 action; // move/delete
 } LoadGameScreenContext;
 
 
@@ -112,7 +132,7 @@ typedef struct {
 
 extern FarmRankingData gFarmRankingData;
 
-extern void initLoadGameScreen(bool flag);
+extern void initializeLoadGameScreen(bool returningFromRanking);
 extern bool saveGameToSram(u8 gameSlot);
 extern void gameSelectCallback(void);
 extern void farmRankingScreenCallback(void);
