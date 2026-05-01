@@ -455,7 +455,7 @@ bool handleLevelInteraction(u16 mapIndex) {
             
             textIndex = getCantEnterTextIndex(gSpawnPointIndex);
          
-            if (gSpawnPointIndex == 0x5F) {
+            if (gSpawnPointIndex == CHURCH_SPAWN_POINT_1) {
 
                 if (!checkLifeEventBit(MARRIED)) {
 

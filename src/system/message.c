@@ -236,14 +236,14 @@ bool initializeMessageBox(u16 messageBoxIndex, u16 textAddressesIndex, u16 textI
             messageBoxes[messageBoxIndex].flags &= ~0x4000;
             messageBoxes[messageBoxIndex].flags |= MESSAGE_BOX_INITIALIZED;
 
-            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
+            messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_NO_AUTO_RESET;
             messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_KEEP_ANIMATION;
             messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_NO_INPUT;
             messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_SILENT;
             messageBoxes[messageBoxIndex].flags &= ~0x20000;
 
-            if (mode == MESSAGE_BOX_MODE_UNKNOWN) {
-                messageBoxes[messageBoxIndex].flags |= MESSAGE_BOX_MODE_UNKNOWN;
+            if (mode == MESSAGE_BOX_MODE_NO_AUTO_RESET) {
+                messageBoxes[messageBoxIndex].flags |= MESSAGE_BOX_MODE_NO_AUTO_RESET;
             }
             
             if (mode == MESSAGE_BOX_MODE_KEEP_ANIMATION) {
@@ -521,11 +521,11 @@ bool resetMessageBoxAnimation(u16 index) {
 
         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
 
-            if (!(messageBoxes[index].flags & MESSAGE_BOX_MODE_UNKNOWN) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_KEEP_ANIMATION) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
+            if (!(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_AUTO_RESET) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_KEEP_ANIMATION) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
                 messageBoxes[index].flags &= ~(MESSAGE_BOX_INITIALIZED | MESSAGE_BOX_TEXT_END_REACHED);
             }
 
-            if ((messageBoxes[index].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_UNKNOWN) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_KEEP_ANIMATION) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
+            if ((messageBoxes[index].flags & MESSAGE_BOX_HAS_DIALOGUE_WINDOW) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_AUTO_RESET) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_KEEP_ANIMATION) && !(messageBoxes[index].flags & MESSAGE_BOX_MODE_NO_INPUT)) {
 
                 resetAnimationState(dialogueWindows[messageBoxes[index].dialogueWindowIndex].spriteIndex);
 

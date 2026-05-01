@@ -46,7 +46,7 @@ typedef struct {
 typedef struct {
 	Vec3f currentWorldRotation;
 	u8 currentMapIndex; // D_80170458/gBaseMapIndex
-	u16 RGBARate; // D_8017045A
+	u16 RGBARate; // currentMapLightingRGBARate
 } CurrentMapContext;
 */
 
@@ -78,7 +78,7 @@ extern Vec4f targetMapLightingRGBA;
 extern Vec4f currentMapLightingRGBA;
 
 // RGBA update rate
-extern s16 D_8017045A;
+extern s16 currentMapLightingRGBARate;
 
 extern Vec3f previousWorldRotationAngles;
 extern Vec3f currentWorldRotationAngles;

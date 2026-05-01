@@ -591,7 +591,7 @@ bool handlePlayerAnimalInteraction(void) {
                             setMessageBoxViewSpacePosition(0, 0.0f, -64.0f, 352.0f);
                             setMessageBoxSpriteIndices(0, 1, 0, 0);
                             
-                            setGameVariableString(0xD, gFarmAnimals[i].name, 6);
+                            setGameVariableString(13, gFarmAnimals[i].name, 6);
     
                             switch (gFarmAnimals[i].condition) {
     
@@ -1458,7 +1458,7 @@ void resetChickenLocation(u8 mapIndex, u8 chickenIndex) {
     
 }
 
-void spawnMiscAnimals(void) {
+void spawnWildAnimals(void) {
 
     switch (gBaseMapIndex) {
         

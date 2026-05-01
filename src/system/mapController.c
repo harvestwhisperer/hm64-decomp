@@ -14,8 +14,7 @@ MapDataAddress mapDataAddresses[96];
 Vec4f targetMapLightingRGBA;
 Vec4f currentMapLightingRGBA;
 
-// RGBA update rate
-s16 D_8017045A;
+s16 currentMapLightingRGBARate;
 
 Vec3f previousWorldRotationAngles;
 Vec3f currentWorldRotationAngles;
@@ -41,7 +40,7 @@ void initializeMapControllers(void) {
     targetMapLightingRGBA.b = 0;
     targetMapLightingRGBA.a = 0;
     
-    D_8017045A = 0;
+    currentMapLightingRGBARate = 0;
     
     for (i = 0; i < MAX_MAPS; i++) {
         
@@ -308,7 +307,7 @@ bool setMapControllerRGBAWithTransition(u16 mapIndex, u8 r, u8 g, u8 b, u8 a, s1
         targetMapLightingRGBA.b = b;
         targetMapLightingRGBA.a = a;
         
-        D_8017045A = rate;
+        currentMapLightingRGBARate = rate;
         
         result = TRUE;
 

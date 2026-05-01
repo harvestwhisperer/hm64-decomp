@@ -533,76 +533,75 @@ void initializeGameVariables(void) {
 
     initializeToolboxSlots();
 
-    // freezer pages 1-4
-    D_80237420[0] = 0;
-    D_80237420[1] = 0;
-    D_80237420[2] = 0;
-    D_80237420[3] = 0;
-    D_80237420[4] = 0;
-    D_80237420[5] = 0;
-    D_80237420[6] = 0;
-    D_80237420[7] = 0;
-    D_80237420[8] = 0;
-    D_80237420[9] = 0;
-    D_80237420[10] = 0;
-    D_80237420[11] = 0;
-    D_80237420[12] = 0;
-    D_80237420[13] = 0;
-    D_80237420[14] = 0;
-    D_80237420[15] = 0;
-    D_80237420[16] = 0;
-    D_80237420[17] = 0;
-    D_80237420[18] = 0;
-    D_80237420[19] = 0;
-    D_80237420[20] = 0;
-    D_80237420[21] = 0;
-    D_80237420[22] = 0;
-    D_80237420[23] = 0;
-    D_80237420[24] = 0;
-    D_80237420[25] = 0;
-    D_80237420[26] = 0;
-    D_80237420[27] = 0;
-    D_80237420[28] = 0;
-    D_80237420[29] = 0;
-    D_80237420[30] = 0;
-    D_80237420[31] = 0;
+    freezerItemSlots[0] = 0;
+    freezerItemSlots[1] = 0;
+    freezerItemSlots[2] = 0;
+    freezerItemSlots[3] = 0;
+    freezerItemSlots[4] = 0;
+    freezerItemSlots[5] = 0;
+    freezerItemSlots[6] = 0;
+    freezerItemSlots[7] = 0;
+    freezerItemSlots[8] = 0;
+    freezerItemSlots[9] = 0;
+    freezerItemSlots[10] = 0;
+    freezerItemSlots[11] = 0;
+    freezerItemSlots[12] = 0;
+    freezerItemSlots[13] = 0;
+    freezerItemSlots[14] = 0;
+    freezerItemSlots[15] = 0;
+    freezerItemSlots[16] = 0;
+    freezerItemSlots[17] = 0;
+    freezerItemSlots[18] = 0;
+    freezerItemSlots[19] = 0;
+    freezerItemSlots[20] = 0;
+    freezerItemSlots[21] = 0;
+    freezerItemSlots[22] = 0;
+    freezerItemSlots[23] = 0;
+    freezerItemSlots[24] = 0;
+    freezerItemSlots[25] = 0;
+    freezerItemSlots[26] = 0;
+    freezerItemSlots[27] = 0;
+    freezerItemSlots[28] = 0;
+    freezerItemSlots[29] = 0;
+    freezerItemSlots[30] = 0;
+    freezerItemSlots[31] = 0;
 
-    D_801890E8[0] = 0;
-    D_801890E8[1] = 0;
-    D_801890E8[2] = 0;
-    D_801890E8[3] = 0;
-    D_801890E8[4] = 0;
-    D_801890E8[5] = 0;
-    D_801890E8[6] = 0;
-    D_801890E8[7] = 0;
-    D_801890E8[8] = 0;
-    D_801890E8[9] = 0;
-    D_801890E8[10] = 0;
-    D_801890E8[11] = 0;
-    D_801890E8[12] = 0;
-    D_801890E8[13] = 0;
-    D_801890E8[14] = 0;
-    D_801890E8[15] = 0;
-    D_801890E8[16] = 0;
-    D_801890E8[17] = 0;
-    D_801890E8[18] = 0;
-    D_801890E8[19] = 0;    
-    D_801890E8[20] = 0;
-    D_801890E8[21] = 0;
-    D_801890E8[22] = 0;
-    D_801890E8[23] = 0;
-    D_801890E8[24] = 0;
-    D_801890E8[25] = 0;
-    D_801890E8[26] = 0;
-    D_801890E8[27] = 0;
-    D_801890E8[28] = 0;
-    D_801890E8[29] = 0;
-    D_801890E8[30] = 0;
-    D_801890E8[31] = 0;
+    cabinetItemSlots[0] = 0;
+    cabinetItemSlots[1] = 0;
+    cabinetItemSlots[2] = 0;
+    cabinetItemSlots[3] = 0;
+    cabinetItemSlots[4] = 0;
+    cabinetItemSlots[5] = 0;
+    cabinetItemSlots[6] = 0;
+    cabinetItemSlots[7] = 0;
+    cabinetItemSlots[8] = 0;
+    cabinetItemSlots[9] = 0;
+    cabinetItemSlots[10] = 0;
+    cabinetItemSlots[11] = 0;
+    cabinetItemSlots[12] = 0;
+    cabinetItemSlots[13] = 0;
+    cabinetItemSlots[14] = 0;
+    cabinetItemSlots[15] = 0;
+    cabinetItemSlots[16] = 0;
+    cabinetItemSlots[17] = 0;
+    cabinetItemSlots[18] = 0;
+    cabinetItemSlots[19] = 0;    
+    cabinetItemSlots[20] = 0;
+    cabinetItemSlots[21] = 0;
+    cabinetItemSlots[22] = 0;
+    cabinetItemSlots[23] = 0;
+    cabinetItemSlots[24] = 0;
+    cabinetItemSlots[25] = 0;
+    cabinetItemSlots[26] = 0;
+    cabinetItemSlots[27] = 0;
+    cabinetItemSlots[28] = 0;
+    cabinetItemSlots[29] = 0;
+    cabinetItemSlots[30] = 0;
+    cabinetItemSlots[31] = 0;
 
     for (j = 0; j < 5; j++) {
         for (k = 0; k < 7; k++) {
-            D_80189108[j][k] = 0xFF;
+            calendarStickerGrid[j][k] = 0xFF;
         }
     }
 
@@ -627,8 +626,8 @@ void initializeGameVariables(void) {
 
     setNPCIntroductionDialogueBits();
     
-    memcpy(farmFieldTiles , D_80113580, FIELD_WIDTH * FIELD_HEIGHT);
-    memcpy(greenhouseFieldTiles, D_80113760, FIELD_WIDTH * FIELD_HEIGHT);
+    memcpy(farmFieldTiles , defaultFarmFieldTiles, FIELD_WIDTH * FIELD_HEIGHT);
+    memcpy(greenhouseFieldTiles, greenhouseResetFieldTiles, FIELD_WIDTH * FIELD_HEIGHT);
         
     albumBits |= PHOTO_GRANDPA;
 
@@ -1271,7 +1270,7 @@ void initializeMainMessageBoxes(void) {
     setDialogueWindowSprite(2, 0x77, &_messageBoxTextureSegmentRomStart, &_messageBoxTextureSegmentRomEnd, &_messageBoxAssetsIndexSegmentRomStart, &_messageBoxAssetsIndexSegmentRomEnd, (u8*)MESSAGE_BOX_TEXTURE_BUFFER, (u16*)MESSAGE_BOX_PALETTE_BUFFER, (u32*)MESSAGE_BOX_ANIMATION_FRAME_METADATA_BUFFER, (u32*)MESSAGE_BOX_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, 0, 0, 0);
   
     setOverlayIconSprite(0, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-    setOverlayIconSprite(1, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+    setOverlayIconSprite(1, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 13, 0xFE, 106.0f, -15.0f, 0.0f);
     
     setCharacterAvatarSprite(0, 0x75, &_characterAvatarsTextureSegmentRomStart, &_characterAvatarsTextureSegmentRomEnd, &_characterAvatarsAssetsIndexSegmentRomStart, &_characterAvatarsAssetsIndexSegmentRomEnd, &_characterAvatarsSpritesheetIndexSegmentRomStart, &_characterAvatarsSpritesheetIndexSegmentRomEnd, (u8*)CHARACTER_AVATAR_TEXTURE_1_BUFFER, (u8*)CHARACTER_AVATAR_TEXTURE_2_BUFFER, (u16*)CHARACTER_AVATAR_PALETTE_BUFFER, (AnimationFrameMetadata*)CHARACTER_AVATAR_ANIMATION_FRAME_METADATA_BUFFER, (u32*)CHARACTER_AVATAR_SPRITESHEET_INDEX_BUFFER, (u32*)CHARACTER_AVATAR_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, -139.0f, 1.0f, 0);
  
@@ -1279,7 +1278,7 @@ void initializeMainMessageBoxes(void) {
     setMessageBoxViewSpacePosition(MAIN_MESSAGE_BOX_INDEX, 24.0f, -64.0f, 352.0f);
     setMessageBoxLineAndRowSizes(MAIN_MESSAGE_BOX_INDEX, 0x10, 3);
     setMessageBoxSpacing(MAIN_MESSAGE_BOX_INDEX, 0, 2);
-    setMessageBoxFont(MAIN_MESSAGE_BOX_INDEX, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(MAIN_MESSAGE_BOX_INDEX, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(MAIN_MESSAGE_BOX_INDEX, -4, 0);
     setMessageBoxSpriteIndices(MAIN_MESSAGE_BOX_INDEX, 0, 0, 0);
     setMessageBoxSfx(MAIN_MESSAGE_BOX_INDEX, 0x57, 8, 1);

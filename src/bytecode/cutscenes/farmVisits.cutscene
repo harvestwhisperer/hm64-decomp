@@ -1,5 +1,5 @@
 ; ============================================
-; Bank 2 - Farm Visits
+; Bank 7-8 - Farm Visits
 ; ============================================
 
 #include "entities.h"
@@ -1300,7 +1300,7 @@
     EXECUTE_SUBROUTINE .pause_and_show_centered_msg_147
     EXECUTE_SUBROUTINE .maria_arm_callback_1
 
-; Shared helper: teleport to (-358, 0, -40), walk 96 units DIRECTION_S, face DIRECTION_E.
+; Shared helper: teleport to (-358, 0, -40), walk 96 units SOUTHWEST, face SOUTHEAST.
 .walk_in_from_north_southwest:
     SET_COORDINATES -358, 0, -40
     ENTITY_WALK 96, DIRECTION_S, 2
@@ -1320,7 +1320,7 @@
     SET_CALLBACK_ROUTINE 0, 32768, .maria_award_and_msg_191
     EXECUTE_SUBROUTINE .idle
 
-; Shared finisher: close message, unpause Maria, walk 32 units DIRECTION_W, show message 488, then walk off.
+; Shared finisher: close message, unpause Maria, walk 32 units NORTHWEST, show message 488, then walk off.
 .maria_close_msg_and_walk_off_northwest_32:
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
