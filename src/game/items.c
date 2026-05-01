@@ -21,6 +21,7 @@
 #include "game/player.h"
 #include "game/time.h"
 
+#include "assetIndices/cutscenes.h"
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
 #include "assetIndices/sfxs.h"
@@ -1989,14 +1990,14 @@ u8 itemFatigueReductionValue[] = {
 
 
 // rodata
-static const u8 D_80122340[];
-static const u8 D_80122344[];
-static const u8 D_80122348[];
-static const u8 D_8012234C[];
-static const u8 D_80122350[];
-static const u8 D_8012235C[];
-static const u8 D_80122368[];
-static const u8 D_80122374[];
+static const u8 silverToolSwingPatternCardinalFront[];
+static const u8 silverToolSwingPatternCardinalBack[];
+static const u8 silverToolSwingPatternDiagonalFront[];
+static const u8 silverToolSwingPatternDiagonalBack[];
+static const u8 goldenSickleSwingPatternFront[];
+static const u8 goldenSickleSwingPatternBack[];
+static const u8 goldenWateringCanSprayPatternFront[];
+static const u8 goldenWateringCanSprayPatternBack[];
 
 
 // forward declarations
@@ -2418,12 +2419,12 @@ void useSickle(void) {
     
     u32 padding[2];
 
-    memcpy(arr1, D_80122340, 3);
-    memcpy(arr2, D_80122344, 3);
-    memcpy(arr3, D_80122348, 3);
-    memcpy(arr4, D_8012234C, 3);
-    memcpy(arr5, D_80122350, 9);
-    memcpy(arr6, D_8012235C, 9);
+    memcpy(arr1, silverToolSwingPatternCardinalFront, 3);
+    memcpy(arr2, silverToolSwingPatternCardinalBack, 3);
+    memcpy(arr3, silverToolSwingPatternDiagonalFront, 3);
+    memcpy(arr4, silverToolSwingPatternDiagonalBack, 3);
+    memcpy(arr5, goldenSickleSwingPatternFront, 9);
+    memcpy(arr6, goldenSickleSwingPatternBack, 9);
 
     direction = convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
 
@@ -2752,7 +2753,7 @@ void useAx(void) {
                     
                 }
 
-                groundObjectIndex = allocateGroundItemSlot(1, ITEM_STATE_THROW_LANDED, 0x3D, 0, 8);
+                groundObjectIndex = allocateGroundItemSlot(1, ITEM_STATE_THROW_LANDED, 61, 0, 8);
 
                 vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                 vec.x += vec2.x;
@@ -3012,12 +3013,12 @@ void useWateringCan(void) {
     
     u32 padding[2];
 
-    memcpy(arr1, D_80122340, 3);
-    memcpy(arr2, D_80122344, 3);
-    memcpy(arr3, D_80122348, 3);
-    memcpy(arr4, D_8012234C, 3);
-    memcpy(arr5, D_80122368, 9);
-    memcpy(arr6, D_80122374, 9);
+    memcpy(arr1, silverToolSwingPatternCardinalFront, 3);
+    memcpy(arr2, silverToolSwingPatternCardinalBack, 3);
+    memcpy(arr3, silverToolSwingPatternDiagonalFront, 3);
+    memcpy(arr4, silverToolSwingPatternDiagonalBack, 3);
+    memcpy(arr5, goldenWateringCanSprayPatternFront, 9);
+    memcpy(arr6, goldenWateringCanSprayPatternBack, 9);
     
     direction = convertScreenDirectionToWorldDirection(entities[ENTITY_PLAYER].direction, MAIN_MAP_INDEX);
 
@@ -3704,37 +3705,37 @@ void useGrassSeeds(void) {
 
 }
 
-static const u8 D_80122340[4] = { 2, 8, 6, 0 };
+static const u8 silverToolSwingPatternCardinalFront[4] = { 2, 8, 6, 0 };
 
-static const u8 D_80122344[4] = { 6, 8, 2, 0 };
+static const u8 silverToolSwingPatternCardinalBack[4] = { 6, 8, 2, 0 };
 
-static const u8 D_80122348[4] = { 3, 8, 5, 0 };
+static const u8 silverToolSwingPatternDiagonalFront[4] = { 3, 8, 5, 0 };
 
-static const u8 D_8012234C[4] = { 5, 8, 3, 0 };
+static const u8 silverToolSwingPatternDiagonalBack[4] = { 5, 8, 3, 0 };
 
-//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", D_80122340);
+//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", silverToolSwingPatternCardinalFront);
 
-//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", D_80122344);
+//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", silverToolSwingPatternCardinalBack);
 
-//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", D_80122348);
+//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", silverToolSwingPatternDiagonalFront);
 
-//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", D_8012234C);
+//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", silverToolSwingPatternDiagonalBack);
 
-//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", D_80122350);
+//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", goldenSickleSwingPatternFront);
 
-static const u8 D_80122350[12] = { 8, 0, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0 };
+static const u8 goldenSickleSwingPatternFront[12] = { 8, 0, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0 };
 
-//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", D_8012235C);
+//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", goldenSickleSwingPatternBack);
 
-static const u8 D_8012235C[12] = { 8, 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0 };
+static const u8 goldenSickleSwingPatternBack[12] = { 8, 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0 };
 
-//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", D_80122368);
+//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", goldenWateringCanSprayPatternFront);
 
-static const u8 D_80122368[12] = { 3, 4, 5, 2, 8, 6, 1, 0, 7, 0, 0, 0 };
+static const u8 goldenWateringCanSprayPatternFront[12] = { 3, 4, 5, 2, 8, 6, 1, 0, 7, 0, 0, 0 };
 
-//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", D_80122374);
+//INCLUDE_RODATA("asm/nonmatchings/game/itemHandlers", goldenWateringCanSprayPatternBack);
 
-static const u8 D_80122374[12] = { 5, 4, 3, 6, 8, 2, 7, 0, 1, 0, 0, 0 };
+static const u8 goldenWateringCanSprayPatternBack[12] = { 5, 4, 3, 6, 8, 2, 7, 0, 1, 0, 0, 0 };
  
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", handleBlueFeatherUse);
 
@@ -4963,27 +4964,27 @@ void updateHeldItemState(void) {
                                 if (checkSpecialDialogueBit(HARVEST_GODDESS_OFFERING_ADVICE_DIALOGUE)) {
                                     
                                     if (!checkSpecialDialogueBit(GRAPEVINE_SPIRIT_AWAKENED_DIALOGUE)) {
-                                         gCutsceneIndex = 344;
+                                         gCutsceneIndex = CUTSCENE_MOUNTAIN_HARVEST_GODDESS_GRAPEVINE_OFFERING;
                                     } else {
-                                         gCutsceneIndex = 341;
+                                         gCutsceneIndex = CUTSCENE_MOUNTAIN_HARVEST_GODDESS_OFFERING;
                                     }
-                                    
+
                                 } else {
-                                    gCutsceneIndex = 341;
+                                    gCutsceneIndex = CUTSCENE_MOUNTAIN_HARVEST_GODDESS_OFFERING;
                                 }
-                                
-                                loadCutscene(0);
-                                
+
+                                loadCutscene(FALSE);
+
                             }
-                            
+
                             if (checkDailyEventBit(KAPPA_FISH_OFFERING_DAILY)) {
-                                gCutsceneIndex = 336;
-                                loadCutscene(0);
+                                gCutsceneIndex = CUTSCENE_MOUNTAIN_KAPPA_GIFT;
+                                loadCutscene(FALSE);
                             }
-                            
+
                             if (checkDailyEventBit(KAPPA_LARGE_FISH_OFFERING_DAILY)) {
-                                gCutsceneIndex = 337;
-                                loadCutscene(0);
+                                gCutsceneIndex = CUTSCENE_MOUNTAIN_KAPPA_POWER_NUT;
+                                loadCutscene(FALSE);
                             } 
                             
                         } else {

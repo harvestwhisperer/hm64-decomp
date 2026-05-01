@@ -451,7 +451,7 @@ bool closeDialogueSession(u16 index) {
     if (index == 0 && dialogues[index].sessionManager.flags & DIALOGUE_ACTIVE) {
 
         if (!(dialogues[index].sessionManager.flags & 0x40)) {
-            messageBoxes[dialogues[index].sessionManager.mainMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
+            messageBoxes[dialogues[index].sessionManager.mainMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_NO_AUTO_RESET;
         }
 
         resetMessageBoxAnimation(dialogues[index].sessionManager.mainMessageBoxIndex);
@@ -471,7 +471,7 @@ bool closeDialogueSession(u16 index) {
 
 void cleanupDialogueOverlayBox(u16 index) {
 
-    messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
+    messageBoxes[dialogues[index].sessionManager.overlayMessageBoxIndex].flags &= ~MESSAGE_BOX_MODE_NO_AUTO_RESET;
     
     resetMessageBoxAnimation(dialogues[index].sessionManager.overlayMessageBoxIndex);
     
@@ -928,7 +928,7 @@ void updateCurrentDialogue(u16 index) {
                 if (dialogues[index].sessionManager.flags & 0x80) {
                     initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, dialogues[index].bytecodeExecutor.textIndex, 0);
                 } else {
-                    initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, dialogues[index].bytecodeExecutor.textIndex, MESSAGE_BOX_MODE_UNKNOWN);
+                    initializeMessageBox(dialogues[index].sessionManager.mainMessageBoxIndex, dialogueBytecodeAddresses[dialogues[index].sessionManager.dialogueBytecodeAddressesIndex].textAddressesIndex, dialogues[index].bytecodeExecutor.textIndex, MESSAGE_BOX_MODE_NO_AUTO_RESET);
                 }
                 
                 finishCurrentDialogueBlockProcessing = TRUE;

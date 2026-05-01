@@ -1958,7 +1958,7 @@ void cutsceneHandlerResetMessageBoxAvatar(u16 index) {
 
     cutsceneExecutors[index].bytecodePtr += 2;
 
-    messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_UNKNOWN;
+    messageBoxes[messageBoxIndex].flags &= ~MESSAGE_BOX_MODE_NO_AUTO_RESET;
 
     resetMessageBoxAnimation(messageBoxIndex);
     
@@ -2338,7 +2338,7 @@ void cutsceneHandlerUpdateRGBA(u16 index) {
         b = targetMapLightingRGBA.b;
         a = targetMapLightingRGBA.a;
 
-        rate = D_8017045A;
+        rate = currentMapLightingRGBARate;
         
     }
 
@@ -2496,7 +2496,7 @@ void cutsceneHandlerUpdateGlobalRGBA(u16 index) {
         b = targetMapLightingRGBA.b;
         a = targetMapLightingRGBA.a;
 
-        rate = D_8017045A;
+        rate = currentMapLightingRGBARate;
         
     }
 

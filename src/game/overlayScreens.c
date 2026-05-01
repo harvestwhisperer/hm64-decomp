@@ -43,15 +43,15 @@
 
 // bss
 OverlayScreenTable overlayScreenTable;
-u32 D_80189858;
+u32 raceBettingGold;
 
-u8 D_80205640[10];
-u8 D_80189108[5][7];
-u32 D_80205204;
-u8 D_80237420[32];
+u8 calendarStickers[10];
+u8 calendarStickerGrid[5][7];
+u32 medalBalance;
+u8 freezerItemSlots[32];
 
 // shared bss
-u8 D_801890E8[32];
+u8 cabinetItemSlots[32];
 
 // data
 
@@ -299,62 +299,62 @@ f32 calendarStickersYCoordinates[] = {
 
 volatile u16 toolAnimationIndices[] = {
      0xFFFF,
-     0x0000,
-     0x0003,
-     0x0006,
-     0x0009,
-     0x000C,
-     0x000F,
-     0x0010,
-     0x0011,
-     0x0012,
-     0x0013,
-     0x0014,
-     0x0015,
-     0x0016,
-     0x0017,
-     0x0018,
-     0x0019,
-     0x001A,
-     0x001B,
-     0x001C,
-     0x001D,
-     0x001E,
-     0x001F,
-     0x0020,
-     0x0021,
-     0x0022,
-     0x0023,
-     0x0024,
-     0x0025,
-     0x0026,
+     0,
+     3,
+     6,
+     9,
+     12,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     37,
+     38,
 };
 
 volatile u16 keyItemAnimationIndices[] = {
      0xFFFF,
-     0x0035,
-     0x0072,
-     0x0073,
-     0x0090,
-     0x0091,
-     0x0092,
-     0x0032,
-     0x0093,
-     0x0094,
-     0x0095,
-     0x0096,
-     0x0097,
-     0x0098,
-     0x0099,
-     0x009A,
-     0x007E,
-     0x007F,
-     0x0080,
-     0x0081,
-     0x0020,
-     0x00E8,
-     0x0000,
-     0x0000,
+     53,
+     114,
+     115,
+     144,
+     145,
+     146,
+     50,
+     147,
+     148,
+     149,
+     150,
+     151,
+     152,
+     153,
+     154,
+     126,
+     127,
+     128,
+     129,
+     32,
+     232,
+     0,
+     0,
 };
 
 
@@ -372,299 +372,299 @@ static u32 powerNutBits[] = {
 };
 
 u16 D_80116F4C[] = {
-    0x0000,
-    0x002F,
-    0x0030,
-    0x0031,
-    0x0032,
-    0x0033,
-    0x0040,
-    0x003F,
-    0x0041,
-    0x004A,
-    0x0034,
-    0x0036,
-    0x0035,
-    0x0037,
-    0x0038,
-    0x0039,
-    0x0012,
-    0x003A,
-    0x003B,
-    0x003C,
-    0x003E,
-    0x004B,
-    0x004D,
-    0x0052,
-    0x004C,
-    0x0050,
-    0x004E,
-    0x003D,
-    0x0051,
-    0x0042,
+    0,
+    47,
+    48,
+    49,
+    50,
+    51,
+    64,
+    63,
+    65,
+    74,
+    52,
+    54,
+    53,
+    55,
+    56,
+    57,
+    18,
+    58,
+    59,
+    60,
+    62,
+    75,
+    77,
+    82,
+    76,
+    80,
+    78,
+    61,
+    81,
+    66,
 };
 
 u16 D_80116F88[] = {
-    0x0000,
-    0x0085,
-    0x0084,
-    0x007F,
-    0x0065,
-    0x0066,
-    0x0000,
-    0x0067,
-    0x0068,
-    0x0069,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0053,
-    0x0055,
-    0x0057,
-    0x0059,
-    0x005B,
-    0x005D,
-    0x005F,
-    0x0060,
-    0x0061,
-    0x0062,
-    0x0063,
-    0x0064,
-    0x006A,
-    0x006B,
-    0x006C,
-    0x006D,
-    0x006E,
-    0x006F,
-    0x0070,
-    0x0086,
-    0x0000,
-    0x0071,
-    0x0073,
-    0x0074,
-    0x0075,
-    0x0076,
-    0x0077,
-    0x0072,
-    0x0078,
-    0x0079,
-    0x007C,
-    0x007B,
-    0x007A,
-    0x0080,
-    0x0082,
-    0x0081,
-    0x0083,
-    0x007E,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x004F,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0099,
-    0x0099,
-    0x0099,
-    0x0099,
-    0x0099,
-    0x0099,
-    0x0099,
-    0x0099,
-    0x00AD,
-    0x00AD,
-    0x00AD,
-    0x00AD,
-    0x00AD,
-    0x00AD,
-    0x00AD,
-    0x00AD,
-    0x00AE,
-    0x00AE,
-    0x00AE,
-    0x00AE,
-    0x00AE,
-    0x00AE,
-    0x00AE,
-    0x00AE,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x00A8,
-    0x00A8,
-    0x00A8,
-    0x00A8,
-    0x00A8,
-    0x00A8,
-    0x00A8,
-    0x00A8,
-    0x00A5,
-    0x00A5,
-    0x00A5,
-    0x00A5,
-    0x00A5,
-    0x00A5,
-    0x00A5,
-    0x00A5,
-    0x00A4,
-    0x00A4,
-    0x00A4,
-    0x00A4,
-    0x00A4,
-    0x00A4,
-    0x00A4,
-    0x00A4,
-    0x00A6,
-    0x00A6,
-    0x00A6,
-    0x00A6,
-    0x00A6,
-    0x00A6,
-    0x00A6,
-    0x00A6,
-    0x00A3,
-    0x00A3,
-    0x00A3,
-    0x00A3,
-    0x00A3,
-    0x00A3,
-    0x00A3,
-    0x00A3,
-    0x00A7,
-    0x00A7,
-    0x00A7,
-    0x00A7,
-    0x00A7,
-    0x00A7,
-    0x00A7,
-    0x00A7,
-    0x00A9,
-    0x00A9,
-    0x00A9,
-    0x00A9,
-    0x00A9,
-    0x00A9,
-    0x00A9,
-    0x00A9,
-    0x009F,
-    0x00A0,
-    0x009E,
-    0x009B,
-    0x009C,
-    0x00A1,
-    0x00A2,
-    0x00B1,
-    0x00B1,
-    0x00B1,
-    0x00B1,
-    0x00B1,
-    0x00B1,
-    0x00B1,
-    0x00B1,
-    0x00B2,
-    0x00B2,
-    0x00B2,
-    0x00B2,
-    0x00B2,
-    0x00B2,
-    0x00B2,
-    0x00B2,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
+    0,
+    133,
+    132,
+    127,
+    101,
+    102,
+    0,
+    103,
+    104,
+    105,
+    0,
+    0,
+    0,
+    83,
+    85,
+    87,
+    89,
+    91,
+    93,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    134,
+    0,
+    113,
+    115,
+    116,
+    117,
+    118,
+    119,
+    114,
+    120,
+    121,
+    124,
+    123,
+    122,
+    128,
+    130,
+    129,
+    131,
+    126,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    79,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    153,
+    153,
+    153,
+    153,
+    153,
+    153,
+    153,
+    153,
+    173,
+    173,
+    173,
+    173,
+    173,
+    173,
+    173,
+    173,
+    174,
+    174,
+    174,
+    174,
+    174,
+    174,
+    174,
+    174,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    168,
+    168,
+    168,
+    168,
+    168,
+    168,
+    168,
+    168,
+    165,
+    165,
+    165,
+    165,
+    165,
+    165,
+    165,
+    165,
+    164,
+    164,
+    164,
+    164,
+    164,
+    164,
+    164,
+    164,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    166,
+    163,
+    163,
+    163,
+    163,
+    163,
+    163,
+    163,
+    163,
+    167,
+    167,
+    167,
+    167,
+    167,
+    167,
+    167,
+    167,
+    169,
+    169,
+    169,
+    169,
+    169,
+    169,
+    169,
+    169,
+    159,
+    160,
+    158,
+    155,
+    156,
+    161,
+    162,
+    177,
+    177,
+    177,
+    177,
+    177,
+    177,
+    177,
+    177,
+    178,
+    178,
+    178,
+    178,
+    178,
+    178,
+    178,
+    178,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
 };
 
 u16 D_80117148[] = {
-    0x0000,
-    0x00AA,
-    0x0087,
-    0x0088,
-    0x0089,
-    0x008A,
-    0x008B,
-    0x008C,
-    0x008D,
-    0x008E,
-    0x008F,
-    0x0090,
-    0x0091,
-    0x0092,
-    0x0093,
-    0x0094,
-    0x0095,
-    0x0096,
-    0x0097,
-    0x0098,
-    0x00AC,
-    0x00AB,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
-    0x0000,
+    0,
+    170,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    148,
+    149,
+    150,
+    151,
+    152,
+    172,
+    171,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
 };
 
 // rodata forward declarations
-static const u8 D_801220CC[19][6];
-static const u8 D_80122140[19][6];
+static const u8 horseRaceRacerNames[19][6];
+static const u8 dogRaceRacerNames[19][6];
 
 // forward declarations
 void loadClockSprites(void);
@@ -2593,7 +2593,7 @@ void fadeOutPauseScreenSprites(void) {
 void pauseScreenCallback(void) {
 
     bool set = FALSE;
-    bool flag;
+    bool itemType;
 
     u8 tempItem;
     u32 temp2;
@@ -3093,22 +3093,22 @@ void pauseScreenCallback(void) {
 
                     case 5:
                         tempItem = gPlayer.toolSlots[overlayScreenTable.cellIndex];
-                        flag = 0;
+                        itemType = 0;
                         break;
                     case 6:
                         tempItem = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
-                        flag = 1;
+                        itemType = 1;
                         break;
                     case 7:
                         tempItem = gPlayer.keyItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
-                        flag = 2;
+                        itemType = 2;
                         break;
                     
                 }
 
                 if (tempItem) {
                     
-                    setItemDescriptionVariable(flag, tempItem);
+                    setItemDescriptionVariable(itemType, tempItem);
 
                     overlayScreenTable.unk_7 = overlayScreenTable.screenState;
                     overlayScreenTable.screenState = 4;
@@ -4137,7 +4137,7 @@ void loadFreezerItemSprites(void) {
 
         j = i;
         
-        if (D_80237420[(overlayScreenTable.pageNumber * 8) + i]) {
+        if (freezerItemSlots[(overlayScreenTable.pageNumber * 8) + i]) {
             
             f32* xCoords = freezerSlotsXCoordinates;
             f32* yCoords = freezerSlotsYCoordinates;
@@ -4150,7 +4150,7 @@ void loadFreezerItemSprites(void) {
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(0xA3 + i, SPRITE_BLEND_ALPHA_MODULATED);
             setBilinearFiltering(0xA3 + i, TRUE);
-            startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(D_80237420[(overlayScreenTable.pageNumber * 8) + i])), 0);
+            startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(freezerItemSlots[(overlayScreenTable.pageNumber * 8) + i])), 0);
         
         }
         
@@ -4248,7 +4248,7 @@ void fadeInFreezerSprites(void) {
     updateSpriteAlpha(0x88, 0xFF, 24);
     
     for (i = 0; i < 9; i++) {
-        if (D_80237420[(overlayScreenTable.pageNumber * 8) + i]) {
+        if (freezerItemSlots[(overlayScreenTable.pageNumber * 8) + i]) {
             updateSpriteAlpha(0xA3 + i, 0xFF, 24);
         }
     }
@@ -4276,7 +4276,7 @@ void fadeOutFreezerSprites(void) {
     updateSpriteAlpha(0x88, 0, 24);
 
     for (i = 0; i < 9; i++) {
-        if (D_80237420[(overlayScreenTable.pageNumber * 8) + i]) {
+        if (freezerItemSlots[(overlayScreenTable.pageNumber * 8) + i]) {
             updateSpriteAlpha(0xA3 + i, 0, 24);
         }
     }
@@ -4638,7 +4638,7 @@ void freezerScreenCallback(void) {
                         break;
                     
                     case 5:
-                        temp = D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+                        temp = freezerItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
                         break;
                     
                 }
@@ -4731,7 +4731,7 @@ void resetFreezerSpriteColors(void) {
 
     for (i = 0; i < 9; i++) {
 
-        if (D_80237420[(overlayScreenTable.pageNumber * 8) + i]) {
+        if (freezerItemSlots[(overlayScreenTable.pageNumber * 8) + i]) {
             setSpriteColor(0xA3 + i, 255, 255, 255, 255);
         }
         
@@ -4757,7 +4757,7 @@ bool isFreezerItemSwappable(void) {
     switch (overlayScreenTable.screenState) {
 
         case 5:
-            temp = D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+            temp = freezerItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
             break;
         case 6:
             temp = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
@@ -4787,13 +4787,13 @@ void swapFreezerItems(void) {
 
         case 5:
 
-            temp = D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+            temp = freezerItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
             
             if (overlayScreenTable.unk_5 == overlayScreenTable.screenState) {
-                D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = D_80237420[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
-                D_80237420[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
+                freezerItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = freezerItemSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
+                freezerItemSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
             } else {
-                D_80237420[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
+                freezerItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
                 gPlayer.belongingsSlots[overlayScreenTable.unk_3] = temp;
             }
 
@@ -4807,8 +4807,8 @@ void swapFreezerItems(void) {
                 gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
                 gPlayer.belongingsSlots[overlayScreenTable.unk_3] = temp;
             } else {
-                gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = D_80237420[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
-                D_80237420[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
+                gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = freezerItemSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
+                freezerItemSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
             }
 
         break;
@@ -4918,7 +4918,7 @@ void loadCabinetItemSprites(void) {
 
         j = i;
         
-        if (D_801890E8[(overlayScreenTable.pageNumber * 8) + i]) {
+        if (cabinetItemSlots[(overlayScreenTable.pageNumber * 8) + i]) {
             
             f32* xCoords = cabinetSlotsXCoordinates;
             f32* yCoords = cabinetSlotsYCoordinates;
@@ -4931,7 +4931,7 @@ void loadCabinetItemSprites(void) {
             setSpriteColor(0xA3 + i, 0xFF, 0xFF, 0xFF, 0);
             setSpriteBlendMode(0xA3 + i, SPRITE_BLEND_ALPHA_MODULATED);
             setBilinearFiltering(0xA3 + i, TRUE);
-            startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(D_801890E8[(overlayScreenTable.pageNumber * 8) + i])), 0);
+            startSpriteAnimation(0xA3 + i, getAnimationOffsetFromScript(heldItemsAnimationScripts, getItemAnimationIndex(cabinetItemSlots[(overlayScreenTable.pageNumber * 8) + i])), 0);
         
         }
         
@@ -5034,7 +5034,7 @@ void fadeInCabinetSprites(void) {
     updateSpriteAlpha(0x88, 0xFF, 24);
 
     for (i = 0; i < 9; i++) {
-        if (D_801890E8[(overlayScreenTable.pageNumber * 8) + i]) {
+        if (cabinetItemSlots[(overlayScreenTable.pageNumber * 8) + i]) {
             updateSpriteAlpha(0xA3 + i, 0xFF, 24);
         }
     }
@@ -5064,7 +5064,7 @@ void fadeOutCabinetSprites(void) {
 
     for (i = 0; i < 9; i++) {
 
-        if (D_801890E8[(overlayScreenTable.pageNumber * 8) + i]) {
+        if (cabinetItemSlots[(overlayScreenTable.pageNumber * 8) + i]) {
             updateSpriteAlpha(0xA3 + i, 0, 24);
         }
         
@@ -5434,7 +5434,7 @@ void cabinetScreenCallback(void) {
                     }
                     
                 } else {
-                    temp = D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+                    temp = cabinetItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
                 }
 
                 if (temp) {
@@ -5528,7 +5528,7 @@ void resetCabinetSpriteColors(void) {
 
     for (i = 0; i < 9; i++) {
 
-        if (D_801890E8[(overlayScreenTable.pageNumber * 8) + i]) {
+        if (cabinetItemSlots[(overlayScreenTable.pageNumber * 8) + i]) {
             setSpriteColor(0xA3 + i, 255, 255, 255, 255);
         }
         
@@ -5554,7 +5554,7 @@ bool isCabinetItemSwappable(void) {
     switch (overlayScreenTable.screenState) {
 
         case 5:
-            temp = D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+            temp = cabinetItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
             break;
         case 101:
             temp = gPlayer.belongingsSlots[overlayScreenTable.cellIndex];
@@ -5584,17 +5584,17 @@ void swapCabinetItems(void) {
 
         case 5:
             
-            temp = D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
+            temp = cabinetItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex];
             
             if (overlayScreenTable.unk_5 == overlayScreenTable.screenState) {
                 
-                D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = 
-                    D_801890E8[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
+                cabinetItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = 
+                    cabinetItemSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
                 
-                D_801890E8[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
+                cabinetItemSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
                 
             } else {
-                D_801890E8[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
+                cabinetItemSlots[(overlayScreenTable.pageNumber * 8) + overlayScreenTable.cellIndex] = gPlayer.belongingsSlots[overlayScreenTable.unk_3];
                 gPlayer.belongingsSlots[overlayScreenTable.unk_3] = temp;
             }
 
@@ -5610,8 +5610,8 @@ void swapCabinetItems(void) {
                 gPlayer.belongingsSlots[overlayScreenTable.unk_3] = temp;
                 
             } else {
-                gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = D_801890E8[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
-                D_801890E8[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
+                gPlayer.belongingsSlots[overlayScreenTable.cellIndex] = cabinetItemSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3];
+                cabinetItemSlots[(overlayScreenTable.unk_4 * 8) + overlayScreenTable.unk_3] = temp;
             }
             
             break;
@@ -6492,35 +6492,35 @@ void loadCalendarStickers(void) {
     u8 i, j, k;
     u8 temp;
     
-    D_80205640[0] = 0;
-    D_80205640[1] = 1;
-    D_80205640[2] = 2;
-    D_80205640[3] = 3;
-    D_80205640[4] = 4;
+    calendarStickers[0] = 0;
+    calendarStickers[1] = 1;
+    calendarStickers[2] = 2;
+    calendarStickers[3] = 3;
+    calendarStickers[4] = 4;
 
     if (checkLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE)) {
-        D_80205640[5] = 5;
-        D_80205640[6] = 6;
-        D_80205640[7] = 7;
-        D_80205640[8] = 8;
-        D_80205640[9] = 9;
+        calendarStickers[5] = 5;
+        calendarStickers[6] = 6;
+        calendarStickers[7] = 7;
+        calendarStickers[8] = 8;
+        calendarStickers[9] = 9;
     } else {
-        D_80205640[5] = 0xFF;
-        D_80205640[6] = 0xFF;
-        D_80205640[7] = 0xFF;
-        D_80205640[8] = 0xFF;
-        D_80205640[9] = 0xFF;
+        calendarStickers[5] = 0xFF;
+        calendarStickers[6] = 0xFF;
+        calendarStickers[7] = 0xFF;
+        calendarStickers[8] = 0xFF;
+        calendarStickers[9] = 0xFF;
     }
 
     for (i = 0; i < 5; i++) {
         
         for (j = 0; j < 7; j++) {
 
-            temp = D_80189108[i][j];
+            temp = calendarStickerGrid[i][j];
 
             if (temp != 0xFF) {
 
-                D_80205640[temp] = 0xFF;
+                calendarStickers[temp] = 0xFF;
                 
                 dmaSprite(CALENDAR_STICKERS_BASE + temp, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
                 setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + temp, calendarStickersXCoordinates[0], calendarStickersYCoordinates[0], 8.0f);
@@ -6539,7 +6539,7 @@ void loadCalendarStickers(void) {
     
     for (k = 0; k < 10; k++) {
 
-        if (D_80205640[k] != 0xFF) {
+        if (calendarStickers[k] != 0xFF) {
 
             dmaSprite(CALENDAR_STICKERS_BASE + k, (u32)&_calendarTextureSegmentRomStart, (u32)&_calendarTextureSegmentRomEnd, (u32)&_calendarAssetsIndexSegmentRomStart, (u32)&_calendarAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
             setSpriteViewSpacePosition(CALENDAR_STICKERS_BASE + k, calendarStickersXCoordinates[k], calendarStickersYCoordinates[k], 8.0f);
@@ -6861,7 +6861,7 @@ void calendarScreenCallback(void) {
 
                     overlayScreenTable.cellIndex = overlayScreenTable.unk_8 + (overlayScreenTable.unk_9 * 2);
                     
-                    if (D_80205640[overlayScreenTable.cellIndex] != 0xFF) {
+                    if (calendarStickers[overlayScreenTable.cellIndex] != 0xFF) {
                         
                         overlayScreenTable.screenState = 6;
                         
@@ -7010,7 +7010,7 @@ void calendarScreenCallback(void) {
             
                 if (!set) {
 
-                    temp = D_80189108[overlayScreenTable.unk_B][overlayScreenTable.unk_A];
+                    temp = calendarStickerGrid[overlayScreenTable.unk_B][overlayScreenTable.unk_A];
                     
                     if (temp == 0xFF) {
                         
@@ -7026,8 +7026,8 @@ void calendarScreenCallback(void) {
                         
                         setSpriteColor(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 0xFF, 0xFF, 0xFF, temp);
                         
-                        D_80189108[overlayScreenTable.unk_B][overlayScreenTable.unk_A] = overlayScreenTable.cellIndex;
-                        D_80205640[overlayScreenTable.cellIndex] = 0xFF;
+                        calendarStickerGrid[overlayScreenTable.unk_B][overlayScreenTable.unk_A] = overlayScreenTable.cellIndex;
+                        calendarStickers[overlayScreenTable.cellIndex] = 0xFF;
                         
                         overlayScreenTable.screenState = 5;
                         playSfx(0);
@@ -7923,9 +7923,9 @@ void addRecipe(u16 bitIndex) {
     recipesBits[temp >> 5] |= 1 << (temp & 0x1F);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", clearRecipe);
+//INCLUDE_ASM("asm/nonmatchings/game/overlayScreens", toggleRecipe);
 
-void clearRecipe(u16 bitIndex) {
+void toggleRecipe(u16 bitIndex) {
     u32 temp = bitIndex;
     recipesBits[temp >> 5] &= ~(1 << (temp & 0x1F));
 }
@@ -8107,11 +8107,13 @@ void setItemDescriptionVariable(u8 type, u32 itemOrToolIndex) {
             idx &= 0xFF;
             ptr = D_80116F4C;
             break;
+        // belongings
         case 1:
             idx = itemOrToolIndex;
             idx &= 0xFF;
             ptr = D_80116F88;
             break;
+        // key item
         case 2:
             idx = itemOrToolIndex;
             idx &= 0xFF;
@@ -8127,65 +8129,65 @@ void setItemDescriptionVariable(u8 type, u32 itemOrToolIndex) {
 skip:
     switch (textIndex) {
 
-        case 0x12:
+        case 18:
             convertNumberToGameVariableString(17, strawberrySeedsQuantity, 0);
             break;
 
-        case 0x33:
+        case 51:
             convertNumberToGameVariableString(17, wateringCanUses, 0);
             break;        
 
-        case 0x34:
+        case 52:
             convertNumberToGameVariableString(17, turnipSeedsQuantity, 0);
             break;
  
-        case 0x35:
+        case 53:
             convertNumberToGameVariableString(17, cabbageSeedsQuantity, 0);
             break;
         
-        case 0x36:
+        case 54:
             convertNumberToGameVariableString(17, potatoSeedsQuantity, 0);
             break;
         
-        case 0x37:
+        case 55:
             convertNumberToGameVariableString(17, tomatoSeedsQuantity, 0);
             break;
         
-        case 0x38:
+        case 56:
             convertNumberToGameVariableString(17, cornSeedsQuantity, 0);
             break;
         
-        case 0x39:
+        case 57:
             convertNumberToGameVariableString(17, eggplantSeedsQuantity, 0);
             break;
         
-        case 0x3A:
+        case 58:
             convertNumberToGameVariableString(17, moondropSeedsQuantity, 0);
             break;
         
-        case 0x3B:
+        case 59:
             convertNumberToGameVariableString(17, pinkCatMintSeedsQuantity, 0);
             break;
 
-        case 0x3C:
+        case 60:
             convertNumberToGameVariableString(17, blueMistSeedsQuantity, 0);
             break;
         
-        case 0x3D:
+        case 61:
             convertNumberToGameVariableString(17, grassSeedsQuantity, 0);
             break;
 
-        case 0x3E:
+        case 62:
             convertNumberToGameVariableString(17, chickenFeedQuantity, 0);
             break;
 
-        case 0x42:
+        case 66:
             textIndex += gPlayer.bottleContents;
             break;
 
     }
 
-    convertNumberToGameVariableString(0x1F, D_80205204, 0);
+    convertNumberToGameVariableString(0x1F, medalBalance, 0);
     convertNumberToGameVariableString(0x30, flowerShopPoints, 0);
     convertNumberToGameVariableString(0x31, bakeryCardPoints, 0);
     
@@ -8422,7 +8424,7 @@ void loadRaceBettingScreenCallback(void) {
 
 void loadRaceBettingScreenSprites(void) {
     
-    D_80189858 = gGold;
+    raceBettingGold = gGold;
 
     setMoneySprites();
     
@@ -8522,7 +8524,7 @@ void loadRaceBettingScreenSprites(void) {
     setSpriteColor(CURSOR_HAND, 255, 255, 255, 255);
     
     setNumberSprites(2, 0x97, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -98.0f, -153.0f, 256.0f, 10);
-    dmaNumberSprites(2, D_80205204, 3, 3);
+    dmaNumberSprites(2, medalBalance, 3, 3);
     setNumberSpritesRGBA(2, 255, 255, 255, 255);
 
     setNumberSprites(3, 0x9B, &_moneyTextureSegmentRomStart, &_moneyTextureSegmentRomEnd, &_moneyAssetsIndexSegmentRomStart, &_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -48.0f, 256.0f, 10);
@@ -8575,10 +8577,10 @@ void loadRaceBettingScreenSprites(void) {
     dmaNumberSprites(0xC, gRacingContext.oddsAndNames.displayOddsBottom[0], 2, 3);
     setNumberSpritesRGBA(0xC, 255, 255, 255, 255);
     
-    setNumberSprites(0xD, 0xB3, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, -30.0f, 256.0f, 8);
+    setNumberSprites(13, 0xB3, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, -30.0f, 256.0f, 8);
     
-    dmaNumberSprites(0xD, gRacingContext.oddsAndNames.displayOddsBottom[1], 2, 3);
-    setNumberSpritesRGBA(0xD, 255, 255, 255, 255);
+    dmaNumberSprites(13, gRacingContext.oddsAndNames.displayOddsBottom[1], 2, 3);
+    setNumberSpritesRGBA(13, 255, 255, 255, 255);
     
     setNumberSprites(0xE, 0xB6, &_raceBettingUITextureSegmentRomStart, &_raceBettingUITextureSegmentRomEnd, &_raceBettingUIAssetsIndexSegmentRomStart, &_raceBettingUIAssetsIndexSegmentRomEnd, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 6, 0, 14.0f, -46.0f, 256.0f, 8);
     
@@ -8605,7 +8607,7 @@ void initializeRaceBettingMessageBoxes(void) {
     setMessageBoxViewSpacePosition(0, -22.0f, 24.0f, 0);
     setMessageBoxLineAndRowSizes(0, 0xA, 2);
     setMessageBoxSpacing(0, 0, 2);
-    setMessageBoxFont(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(0, -4, 2);
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
     setMessageBoxButtonMask(0, BUTTON_A);
@@ -8617,7 +8619,7 @@ void initializeRaceBettingMessageBoxes(void) {
     setMessageBoxViewSpacePosition(1, -22.0f, 8.0f, 0);
     setMessageBoxLineAndRowSizes(1, 0xA, 2);
     setMessageBoxSpacing(1, 0, 2);
-    setMessageBoxFont(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
     setMessageBoxButtonMask(1, BUTTON_A);
@@ -8629,7 +8631,7 @@ void initializeRaceBettingMessageBoxes(void) {
     setMessageBoxViewSpacePosition(2, -22.0f, -8.0f, 0);
     setMessageBoxLineAndRowSizes(2, 0xA, 2);
     setMessageBoxSpacing(2, 0, 2);
-    setMessageBoxFont(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(2, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(2, -4, 2);
     setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
     setMessageBoxButtonMask(2, BUTTON_A);
@@ -8641,7 +8643,7 @@ void initializeRaceBettingMessageBoxes(void) {
     setMessageBoxViewSpacePosition(3, -22.0f, -24.0f, 0);
     setMessageBoxLineAndRowSizes(3, 0xA, 2);
     setMessageBoxSpacing(3, 0, 2);
-    setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(3, -4, 2);
     setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
     setMessageBoxButtonMask(3, BUTTON_A);
@@ -8653,7 +8655,7 @@ void initializeRaceBettingMessageBoxes(void) {
     setMessageBoxViewSpacePosition(4, -22.0f, -40.0f, 0);
     setMessageBoxLineAndRowSizes(4, 0xA, 2);
     setMessageBoxSpacing(4, 0, 2);
-    setMessageBoxFont(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(4, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, BUTTON_A);
@@ -8665,7 +8667,7 @@ void initializeRaceBettingMessageBoxes(void) {
     setMessageBoxViewSpacePosition(5, -22.0f, -56.0f, 0);
     setMessageBoxLineAndRowSizes(5, 0xA, 2);
     setMessageBoxSpacing(5, 0, 2);
-    setMessageBoxFont(5, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(5, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(5, -4, 2);
     setMessageBoxSpriteIndices(5, 0xFF, 0, 0);
     setMessageBoxButtonMask(5, BUTTON_A);
@@ -8832,10 +8834,10 @@ void raceBettingScreenCallback(void) {
                 
                 if (!set) {
                     
-                    if (adjustValue(D_80189858, 50, gGold) == 50) {
+                    if (adjustValue(raceBettingGold, 50, gGold) == 50) {
                         
                         if (gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex]) {
-                            D_80189858 += adjustValue(D_80189858, 50, gGold);
+                            raceBettingGold += adjustValue(raceBettingGold, 50, gGold);
                             gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex]--;
                             playSfx(2);
                         }
@@ -8855,10 +8857,10 @@ void raceBettingScreenCallback(void) {
 
                 if (!set) {
 
-                    if (adjustValue(D_80189858, -50, gGold) == -50) {
+                    if (adjustValue(raceBettingGold, -50, gGold) == -50) {
 
                         if (gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex] != 99) {
-                            D_80189858 += adjustValue(D_80189858, -50, gGold);
+                            raceBettingGold += adjustValue(raceBettingGold, -50, gGold);
                             gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex]++;
                             playSfx(2);
                         }
@@ -8883,7 +8885,7 @@ void raceBettingScreenCallback(void) {
                 
             }
 
-            dmaNumberSprites(1, (u32)D_80189858, 5, 3);
+            dmaNumberSprites(1, (u32)raceBettingGold, 5, 3);
             dmaNumberSprites(overlayScreenTable.cellIndex + 3, gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex], 1, 3);
                 
             break;
@@ -8926,7 +8928,7 @@ void raceBettingScreenCallback(void) {
                         || gRacingContext.playerBets[gRacingContext.currentRaceIndex][5]) {
                         
                         gRacingContext.betPlacedFlags[gRacingContext.currentRaceIndex] = 0xFF;
-                        gGold = D_80189858;
+                        gGold = raceBettingGold;
                         
                         if (checkDailyEventBit(HORSE_RACE)) {
                             acquireKeyItem(HORSE_RACE_TICKET);
@@ -8967,7 +8969,7 @@ void updateHorseRaceContext(void) {
     u8 buffer[20][6];
     u8 temp;
 
-    memcpy(buffer, D_801220CC, 114);
+    memcpy(buffer, horseRaceRacerNames, 114);
 
     if (gHour < 24) {
         gRacingContext.currentRaceIndex = 3;
@@ -9039,17 +9041,17 @@ void updateHorseRaceContext(void) {
         gRacingContext.racerNames[2][3] = horseInfo.name[3];
         gRacingContext.racerNames[2][4] = horseInfo.name[4];
         gRacingContext.racerNames[2][5] = horseInfo.name[5];
-        
-        D_801C3F78 |= 0x20;
-        
+
+        raceStateFlags |= RACE_STATE_PLAYER_IN_RACE;
+
     } else {
-        D_801C3F78 &= ~0x20;
+        raceStateFlags &= ~RACE_STATE_PLAYER_IN_RACE;
     }
-    
-    if (gRacingContext.unk_6E == gRacingContext.currentRaceIndex) {
-        D_801C3F78 |= 0x40;
+
+    if (gRacingContext.rivalEntryRaceIndex == gRacingContext.currentRaceIndex) {
+        raceStateFlags |= RACE_STATE_RIVAL_IN_RACE;
     } else {
-        D_801C3F78 &= ~0x40;
+        raceStateFlags &= ~RACE_STATE_RIVAL_IN_RACE;
     }
     
 }
@@ -9061,7 +9063,7 @@ void updateDogRaceContext(void) {
     u8 buffer[20][6];
     u8 temp;
 
-    memcpy(buffer, D_80122140, 114);
+    memcpy(buffer, dogRaceRacerNames, 114);
 
     if (gHour < 24) {
         gRacingContext.currentRaceIndex = 3;
@@ -9133,17 +9135,17 @@ void updateDogRaceContext(void) {
         gRacingContext.racerNames[0][3] = dogInfo.name[3];
         gRacingContext.racerNames[0][4] = dogInfo.name[4];
         gRacingContext.racerNames[0][5] = dogInfo.name[5];
-        
-        D_801C3F78 |= 0x20;
-        
+
+        raceStateFlags |= RACE_STATE_PLAYER_IN_RACE;
+
     } else {
-        D_801C3F78 &= ~0x20;
+        raceStateFlags &= ~RACE_STATE_PLAYER_IN_RACE;
     }
-    
-    if (gRacingContext.unk_6E == gRacingContext.currentRaceIndex) {
-        D_801C3F78 |= 0x40;
+
+    if (gRacingContext.rivalEntryRaceIndex == gRacingContext.currentRaceIndex) {
+        raceStateFlags |= RACE_STATE_RIVAL_IN_RACE;
     } else {
-        D_801C3F78 &= ~0x40;
+        raceStateFlags &= ~RACE_STATE_RIVAL_IN_RACE;
     }
     
 }
@@ -9284,13 +9286,13 @@ void initializeRaceContext(void) {
     if (checkLifeEventBit(ENTERED_HORSE_RACE)) {
         temp3 = getRandomNumberInRange(0, 2);
         gRacingContext.racerNameIndices[1][temp3 * 6] = 0;
-        gRacingContext.unk_6E = temp3;
+        gRacingContext.rivalEntryRaceIndex = temp3;
     }
 
     if (checkLifeEventBit(ENTERED_DOG_RACE)) {
         temp3 = getRandomNumberInRange(0, 2);
         gRacingContext.racerNameIndices[0][temp3 * 6 + 1] = 0;
-        gRacingContext.unk_6E = temp3;
+        gRacingContext.rivalEntryRaceIndex = temp3;
     }
     
     gRacingContext.playerBets[0][0] = 0;
@@ -9397,11 +9399,11 @@ void loadRaceResultsScreenSprites(void) {
     
     setNumberSprites(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -153.0f, 256.0f, 10);
     
-    D_80205204 += adjustValue(D_80205204, 
+    medalBalance += adjustValue(medalBalance, 
           gRacingContext.displayOddsTop[gRacingContext.finishOrder[0]] * gRacingContext.playerBets[gRacingContext.currentRaceIndex][gRacingContext.finishOrder[0]], 
           9999);
     
-    dmaNumberSprites(2, D_80205204, 3, 3);
+    dmaNumberSprites(2, medalBalance, 3, 3);
     setNumberSpritesRGBA(2, 255, 255, 255, 255);
     
     setNumberSprites(3, 0x9B, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -48.0f, -137.0f, 256.0f, 10);
@@ -9440,7 +9442,7 @@ void initializeRaceResultsMessageBoxes(void) {
     setMessageBoxViewSpacePosition(0, -32.0f, 32.0f, 0.0f);
     setMessageBoxLineAndRowSizes(0, 0xA, 2);
     setMessageBoxSpacing(0, 0, 2);
-    setMessageBoxFont(0, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(0, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(0, -4, 2);
     setMessageBoxSpriteIndices(0, 0xFF, 0, 0);
     setMessageBoxButtonMask(0, BUTTON_A);
@@ -9452,7 +9454,7 @@ void initializeRaceResultsMessageBoxes(void) {
     setMessageBoxViewSpacePosition(1, -32.0f, 16.0f, 0.0f);
     setMessageBoxLineAndRowSizes(1, 0xA, 2);
     setMessageBoxSpacing(1, 0, 2);
-    setMessageBoxFont(1, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(1, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(1, -4, 2);
     setMessageBoxSpriteIndices(1, 0xFF, 0, 0);
     setMessageBoxButtonMask(1, BUTTON_A);
@@ -9464,7 +9466,7 @@ void initializeRaceResultsMessageBoxes(void) {
     setMessageBoxViewSpacePosition(2, -32.0f, 0.0f, 0.0f);
     setMessageBoxLineAndRowSizes(2, 0xA, 2);
     setMessageBoxSpacing(2, 0, 2);
-    setMessageBoxFont(2, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(2, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(2, -4, 2);
     setMessageBoxSpriteIndices(2, 0xFF, 0, 0);
     setMessageBoxButtonMask(2, BUTTON_A);
@@ -9476,7 +9478,7 @@ void initializeRaceResultsMessageBoxes(void) {
     setMessageBoxViewSpacePosition(3, 96.0f, 32.0f, 0.0f);
     setMessageBoxLineAndRowSizes(3, 0xA, 2);
     setMessageBoxSpacing(3, 0, 2);
-    setMessageBoxFont(3, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(3, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(3, -4, 2);
     setMessageBoxSpriteIndices(3, 0xFF, 0, 0);
     setMessageBoxButtonMask(3, BUTTON_A);
@@ -9488,7 +9490,7 @@ void initializeRaceResultsMessageBoxes(void) {
     setMessageBoxViewSpacePosition(4, 96.0f, 16.0f, 0.0f);
     setMessageBoxLineAndRowSizes(4, 0xA, 2);
     setMessageBoxSpacing(4, 0, 2);
-    setMessageBoxFont(4, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(4, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(4, -4, 2);
     setMessageBoxSpriteIndices(4, 0xFF, 0, 0);
     setMessageBoxButtonMask(4, BUTTON_A);
@@ -9500,7 +9502,7 @@ void initializeRaceResultsMessageBoxes(void) {
     setMessageBoxViewSpacePosition(5, 96.0f, 0.0f, 0.0f);
     setMessageBoxLineAndRowSizes(5, 0xA, 2);
     setMessageBoxSpacing(5, 0, 2);
-    setMessageBoxFont(5, 0xE, 0xE, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
+    setMessageBoxFont(5, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(5, -4, 2);
     setMessageBoxSpriteIndices(5, 0xFF, 0, 0);
     setMessageBoxButtonMask(5, BUTTON_A);
@@ -9546,10 +9548,10 @@ void fadeOutRaceResultsSprites(void) {
 
 }
 
-// INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_801220CC);
+// INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", horseRaceRacerNames);
 
 // race strings
-static const u8 D_801220CC[19][6] = {
+static const u8 horseRaceRacerNames[19][6] = {
     { 0xA7, 0xCF, 0xBB, 0xCC, 0xBE, 0xFF }, 
     { 0xB4, 0xBF, 0xC3, 0xC9, 0xC2, 0xFF }, 
     { 0xB4, 0xC3, 0xC8, 0xC1, 0xBF, 0xC8 }, 
@@ -9571,9 +9573,9 @@ static const u8 D_801220CC[19][6] = {
     { 0xAF, 0xC4, 0xBB, 0xC5, 0xC3, 0xFF },
 };
 
-//INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", D_80122140);
+//INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", dogRaceRacerNames);
 
-static const u8 D_80122140[19][6] = {
+static const u8 dogRaceRacerNames[19][6] = {
     { 0xB4, 0xBB, 0xCC, 0xC9, 0xFF, 0xFF }, 
     { 0xB7, 0xC9, 0xC8, 0xBE, 0xBF, 0xCC }, 
     { 0xB0, 0xC9, 0xBD, 0xC2, 0xC3, 0xFF }, 
@@ -9727,7 +9729,7 @@ void loadRaceGiftsScreenSprites(void) {
     
     setNumberSprites(2, 0x97, (u32)&_moneyTextureSegmentRomStart, (u32)&_moneyTextureSegmentRomEnd, (u32)&_moneyAssetsIndexSegmentRomStart, (u32)&_moneyAssetsIndexSegmentRomEnd, (u8*)GOLD_UI_TEXTURE_BUFFER, (u16*)GOLD_UI_PALETTE_BUFFER, (AnimationFrameMetadata*)GOLD_UI_ANIMATION_FRAME_METADATA_BUFFER, (u32*)GOLD_UI_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 1, 0, -24.0f, 6.0f, 256.0f, 10);
     
-    dmaNumberSprites(2, D_80205204, 3, 3);
+    dmaNumberSprites(2, medalBalance, 3, 3);
     setNumberSpritesRGBA(2, 255, 255, 255, 255);
     
     dmaSprite(CURSOR_HAND, (u32)&_dialogueButtonIconsTextureSegmentRomStart, (u32)&_dialogueButtonIconsTextureSegmentRomEnd, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomStart, (u32)&_dialogueButtonIconsAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, NULL, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
@@ -9875,8 +9877,8 @@ void raceGiftsScreenCallback(void) {
             
             if (checkDailyEventBit(HORSE_RACE)) {
                 
-                if (adjustValue(D_80205204, -buff[overlayScreenTable.cellIndex], 9999) == -buff[overlayScreenTable.cellIndex]) {
-                    D_80205204 += adjustValue(D_80205204, -buff[overlayScreenTable.cellIndex], 9999);
+                if (adjustValue(medalBalance, -buff[overlayScreenTable.cellIndex], 9999) == -buff[overlayScreenTable.cellIndex]) {
+                    medalBalance += adjustValue(medalBalance, -buff[overlayScreenTable.cellIndex], 9999);
                     initializeMessageBox(0, FESTIVALS_TEXT_INDEX, 13, 0);
                     overlayScreenTable.screenState = 3;
                     handleGetHorseRacePrize(overlayScreenTable.cellIndex);
@@ -9887,8 +9889,8 @@ void raceGiftsScreenCallback(void) {
                 
             } else {
 
-                if (adjustValue(D_80205204, -buff2[overlayScreenTable.cellIndex ], 9999) == -buff2[overlayScreenTable.cellIndex]) {
-                    D_80205204 += adjustValue(D_80205204, -buff2[overlayScreenTable.cellIndex], 9999);
+                if (adjustValue(medalBalance, -buff2[overlayScreenTable.cellIndex ], 9999) == -buff2[overlayScreenTable.cellIndex]) {
+                    medalBalance += adjustValue(medalBalance, -buff2[overlayScreenTable.cellIndex], 9999);
                     initializeMessageBox(0, FESTIVALS_TEXT_INDEX, 13, 0);
                     overlayScreenTable.screenState = 3;
                     handleGetDogRacePrize(overlayScreenTable.cellIndex);

@@ -2,7 +2,7 @@
 
 #include "game/groundObjects.h"
 
-extern u8 D_80114E50[FIELD_HEIGHT][FIELD_WIDTH];
+extern u8 demoCutsceneFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 extern u8 D_80115030[FIELD_HEIGHT][FIELD_WIDTH];
 extern u8 D_80115210[FIELD_HEIGHT][FIELD_WIDTH];
 extern u8 D_801153F0[FIELD_HEIGHT][FIELD_WIDTH];

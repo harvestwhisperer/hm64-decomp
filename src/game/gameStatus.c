@@ -603,7 +603,7 @@ void updateFarmStatusTyphoon(void) {
 
         if (!getRandomNumberInRange(0, 3)) {
 
-            memcpy(greenhouseFieldTiles, D_80113760, FIELD_HEIGHT * FIELD_WIDTH);
+            memcpy(greenhouseFieldTiles, greenhouseResetFieldTiles, FIELD_HEIGHT * FIELD_WIDTH);
 
             setLifeEventBit(GREENHOUSE_DESTROYED);
             clearLifeEventBit(HAVE_GREENHOUSE);
@@ -1049,7 +1049,7 @@ inline u32 checkLetterInMailBox(u16 bitIndex) {
     return mailboxBits[temp / 32] & (1 << (temp & 0x1F));
 }
 
-static inline void clearLetterBit(u32 i, u32 mailBox) {
+static inline void toggleLetterBit(u32 i, u32 mailBox) {
     mailboxBits[i / 32] &= ~mailBox;
 }
 
@@ -1079,7 +1079,7 @@ u8 readMail(void) {
         
         if (mailBox & letterBit) {
 
-            clearLetterBit(i, letterBit);
+            toggleLetterBit(i, letterBit);
             setReadMail(i, letterBit);
             
             result = i;

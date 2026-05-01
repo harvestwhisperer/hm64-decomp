@@ -65,7 +65,7 @@ typedef struct {
     u8 babyBirthdayDate;        // 0x53
 
     u32 acquiredPowerNutBits;           // 0x54-0x57
-    u32 unk_58;                 // 0x58-0x5B (D_80205204)
+    u32 medalBalance;                 // 0x58-0x5B
     u8 flowerShopPoints;        // 0x5C
     u8 bakeryCardPoints;        // 0x5D
     u8 elliGrievingCounter;    // 0x5E
@@ -142,8 +142,8 @@ typedef struct {
     u8 padding_118[0x268];      // 0x118-0x37F
 
     u8 toolboxSlots[32];      // 0x380-0x39F
-    u8 unk_3A0[32];             // 0x3A0-0x3BF (D_80237420)
-    u8 unk_3C0[32];             // 0x3C0-0x3DF (D_801890E8)
+    u8 freezerItemSlots[32];             // 0x3A0-0x3BF
+    u8 cabinetItemSlots[32];             // 0x3C0-0x3DF
 
     u8 padding_3E0[0x20];       // 0x3E0-0x3FF
 
@@ -159,8 +159,7 @@ typedef struct {
 
     u8 padding_4B0[0x10];       // 0x4B0-0x4BF
 
-    // 0x4C0: (D_80189108[5][7])
-    u8 D_80189108[35];     // 0x4C0-0x4E2
+    u8 calendarStickerGrid[35];     // 0x4C0-0x4E2
 
     u8 padding_4E3[0x1D];       // 0x4E3-0x4FF
 

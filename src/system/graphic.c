@@ -30,9 +30,9 @@ static LookAt gSPLookAtBufferA;
 static LookAt gSPLookAtBufferB;
 
 Camera gCamera;
-Gfx initGfxList[2][0x20];
+Gfx initGfxList[2][0x20] __attribute__((aligned(16)));
 Gfx sceneGraphDisplayList[2][0x500] __attribute__((aligned(16)));
-Gfx D_80205000[2][0x20];
+Gfx viewportGfxList[2][0x20] __attribute__((aligned(16)));
                         
 // rodata
 static const char gfxExceptionStr1[] = "EX";
@@ -113,18 +113,18 @@ volatile u8 startGfxTask(void) {
 
 volatile u8 doViewportGfxTask(void) {
 
-    Gfx *dl = D_80205000[gGraphicsBufferIndex];
+    Gfx *dl = viewportGfxList[gGraphicsBufferIndex];
     
     gSPDisplayList(dl++, OS_K0_TO_PHYSICAL(&viewportDL));
     gDPFullSync(dl++);
     gSPEndDisplayList(dl++);
 
-    if (dl - D_80205000[gGraphicsBufferIndex] >= 32) {
+    if (dl - viewportGfxList[gGraphicsBufferIndex] >= 32) {
         // FIXME: get string literals working
         __assert(&gfxExceptionStr1, &gfxExceptionStr2, 319);
     }
 
-    nuGfxTaskStart(D_80205000[gGraphicsBufferIndex], (s32)(dl - D_80205000[gGraphicsBufferIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX, NU_SC_SWAPBUFFER);
+    nuGfxTaskStart(viewportGfxList[gGraphicsBufferIndex], (s32)(dl - viewportGfxList[gGraphicsBufferIndex]) * sizeof(Gfx), NU_GFX_UCODE_F3DEX, NU_SC_SWAPBUFFER);
     
     gfxTaskNo += 1;
 

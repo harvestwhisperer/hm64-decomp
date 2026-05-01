@@ -1,5 +1,5 @@
 ; ============================================================
-; Bank 15 - Village 2 Cutscenes
+; Bank 16 - Village 2 Cutscenes
 ; ============================================================
 ; Bytecode segment 15 (dispatched by src/game/cutscenes.c when
 ; gCutsceneIndex is in 500..599). The dispatch table below covers
@@ -2047,7 +2047,7 @@
 ; ============================================================
 ; Cutscene 523 - animal funeral
 ; ============================================================
-; Text 72 (Pastor),
+; Text 72 (Pastor: "Spirit of [DEAD_ANIMAL_NAME], rest peacefully"),
 ; text 73 (Doug lectures on animal care), text 74 (selection with
 ; date of death + reminder to look after animals).
 ; Swaps BGM to _creditsSegment, applies a -50 delta to gHappiness,

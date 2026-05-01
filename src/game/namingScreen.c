@@ -25,6 +25,7 @@
 
 #include "buffers/buffers.h"
 
+#include "assetIndices/cutscenes.h"
 #include "assetIndices/dialogues.h"
 #include "assetIndices/sequences.h"
 #include "assetIndices/sfxs.h"
@@ -41,7 +42,7 @@ NamingScreenContext namingScreenContext;
 
 // data
 // japanese strings
-u8 D_8011C680[13][6] = { 
+u8 prohibitedNamesJP[13][6] = { 
     { 0x6E, 0x77, 0xE1, 0xFF, 0xFF, 0xFF },
     { 0x96, 0x94, 0x77, 0xFF, 0xFF, 0xFF },
     { 0x53, 0x77, 0x9D, 0xFF, 0xFF, 0xFF },
@@ -293,7 +294,7 @@ void namingScreenCallback(void) {
 
                  case NAMING_SCREEN_TYPE_HORSE:
                     setLevelAudio(gBaseMapIndex, gSeason, gHour);
-                    gCutsceneIndex = 651;
+                    gCutsceneIndex = CUTSCENE_RANCH_HORSE_NAMING_FOLLOWUP;
                     loadCutscene();
                     exitOverlayScreen();
                     setLevelLighting(8, MAIN_GAME);
@@ -306,23 +307,23 @@ void namingScreenCallback(void) {
 
                     switch (gWife) {
                         case MARIA:
-                            gCutsceneIndex = 5;
+                            gCutsceneIndex = CUTSCENE_HOUSE_MARIA_AFTER_BABY_NAMING;
                             clearSpecialDialogueBit(MARIA_PREGNANT_DIALOGUE);
                             break;
-                        case POPURI:                            
-                            gCutsceneIndex = 12;
+                        case POPURI:
+                            gCutsceneIndex = CUTSCENE_HOUSE_POPURI_AFTER_BABY_NAMING;
                             clearSpecialDialogueBit(POPURI_PREGNANT_DIALOGUE);
                             break;
-                        case ELLI:                            
-                            gCutsceneIndex = 19;
+                        case ELLI:
+                            gCutsceneIndex = CUTSCENE_HOUSE_ELLI_AFTER_BABY_NAMING;
                             clearSpecialDialogueBit(ELLI_PREGNANT_DIALOGUE);
                             break;
-                        case ANN:                            
-                            gCutsceneIndex = 26;
+                        case ANN:
+                            gCutsceneIndex = CUTSCENE_HOUSE_ANN_AFTER_BABY_NAMING;
                             clearSpecialDialogueBit(ANN_PREGNANT_DIALOGUE);
                             break;
-                        case KAREN:                            
-                            gCutsceneIndex = 33;
+                        case KAREN:
+                            gCutsceneIndex = CUTSCENE_HOUSE_KAREN_AFTER_BABY_NAMING;
                             clearSpecialDialogueBit(KAREN_PREGNANT_DIALOGUE);
                             break;
                         }
@@ -939,8 +940,8 @@ bool checkNameProhibited(void) {
     int endWord;
     
     u8 *currentNamePtr;
-    u8 *D_8011C680_ptr;
-    u8 *D_8011C680_stringPtr;
+    u8 *prohibitedNamesJP_ptr;
+    u8 *prohibitedNamesJP_stringPtr;
     u8 *namingScreenContextNamePtr;
     
     processedWordCount = 0;
@@ -949,7 +950,7 @@ bool checkNameProhibited(void) {
     spaceChar = 0xEE;
     endChar = 0xFF;
     
-    D_8011C680_ptr = D_8011C680;
+    prohibitedNamesJP_ptr = prohibitedNamesJP;
     
     while (processedWordCount < 13) {
         
@@ -957,11 +958,11 @@ bool checkNameProhibited(void) {
         do { 
             processingChar = 0; 
             doneProcessingWord = 0; 
-            D_8011C680_stringPtr = D_8011C680_ptr; 
+            prohibitedNamesJP_stringPtr = prohibitedNamesJP_ptr; 
         } while (0);
         
         currentNamePtr = namingScreenContextNamePtr;
-        endWord = D_8011C680_stringPtr + 6;
+        endWord = prohibitedNamesJP_stringPtr + 6;
         
         do {
         
@@ -969,19 +970,19 @@ bool checkNameProhibited(void) {
                 
                 processingChar = TRUE;
                 
-                if (*currentNamePtr != *D_8011C680_stringPtr) {
+                if (*currentNamePtr != *prohibitedNamesJP_stringPtr) {
                     
                     if (*currentNamePtr != spaceChar) {
                         doneProcessingWord = TRUE;
                         break;
-                    } else if (*D_8011C680_stringPtr != endChar) {
+                    } else if (*prohibitedNamesJP_stringPtr != endChar) {
                         doneProcessingWord = TRUE;
                         break;
                     }
                     
                 } else {
                 
-                    D_8011C680_stringPtr++;
+                    prohibitedNamesJP_stringPtr++;
                     currentNamePtr++;
                     continue;
                 
@@ -989,22 +990,22 @@ bool checkNameProhibited(void) {
                 
             }
                     
-            D_8011C680_stringPtr++;
+            prohibitedNamesJP_stringPtr++;
         
             // FIXME
-            if (*D_8011C680_ptr) {
+            if (*prohibitedNamesJP_ptr) {
                 currentNamePtr++;
             } else {
                 currentNamePtr++;
             }
         
-        } while ((s32)D_8011C680_stringPtr < (s32)endWord);
+        } while ((s32)prohibitedNamesJP_stringPtr < (s32)endWord);
             
         if (doneProcessingWord) {
             
             processedWordCount++;
             // skip to next word
-            D_8011C680_ptr += 6;
+            prohibitedNamesJP_ptr += 6;
         
             if (processedWordCount >= 13) {
                 return TRUE;

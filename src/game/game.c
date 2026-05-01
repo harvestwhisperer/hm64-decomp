@@ -13,6 +13,7 @@
 #include "system/message.h"
 
 #include "game/animals.h"
+#include "game/cutsceneCompletionFlags.h"
 #include "game/cutscenes.h"
 #include "game/evaluation.h"
 #include "game/groundObjects.h"
@@ -961,8 +962,7 @@ void showDialogueTextBox(u8 dialogueMenuIndex) {
 
 void setMapAudioAndLighting(void) {
     
-    // ?
-    if (gCutsceneCompletionFlags < 0) {
+    if (gCutsceneCompletionFlags & CUTSCENE_COMPLETION_OWN_AUDIO_LIGHTING) {
         setMainLoopCallbackFunctionIndex(MAIN_GAME);
     } else {
         
@@ -1152,7 +1152,7 @@ void handleDialogueCallback(void) {
         }
          
         setOverlayIconSprite(0, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0xFE, 106.0f, -15.0f, 0.0f);
-        setOverlayIconSprite(1, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 0xD, 0xFE, 106.0f, -15.0f, 0.0f);
+        setOverlayIconSprite(1, 0x78, &_dialogueButtonIconsTextureSegmentRomStart, &_dialogueButtonIconsTextureSegmentRomEnd, &_dialogueButtonIconsAssetsIndexSegmentRomStart, &_dialogueButtonIconsAssetsIndexSegmentRomEnd, (u8*)DIALOGUE_ICON_TEXTURE_BUFFER, (u16*)DIALOGUE_ICON_PALETTE_BUFFER, (AnimationFrameMetadata*)DIALOGUE_ICON_ANIMATION_FRAME_METADATA_BUFFER, (u32*)DIALOGUE_ICON_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 13, 0xFE, 106.0f, -15.0f, 0.0f);
        
         // update stuff after closing dialogue 
         func_8005CDCC();
@@ -2414,7 +2414,7 @@ void dialogueMenuCallback() {
                         break;
                     
                     case 1:                      
-                        launchIntroCutscene_2(FUNERAL, SQUARE_SPAWN_POINT_1, 1);
+                        launchIntroCutscene_2(CUTSCENE_FUNERAL, SQUARE_SPAWN_POINT_1, 1);
                         break;
 
                 }
@@ -2458,9 +2458,9 @@ void endOfFestivalDayCallback1(void) {
             case 405 ... 409:
                 initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, FESTIVALS_TEXT_INDEX, 77, 0);
                 break;
-            case SEA_FESTIVAL:
-            case EGG_FESTIVAL:
-            case NEW_YEAR_FESTIVAL:
+            case CUTSCENE_SEA_FESTIVAL:
+            case CUTSCENE_EGG_FESTIVAL:
+            case CUTSCENE_NEW_YEAR_FESTIVAL:
                 initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, FESTIVALS_TEXT_INDEX, 74, 0);
                 break;
             case 416:
