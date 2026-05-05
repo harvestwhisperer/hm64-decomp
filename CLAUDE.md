@@ -76,7 +76,6 @@ hm64-decomp-master/
 
 The project uses GNU Make with the MIPS Linux GNU cross-compiler toolchain. Two compiler modes:
 - **Default (matching)**: KMC GCC 2.7.2 (`tools/gcc-2.7.2/`) -- produces byte-identical ROM
-- **Modern GCC**: `MODERN_GCC=1` -- uses system `mips-linux-gnu-gcc`, non-matching but enables warnings
 
 Key build targets:
 - `make` / `make all` -- build and verify ROM matches original

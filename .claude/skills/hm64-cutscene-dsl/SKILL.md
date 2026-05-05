@@ -454,7 +454,7 @@ For the matching decompilation build, the transpiled output must produce byte-id
 
 This workflow adds a new cutscene bank to the ROM from a fresh `.cutscene` source file. It is a **source-build modding flow**, not a matching change — the ROM will shift, and the default `master` build will fail its checksum the moment a new bank is linked in.
 
-**Branch requirement.** Use `dev` or `dev-qol` and build with [Makefile.modding](Makefile.modding). Those branches already have shiftability wired up — `common_bss.ld` is cleared, `bssPadding.o` is removed, and `MODERN_GCC=1` is available. If the user is currently on `master`, check `git status` for uncommitted work and confirm before running `git checkout dev` / `dev-qol`.
+**Branch requirement.** Use `dev` or `dev-qol` and build with [Makefile](Makefile). Those branches already have shiftability wired up — `common_bss.ld` is cleared, `bssPadding.o` is removed. If the user is currently on `master`, check `git status` for uncommitted work and confirm before running `git checkout dev` / `dev-qol`.
 
 **Do not use `make` / the default Makefile** for this flow — it will fail the checksum check as soon as any cutscene bank changes size. Always build with:
 

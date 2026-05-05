@@ -251,7 +251,7 @@ extern void initializeHorseEntity();
 extern void initializeChickenEntity(u8);
 extern void initializeFarmAnimalEntity(u8 index);
 extern void initializeMiscAnimalEntity(u8, u8);
-extern void spawnWildAnimals();
+extern void spawnMiscAnimals();
 extern void handleFarmAnimalPlayerCollision();
 extern void handleChickenPlayerCollision();
 extern void handleDogPlayerCollision();
