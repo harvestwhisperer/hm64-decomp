@@ -639,7 +639,6 @@ void setupLevelMap(u16 mapIndex) {
     }
     
     setGridToTileTextureMappings(MAIN_MAP_INDEX);
-    setGroundObjects(MAIN_MAP_INDEX);
 
 }
 

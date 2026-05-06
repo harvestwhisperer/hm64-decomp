@@ -56,8 +56,8 @@ hm64-decomp-master/
 │   └── jp/               # splat.jp.yaml, symbol_addrs.txt, undefined_funcs/syms.txt
 ├── spec                  # ROM layout specification (segment definitions)
 ├── Makefile              # Main build (matching, US)
-├── Makefile.jp           # Japanese version build
 ├── Makefile.common       # Shared recipes
+├── Makefile.jp           # Japanese version build
 └── docs/                 # Documentation (cutscene readability guide, etc.)
 ```
 
@@ -74,8 +74,7 @@ hm64-decomp-master/
 
 ## Build System
 
-The project uses GNU Make with the MIPS Linux GNU cross-compiler toolchain. Two compiler modes:
-- **Default (matching)**: KMC GCC 2.7.2 (`tools/gcc-2.7.2/`) -- produces byte-identical ROM
+The project uses GNU Make with the MIPS Linux GNU cross-compiler toolchain. Uses KMC GCC 2.7.2 (`tools/gcc-2.7.2/`) to produce a byte-identical ROM.
 
 Key build targets:
 - `make` / `make all` -- build and verify ROM matches original
@@ -106,7 +105,7 @@ The codebase contains many generic or auto-generated names (e.g., `func_XXXXXXXX
 - The `config/us/symbol_addrs.txt` file maps symbol names to ROM addresses
 
 ### Matching Refactors
-When refactoring decompiled code, the ROM must still match byte-for-byte. Always verify with `make` (which runs a checksum comparison). Use the default compiler (KMC GCC 2.7.2), not `MODERN_GCC=1`. The `config/us/common_bss.ld` file hardcodes BSS addresses for matching -- do not modify it for matching builds.
+When refactoring decompiled code, the ROM must still match byte-for-byte. Always verify with `make` (which runs a checksum comparison). Use the default compiler (KMC GCC 2.7.2). The `config/us/common_bss.ld` file hardcodes BSS addresses for matching -- do not modify it for matching builds.
 
 ## Key Files for Orientation
 - `src/game/game.c` -- main game loop and state machine

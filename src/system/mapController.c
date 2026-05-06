@@ -196,11 +196,17 @@ bool dmaMapAssets(u16 mainMapIndex, u16 levelMapIndex) {
     u8 *mapAdditionsMetadata; 
  
     if (mainMapIndex == MAIN_MAP_INDEX && mc->flags & MAP_CONTROLLER_INITIALIZED) {
-        
-        mc->mapIndex = levelMapIndex;
-        
-        dmaReadRom(mda->romStart, mc->mapDataIndex, mda->romEnd - mda->romStart);
- 
+
+        if (!(mc->flags & MAP_CONTROLLER_DATA_CACHED) || mc->mapIndex != levelMapIndex) {
+            
+            mc->mapIndex = levelMapIndex;
+            
+            dmaReadRom(mda->romStart, mc->mapDataIndex, mda->romEnd - mda->romStart);
+            
+            mc->flags |= MAP_CONTROLLER_DATA_CACHED;
+
+        }
+
         mapGrid = getAddress(mc->mapDataIndex, 0);
         mesh = getAddress(mc->mapDataIndex, 1);
         terrainQuads = getAddress(mc->mapDataIndex, 2);
@@ -513,8 +519,8 @@ void deactivateAllMapControllers(void) {
     u16 i;
 
     for (i = 0; i < MAX_MAPS; i++) {
-        mapControllers[i].flags &= ~(MAP_CONTROLLER_ASSETS_LOADED | MAP_CONTROLLER_ACTIVE);        
-    }    
+        mapControllers[i].flags &= ~(MAP_CONTROLLER_ASSETS_LOADED | MAP_CONTROLLER_ACTIVE | MAP_CONTROLLER_DATA_CACHED);
+    }
 
 }
 

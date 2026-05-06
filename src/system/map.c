@@ -65,11 +65,13 @@ Vtx tileVertices[2][2560];
 Vtx groundObjectVertices[2][320][4];
 Gfx groundObjectBitmapsDisplayList[2][0x1000] __attribute__((aligned(16)));
 
+static f32 groundObjectTerrainHeightCache[GROUND_OBJECT_GRID_SIZE];
+
 u16 previousGridPositionForTileTexture[MAX_TILE_TEXTURES];
 
 // data 
 
-u8 gridIndexToTileIndexX[20 * 24] = {
+u8 gridIndexToTileIndexX[GROUND_OBJECT_GRID_SIZE] = {
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
     0x10, 0x11, 0x12, 0x13, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B,
     0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -102,7 +104,7 @@ u8 gridIndexToTileIndexX[20 * 24] = {
     0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13,
 };
 
-u8 gridIndexToTileIndexZ[20 * 24] = {
+u8 gridIndexToTileIndexZ[GROUND_OBJECT_GRID_SIZE] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
     0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
@@ -164,9 +166,9 @@ static inline u16 swap16TileIndex(Swap16 halfword) {
 }
 
 void initializeMap(void) {
- 
-    u16 i, j; 
-     
+
+    u16 i, j;
+
     globalBobbingFrameCounter = 0;
     globalBobbingYOffset = 0;
     
@@ -301,7 +303,7 @@ bool setupMap(u16 mapIndex,
             mm->weatherSprites[i].flags = 0;
         }
 
-        for (i = 0; i < 480; i++) {
+        for (i = 0; i < GROUND_OBJECT_GRID_SIZE; i++) {
             mm->groundObjects.gridToSpriteIndex[i] = 0;
             mm->groundObjects.previousGridToSpriteIndex[i] = 0;
             mm->groundObjects.nextGridToSpriteIndex[i] = 0;
@@ -775,8 +777,8 @@ bool setMapObjectAnimation(u16 mapIndex, u8 mapObjectIndex, u16 animationIndex) 
 }
 
 bool deactivateMapObject(u16 mapIndex, u8 index) {
+    
     MainMap *mm = &mainMap[mapIndex];
-
 
     bool result = FALSE; 
 
@@ -793,11 +795,9 @@ bool deactivateMapObject(u16 mapIndex, u8 index) {
     
 }
 
-// load and set texture for map spawnable sprite
-// called by level.c
 bool loadGroundObjects(u16 mapIndex, u8 x, u8 z, u32* textureIndex, u32* paletteIndex, u8* spriteToPaletteIndex, u32 romTextureStart, u32 romTextureEnd, u32 romAssetsIndexStart, u32 romAssetsIndexEnd, u8 y) {
+    
     MainMap *mm = &mainMap[mapIndex];
-
 
     bool result = FALSE;
     
@@ -818,21 +818,26 @@ bool loadGroundObjects(u16 mapIndex, u8 x, u8 z, u32* textureIndex, u32* palette
         // grid positions
         mm->groundObjects.x = x;
         mm->groundObjects.z = z;
-
         mm->groundObjects.y = y;
         
-        nuPiReadRom(romAssetsIndexStart, assetIndex, romAssetsIndexEnd - romAssetsIndexStart);
-        
-        offset1 = assetIndex[0];
-        offset2 = assetIndex[1];
-        offset3 = assetIndex[2];
-        offset4 = assetIndex[3];
-        offset5 = assetIndex[4];
-        
-        dmaReadRom(romTextureStart + offset1, mm->groundObjects.textureIndex, offset2 - offset1);
-        nuPiReadRom(romTextureStart + offset2, mm->groundObjects.paletteIndex, offset3 - offset2);
-        nuPiReadRom(romTextureStart + offset4, mm->groundObjects.spriteToPaletteIndex, offset5 - offset4);
-        
+        if (!(mapControllers[mapIndex].flags & MAP_CONTROLLER_GROUND_OBJECTS_CACHED)) {
+
+            nuPiReadRom(romAssetsIndexStart, assetIndex, romAssetsIndexEnd - romAssetsIndexStart);
+
+            offset1 = assetIndex[0];
+            offset2 = assetIndex[1];
+            offset3 = assetIndex[2];
+            offset4 = assetIndex[3];
+            offset5 = assetIndex[4];
+
+            dmaReadRom(romTextureStart + offset1, mm->groundObjects.textureIndex, offset2 - offset1);
+            nuPiReadRom(romTextureStart + offset2, mm->groundObjects.paletteIndex, offset3 - offset2);
+            nuPiReadRom(romTextureStart + offset4, mm->groundObjects.spriteToPaletteIndex, offset5 - offset4);
+
+            mapControllers[mapIndex].flags |= MAP_CONTROLLER_GROUND_OBJECTS_CACHED;
+
+        }
+
         result = TRUE;
 
     }
@@ -886,9 +891,11 @@ bool setGroundObjectBitmap(u16 mapIndex, u16 bitmapIndex, u16 spriteIndex, f32 x
 }
 
 inline u16 getTileIndexFromGrid(u16 mapIndex, u8 x, u8 z) {
+
     MainMap *mm = &mainMap[mapIndex];
 
     return swap16TileIndex((&mm->mapGrid.gridToTileIndex[mm->mapGrid.mapWidth * z])[x]);
+
 }
 
 f32 getTerrainHeightAtPosition(u16 mapIndex, f32 x, f32 z) {
@@ -1032,8 +1039,8 @@ Vec3f getTerrainHeight(TerrainQuad *quad, f32 x, f32 z, u8 fallbackHeight) {
 }
 
 bool checkTileHasGroundObject(u16 mapIndex, f32 x, f32 z) {
-    MainMap *mm = &mainMap[mapIndex];
 
+    MainMap *mm = &mainMap[mapIndex];
 
     Vec3f vec;
     
@@ -1210,8 +1217,8 @@ bool checkTileVisible(MainMap *map, u8 x, u8 z) {
 // }
 
 u8 updateGridsWithMapAdditions(u16 mapIndex, u16 mapAdditionIndex, u8 xCoord, u8 zCoord, u16 overridePosition) {
-    MainMap *mm = &mainMap[mapIndex];
 
+    MainMap *mm = &mainMap[mapIndex];
 
     Swap16 swap;
     
@@ -1288,8 +1295,8 @@ u8 updateGridsWithMapAdditions(u16 mapIndex, u16 mapAdditionIndex, u8 xCoord, u8
 
 // takes in rotated entity coordinates and returns index for interactable object/exit from rodata array per level
 u8 getLevelInteractionIndexFromPosition(u16 mapIndex, f32 x, f32 z) {
+   
     MainMap *mm = &mainMap[mapIndex];
-
 
     Vec3f vec1;
     Vec3f vec2;
@@ -1506,8 +1513,8 @@ void initializeMesh(MainMap* mainMap) {
 // implements a linked list for tile textures to grid positions to allow for batch rendering
 // i.e., tiles are rendered by texture order, not by grid position or tile number
 void setGridToTileTextureMappings(u16 mapIndex) {
-    MainMap *mm = &mainMap[mapIndex];
 
+    MainMap *mm = &mainMap[mapIndex];
 
     u8 i, j, k;
     u16 gridPosition;
@@ -1572,22 +1579,19 @@ void setGridToTileTextureMappings(u16 mapIndex) {
 }
 
 void setGroundObjects(u16 mapIndex) {
+
     MainMap *mm = &mainMap[mapIndex];
 
-
     u16 tempArr[0x40];
-    
-    u16 i, j;
+
+    u16 j;
     u8 k, m;
     u16 l;
-    
+    u16 spriteIndex;
     u16 temp;
+    s16 tileOffX, tileOffZ;
 
-    for (i = 0; i < MAX_GROUND_OBJECTS; i++) {
-        mm->groundObjects.spriteIndexToGrid[i] = 0xFFFF;
-    }
-
-    for (j = 0; j < 0x1E0; j++) {
+    for (j = 0; j < GROUND_OBJECT_GRID_SIZE; j++) {
         mm->groundObjects.previousGridToSpriteIndex[j] = 0;
         mm->groundObjects.nextGridToSpriteIndex[j] = 0;
     }
@@ -1596,30 +1600,30 @@ void setGroundObjects(u16 mapIndex) {
         mm->groundObjects.spriteIndexToGrid[k] = 0xFFFF;
         tempArr[k] = 0xFFFF;
     }
-    
-    for (l = 0; l < 0x1E0; l++) {
 
-        if (mm->groundObjects.gridToSpriteIndex[l] && mm->groundObjects.gridToSpriteIndex[l] != 0xFFFF) {
+    for (l = 0; l < GROUND_OBJECT_GRID_SIZE; l++) {
 
-            if (mm->groundObjects.spriteIndexToGrid[mm->groundObjects.gridToSpriteIndex[l]] == 0xFFFF) {
+        spriteIndex = mm->groundObjects.gridToSpriteIndex[l];
 
-                mm->groundObjects.spriteIndexToGrid[mm->groundObjects.gridToSpriteIndex[l]] = l;
-                tempArr[mm->groundObjects.gridToSpriteIndex[l]] = l;
+        if (spriteIndex && spriteIndex != 0xFFFF) {
+
+            if (mm->groundObjects.spriteIndexToGrid[spriteIndex] == 0xFFFF) {
+
+                mm->groundObjects.spriteIndexToGrid[spriteIndex] = l;
+                tempArr[spriteIndex] = l;
                 mm->groundObjects.previousGridToSpriteIndex[l] = 0xFFFF;
-                
+
             } else {
 
-                temp = tempArr[mm->groundObjects.gridToSpriteIndex[l]];
-                
-                tempArr[mm->groundObjects.gridToSpriteIndex[l]] = l;
-                
+                temp = tempArr[spriteIndex];
+                tempArr[spriteIndex] = l;
                 mm->groundObjects.nextGridToSpriteIndex[temp] = l;
                 mm->groundObjects.previousGridToSpriteIndex[l] = temp;
 
             }
-            
+
         }
-        
+
     }
 
     for (m = 0; m < MAX_GROUND_OBJECTS; m++) {
@@ -1627,7 +1631,29 @@ void setGroundObjects(u16 mapIndex) {
         if (tempArr[m] != 0xFFFF) {
             mm->groundObjects.nextGridToSpriteIndex[tempArr[m]] = 0xFFFF;
         }
+
+    }
+
+    if (!mm->groundObjects.y && (mm->mapState.flags & MAP_ACTIVE)) {
+
+        tileOffX = (s16)((-(mm->mapGrid.mapWidth * mm->mapGrid.tileSizeX) / 2)
+                 + (mm->mapGrid.tileSizeX * mm->groundObjects.x) - (mm->mapGrid.tileSizeX / 2));
+
+        tileOffZ = (s16)((-(mm->mapGrid.mapHeight * mm->mapGrid.tileSizeZ) / 2)
+                 + (mm->mapGrid.tileSizeZ * mm->groundObjects.z) - (mm->mapGrid.tileSizeZ / 2));
         
+        for (l = 0; l < GROUND_OBJECT_GRID_SIZE; l++) {
+        
+            spriteIndex = mm->groundObjects.gridToSpriteIndex[l];
+        
+            if (spriteIndex && spriteIndex != 0xFFFF) {
+                groundObjectTerrainHeightCache[l] = getTerrainHeightAtPosition(mapIndex,
+                    tileOffX + (gridIndexToTileIndexX[l] * 32),
+                    tileOffZ + (gridIndexToTileIndexZ[l] * 32));
+            }
+        
+        }
+
     }
 
 }
@@ -2204,30 +2230,30 @@ void setTerrainQuad(TerrainQuad* quad, u8* quadPtr, u16 tileIndex) {
 // }
 
 bool updateGroundObjects(u16 mapIndex) {
+
     MainMap *mm = &mainMap[mapIndex];
 
-
-    bool result;
+    bool result = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && (mm->mapState.flags & MAP_ACTIVE)) {
         
         if (!(mm->mapState.flags & MAP_GROUND_OBJECTS_LOADED)) {
             mm->mapState.flags |= MAP_GROUND_OBJECTS_LOADED;
             setGroundObjects(MAIN_MAP_INDEX);
+            result = TRUE;
         }
 
     }
 
-    // never initialized; whoops
     return result;
 
 }
 
 bool resetGroundObjectsLoaded(u16 mapIndex) {
+
     MainMap *mm = &mainMap[mapIndex];
 
-    
-    bool result  = 0;
+    bool result  = FALSE;
 
     if (mapIndex == MAIN_MAP_INDEX && (mm->mapState.flags & MAP_ACTIVE)) {
         mm->mapState.flags &= ~MAP_GROUND_OBJECTS_LOADED;
@@ -2311,10 +2337,9 @@ u8* getMapAdditionsMetadataPtrFromIndex(u16 arg0, u8 *arg1) {
 }
 */
 
-// called by func_800735FC
 bool setMapAdditionSequenceStep(u16 mapIndex, u16 mapAdditionIndex, u16 arg2, u16 arg3, u16 arg4) {
+    
     MainMap *mm = &mainMap[mapIndex];
-
 
     bool result = FALSE;
 
@@ -2337,8 +2362,8 @@ bool setMapAdditionSequenceStep(u16 mapIndex, u16 mapAdditionIndex, u16 arg2, u1
 }
 
 bool activateMapAddition(u16 mapIndex, u16 mapAdditionIndex, bool loopFlag) {
+    
     MainMap *mm = &mainMap[mapIndex];
-
 
     bool result = FALSE;
 
@@ -2365,33 +2390,33 @@ bool activateMapAddition(u16 mapIndex, u16 mapAdditionIndex, bool loopFlag) {
 }
 
 // used by unused entity function
-bool initializeMapAdditionAtPosition(u16 mapIndex, u16 mapAdditionIndex, u8 x, u8 z) {
-    MainMap *mm = &mainMap[mapIndex];
+// bool initializeMapAdditionAtPosition(u16 mapIndex, u16 mapAdditionIndex, u8 x, u8 z) {
 
+//     MainMap *mm = &mainMap[mapIndex];
 
-    bool result = FALSE;
+//     bool result = FALSE;
 
-    if (mapIndex == MAIN_MAP_INDEX && mm->mapState.flags & MAP_ACTIVE && mapAdditionIndex < 32) {
+//     if (mapIndex == MAIN_MAP_INDEX && mm->mapState.flags & MAP_ACTIVE && mapAdditionIndex < 32) {
 
-        if (!(mm->mapAdditions[mapAdditionIndex].flags & MAP_ADDITION_ACTIVE)) {
+//         if (!(mm->mapAdditions[mapAdditionIndex].flags & MAP_ADDITION_ACTIVE)) {
             
-            mm->mapAdditions[mapAdditionIndex].flags = 0;
-            mm->mapAdditions[mapAdditionIndex].processingTimer = 0;
-            mm->mapAdditions[mapAdditionIndex].currentStep = 0;
-            mm->mapAdditions[mapAdditionIndex].x = x;
-            mm->mapAdditions[mapAdditionIndex].z = z;
+//             mm->mapAdditions[mapAdditionIndex].flags = 0;
+//             mm->mapAdditions[mapAdditionIndex].processingTimer = 0;
+//             mm->mapAdditions[mapAdditionIndex].currentStep = 0;
+//             mm->mapAdditions[mapAdditionIndex].x = x;
+//             mm->mapAdditions[mapAdditionIndex].z = z;
 
-            mm->mapAdditions[mapAdditionIndex].flags |= (MAP_ADDITION_ACTIVE | 2);
+//             mm->mapAdditions[mapAdditionIndex].flags |= (MAP_ADDITION_ACTIVE | 2);
             
-            result = TRUE;
+//             result = TRUE;
 
-        }
+//         }
         
-    }
+//     }
     
-    return result;
+//     return result;
 
-}
+// }
 
 bool setStaticMapAddition(u16 mapIndex, u16 mapAdditionIndex) {
     MainMap *mm = &mainMap[mapIndex];
@@ -3132,8 +3157,8 @@ Gfx* renderGroundObject(Gfx* dl, MainMap* map, GroundObjectBitmap* bitmap, u16 v
 }
 
 Vec3f getGroundObjectWorldPosition(u16 mapIndex, u8 x, u8 z) {
-    MainMap *mm = &mainMap[mapIndex];
 
+    MainMap *mm = &mainMap[mapIndex];
 
     Vec3f vec;
 
@@ -3147,7 +3172,7 @@ Vec3f getGroundObjectWorldPosition(u16 mapIndex, u8 x, u8 z) {
     
     vec.y = getTerrainHeightAtPosition(MAIN_MAP_INDEX, vec.x, vec.z);
     
-    if (x < mm->groundObjects.x || z < mm->groundObjects.z || x >= mm->groundObjects.x + 0x14 || z >= mm->groundObjects.z + 0x18) {
+    if (x < mm->groundObjects.x || z < mm->groundObjects.z || x >= mm->groundObjects.x + 20 || z >= mm->groundObjects.z + 24) {
         vec.y = 65535.0f;
     }
     
@@ -3252,17 +3277,13 @@ void renderGroundObjects(MainMap* mainMap) {
                     
                         dl = renderGroundObject(dl, mainMap, &mainMap->groundObjectBitmaps[i], count);
 
-                        f3 = temp1 + (gridIndexToTileIndexX[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.x - 0.0f;
+                        f3 = temp1 + (gridIndexToTileIndexX[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.x;
                         f5 = temp2 + (gridIndexToTileIndexZ[gridIndex] * 32) + mainMap->groundObjectBitmaps[i].coordinates.z - 4.0f;
-                         
-                        terrainHeight = getTerrainHeightAtPosition(0, 
-                            f3,
-                            f5); 
 
-                        addGroundObjectToSceneGraph(mainMap, 
-                            f3, 
-                            terrainHeight, 
-                            f5, 
+                        addGroundObjectToSceneGraph(mainMap,
+                            f3,
+                            groundObjectTerrainHeightCache[gridIndex],
+                            f5,
                             f1, f2, startingPositionDl);
                         
                          count++;

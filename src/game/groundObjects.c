@@ -18,6 +18,8 @@
 
 #include "assetIndices/maps.h"
 
+static bool gBulkLoadingGroundObjects = FALSE;
+
 // bss
 u8 farmFieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
 u8 topOfMountain1FieldTiles[FIELD_HEIGHT][FIELD_WIDTH];
@@ -263,7 +265,9 @@ u8 getGroundObjectIndexFromTilePosition(u8 mapIndex, u8 heightIndex, u8 widthInd
 void setMapGroundObjects(u8 mapIndex) {
 
     u8 i, j;
-    
+
+    gBulkLoadingGroundObjects = TRUE;
+
     switch (mapIndex) {
 
         case FARM:
@@ -365,9 +369,11 @@ void setMapGroundObjects(u8 mapIndex) {
                     }
                 }
             }
-            break;   
+            break;
 
     }
+
+    gBulkLoadingGroundObjects = FALSE;
 }
 
 void clearForagableObjects(u8 mapIndex) {
@@ -1084,8 +1090,10 @@ inline void addGroundObjectToMap(u8 mapIndex, u8 groundObjectIndex, u8 x, u8 z) 
 
         }
 
-        setGroundObjects(MAIN_MAP_INDEX);
-        setGridToTileTextureMappings(MAIN_MAP_INDEX);
+        if (!gBulkLoadingGroundObjects) {
+            setGroundObjects(MAIN_MAP_INDEX);
+            setGridToTileTextureMappings(MAIN_MAP_INDEX);
+        }
 
     }
     

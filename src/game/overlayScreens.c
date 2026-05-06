@@ -9151,8 +9151,6 @@ void fadeOutRaceResultsSprites(void) {
 
 }
 
-// INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", horseRaceRacerNames);
-
 // race strings
 static const u8 horseRaceRacerNames[19][6] = {
     { 0xA7, 0xCF, 0xBB, 0xCC, 0xBE, 0xFF }, 
@@ -9175,8 +9173,6 @@ static const u8 horseRaceRacerNames[19][6] = {
     { 0xB0, 0xC9, 0xD3, 0xBB, 0xC8, 0xC9 }, 
     { 0xAF, 0xC4, 0xBB, 0xC5, 0xC3, 0xFF },
 };
-
-//INCLUDE_RODATA("asm/nonmatchings/game/overlayScreens", dogRaceRacerNames);
 
 static const u8 dogRaceRacerNames[19][6] = {
     { 0xB4, 0xBB, 0xCC, 0xC9, 0xFF, 0xFF }, 

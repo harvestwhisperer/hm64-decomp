@@ -37,6 +37,10 @@
 #define MAP_WEATHER_SPRITE_ACTIVE 1
 #define MAP_WEATHER_SPRITE_ANIMATION_STARTED 2
 
+#define GROUND_OBJECT_GRID_WIDTH  20
+#define GROUND_OBJECT_GRID_HEIGHT 24
+#define GROUND_OBJECT_GRID_SIZE   (GROUND_OBJECT_GRID_WIDTH * GROUND_OBJECT_GRID_HEIGHT)
+
 // 0x8013DC64
 typedef struct {
     u16 *gridToTileIndex; // 0x64
@@ -109,9 +113,9 @@ typedef struct {
     u8 z; // 0xCA5
     u8 y; // 0xCA6 - fixed world-space Y baseline; 0 = sample terrain height instead
     u16 spriteIndexToGrid[MAX_GROUND_OBJECTS]; // 0xCA8
-    u16 gridToSpriteIndex[0x1E0];
-    u16 previousGridToSpriteIndex[0x1E0];
-    u16 nextGridToSpriteIndex[0x1E0]; // 0xD28
+    u16 gridToSpriteIndex[GROUND_OBJECT_GRID_SIZE];
+    u16 previousGridToSpriteIndex[GROUND_OBJECT_GRID_SIZE];
+    u16 nextGridToSpriteIndex[GROUND_OBJECT_GRID_SIZE]; // 0xD28
 } GroundObjects;
 
 // 0x5528

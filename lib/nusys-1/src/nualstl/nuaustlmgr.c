@@ -30,21 +30,15 @@ static Acmd*    auCmdList_ptr[2]; /* pointer of command list */
 static NUScTask	auTask[2];		/* audio task buffer */
 static s16*     auBuffer_ptr[3];	/* audio buffer */
 
-// unused padding; probably indicates different struct layout
-static s32         D_801287F4; 
 static OSMesgQueue	auDmaMesgQ;
 
 static OSMesg		auDmaMesgBuf[NU_AU_DMA_QUEUE_NUM];
 static OSIoMesg		auDmaIOMesgBuf[NU_AU_DMA_QUEUE_NUM];
 
 static NUDMAState	auDmaState;
-// unused padding; probably indicates different struct layout
-static s32           D_80128F1C;
 
 static NUDMABuffer	auDmaBuf[NU_AU_DMA_BUFFER_NUM];
 static s32			auDmaNext;
-// unused padding; probably indicates different struct layout
-static s32            D_80129424; 
 
 static ALDMAproc auDmaNew(NUDMAState** state);
 static void nuAuMgr(void);
@@ -359,9 +353,7 @@ static void nuAuMgr(void)
     s32 temp;
     
     osCreateMesgQueue(&auMesgQ, auMsgBuf, NU_AU_MESG_MAX);
-    
     osCreateMesgQueue(&auRtnMesgQ, &auRtnMesgBuf, 1);
-    
     nuScAddClient(&auClient, &auMesgQ, NU_SC_RETRACE_MSG | NU_SC_PRENMI_MSG );
     
     temp = (nusched.retraceCount * auGlobal.drvr.maxOutSamples + 59) / 60;
@@ -387,7 +379,7 @@ static void nuAuMgr(void)
     
     while(1){
 	(void)osRecvMesg(&auMesgQ, (OSMesg*)&mesg_type, OS_MESG_BLOCK);
-    
+
 	switch(*mesg_type){
         case NU_SC_RETRACE_MSG:
         status = osAiGetStatus();

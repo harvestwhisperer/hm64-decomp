@@ -487,6 +487,13 @@ clean:
 	@rm -rf asm
 	@find assets -type f -name "*.s" -delete 2>/dev/null || true
 
+clean-objects:
+	@find $(BUILD_DIR) -name '*.o' -delete 2>/dev/null || true
+	@rm -f $(LD_SCRIPT)
+	@rm -f $(BASENAME).elf
+	@rm -f $(BASENAME).map
+	@rm -f $(TARGET)
+
 # Clean only extracted bin files (not extracted texts)
 clean-extracted:
 	@rm -rf bin

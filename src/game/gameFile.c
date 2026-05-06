@@ -589,11 +589,9 @@ void gameSelectCallback(void) {
                     
                     switch (loadGameScreenContext.actionColumnHighlighted) {                
                         case 0:                          
-                            // delete   
                             loadGameScreenContext.action = LOAD_GAME_ACTION_PICK_DELETE_TARGET;
                             break;
                         case 1:                            
-                            // move 
                             loadGameScreenContext.action = LOAD_GAME_ACTION_PICK_MOVE_SOURCE;
                             break;
                         case 2:                             
@@ -605,7 +603,6 @@ void gameSelectCallback(void) {
                             setMessageBoxRGBAWithTransition(1, 0, 0, 0, 0, 0x18);
                             setMessageBoxRGBAWithTransition(2, 0, 0, 0, 0, 0x18);
                             setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 0x18);
-                            // load farm ranking screen
                             loadGameScreenContext.action = LOAD_GAME_ACTION_OPEN_RANKING;
                             playSfx(0);
                             break;

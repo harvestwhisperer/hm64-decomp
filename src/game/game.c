@@ -932,7 +932,7 @@ void setMapAudioAndLighting(void) {
             setLevelAudio(gBaseMapIndex, gSeason, gHour);
         }
          
-        setLevelLighting(8, 1);
+        setLevelLighting(12, 1);
     
     }
 
@@ -1014,8 +1014,8 @@ inline void handleExitLevel(u16 arg0, u16 callbackIndex) {
     u8 nextMusicIndex;
 
     // fade out map and entities
-    setMapControllerRGBAWithTransition(MAIN_MAP_INDEX, 0, 0, 0, 0, 8);
-    setEntitiesRGBAWithTransition(0, 0, 0, 0, 8);
+    setMapControllerRGBAWithTransition(MAIN_MAP_INDEX, 0, 0, 0, 0, 12);
+    setEntitiesRGBAWithTransition(0, 0, 0, 0, 12);
 
     nextMapIndex = getMapForSpawnPoint(gSpawnPointIndex);
     currentMusicIndex = getMusicIndexForMap(gBaseMapIndex, gSeason, gHour);
@@ -1047,9 +1047,7 @@ void levelLoadCallback(void) {
 
     handleCutsceneCompletion();
 
-    if (checkMapRGBADone(MAIN_MAP_INDEX)) {
-        setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
-    }
+    setMainLoopCallbackFunctionIndex(gameLoopContext.callbackIndex);
 
 }
 
