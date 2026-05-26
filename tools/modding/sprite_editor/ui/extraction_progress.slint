@@ -1,0 +1,55 @@
+import { VerticalBox } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+// Modal progress bar shown while ROM extraction runs in a background thread.
+// `done` and `total` drive the fill; `current` is the per-step status text
+// (e.g. the sprite currently being extracted).
+export component ExtractionProgress inherits Rectangle {
+    in property <int> done: 0;
+    in property <int> total: 0;
+    in property <string> current: "";
+
+    background: Theme.overlay-backdrop-strong;
+    Rectangle {
+        x: (parent.width - 420px) / 2;
+        y: (parent.height - 140px) / 2;
+        width: 420px;
+        height: 140px;
+        background: Theme.bg-panel;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: Theme.border;
+        VerticalBox {
+            padding: 16px;
+            spacing: 8px;
+            Text {
+                text: "Extracting ROM…";
+                color: white;
+                font-size: 14px;
+                font-weight: 700;
+            }
+            Text {
+                text: root.current != "" ? root.current : "Preparing…";
+                color: Theme.text-secondary;
+            }
+            Rectangle {
+                height: 16px;
+                background: Theme.bg-window;
+                border-radius: 4px;
+                Rectangle {
+                    x: 0;
+                    y: 0;
+                    width: root.total > 0 ? parent.width * (root.done / root.total) : 0px;
+                    height: parent.height;
+                    background: Theme.accent-progress;
+                    border-radius: 4px;
+                }
+            }
+            Text {
+                text: root.total > 0 ? "\{root.done} / \{root.total} sprites" : "";
+                color: Theme.text-muted;
+                horizontal-alignment: right;
+            }
+        }
+    }
+}

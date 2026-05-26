@@ -5,9 +5,14 @@ Contains:
 - CHAR_MAP: Byte value to character mapping
 - CONTROL_CODES: Text control code definitions
 - GAMEVAR_MACROS: Game variable string indices
-- CHARACTER_AVATAR_MACROS: Character avatar indices
+- load_character_avatar_macros(): parses character avatar macros from the
+  sprite-editor-generated characterAvatars.h
 """
 
+from __future__ import annotations
+
+import re
+from pathlib import Path
 from typing import Dict
 
 # Character map: byte value -> display character
@@ -316,67 +321,99 @@ GAMEVAR_MACROS: Dict[int, str] = {
 
 GAMEVAR_MACRO_TO_INDEX = {v: k for k, v in GAMEVAR_MACROS.items()}
 
-CHARACTER_AVATAR_MACROS: Dict[int, str] = {
-    0: 'MARIA_1', 1: 'MARIA_2', 2: 'MARIA_3', 3: 'MARIA_4', 4: 'MARIA_5',
-    5: 'POPURI_1', 6: 'POPURI_2', 7: 'POPURI_3', 8: 'POPURI_4', 9: 'POPURI_5',
-    10: 'ELLI_1', 11: 'ELLI_2', 12: 'ELLI_3', 13: 'ELLI_4', 14: 'ELLI_5',
-    15: 'ANN_1', 16: 'ANN_2', 17: 'ANN_3', 18: 'ANN_4', 19: 'ANN_5',
-    20: 'KAREN_1', 21: 'KAREN_2', 22: 'KAREN_3', 23: 'KAREN_4', 24: 'KAREN_5',
-    25: 'GRAY_1', 26: 'GRAY_2',
-    27: 'CLIFF_1', 28: 'CLIFF_2', 29: 'CLIFF_3',
-    30: 'JEFF_1', 31: 'JEFF_2', 32: 'JEFF_3',
-    33: 'KAI_1', 34: 'KAI_2', 35: 'KAI_3',
-    36: 'HARRIS_1', 37: 'HARRIS_2', 38: 'HARRIS_3',
-    39: 'PASTOR_1', 40: 'PASTOR_2', 41: 'PASTOR_3',
-    42: 'KENT_1', 43: 'KENT_2', 44: 'KENT_3',
-    45: 'STU_1', 46: 'STU_2', 47: 'STU_3',
-    48: 'MAY_1', 49: 'MAY_2', 50: 'MAY_3',
-    51: 'MAYOR_1', 52: 'MAYOR_2',
-    53: 'RICK_1', 54: 'RICK_2', 55: 'RICK_3',
-    56: 'POTION_SHOP_DEALER_1', 57: 'POTION_SHOP_DEALER_2', 58: 'POTION_SHOP_DEALER_3',
-    59: 'ELLEN_1', 60: 'ELLEN_2',
-    61: 'MIDWIFE_1', 62: 'MIDWIFE_2',
-    63: 'HARVEST_GODDESS_1', 64: 'HARVEST_GODDESS_2',
-    65: 'GREG_1', 66: 'GREG_2', 67: 'GREG_3',
-    68: 'DUKE_1', 69: 'DUKE_2',
-    70: 'DOUG_1', 71: 'DOUG_2',
-    72: 'SHIPPER_1', 73: 'SHIPPER_2',
-    74: 'KAREN_6', 75: 'KAREN_7',
-    76: 'ASSISTANT_CARPENTER_1', 77: 'ASSISTANT_CARPENTER_2',
-    78: 'MASTER_CARPENTER_1', 79: 'MASTER_CARPENTER_2',
-    80: 'HARVEST_SPRITE_1', 81: 'HARVEST_SPRITE_2',
-    82: 'SAIBARA_1', 83: 'SAIBARA_2',
-    84: 'BASIL_1', 85: 'BASIL_2',
-    86: 'SASHA_1', 87: 'SASHA_2',
-    88: 'LILLIA_1', 89: 'LILLIA_2',
-    90: 'MAYOR_WIFE_1', 91: 'MAYOR_WIFE_2',
-    92: 'MRS_MANA_1', 93: 'MRS_MANA_2',
-    94: 'GOTZ_1', 95: 'GOTZ_2',
-    96: 'ENTOMOLOGIST_1', 97: 'ENTOMOLOGIST_2',
-    98: 'KAPPA_1',
-    99: 'PLAYER_ENGRAVING_LOGO_1',
-    100: 'BABY_1', 101: 'BABY_2', 102: 'BABY_3', 103: 'BABY_4', 104: 'BABY_5',
-    105: 'OLD_MAN_1',
-    106: 'OLD_WOMAN_1',
-    107: 'DAD_1', 108: 'DAD_2',
-    109: 'FESTIVAL_GIRL_1', 110: 'FESTIVAL_GIRL_2', 111: 'FESTIVAL_GIRL_3',
-    112: 'JOHN_1', 113: 'JOHN_2', 114: 'JOHN_3',
-    115: 'BARLEY_1',
-    116: 'SHADY_SALESMAN_1', 117: 'SHADY_SALESMAN_2',
-    118: 'PLAYER_ENGRAVING_LOGO_2', 119: 'PLAYER_ENGRAVING_LOGO_3', 120: 'PLAYER_ENGRAVING_LOGO_4',
-    121: 'TOURIST_COUPLE_MAN_1', 122: 'TOURIST_COUPLE_WOMAN_1',
-    123: 'PHOTOGRAPHER_1',
-    124: 'GOURMET_JUDGE_1',
-    125: 'SYDNEY_1',
-    126: 'MARIA_6', 127: 'MARIA_7', 128: 'MARIA_8', 129: 'MARIA_9',
-    130: 'ELLI_6', 131: 'ANN_6',
-    132: 'KAREN_8', 133: 'KAREN_9',
-    134: 'ELLI_7', 135: 'ELLI_8',
-    136: 'MARIA_10', 137: 'POPURI_6', 138: 'KAREN_10', 139: 'ANN_7',
-    140: 'GRAY_3', 141: 'JEFF_4', 142: 'CLIFF_4',
-}
+# Default location of the sprite-editor-generated header
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+CHARACTER_AVATARS_H_PATH = _REPO_ROOT / "src" / "data" / "animation" / "characterAvatars" / "characterAvatars.h"
 
-CHARACTER_AVATAR_MACRO_TO_INDEX = {v: k for k, v in CHARACTER_AVATAR_MACROS.items()}
+# `#define DIALOGUE_AVATARS_<NAME> <value>` lines
+_DIALOGUE_AVATAR_DEFINE_RE = re.compile(
+    r"^\s*#\s*define\s+DIALOGUE_AVATARS_([A-Za-z_][A-Za-z0-9_]*)\s+(\d+)\s*$"
+)
+
+
+class CharacterAvatarMacrosError(Exception):
+    """Raised when characterAvatars.h is missing, empty, or otherwise unusable."""
+
+
+def load_character_avatar_macros(path: Path | None = None) -> Dict[int, str]:
+    """Parse `#define DIALOGUE_AVATARS_*` macros out of `characterAvatars.h`.
+
+    Returns a `{index: macro_suffix}` map (with the `DIALOGUE_AVATARS_` prefix
+    stripped) suitable for the same role the old hardcoded
+    `CHARACTER_AVATAR_MACROS` dict played: the canonical mapping the text
+    transpiler/extractor uses to translate `[CHARACTER_AVATAR:NAME]` <-> index.
+
+    Raises `CharacterAvatarMacrosError` if the file doesn't exist, contains
+    no `DIALOGUE_AVATARS_*` macros, or has duplicate macro values. The
+    transpiler/extractor depend on the sprite editor (or the Python avatar
+    exporter) keeping this file in sync — silent fallback would mask a bad
+    extraction.
+    """
+    target = path if path is not None else CHARACTER_AVATARS_H_PATH
+    if not target.is_file():
+        raise CharacterAvatarMacrosError(
+            f"characterAvatars.h not found at {target}. Regenerate it via the "
+            f"sprite editor or `python -m libhm64.animations.exporter --sprite characterAvatars`."
+        )
+
+    macros: Dict[int, str] = {}
+    seen_names: Dict[str, int] = {}
+    with target.open("r", encoding="utf-8") as f:
+        for raw in f:
+            m = _DIALOGUE_AVATAR_DEFINE_RE.match(raw)
+            if not m:
+                continue
+            name, value_str = m.group(1), m.group(2)
+            value = int(value_str)
+            if value in macros:
+                raise CharacterAvatarMacrosError(
+                    f"{target}: duplicate macro value {value} "
+                    f"(both {macros[value]!r} and {name!r})"
+                )
+            if name in seen_names:
+                raise CharacterAvatarMacrosError(
+                    f"{target}: duplicate macro name DIALOGUE_AVATARS_{name} "
+                    f"(values {seen_names[name]} and {value})"
+                )
+            macros[value] = name
+            seen_names[name] = value
+
+    if not macros:
+        raise CharacterAvatarMacrosError(
+            f"{target}: no DIALOGUE_AVATARS_* macros found. Populate the "
+            f"`character` and `expression` fields in characterAvatars.json and "
+            f"regenerate the header."
+        )
+
+    return macros
+
+
+# Loaded lazily on first call to `get_character_avatar_macros`
+_AVATAR_MACROS_CACHE: Dict[int, str] | None = None
+_AVATAR_MACRO_TO_INDEX_CACHE: Dict[str, int] | None = None
+
+
+def get_character_avatar_macros() -> Dict[int, str]:
+    """Cached accessor for the index → macro-suffix mapping."""
+    global _AVATAR_MACROS_CACHE
+    if _AVATAR_MACROS_CACHE is None:
+        _AVATAR_MACROS_CACHE = load_character_avatar_macros()
+    return _AVATAR_MACROS_CACHE
+
+
+def get_character_avatar_macro_to_index() -> Dict[str, int]:
+    """Cached reverse mapping for encoding `[CHARACTER_AVATAR:NAME]` -> index."""
+    global _AVATAR_MACRO_TO_INDEX_CACHE
+    if _AVATAR_MACRO_TO_INDEX_CACHE is None:
+        _AVATAR_MACRO_TO_INDEX_CACHE = {v: k for k, v in get_character_avatar_macros().items()}
+    return _AVATAR_MACRO_TO_INDEX_CACHE
+
+
+def reset_character_avatar_macros_cache() -> None:
+    """For tests: drop the cached mapping so the next access re-reads the file."""
+    global _AVATAR_MACROS_CACHE, _AVATAR_MACRO_TO_INDEX_CACHE
+    _AVATAR_MACROS_CACHE = None
+    _AVATAR_MACRO_TO_INDEX_CACHE = None
 
 # Bit masks for control byte (determines 1-byte vs 2-byte encoding per character)
 BIT_MASKS = [0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01]

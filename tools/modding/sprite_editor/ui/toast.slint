@@ -1,0 +1,19 @@
+import { VerticalBox } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+// Top-right transient notification. The Rust side sets `text` and toggles a
+// `visible` parent for ~3 seconds via `wiring::helpers::toast`. Caller
+// positions this via x/y bindings — `parent.width` cannot be referenced from
+// the root of an exported component.
+export component Toast inherits Rectangle {
+    in property <string> text: "";
+
+    width: 320px;
+    min-height: 40px;
+    background: Theme.toast-bg;
+    border-radius: 6px;
+    VerticalBox {
+        padding: 8px;
+        Text { text: root.text; color: white; wrap: word-wrap; }
+    }
+}

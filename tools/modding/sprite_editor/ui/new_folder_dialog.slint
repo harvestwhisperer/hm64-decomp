@@ -1,0 +1,63 @@
+import { VerticalBox, HorizontalBox, Button, LineEdit } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+// Prompts for a new subfolder name to create under a category. The category
+// name is shown in the header so the user knows where the folder is going.
+// The folder is created in `<asset_root>/assets/sprites/<category>/<name>`.
+export component NewFolderDialog inherits Rectangle {
+    in property <string> category: "";
+    in property <string> message: "";  // error text, blank when ok
+    callback name-edited(string);
+    callback ok();
+    callback cancel();
+
+    background: Theme.overlay-backdrop;
+    Rectangle {
+        x: (parent.width - 420px) / 2;
+        y: (parent.height - 200px) / 2;
+        width: 420px;
+        height: 200px;
+        background: Theme.bg-panel;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: Theme.border;
+        VerticalBox {
+            padding: 16px;
+            spacing: 8px;
+            Text {
+                text: "New subfolder in " + root.category;
+                color: Theme.text-primary;
+                font-size: 16px;
+                font-weight: 700;
+            }
+            Text {
+                text: "Folder name:";
+                color: Theme.text-secondary;
+                font-size: 12px;
+            }
+            LineEdit {
+                placeholder-text: "myFolder";
+                edited(t) => { root.name-edited(t); }
+                accepted(t) => { root.ok(); }
+            }
+            Text {
+                text: root.message;
+                color: Theme.error-soft;
+                font-size: 11px;
+                wrap: word-wrap;
+            }
+            Rectangle { vertical-stretch: 1; }
+            HorizontalBox {
+                Rectangle { horizontal-stretch: 1; }
+                Button {
+                    text: "Cancel";
+                    clicked => { root.cancel(); }
+                }
+                Button {
+                    text: "Create";
+                    clicked => { root.ok(); }
+                }
+            }
+        }
+    }
+}

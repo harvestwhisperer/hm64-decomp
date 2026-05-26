@@ -2,13 +2,6 @@
 Extract animation script data, character-avatar mapping, and standalone
 animation labels from the ROM into JSON under `assets/sprites/...`.
 
-Modding branches (`dev`, `dev-qol`) drop the splat animation-script and
-character-avatar segments and run this extractor inline with
-`make extract-sprites` to bootstrap the JSON source-of-truth files. The
-exporter then regenerates the C/H files from JSON on every build.
-
-Idempotent by default: any JSON already on disk is left alone so editor
-edits aren't clobbered. Pass `--force` to re-extract from the ROM.
 
 Inputs:
   - `tools/libhm64/data/animation_scripts_addresses.csv`  (entity + avatar ROM ranges)
@@ -40,6 +33,7 @@ from libhm64.sprites.addresses import get_all_sprites, get_sprite_by_label
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SPRITES_ROOT = REPO_ROOT / "assets" / "sprites"
 ANIMATION_SCRIPTS_CSV = REPO_ROOT / "tools" / "libhm64" / "data" / "animation_scripts_addresses.csv"
+CHARACTER_AVATARS_CSV = REPO_ROOT / "tools" / "libhm64" / "data" / "character_avatars.csv"
 
 # Some animation scripts share a sprite directory (e.g. the four "holdable"
 # scripts all live under the `holdableItems` sprite). Mirrors the migrator.
@@ -51,9 +45,6 @@ SCRIPT_SPRITE_OVERRIDES: dict[str, str] = {
 }
 
 AVATAR_SCRIPT_NAME = "characterAvatars"
-# The avatar table is 143 entries; the splat segment range (F7118-F71B0) is
-# 152 bytes because the next segment is 8-byte aligned. The 9 trailing bytes
-# are alignment padding emitted by the linker, not part of the C array.
 AVATAR_COUNT = 143
 
 MASK_METADATA_OFFSET = 0x1FFF
@@ -124,18 +115,41 @@ def _build_entity_json(name: str, sprite: str, rom_start: int, rom_end: int) -> 
 
 # --- avatar mapping extraction ------------------------------------------
 
+def _load_character_avatars_csv() -> dict[int, tuple[str, str]]:
+    """Read the canonical (character, expression) names keyed by ROM index.
+
+    Source of truth for the macro names the text transpiler/extractor expect.
+    Missing or unparseable rows surface as empty strings so the caller can
+    decide whether to keep the entry unlabelled.
+    """
+    table: dict[int, tuple[str, str]] = {}
+    if not CHARACTER_AVATARS_CSV.is_file():
+        return table
+    with CHARACTER_AVATARS_CSV.open() as f:
+        reader = csv.reader(f)
+        for row_num, row in enumerate(reader):
+            if row_num == 0 or not row:
+                continue
+            if len(row) < 3:
+                continue
+            try:
+                idx = int(row[0])
+            except ValueError:
+                continue
+            table[idx] = (row[1].strip(), row[2].strip())
+    return table
+
+
 def _build_avatar_json(rom_start: int) -> dict:
-    # `character` is left blank for the editor (or the modder) to fill in
-    # later; `expression` is seeded with the entry index so the table is at
-    # least disambiguable post-extraction.
-    entries = [
-        {
-            "character": "",
-            "expression": str(i),
+    labels = _load_character_avatars_csv()
+    entries: list[dict] = []
+    for i in range(AVATAR_COUNT):
+        character, expression = labels.get(i, ("", str(i)))
+        entries.append({
+            "character": character,
+            "expression": expression,
             "metadata_index": rom.read_u8(rom_start + i),
-        }
-        for i in range(AVATAR_COUNT)
-    ]
+        })
     return {"kind": "avatar", "entries": entries}
 
 
