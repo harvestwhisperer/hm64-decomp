@@ -1,4 +1,4 @@
-//! Parser for `tools/libhm64/data/animation_labels.csv`.
+//! Parser for `tools/modding/sprite_editor/data/animation_labels.csv`.
 //!
 //! Sparse format: only rows with meaningful content (label, group, or both)
 //! appear. Used by the ROM extractor to seed inline labels in per-script JSON.
@@ -150,7 +150,7 @@ pub fn parse(text: &str) -> Result<LabelTable, LabelCsvError> {
 /// Embed the repo's CSV at build time so the standalone-without-decomp use
 /// case works without external file dependencies.
 pub fn embedded_table() -> Result<LabelTable, LabelCsvError> {
-    parse(include_str!("../../../../libhm64/data/animation_labels.csv"))
+    parse(include_str!("../../data/animation_labels.csv"))
 }
 
 #[cfg(test)]
