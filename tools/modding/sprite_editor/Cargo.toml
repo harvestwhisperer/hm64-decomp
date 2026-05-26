@@ -12,7 +12,7 @@ name = "hm64_sprite_editor"
 path = "src/lib.rs"
 
 [[bin]]
-name = "sprite_editor"
+name = "hm64-sprite-editor"
 path = "src/main.rs"
 
 [dependencies]
