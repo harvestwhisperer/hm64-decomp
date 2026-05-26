@@ -724,6 +724,9 @@ extract-sprites:
 	@find $(SPRITE_ASSETS_DIR) -type d -empty -delete 2>/dev/null || true
 	$(V)$(SPRITE_EXTRACTOR) extract_all
 
+extract-animations: extract-sprites
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.animations.extractor --all
+
 extract-fonts:
 	@rm -f $(FONT_ASSETS_DIR)/*.ci2 $(FONT_ASSETS_DIR)/*.pal 2>/dev/null || true
 	$(V)$(FONT_EXTRACTOR)

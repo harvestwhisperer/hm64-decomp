@@ -1,0 +1,911 @@
+import { VerticalBox, HorizontalBox, TabWidget, Button, LineEdit, StandardListView,
+         ListView, GroupBox, ComboBox } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+import { TexturesPanel, TextureThumb, AnimationUsageRow, ScriptEntryUsageRow } from "textures_panel.slint";
+import { PalettesPanel, PaletteRow, ColorCell, PaletteTextureThumb } from "palettes_panel.slint";
+import { AnimationsPanel, AnimThumb, FrameRow, LayerRow, PickerRow, PickerCell } from "animations_panel.slint";
+import { ScriptPanel, ScriptEntryRow } from "script_panel.slint";
+import { NewSpriteWizard } from "new_sprite_wizard.slint";
+import { ConfirmDialog } from "confirm_dialog.slint";
+import { DeleteSpriteDialog } from "delete_sprite_dialog.slint";
+import { ExtractionProgress } from "extraction_progress.slint";
+import { SaveProgress } from "save_progress.slint";
+import { Toast } from "toast.slint";
+import { FontGlyphsPanel } from "font_glyphs_panel.slint";
+import { FontPalettesPanel, FontPaletteRowVm, FontPaletteCellVm } from "font_palettes_panel.slint";
+import { NewFontWizard } from "new_font_wizard.slint";
+import { NewFolderDialog } from "new_folder_dialog.slint";
+
+export struct TreeRow {
+    depth: int,
+    kind: int,            // 0 = Category, 1 = Group, 2 = Sprite
+    label: string,
+    stats: string,
+    expanded: bool,
+    sprite-index: int,    // -1 for Category/Group rows
+    node-key: string,     // encoded NodeKey for Category/Group rows; empty for Sprite
+}
+
+export component MainWindow inherits Window {
+    title: "HM64 Sprite Editor";
+    // Window-size constraints multiply by `ui-scale` so high scales don't
+    // clip the toolbar / tabs. Without this the min stays at 1100×700 even
+    // when content needs ~2× the space at 200 %.
+    preferred-width: 1400px * self.ui-scale;
+    preferred-height: 900px * self.ui-scale;
+    min-width: 1100px * self.ui-scale;
+    min-height: 700px * self.ui-scale;
+    background: Theme.bg-window;
+
+    // User-selected UI scale. Multiplies the window's default font size and
+    // explicit font sizes / lengths that opt into scaling. Presets in the
+    // toolbar dropdown: 75 / 90 / 100 / 125 / 150 / 175 / 200 %. The dropdown
+    // is index-based; `ui-scale` is what panels actually consume.
+    in-out property <float> ui-scale: 1.0;
+    in-out property <int> ui-scale-index: 0;
+    default-font-size: 14px * self.ui-scale;
+    callback ui-scale-changed-by-index(int);
+
+    callback open-asset-root();
+    callback save-all();
+    callback export-bins();
+    callback delete-sprite();
+    callback delete-confirm-accept();
+    callback delete-confirm-cancel();
+    callback start-extract();
+    callback undo();
+    callback redo();
+    in property <bool> extract-running: false;
+    in property <int> extract-done: 0;
+    in property <int> extract-total: 0;
+    in property <string> extract-current: "";
+    in property <bool> save-running: false;
+    in property <int> save-done: 0;
+    in property <int> save-total: 0;
+    in property <string> save-current: "";
+    callback save-cancel();
+    callback filter-changed(string);
+    callback row-clicked(int);
+    in property <[TreeRow]> tree-rows: [];
+    in property <int> selected-sprite-index: -1;
+
+    // Drag-and-drop of sprite rows within the same category.
+    // `drag-source-sprite-index` is set by Rust in `try-start-drag` (-1 if
+    // the drag was rejected, e.g. unsaved changes). `drop-target-row` is the
+    // row index in `tree-rows` the pointer is currently over, set by Rust in
+    // `drag-move` and used to highlight the candidate drop target.
+    in-out property <int> drag-source-sprite-index: -1;
+    in-out property <int> drop-target-row: -1;
+    // Cursor Y in window coords, last set by a drag-move. Reset to -1px on
+    // commit/cancel so any future logic can detect "no active drag pointer".
+    in-out property <length> drag-pointer-y: -1px;
+    // Returns true if the drag was accepted; false rejects it (e.g. dirty
+    // sprite). Returned instead of inspecting `drag-source-sprite-index`
+    // after the call so the check doesn't depend on Slint's property-update
+    // ordering relative to callback returns.
+    callback try-start-drag(int /* source sprite-index */,
+                            length /* source row absolute Y */) -> bool;
+    // Pointer Y in window coords + the source row's CURRENT absolute-Y so
+    // geometry stays correct when auto-scroll moves the source row on
+    // screen.
+    callback drag-move(length /* pointer absolute Y */,
+                       length /* source row absolute Y */);
+    callback commit-drag();
+    callback cancel-drag();
+
+    // New-subfolder dialog state. `new-folder-clicked` is called when the
+    // "+" button on a category header is clicked; `new-folder-accept` /
+    // `_cancel` close the dialog. `new-folder-message` carries validation
+    // errors (e.g. "name already exists").
+    in-out property <bool> new-folder-visible: false;
+    in-out property <string> new-folder-category: "";
+    in-out property <string> new-folder-message: "";
+    callback new-folder-clicked(string /* category */);
+    callback new-folder-name-edited(string);
+    callback new-folder-accept();
+    callback new-folder-cancel();
+
+    in property <string> status-text: "Ready";
+    in property <bool> asset-root-loaded: false;
+    in property <bool> can-undo: false;
+    in property <bool> can-redo: false;
+
+    in-out property <[TextureThumb]> texture-thumbs: [];
+    in-out property <int> selected-texture: -1;
+    in-out property <int> selected-texture-row: -1;
+    in-out property <image> texture-preview;
+    in-out property <string> texture-info: "Select a sprite";
+    callback texture-clicked(int);
+
+    in-out property <[PaletteRow]> palette-rows: [];
+    in-out property <int> selected-palette: -1;
+    in-out property <image> palette-grid;
+    in-out property <string> palette-info;
+    in-out property <[ColorCell]> palette-cells: [];
+    in-out property <int> palette-cell-rows: 16;
+    in-out property <int> palette-cell-cols: 16;
+    in-out property <int> palette-selected-cell: -1;
+    in-out property <bool> palette-can-create: false;
+    in-out property <bool> palette-can-delete: false;
+    in-out property <bool> palette-dirty: false;
+    in-out property <bool> texture-dirty: false;
+    in-out property <bool> picker-visible: false;
+    in-out property <length> picker-x: 0px;
+    in-out property <length> picker-y: 0px;
+    in-out property <int> picker-r: 0;
+    in-out property <int> picker-g: 0;
+    in-out property <int> picker-b: 0;
+    in-out property <int> picker-a: 255;
+    in-out property <int> picker-pre-r: 0;
+    in-out property <int> picker-pre-g: 0;
+    in-out property <int> picker-pre-b: 0;
+    in-out property <int> picker-pre-a: 255;
+    in-out property <color> picker-hue-color: #ff0000;
+    in-out property <float> picker-sat: 0;
+    in-out property <float> picker-val: 0;
+    in-out property <float> picker-hue-frac: 0;
+    in-out property <float> picker-alpha-frac: 1;
+    in-out property <string> picker-hex-text: "#000000";
+    callback picker-sv-pointer(float, float);
+    callback picker-hue-pointer(float);
+    callback picker-alpha-pointer(float);
+    callback picker-hex-accepted(string);
+    callback picker-close();
+    in property <[string]> palette-names: [];
+    in property <[PaletteTextureThumb]> palette-textures: [];
+    in-out property <int> texture-palette-index: -1;
+    callback import-texture();
+    callback replace-texture();
+    callback delete-texture();
+
+    in property <[AnimationUsageRow]> usage-animations: [];
+    in property <[ScriptEntryUsageRow]> usage-script-entries: [];
+    in property <bool> usage-show-scripts: false;
+    callback usage-animation-clicked(int);
+    callback usage-script-entry-clicked(string, int);
+
+    in-out property <int> current-tab: 0;
+
+    callback palette-clicked(int);
+    callback cell-clicked(int);
+    callback new-palette();
+    callback import-palette();
+    callback delete-palette();
+    callback save-palettes();
+    callback save-textures();
+    callback save-selected-texture();
+    callback palette-commit-color(int, int, int, int);
+    callback texture-palette-changed(int);
+
+    in-out property <[AnimThumb]> anim-thumbs: [];
+    in-out property <int> selected-anim: -1;
+    in-out property <int> selected-anim-row: -1;
+    in-out property <image> anim-detail-image;
+    in-out property <string> anim-detail-info;
+    in-out property <int> anim-detail-frame: 0;
+    in-out property <int> anim-detail-frame-count: 1;
+    in property <[FrameRow]> anim-editor-frames: [];
+    in property <[PickerRow]> anim-texture-picker-rows: [];
+    in-out property <bool> anim-dirty: false;
+    callback anim-clicked(int);
+    callback anim-play-pause();
+    callback anim-prev-frame();
+    callback anim-next-frame();
+    callback anim-frame-seek(float);
+    callback anim-new();
+    callback anim-save();
+    callback anim-clone();
+    callback anim-delete();
+    callback anim-frame-expand-toggled(int);
+    callback anim-frame-duration-changed(int, int);
+    callback anim-frame-audio-toggled(int, bool);
+    callback anim-frame-add(int);
+    callback anim-frame-remove(int);
+    callback anim-frame-move(int, int);
+    callback anim-layer-add(int);
+    callback anim-layer-remove(int, int);
+    callback anim-layer-texture-changed(int, int, int);
+    callback anim-layer-anchor-changed(int, int, int, int);
+
+    in-out property <[ScriptEntryRow]> script-rows: [];
+    in-out property <string> script-header: "(no script)";
+    in-out property <int> script-selected-entry: -1;
+    in-out property <bool> script-can-edit-entry: false;
+    in property <image> script-entry-preview;
+    in-out property <int> script-editor-offset: 0;
+    in-out property <int> script-editor-anim-type: 0;
+    in-out property <bool> script-editor-flip: false;
+    in-out property <string> script-editor-label: "";
+    in-out property <string> script-editor-character: "";
+    in-out property <string> script-editor-expression: "";
+    in-out property <bool> script-editor-directional: false;
+    in property <bool> script-editor-directional-allowed: false;
+    in-out property <bool> script-animation-data-dirty: false;
+    in-out property <int> script-display-kind: 3;
+    in-out property <[string]> script-options: [];
+    in-out property <int> script-selected-script-index: 0;
+    in-out property <bool> script-editing-allowed: false;
+    in-out property <bool> script-allow-add-remove: true;
+    in-out property <bool> script-show-type-flip: true;
+    in-out property <int> script-preview-frame: 0;
+    in-out property <int> script-preview-frame-count: 1;
+    callback script-preview-play-pause();
+    callback script-preview-prev-frame();
+    callback script-preview-next-frame();
+    callback script-preview-frame-seek(float);
+    callback script-import();
+    callback script-arrow(int);
+    callback script-entry-clicked(int);
+    callback script-group-toggle(int);
+    callback script-add-entry();
+    callback script-remove-entry();
+    callback script-clone-entry();
+    callback script-move-up();
+    callback script-move-down();
+    callback script-selected(int);
+    callback script-save();
+    callback script-commit-offset(int);
+    callback script-commit-anim-type(int);
+    callback script-commit-flip(bool);
+    callback script-commit-label(string);
+    callback script-commit-character(string);
+    callback script-commit-expression(string);
+    callback script-commit-directional(bool);
+    callback script-export-inc-c();
+    callback script-export-h();
+
+    in-out property <bool> wizard-visible: false;
+    in-out property <int> wizard-category: 0;
+    in-out property <int> wizard-kind: 0;
+    in-out property <int> wizard-type: 0;
+    in-out property <string> wizard-name: "";
+    in-out property <bool> wizard-seed: false;
+    in-out property <string> wizard-msg: "";
+    in-out property <string> wizard-files-label: "";
+
+    in-out property <bool> delete-confirm-visible: false;
+    in-out property <string> delete-confirm-name: "";
+    in-out property <string> delete-confirm-path: "";
+
+    in-out property <bool> tex-confirm-visible: false;
+    in-out property <string> tex-confirm-title: "";
+    in-out property <string> tex-confirm-body: "";
+    callback tex-confirm-ok();
+    callback tex-confirm-cancel();
+
+    in-out property <string> toast-text: "";
+    in-out property <bool> toast-visible: false;
+    callback wizard-open();
+    callback wizard-cancel();
+    callback wizard-name-edited(string);
+    callback wizard-category-changed(int);
+    callback wizard-kind-changed(int);
+    callback wizard-type-changed(int);
+    callback wizard-seed-toggled(bool);
+    callback wizard-pick-pngs();
+    callback wizard-finish();
+
+    // ===== Font mode =====
+    in-out property <bool> font-active: false;
+    in-out property <image> font-contact-sheet;
+    in-out property <int> font-contact-sheet-width: 448;
+    in-out property <int> font-contact-sheet-height: 28;
+    in-out property <image> font-glyph-editor;
+    in-out property <[string]> font-palette-options: [];
+    in-out property <int> font-selected-palette: 0;
+    in-out property <int> font-selected-glyph: 0;
+    in-out property <string> font-selected-label: "—";
+    in-out property <int> font-active-color-index: 0;
+    in-out property <[FontPaletteRowVm]> font-palette-rows: [];
+
+    callback font-tree-clicked(string /* node-key */);
+    callback font-contact-sheet-clicked(length, length);
+    callback font-glyph-pixel-clicked(length, length, int);
+    callback font-palette-changed(int);
+    callback font-color-radio-changed(int);
+    callback font-palette-cell-clicked(int, int);
+
+    // Picker font-mode tag (color picker is shared with sprite mode).
+    in-out property <bool> picker-font-mode: false;
+    in-out property <int> picker-font-palette-index: 0;
+    in-out property <int> picker-font-color-index: 0;
+
+    // New Font wizard
+    in-out property <bool> new-font-wizard-visible: false;
+    in-out property <string> new-font-name;
+    in-out property <int> new-font-glyph-count: 700;
+    in-out property <int> new-font-initial-palette-index: 0;
+    in-out property <string> new-font-error;
+    callback new-font-wizard-open();
+    callback new-font-wizard-create();
+    callback new-font-wizard-cancel();
+
+    fs := FocusScope {
+        key-pressed(event) => {
+            if (event.modifiers.control && event.text == "z") {
+                if (event.modifiers.shift) { root.redo(); } else { root.undo(); }
+                return accept;
+            }
+            if (event.modifiers.control && event.text == "y") {
+                root.redo();
+                return accept;
+            }
+            if (event.modifiers.control && event.text == "s") {
+                if (event.modifiers.shift) { root.save-all(); }
+                return accept;
+            }
+            return reject;
+        }
+        Rectangle {
+            background: Theme.bg-window;
+
+            VerticalBox {
+                spacing: 0px;
+                padding: 0px;
+
+                // Toolbar
+                Rectangle {
+                    height: 34px * root.ui-scale;
+                    background: Theme.bg-toolbar;
+                    HorizontalBox {
+                        padding: 4px;
+                        spacing: 6px;
+                        Button {
+                            text: "+ New Sprite";
+                            enabled: root.asset-root-loaded;
+                            clicked => { root.wizard-open(); }
+                        }
+                        Button {
+                            text: "Delete sprite";
+                            enabled: root.selected-sprite-index >= 0;
+                            clicked => { root.delete-sprite(); }
+                        }
+                        Button { text: "Open…"; clicked => { root.open-asset-root(); } }
+                        Button {
+                            text: "Extract ROM…";
+                            enabled: !root.extract-running;
+                            clicked => { root.start-extract(); }
+                        }
+                        Button {
+                            text: "Save Sprite";
+                            enabled: root.palette-dirty || root.texture-dirty
+                                  || root.script-animation-data-dirty || root.anim-dirty;
+                            clicked => { root.save-all(); }
+                        }
+                        Button {
+                            text: "Export bins…";
+                            enabled: root.selected-sprite-index >= 0;
+                            clicked => { root.export-bins(); }
+                        }
+                        Button { text: "New Font…"; clicked => { root.new-font-wizard-open(); } }
+                        Rectangle { width: 16px * root.ui-scale; }
+                        Button {
+                            text: "Undo";
+                            enabled: root.can-undo;
+                            clicked => { root.undo(); }
+                        }
+                        Button {
+                            text: "Redo";
+                            enabled: root.can-redo;
+                            clicked => { root.redo(); }
+                        }
+                        Rectangle { horizontal-stretch: 1; }
+                        // UI scale dropdown. Options correspond 1-to-1 with
+                        // `state::config::UI_SCALE_PRESETS` — keep them in
+                        // sync. The Rust side maps current-index → multiplier.
+                        Text {
+                            text: "Scale";
+                            color: Theme.text-muted;
+                            vertical-alignment: center;
+                        }
+                        ComboBox {
+                            // Generous width so the popup doesn't truncate
+                            // the four-character "200%" / "125%" entries at
+                            // any scale. Width tracks ui-scale so it grows
+                            // proportionally with the (also scaled) font.
+                            width: 120px * root.ui-scale;
+                            // Must stay in sync with `state::config::UI_SCALE_PRESETS`.
+                            model: ["75%", "90%", "100%", "125%", "150%", "175%", "200%"];
+                            current-index: root.ui-scale-index;
+                            selected => { root.ui-scale-changed-by-index(self.current-index); }
+                        }
+                    }
+                }
+
+                // Main body split
+                HorizontalBox {
+                    padding: 0px;
+                    spacing: 0px;
+
+                    // Left dock — sprite browser
+                    Rectangle {
+                        width: 280px * root.ui-scale;
+                        background: Theme.bg-sidebar;
+                        VerticalBox {
+                            padding: 6px;
+                            spacing: 4px;
+                            Text { text: "Sprites"; font-weight: 700; color: Theme.text-primary; }
+                            if root.tree-rows.length > 0: LineEdit {
+                                placeholder-text: "Filter…";
+                                edited(t) => { root.filter-changed(t); }
+                            }
+                            if root.tree-rows.length == 0: Text {
+                                text: "Open a root directory\nto browse sprites";
+                                color: Theme.text-faint;
+                                horizontal-alignment: center;
+                                wrap: word-wrap;
+                            }
+                            if root.tree-rows.length > 0: list-view := ListView {
+                                // Auto-scroll: when the user drags the
+                                // pointer near the top or bottom edge of
+                                // the list, nudge viewport-y. Done inside
+                                // `moved` rather than a Timer because Timer
+                                // can't be conditional and reading geometry
+                                // via mirrored root properties / `changed`
+                                // callbacks triggered a Slint property
+                                // recursion. Tradeoff: no scroll while the
+                                // cursor is held still at the edge — only
+                                // when the user keeps wiggling toward it.
+                                for row[i] in root.tree-rows: ta := TouchArea {
+                                    height: row.kind == 2 ? 42px * root.ui-scale : 24px * root.ui-scale;
+                                    // Per-row drag state. Click is dispatched
+                                    // on release if no drag started; otherwise
+                                    // the release commits (or cancels) the
+                                    // drag via the window callbacks.
+                                    property <length> press-x;
+                                    property <length> press-y;
+                                    property <bool> press-started;
+                                    property <bool> drag-started;
+                                    pointer-event(ev) => {
+                                        if (ev.kind == PointerEventKind.down) {
+                                            press-x = self.mouse-x;
+                                            press-y = self.mouse-y;
+                                            press-started = true;
+                                            drag-started = false;
+                                        } else if (ev.kind == PointerEventKind.up) {
+                                            if (drag-started) {
+                                                root.commit-drag();
+                                            } else if (press-started) {
+                                                root.row-clicked(i);
+                                            }
+                                            press-started = false;
+                                            drag-started = false;
+                                        } else if (ev.kind == PointerEventKind.cancel) {
+                                            if (drag-started) {
+                                                root.cancel-drag();
+                                            }
+                                            press-started = false;
+                                            drag-started = false;
+                                        }
+                                    }
+                                    moved => {
+                                        if (press-started && row.kind == 2 && !drag-started) {
+                                            if (abs(self.mouse-x - press-x) > 4px
+                                                || abs(self.mouse-y - press-y) > 4px) {
+                                                if (root.try-start-drag(row.sprite-index,
+                                                                        self.absolute-position.y)) {
+                                                    drag-started = true;
+                                                } else {
+                                                    // Drag rejected (e.g.
+                                                    // unsaved changes). Don't
+                                                    // re-attempt and don't
+                                                    // fire row-clicked on
+                                                    // release — the user's
+                                                    // intent was to drag.
+                                                    press-started = false;
+                                                }
+                                            }
+                                        }
+                                        if (drag-started) {
+                                            root.drag-pointer-y =
+                                                self.absolute-position.y + self.mouse-y;
+                                            // Auto-scroll if pointer is
+                                            // near the list's top/bottom
+                                            // edges. ListView viewport-y
+                                            // is the negative scroll
+                                            // offset (0 = content top,
+                                            // negative = scrolled down).
+                                            if (root.drag-pointer-y
+                                                < list-view.absolute-position.y + 30px) {
+                                                list-view.viewport-y =
+                                                    min(0px, list-view.viewport-y + 16px);
+                                            } else if (root.drag-pointer-y
+                                                > list-view.absolute-position.y
+                                                  + list-view.height - 30px) {
+                                                list-view.viewport-y -= 16px;
+                                            }
+                                            root.drag-move(self.absolute-position.y
+                                                            + self.mouse-y,
+                                                           self.absolute-position.y);
+                                        }
+                                    }
+                                    Rectangle {
+                                        background:
+                                            (i == root.drop-target-row
+                                             && root.drag-source-sprite-index >= 0)
+                                                ? Theme.drop-target
+                                            : (row.kind == 2
+                                               && row.sprite-index == root.selected-sprite-index)
+                                                ? Theme.selected
+                                            : (ta.has-hover ? Theme.hover-row : transparent);
+                                        HorizontalLayout {
+                                            padding-left: row.depth * 14px * root.ui-scale + 4px;
+                                            padding-right: 4px;
+                                            padding-top: 2px;
+                                            padding-bottom: 2px;
+                                            spacing: 4px;
+                                            alignment: start;
+                                            if row.kind != 2: Rectangle {
+                                                width: 14px * root.ui-scale;
+                                                Path {
+                                                    x: (parent.width - self.width) / 2;
+                                                    y: (parent.height - self.height) / 2;
+                                                    width: 10px * root.ui-scale;
+                                                    height: 10px * root.ui-scale;
+                                                    fill: #bbb;
+                                                    commands: row.expanded
+                                                        ? "M 2 3 L 8 3 L 5 8 Z"
+                                                        : "M 3 2 L 3 8 L 8 5 Z";
+                                                }
+                                            }
+                                            VerticalLayout {
+                                                spacing: 0px;
+                                                alignment: center;
+                                                Text {
+                                                    text: row.label;
+                                                    font-weight: row.kind == 2 ? 600 : 700;
+                                                    color: row.kind == 0 ? Theme.text-category : Theme.text-primary;
+                                                    font-size: (row.kind == 0 ? 12px : (row.kind == 1 ? 12px : 13px)) * root.ui-scale;
+                                                }
+                                                if row.kind == 2: Text {
+                                                    text: row.stats;
+                                                    color: #999;
+                                                    font-size: 10px * root.ui-scale;
+                                                }
+                                            }
+                                        }
+                                        // "+ folder" button on category rows.
+                                        // Positioned at the right edge as an
+                                        // overlay so the nested TouchArea
+                                        // captures clicks before the outer
+                                        // drag-detection TouchArea sees them.
+                                        if row.kind == 0: Rectangle {
+                                            x: parent.width - self.width - 4px;
+                                            y: (parent.height - self.height) / 2;
+                                            width: 22px * root.ui-scale;
+                                            height: 18px * root.ui-scale;
+                                            background: new-folder-ta.has-hover
+                                                ? Theme.hover-cell
+                                                : transparent;
+                                            border-radius: 3px;
+                                            new-folder-ta := TouchArea {
+                                                clicked => {
+                                                    root.new-folder-clicked(row.label);
+                                                }
+                                                Text {
+                                                    text: "+";
+                                                    color: Theme.text-secondary;
+                                                    horizontal-alignment: center;
+                                                    vertical-alignment: center;
+                                                    font-size: 14px * root.ui-scale;
+                                                    font-weight: 700;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Right pane — tabs
+                    if !root.font-active : TabWidget {
+                        current-index <=> root.current-tab;
+                        Tab {
+                            title: "Textures";
+                            textures := TexturesPanel {
+                                thumbs <=> root.texture-thumbs;
+                                selected-index <=> root.selected-texture;
+                                selected-row: root.selected-texture-row;
+                                preview-image <=> root.texture-preview;
+                                preview-info <=> root.texture-info;
+                                dirty <=> root.texture-dirty;
+                                palette-names: root.palette-names;
+                                texture-palette-index <=> root.texture-palette-index;
+                                usage-animations: root.usage-animations;
+                                usage-script-entries: root.usage-script-entries;
+                                usage-show-scripts: root.usage-show-scripts;
+                                thumb-clicked(i) => { root.texture-clicked(i); }
+                                save-textures => { root.save-textures(); }
+                                save-selected-texture => { root.save-selected-texture(); }
+                                texture-palette-changed(i) => { root.texture-palette-changed(i); }
+                                import-texture => { root.import-texture(); }
+                                replace-texture => { root.replace-texture(); }
+                                delete-texture => { root.delete-texture(); }
+                                usage-animation-clicked(i) => { root.usage-animation-clicked(i); }
+                                usage-script-entry-clicked(name, i) => { root.usage-script-entry-clicked(name, i); }
+                            }
+                        }
+                        Tab {
+                            title: "Palettes";
+                            PalettesPanel {
+                                palettes <=> root.palette-rows;
+                                selected-index <=> root.selected-palette;
+                                cells <=> root.palette-cells;
+                                cell-rows <=> root.palette-cell-rows;
+                                cell-cols <=> root.palette-cell-cols;
+                                selected-cell <=> root.palette-selected-cell;
+                                info <=> root.palette-info;
+                                can-create-palette <=> root.palette-can-create;
+                                can-delete-palette <=> root.palette-can-delete;
+                                dirty <=> root.palette-dirty;
+                                picker-visible <=> root.picker-visible;
+                                picker-x <=> root.picker-x;
+                                picker-y <=> root.picker-y;
+                                picker-r <=> root.picker-r;
+                                picker-g <=> root.picker-g;
+                                picker-b <=> root.picker-b;
+                                picker-a <=> root.picker-a;
+                                picker-pre-r <=> root.picker-pre-r;
+                                picker-pre-g <=> root.picker-pre-g;
+                                picker-pre-b <=> root.picker-pre-b;
+                                picker-pre-a <=> root.picker-pre-a;
+                                picker-hue-color <=> root.picker-hue-color;
+                                picker-sat <=> root.picker-sat;
+                                picker-val <=> root.picker-val;
+                                picker-hue-frac <=> root.picker-hue-frac;
+                                picker-alpha-frac <=> root.picker-alpha-frac;
+                                picker-hex-text <=> root.picker-hex-text;
+                                palette-textures: root.palette-textures;
+                                palette-clicked(i) => { root.palette-clicked(i); }
+                                cell-clicked(i) => { root.cell-clicked(i); }
+                                new-palette => { root.new-palette(); }
+                                import-palette => { root.import-palette(); }
+                                delete-palette => { root.delete-palette(); }
+                                save-palettes => { root.save-palettes(); }
+                                commit-color(r, g, b, a) => { root.palette-commit-color(r, g, b, a); }
+                                picker-sv-pointer(x, y) => { root.picker-sv-pointer(x, y); }
+                                picker-hue-pointer(y) => { root.picker-hue-pointer(y); }
+                                picker-alpha-pointer(y) => { root.picker-alpha-pointer(y); }
+                                picker-hex-accepted(t) => { root.picker-hex-accepted(t); }
+                                picker-close => { root.picker-close(); }
+                            }
+                        }
+                        Tab {
+                            title: "Animations";
+                            AnimationsPanel {
+                                thumbs <=> root.anim-thumbs;
+                                selected-index <=> root.selected-anim;
+                                selected-row: root.selected-anim-row;
+                                detail-image <=> root.anim-detail-image;
+                                detail-info <=> root.anim-detail-info;
+                                detail-frame <=> root.anim-detail-frame;
+                                detail-frame-count <=> root.anim-detail-frame-count;
+                                editor-frames: root.anim-editor-frames;
+                                texture-picker-rows: root.anim-texture-picker-rows;
+                                dirty <=> root.anim-dirty;
+                                thumb-clicked(i) => { root.anim-clicked(i); }
+                                play-pause => { root.anim-play-pause(); }
+                                prev-frame => { root.anim-prev-frame(); }
+                                next-frame => { root.anim-next-frame(); }
+                                frame-seek(v) => { root.anim-frame-seek(v); }
+                                new-anim => { root.anim-new(); }
+                                save-animations => { root.anim-save(); }
+                                anim-clone => { root.anim-clone(); }
+                                anim-delete => { root.anim-delete(); }
+                                frame-expand-toggled(f) => { root.anim-frame-expand-toggled(f); }
+                                frame-duration-changed(f, v) => {
+                                    root.anim-frame-duration-changed(f, v);
+                                }
+                                frame-audio-toggled(f, on) => {
+                                    root.anim-frame-audio-toggled(f, on);
+                                }
+                                frame-add(at) => { root.anim-frame-add(at); }
+                                frame-remove(at) => { root.anim-frame-remove(at); }
+                                frame-move(from, to) => { root.anim-frame-move(from, to); }
+                                layer-add(f) => { root.anim-layer-add(f); }
+                                layer-remove(f, l) => { root.anim-layer-remove(f, l); }
+                                layer-texture-changed(f, l, c) => {
+                                    root.anim-layer-texture-changed(f, l, c);
+                                }
+                                layer-anchor-changed(f, l, x, y) => {
+                                    root.anim-layer-anchor-changed(f, l, x, y);
+                                }
+                            }
+                        }
+                        Tab {
+                            title: "Script";
+                            ScriptPanel {
+                                ui-scale: root.ui-scale;
+                                rows <=> root.script-rows;
+                                script-header <=> root.script-header;
+                                selected-entry-index <=> root.script-selected-entry;
+                                can-edit-entry <=> root.script-can-edit-entry;
+                                entry-preview: root.script-entry-preview;
+                                editor-offset <=> root.script-editor-offset;
+                                editor-anim-type <=> root.script-editor-anim-type;
+                                editor-flip <=> root.script-editor-flip;
+                                editor-label <=> root.script-editor-label;
+                                editor-character <=> root.script-editor-character;
+                                editor-expression <=> root.script-editor-expression;
+                                editor-directional <=> root.script-editor-directional;
+                                editor-directional-allowed: root.script-editor-directional-allowed;
+                                animation-data-dirty <=> root.script-animation-data-dirty;
+                                display-kind <=> root.script-display-kind;
+                                script-options <=> root.script-options;
+                                selected-script-index <=> root.script-selected-script-index;
+                                editing-allowed <=> root.script-editing-allowed;
+                                allow-add-remove <=> root.script-allow-add-remove;
+                                show-type-flip <=> root.script-show-type-flip;
+                                preview-frame <=> root.script-preview-frame;
+                                preview-frame-count <=> root.script-preview-frame-count;
+                                preview-play-pause => { root.script-preview-play-pause(); }
+                                preview-prev-frame => { root.script-preview-prev-frame(); }
+                                preview-next-frame => { root.script-preview-next-frame(); }
+                                preview-frame-seek(v) => { root.script-preview-frame-seek(v); }
+                                script-import => { root.script-import(); }
+                                script-arrow(d) => { root.script-arrow(d); }
+                                entry-clicked(i) => { root.script-entry-clicked(i); }
+                                group-toggle(i) => { root.script-group-toggle(i); }
+                                add-entry => { root.script-add-entry(); }
+                                remove-entry => { root.script-remove-entry(); }
+                                clone-entry => { root.script-clone-entry(); }
+                                move-up => { root.script-move-up(); }
+                                move-down => { root.script-move-down(); }
+                                save-script => { root.script-save(); }
+                                script-selected(i) => { root.script-selected(i); }
+                                commit-offset(v) => { root.script-commit-offset(v); }
+                                commit-anim-type(v) => { root.script-commit-anim-type(v); }
+                                commit-flip(v) => { root.script-commit-flip(v); }
+                                commit-label(v) => { root.script-commit-label(v); }
+                                commit-character(v) => { root.script-commit-character(v); }
+                                commit-expression(v) => { root.script-commit-expression(v); }
+                                commit-directional(v) => { root.script-commit-directional(v); }
+                                export-inc-c => { root.script-export-inc-c(); }
+                                export-h => { root.script-export-h(); }
+                            }
+                        }
+                    }
+                    if root.font-active : TabWidget {
+                        Tab {
+                            title: "Glyphs";
+                            FontGlyphsPanel {
+                                contact-sheet: root.font-contact-sheet;
+                                contact-sheet-width: root.font-contact-sheet-width;
+                                contact-sheet-height: root.font-contact-sheet-height;
+                                glyph-editor: root.font-glyph-editor;
+                                palette-options: root.font-palette-options;
+                                selected-palette <=> root.font-selected-palette;
+                                selected-glyph <=> root.font-selected-glyph;
+                                selected-label <=> root.font-selected-label;
+                                active-color-index <=> root.font-active-color-index;
+                                contact-sheet-clicked(x, y) => { root.font-contact-sheet-clicked(x, y); }
+                                glyph-pixel-clicked(x, y, b) => { root.font-glyph-pixel-clicked(x, y, b); }
+                                palette-changed(p) => { root.font-palette-changed(p); }
+                                color-radio-changed(c) => { root.font-color-radio-changed(c); }
+                            }
+                        }
+                        Tab {
+                            title: "Palettes";
+                            FontPalettesPanel {
+                                rows: root.font-palette-rows;
+                                cell-clicked(p, c) => { root.font-palette-cell-clicked(p, c); }
+                            }
+                        }
+                    }
+                }
+
+                // Status bar
+                Rectangle {
+                    height: 22px;
+                    background: Theme.bg-window;
+                    HorizontalBox {
+                        padding: 2px;
+                        Text {
+                            text: root.status-text;
+                            vertical-alignment: center;
+                            color: Theme.text-secondary;
+                        }
+                    }
+                }
+            }
+
+            // Wizard overlay — sibling of VerticalBox so it covers the whole window
+            if root.wizard-visible: NewSpriteWizard {
+                x: 0;
+                y: 0;
+                width: parent.width;
+                height: parent.height;
+                category-index: root.wizard-category;
+                kind-index: root.wizard-kind;
+                type-index: root.wizard-type;
+                name-field: root.wizard-name;
+                seed-from-png: root.wizard-seed;
+                validation-msg: root.wizard-msg;
+                picked-files-label: root.wizard-files-label;
+                cancel => { root.wizard-cancel(); }
+                name-edited(t) => { root.wizard-name-edited(t); }
+                category-changed(v) => { root.wizard-category-changed(v); }
+                kind-changed(v) => { root.wizard-kind-changed(v); }
+                type-changed(v) => { root.wizard-type-changed(v); }
+                seed-toggled(b) => { root.wizard-seed-toggled(b); }
+                pick-pngs => { root.wizard-pick-pngs(); }
+                finish => { root.wizard-finish(); }
+            }
+
+            // Delete-sprite confirmation overlay
+            if root.delete-confirm-visible: DeleteSpriteDialog {
+                x: 0; y: 0;
+                width: parent.width; height: parent.height;
+                sprite-name: root.delete-confirm-name;
+                sprite-path: root.delete-confirm-path;
+                cancel => { root.delete-confirm-cancel(); }
+                ok => { root.delete-confirm-accept(); }
+            }
+
+            // New-subfolder dialog overlay
+            if root.new-folder-visible: NewFolderDialog {
+                x: 0; y: 0;
+                width: parent.width; height: parent.height;
+                category: root.new-folder-category;
+                message: root.new-folder-message;
+                name-edited(t) => { root.new-folder-name-edited(t); }
+                cancel => { root.new-folder-cancel(); }
+                ok => { root.new-folder-accept(); }
+            }
+
+            if root.tex-confirm-visible: ConfirmDialog {
+                x: 0; y: 0;
+                width: parent.width; height: parent.height;
+                title: root.tex-confirm-title;
+                body: root.tex-confirm-body;
+                ok-label: "Delete";
+                ok => { root.tex-confirm-ok(); }
+                cancel => { root.tex-confirm-cancel(); }
+            }
+
+            // ROM extraction progress overlay
+            if root.extract-running: ExtractionProgress {
+                x: 0; y: 0;
+                width: parent.width; height: parent.height;
+                done: root.extract-done;
+                total: root.extract-total;
+                current: root.extract-current;
+            }
+
+            // Save All progress overlay
+            if root.save-running: SaveProgress {
+                x: 0; y: 0;
+                width: parent.width; height: parent.height;
+                done: root.save-done;
+                total: root.save-total;
+                current: root.save-current;
+                cancel-clicked => { root.save-cancel(); }
+            }
+
+            // New Font wizard overlay
+            if root.new-font-wizard-visible : Rectangle {
+                background: Theme.overlay-backdrop-light;
+                NewFontWizard {
+                    width: 400px;
+                    height: 400px;
+                    x: (parent.width - self.width) / 2;
+                    y: (parent.height - self.height) / 2;
+                    name-text <=> root.new-font-name;
+                    glyph-count <=> root.new-font-glyph-count;
+                    initial-palette-index <=> root.new-font-initial-palette-index;
+                    error-text <=> root.new-font-error;
+                    create => { root.new-font-wizard-create(); }
+                    cancel => { root.new-font-wizard-cancel(); }
+                }
+            }
+
+            // Toast overlay
+            if root.toast-visible: Toast {
+                x: parent.width - self.width - 20px;
+                y: 40px;
+                text: root.toast-text;
+            }
+        }
+    }
+}

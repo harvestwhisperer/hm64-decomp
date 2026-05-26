@@ -1,0 +1,139 @@
+import { ComboBox, GroupBox, ScrollView, VerticalBox, HorizontalBox } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+export component FontGlyphsPanel inherits Rectangle {
+    background: Theme.bg-window;
+
+    // Inputs (set by main.rs each render).
+    in property <image> contact-sheet;
+    in property <int> contact-sheet-width: 672;
+    in property <int> contact-sheet-height: 42;
+    in property <image> glyph-editor;
+    in property <[string]> palette-options;
+    in-out property <int> selected-palette: 0;
+    in-out property <int> selected-glyph: 0;
+    in-out property <string> selected-label: "—";
+    in-out property <int> active-color-index: 0;
+
+    // Callbacks.
+    callback contact-sheet-clicked(length, length);
+    callback glyph-pixel-clicked(length, length, int /* button: 0 = left, 1 = right */);
+    callback palette-changed(int);
+    callback color-radio-changed(int);
+
+    VerticalBox {
+        HorizontalBox {
+            Text { text: "Palette:"; vertical-alignment: center; }
+            ComboBox {
+                model: root.palette-options;
+                current-index <=> root.selected-palette;
+                selected => { root.palette-changed(root.selected-palette); }
+            }
+            Text { text: "Selected: " + root.selected-label; vertical-alignment: center; }
+        }
+
+        // Contact sheet — scrollable, horizontally centred when wider than the
+        // image. The wrapping Rectangle stretches to the ScrollView's visible
+        // width so the Image's `x:` centring expression has the panel width to
+        // work with; viewport-height drives the vertical scrollbar. The 60 %
+        // vertical-stretch (paired with 40 % on the editor row below) keeps
+        // the sheet dominant.
+        sv := ScrollView {
+            vertical-stretch: 6;
+            viewport-width: max(self.visible-width, root.contact-sheet-width * 1px);
+            viewport-height: root.contact-sheet-height * 1px;
+            Rectangle {
+                width: max(sv.visible-width, root.contact-sheet-width * 1px);
+                height: root.contact-sheet-height * 1px;
+                Image {
+                    source: root.contact-sheet;
+                    image-rendering: pixelated;
+                    x: (parent.width - self.width) / 2;
+                    width: root.contact-sheet-width * 1px;
+                    height: root.contact-sheet-height * 1px;
+                    TouchArea {
+                        clicked => { root.contact-sheet-clicked(self.mouse-x, self.mouse-y); }
+                    }
+                }
+            }
+        }
+
+        HorizontalBox {
+            vertical-stretch: 4;
+            spacing: 8px;
+            // Each GroupBox claims an equal share of the row width via
+            // matching horizontal-stretch. The inner content is centred so
+            // neither side anchors to one edge.
+            GroupBox {
+                title: "Glyph editor";
+                horizontal-stretch: 1;
+                Rectangle {
+                    Image {
+                        source: root.glyph-editor;
+                        image-rendering: pixelated;
+                        image-fit: preserve;
+                        // Fixed 280 px so click coords map 1-to-1 with the
+                        // pre-rendered scale-20 buffer (14 px × 20 = 280).
+                        // The Image is centred horizontally inside the
+                        // GroupBox via x:.
+                        width: 280px;
+                        height: 280px;
+                        x: (parent.width - self.width) / 2;
+                        TouchArea {
+                            clicked => { root.glyph-pixel-clicked(self.mouse-x, self.mouse-y, 0); }
+                            pointer-event(e) => {
+                                if (e.button == PointerEventButton.right && e.kind == PointerEventKind.up) {
+                                    root.glyph-pixel-clicked(self.mouse-x, self.mouse-y, 1);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            GroupBox {
+                title: "Color index";
+                horizontal-stretch: 1;
+                VerticalLayout {
+                    alignment: start;
+                    spacing: 6px;
+                    padding: 4px;
+
+                    // Each row is a TouchArea wrapping the visual content so
+                    // the entire row reacts to clicks. A bare TouchArea
+                    // sibling inside a layout collapses to zero size and
+                    // never fires.
+                    for ci in [0, 1, 2, 3]: TouchArea {
+                        height: 32px;
+                        clicked => {
+                            root.active-color-index = ci;
+                            root.color-radio-changed(ci);
+                        }
+                        Rectangle {
+                            background: root.active-color-index == ci ? #2d4a6a : transparent;
+                            border-radius: 4px;
+                            HorizontalLayout {
+                                padding-left: 8px;
+                                padding-right: 8px;
+                                spacing: 10px;
+                                alignment: start;
+                                Rectangle {
+                                    width: 20px;
+                                    height: 20px;
+                                    y: (parent.height - self.height) / 2;
+                                    background: root.active-color-index == ci ? #ffffff : #555555;
+                                    border-radius: 10px;
+                                }
+                                Text {
+                                    text: ci == 0 ? "0 (background)" : ci == 1 ? "1" : ci == 2 ? "2" : "3";
+                                    vertical-alignment: center;
+                                    color: Theme.text-primary;
+                                    horizontal-stretch: 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

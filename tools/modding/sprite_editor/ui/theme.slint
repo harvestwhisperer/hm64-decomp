@@ -1,0 +1,48 @@
+// Centralizes the dark-mode color palette so panels and modals don't repeat
+// raw hex literals. New colors should be added here before they spread.
+//
+// Naming follows role, not appearance: panels referencing `text-primary`
+// should keep working if the palette ever shifts to a lighter or different
+// hue. Hex values were lifted from the original inline literals in
+// main_window.slint and the panel files.
+export global Theme {
+    // Surfaces
+    out property <color> bg-window: #1a1a1a;
+    out property <color> bg-panel: #2d2d2d;
+    out property <color> bg-panel-alt: #2a2a2a;
+    out property <color> bg-sidebar: #252526;
+    out property <color> bg-toolbar: #2d2d2d;
+    out property <color> bg-input: #1e1e1e;
+
+    // Borders / dividers
+    out property <color> border: #444;
+    out property <color> border-strong: #555;
+    out property <color> border-subtle: #3a3a3a;
+    out property <color> border-light: #888888;
+
+    // Text
+    out property <color> text-primary: #f0f0f0;
+    out property <color> text-secondary: #ccc;
+    out property <color> text-muted: #aaa;
+    out property <color> text-dim: #888;
+    out property <color> text-faint: #666;
+    out property <color> text-category: #e6d48a;
+
+    // Selection / interaction
+    out property <color> selected: #264f78;
+    out property <color> hover-row: #2d3d50;
+    out property <color> hover-cell: #3a3a3a;
+    out property <color> drop-target: #3a6b3a;
+
+    // Accents
+    out property <color> accent-progress: #4a90e2;
+    out property <color> warning: #ffaa44;
+    out property <color> error: #ff4444;
+    out property <color> error-soft: #ff6b6b;
+
+    // Overlays
+    out property <brush> overlay-backdrop: rgba(0, 0, 0, 0.6);
+    out property <brush> overlay-backdrop-strong: rgba(0, 0, 0, 0.7);
+    out property <brush> overlay-backdrop-light: rgba(0, 0, 0, 0.4);
+    out property <brush> toast-bg: rgba(30, 30, 30, 0.9);
+}

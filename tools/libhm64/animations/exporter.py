@@ -191,6 +191,20 @@ def emit_avatar_inc_c(data: dict) -> str:
 
 
 def emit_avatar_h(data: dict) -> str:
+    """Emit `characterAvatars.h` from the JSON model.
+
+    Macro names are `DIALOGUE_AVATARS_<CHARACTER>_<EXPRESSION>`
+    """
+    macros: list[tuple[str, int]] = []
+    for flat_idx, entry in enumerate(data["entries"]):
+        character = (entry.get("character") or "").strip()
+        expression = (entry.get("expression") or "").strip()
+        if not character or not expression:
+            continue
+        macros.append((f"DIALOGUE_AVATARS_{character}_{expression}", flat_idx))
+
+    longest = max((len(name) for name, _ in macros), default=0)
+
     lines: list[str] = [
         "#ifndef _CHARACTER_AVATARS_H_",
         "#define _CHARACTER_AVATARS_H_",
@@ -198,10 +212,10 @@ def emit_avatar_h(data: dict) -> str:
         "extern u8 characterAvatarCodesToAnimations[];",
         "",
     ]
-    for flat_idx, entry in enumerate(data["entries"]):
-        macro = f"DIALOGUE_AVATARS_{entry['label']}"
-        lines.append(f"#define {macro:<40s} {flat_idx}")
-    lines.append("")
+    if macros:
+        for name, value in macros:
+            lines.append(f"#define {name:<{longest}} {value}")
+        lines.append("")
     lines.append("#endif")
     return "\n".join(lines) + "\n"
 

@@ -18,7 +18,13 @@ import re
 from pathlib import Path
 from typing import List, Tuple, Optional
 
-from .charmap import CHAR_MAP, CONTROL_CODES, GAMEVAR_MACRO_TO_INDEX, CHARACTER_AVATAR_MACRO_TO_INDEX
+from .charmap import (
+    CHAR_MAP,
+    CONTROL_CODES,
+    GAMEVAR_MACRO_TO_INDEX,
+    get_character_avatar_macro_to_index,
+    CharacterAvatarMacrosError,
+)
 
 # Create reverse mappings for encoding
 REVERSE_CHAR_MAP = {v: k for k, v in CHAR_MAP.items()}
@@ -217,10 +223,11 @@ class TextEncoder:
                     # Add parameter if present
                     if param_str is not None:
 
-                        # CHARACTER_AVATAR supports macro names (e.g., MARIA_1) or decimal indices
+                        # CHARACTER_AVATAR supports macro names (e.g., MARIA_1) or decimal indices.
                         if control_code == 9:  # CHARACTER_AVATAR
-                            if param_str in CHARACTER_AVATAR_MACRO_TO_INDEX:
-                                param = CHARACTER_AVATAR_MACRO_TO_INDEX[param_str]
+                            avatar_macros = get_character_avatar_macro_to_index()
+                            if param_str in avatar_macros:
+                                param = avatar_macros[param_str]
                             else:
                                 param = int(param_str, 10)
                         # WAIT, LOAD_TEXT use decimal for readability
@@ -629,6 +636,9 @@ class TextTranspiler:
             data_output = '\n'.join(self.data_lines) + '\n'
             index_output = '\n'.join(self.index_lines) + '\n'
             return data_output, index_output
+
+        # Eagerly validate that characterAvatars.h is loadable
+        get_character_avatar_macro_to_index()
 
         encoder = TextEncoder(modding=self.modding_mode)
         encoder.verbose = self.verbose
