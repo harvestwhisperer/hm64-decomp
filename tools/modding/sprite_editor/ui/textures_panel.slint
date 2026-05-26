@@ -1,0 +1,225 @@
+import { VerticalBox, HorizontalBox, ListView, GroupBox, Button, ComboBox } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+export struct TextureThumb {
+    index: int,
+    width: int,
+    height: int,
+    palette-index: int,
+    image: image,
+}
+
+export struct AnimationUsageRow {
+    animation-index: int,
+    frame-count: int,
+    label: string,
+}
+
+export struct ScriptEntryUsageRow {
+    script-name: string,
+    entry-index: int,
+    animation-index: int,
+    label: string,
+}
+
+export component TexturesPanel inherits Rectangle {
+    forward-focus: fs;
+    in property <[TextureThumb]> thumbs: [];
+    in property <int> selected-index: -1;
+    in property <int> selected-row: -1;
+    in property <image> preview-image;
+    in property <string> preview-info: "Click a texture";
+    in property <bool> dirty: false;
+
+    // Palette assignment
+    in property <[string]> palette-names: [];
+    in-out property <int> texture-palette-index: -1;
+
+    in property <[AnimationUsageRow]> usage-animations: [];
+    in property <[ScriptEntryUsageRow]> usage-script-entries: [];
+    in property <bool> usage-show-scripts: false;
+
+    callback thumb-clicked(int);
+    callback save-textures();
+    callback save-selected-texture();
+    callback texture-palette-changed(int);
+    callback import-texture();
+    callback replace-texture();
+    callback delete-texture();
+    callback usage-animation-clicked(int);
+    callback usage-script-entry-clicked(string, int);
+
+    VerticalBox {
+        padding: 4px;
+        spacing: 4px;
+        // Tab-level toolbar — actions that operate on the whole texture set
+        // rather than the currently inspected texture.
+        HorizontalBox {
+            padding: 0px;
+            spacing: 4px;
+            height: 32px;
+            alignment: end;
+            Button {
+                text: root.dirty ? "Save All Textures *" : "Save All Textures";
+                enabled: root.dirty;
+                clicked => { root.save-textures(); }
+            }
+        }
+        HorizontalBox {
+        padding: 0px;
+        spacing: 4px;
+
+        // Thumbnail gallery
+        Rectangle {
+            horizontal-stretch: 2;
+            background: Theme.bg-input;
+            fs := FocusScope {
+                init => { self.focus(); }
+                key-pressed(event) => {
+                    if (event.text == Key.UpArrow) {
+                        if (root.thumbs.length == 0) { return reject; }
+                        if (root.selected-row < 0) {
+                            root.thumb-clicked(root.thumbs[root.thumbs.length - 1].index);
+                            return accept;
+                        }
+                        if (root.selected-row > 0) {
+                            root.thumb-clicked(root.thumbs[root.selected-row - 1].index);
+                            return accept;
+                        }
+                        return accept;
+                    }
+                    if (event.text == Key.DownArrow) {
+                        if (root.thumbs.length == 0) { return reject; }
+                        if (root.selected-row < 0) {
+                            root.thumb-clicked(root.thumbs[0].index);
+                            return accept;
+                        }
+                        if (root.selected-row < root.thumbs.length - 1) {
+                            root.thumb-clicked(root.thumbs[root.selected-row + 1].index);
+                            return accept;
+                        }
+                        return accept;
+                    }
+                    return reject;
+                }
+                ListView {
+                    for t[i] in root.thumbs: TouchArea {
+                        height: 72px;
+                        clicked => { fs.focus(); root.thumb-clicked(t.index); }
+                        Rectangle {
+                            background: t.index == root.selected-index ? Theme.selected : Theme.bg-panel;
+                            HorizontalBox {
+                                padding: 4px;
+                                spacing: 6px;
+                                Image {
+                                    source: t.image;
+                                    width: 64px;
+                                    height: 64px;
+                                    image-rendering: pixelated;
+                                    image-fit: contain;
+                                }
+                                VerticalBox {
+                                    Text { text: "#" + t.index; font-weight: 600; color: Theme.text-primary; }
+                                    Text {
+                                        text: t.width + "×" + t.height + ", pal " + t.palette-index;
+                                        color: #999;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Inspector
+        GroupBox {
+            title: "Inspector";
+            horizontal-stretch: 1;
+            VerticalBox {
+                alignment: start;
+                spacing: 6px;
+                HorizontalBox {
+                    padding: 0px;
+                    spacing: 4px;
+                    height: 32px;
+                    Button { text: "Import PNG…"; clicked => { root.import-texture(); } }
+                    Button {
+                        text: "Replace…";
+                        enabled: root.selected-index >= 0;
+                        clicked => { root.replace-texture(); }
+                    }
+                    Button {
+                        text: "− Delete";
+                        enabled: root.selected-index >= 0;
+                        clicked => { root.delete-texture(); }
+                    }
+                    Button {
+                        text: "Save";
+                        enabled: root.selected-index >= 0;
+                        clicked => { root.save-selected-texture(); }
+                    }
+                }
+                Image {
+                    source: root.preview-image;
+                    width: 256px;
+                    height: 256px;
+                    image-rendering: pixelated;
+                    horizontal-alignment: center;
+                    image-fit: contain;
+                }
+                Text { text: root.preview-info; color: Theme.text-secondary; }
+
+                // Palette assignment — shown when a texture is selected
+                if root.texture-palette-index >= 0: HorizontalBox {
+                    padding: 0px;
+                    spacing: 6px;
+                    height: 30px;
+                    Text { text: "Palette"; width: 52px; color: Theme.text-secondary; vertical-alignment: center; }
+                    ComboBox {
+                        model: root.palette-names;
+                        current-index <=> root.texture-palette-index;
+                        enabled: root.palette-names.length > 1;
+                        selected(_) => { root.texture-palette-changed(self.current-index); }
+                    }
+                }
+
+                if root.selected-index >= 0: GroupBox {
+                    title: "Used by";
+                    VerticalBox {
+                        alignment: start;
+                        spacing: 4px;
+                        if root.usage-animations.length == 0 && root.usage-script-entries.length == 0: Text {
+                            text: "Unused";
+                            color: Theme.text-dim;
+                        }
+                        if root.usage-animations.length > 0: Text { text: "Animations"; font-weight: 600; color: #ddd; }
+                        for a[i] in root.usage-animations: TouchArea {
+                            height: 20px;
+                            clicked => { root.usage-animation-clicked(a.animation-index); }
+                            Text {
+                                text: a.label;
+                                color: #aac;
+                            }
+                        }
+                        if root.usage-show-scripts && root.usage-script-entries.length > 0: Text {
+                            text: "Script entries";
+                            font-weight: 600;
+                            color: #ddd;
+                        }
+                        for e[i] in root.usage-script-entries: TouchArea {
+                            height: root.usage-show-scripts ? 20px : 0px;
+                            visible: root.usage-show-scripts;
+                            clicked => { root.usage-script-entry-clicked(e.script-name, e.entry-index); }
+                            Text {
+                                text: e.script-name + ":" + e.label;
+                                color: #aac;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        }
+    }
+}

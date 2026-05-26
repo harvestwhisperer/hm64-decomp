@@ -1,0 +1,50 @@
+import { Button, ComboBox, LineEdit, GroupBox, VerticalBox, HorizontalBox, SpinBox } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+export component NewFontWizard inherits Rectangle {
+    background: Theme.bg-panel-alt;
+    border-color: Theme.border-light; border-width: 1px;
+
+    in-out property <string> name-text;
+    in-out property <int> glyph-count: 700;
+    in-out property <int> initial-palette-index: 0; // 0=Black, 1=Greyscale, 2=CopyDefault
+    in-out property <string> error-text;
+
+    callback create();
+    callback cancel();
+
+    VerticalBox {
+        padding: 16px;
+        spacing: 12px;
+        Text { text: "New Font"; font-size: 18px; }
+
+        GroupBox {
+            title: "Name";
+            LineEdit { text <=> root.name-text; placeholder-text: "myFont"; }
+        }
+        GroupBox {
+            title: "Glyph count";
+            VerticalBox {
+                SpinBox { value <=> root.glyph-count; minimum: 1; maximum: 65535; }
+                Text {
+                    text: glyph-count != 700 ? "⚠ Counts other than 700 require runtime changes in src/system/message.c. Your font won't render in-game without those changes." : "";
+                    color: Theme.warning;
+                    wrap: word-wrap;
+                }
+            }
+        }
+        GroupBox {
+            title: "Initial palette";
+            ComboBox {
+                model: ["Black", "Greyscale", "Copy from default"];
+                current-index <=> root.initial-palette-index;
+            }
+        }
+        Text { text: root.error-text; color: Theme.error; }
+        HorizontalBox {
+            alignment: end;
+            Button { text: "Cancel"; clicked => { root.cancel(); } }
+            Button { text: "Create"; clicked => { root.create(); } primary: true; }
+        }
+    }
+}

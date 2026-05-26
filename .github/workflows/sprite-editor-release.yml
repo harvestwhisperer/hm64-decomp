@@ -1,0 +1,102 @@
+name: sprite-editor release
+
+on:
+  push:
+    tags:
+      - 'sprite-editor-v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact-name: sprite-editor-linux-x64
+          - os: windows-latest
+            artifact-name: sprite-editor-windows-x64
+          - os: macos-latest
+            artifact-name: sprite-editor-macos-universal
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: tools/modding/sprite_editor
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux UI dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxcb1-dev libxcb-render0-dev libxcb-shape0-dev \
+            libxcb-xfixes0-dev libxkbcommon-dev libfontconfig1-dev
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: tools/modding/sprite_editor
+
+      - name: Build (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: cargo build --release --locked
+
+      - name: Package (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: tar czf ${{ matrix.artifact-name }}.tar.gz -C target/release sprite_editor
+
+      - name: Build (Windows)
+        if: matrix.os == 'windows-latest'
+        run: cargo build --release --locked
+
+      - name: Package (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: Compress-Archive -Path target/release/sprite_editor.exe -DestinationPath ${{ matrix.artifact-name }}.zip
+
+      - name: Install cargo-bundle (macOS)
+        if: matrix.os == 'macos-latest'
+        run: cargo install cargo-bundle --locked
+
+      - name: Build universal macOS binary
+        if: matrix.os == 'macos-latest'
+        run: |
+          rustup target add x86_64-apple-darwin aarch64-apple-darwin
+          cargo build --release --locked --target aarch64-apple-darwin
+          cargo build --release --locked --target x86_64-apple-darwin
+          cargo bundle --release --locked
+          APP="target/release/bundle/osx/HM64 Sprite Editor.app"
+          lipo -create -output "$APP/Contents/MacOS/sprite_editor" \
+            target/aarch64-apple-darwin/release/sprite_editor \
+            target/x86_64-apple-darwin/release/sprite_editor
+          lipo -info "$APP/Contents/MacOS/sprite_editor"
+
+      - name: Package (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd target/release/bundle/osx
+          zip -r "$GITHUB_WORKSPACE/tools/modding/sprite_editor/${{ matrix.artifact-name }}.zip" "HM64 Sprite Editor.app"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: tools/modding/sprite_editor/${{ matrix.artifact-name }}.*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Sprite Editor ${{ github.ref_name }}
+          draft: true
+          files: artifacts/**/*

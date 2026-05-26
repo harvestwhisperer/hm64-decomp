@@ -1,0 +1,57 @@
+import { GroupBox, VerticalBox, HorizontalBox } from "std-widgets.slint";
+
+export struct FontPaletteCellVm {
+    r: int,
+    g: int,
+    b: int,
+    a: int,
+}
+
+export struct FontPaletteRowVm {
+    palette-index: int,
+    label: string,
+    cell-0: FontPaletteCellVm,
+    cell-1: FontPaletteCellVm,
+    cell-2: FontPaletteCellVm,
+    cell-3: FontPaletteCellVm,
+}
+
+export component FontPalettesPanel inherits Rectangle {
+    background: #1a1a1a;
+
+    in property <[FontPaletteRowVm]> rows;
+    callback cell-clicked(int /* palette-index */, int /* color-index */);
+
+    VerticalBox {
+        for row in rows: GroupBox {
+            title: row.label;
+            HorizontalBox {
+                spacing: 8px;
+                Rectangle {
+                    width: 48px; height: 48px;
+                    background: rgba(row.cell-0.r, row.cell-0.g, row.cell-0.b, row.cell-0.a / 255);
+                    border-color: #888888; border-width: 1px;
+                    TouchArea { clicked => { root.cell-clicked(row.palette-index, 0); } }
+                }
+                Rectangle {
+                    width: 48px; height: 48px;
+                    background: rgba(row.cell-1.r, row.cell-1.g, row.cell-1.b, row.cell-1.a / 255);
+                    border-color: #888888; border-width: 1px;
+                    TouchArea { clicked => { root.cell-clicked(row.palette-index, 1); } }
+                }
+                Rectangle {
+                    width: 48px; height: 48px;
+                    background: rgba(row.cell-2.r, row.cell-2.g, row.cell-2.b, row.cell-2.a / 255);
+                    border-color: #888888; border-width: 1px;
+                    TouchArea { clicked => { root.cell-clicked(row.palette-index, 2); } }
+                }
+                Rectangle {
+                    width: 48px; height: 48px;
+                    background: rgba(row.cell-3.r, row.cell-3.g, row.cell-3.b, row.cell-3.a / 255);
+                    border-color: #888888; border-width: 1px;
+                    TouchArea { clicked => { root.cell-clicked(row.palette-index, 3); } }
+                }
+            }
+        }
+    }
+}

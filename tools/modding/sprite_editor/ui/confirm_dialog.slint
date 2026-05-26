@@ -1,0 +1,50 @@
+import { VerticalBox, HorizontalBox, Button } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+export component ConfirmDialog inherits Rectangle {
+    in property <string> title: "Confirm";
+    in property <string> body: "";
+    in property <string> ok-label: "OK";
+    in property <string> cancel-label: "Cancel";
+    callback ok();
+    callback cancel();
+
+    background: Theme.overlay-backdrop;
+    Rectangle {
+        x: (parent.width - 460px) / 2;
+        y: (parent.height - 220px) / 2;
+        width: 460px;
+        height: 220px;
+        background: Theme.bg-panel;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: Theme.border;
+        VerticalBox {
+            padding: 16px;
+            spacing: 8px;
+            Text {
+                text: root.title;
+                color: Theme.text-primary;
+                font-size: 16px;
+                font-weight: 700;
+            }
+            Text {
+                text: root.body;
+                color: Theme.text-secondary;
+                wrap: word-wrap;
+                vertical-stretch: 1;
+            }
+            HorizontalBox {
+                Rectangle { horizontal-stretch: 1; }
+                Button {
+                    text: root.cancel-label;
+                    clicked => { root.cancel(); }
+                }
+                Button {
+                    text: root.ok-label;
+                    clicked => { root.ok(); }
+                }
+            }
+        }
+    }
+}

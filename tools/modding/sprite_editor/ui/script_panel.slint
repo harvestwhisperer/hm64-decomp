@@ -1,0 +1,517 @@
+import { VerticalBox, HorizontalBox, ListView, GroupBox, Button, LineEdit,
+         SpinBox, ComboBox, CheckBox, Slider } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+export struct ScriptEntryRow {
+    entry-index: int,
+    is-break: bool,
+    label: string,
+    offset: int,
+    type-short: string,
+    flip: bool,
+    directional: bool,
+    // Group-header rows: synthetic, clickable, render a chevron + summary
+    // and toggle visibility of the 8 directional entries below them.
+    // `entry-index` on a header is the base entry-index of its group.
+    is-group-header: bool,
+    group-collapsed: bool,
+    group-size: int,
+}
+
+export component ScriptPanel inherits Rectangle {
+    forward-focus: fs;
+    // UI scale factor inherited from MainWindow. All explicit font sizes and
+    // dimensions in this panel multiply by it so the Script tab scales as a
+    // unit. Default-sized Text inherits from `Window.default-font-size` and
+    // doesn't need to read this property directly.
+    in property <float> ui-scale: 1.0;
+
+    in property <[ScriptEntryRow]> rows: [];
+    in property <string> script-header: "(no script)";
+
+    in-out property <int> selected-entry-index: -1;
+    in-out property <bool> can-edit-entry: false;
+    in property <image> entry-preview;
+
+    in-out property <int> editor-offset: 0;
+    in-out property <int> editor-anim-type: 0; // 0 = OneShot, 1 = Loop, 2 = DestroyOnEnd
+    in-out property <bool> editor-flip: false;
+    in-out property <string> editor-label: "";
+    // Avatar-only: shown instead of `editor-label` when display-kind == 1.
+    in-out property <string> editor-character: "";
+    in-out property <string> editor-expression: "";
+    // Entity-only directional flag for the *currently selected* entry.
+    // `editor-directional-allowed` is true only when the selection is at an
+    // 8-aligned position with 8 entries available from there.
+    in-out property <bool> editor-directional: false;
+    in property <bool> editor-directional-allowed: false;
+
+    in property <bool> animation-data-dirty: false;
+
+    // 0 = entity, 1 = avatar, 2 = standalone, 3 = none
+    in property <int> display-kind: 3;
+    // Script-name dropdown options. Only shown when length > 1.
+    in property <[string]> script-options: [];
+    in-out property <int> selected-script-index: 0;
+    // Master toggle for all editor controls. When false, the panel is purely
+    // display-only (e.g. JSON-driven flow). The Import button stays enabled
+    // independently.
+    in property <bool> editing-allowed: false;
+    // Whether the kind permits Add/Remove/Clone/Move. Avatar tables are a
+    // fixed 143-entry list, so the buttons stay disabled even when editing
+    // is otherwise allowed.
+    in property <bool> allow-add-remove: true;
+    // Toggles Type / Flip column visibility (Avatar/Standalone hide them).
+    in property <bool> show-type-flip: true;
+
+    // Entry preview playback state. Only meaningful for entity sprites.
+    in property <int> preview-frame: 0;
+    in property <int> preview-frame-count: 1;
+
+    callback save-script();
+    callback script-import();
+    callback script-arrow(int);
+    callback entry-clicked(int);
+    // Toggle expand/collapse for a directional group. Argument is the base
+    // entry-index of the group (which is also the header row's entry-index).
+    callback group-toggle(int);
+    callback add-entry();
+    callback remove-entry();
+    callback clone-entry();
+    callback move-up();
+    callback move-down();
+    callback script-selected(int);
+
+    callback commit-offset(int);
+    callback commit-anim-type(int);
+    callback commit-flip(bool);
+    callback commit-label(string);
+    callback commit-character(string);
+    callback commit-expression(string);
+    callback commit-directional(bool);
+
+    callback export-inc-c();
+    callback export-h();
+
+    callback preview-play-pause();
+    callback preview-prev-frame();
+    callback preview-next-frame();
+    callback preview-frame-seek(float);
+
+    // Top-level layout: toolbar + (optional) sub-script picker stretch the
+    // full panel width, and the left/right split sits beneath. Keeping the
+    // toolbar outside the horizontal split is what makes the left list's
+    // GroupBox title and the right "Entry editor" GroupBox title share a
+    // baseline at every window width — putting the toolbar inside the left
+    // half made the right panel start ~one toolbar-row higher, which produced
+    // a visible misalignment that grew more obvious as the window widened.
+    VerticalBox {
+        padding: 4px;
+        spacing: 4px;
+
+        // Button row. Import is always enabled; everything else is gated on
+        // `editing-allowed` (and per-button on can-edit-entry where applicable).
+        HorizontalBox {
+            padding: 0px;
+            spacing: 4px;
+            Button { text: "Import…"; clicked => { root.script-import(); } }
+            Button {
+                text: "+ Add";
+                enabled: root.editing-allowed && root.allow-add-remove;
+                clicked => { root.add-entry(); }
+            }
+            Button {
+                text: "− Remove";
+                enabled: root.editing-allowed && root.allow-add-remove && root.can-edit-entry;
+                clicked => { root.remove-entry(); }
+            }
+            Button {
+                text: "Clone";
+                enabled: root.editing-allowed && root.allow-add-remove && root.can-edit-entry;
+                clicked => { root.clone-entry(); }
+            }
+            Button {
+                text: "↑ Up";
+                enabled: root.editing-allowed && root.allow-add-remove && root.can-edit-entry;
+                clicked => { root.move-up(); }
+            }
+            Button {
+                text: "↓ Down";
+                enabled: root.editing-allowed && root.allow-add-remove && root.can-edit-entry;
+                clicked => { root.move-down(); }
+            }
+            Rectangle { horizontal-stretch: 1; }
+            Button {
+                text: "Export .inc.c…";
+                enabled: root.editing-allowed && (root.display-kind == 0 || root.display-kind == 1);
+                clicked => { root.export-inc-c(); }
+            }
+            Button {
+                text: "Export .h…";
+                enabled: root.editing-allowed;
+                clicked => { root.export-h(); }
+            }
+            Button {
+                text: root.animation-data-dirty ? "Save *" : "Save";
+                enabled: root.editing-allowed && root.animation-data-dirty;
+                clicked => { root.save-script(); }
+            }
+        }
+
+        // Sub-script picker (entity sprites with multiple scripts).
+        if root.script-options.length > 1: ComboBox {
+            model: root.script-options;
+            current-index <=> root.selected-script-index;
+            selected => { root.script-selected(self.current-index); }
+        }
+
+        // Below the toolbar: left list + right entry editor.
+        HorizontalBox {
+            padding: 0px;
+            spacing: 4px;
+
+            // Left: entry list. The right panel is locked to a fixed width
+            // below; this side absorbs all remaining horizontal space via
+            // stretch so its width doesn't drift with inner content (and the
+            // window's overall layout stays identical across display kinds).
+            // GroupBox is the direct HBox child here — wrapping it in a plain
+            // Rectangle would leave the GroupBox at its (minimal) preferred
+            // size because Rectangle doesn't lay out its children.
+            GroupBox {
+                title: root.script-header;
+                horizontal-stretch: 1;
+                min-width: 360px * root.ui-scale;
+                    VerticalBox {
+                        padding: 0px;
+                        spacing: 0px;
+
+                        // Column headers. Label takes all leftover horizontal
+                        // space via stretch so rows don't have a big empty gap
+                        // on the right. Type/Flip use `visible:` (not `if`) so
+                        // their layout footprint stays the same across display
+                        // kinds — that keeps the row HBox preferred-width
+                        // identical for entity vs avatar/standalone, which in
+                        // turn keeps the surrounding panel widths stable.
+                        HorizontalBox {
+                            padding: 2px;
+                            spacing: 8px;
+                            Text { text: "#"; width: 34px * root.ui-scale; color: #888; font-size: 12px * root.ui-scale; }
+                            Text {
+                                text: "Label";
+                                horizontal-stretch: 1;
+                                min-width: 100px * root.ui-scale;
+                                color: #888;
+                                font-size: 12px * root.ui-scale;
+                            }
+                            Text { text: "Offset"; width: 56px * root.ui-scale; color: #888; font-size: 12px * root.ui-scale; }
+                            Text {
+                                text: "Type";
+                                width: 56px * root.ui-scale;
+                                color: #888;
+                                font-size: 12px * root.ui-scale;
+                                visible: root.show-type-flip;
+                            }
+                            Text {
+                                text: "Flip";
+                                width: 28px * root.ui-scale;
+                                color: #888;
+                                font-size: 12px * root.ui-scale;
+                                visible: root.show-type-flip;
+                            }
+                        }
+
+                        // Separator
+                        Rectangle { height: 1px; background: Theme.border-subtle; }
+
+                        fs := FocusScope {
+                            init => { self.focus(); }
+                            key-pressed(event) => {
+                                if (event.text == Key.DownArrow) { root.script-arrow(1); return accept; }
+                                if (event.text == Key.UpArrow) { root.script-arrow(-1); return accept; }
+                                return reject;
+                            }
+                        ListView {
+                            // Each row is a single Rectangle with one always-
+                            // present TouchArea. Group-header vs entry rows
+                            // differ only in which inner HBox is visible —
+                            // never in the structural element tree. This keeps
+                            // Slint from destroying/recreating TouchAreas when
+                            // a row's `is_group_header` flag flips between
+                            // model swaps (e.g. switching sprites with a
+                            // directional group present), which previously
+                            // could stall the UI.
+                            for r[i] in root.rows: Rectangle {
+                                height: r.is-break
+                                    ? 4px * root.ui-scale
+                                    : (r.is-group-header
+                                        ? 26px * root.ui-scale
+                                        : 22px * root.ui-scale);
+                                background: r.is-break
+                                    ? Theme.border-subtle
+                                    : (r.is-group-header
+                                        ? #2a3a4a
+                                        : (r.entry-index == root.selected-entry-index
+                                            ? Theme.selected
+                                            : (i / 2 * 2 == i ? Theme.bg-panel : Theme.bg-sidebar)));
+                                TouchArea {
+                                    enabled: !r.is-break;
+                                    clicked => {
+                                        fs.focus();
+                                        if (r.is-group-header) {
+                                            root.group-toggle(r.entry-index);
+                                        } else if (!r.is-break) {
+                                            root.entry-clicked(r.entry-index);
+                                        }
+                                    }
+                                    // Group-header content. Visible only on
+                                    // header rows — invisible HBoxes still
+                                    // occupy layout space, but they're hidden
+                                    // and the wrapping Rectangle's `height`
+                                    // constrains both branches uniformly.
+                                    HorizontalBox {
+                                        visible: r.is-group-header;
+                                        padding-left: 16px * root.ui-scale;
+                                        padding-right: 4px * root.ui-scale;
+                                        padding-top: 2px;
+                                        padding-bottom: 2px;
+                                        spacing: 8px;
+                                        Text {
+                                            text: r.group-collapsed ? "▶" : "▼";
+                                            width: 16px * root.ui-scale;
+                                            color: #ffcc66;
+                                            vertical-alignment: center;
+                                        }
+                                        Text {
+                                            text: r.label != "" ? r.label : "(unnamed)";
+                                            color: r.label != "" ? #f0e0a0 : #806844;
+                                            font-size: 13px * root.ui-scale;
+                                            font-weight: 600;
+                                            vertical-alignment: center;
+                                            overflow: elide;
+                                        }
+                                        Text {
+                                            text: "· directional · entries " + r.entry-index + "–" + (r.entry-index + r.group-size - 1);
+                                            color: #888;
+                                            font-size: 11px * root.ui-scale;
+                                            vertical-alignment: center;
+                                            horizontal-stretch: 1;
+                                        }
+                                        Text {
+                                            text: r.group-collapsed ? "(collapsed)" : "";
+                                            color: #888;
+                                            font-size: 11px * root.ui-scale;
+                                            vertical-alignment: center;
+                                        }
+                                    }
+                                    // Regular entry row content. Visible on
+                                    // non-break, non-header rows.
+                                    HorizontalBox {
+                                        visible: !r.is-break && !r.is-group-header;
+                                        padding-left: r.directional ? 28px * root.ui-scale : 2px;
+                                        padding-right: 2px;
+                                        padding-top: 2px;
+                                        padding-bottom: 2px;
+                                        spacing: 8px;
+                                        Text {
+                                            text: r.entry-index;
+                                            width: 34px * root.ui-scale;
+                                            color: #999;
+                                            font-size: 13px * root.ui-scale;
+                                            overflow: elide;
+                                            vertical-alignment: center;
+                                        }
+                                        Text {
+                                            text: r.label;
+                                            horizontal-stretch: 1;
+                                            min-width: 100px * root.ui-scale;
+                                            color: Theme.text-primary;
+                                            font-size: 13px * root.ui-scale;
+                                            overflow: elide;
+                                            vertical-alignment: center;
+                                        }
+                                        Text {
+                                            text: r.offset;
+                                            width: 56px * root.ui-scale;
+                                            color: #ccc;
+                                            font-size: 13px * root.ui-scale;
+                                            overflow: elide;
+                                            vertical-alignment: center;
+                                        }
+                                        Text {
+                                            text: r.type-short;
+                                            width: 56px * root.ui-scale;
+                                            color: #ccc;
+                                            font-size: 13px * root.ui-scale;
+                                            overflow: elide;
+                                            vertical-alignment: center;
+                                            visible: root.show-type-flip;
+                                        }
+                                        Text {
+                                            text: r.flip ? "H" : "";
+                                            width: 28px * root.ui-scale;
+                                            color: #ccc;
+                                            font-size: 13px * root.ui-scale;
+                                            vertical-alignment: center;
+                                            visible: root.show-type-flip;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        }
+                    }
+                }
+
+            // Right: entry editor. Locked to a fixed width so the page width
+            // stays identical across display kinds (entity / avatar /
+            // standalone). Inner content varies — entity adds Type/Flip +
+            // Directional; avatar swaps Label for Character + Expression — but
+            // the surrounding box doesn't resize as a result.
+            GroupBox {
+                title: "Entry editor";
+                min-width: 380px * root.ui-scale;
+                max-width: 380px * root.ui-scale;
+                VerticalBox {
+                    padding: 0px;
+                    spacing: 8px;
+
+                    // Entry fields
+                    VerticalBox {
+                        spacing: 6px;
+                        padding: 0px;
+
+                        if root.display-kind != 1: LineEdit {
+                            placeholder-text: "Label";
+                            text <=> root.editor-label;
+                            enabled: root.editing-allowed && root.can-edit-entry;
+                            edited(t) => { root.commit-label(t); }
+                        }
+                        if root.display-kind == 1: LineEdit {
+                            placeholder-text: "Character (e.g. MARIA)";
+                            text <=> root.editor-character;
+                            enabled: root.editing-allowed && root.can-edit-entry;
+                            edited(t) => { root.commit-character(t); }
+                        }
+                        if root.display-kind == 1: LineEdit {
+                            placeholder-text: "Expression (e.g. HAPPY)";
+                            text <=> root.editor-expression;
+                            enabled: root.editing-allowed && root.can-edit-entry;
+                            edited(t) => { root.commit-expression(t); }
+                        }
+
+                        // Offset / Type / H-flip row, centered within the
+                        // panel. `min-width` is load-bearing: a HorizontalBox
+                        // in this VerticalBox sizes to its content width by
+                        // default (horizontal-stretch alone doesn't propagate
+                        // through nested VerticalBox + GroupBox here), so
+                        // without it `alignment: center` has no leftover space
+                        // to center within.
+                        HorizontalBox {
+                            padding: 0px;
+                            spacing: 6px;
+                            min-width: 370px * root.ui-scale;
+                            alignment: center;
+                            SpinBox {
+                                width: 110px * root.ui-scale;
+                                minimum: 0;
+                                maximum: 8191;
+                                value <=> root.editor-offset;
+                                enabled: root.editing-allowed && root.can-edit-entry;
+                                edited(v) => { root.commit-offset(v); }
+                            }
+                            if root.show-type-flip: ComboBox {
+                                width: 130px * root.ui-scale;
+                                model: ["OneShot", "Loop", "DestroyOnEnd"];
+                                current-index <=> root.editor-anim-type;
+                                enabled: root.editing-allowed && root.can-edit-entry;
+                                selected => { root.commit-anim-type(self.current-index); }
+                            }
+                            if root.show-type-flip: CheckBox {
+                                text: "H-flip";
+                                checked <=> root.editor-flip;
+                                enabled: root.editing-allowed && root.can-edit-entry;
+                                toggled => { root.commit-flip(self.checked); }
+                            }
+                        }
+
+                        if root.display-kind == 0: CheckBox {
+                            text: "Directional (8 slots)";
+                            checked <=> root.editor-directional;
+                            enabled: root.editing-allowed && root.can-edit-entry && root.editor-directional-allowed;
+                            toggled => { root.commit-directional(self.checked); }
+                        }
+
+                        Text {
+                            text: root.can-edit-entry
+                                ? ("Animation #" + root.editor-offset)
+                                : "(no entry selected)";
+                            color: Theme.text-faint;
+                        }
+
+                        // Preview + playback controls. We use `visible:` instead
+                        // of `if` so these elements always occupy their layout
+                        // footprint — without that, the panel's preferred width
+                        // shrinks when nothing is selected and the layout shifts
+                        // every time the user clicks a row.
+                        Image {
+                            source: root.entry-preview;
+                            width: 160px * root.ui-scale;
+                            height: 160px * root.ui-scale;
+                            image-rendering: pixelated;
+                            image-fit: contain;
+                            horizontal-alignment: center;
+                            visible: root.can-edit-entry;
+                        }
+
+                        // Playback controls for an entry's animation preview.
+                        // Driven by `anims_vm` for the selected metadata index,
+                        // so entity / avatar / standalone all use the same
+                        // controls.
+                        HorizontalBox {
+                            visible: root.can-edit-entry && root.display-kind != 3;
+                            padding: 0px;
+                            spacing: 4px;
+                            Button {
+                                text: "◀";
+                                max-width: 40px * root.ui-scale;
+                                clicked => { root.preview-prev-frame(); }
+                            }
+                            Button {
+                                text: "▶ ⏸";
+                                max-width: 80px * root.ui-scale;
+                                clicked => { root.preview-play-pause(); }
+                            }
+                            Button {
+                                text: "▶";
+                                max-width: 40px * root.ui-scale;
+                                clicked => { root.preview-next-frame(); }
+                            }
+                        }
+                        HorizontalBox {
+                            visible: root.can-edit-entry && root.display-kind != 3;
+                            padding: 0px;
+                            spacing: 6px;
+                            Text {
+                                text: (root.preview-frame + 1) + " / " + root.preview-frame-count;
+                                color: #888;
+                                font-size: 11px * root.ui-scale;
+                                vertical-alignment: center;
+                                min-width: 44px * root.ui-scale;
+                            }
+                            Slider {
+                                minimum: 0;
+                                maximum: max(0, root.preview-frame-count - 1);
+                                step: 1;
+                                value: root.preview-frame;
+                                enabled: root.preview-frame-count > 1;
+                                changed(v) => { root.preview-frame-seek(v); }
+                            }
+                        }
+                    }
+
+                    Rectangle { vertical-stretch: 1; }
+                }
+            }
+        }
+    }
+}

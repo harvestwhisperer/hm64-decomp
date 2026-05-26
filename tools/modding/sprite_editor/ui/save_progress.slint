@@ -1,0 +1,65 @@
+import { VerticalBox, HorizontalBox, Button } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+// Modal progress overlay shown while Save All runs. `done` and `total` drive
+// the bar; `current` is the current-file label. The Cancel button emits
+// `cancel-clicked()` — the wiring layer flips a cell on the SaveAllJob, the
+// runner picks it up before the next task.
+export component SaveProgress inherits Rectangle {
+    in property <int> done: 0;
+    in property <int> total: 0;
+    in property <string> current: "";
+
+    callback cancel-clicked();
+
+    background: Theme.overlay-backdrop-strong;
+    Rectangle {
+        x: (parent.width - 420px) / 2;
+        y: (parent.height - 180px) / 2;
+        width: 420px;
+        height: 180px;
+        background: Theme.bg-panel;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: Theme.border;
+        VerticalBox {
+            padding: 16px;
+            spacing: 8px;
+            Text {
+                text: "Saving…";
+                color: white;
+                font-size: 14px;
+                font-weight: 700;
+            }
+            Text {
+                text: root.current != "" ? root.current : "Preparing…";
+                color: Theme.text-secondary;
+            }
+            Rectangle {
+                height: 16px;
+                background: Theme.bg-window;
+                border-radius: 4px;
+                Rectangle {
+                    x: 0;
+                    y: 0;
+                    width: root.total > 0 ? parent.width * (root.done / root.total) : 0px;
+                    height: parent.height;
+                    background: Theme.accent-progress;
+                    border-radius: 4px;
+                }
+            }
+            Text {
+                text: root.total > 0 ? "\{root.done} / \{root.total} files" : "";
+                color: Theme.text-muted;
+                horizontal-alignment: right;
+            }
+            HorizontalBox {
+                alignment: end;
+                Button {
+                    text: "Cancel";
+                    clicked => { root.cancel-clicked(); }
+                }
+            }
+        }
+    }
+}

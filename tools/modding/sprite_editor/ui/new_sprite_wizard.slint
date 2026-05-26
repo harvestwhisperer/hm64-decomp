@@ -1,0 +1,99 @@
+import { VerticalBox, HorizontalBox, Button, ComboBox, LineEdit, CheckBox } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+export component NewSpriteWizard inherits Rectangle {
+    in-out property <string> name-field: "";
+    in-out property <int> category-index: 0;   // 0..=3
+    in-out property <int> kind-index: 0;       // 0=Entity, 1=Avatar, 2=Standalone
+    in-out property <int> type-index: 0;       // 0=Type1, 1=Type2
+    in-out property <bool> seed-from-png: false;
+    in-out property <string> validation-msg: "";
+    callback cancel();
+    callback pick-pngs();
+    callback finish();
+    callback name-edited(string);
+    callback category-changed(int);
+    callback kind-changed(int);
+    callback type-changed(int);
+    callback seed-toggled(bool);
+    in property <string> picked-files-label: "";
+
+    background: Theme.overlay-backdrop;
+
+    Rectangle {
+        width: 420px;
+        // Height tracks the inner layout's preferred height so the bottom
+        // button row always sits inside the dialog frame regardless of which
+        // std-widgets style is active (default button / line-edit heights
+        // vary between Fluent / Material / native and a fixed value clipped
+        // the buttons under Fluent).
+        height: vbox.preferred-height;
+        background: Theme.bg-panel;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: Theme.border;
+        x: parent.width / 2 - self.width / 2;
+        y: parent.height / 2 - self.height / 2;
+        vbox := VerticalBox {
+            padding: 12px;
+            spacing: 8px;
+            Text { text: "New Sprite"; font-size: 18px; font-weight: 700; color: Theme.text-primary; }
+
+            HorizontalBox {
+                Text { text: "Category"; width: 80px; vertical-alignment: center; color: Theme.text-secondary; }
+                ComboBox {
+                    model: ["entitySprites", "mapObjects", "effects", "overlayScreens"];
+                    current-index: root.category-index;
+                    selected(_) => { root.category-changed(self.current-index); }
+                }
+            }
+            HorizontalBox {
+                Text { text: "Kind"; width: 80px; vertical-alignment: center; color: Theme.text-secondary; }
+                ComboBox {
+                    model: ["entity", "avatar", "standalone"];
+                    current-index: root.kind-index;
+                    selected(_) => { root.kind-changed(self.current-index); }
+                }
+            }
+            HorizontalBox {
+                Text { text: "Name"; width: 80px; vertical-alignment: center; color: Theme.text-secondary; }
+                LineEdit {
+                    text: root.name-field;
+                    placeholder-text: "myNewSprite";
+                    edited(t) => { root.name-edited(t); }
+                }
+            }
+            HorizontalBox {
+                Text { text: "Type"; width: 80px; vertical-alignment: center; color: Theme.text-secondary; }
+                ComboBox {
+                    enabled: root.kind-index == 0;
+                    model: ["type-1", "type-2"];
+                    current-index: root.type-index;
+                    selected(_) => { root.type-changed(self.current-index); }
+                }
+            }
+            CheckBox {
+                enabled: root.kind-index == 0;
+                text: "Seed from indexed PNG(s)";
+                checked: root.seed-from-png;
+                toggled => { root.seed-toggled(self.checked); }
+            }
+            HorizontalBox {
+                visible: root.kind-index == 0 && root.seed-from-png;
+                Button {
+                    text: "Pick PNGs…";
+                    enabled: root.seed-from-png;
+                    clicked => { root.pick-pngs(); }
+                }
+                Text { text: root.picked-files-label; vertical-alignment: center; color: Theme.text-secondary; }
+            }
+            Text { text: root.validation-msg; color: Theme.error-soft; }
+            Rectangle { vertical-stretch: 1; }
+            HorizontalBox {
+                Rectangle { horizontal-stretch: 1; }
+                Button { text: "Cancel"; clicked => { root.cancel(); } }
+                Button { text: "Create"; clicked => { root.finish(); } }
+            }
+        }
+    }
+}
