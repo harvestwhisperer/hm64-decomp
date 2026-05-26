@@ -45,7 +45,7 @@ jobs:
 
       - name: Package (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: tar czf ${{ matrix.artifact-name }}.tar.gz -C target/release sprite_editor
+        run: tar czf ${{ matrix.artifact-name }}.tar.gz -C target/release hm64-sprite-editor
 
       - name: Build (Windows)
         if: matrix.os == 'windows-latest'
@@ -54,7 +54,7 @@ jobs:
       - name: Package (Windows)
         if: matrix.os == 'windows-latest'
         shell: pwsh
-        run: Compress-Archive -Path target/release/sprite_editor.exe -DestinationPath ${{ matrix.artifact-name }}.zip
+        run: Compress-Archive -Path target/release/hm64-sprite-editor.exe -DestinationPath ${{ matrix.artifact-name }}.zip
 
       - name: Install cargo-bundle (macOS)
         if: matrix.os == 'macos-latest'
@@ -68,10 +68,10 @@ jobs:
           cargo build --release --locked --target x86_64-apple-darwin
           cargo bundle --release
           APP="target/release/bundle/osx/HM64 Sprite Editor.app"
-          lipo -create -output "$APP/Contents/MacOS/sprite_editor" \
-            target/aarch64-apple-darwin/release/sprite_editor \
-            target/x86_64-apple-darwin/release/sprite_editor
-          lipo -info "$APP/Contents/MacOS/sprite_editor"
+          lipo -create -output "$APP/Contents/MacOS/hm64-sprite-editor" \
+            target/aarch64-apple-darwin/release/hm64-sprite-editor \
+            target/x86_64-apple-darwin/release/hm64-sprite-editor
+          lipo -info "$APP/Contents/MacOS/hm64-sprite-editor"
 
       - name: Package (macOS)
         if: matrix.os == 'macos-latest'
