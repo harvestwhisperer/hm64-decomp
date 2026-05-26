@@ -471,7 +471,7 @@ $(TEXT_BUILD_DIR)/%TextIndex.bin.o: $(TEXT_ASSETS_DIR)/%TextIndex.s
 all: $(TARGET)
 
 # Extract all assets required for a dev rebuild
-extract: split extract-texts extract-sprites extract-fonts
+extract: split extract-texts extract-sprites extract-fonts extract-animations
 
 # ==============================================================================
 # Clean
