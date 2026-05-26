@@ -1,0 +1,273 @@
+import { VerticalBox, HorizontalBox, ScrollView, ListView, Button } from "std-widgets.slint";
+import { ColorPickerPopover } from "color_picker.slint";
+import { Theme } from "theme.slint";
+
+export struct PaletteRow {
+    index: int,
+    label: string,
+    swatch: image,
+}
+
+export struct ColorCell {
+    r: int,
+    g: int,
+    b: int,
+    a: int,
+}
+
+export struct PaletteTextureThumb {
+    index: int,
+    image: image,
+}
+
+export component PalettesPanel inherits Rectangle {
+    forward-focus: cell-fs;
+    in property <[PaletteRow]> palettes: [];
+    in property <int> selected-index: -1;
+    in property <[ColorCell]> cells: [];
+    in property <int> cell-rows: 16;
+    in property <int> cell-cols: 16;
+    in property <int> selected-cell: -1;
+    in property <string> info;
+    in property <bool> can-create-palette: false;
+    in property <bool> can-delete-palette: false;
+    in property <bool> dirty: false;
+
+    // Picker state (driven by parent/Rust)
+    in property <bool> picker-visible: false;
+    in property <length> picker-x: 0px;
+    in property <length> picker-y: 0px;
+    in property <int> picker-r: 0;
+    in property <int> picker-g: 0;
+    in property <int> picker-b: 0;
+    in property <int> picker-a: 255;
+    in property <int> picker-pre-r: 0;
+    in property <int> picker-pre-g: 0;
+    in property <int> picker-pre-b: 0;
+    in property <int> picker-pre-a: 255;
+    in property <color> picker-hue-color: #ff0000;
+    in property <float> picker-sat: 0;
+    in property <float> picker-val: 0;
+    in property <float> picker-hue-frac: 0;
+    in property <float> picker-alpha-frac: 1;
+    in property <string> picker-hex-text: "#000000";
+
+    // Textures that use the currently selected palette
+    in property <[PaletteTextureThumb]> palette-textures: [];
+
+    callback palette-clicked(int);
+    callback cell-clicked(int);
+    callback new-palette();
+    callback import-palette();
+    callback delete-palette();
+    callback save-palettes();
+    callback commit-color(int, int, int, int);
+    callback picker-sv-pointer(float, float);
+    callback picker-hue-pointer(float);
+    callback picker-alpha-pointer(float);
+    callback picker-hex-accepted(string);
+    callback picker-close();
+
+    // Outside-click catcher — placed BEFORE the HorizontalBox so it sits at
+    // the bottom of z-order. Cells, buttons, and list items (which have their
+    // own TouchAreas) still win hit-testing; clicks that land on panel
+    // padding / gaps fall through to this catcher and close the picker.
+    if root.picker-visible: TouchArea {
+        x: 0;
+        y: 0;
+        width: parent.width;
+        height: parent.height;
+        clicked => { root.picker-close(); }
+    }
+
+    HorizontalBox {
+        padding: 4px;
+        spacing: 4px;
+
+        // Left: palette list
+        Rectangle {
+            width: 260px;
+            VerticalBox {
+                // Two rows of two buttons each — four full-text buttons don't
+                // fit in the 260px column width, so stack them vertically.
+                HorizontalBox {
+                    height: 32px;
+                    padding: 0px;
+                    spacing: 4px;
+                    Button { text: "+ New"; enabled: root.can-create-palette; clicked => { root.new-palette(); } }
+                    Button { text: "+ Import…"; enabled: root.can-create-palette; clicked => { root.import-palette(); } }
+                }
+                HorizontalBox {
+                    height: 32px;
+                    padding: 0px;
+                    spacing: 4px;
+                    Button { text: "− Delete"; enabled: root.can-delete-palette; clicked => { root.delete-palette(); } }
+                    Button {
+                        text: root.dirty ? "Save *" : "Save";
+                        enabled: root.dirty;
+                        clicked => { root.save-palettes(); }
+                    }
+                }
+                ListView {
+                    for p[i] in root.palettes: TouchArea {
+                        height: 34px;
+                        clicked => { root.palette-clicked(p.index); }
+                        Rectangle {
+                            background: p.index == root.selected-index ? Theme.selected : Theme.bg-panel;
+                            HorizontalBox {
+                                padding: 4px;
+                                Image {
+                                    source: p.swatch;
+                                    width: 64px;
+                                    height: 8px;
+                                    image-rendering: pixelated;
+                                }
+                                Text { text: p.label; vertical-alignment: center; color: Theme.text-primary; }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Right: info + color grid + editor + texture gallery
+        VerticalBox {
+            padding: 0px;
+            spacing: 6px;
+            horizontal-stretch: 1;
+
+            // Description at the top
+            Text { text: root.info; color: Theme.text-primary; font-weight: 600; }
+
+            // Color grid
+            cell-fs := FocusScope {
+                init => { self.focus(); }
+                key-pressed(event) => {
+                    if (root.picker-visible) { return reject; }
+                    if (root.cells.length == 0) { return reject; }
+                    if (root.selected-cell < 0) {
+                        if (event.text == Key.DownArrow || event.text == Key.RightArrow
+                            || event.text == Key.UpArrow || event.text == Key.LeftArrow) {
+                            root.cell-clicked(0);
+                            return accept;
+                        }
+                        return reject;
+                    }
+                    if (event.text == Key.LeftArrow) {
+                        if (mod(root.selected-cell, root.cell-cols) > 0) {
+                            root.cell-clicked(root.selected-cell - 1);
+                        }
+                        return accept;
+                    }
+                    if (event.text == Key.RightArrow) {
+                        if (mod(root.selected-cell, root.cell-cols) < root.cell-cols - 1
+                            && root.selected-cell + 1 < root.cells.length) {
+                            root.cell-clicked(root.selected-cell + 1);
+                        }
+                        return accept;
+                    }
+                    if (event.text == Key.UpArrow) {
+                        if (root.selected-cell >= root.cell-cols) {
+                            root.cell-clicked(root.selected-cell - root.cell-cols);
+                        }
+                        return accept;
+                    }
+                    if (event.text == Key.DownArrow) {
+                        if (root.selected-cell + root.cell-cols < root.cells.length) {
+                            root.cell-clicked(root.selected-cell + root.cell-cols);
+                        }
+                        return accept;
+                    }
+                    return reject;
+                }
+                Rectangle {
+                    preferred-width: root.cell-cols * 24px;
+                    preferred-height: root.cell-rows * 24px;
+                    for cell[i] in root.cells: TouchArea {
+                        clicked => { cell-fs.focus(); root.cell-clicked(i); }
+                        x: mod(i, root.cell-cols) * 24px;
+                        y: floor(i / root.cell-cols) * 24px;
+                        width: 24px; height: 24px;
+                        Rectangle {
+                            background: rgba(cell.r, cell.g, cell.b, cell.a / 255);
+                            border-color: i == root.selected-cell ? #fff : #3a3a3a;
+                            border-width: i == root.selected-cell ? 2px : 1px;
+                        }
+                    }
+                }
+            }
+
+            // Texture gallery for this palette — responsive grid whose column
+            // count adapts to the gallery's visible width so horizontal space
+            // is filled. The ScrollView's viewport-height is set explicitly
+            // from the content layout so overflow activates the scrollbar.
+            if root.palette-textures.length > 0: VerticalBox {
+                padding: 0px;
+                spacing: 4px;
+                vertical-stretch: 1;
+                Text { text: "Textures"; color: #aaa; font-size: 11px; font-weight: 600; }
+                gallery-scroll := ScrollView {
+                    vertical-stretch: 1;
+                    property <int> cols: max(1, floor(self.visible-width / 72px));
+                    viewport-width: self.visible-width;
+                    viewport-height: ceil(root.palette-textures.length / gallery-scroll.cols) * 80px;
+                    for t[i] in root.palette-textures: Rectangle {
+                        x: mod(i, gallery-scroll.cols) * 72px;
+                        y: floor(i / gallery-scroll.cols) * 80px;
+                        width: 68px;
+                        height: 76px;
+                        border-radius: 3px;
+                        background: #2a2a2a;
+                        VerticalBox {
+                            padding: 2px;
+                            spacing: 2px;
+                            Image {
+                                source: t.image;
+                                width: 60px;
+                                height: 60px;
+                                image-rendering: pixelated;
+                                image-fit: contain;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                            Text {
+                                text: "#" + t.index;
+                                horizontal-alignment: center;
+                                font-size: 9px;
+                                color: #999;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if root.palette-textures.length == 0: Rectangle { vertical-stretch: 1; }
+        }
+    }
+
+    // Popover — placed last so it sits at the top of z-order, above both the
+    // functional UI and the outside-click catcher declared at the top.
+    if root.picker-visible: ColorPickerPopover {
+        x: root.picker-x;
+        y: root.picker-y;
+        r: root.picker-r;
+        g: root.picker-g;
+        b: root.picker-b;
+        a: root.picker-a;
+        pre-r: root.picker-pre-r;
+        pre-g: root.picker-pre-g;
+        pre-b: root.picker-pre-b;
+        pre-a: root.picker-pre-a;
+        hue-color: root.picker-hue-color;
+        sat: root.picker-sat;
+        val: root.picker-val;
+        hue-frac: root.picker-hue-frac;
+        alpha-frac: root.picker-alpha-frac;
+        hex-text: root.picker-hex-text;
+        sv-pointer(x, y) => { root.picker-sv-pointer(x, y); }
+        hue-pointer(y) => { root.picker-hue-pointer(y); }
+        alpha-pointer(y) => { root.picker-alpha-pointer(y); }
+        hex-accepted(t) => { root.picker-hex-accepted(t); }
+        close-picker => { root.picker-close(); }
+    }
+}

@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HM64 Sprite Editor</title>
+<style>
+  :root {
+    --fg: #1f2328;
+    --muted: #59636e;
+    --bg: #ffffff;
+    --border: #d1d9e0;
+    --code-bg: #f6f8fa;
+    --link: #0969da;
+    --blockquote-fg: #59636e;
+    --blockquote-border: #d1d9e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fg: #e6edf3;
+      --muted: #9198a1;
+      --bg: #0d1117;
+      --border: #30363d;
+      --code-bg: #161b22;
+      --link: #4493f8;
+      --blockquote-fg: #9198a1;
+      --blockquote-border: #30363d;
+    }
+  }
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+                 Helvetica, Arial, sans-serif, "Apple Color Emoji",
+                 "Segoe UI Emoji";
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+  main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 1.75rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  h1 {
+    font-size: 2em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--border);
+  }
+  h2 {
+    font-size: 1.5em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 { font-size: 1.25em; }
+  h4 { font-size: 1em; }
+  h5 { font-size: 0.875em; }
+  h6 { font-size: 0.85em; color: var(--muted); }
+
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  p { margin-top: 0; margin-bottom: 1rem; }
+
+  ul, ol { padding-left: 2em; margin-top: 0; margin-bottom: 1rem; }
+  li + li { margin-top: 0.25em; }
+  li > p { margin-top: 1em; }
+  li > ul, li > ol { margin-bottom: 0; }
+
+  code, kbd, pre, samp {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+                 "Liberation Mono", monospace;
+    font-size: 0.9em;
+  }
+  code {
+    background: var(--code-bg);
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+    white-space: break-spaces;
+  }
+  pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow: auto;
+    line-height: 1.45;
+  }
+  pre code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    white-space: pre;
+    font-size: 0.875em;
+  }
+
+  blockquote {
+    margin: 0 0 1rem;
+    padding: 0 1em;
+    color: var(--blockquote-fg);
+    border-left: 0.25em solid var(--blockquote-border);
+  }
+  blockquote > :first-child { margin-top: 0; }
+  blockquote > :last-child { margin-bottom: 0; }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 1rem;
+    display: block;
+    overflow: auto;
+    max-width: 100%;
+  }
+  table th, table td {
+    border: 1px solid var(--border);
+    padding: 0.4em 0.8em;
+  }
+  table th {
+    background: var(--code-bg);
+    font-weight: 600;
+    text-align: left;
+  }
+  table tr:nth-child(2n) td {
+    background: var(--code-bg);
+  }
+
+  strong { font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+
+<h1 id="hm64-sprite-editor">HM64 Sprite Editor</h1>
+
+<p>A standalone desktop editor for Harvest Moon 64 sprites.</p>
+
+<hr>
+
+<h2 id="contents">Contents</h2>
+
+<ul>
+  <li><a href="#hm64-sprite-editor">HM64 Sprite Editor</a>
+    <ul>
+      <li><a href="#contents">Contents</a></li>
+      <li><a href="#setup">Setup</a>
+        <ul>
+          <li><a href="#1-get-a-workspace-with-extracted-assets">1. Get a workspace with extracted assets</a></li>
+          <li><a href="#2-launch-the-editor">2. Launch the editor</a></li>
+          <li><a href="#3-getting-your-changes-into-a-rom">3. Getting your changes into a ROM</a></li>
+        </ul>
+      </li>
+      <li><a href="#terminology">Terminology</a></li>
+      <li><a href="#tour-of-the-window">Tour of the window</a></li>
+      <li><a href="#creating-a-new-sprite">Creating a new sprite</a></li>
+      <li><a href="#editing-an-existing-sprite">Editing an existing sprite</a>
+        <ul>
+          <li><a href="#palettes">Palettes</a></li>
+          <li><a href="#textures">Textures</a></li>
+          <li><a href="#animations">Animations</a></li>
+          <li><a href="#animation-scripts-and-labels">Animation scripts and labels</a>
+            <ul>
+              <li><a href="#animation-labeling">Animation labeling</a></li>
+              <li><a href="#directional-groups-entity-only">Directional groups (entity only)</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#fonts">Fonts</a>
+        <ul>
+          <li><a href="#glyph-editing">Glyph editing</a></li>
+          <li><a href="#font-palette-editing">Font palette editing</a></li>
+          <li><a href="#creating-a-new-font">Creating a new font</a></li>
+        </ul>
+      </li>
+      <li><a href="#asset-formats-reference">Asset formats reference</a>
+        <ul>
+          <li><a href="#per-sprite-directory-layout">Per-sprite directory layout</a></li>
+          <li><a href="#sprite-type-1-vs-type-2">Sprite type 1 vs. type 2</a></li>
+          <li><a href="#ci4-ci8-and-ci2">CI4, CI8, and CI2</a></li>
+          <li><a href="#animation-metadata-frames-and-layers">Animation metadata: frames and layers</a></li>
+          <li><a href="#entity-animation-scripts">Entity animation scripts</a></li>
+          <li><a href="#export-bin-file-layout">Export bin file layout</a>
+            <ul>
+              <li><a href="#sprite-bins">Sprite bins</a>
+                <ul>
+                  <li><a href="#nametexturebin"><code>&lt;name&gt;Texture.bin</code></a></li>
+                  <li><a href="#nameassetsindexbin"><code>&lt;name&gt;AssetsIndex.bin</code></a></li>
+                  <li><a href="#namespritesheetindexbin-type-1-only"><code>&lt;name&gt;SpritesheetIndex.bin</code> (type-1 only)</a></li>
+                </ul>
+              </li>
+              <li><a href="#font-bins">Font bins</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#license">License</a></li>
+    </ul>
+  </li>
+</ul>
+
+<hr>
+
+<h2 id="setup">Setup</h2>
+
+<h3 id="1-get-a-workspace-with-extracted-assets">1. Get a workspace with extracted assets</h3>
+
+<p>The editor needs an <strong>asset workspace</strong> &mdash; a directory laid out like the
+decomp's repo root, with <code>assets/sprites/...</code> and (optionally) <code>assets/font/</code>
+underneath it. You can produce one two ways:</p>
+
+<p><strong>Option A &mdash; extract directly from a ROM.</strong> Click <strong>Extract ROM&hellip;</strong> in the
+toolbar, point it at an unmodified US Harvest Moon 64 ROM (.z64/byteswapped), and choose
+an empty workspace folder. The editor verifies the ROM and then populates <code>assets/sprites/</code> and
+<code>assets/font/</code>.</p>
+
+<p><strong>Option B &mdash; use the decomp repo.</strong> Clone the HM64 decomp and check out the
+<code>dev</code> or <code>dev-qol</code> branch and run <code>make extract</code> from the repo root. Then
+open the repo root in the editor. Any edits made in the editor to sprite assets will be picked up on subsequent builds.</p> 
+
+<h3 id="2-launch-the-editor">2. Launch the editor</h3>
+
+<p>Download the release for your platform from the GitHub Releases page and
+run it. On first launch, click <strong>Open&hellip;</strong> and pick your workspace
+directory. The choice is remembered across sessions.</p>
+
+<h3 id="3-getting-your-changes-into-a-rom">3. Getting your changes into a ROM</h3>
+
+<p>There are two ways to ship new assets into the game.</p>
+
+<p><strong>Pathway A &mdash; Export bins (no build environment required).</strong> With a
+sprite (or font) loaded, click <strong>Export bins&hellip;</strong> and choose an output
+folder. The editor writes ROM-ready binary files:</p>
+
+<ul>
+  <li>For type-1 sprites: <code>&lt;name&gt;Texture.bin</code>, <code>&lt;name&gt;AssetsIndex.bin</code>,
+    <code>&lt;name&gt;SpritesheetIndex.bin</code>.</li>
+  <li>For type-2 sprites: <code>&lt;name&gt;Texture.bin</code>, <code>&lt;name&gt;AssetsIndex.bin</code>
+    (the spritesheet index is embedded in the texture bin).</li>
+  <li>For fonts: <code>fontTexture.bin</code> plus one <code>fontPaletteN.bin</code> per selected
+    palette.</li>
+</ul>
+
+<p>See <a href="#export-bin-file-layout">Export bin file layout</a> for what's inside
+each file.</p>
+
+<p>These match the layout the original ROM uses, so anyone with a working
+HM64 decomp build (modding branch) can drop them into the appropriate
+segment of their build and produce a patched ROM. This is the right
+pathway if you're authoring graphics for someone else to integrate &mdash;
+you don't need WSL/Docker, the build toolchain, or any of the decomp setup.</p>
+
+<p><strong>Pathway B &mdash; Save asset files and rebuild yourself.</strong> If you have the decomp repo set up, click <strong>Save
+Sprite</strong> to write the loaded asset back to the workspace. Files get saved to <code>assets/sprites/&lt;category&gt;/&lt;sprite&gt;/</code> (palettes, textures,
+animations, manifest) and, for entity sprites,
+<code>src/data/animationScripts/&lt;name&gt;.inc.c</code>. The next <code>make</code> on the
+modding branch (<code>dev</code> or <code>dev-qol</code>) picks them up, creates the necessary bin files, and links them into the ROM. This requires the full decomp build environment (WSL2 +
+<code>mips-linux-gnu-</code> cross toolchain on Windows or native tools on Debian/Ubuntu/macOS).</p>
+
+<p>With either approach, net new entity sprite assets still need the small
+manual C / <code>spec</code> wiring listed at the end of
+<a href="#creating-a-new-sprite">Creating a new sprite</a> before the game can
+address them.</p>
+
+<hr>
+
+<h2 id="terminology">Terminology</h2>
+
+<p><strong>Sprite asset.</strong> The whole bundle that the editor treats as one unit
+and that the game addresses as one entity: textures, palettes,
+animation metadata, and the lookup tables that tie them together. A sprite asset corresponds to an <code>assets/sprites/&lt;category&gt;/&lt;name&gt;/</code> directory; in a ROM
+build, it's the 2&ndash;3 <code>.bin</code> files that <strong>Export bins&hellip;</strong> writes
+(<code>&lt;name&gt;Texture.bin</code>, <code>&lt;name&gt;AssetsIndex.bin</code>, and &mdash; type-1 only &mdash;
+<code>&lt;name&gt;SpritesheetIndex.bin</code>). Whenever this README says &ldquo;sprite&rdquo; in
+the context of the browser, the <strong>+ New Sprite</strong> wizard, or
+<strong>Save Sprite</strong>, it means a sprite <em>asset</em>. Not to be confused with the
+lowercase, individual-image meaning below.</p>
+
+<p><strong>Texture (a.k.a. &ldquo;sprite,&rdquo; lowercase).</strong> A single image: one
+<code>textures/NNN.ci</code> raw-index file plus its <code>NNN.png</code> indexed-PNG copy.
+The game never references textures/images directly &mdash; they are reached <em>only</em> through the animation system,
+which addresses them by spritesheet index. The editor's UI uses &ldquo;texture&rdquo; to keep the
+distinction clear.</p>
+
+<p><strong>Palette.</strong> An array of RGBA color entries (16 for CI4 textures, 256
+for CI8, 16 for fonts &mdash; only the first 4 of which actually render).
+Stored as <code>.pal</code> files (RGBA5551 big-endian, 2 bytes per color). A
+texture stores palette <em>indices</em>; the palette turns those indices into
+actual colors at render time.</p>
+
+<p><strong>Animation / animation metadata.</strong> A timeline of frames, stored as
+<code>animations/NN.json</code>. Each frame holds a duration and one or more
+<strong>layers</strong>; each layer points at a texture by spritesheet index and
+positions it via <code>(anchor_x, anchor_y)</code>. The single word &ldquo;animation&rdquo;
+gets used loosely in this codebase &mdash; it can mean a multi-frame
+sequence, a single composite frame (when only one frame matters), or
+just the set of textures reachable from that JSON via its layer
+indices. The phrase &ldquo;animation metadata&rdquo; specifically means the JSON
+file and its data.</p>
+
+<p><strong>Animation script.</strong> Entity sprites-only. A flat list of packed 16-bit values (in the code, this looks like <code>PACK_ANIM_DATA(...)</code> entries in the exported <code>.inc.c</code>) that wraps
+animation metadata with playback flags: which animation to play
+(by <code>metadata_index</code>), how it loops (<code>ONE_SHOT</code> / <code>LOOP</code> /
+<code>DESTROY_ON_END</code>), whether to flip horizontally. Game code calls into an entry by its
+byte offset inside the script &mdash; that offset is what the exported <code>.h</code>
+file's macros expand to. (See more at
+<a href="#animation-scripts-and-labels">Animation scripts and labels</a>).</p>
+
+<hr>
+
+<h2 id="tour-of-the-window">Tour of the window</h2>
+
+<pre><code>┌─ Toolbar ────────────────────────────────────────────────────────────┐
+│  + New Sprite   Delete   Open…   Extract ROM…   Save Sprite          │
+│  Export bins…   New Font…   Undo   Redo                    Scale ▾  │
+├─ Sprite browser ────┬─ Tabs ─────────────────────────────────────────┤
+│  entitySprites      │  Textures │ Palettes │ Animations │ Script    │
+│   ├ animals         │  ┌──────────────────────────────────────────┐  │
+│   │   ├ bunny  ◀── │  │                                           │  │
+│   │   └ cow         │  │  Active tab content                      │  │
+│   ├ npc             │  │                                          │  │
+│   └ player          │  └──────────────────────────────────────────┘  │
+│  mapObjects         │                                                │
+│  effects            │                                                │
+│  overlayScreens     │                                                │
+│  font               │                                                |
+└─────────────────────┴────────────────────────────────────────────────┘
+</code></pre>
+
+<ul>
+  <li><strong>Sprite browser (left dock).</strong> Browses every sprite directory under
+    <code>assets/sprites/</code> plus any font directory. Click a leaf to load it.
+    Filter narrows the tree to matching names.</li>
+  <li><strong>Tabs (right).</strong> When a sprite is loaded: <strong>Textures</strong>, <strong>Palettes</strong>,
+    <strong>Animations</strong>, <strong>Script</strong>. When a font is loaded: <strong>Glyphs</strong> and
+    <strong>Palettes</strong>.</li>
+  <li><strong>Save Sprite.</strong> Writes every dirty domain (palettes, textures,
+    animations, animation scripts) for the loaded asset. Tabs with unsaved
+    changes show a star. Undo / Redo are global, with a 500 ms merge window
+    so drags coalesce into single undo steps.</li>
+</ul>
+
+<hr>
+
+<h2 id="creating-a-new-sprite">Creating a new sprite</h2>
+
+<ol>
+  <li>Click <strong>+ New Sprite</strong> in the toolbar.</li>
+  <li>Pick a <strong>category</strong> &mdash; one of:
+    <ul>
+      <li><code>entitySprites</code> &mdash; moving game-world entities (NPCs, animals, the
+        player, expression bubbles). Need an animation script.</li>
+      <li><code>mapObjects</code> &mdash; static map objects (mountain boulder) and water effects. These do not include foragable items or billboarded sprites that are included in the map data itself (trees, fences, signs).</li>
+      <li><code>effects</code> &mdash; particle / overlay sprites (smoke, sparks, etc.).</li>
+      <li><code>overlayScreens</code> &mdash; UI / HUD imagery, items, and character dialogue portraits/avatars.</li>
+    </ul>
+  </li>
+  <li>Pick a <strong>type</strong> (<code>type-1</code> or <code>type-2</code>). See
+    <a href="#sprite-type-1-vs-type-2">Sprite type 1 vs. type 2</a>. When in doubt,
+    follow the type used by the same asset category (type 1 for entities, etc.)</li>
+  <li>Optionally tick <strong>Seed from indexed PNG(s)</strong> and pick one or more 4-bit
+    or 8-bit indexed PNGs (PNGs MUST be indexed). The wizard imports each picked PNG as a starting
+    texture with its embedded palette. Duplicate palettes are detected and only created once</li>
+  <li>Click <strong>Create</strong>. The wizard scaffolds a fresh asset directory at
+    <code>assets/sprites/&lt;category&gt;/&lt;name&gt;/</code> with <code>manifest.json</code> and empty
+    <code>textures/</code>, <code>palettes/</code>, and <code>animations/</code> subdirectories.</li>
+</ol>
+
+<p><strong>Manual build wiring.</strong> Adding a brand-new sprite
+the <em>game</em> will reference requires five additional code and build changes the editor
+doesn't handle:</p>
+
+<ol>
+  <li>Add a segment entry for the sprite's binary in the necessary sprite <code>spec</code> file (i.e., <code>assets/sprites/entitySprites/entitySprites.spec</code>).</li>
+  <li>For entities, add the exported animation script files (&ldquo;&lt;name&gt;.inc.c&rdquo; and &ldquo;animatonLabels/&lt;name&gt;.h&rdquo;) to the <code>src/data/animation/entityAnimationScripts</code> directory.</li>
+  <li>Add <code>#include "&lt;name&gt;.inc.c"</code> to
+    <code>src/data/animationScripts/animationScripts.c</code>.</li>
+  <li>Add <code>extern u16 &lt;name&gt;AnimationScripts[];</code> to
+    <code>src/data/animationScripts/animationScripts.h</code>.</li>
+  <li>Add the new <code>ENTITY_ASSET_*</code> entry in <code>src/game/initialize.c</code>.</li>
+</ol>
+
+<p>For standalone sprites (UI, map objects, etc.), just add the new sprite asset bin files to the relevant spec files (<code>assets/sprtes/mapObjects/mapObjects.spec</code>, etc.). These sprites are accessed via direct sprite API calls (in <code>level.c</code>, <code>overlayScreens.c</code>, etc.)</p>
+
+<p>For character avatars, replace <code>characterAvatars.inc.c</code> and <code>characterAvatars.h</code> in the <code>src/data/animation/characterAvatars</code> directory.</p>
+
+<p>TODO: update with latest state of text transpiler</p>
+
+<p>After that, <code>make</code> (on a modding branch based off of dev or dev-qol) builds a ROM that can use
+the new sprite.</p>
+
+<hr>
+
+<h2 id="editing-an-existing-sprite">Editing an existing sprite</h2>
+
+<p>Click a sprite in the browser to load it. The four tabs cover everything
+on disk for that sprite.</p>
+
+<h3 id="palettes">Palettes</h3>
+
+<p>A palette is a fixed-size table of colors that textures reference by
+index. CI4 palettes hold 16 colors; CI8 palettes hold 256. Sprites can
+own multiple palettes, and each texture is bound to exactly one.</p>
+
+<p>The <strong>Palettes</strong> tab has three panes:</p>
+
+<ul>
+  <li><strong>Palette list (left).</strong> All palettes for this sprite. The buttons
+    here are:
+    <ul>
+      <li><strong>+ New</strong> &mdash; create an empty palette in the current sprite's format.</li>
+      <li><strong>+ Import&hellip;</strong> &mdash; load colors from a <code>.pal</code> file (RGBA5551 big-endian,
+        the format the extractor produces) or an indexed PNG. The palette's
+        color count is inferred from the file.</li>
+      <li><strong>Delete</strong> &mdash; only enabled when no texture still references the
+        palette.</li>
+    </ul>
+  </li>
+  <li><strong>Color grid (center).</strong> A 16&times;N grid of color cells. Click a cell to
+    open the color picker (HSV pad, hue slider, alpha slider, <code>#RRGGBB</code>
+    hex entry). Picker edits are applied as you adjust; clicking outside
+    the picker closes it.</li>
+  <li><strong>Texture preview (right).</strong> Live thumbnails of every texture in the
+    sprite that uses this palette. Changing a color updates all of them
+    immediately.</li>
+</ul>
+
+<h3 id="textures">Textures</h3>
+
+<p>A texture is an image stored as <strong>palette indices</strong> &mdash; each pixel is a
+small integer that picks a color from the texture's bound palette. The
+on-disk file (<code>textures/NNN.ci</code>) is the raw index data; the sibling
+<code>NNN.png</code> is a copy of the same image as an indexed PNG, kept as a
+human-viewable preview. The editor reads from and writes to both.</p>
+
+<p>The <strong>Textures</strong> tab shows:</p>
+
+<ul>
+  <li><strong>Gallery (left).</strong> All textures for the sprite as thumbnails.</li>
+  <li><strong>Preview + actions (right).</strong> The currently selected texture rendered
+    through its palette. Buttons:
+    <ul>
+      <li><strong>Import&hellip;</strong> &mdash; add a new texture from an indexed PNG. If the PNG's
+        palette doesn't match any existing palette in the sprite, the editor
+        will offer to add it.</li>
+      <li><strong>Replace&hellip;</strong> &mdash; replace the selected texture's pixels (and optionally
+        its palette) from a PNG. Width/height/format must remain compatible
+        with the sprite's existing dimensions.</li>
+      <li><strong>Delete</strong> &mdash; remove the texture. Any animation frame or script entry
+        referencing the index is shown in the <strong>Usage</strong> list below so you
+        can fix references first.</li>
+      <li><strong>Palette dropdown</strong> &mdash; re-bind the texture to a different palette in
+        the same sprite (must have a compatible color count).</li>
+    </ul>
+  </li>
+  <li><strong>Usage panel.</strong> Lists every animation frame and every script entry
+    that references the selected texture's spritesheet index. Click a row
+    to jump there.</li>
+</ul>
+
+<h3 id="animations">Animations</h3>
+
+<p>An <strong>animation</strong> is the per-sprite playback timeline that animation
+scripts (or the avatar table) reference by <code>metadata_index</code>. One
+<code>animations/NN.json</code> file stores one animation. The number in the
+filename is its index.</p>
+
+<p>The <strong>Animations</strong> tab has:</p>
+
+<ul>
+  <li><strong>Gallery (left).</strong> All animations for this sprite, with a thumbnail
+    of frame 0 and the animation's index. <strong>+ New</strong> creates an empty
+    animation slot.</li>
+  <li><strong>Playback preview (right).</strong> Plays the selected animation through
+    its bound palettes. Frame controls let you scrub a single frame at a
+    time.</li>
+  <li><strong>Frame editor (below).</strong> Each frame row is expandable and shows:
+    <ul>
+      <li><strong>Duration</strong> (game ticks). The runtime advances frames using a
+        fixed-tick timer.</li>
+      <li><strong>Has audio</strong> (yes/no) &mdash; a flag the runtime checks to decide
+        whether to trigger a sound on this frame; the editor only preserves
+        the value.</li>
+      <li><strong>Layers</strong> &mdash; one or more <code>(spritesheet_index, anchor_x, anchor_y)</code>
+        triples. See
+        <a href="#animation-metadata-frames-and-layers">Animation metadata: frames and layers</a>
+        for what these mean.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Layers can be added, removed, or reordered. Anchors are signed pixel
+offsets relative to the entity's origin (positive Y goes down on screen
+in the editor preview).</p>
+
+<h3 id="animation-scripts-and-labels">Animation scripts and labels</h3>
+
+<p>There are tree types of &ldquo;scripts&rdquo; based on the sprite type:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sprite kind</th>
+      <th>What you edit on the Script tab</th>
+      <th>Where it lives on disk</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>entity</code></td>
+      <td>One or more entity animation scripts</td>
+      <td><code>&lt;sprite&gt;/animationScripts/&lt;name&gt;.json</code> (+ exported <code>*.inc.c</code>)</td>
+    </tr>
+    <tr>
+      <td><code>avatar</code></td>
+      <td>The character portrait table that maps character+animation label (array index) to animation index</td>
+      <td><code>assets/sprites/overlayScreens/characterAvatars/characterAvatars.json</code></td>
+    </tr>
+    <tr>
+      <td><code>standalone</code></td>
+      <td>A flat list of <code>(metadata_index, label)</code> pairs (optional)</td>
+      <td><code>&lt;sprite&gt;/animationLabels.json</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The tab's layout adapts to the kind:</p>
+
+<ul>
+  <li><strong>Script picker</strong> (entity only). Most entity sprites have one script,
+    but some have several. The dropdown selects which one you're editing.</li>
+  <li><strong>Entry list.</strong> Each row is one animation-script entry: an offset
+    number, the bound animation's metadata index, type, flip flag, label
+    text, and (entity-only) a <code>directional</code> marker.</li>
+  <li><strong>Entry editor.</strong> Edit the selected entry's fields:
+    <ul>
+      <li><strong>Offset</strong> &mdash; display-only ordering hint (preserved verbatim).</li>
+      <li><strong>Animation type</strong> &mdash; <code>ONE_SHOT</code>, <code>LOOP</code>, or <code>DESTROY_ON_END</code>. See
+        <a href="#entity-animation-scripts">Entity animation scripts</a>.</li>
+      <li><strong>Flip</strong> &mdash; when set, the runtime renders the sprite mirrored on the
+        X axis. Reuses the same animation, halving texture cost.</li>
+      <li><strong>Label</strong> &mdash; free-text human name for the entry. For avatar entries,
+        <code>label</code> splits into <strong>character</strong> and <strong>expression</strong> fields (e.g.
+        <code>MARIA</code> + <code>HAPPY</code>).</li>
+      <li><strong>Directional</strong> &mdash; entity only. Marks the entry as part of an
+        8-direction group (see below).</li>
+    </ul>
+  </li>
+  <li><strong>Preview pane.</strong> Plays the animation referenced by the selected entry,
+    flipped if the entry has <code>flip</code> set.</li>
+  <li><strong>Buttons:</strong>
+    <ul>
+      <li><strong>Add / Clone / Remove</strong> entries.</li>
+      <li><strong>Move up / down</strong>.</li>
+      <li><strong>Import</strong> &mdash; bulk-replace the script from a <code>.inc.c</code> file. Useful
+        for round-tripping from the legacy Python pipeline.</li>
+      <li><strong>Export inc.c</strong> &mdash; write the active entity script back to its
+        <code>.inc.c</code> file for the build.</li>
+      <li><strong>Export .h</strong> &mdash; emit the macro header (<code>#define &lt;LABEL&gt; &lt;index&gt;</code>)
+        that game code uses to refer to entries by name.</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="animation-labeling">Animation labeling</h4>
+
+<p>Labels exist purely for human readability. Labels get exported as <code>.h</code> files
+so game code can write a named constant
+(<code>PLAYER_ANIMATION_WALKING_S</code>) instead of a raw integer offset. The
+three sprite asset types label different things:</p>
+
+<p><strong>Entity sprites &mdash; per-entry or per-group labels.</strong> Set a label on each
+script entry. Entries <em>outside</em> a directional group get one macro each
+named <code>&lt;SCRIPT&gt;_ANIMATION_&lt;LABEL&gt;</code>, where <code>&lt;SCRIPT&gt;</code> is the script
+filename (e.g. <code>PLAYER_ANIMATION_NAPPING</code> &rarr; that entry's byte offset).
+Entries <em>inside</em> a directional group share a single label set on the
+group's base entry, and the exporter then emits nine macros from it:</p>
+
+<ul>
+  <li><code>&lt;SCRIPT&gt;_ANIMATION_&lt;LABEL&gt;_DIRECTIONAL</code> &mdash; the group's base offset.
+    This is the constant passed to <code>setEntityDirectionalAnimation()</code>,
+    which then plays <code>base + direction</code> at runtime.</li>
+  <li><code>&lt;SCRIPT&gt;_ANIMATION_&lt;LABEL&gt;_S</code>, <code>_SW</code>, <code>_W</code>, <code>_NW</code>, <code>_N</code>, <code>_NE</code>, <code>_E</code>,
+    <code>_SE</code> &mdash; the eight individual direction offsets, in the slot order
+    described in <a href="#directional-groups-entity-only">Directional groups</a>.</li>
+</ul>
+
+<p>So a <code>WALKING</code> group on the <code>player</code> script produces
+<code>PLAYER_ANIMATION_WALKING_DIRECTIONAL</code> plus
+<code>PLAYER_ANIMATION_WALKING_S</code> through <code>PLAYER_ANIMATION_WALKING_SE</code>.</p>
+
+<p><strong>Standalone sprites &mdash; per-animation labels.</strong> Each entry in the
+<code>animationLabels.json</code> file labels one animation by its metadata index.
+Useful for sprite assets that bundle a set of unrelated single-frame
+images &mdash; for example, a shared UI sprite containing one &ldquo;animation&rdquo; (frame)
+per button. The macro is <code>&lt;SPRITE&gt;_&lt;LABEL&gt;</code> and resolves to the
+animation's metadata index directly. The &ldquo;script&rdquo; here is purely for labeling/code readability.</p>
+
+<p><strong>Character dialogue avatars/portraits &mdash; array-index labels.</strong> The
+entries in <code>characterAvatars.json</code> form a mapping table from
+<code>character + expression</code> to the underlying animation. Each entry stores
+a <code>metadata_index</code> (the actual animation in
+<code>characterAvatars/animations/</code>), but the <strong>macro value the <code>.h</code>
+exporter writes is the <em>array index</em> of the entry, not the metadata
+index</strong>. The game code does a lookup on the avatar mapping table with the array index to
+get the right animation metadata index (individual portrait frame).</p>
+
+<p>The macro is <code>DIALOGUE_AVATARS_&lt;CHARACTER&gt;_&lt;EXPRESSION&gt;</code>. For example,
+if array index <code>0</code> holds <code>(character: "MARIA", expression: "DEFAULT",
+metadata_index: 7)</code>, the exporter emits:</p>
+
+<pre><code class="language-c">#define DIALOGUE_AVATARS_MARIA_DEFAULT 0
+</code></pre>
+
+<h4 id="directional-groups-entity-only">Directional groups (entity only)</h4>
+
+<p>A directional group is an 8-entry run of script entries that share the
+same logical animation across the eight on-screen directions. When the
+game calls <code>setEntityDirectionalAnimation(base)</code> it plays
+<code>base + direction</code> where <code>direction</code> advances through the slots in
+order:</p>
+
+<pre><code>slot 0 = S     slot 4 = N
+slot 1 = SW    slot 5 = NE
+slot 2 = W     slot 6 = E
+slot 3 = NW    slot 7 = SE
+</code></pre>
+
+<p>To form a group, select a row that has 8 entries available below it
+and toggle <strong>directional</strong> ON. The eight rows are then visually
+collapsible under a header showing the group's base offset and label.
+A group can start at any offset (not only multiples of 8) and groups
+cannot overlap.</p>
+
+<blockquote>
+<p>The compass labels above are <strong>world</strong> directions &mdash; the direction the
+entity is <em>facing</em> in world coordinates. Under HM64's south-west
+isometric projection, the slot 0 (<code>S</code>) art often looks &ldquo;south-facing&rdquo;
+on screen because the camera sits at world-SW.</p>
+</blockquote>
+
+<hr>
+
+<h2 id="fonts">Fonts</h2>
+
+<p>The font category in the sprite browser opens the <strong>Glyphs</strong> and
+<strong>Palettes</strong> tabs instead of the four sprite tabs.</p>
+
+<h3 id="glyph-editing">Glyph editing</h3>
+
+<p>The <strong>Glyphs</strong> tab shows the entire font as a horizontal contact sheet
+plus a 280-pixel single-glyph editor on the right.</p>
+
+<ul>
+  <li>Click a glyph in the contact sheet to load it into the editor.</li>
+  <li>Pick an <strong>active color</strong> (0, 1, 2, or 3) from the radio list.</li>
+  <li><strong>Left-click</strong> a pixel in the editor to paint it with the active
+    color; <strong>right-click</strong> to paint with color 0 (background).</li>
+  <li>The <strong>Palette dropdown</strong> at the top picks which of the three font
+    palettes (1, 2, 3) is used for the on-screen preview. Pixel data is
+    shared across palettes &mdash; palettes recolor the same glyphs.</li>
+</ul>
+
+<h3 id="font-palette-editing">Font palette editing</h3>
+
+<p>The <strong>Palettes</strong> tab works like the sprite palette editor but is
+restricted to 4 visible colors per palette (color index 0 is the
+runtime background and is ignored by the renderer). The remaining 12
+slots in each palette are unused at runtime but preserved on disk so
+loading and saving produces byte-identical output.</p>
+
+<h3 id="creating-a-new-font">Creating a new font</h3>
+
+<ol>
+  <li>Click <strong>New Font&hellip;</strong> in the toolbar.</li>
+  <li>Enter a <strong>name</strong>.</li>
+  <li>Set a <strong>glyph count</strong>. The default <code>700</code> matches the original font
+    and is what <code>src/system/message.c</code> hard-codes. Any other count
+    requires patching that file before the new font will render in-game
+    &mdash; a warning appears in the wizard when you change the value.</li>
+  <li>Choose an <strong>initial palette</strong> (Black, Greyscale, or Copy from
+    default).</li>
+  <li>Click <strong>Create</strong>. A new directory is added under <code>assets/font/</code> with
+    a fresh <code>fontTexture.ci2</code> and one palette file.</li>
+</ol>
+
+<hr>
+
+<h2 id="asset-formats-reference">Asset formats reference</h2>
+
+<p>This section describes what's actually on disk. You don't need to read
+it to use the editor, but it helps when debugging round-trips or hand-
+editing files.</p>
+
+<h3 id="per-sprite-directory-layout">Per-sprite directory layout</h3>
+
+<pre><code>assets/sprites/&lt;category&gt;/&lt;sprite_name&gt;/
+├── manifest.json
+├── palettes/
+│   ├── 00.json    ← per-palette metadata (color count, format)
+│   ├── 00.pal     ← raw colors: RGBA5551, big-endian, 2 bytes per color
+│   ├── 01.json
+│   └── 01.pal
+├── textures/
+│   ├── 000.ci     ← raw palette-index bytes (CI4 packed, CI8 flat)
+│   ├── 000.png    ← indexed PNG copy of the same image
+│   └── …
+├── animations/
+│   ├── 00.json    ← one animation per file, filename = index
+│   └── …
+├── animationScripts/                   (entity sprites only)
+│   └── &lt;name&gt;.json
+└── animationLabels.json                (standalone sprites only)
+</code></pre>
+
+<p><code>manifest.json</code> records the sprite's category, type, sprite count,
+palette count, per-texture format, and the sprite-to-palette mapping.
+The editor maintains it automatically; manual edits aren't usually
+needed.</p>
+
+<h3 id="sprite-type-1-vs-type-2">Sprite type 1 vs. type 2</h3>
+
+<p>The two types differ in how a sprite's binary section is laid out in
+ROM and, correspondingly, how many <code>.bin</code> files <strong>Export bins&hellip;</strong> emits.
+They are not interchangeable on a per-sprite basis without adjusting
+the sprite's address-table entry.</p>
+
+<p><strong>Type 1</strong> &mdash; the spritesheet index (the table of per-texture offsets)
+lives in a separate <code>&lt;name&gt;SpritesheetIndex.bin</code> file. The address
+table uses a <code>spritesheet_index_base..end</code> range to point external
+code at it. Three bin files: <code>Texture.bin</code>, <code>AssetsIndex.bin</code>,
+<code>SpritesheetIndex.bin</code>.</p>
+
+<p><strong>Type 2</strong> &mdash; the spritesheet index is embedded inline at the start of
+the texture bin's spritesheet section. The address table uses an
+<code>addr_extra</code> pointer instead of a range. Two bin files only:
+<code>Texture.bin</code> and <code>AssetsIndex.bin</code>.</p>
+
+<p>Empirically, the two types correlate cleanly with what the sprite is
+for, not with a &ldquo;default vs. fallback&rdquo; relationship. Of the 161
+sprites in the original ROM, ~28% are type-2 and they are all
+<code>kind: standalone</code> &mdash; sprites the engine renders without an animation
+script driving them. The split looks like this:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Use case</th>
+      <th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Anything with an animation script (NPCs, animals, player)</td><td>Type-1</td></tr>
+    <tr><td>Map objects (<code>mapObjects</code>)</td><td>Type-1</td></tr>
+    <tr><td>Character avatar / portrait sheet</td><td>Type-1</td></tr>
+    <tr><td>UI / HUD / overlay surfaces (<code>overlayScreens</code>)</td><td>Type-2</td></tr>
+    <tr><td>Particle and ambient effects (<code>effects</code>)</td><td>Type-2</td></tr>
+    <tr><td>Sprites driven by external C code rather than a script</td><td>Type-2</td></tr>
+  </tbody>
+</table>
+
+<p>So <strong>all <code>effects</code> are type-2</strong> (<code>fairies</code>, <code>fireflies</code>, <code>chimneySmoke</code>,
+<code>sparklers</code>, <code>balloons</code>, <code>funeralIntro</code>, &hellip;) and <strong>nearly every
+<code>overlayScreens</code> sprite is type-2</strong> (<code>inventoryScreen</code>, <code>messageBox</code>,
+<code>calendar</code>, <code>dialogueButtonIcons</code>, <code>titleSprites</code>, <code>controllerIcons</code>,
+and so on). <code>entitySprites</code> is almost entirely type-1, the only
+exception being <code>shadows</code> (which has no animation script).</p>
+
+<p>When in doubt, pick the type used by other sprites in the same category
+&mdash; the wizard's category dropdown is a strong hint at which is correct.</p>
+
+<h3 id="ci4-ci8-and-ci2">CI4, CI8, and CI2</h3>
+
+<p>All three are <strong>palette-indexed</strong> color formats: pixels store small
+integers that look up colors in a palette table.</p>
+
+<ul>
+  <li><strong>CI4</strong> &mdash; 4 bits per pixel, 16-color palette. Two pixels per byte
+    (high nibble first). The on-disk byte count is
+    <code>ceil(width * height / 2)</code>. Used by sprites that need to be small.</li>
+  <li><strong>CI8</strong> &mdash; 8 bits per pixel, 256-color palette. One byte per pixel.
+    The on-disk byte count is <code>width * height</code>. Used when a sprite needs
+    more than 16 distinct colors.</li>
+  <li><strong>CI2</strong> &mdash; 2 bits per pixel, 4 visible colors. <strong>Only the font uses
+    it.</strong> Each glyph is 14&times;14 pixels stored in a fixed 64-byte slot
+    (14 rows &times; 4 bytes per row + 8 trailing padding bytes). The packing
+    is unusual: each row's 4 bytes are read in reverse, each byte's two
+    nibbles are unpacked separately, and the lower nibble of byte 0 in
+    each row is unused. The editor packs and unpacks this for you and
+    preserves the runtime-ignored bytes byte-for-byte across a load /
+    save round-trip.</li>
+</ul>
+
+<p>Palettes for CI4 and CI8 are stored as <code>.pal</code> files (RGBA5551 big-
+endian, 2 bytes per color). Fonts use the same <code>.pal</code> format but
+always have 16 entries per palette (of which 4 are actually rendered).</p>
+
+<h3 id="animation-metadata-frames-and-layers">Animation metadata: frames and layers</h3>
+
+<p><code>animations/NN.json</code> describes a single animation as a sequence of
+frames. The runtime plays one frame at a time, holding each for its
+<code>duration</code> value (in game ticks) before advancing.</p>
+
+<pre><code class="language-jsonc">{
+  "frame_count": 4,          // = frames.length
+  "unused": 0,               // preserved verbatim
+  "frames": [
+    {
+      "duration": 24,        // ticks
+      "has_audio": 0,        // 0 or 1
+      "sprites": [           // one or more "layers"
+        { "spritesheet_index": 2, "anchor_x":  0, "anchor_y": -8 }
+      ]
+    },
+    { "…": "next frame" }
+  ],
+  "index": 0                 // matches the filename stem
+}
+</code></pre>
+
+<p><strong>Consecutive frames</strong> are simply the entries in the <code>frames</code> array,
+played top-to-bottom. The runtime loops, runs once, or destroys the
+entity at the end depending on the animation type set by the <em>script
+entry</em> that referenced this animation &mdash; the animation file itself
+doesn't know which behavior applies.</p>
+
+<p><strong>Layers</strong> are the <code>sprites</code> array inside a frame. Each layer
+contributes one texture composited at <code>(anchor_x, anchor_y)</code> offsets
+relative to the entity's origin. Most frames use exactly one layer; a
+few use several to assemble a sprite from sub-pieces (e.g. body + head
+that animate at different rates by referencing the layers from
+different frames). Each layer's <code>spritesheet_index</code> selects a texture
+by its index in <code>manifest.json</code>.</p>
+
+<h3 id="entity-animation-scripts">Entity animation scripts</h3>
+
+<p>An entity animation script is a flat array of u16 entries packed by the
+<code>PACK_ANIM_DATA(metadata_index, anim_type, flip)</code> macro:</p>
+
+<pre><code class="language-c">u16 bunnyAnimationScripts[] = {
+    PACK_ANIM_DATA(14, ANIM_TYPE_LOOP, 0),
+    PACK_ANIM_DATA(10, ANIM_TYPE_LOOP, 0),
+    PACK_ANIM_DATA(20, ANIM_TYPE_LOOP, FLIP_HORIZONTAL),
+    /* … */
+    0, 0, 0, 0,                   // trailing zero padding found in original rom; kept to preserve matching, but unneeded in modding builds
+};
+</code></pre>
+
+<p>Per entry:</p>
+
+<ul>
+  <li><strong><code>metadata_index</code></strong> &mdash; the animation file under <code>animations/</code> (e.g.
+    <code>14</code> references <code>animations/14.json</code>).</li>
+  <li><strong><code>anim_type</code></strong> &mdash; playback behavior:
+    <ul>
+      <li><code>ANIM_TYPE_ONE_SHOT</code> &mdash; play through frames once and stop on the last
+        frame.</li>
+      <li><code>ANIM_TYPE_LOOP</code> &mdash; play forever, restarting after the last frame.</li>
+      <li><code>ANIM_TYPE_DESTROY_ON_END</code> &mdash; play once, then destroy the entity.</li>
+    </ul>
+  </li>
+  <li><strong><code>flip</code></strong> &mdash; <code>0</code> or <code>FLIP_HORIZONTAL</code>. When set, the runtime mirrors
+    the sprite on the X axis at render time, so a single texture can cover both left and right directions.</li>
+</ul>
+
+<p>Game code references entries by <strong>byte offset</strong> (the position in the
+array &times; 2), which is what the exported <code>.h</code> file's macros expand to.
+The editor's &ldquo;Offset&rdquo; column shows that offset and the <code>.h</code> exporter
+writes one <code>#define</code> per labeled entry.</p>
+
+<p>Trailing zeros are preserved verbatim across load / save so the
+exported <code>.inc.c</code> byte-matches the input file. Group breaks (blank
+lines between entries in the source <code>.inc.c</code>) are also preserved.</p>
+
+<blockquote>
+<p>Avatar and standalone sprites don't use this format. Avatars use the
+143-entry table in <code>characterAvatars.json</code>; standalone sprites only
+store optional human labels in <code>animationLabels.json</code>. Neither needs
+a <code>.inc.c</code> exported.</p>
+</blockquote>
+
+<h3 id="export-bin-file-layout">Export bin file layout</h3>
+
+<p>The files produced by <strong>Export bins&hellip;</strong> are the raw byte layouts the
+engine expects in ROM.</p>
+
+<h4 id="sprite-bins">Sprite bins</h4>
+
+<p>A sprite produces 2 or 3 files depending on whether it's type 1 or type 2. All offsets and
+index entries below are 32-bit <strong>big-endian</strong>; texture / animation
+fields are little-endian. The offsets in <code>&lt;name&gt;AssetsIndex.bin</code> are
+how the runtime locates each section inside <code>&lt;name&gt;Texture.bin</code>.</p>
+
+<h5 id="nametexturebin"><code>&lt;name&gt;Texture.bin</code></h5>
+
+<p>The main bundle. Four sections concatenated end-to-end (the offsets
+listed below are recorded in <code>AssetsIndex.bin</code>):</p>
+
+<ol>
+  <li><strong>Spritesheet section.</strong> Each texture in turn, prefixed by an
+    8-byte header: <code>34 36 64</code> + a format byte (<code>0x10</code> for CI4, <code>0x00</code>
+    for CI8), then width and height as little-endian <code>s16</code>. The raw
+    palette-index pixel bytes follow.
+    <ul>
+      <li><strong>Type-2 only:</strong> an additional table sits at the very start of
+        this section &mdash; one BE <code>u32</code> per sprite pointing at that sprite's
+        header. (Type-1 sprites put that table in a separate
+        <code>SpritesheetIndex.bin</code> file instead.)</li>
+    </ul>
+  </li>
+  <li><strong>Palette section.</strong> A palette index table (one BE <code>u32</code> per
+    palette, each pointing at that palette's block within this section)
+    followed by the palette blocks themselves. Each block is
+    <code>34 36 64</code> + format byte, then the colors as RGBA5551 big-endian
+    (2 bytes per color), terminated by <code>FF FF FF FF</code>.</li>
+  <li><strong>Animation section.</strong> An animation index table (BE <code>u32</code> offsets)
+    followed by animation blocks. Each block opens with
+    <code>34 36 64 00 &lt;frame_count u16 LE&gt; 00 00</code>, then for each frame:
+    <code>&lt;layer_count u16 LE&gt; &lt;duration u8&gt; &lt;has_audio u8&gt;</code> and 8 bytes per
+    layer &mdash; spritesheet index (<code>u16 LE</code>), reserved zero (<code>u16 LE</code>),
+    <code>anchor_x</code> (<code>s16 LE</code>), <code>anchor_y</code> (<code>s16 LE</code>).</li>
+  <li><strong>Sprite-to-palette section.</strong> <code>34 36 64 00</code> + one <code>u8</code> per sprite
+    giving the palette index that sprite is bound to, padded to
+    alignment with <code>0xFF</code> bytes.</li>
+</ol>
+
+<h5 id="nameassetsindexbin"><code>&lt;name&gt;AssetsIndex.bin</code></h5>
+
+<p>A fixed 32-byte block: eight big-endian <code>u32</code> values pointing at the
+section starts inside <code>&lt;name&gt;Texture.bin</code>:</p>
+
+<table>
+  <thead>
+    <tr><th>Word</th><th>Meaning</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>0</td><td>Start of the spritesheet section</td></tr>
+    <tr><td>1</td><td>Start of the palette section</td></tr>
+    <tr><td>2</td><td>Start of the animation section</td></tr>
+    <tr><td>3</td><td>Start of the sprite-to-palette section</td></tr>
+    <tr><td>4</td><td>Start of the assets index itself (= end of the bundle)</td></tr>
+    <tr><td>5&ndash;7</td><td>Zero padding (reserved)</td></tr>
+  </tbody>
+</table>
+
+<p>The code reads this to jump straight into each section without
+scanning; the file is always 32 bytes long.</p>
+
+<h5 id="namespritesheetindexbin-type-1-only"><code>&lt;name&gt;SpritesheetIndex.bin</code> (type-1 only)</h5>
+
+<p>One BE <code>u32</code> per sprite plus a trailing terminator entry, each holding
+the offset of that texture's header inside the spritesheet section of
+<code>Texture.bin</code>. Padded to a 16-byte boundary with zeros. Type-2 sprites
+omit this file because the equivalent table is embedded inline at the
+start of their spritesheet section.</p>
+
+<h4 id="font-bins">Font bins</h4>
+
+<p>A font produces:</p>
+
+<ul>
+  <li><strong><code>fontTexture.bin</code></strong> &mdash; concatenated packed-CI2 glyph slots, 64
+    bytes per glyph, in glyph order. The per-slot packing is described
+    in <a href="#ci4-ci8-and-ci2">CI4, CI8, and CI2</a>.</li>
+  <li><strong><code>fontPaletteN.bin</code></strong> (one per selected palette, with <code>N = 1, 2,</code>
+    or <code>3</code>) &mdash; a 4-byte header <code>34 36 64 10</code> followed by 16 RGBA5551
+    big-endian colors, padded to a 16-byte boundary with zeros.</li>
+</ul>
+
+<hr>
+
+<h2 id="license">License</h2>
+
+<p>GPL-3.0-or-later. See <a href="LICENSE"><code>LICENSE</code></a>.</p>
+
+</main>
+</body>
+</html>

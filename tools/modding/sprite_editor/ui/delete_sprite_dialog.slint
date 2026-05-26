@@ -1,0 +1,63 @@
+import { VerticalBox, HorizontalBox, Button } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+// Sprite-deletion confirmation. Distinct from the generic ConfirmDialog
+// because it surfaces the sprite path and a "this won't touch the spec /
+// animationScripts.c / .h files" caveat — both are specific to the sprite
+// directory delete and would clutter ConfirmDialog with rarely-used props.
+export component DeleteSpriteDialog inherits Rectangle {
+    in property <string> sprite-name: "";
+    in property <string> sprite-path: "";
+    callback ok();
+    callback cancel();
+
+    background: Theme.overlay-backdrop;
+    Rectangle {
+        x: (parent.width - 460px) / 2;
+        y: (parent.height - 200px) / 2;
+        width: 460px;
+        height: 200px;
+        background: Theme.bg-panel;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: Theme.border;
+        VerticalBox {
+            padding: 16px;
+            spacing: 8px;
+            Text {
+                text: "Delete sprite?";
+                color: Theme.text-primary;
+                font-size: 16px;
+                font-weight: 700;
+            }
+            Text {
+                text: "Delete '" + root.sprite-name + "' and all its files?";
+                color: Theme.text-secondary;
+                wrap: word-wrap;
+            }
+            Text {
+                text: root.sprite-path;
+                color: Theme.text-dim;
+                font-size: 11px;
+                wrap: word-wrap;
+            }
+            Text {
+                text: "Does not modify spec, animationScripts.c, or .h files.";
+                color: Theme.text-dim;
+                font-size: 11px;
+            }
+            Rectangle { vertical-stretch: 1; }
+            HorizontalBox {
+                Rectangle { horizontal-stretch: 1; }
+                Button {
+                    text: "Cancel";
+                    clicked => { root.cancel(); }
+                }
+                Button {
+                    text: "Delete";
+                    clicked => { root.ok(); }
+                }
+            }
+        }
+    }
+}

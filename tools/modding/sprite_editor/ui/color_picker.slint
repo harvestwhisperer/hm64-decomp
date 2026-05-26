@@ -1,0 +1,230 @@
+import { LineEdit } from "std-widgets.slint";
+
+// Visual-only color picker popover. Display state (hue color, crosshair
+// position, markers, swatch colors) is driven from Rust; pointer gestures
+// leave as callbacks with fractions in [0, 1]. No math in Slint.
+export component ColorPickerPopover inherits Rectangle {
+    in property <int> r: 0;
+    in property <int> g: 0;
+    in property <int> b: 0;
+    in property <int> a: 255;
+    in property <int> pre-r: 0;
+    in property <int> pre-g: 0;
+    in property <int> pre-b: 0;
+    in property <int> pre-a: 255;
+    in property <color> hue-color: #ff0000;
+    in property <float> sat: 0;        // [0, 1] for SV crosshair x
+    in property <float> val: 0;        // [0, 1] for SV crosshair y (inverted)
+    in property <float> hue-frac: 0;   // [0, 1] for hue strip marker
+    in property <float> alpha-frac: 1; // [0, 1] for alpha strip marker
+    in property <string> hex-text: "#000000";
+
+    callback sv-pointer(float, float);
+    callback hue-pointer(float);
+    callback alpha-pointer(float);
+    callback hex-accepted(string);
+    callback close-picker();
+
+    width: 280px;
+    height: 260px;
+    background: #1f1f1f;
+    border-radius: 6px;
+    border-color: #3a3a3a;
+    border-width: 1px;
+    drop-shadow-color: rgba(0, 0, 0, 0.6);
+    drop-shadow-offset-y: 4px;
+    drop-shadow-blur: 12px;
+
+    // Catch-all click absorber — prevents clicks on the popover's "gap"
+    // areas (between widgets) from falling through to the panel's outside-
+    // click overlay and closing the popover. Sits at the bottom of z-order.
+    TouchArea {
+        width: parent.width;
+        height: parent.height;
+        clicked => { }
+    }
+
+    FocusScope {
+        focus-gained => { }
+        key-pressed(event) => {
+            if (event.text == Key.Escape) { root.close-picker(); return accept; }
+            return reject;
+        }
+        init => { self.focus(); }
+
+        // SV square — horizontal white→hue + vertical transparent→black
+        sv-square := Rectangle {
+            x: 12px;
+            y: 12px;
+            width: 180px;
+            height: 180px;
+            border-radius: 3px;
+            background: @linear-gradient(90deg, white 0%, root.hue-color 100%);
+            Rectangle {
+                width: parent.width;
+                height: parent.height;
+                border-radius: 3px;
+                background: @linear-gradient(180deg, transparent 0%, black 100%);
+            }
+            // Crosshair
+            Rectangle {
+                x: root.sat * parent.width - 5px;
+                y: (1 - root.val) * parent.height - 5px;
+                width: 10px;
+                height: 10px;
+                border-radius: 5px;
+                background: transparent;
+                border-color: white;
+                border-width: 2px;
+            }
+            TouchArea {
+                width: parent.width;
+                height: parent.height;
+                moved => {
+                    if (self.pressed) {
+                        root.sv-pointer(
+                            clamp(self.mouse-x / parent.width, 0, 1),
+                            clamp(self.mouse-y / parent.height, 0, 1));
+                    }
+                }
+                pointer-event(e) => {
+                    if (e.kind == PointerEventKind.down) {
+                        root.sv-pointer(
+                            clamp(self.mouse-x / parent.width, 0, 1),
+                            clamp(self.mouse-y / parent.height, 0, 1));
+                    }
+                }
+            }
+        }
+
+        // Hue strip
+        hue-strip := Rectangle {
+            x: 204px;
+            y: 12px;
+            width: 20px;
+            height: 180px;
+            border-radius: 3px;
+            background: @linear-gradient(180deg,
+                #ff0000 0%, #ffff00 16.6667%, #00ff00 33.3333%,
+                #00ffff 50%, #0000ff 66.6667%, #ff00ff 83.3333%,
+                #ff0000 100%);
+            Rectangle {
+                x: -2px;
+                y: root.hue-frac * parent.height - 2px;
+                width: parent.width + 4px;
+                height: 4px;
+                border-radius: 2px;
+                background: white;
+                border-color: black;
+                border-width: 1px;
+            }
+            TouchArea {
+                width: parent.width;
+                height: parent.height;
+                moved => {
+                    if (self.pressed) {
+                        root.hue-pointer(clamp(self.mouse-y / parent.height, 0, 1));
+                    }
+                }
+                pointer-event(e) => {
+                    if (e.kind == PointerEventKind.down) {
+                        root.hue-pointer(clamp(self.mouse-y / parent.height, 0, 1));
+                    }
+                }
+            }
+        }
+
+        // Alpha strip — checker background + gradient overlay
+        alpha-strip := Rectangle {
+            x: 236px;
+            y: 12px;
+            width: 20px;
+            height: 180px;
+            border-radius: 3px;
+            background: white;
+            // Inline 2×2 checker. Opaque grey squares on a white background
+            // produce the familiar transparency pattern underneath the
+            // gradient.
+            for i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                      10, 11, 12, 13, 14, 15, 16, 17]: Rectangle {
+                x: mod(i, 2) * 10px;
+                y: floor(i / 2) * 20px + mod(i, 2) * 10px;
+                width: 10px;
+                height: 10px;
+                background: #cccccc;
+                visible: mod(floor(i / 2) + mod(i, 2), 2) == 0;
+            }
+            Rectangle {
+                width: parent.width;
+                height: parent.height;
+                border-radius: 3px;
+                background: @linear-gradient(180deg,
+                    rgb(root.r, root.g, root.b) 0%,
+                    transparent 100%);
+            }
+            Rectangle {
+                x: -2px;
+                y: (1 - root.alpha-frac) * parent.height - 2px;
+                width: parent.width + 4px;
+                height: 4px;
+                border-radius: 2px;
+                background: white;
+                border-color: black;
+                border-width: 1px;
+            }
+            TouchArea {
+                width: parent.width;
+                height: parent.height;
+                moved => {
+                    if (self.pressed) {
+                        root.alpha-pointer(clamp(self.mouse-y / parent.height, 0, 1));
+                    }
+                }
+                pointer-event(e) => {
+                    if (e.kind == PointerEventKind.down) {
+                        root.alpha-pointer(clamp(self.mouse-y / parent.height, 0, 1));
+                    }
+                }
+            }
+        }
+
+        // Hex + RGB readout
+        hex-field := LineEdit {
+            x: 12px;
+            y: 200px;
+            width: 130px;
+            height: 24px;
+            text: root.hex-text;
+            accepted(t) => { root.hex-accepted(t); }
+        }
+        Text {
+            x: 150px;
+            y: 202px;
+            text: "R " + root.r + "  G " + root.g + "  B " + root.b;
+            color: #bbb;
+            font-size: 11px;
+        }
+
+        // Before/after swatch
+        pre-swatch := Rectangle {
+            x: 12px;
+            y: 232px;
+            width: 122px;
+            height: 20px;
+            border-radius: 3px;
+            background: rgba(root.pre-r, root.pre-g, root.pre-b, root.pre-a / 255);
+            border-color: #3a3a3a;
+            border-width: 1px;
+        }
+        new-swatch := Rectangle {
+            x: 134px;
+            y: 232px;
+            width: 122px;
+            height: 20px;
+            border-radius: 3px;
+            background: rgba(root.r, root.g, root.b, root.a / 255);
+            border-color: #3a3a3a;
+            border-width: 1px;
+        }
+    }
+}

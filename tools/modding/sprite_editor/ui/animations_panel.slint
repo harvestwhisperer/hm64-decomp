@@ -1,0 +1,508 @@
+import { VerticalBox, HorizontalBox, ListView, GroupBox, Button, Slider, ComboBox,
+         CheckBox, SpinBox, ScrollView } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+export struct AnimThumb {
+    index: int,
+    label: string,
+    image: image,
+}
+
+export struct LayerRow {
+    layer-index: int,
+    texture-combo-index: int,
+    texture-label: string,
+    anchor-x: int,
+    anchor-y: int,
+}
+
+export struct FrameRow {
+    frame-index: int,
+    duration: int,
+    has-audio: bool,
+    layers: [LayerRow],
+    expanded: bool,
+}
+
+export struct PickerCell {
+    combo-index: int,
+    label: string,
+    image: image,
+}
+
+export struct PickerRow {
+    cells: [PickerCell],
+}
+
+export component AnimationsPanel inherits Rectangle {
+    forward-focus: fs;
+    in property <[AnimThumb]> thumbs: [];
+    in property <int> selected-index: -1;
+    in property <int> selected-row: -1;
+    in property <image> detail-image;
+    in property <string> detail-info;
+    in property <int> detail-frame: 0;
+    in property <int> detail-frame-count: 1;
+
+    in property <[FrameRow]> editor-frames: [];
+    in property <[PickerRow]> texture-picker-rows: [];
+    in property <bool> dirty: false;
+
+    // Picker target while the popup is open. Set by layer click handlers.
+    property <int> picker-target-frame: -1;
+    property <int> picker-target-layer: -1;
+
+    callback thumb-clicked(int);
+    callback play-pause();
+    callback prev-frame();
+    callback next-frame();
+    callback frame-seek(float);
+    callback new-anim();
+
+    callback save-animations();
+    callback anim-clone();
+    callback anim-delete();
+    callback frame-expand-toggled(int);
+    callback frame-duration-changed(int, int);
+    callback frame-audio-toggled(int, bool);
+    callback frame-add(int);
+    callback frame-remove(int);
+    callback frame-move(int, int);
+    callback layer-add(int);
+    callback layer-remove(int, int);
+    callback layer-texture-changed(int, int, int);
+    callback layer-anchor-changed(int, int, int, int);
+
+    HorizontalBox {
+        padding: 4px;
+        spacing: 4px;
+
+        // Gallery
+        Rectangle {
+            horizontal-stretch: 1;
+            min-width: 240px;
+            background: #1e1e1e;
+            VerticalBox {
+                padding: 0px;
+                spacing: 0px;
+
+                // Toolbar
+                HorizontalBox {
+                    padding: 4px;
+                    spacing: 4px;
+                    Button { text: "+ New"; clicked => { root.new-anim(); } }
+                    Rectangle { horizontal-stretch: 1; }
+                }
+
+                fs := FocusScope {
+                    vertical-stretch: 1;
+                    init => { self.focus(); }
+                    key-pressed(event) => {
+                        if (event.text == Key.UpArrow) {
+                            if (root.thumbs.length == 0) { return reject; }
+                            if (root.selected-row < 0) {
+                                root.thumb-clicked(root.thumbs[root.thumbs.length - 1].index);
+                                return accept;
+                            }
+                            if (root.selected-row > 0) {
+                                root.thumb-clicked(root.thumbs[root.selected-row - 1].index);
+                                return accept;
+                            }
+                            return accept;
+                        }
+                        if (event.text == Key.DownArrow) {
+                            if (root.thumbs.length == 0) { return reject; }
+                            if (root.selected-row < 0) {
+                                root.thumb-clicked(root.thumbs[0].index);
+                                return accept;
+                            }
+                            if (root.selected-row < root.thumbs.length - 1) {
+                                root.thumb-clicked(root.thumbs[root.selected-row + 1].index);
+                                return accept;
+                            }
+                            return accept;
+                        }
+                        return reject;
+                    }
+                    ListView {
+                        for t[i] in root.thumbs: TouchArea {
+                            height: 80px;
+                            clicked => { fs.focus(); root.thumb-clicked(t.index); }
+                            Rectangle {
+                                background: t.index == root.selected-index ? Theme.selected : Theme.bg-panel;
+                                HorizontalBox {
+                                    padding: 4px;
+                                    spacing: 6px;
+                                    Image {
+                                        source: t.image;
+                                        width: 72px;
+                                        height: 72px;
+                                        image-rendering: pixelated;
+                                        image-fit: contain;
+                                    }
+                                    Text { text: t.label; vertical-alignment: center; color: Theme.text-primary; }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Detail + Editor
+        Rectangle {
+            horizontal-stretch: 1;
+            min-width: 320px;
+            max-width: 480px;
+            ScrollView {
+                VerticalBox {
+                    spacing: 6px;
+                    padding: 4px;
+
+                    // --- Preview (top) ---
+                    GroupBox {
+                        title: "Preview";
+                        // Empty state: no animation selected.
+                        if root.selected-index < 0: Rectangle {
+                            min-height: 80px;
+                            Text {
+                                text: "Select an animation to preview";
+                                color: #777;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                        }
+                        if root.selected-index >= 0: VerticalBox {
+                            spacing: 6px;
+                            Image {
+                                source: root.detail-image;
+                                min-width: 64px;
+                                max-width: 256px;
+                                preferred-width: 256px;
+                                height: self.width;
+                                image-rendering: pixelated;
+                                horizontal-alignment: center;
+                                image-fit: contain;
+                            }
+                            Text { text: root.detail-info; color: #ccc; }
+                            HorizontalBox {
+                                padding: 0px;
+                                spacing: 6px;
+                                vertical-stretch: 0;
+                                Button {
+                                    text: "◀ Prev";
+                                    horizontal-stretch: 1;
+                                    clicked => { root.prev-frame(); }
+                                }
+                                Button {
+                                    text: "▶ Play/Pause";
+                                    horizontal-stretch: 1;
+                                    clicked => { root.play-pause(); }
+                                }
+                                Button {
+                                    text: "Next ▶";
+                                    horizontal-stretch: 1;
+                                    clicked => { root.next-frame(); }
+                                }
+                            }
+                            HorizontalBox {
+                                padding: 0px;
+                                spacing: 6px;
+                                vertical-stretch: 0;
+                                Text {
+                                    text: (root.detail-frame + 1) + " / " + root.detail-frame-count;
+                                    color: #888;
+                                    font-size: 11px;
+                                    vertical-alignment: center;
+                                    min-width: 44px;
+                                }
+                                Slider {
+                                    minimum: 0;
+                                    maximum: max(0, root.detail-frame-count - 1);
+                                    step: 1;
+                                    value: root.detail-frame;
+                                    enabled: root.detail-frame-count > 1;
+                                    changed(v) => { root.frame-seek(v); }
+                                }
+                            }
+                        }
+                    }
+
+                    // --- Editor (bottom) ---
+                    if root.selected-index >= 0: GroupBox {
+                        title: "Animation #" + root.selected-index;
+                        VerticalBox {
+                            spacing: 6px;
+                            HorizontalBox {
+                                padding: 0px;
+                                spacing: 6px;
+                                Button { text: "Clone"; clicked => { root.anim-clone(); } }
+                                Rectangle { horizontal-stretch: 1; }
+                                Button { text: "Delete"; clicked => { root.anim-delete(); } }
+                                Button {
+                                    text: root.dirty ? "Save *" : "Save";
+                                    enabled: root.dirty;
+                                    clicked => { root.save-animations(); }
+                                }
+                            }
+
+                            // Empty-state CTA when there are no frames.
+                            if root.editor-frames.length == 0: Button {
+                                text: "+ Add first frame";
+                                clicked => { root.frame-add(0); }
+                            }
+
+                            for fr[fi] in root.editor-frames: Rectangle {
+                                background: #232323;
+                                border-radius: 4px;
+                                border-width: 1px;
+                                border-color: #3a3a3a;
+                                VerticalBox {
+                                    padding: 6px;
+                                    spacing: 4px;
+                                    // Header row (always visible)
+                                    HorizontalBox {
+                                        padding: 0px;
+                                        spacing: 6px;
+                                        TouchArea {
+                                            width: 18px;
+                                            clicked => { root.frame-expand-toggled(fr.frame-index); }
+                                            Text {
+                                                text: fr.expanded ? "▼" : "▶";
+                                                color: #ccc;
+                                                vertical-alignment: center;
+                                            }
+                                        }
+                                        Text {
+                                            text: "Frame " + fr.frame-index;
+                                            color: Theme.text-primary;
+                                            font-weight: 600;
+                                            vertical-alignment: center;
+                                            min-width: 70px;
+                                        }
+                                        Text {
+                                            text: "dur:";
+                                            color: #ccc;
+                                            vertical-alignment: center;
+                                        }
+                                        SpinBox {
+                                            minimum: 0;
+                                            maximum: 65535;
+                                            value: fr.duration;
+                                            edited(v) => {
+                                                root.frame-duration-changed(fr.frame-index, v);
+                                            }
+                                        }
+                                        CheckBox {
+                                            text: "audio";
+                                            checked: fr.has-audio;
+                                            toggled => {
+                                                root.frame-audio-toggled(fr.frame-index, self.checked);
+                                            }
+                                        }
+                                        if !fr.expanded: Text {
+                                            text: " · " + fr.layers.length + " layers";
+                                            color: #888;
+                                            vertical-alignment: center;
+                                        }
+                                    }
+                                    // Layers (only when expanded)
+                                    if fr.expanded: VerticalBox {
+                                        padding: 0px;
+                                        spacing: 4px;
+                                        Text { text: "Layers:"; color: #ccc; }
+                                        for lr[li] in fr.layers: VerticalBox {
+                                            padding: 0px;
+                                            spacing: 2px;
+                                            HorizontalBox {
+                                                padding: 0px;
+                                                spacing: 4px;
+                                                Text {
+                                                    text: "#" + lr.layer-index;
+                                                    color: #999;
+                                                    vertical-alignment: center;
+                                                    min-width: 26px;
+                                                }
+                                                Button {
+                                                    horizontal-stretch: 1;
+                                                    min-width: 80px;
+                                                    text: lr.texture-label != "" ? lr.texture-label : "(missing)";
+                                                    enabled: root.texture-picker-rows.length > 0;
+                                                    clicked => {
+                                                        root.picker-target-frame = fr.frame-index;
+                                                        root.picker-target-layer = lr.layer-index;
+                                                        texture-picker-popup.show();
+                                                    }
+                                                }
+                                                Button {
+                                                    text: "×";
+                                                    max-width: 32px;
+                                                    clicked => {
+                                                        root.layer-remove(fr.frame-index, lr.layer-index);
+                                                    }
+                                                }
+                                            }
+                                            HorizontalBox {
+                                                padding: 0px;
+                                                spacing: 4px;
+                                                Rectangle { width: 26px; }
+                                                Text {
+                                                    text: "x:";
+                                                    color: #999;
+                                                    vertical-alignment: center;
+                                                }
+                                                SpinBox {
+                                                    horizontal-stretch: 1;
+                                                    minimum: -512;
+                                                    maximum: 512;
+                                                    value: lr.anchor-x;
+                                                    edited(v) => {
+                                                        root.layer-anchor-changed(
+                                                            fr.frame-index, lr.layer-index,
+                                                            v, lr.anchor-y
+                                                        );
+                                                    }
+                                                }
+                                                Text {
+                                                    text: "y:";
+                                                    color: #999;
+                                                    vertical-alignment: center;
+                                                }
+                                                SpinBox {
+                                                    horizontal-stretch: 1;
+                                                    minimum: -512;
+                                                    maximum: 512;
+                                                    value: lr.anchor-y;
+                                                    edited(v) => {
+                                                        root.layer-anchor-changed(
+                                                            fr.frame-index, lr.layer-index,
+                                                            lr.anchor-x, v
+                                                        );
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        Button {
+                                            text: "+ Add layer";
+                                            clicked => { root.layer-add(fr.frame-index); }
+                                        }
+                                        HorizontalBox {
+                                            padding: 0px;
+                                            spacing: 4px;
+                                            Button {
+                                                text: "▲ Move up";
+                                                horizontal-stretch: 1;
+                                                enabled: fr.frame-index > 0;
+                                                clicked => {
+                                                    root.frame-move(fr.frame-index, fr.frame-index - 1);
+                                                }
+                                            }
+                                            Button {
+                                                text: "▼ Move down";
+                                                horizontal-stretch: 1;
+                                                enabled: fr.frame-index < root.editor-frames.length - 1;
+                                                clicked => {
+                                                    root.frame-move(fr.frame-index, fr.frame-index + 1);
+                                                }
+                                            }
+                                        }
+                                        HorizontalBox {
+                                            padding: 0px;
+                                            spacing: 4px;
+                                            Button {
+                                                text: "+ Insert frame after";
+                                                horizontal-stretch: 1;
+                                                clicked => {
+                                                    root.frame-add(fr.frame-index + 1);
+                                                }
+                                            }
+                                            Button {
+                                                text: "– Delete frame";
+                                                horizontal-stretch: 1;
+                                                clicked => { root.frame-remove(fr.frame-index); }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if root.editor-frames.length > 0: Button {
+                                text: "+ Add frame at end";
+                                clicked => { root.frame-add(root.editor-frames.length); }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Texture picker popup. Shared instance at panel root; layer trigger
+    // buttons set `picker-target-frame` / `picker-target-layer` then call
+    // `texture-picker-popup.show()`. Closes on outside click (Slint default)
+    // or after a thumbnail is selected.
+    texture-picker-popup := PopupWindow {
+        x: 80px;
+        y: 80px;
+        width: 460px;
+        height: 480px;
+        Rectangle {
+            background: Theme.bg-panel-alt;
+            border-color: Theme.border-strong;
+            border-width: 1px;
+            border-radius: 6px;
+            VerticalBox {
+                padding: 8px;
+                spacing: 6px;
+                Text {
+                    text: "Choose texture";
+                    color: Theme.text-primary;
+                    font-weight: 600;
+                }
+                ScrollView {
+                    VerticalBox {
+                        padding: 0px;
+                        spacing: 6px;
+                        for row in root.texture-picker-rows: HorizontalBox {
+                            padding: 0px;
+                            spacing: 6px;
+                            for cell in row.cells: TouchArea {
+                                width: 100px;
+                                height: 130px;
+                                clicked => {
+                                    root.layer-texture-changed(
+                                        root.picker-target-frame,
+                                        root.picker-target-layer,
+                                        cell.combo-index,
+                                    );
+                                    texture-picker-popup.close();
+                                }
+                                Rectangle {
+                                    background: parent.has-hover ? #3a3a3a : transparent;
+                                    border-radius: 4px;
+                                    VerticalBox {
+                                        padding: 2px;
+                                        spacing: 2px;
+                                        Image {
+                                            source: cell.image;
+                                            width: 96px;
+                                            height: 96px;
+                                            image-rendering: pixelated;
+                                            image-fit: contain;
+                                        }
+                                        Text {
+                                            text: cell.label;
+                                            color: #ccc;
+                                            font-size: 11px;
+                                            horizontal-alignment: center;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
