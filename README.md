@@ -12,7 +12,7 @@ Currently supported modding workflows:
 - Audio sequence replacement
 
 QOL implementations:
-- Time slowed to 1/5th of the original game speed
+- Day clock advances at 80% of the original game speed
 - Farm ranking screen accessible in game select menu
 - Music continues playing unless the entered map contains a different theme
 - Naming screen music doesn't restart across screens during new game naming 
