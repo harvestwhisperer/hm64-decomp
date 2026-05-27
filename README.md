@@ -18,6 +18,7 @@ QOL implementations:
 - Naming screen music doesn't restart across screens during new game naming 
 - Adds compression of map and sprite assets, saving 6.56 MiB, or a total of ~41% of the space of the 16MB cartridge
 - Use cached pointers wherever possible, reducing up to 50% of RAM lookups across translation units
+- Fix map loading bug caused by redundant/unnecessary ground object function calls 
 
 Replacing other assets (maps, sprites, animations, fonts) is fully supported in theory, but tooling to create/modify these assets is still in progress.
 
