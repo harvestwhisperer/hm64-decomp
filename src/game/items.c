@@ -3151,7 +3151,7 @@ void useTurnipSeeds(void) {
     if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
-            groundObjectIndex = TURNIP_PLANTED_STAGE_1;
+            groundObjectIndex = applyRainToSownCrop(TURNIP_PLANTED_STAGE_1);
         } else {
             groundObjectIndex = INVALID_GROUND_OBJECT;
         }
@@ -3193,7 +3193,7 @@ void usePotatoSeeds(void) {
     if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
-          groundObjectIndex = POTATO_PLANTED_STAGE_1;
+          groundObjectIndex = applyRainToSownCrop(POTATO_PLANTED_STAGE_1);
         } else {
           groundObjectIndex = INVALID_GROUND_OBJECT;
         }
@@ -3235,7 +3235,7 @@ void useCabbageSeeds(void) {
     if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
         
         if (gSeason == SPRING || gBaseMapIndex == GREENHOUSE) {
-          groundObjectIndex = CABBAGE_PLANTED_STAGE_1;
+          groundObjectIndex = applyRainToSownCrop(CABBAGE_PLANTED_STAGE_1);
         } else {
           groundObjectIndex = INVALID_GROUND_OBJECT;
         }
@@ -3277,7 +3277,7 @@ void useTomatoSeeds(void) {
     if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
-          groundObjectIndex = TOMATO_PLANTED_STAGE_1;
+          groundObjectIndex = applyRainToSownCrop(TOMATO_PLANTED_STAGE_1);
         } else {
           groundObjectIndex = INVALID_GROUND_OBJECT;
         }
@@ -3319,7 +3319,7 @@ void useCornSeeds(void) {
     if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gSeason == SUMMER || gBaseMapIndex == GREENHOUSE) {
-            groundObjectIndex = CORN_PLANTED_STAGE_1;
+            groundObjectIndex = applyRainToSownCrop(CORN_PLANTED_STAGE_1);
         } else {
             groundObjectIndex = INVALID_GROUND_OBJECT;
         }
@@ -3361,7 +3361,7 @@ void useEggplantSeeds(void) {
     if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if (gSeason == AUTUMN || gBaseMapIndex == GREENHOUSE) {
-            groundObjectIndex = EGGPLANT_PLANTED_STAGE_1;
+            groundObjectIndex = applyRainToSownCrop(EGGPLANT_PLANTED_STAGE_1);
         } else {
             groundObjectIndex = INVALID_GROUND_OBJECT;
         }
@@ -3406,7 +3406,7 @@ void useStrawberrySeeds(void) {
         // leaving for reference
         //groundObjectIndex = ((-(gBaseMapIndex != 0x56) & ~0x28) | 0x44);
 
-        groundObjectIndex = (gBaseMapIndex == GREENHOUSE) ? STRAWBERRY_PLANTED_STAGE_1 : INVALID_GROUND_OBJECT;
+        groundObjectIndex = applyRainToSownCrop((gBaseMapIndex == GREENHOUSE) ? STRAWBERRY_PLANTED_STAGE_1 : INVALID_GROUND_OBJECT);
 
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
 
@@ -3445,9 +3445,8 @@ void useMoonDropSeeds(void) {
  
     if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
         
-        // alternate for reference: (gSeason - 1 < 2U)
         if ((gSeason == SPRING || gSeason == SUMMER) || gBaseMapIndex == GREENHOUSE) {
-            groundObjectIndex = MOONDROP_PLANTED_STAGE_1; 
+            groundObjectIndex = applyRainToSownCrop(MOONDROP_PLANTED_STAGE_1);
         } else {
             groundObjectIndex = INVALID_GROUND_OBJECT;
         }
@@ -3489,7 +3488,7 @@ void usePinkCatMintSeeds(void) {
     if ((getGroundObjectToolInteractionFlags(getGroundObjectIndexFromPlayerPosition(0.0f, temp)) & GROUND_OBJECT_PLANTABLE) && vec.y != 65535.0f) {
 
         if ((gSeason >= SPRING && gSeason < AUTUMN) || gBaseMapIndex == GREENHOUSE) {
-            groundObjectIndex = PINK_CAT_MINT_PLANTED_STAGE_1; 
+            groundObjectIndex = applyRainToSownCrop(PINK_CAT_MINT_PLANTED_STAGE_1);
         } else {
             groundObjectIndex = INVALID_GROUND_OBJECT;
         }

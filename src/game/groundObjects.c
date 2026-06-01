@@ -1457,9 +1457,20 @@ void updateCropsIfRain(void) {
             }
             
         }
-        
+
     }
-    
+
+}
+
+u8 applyRainToSownCrop(u8 groundObjectIndex) {
+
+    if (gWeather == RAIN && gBaseMapIndex == FARM
+        && (getGroundObjectToolInteractionFlags(groundObjectIndex) & GROUND_OBJECT_WATERABLE)) {
+        groundObjectIndex++;
+    }
+
+    return groundObjectIndex;
+
 }
 
 bool checkAnimalCanEatGrass(void) {
