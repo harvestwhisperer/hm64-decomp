@@ -1,3 +1,17 @@
+# ==============================================================================
+# Version routing: `make <target> VERSION=jp` delegates every goal to Makefile.jp,
+# ==============================================================================
+ifeq ($(VERSION),jp)
+
+JP_GOALS := $(or $(MAKECMDGOALS),all)
+.PHONY: $(JP_GOALS) __jp_forward
+$(JP_GOALS): __jp_forward
+	@:
+__jp_forward:
+	$(MAKE) -f Makefile.jp $(JP_GOALS)
+
+else  # US build below
+
 .DEFAULT_GOAL := all
 
 BASENAME := hm64
@@ -334,3 +348,5 @@ clean-all: clean clean-assets
 # Prevent Make from deleting intermediate .s files (matching needs all of them)
 .SECONDARY:
 .PRECIOUS: %.bin
+
+endif  # VERSION == jp routing

@@ -7,7 +7,11 @@
 beginseg
     name    "header"
     flags   RAW
+#ifdef _JP
+    include "$(BUILD_DIR)/config/jp/header.o"
+#else
     include "$(BUILD_DIR)/config/us/header.o"
+#endif
 endseg
 
 // ============================================================================

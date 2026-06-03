@@ -11,15 +11,36 @@ from pathlib import Path
 
 from ..common.rom import get_rom, set_rom_path, read_bytes
 
-# ROM addresses for US version
-FONT_TEXTURE_ROM_START = 0xE08870
-FONT_TEXTURE_ROM_END = 0xE13770
-FONT_PALETTE_1_ROM_START = 0xE13770
-FONT_PALETTE_1_ROM_END = 0xE137A0
-FONT_PALETTE_2_ROM_START = 0xE137A0
-FONT_PALETTE_2_ROM_END = 0xE137D0
-FONT_PALETTE_3_ROM_START = 0xE137D0
-FONT_PALETTE_3_ROM_END = 0xE13800
+# Baseroms live at the repo root, named per region.
+_REPO_DIR = Path(__file__).resolve().parent.parent.parent.parent
+BASEROM_PATHS = {
+    'us': _REPO_DIR / "baserom.us.z64",
+    'jp': _REPO_DIR / "baserom.jp.z64",
+}
+
+FONT_ROM_RANGES = {
+    'us': {
+        'texture':  (0xE08870, 0xE13770),
+        'palette1': (0xE13770, 0xE137A0),
+        'palette2': (0xE137A0, 0xE137D0),
+        'palette3': (0xE137D0, 0xE13800),
+    },
+    'jp': {
+        'texture':  (0xE18930, 0xE23830),
+        'palette1': (0xE23830, 0xE23860),
+        'palette2': (0xE23860, 0xE23890),
+        'palette3': (0xE23890, 0xE238C0),
+    },
+}
+
+# Selected region (set via set_region); defaults to US.
+_ranges = FONT_ROM_RANGES['us']
+
+
+def set_region(region: str) -> None:
+    """Select the font ROM address set for the given region ('us' or 'jp')."""
+    global _ranges
+    _ranges = FONT_ROM_RANGES[region]
 
 # Font parameters
 BYTES_PER_CHARACTER = 0x40  # 64 bytes
@@ -36,22 +57,15 @@ DEFAULT_OUTPUT_DIR = _PACKAGE_DIR / "assets" / "font"
 
 def extract_font_texture(output_path: Path):
     """Extract font texture from ROM to raw CI2 file."""
-    data = read_bytes(FONT_TEXTURE_ROM_START, FONT_TEXTURE_ROM_END)
+    rom_start, rom_end = _ranges['texture']
+    data = read_bytes(rom_start, rom_end)
     output_path.write_bytes(data)
 
 
 def extract_font_palette(output_path: Path, palette_index: int):
     """Extract font palette from ROM to raw .pal file."""
     # Get ROM addresses for this palette
-    if palette_index == 1:
-        rom_start = FONT_PALETTE_1_ROM_START
-        rom_end = FONT_PALETTE_1_ROM_END
-    elif palette_index == 2:
-        rom_start = FONT_PALETTE_2_ROM_START
-        rom_end = FONT_PALETTE_2_ROM_END
-    else:
-        rom_start = FONT_PALETTE_3_ROM_START
-        rom_end = FONT_PALETTE_3_ROM_END
+    rom_start, rom_end = _ranges[f'palette{palette_index}']
 
     data = read_bytes(rom_start, rom_end)
 
@@ -85,13 +99,15 @@ def main():
     parser = argparse.ArgumentParser(description="HM64 Font Asset Extractor")
     parser.add_argument("--output-dir", type=str, default=str(DEFAULT_OUTPUT_DIR),
                         help="Output directory for extracted assets")
+    parser.add_argument("--region", choices=['us', 'jp'], default='us',
+                        help="ROM region: selects the font addresses and default baserom (default: us)")
     parser.add_argument("--rom", type=str, default=None,
-                        help="Path to ROM file")
+                        help="Override the ROM path (defaults to baserom.<region>.z64 at repo root)")
 
     args = parser.parse_args()
 
-    if args.rom:
-        set_rom_path(Path(args.rom))
+    set_region(args.region)
+    set_rom_path(Path(args.rom) if args.rom else BASEROM_PATHS[args.region])
 
     extract_all(Path(args.output_dir))
 

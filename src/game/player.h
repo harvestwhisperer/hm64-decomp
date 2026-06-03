@@ -8,7 +8,11 @@
 #define MAX_STAMINA 250
 #define MAX_RUCKSACK_SLOTS 9
 #define MAX_TOOL_SLOTS_RUCKSACK 9
+#ifdef _JP
+#define MAX_TOOLBOX_SLOTS 7 * 4
+#else
 #define MAX_TOOLBOX_SLOTS 8 * 4
+#endif
 
 /* actions */
 #define CONTROLLER_INPUT 0

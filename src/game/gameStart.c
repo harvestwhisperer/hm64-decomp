@@ -24,13 +24,16 @@
 // shared bss
 u32 D_8016FB00;
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStart", setupGameStart);
+// INCLUDE_ASM("asm/nonmatchings/game/gameStart", setupGameStart);
 
 void setupGameStart(void) {
-    
+
     // set up game
-    initializeAll(); 
-    
+    initializeAll();
+
+#ifdef _JP
+    launchIntroCutscene(CUTSCENE_OPENING_LOGOS, SQUARE_SPAWN_POINT_1, 1);
+#else
     if (contPattern & 1) {
         launchIntroCutscene(CUTSCENE_OPENING_LOGOS, SQUARE_SPAWN_POINT_1, 1);
     } else {
@@ -44,10 +47,11 @@ void setupGameStart(void) {
         initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, TEXT_1_TEXT_INDEX, 25, MESSAGE_BOX_MODE_NO_INPUT);
 
     }
-    
+#endif
+
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/gameStart", startGame);
+// INCLUDE_ASM("asm/nonmatchings/game/gameStart", startGame);
 
 void startGame(void) {
 
@@ -62,15 +66,14 @@ void startGame(void) {
     gHour = 6;
 
     setMainLoopCallbackFunctionIndex(MAP_LOAD);
-    
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/gameStart", func_8004DFF8);
 
 // unused function: probably for sandboxing during development or demos
-// not in JP version
 void func_8004DFF8(void) {
-    
+#ifndef _JP
     setLifeEventBit(HAVE_HORSE);
     setLifeEventBit(HAVE_KITCHEN);
     setLifeEventBit(HAVE_BATHROOM);
@@ -93,35 +96,35 @@ void func_8004DFF8(void) {
     setLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE);
     setLifeEventBit(HAVE_MUG);
     setLifeEventBit(HAVE_LUNCHEON_MAT);
-    
+
     setSpecialDialogueBit(HARVEST_GODDESS_OFFERING_ADVICE_DIALOGUE);
-    
+
     gPlayer.belongingsSlots[0] = TOMATO_HELD_ITEM;
-    
+
     initializeHorse();
-    
+
     horseInfo.grown = TRUE;
 
     setLifeEventBit(MARRIED);
     setLifeEventBit(WIFE_PREGNANT);
-    
+
     gWife = POPURI;
-    
+
     npcAffection[POPURI] = MAX_AFFECTION;
-    
+
     gSeason = WINTER;
     gDayOfMonth = 18;
-    
+
     dogInfo.affection = MAX_AFFECTION;
-    
+
     gHour = 8;
-    
+
     // max recipes
     recipesBits[0] = -1;
-    
+
     // unused game variable
     D_8016FB00 = 7;
-    
+#endif
 }
 
 // empty function

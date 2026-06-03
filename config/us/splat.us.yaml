@@ -755,14 +755,14 @@ segments:
       - { start: 0xFF5C0, type: .bss, vram: 0x8030E000, name: buffers/farmRankingsBuffer }
 
   # referenced in unused cutscene.c array
-  - name: unknownBuffer
+  - name: nuAuHeapBuffer
     type: code
     start: 0xFF5C0
     bss_size: 0x8000
     vram: 0x8030F800
     subsegments:
-      - [ 0xFF5C0, c, buffers/unknownBuffer]
-      - { start: 0xFF5C0, type: .bss, vram: 0x8030F800, name: buffers/unknownBuffer }
+      - [ 0xFF5C0, c, buffers/nuAuHeapBuffer]
+      - { start: 0xFF5C0, type: .bss, vram: 0x8030F800, name: buffers/nuAuHeapBuffer }
 
   # 0x8038F800
   # 0x803B5000
@@ -776,190 +776,163 @@ segments:
       - [ 0xFF5C0, c, buffers/frameBuffer ]
       - { start: 0xFF5C0, type: .bss, vram: 0x8038F800, name: buffers/frameBuffer }
 
-  # farm cutscenes: shipper, animal purchase
   - name: farmBusiness
     type: bin
     dir: cutscenes
     extract: false
     start: 0xFF5C0
 
-  # farm visits
   - name: farmVisits
     type: bin
     dir: cutscenes
     extract: false
     start: 0x100180
 
-  # marriage, births
   - name: houseCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x109920
     
-  # cliff leaving, shady salesman, ann sprained ankle
   - name: roadCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x10EA80
 
-  # girl cutscenes
   - name: mountainCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x10F980
 
-  # ann cutscenes
   - name: ranchCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x115310
 
-  # karen cutscenes
   - name: vineyardCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x1175F0
 
-  # wedding, rival events, new year's, starry night festval
-  - name: cutsceneBank8
+  - name: village1Cutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x118D70
     vram: 0x802F5000
   
-  # maria cutscenes
   - name: village2Cutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x120910
 
-  # karen cutscenes 2 (beach fireworks, heart events)
   - name: beachCutscenes
     type: bin
     dir: cutscenes
     extract: false
     start: 0x123CE0
 
-  # sowing festival
   - name: sowingFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x125200
 
-  # horse race
   - name: horseRace
     type: bin
     dir: cutscenes
     extract: false
     start: 0x129760
 
-  # flower festival
   - name: flowerFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x12FE90
 
-  # vegetable festival
-  - name: squareFireworks
+  - name: vegetableFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x134510
 
-  # square fireworks
   - name: fireworksFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x135F40
 
-  # firefly festival
   - name: fireflyFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x136930
 
-  # sea festival
   - name: seaFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x1385E0
 
-  # cow festival
   - name: cowFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x139840
 
-  # harvest festival
   - name: harvestFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x13AFC0
 
-  # egg festival
   - name: eggFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x13D470
 
-  # dog race
   - name: dogRace
     type: bin
     dir: cutscenes
     extract: false
     start: 0x13FAC0
 
-  # spirit festival
   - name: spiritFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x144F60
 
-  # new year festival
   - name: newYearFestival
     type: bin
     dir: cutscenes
     extract: false
     start: 0x1485B0
 
-  # intro/opening
   - name: funeralIntro
     type: bin
     dir: cutscenes
     extract: false
     start: 0x149CC0
 
-  # evaluation
   - name: evaluationEnding
     type: bin
     dir: cutscenes
     extract: false
     start: 0x14B8F0
 
-  # demo cutscenes
   - name: demos
     type: bin
     dir: cutscenes
     extract: false
     start: 0x150120
 
-  # how to play
   - name: howToPlay
     type: bin
     dir: cutscenes

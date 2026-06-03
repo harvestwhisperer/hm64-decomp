@@ -246,9 +246,8 @@ void loadLevel(u8 arg0) {
     previousLightingRGBA.g = 0;
     previousLightingRGBA.b = 0;
     previousLightingRGBA.a = 0;
-    
-}
 
+}
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", initializeEntityInstances);
 
@@ -521,7 +520,7 @@ void initializeEntityInstances(u8 arg0) {
             break;
 
     }
-    
+
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/transition", resumeGameplay);
@@ -571,7 +570,7 @@ void inline openOverlayScreen(void) {
     unloadMapAssets(MAIN_MAP_INDEX);
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/transition", startNewDay);
+// INCLUDE_ASM("asm/nonmatchings/game/transition", startNewDay);
 
 void startNewDay(void) {
     
@@ -639,7 +638,12 @@ void startNewDay(void) {
         // get average of sprite affection
         if (((npcAffection[HARVEST_SPRITE_1] + npcAffection[HARVEST_SPRITE_2] + npcAffection[HARVEST_SPRITE_3]) / 3) >= 120) {
             
-            if ((getTotalChickenCount() + getTotalFarmAnimalsCount()) >= 2) {
+#ifdef _JP
+            if (((getTotalChickenCount() & 0xFF) + (getTotalFarmAnimalsCount() & 0xFF)) >= 2) 
+#else
+            if ((getTotalChickenCount() + getTotalFarmAnimalsCount()) >= 2)
+#endif
+            {
                 setLifeEventBit(HARVEST_SPRITES_ANIMAL_HELP);
             }
 
@@ -693,7 +697,7 @@ void startNewDay(void) {
     if (checkLifeEventBit(KAREN_KEIFU_FAIRIES_INVITE) && checkLifeEventBit(FIRST_VINEYARD_WINE_GIFT)) {
     }
     
-    updategroundObjectsOvernight();
+    updateGroundObjectsOvernight();
 
     resetAnimalStatuses();
     updateCropsIfRain();
@@ -711,5 +715,5 @@ void startNewDay(void) {
     
     // update more game state
     func_800598E0();
-    
+
 }

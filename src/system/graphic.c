@@ -107,6 +107,7 @@ volatile u8 startGfxTask(void) {
     gfxTaskNo += 1;
     
     return gfxTaskNo;
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/system/graphic", doViewportGfxTask);

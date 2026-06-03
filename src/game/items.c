@@ -2032,7 +2032,10 @@ void useMiraclePotion();
 void useCowMedicine();
 void useGrassSeeds();
 void useEmptyBottle();
+#ifndef JP
 u8 allocateGroundItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment);
+#endif
+u8 allocateThrownItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment);
 void setItemPosition(u8 index, f32 x, f32 y, f32 z);
 void loadHeldItemEntity(u8, u16);   
 bool handlePutDownHeldItem(u8 itemIndex);
@@ -2396,7 +2399,7 @@ void processToolUseState(void) {
 //     }
 // }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D0360);
+// INCLUDE_ASM("asm/nonmatchings/game/items", useSickle);
 
 void useSickle(void) {
 
@@ -2504,7 +2507,11 @@ void useSickle(void) {
 
         addGroundObjectToMap(gBaseMapIndex, groundObjectIndex, (u8)vec.x - groundObjectsGridX, (u8)vec.z - groundObjectsGridZ);
            
+#ifdef _JP
+        temp3 = allocateThrownItemSlot(1, ITEM_STATE_THROW_LANDED, temp4, 0, 8);
+#else
         temp3 = allocateGroundItemSlot(1, ITEM_STATE_THROW_LANDED, temp4, 0, 8);
+#endif
 
         vec = getGroundObjectWorldPosition(0, (u8)vec.x, (u8)vec.z);
         setItemPosition(temp3, vec.x, vec.y, vec.z);
@@ -2684,7 +2691,7 @@ void useHoe(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D0DD4);
+// INCLUDE_ASM("asm/nonmatchings/game/items", useAx);
 
 void useAx(void) {
     
@@ -2753,7 +2760,11 @@ void useAx(void) {
                     
                 }
 
+#ifdef _JP
+                groundObjectIndex = allocateThrownItemSlot(1, ITEM_STATE_THROW_LANDED, 61, 0, 8);
+#else
                 groundObjectIndex = allocateGroundItemSlot(1, ITEM_STATE_THROW_LANDED, 61, 0, 8);
+#endif
 
                 vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                 vec.x += vec2.x;
@@ -2815,7 +2826,7 @@ void useAx(void) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", func_800D1DB0);
+// INCLUDE_ASM("asm/nonmatchings/game/items", useHammer);
 
 void useHammer(void) {
 
@@ -2846,7 +2857,11 @@ void useHammer(void) {
                     
                     toolUse.boulderHitCounter = 0;
                     
-                    groundObjectIndex = allocateGroundItemSlot(1, 12, 2, 0, 8);
+#ifdef _JP
+                        groundObjectIndex = allocateThrownItemSlot(1, 12, 2, 0, 8);
+#else
+                        groundObjectIndex = allocateGroundItemSlot(1, 12, 2, 0, 8);
+#endif
                     
                     vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                     vec.x += vec2.x;
@@ -2921,8 +2936,11 @@ void useHammer(void) {
 
                         }
 
+#ifdef _JP
+                        groundObjectIndex = allocateThrownItemSlot(1, 12, temp, 0, 8);
+#else
                         groundObjectIndex = allocateGroundItemSlot(1, 12, temp, 0, 8);
-
+#endif
                         vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                         vec.x += vec2.x;
                         vec.z += vec2.z;
@@ -3921,7 +3939,10 @@ u8 allocateThrownItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDir
     }
     
     return index;
+
 }
+
+#ifndef _JP
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", allocateGroundItemSlot);
 
@@ -3954,6 +3975,8 @@ u8 allocateGroundItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDir
     return index;
 
 }
+
+#endif
 
 //INCLUDE_ASM("asm/nonmatchings/game/itemHandlers", clearHeldItemSlot);
 

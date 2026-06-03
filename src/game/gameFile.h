@@ -46,27 +46,31 @@ typedef struct {
     u8 gamePakNoteNameB[20];
     u8 unk_29;
     u8 gamePakExtension[6]; // "E9NYWE"
-    u8 unk_30;
-    u32 unk_34;
-    u16 unk_38;
-    u16 unk_3A;
+    struct {
+        s32 maxFiles;         
+        s32 usedFiles;        
+        s32 freeBytes;       
+    } gamePakInfo;
     u8 unk_3C;
     u8 gamePakEnabled;
     u8 unk_3E;
     u8 unk_3F;
-    u8 playerNames[4][6];  
-    u8 dateNumbers[4][2]; 
+    u8 playerNames[4][6];
+    u8 dateNumbers[4][2];
+#ifdef _JP
+    u8 seasonNames[4][1];
+#else
     u8 seasonNames[4][6];
+#endif
     u8 dateEndings[4][2];  // "st" or "rd" strings
     u8 flags[4];
     u8 diaryHighlighted;
     u8 actionColumnHighlighted;
-    u8 unk_86;
-    u8 showControllerPakScreen;
-    u8 unk_88;
+    u8 unk_72;                
+    u8 showControllerPakScreen; 
+    u8 unk_74;                
     u8 action; // move/delete
 } LoadGameScreenContext;
-
 
 // 0x801FB708
 typedef struct {

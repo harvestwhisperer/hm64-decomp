@@ -13,7 +13,19 @@ versions:
     compiled_target: "hm64.z64"
     elf: "hm64.elf"
     expected_dir: "expected"
-    asm: "asm"
+    asm: "asm/nonmatchings"
+    nonmatchings: "asm/nonmatchings"
+- name: jp
+  fullname: HM64 JP
+  sha1: e41d15c394b5fefd4016add3883a794c48e7e232
+  paths:
+    target: "hm64-jp.z64"
+    build_dir: "build"
+    map: "hm64-jp.map"
+    compiled_target: "hm64-jp.z64"
+    elf: "hm64-jp.elf"
+    expected_dir: "expected"
+    asm: "asm/nonmatchings"
     nonmatchings: "asm/nonmatchings"
 
 tools:

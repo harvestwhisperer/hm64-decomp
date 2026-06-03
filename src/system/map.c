@@ -1749,7 +1749,7 @@ void setMapGrid(MapGrid* mapGrid, u8* data) {
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80037350);
 
 // unused
-u8* func_80037350(TileRenderingInfo* tileRenderingInfo, u8* data) {
+u8* func_80037350_US(TileRenderingInfo* tileRenderingInfo, u8* data) {
 
     // arg1 = &*(arg1+4);
     // skip header
@@ -1795,7 +1795,7 @@ u8* func_80037388(TileRenderingInfo* tileRenderingInfo, u8* data, u8 arg2) {
 
 //INCLUDE_ASM("asm/nonmatchings/system/map", func_80037400);
 
-inline u8* func_80037400(TileRenderingInfo* tileRenderingInfo, u8* data, bool flag) {
+inline u8* func_80037400_US(TileRenderingInfo* tileRenderingInfo, u8* data, bool flag) {
     
     Swap16 swap;
     u8 i;
@@ -1874,7 +1874,7 @@ u8* func_800374C0(TileRenderingInfo* tileRenderingInfo, u8* data) {
 
     if (tileRenderingInfo->flags & 0x80) {
 
-        data = func_80037400(tileRenderingInfo, data, flags & 0x40);
+        data = func_80037400_US(tileRenderingInfo, data, flags & 0x40);
         
     } else {
 

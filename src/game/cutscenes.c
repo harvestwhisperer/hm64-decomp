@@ -2206,7 +2206,9 @@ u16 setHouseCutscenes(void) {
     if (checkLifeEventBit(MARRIED) && !checkLifeEventBit(HAVE_BABY) && checkLifeEventBit(WIFE_PREGNANT) && gWifePregnancyCounter >= 60) {
 
         setDailyEventBit(BIRTH_EVENT_DAILY);
+#ifndef _JP
         gWeather = SUNNY;
+#endif
 
         babyBirthdaySeason = gSeason;
         babyBirthdayDate = gDayOfMonth;
@@ -5837,3 +5839,8 @@ void loadCutscene(bool morningVisit) {
     }
     
 }
+
+// evaluation.c doesn't start at a 0x10-aligned boundary in JP; functions might actually belong to this translation unit
+#ifdef _JP
+#include "game/evaluation.c"
+#endif

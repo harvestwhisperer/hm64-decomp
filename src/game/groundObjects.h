@@ -259,7 +259,7 @@ extern void addGroundObjectToMap(u8, u8, u8, u8);
 extern void addGroundObjectToMapFromPlayerPosition(u8, f32, u8);    
 extern u8 getGroundObjectIndexFromPlayerPosition(f32, u8);  
 extern u8 getGroundObjectIndexFromCoordinates(f32, f32); 
-extern void updategroundObjectsOvernight();                
+extern void updateGroundObjectsOvernight();                
 extern void updateCropsIfRain();                                   
 extern void randomlyAddWeedsToFarmField();     
 extern void randomlyBreakLogPieces(u8);             
