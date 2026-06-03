@@ -4,7 +4,7 @@
 
 ### North America
 
-The US version is now 100% decompiled! This includes all game functions, data and rodata within the game's main code section, and all library functions, as well as DSL for the cutscenes and dialogue that compiles to the game's custom bytecode systems. All text segments are also automatically extracted and transpiled back to the custom text format during the build process.
+The US and JP versions are now 100% decompiled! This includes all game functions, data and rodata within the game's main code section, and all library functions, as well as DSL for the cutscenes and dialogue that compiles to the game's custom bytecode systems. All text segments are also automatically extracted and transpiled back to the custom text format during the build process.
 
 The current build system also supports shiftability. For modding, it's highly recommended to use the `dev` or `dev-qol` branch in this repo as your starting point. The bare minumum to get shiftability working on the `master` branch requires:
 - Removal of `common_bss.ld`. To preserve matching, `config/us/common_bss.ld` is used to match up game variables with their original addresses. For modding, this file should be empty or removed to allow the linker to reallocate memory addresses without conflict.
@@ -12,7 +12,7 @@ The current build system also supports shiftability. For modding, it's highly re
 
 ### Japan
 
-The repository now has initial support for Japanese-version builds.
+To build a JP ROM, place your JP ROM in the root directory as `baserom.jp.z64` and simply pass in `VERSION=jp` to the normal `make` commands
 
 ## Setting up
 1. Install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)
@@ -23,8 +23,8 @@ The repository now has initial support for Japanese-version builds.
 1. `cd hm64-decomp`
 1. `sudo chmod +x tools/setup.sh`
 1. `sudo tools/setup.sh`. This will fetch needed system packages not already installed, Splat, GCC 2.7.2, and the necessary GCC binutils for compiling and linking.
-1. Copy `baserom.us.z64` to the project's root directory (must provide your own and must be in big endian/z64 format).
-1. Run `make setup && make` (with `VERBOSE=1` optional)
+1. Copy `baserom.us.z64` (or `baserom.jp.z64` if building JP) to the project's root directory (must provide your own and must be in big endian/z64 format).
+1. Run `make setup && make` or simply `make fresh` (with `VERBOSE=1` and `-j[n]` optional). For building JP, run `make fresh VERSION=jp`, etc.
 
 ## Asset extraction
 
@@ -98,7 +98,7 @@ Compared to the dialogue bytecode, the cutscene bytecode is much more sophistica
 
 ## Modding
 
-See the `dev` branch for more information.
+See the `dev` and `dev-qol` branches for more information.
 
 ### Music
 
@@ -108,9 +108,5 @@ See the README at `tools/modding/music` for more details for converting and inse
 
 Contributions are much welcome. There are a few areas of work still do in the project:
 - Cleaning up fake/forced matches (searchable under `FIXME`)
-- Research into function, struct member, flag, and variable purposes and making accurate labels. This also includes adding macro values, such as player actions (see `player.h`)
-- Cleaning up and improving asset tools (most are heavily vibecoded)
+- Research into function, struct member, flag, and variable purposes and making accurate labels
 - Improving labeling and macro usage in bytecode files for readability
-- JP version matching (only basic project scaffolding is done so far)
-
-For function matching work, Decomp.me has a `Harvest Moon 64` compiler preset that's selectable when creating new scratches.
