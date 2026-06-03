@@ -20,6 +20,10 @@ typedef u32 Addr;
 typedef u8 bool;
 
 // FIXME: signature from ultra64.h; not getting picked up by sprite.c
-void __assert(const char* exp, const char* filename, int line);     
+void __assert(const char* exp, const char* filename, int line);
+
+#ifdef _JP
+#include "jp_symbol_aliases.h"
+#endif
 
 #endif

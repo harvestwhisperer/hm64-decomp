@@ -21,10 +21,25 @@ from typing import Dict, List, Optional, Set, Tuple
 from ..common import rom
 from ..common.rom import RomReader
 from ..data import (
-    CUTSCENE_ADDRESSES_CSV, CUTSCENE_ENTRY_POINTS_CSV,
+    CUTSCENE_ADDRESSES_CSV, CUTSCENE_ADDRESSES_JP_CSV, CUTSCENE_ENTRY_POINTS_CSV,
     ROM_SEGMENT_START_SYMBOLS, ROM_SEGMENT_END_SYMBOLS
 )
 from .opcodes import ASM_COMMAND_SPECS, COMMAND_SPECS
+
+# Active cutscene-addresses CSV. Defaults to US; switch via set_region().
+ACTIVE_CUTSCENE_CSV: Path = CUTSCENE_ADDRESSES_CSV
+
+
+def set_region(region: str) -> None:
+    """Select which region's cutscene-address CSV the loaders use ('us' or 'jp')."""
+    global ACTIVE_CUTSCENE_CSV
+    region = region.lower()
+    if region == 'us':
+        ACTIVE_CUTSCENE_CSV = CUTSCENE_ADDRESSES_CSV
+    elif region == 'jp':
+        ACTIVE_CUTSCENE_CSV = CUTSCENE_ADDRESSES_JP_CSV
+    else:
+        raise ValueError(f"Unknown region: {region!r} (expected 'us' or 'jp')")
 
 
 # =============================================================================
@@ -216,6 +231,27 @@ class CutsceneBytecodeParser:
 
         return block
 
+    def _anim_ongrid_terminator(self, addr: int, max_pos: int = None) -> Optional[int]:
+        """Return the data-index of the on-grid terminator for an anim block
+        starting at absolute offset ``addr``, or None if there is none.
+
+        parse_animation_sequence reads fixed 8-byte frames until it sees a
+        0xFFFF/0xFFFE word at a frame boundary. A *real* anim target therefore
+        always has such a terminator sitting on its 8-byte grid. False targets
+        produced by the linear-scan drifting through anim data (mis-framed
+        commands) do not, so this is a reliable discriminator.
+        """
+        idx = addr - self.base_offset
+        if idx < 0:
+            return None
+        limit = max_pos if max_pos is not None else len(self.data)
+        while idx + 2 <= limit:
+            w = struct.unpack_from('>H', self.data, idx)[0]
+            if w in (0xFFFF, 0xFFFE):
+                return idx
+            idx += 8
+        return None
+
     def _try_parse_padding_or_data(self) -> Optional[ParsedCommand]:
         """Try to parse padding or unrecognized data"""
         if self.pos + 2 > len(self.data):
@@ -249,15 +285,28 @@ class CutsceneBytecodeParser:
         return None
 
     def parse_linear_scan(self, start_offset: int, end_offset: int = None,
-                          known_anim_offsets: Set[int] = None) -> List[ParsedCommand]:
-        """Parse all commands linearly"""
+                          known_anim_offsets: Set[int] = None,
+                          code_start: int = 0) -> List[ParsedCommand]:
+        """Parse all commands linearly.
+
+        code_start: byte offset (within the bank) where executable code begins.
+        Bytes before it are the leading local-buffer storage and are emitted as
+        a single raw data block, not decoded — otherwise the scan mis-frames
+        them and corrupts the framing of the code that follows.
+        """
         self.seek(start_offset)
         commands = []
         anim_targets = set(known_anim_offsets) if known_anim_offsets else set()
 
         max_pos = (end_offset - self.base_offset) if end_offset else len(self.data)
 
-        # Pre-pass: discover animation targets
+        # Pre-pass: discover animation targets (starting past the leading buffer)
+        # and code targets (branch/spawn/subroutine destinations), keyed by the
+        # source command offset(s). The sources let us tell a real swallowed
+        # code target (reached from outside the anim span) from a phantom (only
+        # "reached" from a command mis-framed inside the anim data itself).
+        code_target_srcs = {}
+        self.pos = code_start
         save_pos = self.pos
         while self.pos < max_pos - 1:
             if self.pos + 2 > len(self.data):
@@ -266,11 +315,24 @@ class CutsceneBytecodeParser:
             if peek >= 98:
                 self.pos += 2
                 continue
-            cmd = self.parse_command()
+            try:
+                cmd = self.parse_command()
+            except struct.error:
+                # Command near the boundary claims more bytes than remain
+                # (trailing alignment padding misread as an opcode). Stop the
+                # discovery pre-pass; the main pass handles the tail as padding.
+                break
             if cmd and cmd.anim_target:
                 if self.base_offset <= cmd.anim_target < self.base_offset + len(self.data):
                     anim_targets.add(cmd.anim_target)
-            elif not cmd:
+            # Only trust 2-aligned targets: real command destinations are
+            # always halfword-aligned, so an odd target is drift noise that
+            # must not be used to reject a real anim block.
+            if cmd and cmd.branch_target is not None and cmd.branch_target % 2 == 0:
+                code_target_srcs.setdefault(cmd.branch_target, set()).add(cmd.offset)
+            if cmd and cmd.spawn_target is not None and cmd.spawn_target[1] % 2 == 0:
+                code_target_srcs.setdefault(cmd.spawn_target[1], set()).add(cmd.offset)
+            if not cmd:
                 self.pos += 2
 
         # Follow animation loops to find more targets
@@ -294,9 +356,38 @@ class CutsceneBytecodeParser:
             except Exception:
                 pass
 
+        # Reject false anim targets. A real anim block (a) has an on-grid
+        # 0xFFFF/0xFFFE terminator and (b) contains no reachable code. Targets
+        # produced by the linear scan drifting through anim data (mis-framed
+        # commands) violate one or the other; if kept they make the main pass
+        # mis-segment real code as animation frames (over-running past
+        # branch/spawn targets, dropping their labels).
+        def _valid_anim(t):
+            term = self._anim_ongrid_terminator(t, max_pos)
+            if term is None:
+                return False
+            term_abs = self.base_offset + term
+            # A code target inside the span only disproves animation if it is
+            # reached from OUTSIDE the span. A target whose only sources are
+            # commands inside the span is a phantom: the anim frames were
+            # mis-framed as commands during the linear scan (e.g. a frame's
+            # bytes parsed as a branch into the middle of itself). Such a
+            # phantom must not reject a genuine anim block.
+            for c, srcs in code_target_srcs.items():
+                if t < c <= term_abs and any(s < t or s > term_abs for s in srcs):
+                    return False
+            return True
+
+        anim_targets = {t for t in anim_targets if _valid_anim(t)}
+
         # Main pass
-        self.pos = save_pos
         self.seek(start_offset)
+        if code_start > 0:
+            commands.append(ParsedCommand(
+                offset=start_offset, opcode=-2, size=code_start,
+                name="PADDING_N", params=[], raw_bytes=bytes(self.data[:code_start])
+            ))
+        self.pos = code_start
 
         while self.pos < max_pos - 1:
             curr_offset = self.tell()
@@ -324,7 +415,20 @@ class CutsceneBytecodeParser:
                 continue
 
             # Regular command
-            cmd = self.parse_command()
+            try:
+                cmd = self.parse_command()
+            except struct.error:
+                # Trailing bytes can't form a complete command (alignment
+                # padding). Emit them verbatim as padding so output stays
+                # byte-exact, then stop.
+                self.pos = curr_offset - self.base_offset
+                tail = self.data[self.pos:max_pos]
+                if tail:
+                    commands.append(ParsedCommand(
+                        offset=curr_offset, opcode=-2, size=len(tail),
+                        name="PADDING_N", params=[], raw_bytes=bytes(tail)
+                    ))
+                break
             if cmd is None:
                 if self.pos + 2 <= max_pos:
                     self.pos += 2
@@ -332,7 +436,7 @@ class CutsceneBytecodeParser:
                     break
                 continue
 
-            if cmd.anim_target:
+            if cmd.anim_target and _valid_anim(cmd.anim_target):
                 anim_targets.add(cmd.anim_target)
             commands.append(cmd)
 
@@ -426,10 +530,23 @@ def format_asm_linear(commands: List[ParsedCommand], bank_name: str, use_symbols
                 label_mgr.get_or_create(target, "anim")
 
     # Pass 2: Emit
+    in_anim = False
     for cmd in commands:
+        is_anim = (cmd.opcode == -1)
+        # Mark animation-data regions so the disassembler (asm_to_dsl) can trust
+        # this segmentation instead of re-deriving it (which over-runs blocks
+        # and misclassifies code as anim data).
+        if in_anim and not is_anim:
+            lines.append("    # @anim_end")
+            in_anim = False
+
         # Label
         if cmd.offset in label_mgr.labels:
             lines.append(f"{label_mgr.labels[cmd.offset]}:")
+
+        if is_anim and not in_anim:
+            lines.append("    # @anim_begin")
+            in_anim = True
 
         # Animation pseudo-commands
         if cmd.opcode == -1:
@@ -501,6 +618,9 @@ def format_asm_linear(commands: List[ParsedCommand], bank_name: str, use_symbols
                     lines.append(f"    .word   {formatted}")
                     curr_byte_pos += 4
 
+    if in_anim:
+        lines.append("    # @anim_end")
+
     lines.append("")
     lines.append(f".global {bank_name}_end")
     lines.append(f"{bank_name}_end:")
@@ -567,7 +687,7 @@ def load_entry_points(csv_path: Path) -> Dict[str, List[Dict]]:
 # =============================================================================
 
 def extract_bank(bank: Dict, output_dir: Path, known_anims: Set[int] = None,
-                 use_symbols: bool = True) -> bool:
+                 use_symbols: bool = True, code_start: int = 0) -> bool:
     """Extract a single cutscene bank to assembly.
 
     Args:
@@ -575,6 +695,7 @@ def extract_bank(bank: Dict, output_dir: Path, known_anims: Set[int] = None,
         output_dir: Directory to write output files
         known_anims: Optional set of known animation offsets
         use_symbols: Use symbolic names for ROM addresses
+        code_start: Byte offset where code begins (size of leading local buffer)
 
     Returns:
         True if extraction succeeded
@@ -586,7 +707,8 @@ def extract_bank(bank: Dict, output_dir: Path, known_anims: Set[int] = None,
         data = rom_data[bank['start']:bank['end']]
 
         parser = CutsceneBytecodeParser(data, base_offset=bank['start'])
-        commands = parser.parse_linear_scan(bank['start'], bank['end'], known_anims)
+        commands = parser.parse_linear_scan(bank['start'], bank['end'], known_anims,
+                                            code_start=code_start)
 
         output = format_asm_linear(commands, bank['name'], use_symbols)
 
@@ -609,9 +731,9 @@ def extract_all(output_dir: Path, use_symbols: bool = True):
     """Extract all cutscene banks."""
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    banks = load_cutscene_addresses(CUTSCENE_ADDRESSES_CSV)
+    banks = load_cutscene_addresses(ACTIVE_CUTSCENE_CSV)
     if not banks:
-        print(f"No banks found in {CUTSCENE_ADDRESSES_CSV}")
+        print(f"No banks found in {ACTIVE_CUTSCENE_CSV}")
         return
 
     print(f"Found {len(banks)} cutscene banks")
@@ -628,7 +750,7 @@ def extract_one(name: str, output_dir: Path, use_symbols: bool = True):
     """Extract a single bank by name."""
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    banks = load_cutscene_addresses(CUTSCENE_ADDRESSES_CSV)
+    banks = load_cutscene_addresses(ACTIVE_CUTSCENE_CSV)
     bank = next((b for b in banks if b['name'] == name), None)
 
     if bank is None:
@@ -643,9 +765,9 @@ def extract_one(name: str, output_dir: Path, use_symbols: bool = True):
 
 def list_banks():
     """List all available cutscene banks"""
-    banks = load_cutscene_addresses(CUTSCENE_ADDRESSES_CSV)
+    banks = load_cutscene_addresses(ACTIVE_CUTSCENE_CSV)
     if not banks:
-        print(f"No banks found in {CUTSCENE_ADDRESSES_CSV}")
+        print(f"No banks found in {ACTIVE_CUTSCENE_CSV}")
         return
 
     print(f"Cutscene banks ({len(banks)} total):")
@@ -679,8 +801,16 @@ def main():
                         help='Use symbolic names for ROM addresses (default)')
     parser.add_argument('--no-symbols', dest='use_symbols', action='store_false',
                         help='Use raw hex for ROM addresses')
+    parser.add_argument('--region', choices=['us', 'jp'], default='us',
+                        help='ROM region: selects the address CSV and default baserom (default: us)')
+    parser.add_argument('--rom', type=str, default=None,
+                        help='Override the ROM path (defaults to baserom.<region>.z64 at repo root)')
 
     args = parser.parse_args()
+
+    set_region(args.region)
+    repo_dir = Path(__file__).resolve().parents[3]
+    rom.set_rom_path(Path(args.rom) if args.rom else repo_dir / f"baserom.{args.region}.z64")
 
     if args.list:
         list_banks()

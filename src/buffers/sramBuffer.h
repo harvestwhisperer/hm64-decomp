@@ -159,6 +159,7 @@ typedef struct {
 
     u8 padding_4B0[0x10];       // 0x4B0-0x4BF
 
+    // 0x4C0: stored flat, used as calendarStickerGrid[5][7]
     u8 calendarStickerGrid[35];     // 0x4C0-0x4E2
 
     u8 padding_4E3[0x1D];       // 0x4E3-0x4FF

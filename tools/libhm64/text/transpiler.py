@@ -224,6 +224,10 @@ class TextEncoder:
                     if param_str is not None:
 
                         # CHARACTER_AVATAR supports macro names (e.g., MARIA_1) or decimal indices.
+                        # Macro suffixes come from characterAvatars.h with the
+                        # DIALOGUE_AVATARS_ prefix stripped, so the DSL form
+                        # [CHARACTER_AVATAR:MARIA_1] maps to
+                        # `#define DIALOGUE_AVATARS_MARIA_1 0`.
                         if control_code == 9:  # CHARACTER_AVATAR
                             avatar_macros = get_character_avatar_macro_to_index()
                             if param_str in avatar_macros:
@@ -637,7 +641,10 @@ class TextTranspiler:
             index_output = '\n'.join(self.index_lines) + '\n'
             return data_output, index_output
 
-        # Eagerly validate that characterAvatars.h is loadable
+        # Eagerly validate that characterAvatars.h is loadable. The per-file
+        # `except Exception` below would otherwise convert this setup error
+        # into a transpile-time per-file error message that the build keeps
+        # going past — `make` needs to see a hard failure here instead.
         get_character_avatar_macro_to_index()
 
         encoder = TextEncoder(modding=self.modding_mode)

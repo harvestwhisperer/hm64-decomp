@@ -94,7 +94,7 @@ u16 calculateFieldScore(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/evaluation", calculateShippingScore);
 
-u8 calculateShippingScore(void) {
+u32 calculateShippingScore(void) {
 
     u8 score = 0;
     

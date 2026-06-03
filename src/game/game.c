@@ -204,7 +204,7 @@ u8 D_80113C40[] = {
 static const u8 houseConstructionDays[6];
 static const u16 lifeEventHouseConstructionBits[6];
 static const u8 animalLocationsHouseConstruction[6];
-static const u16 mailTextIndices[79];
+static const u16 mailTextIndices[80];
 
 static const s16 houseExtensionPrices[6];     
 static const s16 houseExtensionLumberCosts[6];
@@ -2897,6 +2897,56 @@ bool checkBacheloretteReadyForMarriage(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", setWifeNameString);
 
+#ifdef _JP
+void setWifeNameString(u8 wife) {
+
+    switch (wife) {
+        case MARIA:
+            gWifeName[0] = 0x6E;
+            gWifeName[1] = 0x77;
+            gWifeName[2] = 0xE1;
+            gWifeName[3] = 0xFF;
+            gWifeName[4] = 0xFF;
+            gWifeName[5] = 0xFF;
+            break;
+        case POPURI:
+            gWifeName[0] = 0x96;
+            gWifeName[1] = 0x94;
+            gWifeName[2] = 0x77;
+            gWifeName[3] = 0xFF;
+            gWifeName[4] = 0xFF;
+            gWifeName[5] = 0xFF;
+            break;
+        case ELLI:
+            gWifeName[0] = 0x53;
+            gWifeName[1] = 0x77;
+            gWifeName[2] = 0x9D;
+            gWifeName[3] = 0xFF;
+            gWifeName[4] = 0xFF;
+            gWifeName[5] = 0xFF;
+            break;
+        case ANN:
+            gWifeName[0] = 0x76;
+            gWifeName[1] = 0x7D;
+            gWifeName[2] = 0xFF;
+            gWifeName[3] = 0xFF;
+            gWifeName[4] = 0xFF;
+            gWifeName[5] = 0xFF;
+            break;
+        case KAREN:
+            gWifeName[0] = 0x55;
+            gWifeName[1] = 0x79;
+            gWifeName[2] = 0x7D;
+            gWifeName[3] = 0xFF;
+            gWifeName[4] = 0xFF;
+            gWifeName[5] = 0xFF;
+            break;
+        default:
+            return;
+            
+    }
+}
+#else
 void setWifeNameString(u8 wife) {
 
     switch (wife) {
@@ -2945,9 +2995,59 @@ void setWifeNameString(u8 wife) {
             
     }
 }
+#endif
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", setDefaultBabyName);
 
+#ifdef _JP
+void setDefaultBabyName(u8 wife) {
+    
+    switch (wife) {
+        case MARIA:
+            gBabyName[0] = 0x77;
+            gBabyName[1] = 0xE1;
+            gBabyName[2] = 0x73;
+            gBabyName[3] = 0xFF;
+            gBabyName[4] = 0xFF;
+            gBabyName[5] = 0xFF;
+            break;
+        case POPURI:
+            gBabyName[0] = 0x92;
+            gBabyName[1] = 0x5D;
+            gBabyName[2] = 0x77;
+            gBabyName[3] = 0xFF;
+            gBabyName[4] = 0xFF;
+            gBabyName[5] = 0xFF;
+            break;
+        case ELLI:
+            gBabyName[0] = 0x59;
+            gBabyName[1] = 0x59;
+            gBabyName[2] = 0x9B;
+            gBabyName[3] = 0x63;
+            gBabyName[4] = 0xFF;
+            gBabyName[5] = 0xFF;
+            break;
+        case ANN:
+            gBabyName[0] = 0x6F;
+            gBabyName[1] = 0x7D;
+            gBabyName[2] = 0x63;
+            gBabyName[3] = 0xFF;
+            gBabyName[4] = 0xFF;
+            gBabyName[5] = 0xFF; 
+            break;
+        case KAREN:
+            gBabyName[0] = 0x58;
+            gBabyName[1] = 0x77;
+            gBabyName[2] = 0xE1;
+            gBabyName[3] = 0xFF;
+            gBabyName[4] = 0xFF;
+            gBabyName[5] = 0xFF;
+            break;
+        default:
+            break;
+    }
+}
+#else
 void setDefaultBabyName(u8 wife) {
     
     switch (wife) {
@@ -2995,9 +3095,67 @@ void setDefaultBabyName(u8 wife) {
             break;
     }
 }
+#endif
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", setHarvestKingName);
  
+#ifdef _JP
+void setHarvestKingName(u8 harvestKing) {
+
+    switch (harvestKing) {
+        case PLAYER:
+            gHarvestKingName[0] = gPlayer.name[0];
+            gHarvestKingName[1] = gPlayer.name[1];
+            gHarvestKingName[2] = gPlayer.name[2];
+            gHarvestKingName[3] = gPlayer.name[3];
+            gHarvestKingName[4] = gPlayer.name[4];
+            gHarvestKingName[5] = gPlayer.name[5];
+            break;
+        case 1:
+            gHarvestKingName[0] = 0x69;
+            gHarvestKingName[1] = 0x77;
+            gHarvestKingName[2] = 0x5C;
+            gHarvestKingName[3] = 0xFF;
+            gHarvestKingName[4] = 0xFF;
+            gHarvestKingName[5] = 0xFF;
+            break;
+        default:
+            break;
+        case 2:
+            gHarvestKingName[0] = 0x80;
+            gHarvestKingName[1] = 0x79;
+            gHarvestKingName[2] = 0x51;
+            gHarvestKingName[3] = 0xFF;
+            gHarvestKingName[4] = 0xFF;
+            gHarvestKingName[5] = 0xFF;
+            break;
+        case 3:
+            gHarvestKingName[0] = 0x84;
+            gHarvestKingName[1] = 0x9F;
+            gHarvestKingName[2] = 0x6B;
+            gHarvestKingName[3] = 0xFF;
+            gHarvestKingName[4] = 0xFF;
+            gHarvestKingName[5] = 0xFF;
+            break;
+        case 4:
+            gHarvestKingName[0] = 0x57;
+            gHarvestKingName[1] = 0x77;
+            gHarvestKingName[2] = 0x6B;
+            gHarvestKingName[3] = 0xFF;
+            gHarvestKingName[4] = 0xFF;
+            gHarvestKingName[5] = 0xFF;
+            break;
+        case 5:
+            gHarvestKingName[0] = 0x55;
+            gHarvestKingName[1] = 0x51;
+            gHarvestKingName[2] = 0xFF;
+            gHarvestKingName[3] = 0xFF;
+            gHarvestKingName[4] = 0xFF;
+            gHarvestKingName[5] = 0xFF;
+            break;
+        }
+}
+#else
 void setHarvestKingName(u8 harvestKing) {
 
     switch (harvestKing) {
@@ -3053,9 +3211,50 @@ void setHarvestKingName(u8 harvestKing) {
             break;
         }
 }
+#endif
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", func_80061690);
+// INCLUDE_ASM("asm/nonmatchings/game/game", func_80061690);
 
+#ifdef _JP
+void func_80061690(u8 arg0) {
+
+    switch (arg0) {
+        case 0:              
+            D_801886D4[0] = 0x24;
+            D_801886D4[1] = 2;
+            D_801886D4[2] = 0xB;
+            D_801886D4[3] = 0x49;
+            D_801886D4[4] = 2;
+            D_801886D4[5] = 0xFF;
+            break;
+        case 1:
+            D_801886D4[0] = 0xD6;
+            D_801886D4[1] = 0x13;
+            D_801886D4[2] = 2;
+            D_801886D4[3] = 0xB;
+            D_801886D4[4] = 0x49;
+            D_801886D4[5] = 2;
+            break;
+        case 2:
+            D_801886D4[0] = 0xD7;
+            D_801886D4[1] = 0x13;
+            D_801886D4[2] = 2;
+            D_801886D4[3] = 0xB;
+            D_801886D4[4] = 0x49;
+            D_801886D4[5] = 0x2;
+            break;
+        default:
+            D_801886D4[0] = 0xF6;
+            D_801886D4[1] = 0xF6;
+            D_801886D4[2] = 0xF6;
+            D_801886D4[3] = 0xF6;
+            D_801886D4[4] = 0xF6;
+            D_801886D4[5] = 0xF6;
+            break;
+    }
+    
+}
+#else
 void func_80061690(u8 arg0) {
     D_801886D4[0] = 0xF6;
     D_801886D4[1] = 0xF6;
@@ -3064,6 +3263,7 @@ void func_80061690(u8 arg0) {
     D_801886D4[4] = 0xF6;
     D_801886D4[5] = 0xF6;
 }
+#endif
 
 //INCLUDE_ASM("asm/nonmatchings/game/game", handlePurchaseHouseExtension);
 
@@ -3743,7 +3943,7 @@ u16 getTextIndexFromLetterIndex(u8 index) {
 
     u16 arr[80];
     
-    memcpy(arr, mailTextIndices, 0xA0);
+    memcpy(arr, mailTextIndices, 160);
 
     return arr[index];
 
@@ -3775,8 +3975,7 @@ static const u8 animalLocationsHouseConstruction[6] = { FARM, FARM, HOUSE, FARM,
 
 // INCLUDE_RODATA("asm/nonmatchings/game/game", mailTextIndices);
 
-// text indices for letters
-static const u16 mailTextIndices[79] = { 
+static const u16 mailTextIndices[80] = { 
      0, 1, 2, 3, 4, 5, 
      6, 7, 8, 9, 10, 11, 
      12, 13, 14, 15, 16, 
@@ -3794,3 +3993,7 @@ static const u16 mailTextIndices[79] = {
      53, 54, 55, 56, 57,
      0, 0, 0, 0
 };
+
+#ifdef _JP
+#include "game/gameStatus.c"
+#endif

@@ -53,8 +53,16 @@ export BUILD_DIR
 
 # Extract object files from the spec file
 # Preprocesses spec, replaces $(BUILD_DIR), extracts .o paths
+# Region-specific defines: JP adds -D_JP and builds the Japanese font data
+# (nupakmenuloadfont's `#if LANG_JAPANESE` block, ~0x540 of .data).
+LANG_JAPANESE ?= 0
+ifeq ($(REGION),jp)
+  JP_DEFINE := -D_JP=1
+  LANG_JAPANESE := 1
+endif
+
 BUILD_DIR_REPLACE := sed -e 's|$$(BUILD_DIR)|$(BUILD_DIR)|g'
-SPEC_CPP_FLAGS := -I. -I include -I lib/nusys-1/include -I lib/libultra/include
+SPEC_CPP_FLAGS := -I. -I include -I lib/nusys-1/include -I lib/libultra/include $(JP_DEFINE)
 SPEC_O_FILES := $(shell $(CPP) $(SPEC_CPP_FLAGS) $(SPEC) | $(BUILD_DIR_REPLACE) | sed -n -E 's/^[[:space:]]*include[[:space:]]+"([^"]+\.o)"/\1/p')
 OBJECTS := $(SPEC_O_FILES)
 
@@ -65,7 +73,7 @@ $(shell mkdir -p $(sort $(dir $(OBJECTS))))
 # Flags
 # ==============================================================================
 
-MACROS := -D_LANGUAGE_C -D_MIPS_SZLONG=32 -D_MIPS_SZINT=32 -DSUPPORT_NAUDIO -DNU_SYSTEM -DF3DEX_GBI_2 -DN_MICRO -DLANG_JAPANESE=0 -DUSE_EPI -DNDEBUG -D_AUDIOVISIBLE -DN_AUDIO
+MACROS := -D_LANGUAGE_C -D_MIPS_SZLONG=32 -D_MIPS_SZINT=32 -DSUPPORT_NAUDIO -DNU_SYSTEM -DF3DEX_GBI_2 -DN_MICRO -DLANG_JAPANESE=$(LANG_JAPANESE) -DUSE_EPI -DNDEBUG -D_AUDIOVISIBLE -DN_AUDIO $(JP_DEFINE)
 
 # Common flags for both compilers
 CFLAGS_COMMON := -G0 -mgp32 -mfp32 -funsigned-char
@@ -156,6 +164,12 @@ CUTSCENE_BUILD_DIR := $(BUILD_DIR)/assets/cutscenes
 CUTSCENE_TRANSPILER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.transpiler
 
 CUTSCENE_CPP_INCLUDES := -I src/buffers -I src/game -I src/assetIndices -I src/data/animation/entityAnimationScripts
+
+ifeq ($(REGION),jp)
+cutscene_dsl = $(or $(wildcard $(CUTSCENE_SRC_DIR)/jp/$(1).cutscene),$(CUTSCENE_SRC_DIR)/$(1).cutscene)
+else
+cutscene_dsl = $(CUTSCENE_SRC_DIR)/$(1).cutscene
+endif
 
 # Dialogues
 # DSL source in src/bytecode/dialogues/, ASM output to assets/dialogues/
@@ -311,8 +325,9 @@ $(BUILD_DIR)/makerom/entry.o: makerom/entry.s
 # Asset pattern rules
 # ==============================================================================
 
-# Cutscenes: transpile DSL → assembly, then assemble
-$(CUTSCENE_ASSETS_DIR)/%.s: $(CUTSCENE_SRC_DIR)/%.cutscene
+# Cutscenes: transpile DSL → assembly, then assemble.
+.SECONDEXPANSION:
+$(CUTSCENE_ASSETS_DIR)/%.s: $$(call cutscene_dsl,$$*)
 	@mkdir -p $(CUTSCENE_ASSETS_DIR)
 	$(V)$(CPP) $(CUTSCENE_CPP_INCLUDES) $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
 
@@ -722,29 +737,27 @@ $(TARGET): $(BASENAME).elf
 extract-sprites:
 	@find $(SPRITE_ASSETS_DIR) -type f ! -name "*.spec" -delete 2>/dev/null || true
 	@find $(SPRITE_ASSETS_DIR) -type d -empty -delete 2>/dev/null || true
-	$(V)$(SPRITE_EXTRACTOR) extract_all
-
-extract-animations: extract-sprites
-	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.animations.extractor --all
+	$(V)$(SPRITE_EXTRACTOR) extract_all --region $(REGION)
 
 extract-fonts:
 	@rm -f $(FONT_ASSETS_DIR)/*.ci2 $(FONT_ASSETS_DIR)/*.pal 2>/dev/null || true
-	$(V)$(FONT_EXTRACTOR)
+	$(V)$(FONT_EXTRACTOR) --region $(REGION)
 
 assemble-fonts:
 	$(V)$(FONT_ASSEMBLER)
 
 extract-texts:
-	$(V)$(TEXT_EXTRACTOR) extract_all $(TEXT_EXTRACT_ARGS)
+	@find $(TEXT_ASSETS_DIR) -type f \( -name 'text*.txt' -o -name '_metadata.txt' \) -delete 2>/dev/null || true
+	$(V)$(TEXT_EXTRACTOR) extract_all --region $(REGION) $(TEXT_EXTRACT_ARGS)
 
 extract-gifs:
 	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.animations.gif_builder
 
 extract-map-sprites:
-	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.maps.png_exporter all
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.maps.png_exporter all --region $(REGION)
 
 extract-cutscenes:
-	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.extractor --all
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.extractor --all --region $(REGION)
 
 # Extract .inst + .aifc directly from the ROM. The .inst is the canonical
 # sentinel — make tracks it as the prerequisite for repack. The recipe also
@@ -773,7 +786,7 @@ extract-font:
 	$(V)$(FONT_PNG_EXPORTER) extract_all_palettes
 
 split:
-	$(V)$(PYTHON) -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts seq hm64map
+	$(V)$(PYTHON) -m splat split ./config/$(REGION)/splat.$(REGION).yaml --modes code bin animationScripts seq hm64map assetBin
 
 # ==============================================================================
 # Derived asset asm lists (used by dev/dev-qol's scoped .SECONDARY)

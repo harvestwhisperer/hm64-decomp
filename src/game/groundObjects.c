@@ -1215,17 +1215,17 @@ u8 getGroundObjectIndexFromCoordinates(f32 x, f32 z) {
     
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", updategroundObjectsOvernight);
+//INCLUDE_ASM("asm/nonmatchings/game/groundObjects", updateGroundObjectsOvernight);
 
-void updategroundObjectsOvernight(void) {
+void updateGroundObjectsOvernight(void) {
 
     u8 i, j;
     u8 flags;
     u8 currentGroundObject;
-    
+
     // farm
     for (i = 0; i < FIELD_HEIGHT; i++) {
-        
+
         for (j = 0; j < FIELD_WIDTH; j++) {
 
             currentGroundObject = farmFieldTiles[i][j];
@@ -1354,7 +1354,11 @@ void updategroundObjectsOvernight(void) {
                                 case TOMATO_DEAD ... CORN_PLANTED_STAGE_3_WATERED:
                                 case CORN_DEAD:
                                 case MOONDROP_PLANTED_STAGE_1 ... MOONDROP_PLANTED_STAGE_2_WATERED:
+#ifdef _JP
+                                case PINK_CAT_MINT_PLANTED_STAGE_1 ... PINK_CAT_MINT_PLANTED_STAGE_3_WATERED:
+#else
                                 case MOONDROP_DEAD ... PINK_CAT_MINT_PLANTED_STAGE_3_WATERED:
+#endif
                                 case PINK_CAT_MINT_DEAD:
                                 case 0xD7 ... 0xD8:
                                     currentGroundObject = BASE_TILE;
@@ -1368,18 +1372,18 @@ void updategroundObjectsOvernight(void) {
                     }
                     
                 }
-                
+
                 farmFieldTiles[i][j] = currentGroundObject;
-                
+
             }
-            
+
         }
-        
+
     }
 
     // greenhouse
     for (i = 0; i < FIELD_HEIGHT; i++) {
-     
+
         for (j = 0; j < FIELD_WIDTH; j++) {
 
             currentGroundObject = greenhouseFieldTiles[i][j];

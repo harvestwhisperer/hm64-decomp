@@ -5,8 +5,7 @@ Contains:
 - CHAR_MAP: Byte value to character mapping
 - CONTROL_CODES: Text control code definitions
 - GAMEVAR_MACROS: Game variable string indices
-- load_character_avatar_macros(): parses character avatar macros from the
-  sprite-editor-generated characterAvatars.h
+- CHARACTER_AVATAR_MACROS: Character avatar indices
 """
 
 from __future__ import annotations
@@ -88,7 +87,10 @@ CHAR_MAP: Dict[int, str] = {
     0xE5: '6', 0xE6: '7', 0xE7: '8', 0xE8: '9', 0xE9: '0',
 
     # --- Punctuation ---
-    0xEA: '?', 0xEB: '!', 0xEC: '-', 0xEF: ',', 0xF0: '.', 0xF1: '/',
+    0xEA: '?', 0xEB: '!', 0xEC: '-',
+    0xED: '〜',  # wave dash (numeric ranges, e.g. 30〜50mm); JP-only
+    0xEE: '・',  # middle dot / nakaguro (name separators, stylized speech); JP-only
+    0xEF: ',', 0xF0: '.', 0xF1: '/',
 
     # --- Symbols ---
     0xF2: '☆', 0xF3: '★', 0xF4: '&', 0xF5: '♡', 0xF6: '♥',
@@ -103,8 +105,8 @@ CHAR_MAP: Dict[int, str] = {
     # --- More punctuation ---
     0x101: '—', 0x102: '×', 0x103: ':', 0x104: ';',
     0x105: '…', 0x106: "‥", 0x107: '\u201c', 0x108: '\u201d',
-    # 0x109: '', # left diagonal unused
-    # 0x10A: '', # right diagonal unused
+    0x109: '「',  # opening corner bracket (wraps titles); JP-only, glyph idx 0xFE
+    0x10A: '」',  # closing corner bracket (wraps titles); JP-only, glyph idx 0xFF
 
     # --- Row 17 ---
     0x10B: '(', 0x10C: ")", 0x10D: '♪', 0x10E: "\u2019", 0x10F: '日',
@@ -321,11 +323,12 @@ GAMEVAR_MACROS: Dict[int, str] = {
 
 GAMEVAR_MACRO_TO_INDEX = {v: k for k, v in GAMEVAR_MACROS.items()}
 
-# Default location of the sprite-editor-generated header
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 CHARACTER_AVATARS_H_PATH = _REPO_ROOT / "src" / "data" / "animation" / "characterAvatars" / "characterAvatars.h"
 
-# `#define DIALOGUE_AVATARS_<NAME> <value>` lines
+# `#define DIALOGUE_AVATARS_<NAME> <value>` lines. 
+# Strip the `DIALOGUE_AVATARS_` prefix when setting up the DSL macros in
+# .txt files (e.g. [CHARACTER_AVATAR:MARIA_1]
 _DIALOGUE_AVATAR_DEFINE_RE = re.compile(
     r"^\s*#\s*define\s+DIALOGUE_AVATARS_([A-Za-z_][A-Za-z0-9_]*)\s+(\d+)\s*$"
 )
@@ -344,10 +347,7 @@ def load_character_avatar_macros(path: Path | None = None) -> Dict[int, str]:
     transpiler/extractor uses to translate `[CHARACTER_AVATAR:NAME]` <-> index.
 
     Raises `CharacterAvatarMacrosError` if the file doesn't exist, contains
-    no `DIALOGUE_AVATARS_*` macros, or has duplicate macro values. The
-    transpiler/extractor depend on the sprite editor (or the Python avatar
-    exporter) keeping this file in sync — silent fallback would mask a bad
-    extraction.
+    no `DIALOGUE_AVATARS_*` macros, or has duplicate macro value.
     """
     target = path if path is not None else CHARACTER_AVATARS_H_PATH
     if not target.is_file():

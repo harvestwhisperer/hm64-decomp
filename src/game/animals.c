@@ -1308,6 +1308,29 @@ void setMrsManaCowsNames(void) {
     mrsManaCow2Index = initializeNewFarmAnimal(1, 0);
     mrsManaCow3Index = initializeNewFarmAnimal(1, 0);
 
+#ifdef _JP    
+    gFarmAnimals[mrsManaCow1Index].name[0] = 0x22;
+    gFarmAnimals[mrsManaCow1Index].name[1] = 0xE2;
+    gFarmAnimals[mrsManaCow1Index].name[2] = 0xF;
+    gFarmAnimals[mrsManaCow1Index].name[3] = 0xFF;
+    gFarmAnimals[mrsManaCow1Index].name[4] = 0xFF;
+    gFarmAnimals[mrsManaCow1Index].name[5] = 0xFF;
+
+    gFarmAnimals[mrsManaCow2Index].name[0] = 0x22;
+    gFarmAnimals[mrsManaCow2Index].name[1] = 0xE2;
+    gFarmAnimals[mrsManaCow2Index].name[2] = 1;
+    gFarmAnimals[mrsManaCow2Index].name[3] = 0x10;
+    gFarmAnimals[mrsManaCow2Index].name[4] = 0xFF;
+    gFarmAnimals[mrsManaCow2Index].name[5] = 0xFF;
+
+    gFarmAnimals[mrsManaCow3Index].name[0] = 0x22;
+    gFarmAnimals[mrsManaCow3Index].name[1] = 0x22;
+    gFarmAnimals[mrsManaCow3Index].name[2] = 9;
+    gFarmAnimals[mrsManaCow3Index].name[3] = 0xFF;
+    gFarmAnimals[mrsManaCow3Index].name[4] = 0xFF;
+    gFarmAnimals[mrsManaCow3Index].name[5] = 0xFF;
+#else
+
     gFarmAnimals[mrsManaCow1Index].name[0] = char_M;
     gFarmAnimals[mrsManaCow1Index].name[1] = char_o;
     gFarmAnimals[mrsManaCow1Index].name[2] = char_m;
@@ -1328,6 +1351,8 @@ void setMrsManaCowsNames(void) {
     gFarmAnimals[mrsManaCow3Index].name[3] = char_a;
     gFarmAnimals[mrsManaCow3Index].name[4] = 0xFF;
     gFarmAnimals[mrsManaCow3Index].name[5] = 0xFF;
+
+#endif
     
 }
 
@@ -1717,6 +1742,39 @@ void spawnWildAnimals(void) {
 
         case VILLAGE_2:
 
+#ifdef _JP
+            if (checkLifeEventBit(PUPPIES) && 8 < gHour && gHour < 18) {
+
+                if (gWeather != RAIN && gSeason != WINTER) {
+    
+                    if (1) {
+                        
+                        if ((u8)(gPlayer.heldItem + 0x55) >= 8) {
+                            spawnMiscAnimal(0, DIRECTION_S, 400.0f, 0.0f, -160.0f);
+                        } 
+                        
+                        if ((u8)(gPlayer.heldItem - 0x7B) >= 8) {
+                            spawnMiscAnimal(1, DIRECTION_S, 432.0f, 0.0f, -160.0f);
+                        }
+                        
+                    }
+    
+                }
+                
+            }
+            
+            if (8 < gHour && gHour < 18 && !(SUNNY < gWeather && gWeather < 4)) {
+                
+                if ((u8)(gPlayer.heldItem + 0x7D) >= 8) {
+                    spawnMiscAnimal(2, DIRECTION_S, 32.0f, 0.0f, -96.0f);
+                }
+            
+                spawnMiscAnimal(2, DIRECTION_S, 0.0f, 0.0f, -64.0f);
+            
+            }
+
+            break;
+#else
             if (8 < gHour && gHour < 18) {
 
                 if (gWeather != RAIN && gSeason != WINTER) {
@@ -1744,6 +1802,7 @@ void spawnWildAnimals(void) {
             }
 
             break;
+#endif
 
         case POTION_SHOP:
 
@@ -10490,6 +10549,7 @@ u8 getTotalFarmAnimalsByType(u8 type) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalPregnantFamAnimals);
 
+#ifndef _JP
 u8 getTotalPregnantFamAnimals(void) {
 
     u8 i;
@@ -10504,8 +10564,9 @@ u8 getTotalPregnantFamAnimals(void) {
     }
     
     return count;
-    
+
 }
+#endif
 
 //INCLUDE_ASM("asm/nonmatchings/game/animals", getTotalFarmAnimalsCount);
 

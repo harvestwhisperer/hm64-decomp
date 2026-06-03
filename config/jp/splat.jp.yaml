@@ -34,10 +34,10 @@ options:
   migrate_rodata_to_functions: True
   # misc.
   find_file_boundaries: True
-  rodata_string_guesser_level: 2
+  rodata_string_guesser_level: 0
   data_string_guesser_level: 2
   libultra_symbols: True
-  disassemble_all: True
+  disassemble_all: False
   segment_symbols_style: makerom
   # hardware_regs: True
   gfx_ucode: f3dex2
@@ -69,16 +69,1472 @@ segments:
     bss_size: 0x113860
     subalign: 8
     subsegments:
-      - [ 0x1050, c, lib/nusys-1/src/nusys/nuboot]
-      - [ 0x1190, asm]
-      # - [ 0x1190, c, mainproc]
-      # - [ 0x13A0, asm]
-      - [0xEBD80, data]
-      - { start: 0xFFA60, type: .bss, vram: 0x80124660, name: lib/nusys-1/src/nusys/nuboot }
-      - { start: 0xFFA60, type: bss, vram: 0x801269C0 }
+      - [ 0x1050, c, ../lib/nusys-1/src/nusys/nuboot]
+      - [ 0x1190, c, mainproc]
+      - [ 0x13A0, c, mainLoop]
+      - [ 0x1A10, c, system/interpolation]
+      - [ 0x1BA0, c, system/math]
+      - [ 0x1C40, c, system/graphic]
+      - [0x4350, c, system/spriteDMAManager]
+      - [0x44C0, c, system/sceneGraph]
+      - [0x4E80, c, system/sprite]
+      - [0x6330, c, system/globalSprites]
+      - [0x8FC0, c, system/entity]
+      - [0xEB20, c, system/map]
+      - [0x16BC0, c, system/mapController]
+      - [0x18110, c, system/audio]
+      - [0x18CC0, c, system/message]
+      - [0x1E2B0, c, system/dialogue]
+      - [0x21130, c, system/numberSprites]
+      - [0x21BB0, c, system/cutscene]
+      - [0x280F0, c, system/controller]
+      - [0x28EE0, c, system/memory]
+      - [0x291F0, c, system/flags]
+      - [0x29250, c, game/gameStart]
+      - [0x292E0, c, game/initialize]
+      - [0x30FA0, c, game/transition]
+      - [0x34A60, c, game/load]
+      - [0x34F10, c, game/game]  # also covers game/gameStatus.c (0x3EBF4)
+      - [0x408D0, c, game/player]
+      - [0x49920, c, game/level]
+      - [0x503C0, c, game/npc]
+      - [0x61070, c, game/animals]
+      - [0x77030, c, game/cutscenes]
+      - [0x87B40, c, game/gameAudio]
+      - [0x87E00, c, game/levelInteractions]
+      - [0x8DA20, c, game/overlayScreens]
+      - [0xAA860, c, game/items]
+      - [0xB2B70, c, game/time]
+      - [0xB3350, c, game/tv]
+      - [0xB4490, c, game/groundObjects]
+      - [0xB71F0, c, game/weather]
+      - [0xB75E0, c, game/shop]
+      - [0xB9230, c, game/title]
+      - [0xBC1F0, c, game/gameFile]
+      - [0xC8700, c, game/namingScreen]
+      - [0xCC600, c, ../lib/nusys-1/src/sample/nunospak/nupakmenu]
+      - [0xCD360, c, ../lib/nusys-1/src/sample/nunospak/nupakmenuloadfont]
+      - [0xCD7E0, c, ../lib/nusys-1/src/nualstl/nuaustlinit]
+      - [0xCD870, c, ../lib/nusys-1/src/nualstl/nuaustlbankset]
+      - [0xCD910, c, ../lib/nusys-1/src/nualstl/nuaustlplayerinit]
+      - [0xCD9D0, c, ../lib/nusys-1/src/nualstl/nuaustlseqplayersetdata]
+      - [0xCDA50, c, ../lib/nusys-1/src/nualstl/nuaustlseqplayerplay]
+      - [0xCDAB0, c, ../lib/nusys-1/src/nualstl/nuaustlsndplayerplay]
+      - [0xCDAF0, c, ../lib/nusys-1/src/nualstl/nuauprenmifuncset]
+      - [0xCDB30, c, ../lib/nusys-1/src/nualstl/nuauprenmiproc]
+      - [0xCDB90, c, ../lib/nusys-1/src/nualstl/nuaustlmgr]
+      - [0xCE590, c, ../lib/libmus/src/player]
+      - [0xD3570, c, ../lib/libultra/src/libnaudio/n_sl]
+      - [0xD35F0, c, ../lib/libultra/src/libnaudio/n_synaddplayer]
+      - [0xD3640, c, ../lib/libultra/src/libnaudio/n_synallocvoice]
+      - [0xD3820, c, ../lib/libultra/src/libnaudio/n_syndelete]
+      - [0xD3830, c, ../lib/libultra/src/libnaudio/n_synsetfxmix]
+      - [0xD38D0, c, ../lib/libultra/src/libnaudio/n_synsetpan]
+      - [0xD3960, c, ../lib/libultra/src/libnaudio/n_synsetpitch]
+      - [0xD39F0, c, ../lib/libultra/src/libnaudio/n_synsetvol]
+      - [0xD3AA0, c, ../lib/libultra/src/libnaudio/n_synstartvoice]
+      - [0xD3B30, c, ../lib/libultra/src/libnaudio/n_synstopvoice]
+      - [0xD3BB0, c, ../lib/libultra/src/libnaudio/n_synthesizer]
+      - [0xD4110, c, ../lib/libultra/src/libnaudio/n_auxbus]
+      - [0xD41B0, c, ../lib/libultra/src/libnaudio/n_drvrNew]
+      - [0xD46D0, c, ../lib/libultra/src/libnaudio/n_env]
+      - [0xD50A0, c, ../lib/libultra/src/libnaudio/n_load]
+      - [0xD57C0, c, ../lib/libultra/src/libnaudio/n_resample]
+      - [0xD59A0, c, ../lib/libultra/src/libnaudio/n_reverb]
+      - [0xD6390, c, ../lib/libultra/src/libnaudio/n_save]
+      - [0xD63E0, c, ../lib/libultra/src/libnaudio/n_synallocfx]
+      - [0xD6430, c, ../lib/libultra/src/libnaudio/n_mainbus]
+      - [0xD64B0, c, ../lib/nusys-1/src/nusys/nusched]
+      - [0xD6C80, c, ../lib/nusys-1/src/nusys/nugfxthread]
+      - [0xD6DD0, c, ../lib/nusys-1/src/nusys/nugfxtaskmgr]
+      - [0xD71C0, c, ../lib/nusys-1/src/nusys/nugfxfuncset]
+      - [0xD7200, c, ../lib/nusys-1/src/nusys/nugfxprenmifuncset]
+      - [0xD7240, c, ../lib/nusys-1/src/nusys/nugfxswapcfbfuncset]
+      - [0xD7280, c, ../lib/nusys-1/src/nusys/nugfxswapcfb]
+      - [0xD72A0, c, ../lib/nusys-1/src/nusys/nugfxtaskallendwait]
+      - [0xD72C0, c, ../lib/nusys-1/src/nusys/nugfxretracewait]
+      - [0xD7340, c, ../lib/nusys-1/src/nusys/nugfxsetcfb]
+      - [0xD7370, c, ../lib/nusys-1/src/nusys/nugfxdisplayoff]
+      - [0xD73A0, c, ../lib/nusys-1/src/nusys/nugfxdisplayon]
+      - [0xD73B0, c, ../lib/nusys-1/src/nusys/nucontmgr]
+      - [0xD7770, c, ../lib/nusys-1/src/nusys/nucontinit]
+      - [0xD77B0, c, ../lib/nusys-1/src/nusys/nucontdatalock]
+      - [0xD7810, c, ../lib/nusys-1/src/nusys/nucontdatareadwait]
+      - [0xD7840, c, ../lib/nusys-1/src/nusys/nucontdatareadstart]
+      - [0xD7880, c, ../lib/nusys-1/src/nusys/nucontdatagetex]
+      - [0xD7910, c, ../lib/nusys-1/src/nusys/nucontdatagetexall]
+      - [0xD79C0, c, ../lib/nusys-1/src/nusys/nucontqueryread]
+      - [0xD7A30, c, ../lib/nusys-1/src/nusys/nucontpakmgr]
+      - [0xD7C80, c, ../lib/nusys-1/src/nusys/nucontpakopen]
+      - [0xD7D30, c, ../lib/nusys-1/src/nusys/nucontpakgetfree]
+      - [0xD7DC0, c, ../lib/nusys-1/src/nusys/nucontpakrepairid]
+      - [0xD7E40, c, ../lib/nusys-1/src/nusys/nucontpakfileopenjis]
+      - [0xD7F60, c, ../lib/nusys-1/src/nusys/nucontpakcodeset]
+      - [0xD7FB0, c, ../lib/nusys-1/src/nusys/nucontpakfilereadwrite]
+      - [0xD8070, c, ../lib/nusys-1/src/nusys/nucontpakfiledelete]
+      - [0xD8110, c, ../lib/nusys-1/src/nusys/nucontpakfiledeletejis]
+      - [0xD8210, c, ../lib/nusys-1/src/nusys/nucontpakfilestate]
+      - [0xD82A0, c, ../lib/nusys-1/src/nusys/nucontpakfilenum]
+      - [0xD8340, c, ../lib/nusys-1/src/nusys/nucontrmbmgr]
+      - [0xD8920, c, ../lib/nusys-1/src/nusys/nupiinit]
+      - [0xD8950, c, ../lib/nusys-1/src/nusys/nupireadrom]
+      - [0xD8AB0, c, ../lib/nusys-1/src/nusys/nusimgr]
+      - [0xD8BF0, c, ../lib/nusys-1/src/nusys/nusicallbackadd]
+      - [0xD8C70, c, ../lib/nusys-1/src/nusys/nusicallbackremove]
+      - [0xD8CF0, c, ../lib/nusys-1/src/nusys/nucontpakjiston64]
+      - [0xD8FB0, hasm, ../lib/libultra/src/gu/sqrtf, extract: false]
+      - [0xD8FC0, c, ../lib/libultra/src/gu/cosf]
+      - [0xD9110, c, ../lib/libultra/src/gu/lookat]
+      - [0xD9820, c, ../lib/libultra/src/gu/mtxutil]
+      - [0xD9AA0, c, ../lib/libultra/src/gu/ortho]
+      - [0xD9D20, c, ../lib/libultra/src/gu/perspective]
+      - [0xDA0A0, c, ../lib/libultra/src/gu/rotaterpy]
+      - [0xDA3C0, c, ../lib/libultra/src/gu/scale]
+      - [0xDA4A0, c, ../lib/libultra/src/gu/sinf]
+      - [0xDA640, c, ../lib/libultra/src/gu/translate]
+      - [0xDA710, hasm, ../lib/libultra/src/os/invaldcache]
+      - [0xDA7C0, hasm, ../lib/libultra/src/os/unusedPadding]
+      - [0xDA820, hasm, ../lib/libultra/src/os/setintmask]
+      - [0xDA8C0, hasm, ../lib/libultra/src/os/writebackdcache]
+      - [0xDA940, hasm, ../lib/libultra/src/os/writebackdcacheall]
+      - [0xDA970, c, ../lib/libultra/src/os/createmesgqueue]
+      - [0xDA9A0, c, ../lib/libultra/src/os/createthread]
+      - [0xDAA70, c, ../lib/libultra/src/os/recvmesg]
+      - [0xDABA0, c, ../lib/libultra/src/os/sendmesg]
+      - [0xDACD0, c, ../lib/libultra/src/os/setthreadpri]
+      - [0xDADA0, c, ../lib/libultra/src/os/startthread]
+      - [0xDAEC0, c, ../lib/libultra/src/os/thread]
+      - [0xDAF00, c, ../lib/libultra/src/os/virtualtophysical]
+      - [0xDAF60, c, ../lib/libultra/src/debug/assert]
+      - [0xDAF90, c, ../lib/libultra/src/audio/sl]
+      - [0xDB040, c, ../lib/libultra/src/audio/heapinit]
+      - [0xDB080, c, ../lib/libultra/src/audio/heapalloc]
+      - [0xDB0D0, c, ../lib/libultra/src/audio/copy]
+      - [0xDB110, c, ../lib/libultra/src/audio/syndelete]
+      - [0xDB120, c, ../lib/libultra/src/io/aigetlen]
+      - [0xDB130, c, ../lib/libultra/src/io/aigetstat]
+      - [0xDB140, c, ../lib/libultra/src/io/aisetnextbuf]
+      - [0xDB1E0, c, ../lib/libultra/src/io/sptask]
+      - [0xDB420, c, ../lib/libultra/src/io/sptaskyield]
+      - [0xDB440, c, ../lib/libultra/src/io/sptaskyielded]
+      - [0xDB490, c, ../lib/libultra/src/io/vigetcurrframebuf]
+      - [0xDB4D0, c, ../lib/libultra/src/io/vigetnextframebuf]
+      - [0xDB510, c, ../lib/libultra/src/io/visetevent]
+      - [0xDB570, c, ../lib/libultra/src/io/visetmode]
+      - [0xDB5C0, c, ../lib/libultra/src/io/visetyscale]
+      - [0xDB610, c, ../lib/libultra/src/io/viswapbuf]
+      - [0xDB660, c, ../lib/libultra/src/io/viblack]
+      - [0xDB6C0, c, ../lib/libultra/src/io/contquery]
+      - [0xDB760, c, ../lib/libultra/src/io/controller]
+      - [0xDBA70, c, ../lib/libultra/src/io/epidma]
+      - [0xDBB10, c, ../lib/libultra/src/io/epilinkhandle]
+      - [0xDBB60, hasm, ../lib/libultra/src/libc/bcopy]
+      - [0xDBE80, hasm, ../lib/libultra/src/libc/bzero]
+      - [0xDBF20, c, ../lib/libultra/src/libc/syncPrintf]
+      - [0xDC270, c, ../lib/libultra/src/audio/drvrnew]
+      - [0xDCAA0, c, ../lib/libultra/src/audio/env]
+      - [0xDD750, c, ../lib/libultra/src/audio/reverb]
+      - [0xDE2F0, c, ../lib/libultra/src/audio/save]
+      - [0xDE3C0, c, ../lib/libultra/src/audio/synthesizer]
+      - [0xDEA00, c, ../lib/libultra/src/io/aisetfreq]
+      - [0xDEB20, c, ../lib/libultra/src/io/cartrominit]
+      - [0xDECA0, c, ../lib/libultra/src/io/contreaddata]
+      - [0xDEE80, c, ../lib/libultra/src/io/motor]
+      - [0xDF210, c, ../lib/libultra/src/io/pfsallocatefile]
+      - [0xDF640, c, ../lib/libultra/src/io/pfsdeletefile]
+      - [0xDF860, c, ../lib/libultra/src/io/pfsfilestate]
+      - [0xDF9F0, c, ../lib/libultra/src/io/pfsfreeblocks]
+      - [0xDFB00, c, ../lib/libultra/src/io/pfsinitpak]
+      - [0xDFDD0, c, ../lib/libultra/src/io/pfsnumfiles]
+      - [0xDFED0, c, ../lib/libultra/src/io/pfsreadwritefile]
+      - [0xE0310, c, ../lib/libultra/src/io/pfsrepairid]
+      - [0xE0370, c, ../lib/libultra/src/io/pfssearchfile]
+      - [0xE0510, c, ../lib/libultra/src/io/pfsselectbank]
+      - [0xE0580, c, ../lib/libultra/src/io/pimgr]
+      - [0xE0830, c, ../lib/libultra/src/io/pirawdma]
+      - [0xE0900, c, ../lib/libultra/src/io/sirawdma]
+      - [0xE09B0, c, ../lib/libultra/src/io/sprawdma]
+      - [0xE0A40, c, ../lib/libultra/src/io/vimgr]
+      - [0xE0D80, c, ../lib/libultra/src/io/visetspecial]
+      - [0xE0EF0, c, ../lib/libultra/src/io/viswapcontext]
+      - [0xE1200, hasm, ../lib/libultra/src/os/exceptasm]
+      - [0xE1FF0, c, ../lib/libultra/src/os/initialize]
+      - [0xE23F0, hasm, ../lib/libultra/src/os/interrupt]
+      - [0xE2480, c, ../lib/libultra/src/os/seteventmesg]
+      - [0xE2530, hasm, ../lib/libultra/src/os/getcause]
+      - [0xE2540, hasm, ../lib/libultra/src/os/getcount]
+      - [0xE2550, hasm, ../lib/libultra/src/os/getsr]
+      - [0xE2560, hasm, ../lib/libultra/src/os/invalicache]
+      - [0xE25E0, hasm, ../lib/libultra/src/os/probetlb]
+      - [0xE26A0, hasm, ../lib/libultra/src/os/setfpcsr]
+      - [0xE26B0, hasm, ../lib/libultra/src/os/setsr]
+      - [0xE26C0, hasm, ../lib/libultra/src/os/unmaptlball]
+      - [0xE2710, hasm, ../lib/libultra/src/os/maptlbrdb]
+      - [0xE2770, c, ../lib/libultra/src/os/destroythread]
+      - [0xE2840, c, ../lib/libultra/src/os/getthreadpri]
+      - [0xE2860, c, ../lib/libultra/src/os/gettime]
+      - [0xE28F0, c, ../lib/libultra/src/os/jammesg]
+      - [0xE2A30, c, ../lib/libultra/src/debug/kdebugserver]
+      - [0xE2CF0, c, ../lib/libultra/src/os/settimer]
+      - [0xE2D90, c, ../lib/libultra/src/os/timerintr]
+      - [0xE3130, c, ../lib/libultra/src/os/initrdb]
+      - [0xE31B0, c, ../lib/libultra/src/os/rdbsend]
+      - [0xE33D0, c, ../lib/libultra/src/host/readhost]
+      - [0xE34A0, c, ../lib/libultra/src/audio/load]
+      - [0xE3FB0, c, ../lib/libultra/src/audio/auxbus]
+      - [0xE40C0, c, ../lib/libultra/src/audio/filter]
+      - [0xE40E0, c, ../lib/libultra/src/audio/mainbus]
+      - [0xE4250, c, ../lib/libultra/src/audio/resample]
+      - [0xE4500, c, ../lib/libultra/src/audio/synallocfx]
+      - [0xE45A0, c, ../lib/libultra/src/io/ai]
+      - [0xE45C0, c, ../lib/libultra/src/io/sp]
+      - [0xE45E0, c, ../lib/libultra/src/io/spgetstat]
+      - [0xE45F0, c, ../lib/libultra/src/io/spsetstat]
+      - [0xE4600, c, ../lib/libultra/src/io/spsetpc]
+      - [0xE4630, c, ../lib/libultra/src/io/vi]
+      - [0xE4740, c, ../lib/libultra/src/io/vigetcurrcontext]
+      - [0xE4750, c, ../lib/libultra/src/io/siacs]
+      - [0xE4840, c, ../lib/libultra/src/io/pigetcmdq]
+      - [0xE4860, c, ../lib/libultra/src/io/piacs]
+      - [0xE4950, c, ../lib/libultra/src/rmon/rmonsio]
+      - [0xE4B00, hasm, ../lib/libultra/src/libc/bcmp]
+      - [0xE4C10, c, ../lib/libultra/src/libc/xprintf]
+      - [0xE5640, c, ../lib/libultra/src/io/contpfs]
+      - [0xE60D0, c, ../lib/libultra/src/io/contramread]
+      - [0xE62D0, c, ../lib/libultra/src/io/contramwrite]
+      - [0xE64F0, c, ../lib/libultra/src/io/crc]
+      - [0xE65E0, c, ../lib/libultra/src/io/devmgr]
+      - [0xE69A0, c, ../lib/libultra/src/io/epirawdma]
+      - [0xE6B90, c, ../lib/libultra/src/io/epirawread]
+      - [0xE6D00, c, ../lib/libultra/src/io/epirawwrite]
+      - [0xE6E70, c, ../lib/libultra/src/io/pfschecker]
+      - [0xE7590, c, ../lib/libultra/src/io/pfsgetstatus]
+      - [0xE77A0, c, ../lib/libultra/src/io/sirawread]
+      - [0xE77F0, c, ../lib/libultra/src/io/sirawwrite]
+      - [0xE7840, hasm, ../lib/libultra/src/os/setcompare]
+      - [0xE7850, c, ../lib/libultra/src/os/resetglobalintmask]
+      - [0xE78A0, c, ../lib/libultra/src/os/setglobalintmask]
+      - [0xE78E0, c, ../lib/libultra/src/os/yieldthread]
+      - [0xE7930, c, ../lib/libultra/src/io/si]
+      - [0xE7950, c, ../lib/libultra/src/io/pfsisplug]
+      - [0xE7C30, c, ../lib/libultra/src/rmon/rmoncmds]
+      - [0xE7CC0, c, ../lib/libultra/src/rmon/rmonmem]
+      - [0xE8430, c, ../lib/libultra/src/rmon/rmonmisc]
+      - [0xE8580, c, ../lib/libultra/src/rmon/rmonregs]
+      - [0xE9040, c, ../lib/libultra/src/rmon/rmontask]
+      - [0xE9910, c, ../lib/libultra/src/rmon/rmonmain]
+      - [0xE9CB0, c, ../lib/libultra/src/libc/string]
+      - [0xE9D40, c, ../lib/libultra/src/libc/xlitob]
+      - [0xE9F90, c, ../lib/libultra/src/libc/xldtob]
+      - [0xEAA10, c, ../lib/libultra/src/io/sprawread]
+      - [0xEAA60, c, ../lib/libultra/src/io/sprawwrite]
+      - [0xEAAB0, c, ../lib/libultra/src/os/getactivequeue]
+      - [0xEAAC0, c, ../lib/libultra/src/os/stopthread]
+      - [0xEAB80, hasm, ../lib/libultra/src/rmon/rmonrcp]
+      - [0xEAC20, c, ../lib/libultra/src/rmon/rmonbrk]
+      - [0xEB5C0, c, ../lib/libultra/src/libc/ldiv]
+      - [0xEB780, c, ../lib/libkmc/src/rand]
+      - [0xEB7C0, hasm, ../lib/libkmc/src/mmuldi3]
+      - [0xEBB90, textbin, lib/ucode/rspboot]
+      - [0xEBC60, textbin, lib/ucode/n_aspMain]
+      - [0xEC8C0, textbin, lib/ucode/gspF3DEX2.fifo]
+      - [0xEDC70, .data, system/staticGfx]
+      - [0xEDDF0, .data, system/paddingData]
+      - [0xEE080, .data, system/map]
+      - [0xEE720, .data, system/numberSprites]
+      - [0xEE740, .data, system/cutscene]
+      - [0xEE8F0, .data, data/fieldTileMaps/fieldTiles]
+      - [0xEEE90, .data, game/game]
+      - [0xEEFC0, .data, game/player]
+      - [0xEF5F0, .data, game/level]
+      - [0xEFC70, .data, game/npc]
+      - [0xEFD30, .data, game/animals]
+      - [0xEFE60, .data, game/cutscenes]
+      - [0xF01C0, .data, data/fieldTileMaps/cutsceneFieldTiles]
+      - [0xF1660, .data, game/gameAudio]
+      - [0xF1FF0, .data, game/overlayScreens]
+      - [0xF24F0, .data, game/items]
+      - [0xF3A70, .data, game/groundObjects]
+      - [0xF3EC0, .data, game/weather]
+      - [0xF3EE0, .data, game/shop]
+      - [0xF4AB0, .data, game/gameFile]
+      - name: data/animation/entityAnimationScripts/entityAnimationScripts
+        type: animationScripts
+        start: 0xF4AC0
+        subsegments:
+          - { start: 0xF4AC0, type: animationScriptData, name: data/animation/entityAnimationScripts/player }
+          - { start: 0xF5040, type: animationScriptData, name: data/animation/entityAnimationScripts/maria }
+          - { start: 0xF5140, type: animationScriptData, name: data/animation/entityAnimationScripts/popuri }
+          - { start: 0xF5260, type: animationScriptData, name: data/animation/entityAnimationScripts/elli }
+          - { start: 0xF5360, type: animationScriptData, name: data/animation/entityAnimationScripts/ann }
+          - { start: 0xF5470, type: animationScriptData, name: data/animation/entityAnimationScripts/karen }
+          - { start: 0xF5564, type: animationScriptData, name: data/animation/entityAnimationScripts/gray }
+          - { start: 0xF55D0, type: animationScriptData, name: data/animation/entityAnimationScripts/jeff }
+          - { start: 0xF5638, type: animationScriptData, name: data/animation/entityAnimationScripts/cliff }
+          - { start: 0xF5688, type: animationScriptData, name: data/animation/entityAnimationScripts/kai }
+          - { start: 0xF56E8, type: animationScriptData, name: data/animation/entityAnimationScripts/rick }
+          - { start: 0xF5718, type: animationScriptData, name: data/animation/entityAnimationScripts/masterCarpenter }
+          - { start: 0xF573C, type: animationScriptData, name: data/animation/entityAnimationScripts/shadySalesman }
+          - { start: 0xF576C, type: animationScriptData, name: data/animation/entityAnimationScripts/duke }
+          - { start: 0xF5790, type: animationScriptData, name: data/animation/entityAnimationScripts/harvestSprite }
+          - { start: 0xF57E0, type: animationScriptData, name: data/animation/entityAnimationScripts/princess }
+          - { start: 0xF5800, type: animationScriptData, name: data/animation/entityAnimationScripts/may }
+          - { start: 0xF582C, type: animationScriptData, name: data/animation/entityAnimationScripts/touristCoupleMan }
+          - { start: 0xF5850, type: animationScriptData, name: data/animation/entityAnimationScripts/touristCoupleWoman }
+          - { start: 0xF5870, type: animationScriptData, name: data/animation/entityAnimationScripts/oldMan }
+          - { start: 0xF5890, type: animationScriptData, name: data/animation/entityAnimationScripts/oldWoman }
+          - { start: 0xF58B0, type: animationScriptData, name: data/animation/entityAnimationScripts/festivalGirl1 }
+          - { start: 0xF58D0, type: animationScriptData, name: data/animation/entityAnimationScripts/festivalGirl2 }
+          - { start: 0xF58F0, type: animationScriptData, name: data/animation/entityAnimationScripts/festivalGirl3 }
+          - { start: 0xF5910, type: animationScriptData, name: data/animation/entityAnimationScripts/midwife }
+          - { start: 0xF5954, type: animationScriptData, name: data/animation/entityAnimationScripts/mayorWife }
+          - { start: 0xF597C, type: animationScriptData, name: data/animation/entityAnimationScripts/lillia }
+          - { start: 0xF59A4, type: animationScriptData, name: data/animation/entityAnimationScripts/mariaHarrisBaby }
+          - { start: 0xF59C4, type: animationScriptData, name: data/animation/entityAnimationScripts/popuriGrayBaby }
+          - { start: 0xF59E4, type: animationScriptData, name: data/animation/entityAnimationScripts/elliJeffBaby }
+          - { start: 0xF5A04, type: animationScriptData, name: data/animation/entityAnimationScripts/annCliffBaby }
+          - { start: 0xF5A24, type: animationScriptData, name: data/animation/entityAnimationScripts/karenKaiBaby }
+          - { start: 0xF5A44, type: animationScriptData, name: data/animation/entityAnimationScripts/baby }
+          - { start: 0xF5B64, type: animationScriptData, name: data/animation/entityAnimationScripts/pastor }
+          - { start: 0xF5B8C, type: animationScriptData, name: data/animation/entityAnimationScripts/sasha }
+          - { start: 0xF5BB0, type: animationScriptData, name: data/animation/entityAnimationScripts/potionShopDealer }
+          - { start: 0xF5BDC, type: animationScriptData, name: data/animation/entityAnimationScripts/harris }
+          - { start: 0xF5C34, type: animationScriptData, name: data/animation/entityAnimationScripts/mayor }
+          - { start: 0xF5C68, type: animationScriptData, name: data/animation/entityAnimationScripts/doug }
+          - { start: 0xF5C8C, type: animationScriptData, name: data/animation/entityAnimationScripts/gotz }
+          - { start: 0xF5CB0, type: animationScriptData, name: data/animation/entityAnimationScripts/shipper }
+          - { start: 0xF5CE4, type: animationScriptData, name: data/animation/entityAnimationScripts/basil }
+          - { start: 0xF5D10, type: animationScriptData, name: data/animation/entityAnimationScripts/kent }
+          - { start: 0xF5D70, type: animationScriptData, name: data/animation/entityAnimationScripts/stu }
+          - { start: 0xF5DCC, type: animationScriptData, name: data/animation/entityAnimationScripts/assistantCarpenter }
+          - { start: 0xF5E3C, type: animationScriptData, name: data/animation/entityAnimationScripts/entomologist }
+          - { start: 0xF5E60, type: animationScriptData, name: data/animation/entityAnimationScripts/greg }
+          - { start: 0xF5E94, type: animationScriptData, name: data/animation/entityAnimationScripts/photographer }
+          - { start: 0xF5EC4, type: animationScriptData, name: data/animation/entityAnimationScripts/saibara }
+          - { start: 0xF5EF4, type: animationScriptData, name: data/animation/entityAnimationScripts/ellen }
+          - { start: 0xF5F08, type: animationScriptData, name: data/animation/entityAnimationScripts/barley }
+          - { start: 0xF5F28, type: animationScriptData, name: data/animation/entityAnimationScripts/sydney }
+          - { start: 0xF5F68, type: animationScriptData, name: data/animation/entityAnimationScripts/spiritFestivalOcarinaPerformer }
+          - { start: 0xF5F74, type: animationScriptData, name: data/animation/entityAnimationScripts/gourmetJudge }
+          - { start: 0xF5F98, type: animationScriptData, name: data/animation/entityAnimationScripts/mrsMana }
+          - { start: 0xF5FB8, type: animationScriptData, name: data/animation/entityAnimationScripts/john }
+          - { start: 0xF5FD8, type: animationScriptData, name: data/animation/entityAnimationScripts/kappa }
+          - { start: 0xF5FDC, type: animationScriptData, name: data/animation/entityAnimationScripts/harvestGoddess }
+          - { start: 0xF6000, type: animationScriptData, name: data/animation/entityAnimationScripts/dog }
+          - { start: 0xF61B0, type: animationScriptData, name: data/animation/entityAnimationScripts/dogVillage }
+          - { start: 0xF62A0, type: animationScriptData, name: data/animation/entityAnimationScripts/chicken }
+          - { start: 0xF6310, type: animationScriptData, name: data/animation/entityAnimationScripts/chick }
+          - { start: 0xF6340, type: animationScriptData, name: data/animation/entityAnimationScripts/cow }
+          - { start: 0xF65C0, type: animationScriptData, name: data/animation/entityAnimationScripts/calf }
+          - { start: 0xF6680, type: animationScriptData, name: data/animation/entityAnimationScripts/youngCow }
+          - { start: 0xF6740, type: animationScriptData, name: data/animation/entityAnimationScripts/cowIndoors }
+          - { start: 0xF6810, type: animationScriptData, name: data/animation/entityAnimationScripts/sheep }
+          - { start: 0xF6910, type: animationScriptData, name: data/animation/entityAnimationScripts/lamb }
+          - { start: 0xF6970, type: animationScriptData, name: data/animation/entityAnimationScripts/horseGrown }
+          - { start: 0xF6A20, type: animationScriptData, name: data/animation/entityAnimationScripts/horsePony }
+          - { start: 0xF6A90, type: animationScriptData, name: data/animation/entityAnimationScripts/cat }
+          - { start: 0xF6B10, type: animationScriptData, name: data/animation/entityAnimationScripts/horseUnbridled }
+          - { start: 0xF6B30, type: animationScriptData, name: data/animation/entityAnimationScripts/fox }
+          - { start: 0xF6B70, type: animationScriptData, name: data/animation/entityAnimationScripts/squirrel }
+          - { start: 0xF6BB0, type: animationScriptData, name: data/animation/entityAnimationScripts/monkey }
+          - { start: 0xF6C00, type: animationScriptData, name: data/animation/entityAnimationScripts/hawk }
+          - { start: 0xF6C40, type: animationScriptData, name: data/animation/entityAnimationScripts/bunny }
+          - { start: 0xF6C80, type: animationScriptData, name: data/animation/entityAnimationScripts/mouse }
+          - { start: 0xF6CA4, type: animationScriptData, name: data/animation/entityAnimationScripts/bird }
+          - { start: 0xF6CD4, type: animationScriptData, name: data/animation/entityAnimationScripts/crab }
+          - { start: 0xF6CF4, type: animationScriptData, name: data/animation/entityAnimationScripts/snake }
+          - { start: 0xF6D14, type: animationScriptData, name: data/animation/entityAnimationScripts/whiteButterfly }
+          - { start: 0xF6D24, type: animationScriptData, name: data/animation/entityAnimationScripts/ladybug }
+          - { start: 0xF6D2C, type: animationScriptData, name: data/animation/entityAnimationScripts/cicada }
+          - { start: 0xF6D34, type: animationScriptData, name: data/animation/entityAnimationScripts/hornedBeetle }
+          - { start: 0xF6D44, type: animationScriptData, name: data/animation/entityAnimationScripts/stagBeetle }
+          - { start: 0xF6D54, type: animationScriptData, name: data/animation/entityAnimationScripts/dragonfly }
+          - { start: 0xF6D5C, type: animationScriptData, name: data/animation/entityAnimationScripts/cricket }
+          - { start: 0xF6D64, type: animationScriptData, name: data/animation/entityAnimationScripts/homeItems }
+          - { start: 0xF6D6C, type: animationScriptData, name: data/animation/entityAnimationScripts/expressionBubbles }
+          - { start: 0xF6D80, type: animationScriptData, name: data/animation/entityAnimationScripts/heldItems }
+          - { start: 0xF6F80, type: animationScriptData, name: data/animation/entityAnimationScripts/thrownItems }
+          - { start: 0xF7010, type: animationScriptData, name: data/animation/entityAnimationScripts/tools }
+          - { start: 0xF7070, type: animationScriptData, name: data/animation/entityAnimationScripts/toolEffects }
+          - { start: 0xF7088, type: characterAvatarData, name: data/animation/characterAvatars/characterAvatars, extract: false }
+      - [0xF7120, .data, data/audio/sfx]
+      - [0xF79F0, .data, game/namingScreen]
+      - [0xF7B60, .data, ../lib/nusys-1/src/sample/nunospak/nupakmenu]
+      - [0xF7B90, .data, ../lib/nusys-1/src/sample/nunospak/nupakmenuloadfont]
+      - [0xF8100, .data, ../lib/nusys-1/src/nualstl/nuaustlinit]
+      - [0xF8150, .data, ../lib/nusys-1/src/nualstl/nuaustlmgr]
+      - [0xF8170, .data, ../lib/libmus/src/player]
+      - [0xF8220, .data, ../lib/libultra/src/libnaudio/n_sl]
+      - [0xF8230, .data, ../lib/libultra/src/libnaudio/n_drvrNew]
+      - [0xF83C0, .data, ../lib/libultra/src/libnaudio/n_env]
+      - [0xF84C0, .data, ../lib/libultra/src/libnaudio/n_reverb]
+      - [0xF84D0, .data, ../lib/nusys-1/src/nusys/nusched]
+      - [0xF84E0, .data, ../lib/nusys-1/src/nusys/nugfxthread]
+      - [0xF84F0, .data, ../lib/nusys-1/src/nusys/nugfxtaskmgr]
+      - [0xF8500, .data, ../lib/nusys-1/src/nusys/nucontmgr]
+      - [0xF8510, .data, ../lib/nusys-1/src/nusys/nucontdatareadstart]
+      - [0xF8520, .data, ../lib/nusys-1/src/nusys/nucontpakmgr]
+      - [0xF8530, .data, ../lib/nusys-1/src/nusys/nucontrmbmgr]
+      - [0xF8540, .data, ../lib/nusys-1/src/nusys/nucontpakjiston64]
+      - [0xF8580, .data, ../lib/libultra/src/gu/rotaterpy]
+      - [0xF8590, .data, ../lib/libultra/src/os/thread]
+      - [0xF85B0, .data, ../lib/libultra/src/audio/sl]
+      - [0xF85C0, .data, ../lib/libultra/src/io/aisetnextbuf]
+      - [0xF85D0, .data, ../lib/libultra/src/io/controller]
+      - [0xF85E0, .data, ../lib/libultra/src/libc/syncPrintf]
+      - [0xF85F0, .data, ../lib/libultra/src/audio/drvrnew]
+      - [0xF8780, .data, ../lib/libultra/src/audio/env]
+      - [0xF8880, .data, ../lib/libultra/src/audio/reverb]
+      - [0xF88A0, .data, ../lib/libultra/src/io/cartrominit]
+      - [0xF88B0, .data, ../lib/libultra/src/io/pimgr]
+      - [0xF88E0, .data, ../lib/libultra/src/io/vimgr]
+      - [0xF8900, .data, ../lib/libultra/src/io/vitbl]
+      - [0xF9A80, .data, ../lib/libultra/src/os/exceptasm]
+      - [0xF9AC0, .data, ../lib/libultra/src/os/initialize]
+      - [0xF9AE0, .data, ../lib/libultra/src/os/seteventmesg]
+      - [0xF9AF0, .data, ../lib/libultra/src/debug/kdebugserver]
+      - [0xF9B00, .data, ../lib/libultra/src/os/timerintr]
+      - [0xF9B10, .data, ../lib/libultra/src/os/rdbsend]
+      - [0xF9B20, .data, ../lib/libultra/src/host/readhost]
+      - [0xF9B30, .data, ../lib/libultra/src/io/vi]
+      - [0xF9BA0, .data, ../lib/libultra/src/io/siacs]
+      - [0xF9BB0, .data, ../lib/libultra/src/vimodes/vimodentsclan1]
+      - [0xF9C00, .data, ../lib/libultra/src/vimodes/vimodepallan1]
+      - [0xF9C50, .data, ../lib/libultra/src/vimodes/vimodempallan1]
+      - [0xF9CA0, .data, ../lib/libultra/src/io/piacs]
+      - [0xF9CB0, .data, ../lib/libultra/src/libc/xprintf]
+      - [0xF9D00, .data, ../lib/libultra/src/io/contpfs]
+      - [0xF9D10, .data, ../lib/libultra/src/io/contramread]
+      - [0xF9D20, .data, ../lib/libultra/src/rmon/rmoncmds]
+      - [0xF9E00, .data, ../lib/libultra/src/rmon/rmonmain]
+      - [0xF9E10, .data, ../lib/libultra/src/libc/xlitob]
+      - [0xF9E40, databin, lib/ucode/n_aspMain]
+      - [0xFA0F0, databin, lib/ucode/gspF3DEX2.fifo]
+      # game rodata
+      - [0xFA510, .rodata, system/graphic]
+      - [0xFA570, .rodata, system/sprite]
+      - [0xFA618, .rodata, system/map]
+      - [0xFA690, .rodata, system/mapController]
+      - [0xFA6B0, .rodata, system/audio]
+      - [0xFA6C0, .rodata, system/message]
+      - [0xFA790, .rodata, system/dialogue]
+      - [0xFA800, .rodata, game/game]
+      - [0xFACA0, .rodata, game/player]
+      - [0xFAFC0, .rodata, game/level]
+      - [0xFB8C0, .rodata, game/npc]
+      - [0xFBBD0, .rodata, game/animals]
+      - [0xFC770, .rodata, game/cutscenes]
+      - [0xFCCB8, .rodata, game/levelInteractions]
+      - [0xFD540, .rodata, game/overlayScreens]
+      - [0xFDB60, .rodata, game/items]
+      - [0xFE010, .rodata, game/tv]
+      - [0xFE128, .rodata, game/groundObjects]
+      - [0xFED08, .rodata, game/weather]
+      - [0xFED30, .rodata, game/shop]
+      - [0xFEF28, .rodata, game/title]
+      - [0xFEF60, .rodata, game/gameFile]
+      - [0xFF0C0, .rodata, game/namingScreen]
+      - [0xFF110, .rodata, ../lib/nusys-1/src/sample/nunospak/nupakmenu]
+      - [0xFF1A0, .rodata, ../lib/libmus/src/player]
+      - [0xFF280, .rodata, ../lib/libultra/src/libnaudio/n_synthesizer]
+      - [0xFF2A0, .rodata, ../lib/libultra/src/libnaudio/n_drvrNew]
+      - [0xFF2D0, .rodata, ../lib/libultra/src/libnaudio/n_env]
+      - [0xFF340, .rodata, ../lib/libultra/src/libnaudio/n_resample]
+      - [0xFF350, .rodata, ../lib/libultra/src/libnaudio/n_reverb]
+      - [0xFF390, .rodata, ../lib/nusys-1/src/nusys/nucontpakmgr]
+      - [0xFF3B0, .rodata, ../lib/libultra/src/gu/cosf]
+      - [0xFF410, .rodata, ../lib/libultra/src/gu/lookat]
+      - [0xFF430, .rodata, ../lib/libultra/src/gu/perspective]
+      - [0xFF470, .rodata, ../lib/libultra/src/gu/sinf]
+      - [0xFF4D0, .rodata, ../lib/libultra/src/os/setintmask]
+      - [0xFF550, .rodata, ../lib/libultra/src/debug/assert]
+      - [0xFF570, .rodata, ../lib/libultra/src/audio/drvrnew]
+      - [0xFF5B0, .rodata, ../lib/libultra/src/audio/env]
+      - [0xFF6A0, .rodata, ../lib/libultra/src/audio/reverb]
+      - [0xFF6F0, .rodata, ../lib/libultra/src/audio/synthesizer]
+      - [0xFF710, .rodata, ../lib/libultra/src/io/aisetfreq]
+      - [0xFF720, .rodata, ../lib/libultra/src/io/viswapcontext]
+      - [0xFF730, .rodata, ../lib/libultra/src/os/exceptasm]
+      - [0xFF7A0, hasm, ../lib/libultra/src/gu/libm_vals]
+      - [0xFF7A0, .rodata, ../lib/libultra/src/gu/libm_vals]
+      - [0xFF7B0, .rodata, ../lib/libultra/src/audio/resample]
+      - [0xFF7E0, .rodata, ../lib/libultra/src/libc/xprintf]
+      - [0xFF958, .rodata, ../lib/libultra/src/io/devmgr]
+      - [0xFF978, .rodata, ../lib/libultra/src/rmon/rmonmem]
+      - [0xFF990, .rodata, ../lib/libultra/src/libc/xldtob]
+      - [0xFFA00, .rodata, ../lib/libultra/src/rmon/rmonbrk]
+      # Static BSS
+      - { start: 0xFFA60, type: .bss, vram: 0x80124660, name: ../lib/nusys-1/src/nusys/nuboot }
+      - { start: 0xFFA60, type: .bss, vram: 0x801269C0, name: system/graphic }
+      - { start: 0xFFA60, type: .bss, vram: 0x80126A00, name: game/levelInteractions }
+      - { start: 0xFFA60, type: .bss, vram: 0x80126A10, name: game/title }
+      # Common BSS
+      - { start: 0xFFA60, type: .bss, vram: 0x80126A20, name: ../lib/nusys-1/src/nualstl/nuaustlmgr }
+      - { start: 0xFFA60, type: .bss, vram: 0x801298D0, name: ../lib/nusys-1/src/nusys/nusched }
+      - { start: 0xFFA60, type: .bss, vram: 0x8012F8D0, name: ../lib/nusys-1/src/nusys/nugfxthread }
+      - { start: 0xFFA60, type: .bss, vram: 0x80131AA0, name: ../lib/nusys-1/src/nusys/nugfxtaskmgr }
+      - { start: 0xFFA60, type: .bss, vram: 0x80133C80, name: ../lib/nusys-1/src/nusys/nucontmgr }
+      - { start: 0xFFA60, type: .bss, vram: 0x80133C90, name: ../lib/nusys-1/src/nusys/nupiinit }
+      - { start: 0xFFA60, type: .bss, vram: 0x80133D70, name: ../lib/nusys-1/src/nusys/nusimgr }
+      - { start: 0xFFA60, type: .bss, vram: 0x80135F40, name: ../lib/libultra/src/io/sptask }
+      - { start: 0xFFA60, type: .bss, vram: 0x80135F80, name: ../lib/libultra/src/io/motor }
+      - { start: 0xFFA60, type: .bss, vram: 0x80136080, name: ../lib/libultra/src/io/pimgr }
+      - { start: 0xFFA60, type: .bss, vram: 0x80137840, name: ../lib/libultra/src/io/vimgr }
+      - { start: 0xFFA60, type: .bss, vram: 0x80138A60, name: ../lib/libultra/src/debug/kdebugserver }
+      - { start: 0xFFA60, type: .bss, vram: 0x80138A70, name: ../lib/libultra/src/host/readhost }
+      - { start: 0xFFA60, type: .bss, vram: 0x80138A90, name: ../lib/libultra/src/io/siacs }
+      - { start: 0xFFA60, type: .bss, vram: 0x80138AA0, name: ../lib/libultra/src/io/piacs }
+      - { start: 0xFFA60, type: .bss, vram: 0x80138AB0, name: ../lib/libultra/src/rmon/rmonsio }
+      - { start: 0xFFA60, type: .bss, vram: 0x80138AD0, name: ../lib/libultra/src/rmon/rmonmisc }
+      - { start: 0xFFA60, type: .bss, vram: 0x8013CCE0, name: ../lib/libultra/src/rmon/rmonregs }
+      - { start: 0xFFA60, type: .bss, vram: 0x8013CD00, name: ../lib/libultra/src/rmon/rmonmain }
+      - { start: 0xFFA60, type: .bss, vram: 0x8013D180, name: ../lib/libultra/src/rmon/rmonbrk }
+      - { start: 0xFFA60, type: .bss, vram: 0x8013D290, name: ../lib/libkmc/src/rand }
+      - { start: 0xFFA60, type: bss, vram: 0x8013D2A0, name: data/FFA60 }
 
   - type: bin
+    extract: false
+    dir: cutscenes
     start: 0xFFA60
     follows_vram: main
+    name: farmBusiness
+  - { type: bin, extract: false, dir: cutscenes, start: 0x100620, name: farmVisits }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x109D90, name: houseCutscenes }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x10EE50, name: roadCutscenes }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x10FD50, name: mountainCutscenes }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x1156B0, name: ranchCutscenes }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x117990, name: vineyardCutscenes }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x119110, name: village1Cutscenes }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x120AC0, name: village2Cutscenes }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x123EA0, name: beachCutscenes }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x1253B0, name: sowingFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x129820, name: horseRace }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x12FE90, name: flowerFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x134290, name: vegetableFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x135C70, name: fireworksFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x136660, name: fireflyFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x138270, name: seaFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x1394D0, name: cowFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x13AC40, name: harvestFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x13D070, name: eggFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x13F6C0, name: dogRace }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x144AF0, name: spiritFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x148140, name: newYearFestival }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x149850, name: funeralIntro }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x14B3E0, name: evaluationEnding }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x14FBA0, name: demos }
+  - { type: bin, extract: false, dir: cutscenes, start: 0x150B30, name: howToPlay }
+
+  - { type: bin, extract: false, dir: sprites/entitySprites/player, start: 0x158D30, name: playerTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/player, start: 0x2D0060, name: playerAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/player, start: 0x2D0080, name: playerSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/maria, start: 0x2D0FE0, name: mariaTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/maria, start: 0x3010C0, name: mariaAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/maria, start: 0x3010E0, name: mariaSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/popuri, start: 0x301330, name: popuriTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/popuri, start: 0x338E90, name: popuriAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/popuri, start: 0x338EB0, name: popuriSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/elli, start: 0x3390E0, name: elliTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/elli, start: 0x366370, name: elliAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/elli, start: 0x366390, name: elliSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/ann, start: 0x3665B0, name: annTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/ann, start: 0x39B660, name: annAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/ann, start: 0x39B680, name: annSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/karen, start: 0x39B8C0, name: karenTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/karen, start: 0x3D1260, name: karenAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/karen, start: 0x3D1280, name: karenSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/baby, start: 0x3D14E0, name: babyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/baby, start: 0x3EDE30, name: babyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/baby, start: 0x3EDE50, name: babySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/harris, start: 0x3EE070, name: harrisTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/harris, start: 0x40CDF0, name: harrisAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/harris, start: 0x40CE10, name: harrisSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/gray, start: 0x40CF50, name: grayTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/gray, start: 0x42A2D0, name: grayAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/gray, start: 0x42A2F0, name: graySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/jeff, start: 0x42A440, name: jeffTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/jeff, start: 0x443240, name: jeffAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/jeff, start: 0x443260, name: jeffSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/cliff, start: 0x443390, name: cliffTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/cliff, start: 0x45CC30, name: cliffAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/cliff, start: 0x45CC50, name: cliffSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/kai, start: 0x45CD80, name: kaiTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/kai, start: 0x476CB0, name: kaiAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/kai, start: 0x476CD0, name: kaiSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mayor, start: 0x476E10, name: mayorTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mayor, start: 0x483720, name: mayorAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mayor, start: 0x483740, name: mayorSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mayorWife, start: 0x483880, name: mayorWifeTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mayorWife, start: 0x48AF70, name: mayorWifeAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mayorWife, start: 0x48AF90, name: mayorWifeSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/lillia, start: 0x48B020, name: lilliaTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/lillia, start: 0x4913B0, name: lilliaAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/lillia, start: 0x4913D0, name: lilliaSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/basil, start: 0x491440, name: basilTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/basil, start: 0x49E7A0, name: basilAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/basil, start: 0x49E7C0, name: basilSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/ellen, start: 0x49E8F0, name: ellenTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/ellen, start: 0x4A5720, name: ellenAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/ellen, start: 0x4A5740, name: ellenSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/doug, start: 0x4A5770, name: dougTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/doug, start: 0x4B0C60, name: dougAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/doug, start: 0x4B0C80, name: dougSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/gotz, start: 0x4B0DC0, name: gotzTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/gotz, start: 0x4BBD90, name: gotzAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/gotz, start: 0x4BBDB0, name: gotzSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/sasha, start: 0x4BBEA0, name: sashaTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/sasha, start: 0x4C2C20, name: sashaAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/sasha, start: 0x4C2C40, name: sashaSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/potionShopDealer, start: 0x4C2CC0, name: potionShopDealerTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/potionShopDealer, start: 0x4CD140, name: potionShopDealerAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/potionShopDealer, start: 0x4CD160, name: potionShopDealerSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/kent, start: 0x4CD290, name: kentTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/kent, start: 0x4DE980, name: kentAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/kent, start: 0x4DE9A0, name: kentSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/stu, start: 0x4DEB10, name: stuTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/stu, start: 0x4E7FD0, name: stuAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/stu, start: 0x4E7FF0, name: stuSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/midwife, start: 0x4E80B0, name: midwifeTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/midwife, start: 0x4EF800, name: midwifeAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/midwife, start: 0x4EF820, name: midwifeSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/may, start: 0x4EF8B0, name: mayTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/may, start: 0x4F41F0, name: mayAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/may, start: 0x4F4210, name: maySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/rick, start: 0x4F4290, name: rickTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/rick, start: 0x4FB9F0, name: rickAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/rick, start: 0x4FBA10, name: rickSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/pastor, start: 0x4FBB40, name: pastorTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/pastor, start: 0x5034B0, name: pastorAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/pastor, start: 0x5034D0, name: pastorSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/shipper, start: 0x5035C0, name: shipperTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/shipper, start: 0x518500, name: shipperAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/shipper, start: 0x518520, name: shipperSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/saibara, start: 0x5185B0, name: saibaraTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/saibara, start: 0x520700, name: saibaraAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/saibara, start: 0x520720, name: saibaraSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/duke, start: 0x5207B0, name: dukeTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/duke, start: 0x5243E0, name: dukeAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/duke, start: 0x524400, name: dukeSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/greg, start: 0x5244E0, name: gregTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/greg, start: 0x52EC60, name: gregAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/greg, start: 0x52EC80, name: gregSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/assistantCarpenter, start: 0x52ED70, name: assistantCarpenterTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/assistantCarpenter, start: 0x5482A0, name: assistantCarpenterAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/assistantCarpenter, start: 0x5482C0, name: assistantCarpenterSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/masterCarpenter, start: 0x5483C0, name: masterCarpenterTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/masterCarpenter, start: 0x554E60, name: masterCarpenterAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/masterCarpenter, start: 0x554E80, name: masterCarpenterSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/harvestSprite, start: 0x554F70, name: harvestSpriteTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/harvestSprite, start: 0x55A040, name: harvestSpriteAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/harvestSprite, start: 0x55A060, name: harvestSpriteSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/barley, start: 0x55A130, name: barleyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/barley, start: 0x55FD30, name: barleyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/barley, start: 0x55FD50, name: barleySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/sydney, start: 0x55FDD0, name: sydneyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/sydney, start: 0x565FC0, name: sydneyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/sydney, start: 0x565FE0, name: sydneySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/entomologist, start: 0x566030, name: entomologistTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/entomologist, start: 0x56E720, name: entomologistAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/entomologist, start: 0x56E740, name: entomologistSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/gourmetJudge, start: 0x56E830, name: gourmetJudgeTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/gourmetJudge, start: 0x5786D0, name: gourmetJudgeAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/gourmetJudge, start: 0x5786F0, name: gourmetJudgeSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/photographer, start: 0x578760, name: photographerTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/photographer, start: 0x583630, name: photographerAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/photographer, start: 0x583650, name: photographerSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/shadySalesman, start: 0x583740, name: shadySalesmanTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/shadySalesman, start: 0x593130, name: shadySalesmanAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/shadySalesman, start: 0x593150, name: shadySalesmanSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/john, start: 0x593240, name: johnTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/john, start: 0x596A40, name: johnAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/john, start: 0x596A60, name: johnSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mrsMana, start: 0x596AC0, name: mrsManaTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mrsMana, start: 0x59C700, name: mrsManaAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mrsMana, start: 0x59C720, name: mrsManaSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/oldMan, start: 0x59C790, name: oldManTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/oldMan, start: 0x5A1F80, name: oldManAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/oldMan, start: 0x5A1FA0, name: oldManSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/oldWoman, start: 0x5A20A0, name: oldWomanTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/oldWoman, start: 0x5A7310, name: oldWomanAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/oldWoman, start: 0x5A7330, name: oldWomanSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/touristCoupleMan, start: 0x5A7410, name: touristCoupleManTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/touristCoupleMan, start: 0x5AE0A0, name: touristCoupleManAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/touristCoupleMan, start: 0x5AE0C0, name: touristCoupleManSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/touristCoupleWoman, start: 0x5AE1B0, name: touristCoupleWomanTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/touristCoupleWoman, start: 0x5B34A0, name: touristCoupleWomanAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/touristCoupleWoman, start: 0x5B34C0, name: touristCoupleWomanSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/festivalGirl1, start: 0x5B35C0, name: festivalGirl1Texture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/festivalGirl1, start: 0x5B9AC0, name: festivalGirl1AssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/festivalGirl1, start: 0x5B9AE0, name: festivalGirl1SpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/festivalGirl2, start: 0x5B9BD0, name: festivalGirl2Texture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/festivalGirl2, start: 0x5BFEE0, name: festivalGirl2AssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/festivalGirl2, start: 0x5BFF00, name: festivalGirl2SpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/festivalGirl3, start: 0x5C0030, name: festivalGirl3Texture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/festivalGirl3, start: 0x5C7970, name: festivalGirl3AssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/festivalGirl3, start: 0x5C7990, name: festivalGirl3SpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/harvestGoddess, start: 0x5C7B10, name: harvestGoddessTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/harvestGoddess, start: 0x5CAED0, name: harvestGoddessAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/harvestGoddess, start: 0x5CAEF0, name: harvestGoddessSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/spiritFestivalOcarinaPerformer, start: 0x5CAF20, name: spiritFestivalOcarinaPerformerTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/spiritFestivalOcarinaPerformer, start: 0x5CDF00, name: spiritFestivalOcarinaPerformerAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/spiritFestivalOcarinaPerformer, start: 0x5CDF20, name: spiritFestivalOcarinaPerformerSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/kappa, start: 0x5CDF40, name: kappaTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/kappa, start: 0x5CEC60, name: kappaAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/kappa, start: 0x5CEC80, name: kappaSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/princess, start: 0x5CECA0, name: princessTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/princess, start: 0x5D0B30, name: princessAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/princess, start: 0x5D0B50, name: princessSpritesheetIndex }
+  - { type: bin, dir: assets/sprites/entitySprites/npc/empty, start: 0x5D0BA0, name: emptyNPCTexture }
+  - { type: bin, dir: assets/sprites/entitySprites/npc/empty, start: 0x5D0BB0, name: emptyNPCAssetsIndex }
+  - { type: bin, dir: assets/sprites/entitySprites/npc/empty, start: 0x5D0BC0, name: emptyNPCSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/bunny, start: 0x5D0BD0, name: bunnyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/bunny, start: 0x5D54F0, name: bunnyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/bunny, start: 0x5D5510, name: bunnySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/mouse, start: 0x5D55A0, name: mouseTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/mouse, start: 0x5D8980, name: mouseAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/mouse, start: 0x5D89A0, name: mouseSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/fox, start: 0x5D8A90, name: foxTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/fox, start: 0x5DEEB0, name: foxAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/fox, start: 0x5DEED0, name: foxSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/monkey, start: 0x5DEF90, name: monkeyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/monkey, start: 0x5E58A0, name: monkeyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/monkey, start: 0x5E58C0, name: monkeySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/hawk, start: 0x5E59F0, name: hawkTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/hawk, start: 0x5EB860, name: hawkAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/hawk, start: 0x5EB880, name: hawkSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/mole, start: 0x5EB9C0, name: moleTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/mole, start: 0x5EC7D0, name: moleAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/mole, start: 0x5EC7F0, name: moleSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/squirrel, start: 0x5EC840, name: squirrelTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/squirrel, start: 0x5F0B60, name: squirrelAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/squirrel, start: 0x5F0B80, name: squirrelSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/bird, start: 0x5F0C70, name: birdTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/bird, start: 0x5F4F30, name: birdAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/bird, start: 0x5F4F50, name: birdSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cat, start: 0x5F4FD0, name: catTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cat, start: 0x5FCF20, name: catAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cat, start: 0x5FCF40, name: catSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/dogVillage, start: 0x5FD070, name: dogVillageTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/dogVillage, start: 0x60E1F0, name: dogVillageAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/dogVillage, start: 0x60E210, name: dogVillageSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/dog, start: 0x60E620, name: dogTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/dog, start: 0x6308C0, name: dogAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/dog, start: 0x6308E0, name: dogSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/horsePony, start: 0x630E00, name: horsePonyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/horsePony, start: 0x64F4C0, name: horsePonyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/horsePony, start: 0x64F4E0, name: horsePonySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/horseGrown, start: 0x64F6E0, name: horseGrownTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/horseGrown, start: 0x6AEFF0, name: horseGrownAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/horseGrown, start: 0x6AF010, name: horseGrownSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/chick, start: 0x6AF2A0, name: chickTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/chick, start: 0x6B37E0, name: chickAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/chick, start: 0x6B3800, name: chickSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/chicken, start: 0x6B3930, name: chickenTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/chicken, start: 0x6BAF90, name: chickenAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/chicken, start: 0x6BAFB0, name: chickenSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/calf, start: 0x6BB280, name: calfTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/calf, start: 0x6D3000, name: calfAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/calf, start: 0x6D3020, name: calfSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/youngCow, start: 0x6D3220, name: youngCowTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/youngCow, start: 0x6F5810, name: youngCowAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/youngCow, start: 0x6F5830, name: youngCowSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cow, start: 0x6F5B30, name: cowTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cow, start: 0x76B6B0, name: cowAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cow, start: 0x76B6D0, name: cowSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/lamb, start: 0x76BBB0, name: lambTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/lamb, start: 0x775140, name: lambAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/lamb, start: 0x775160, name: lambSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/sheep, start: 0x7753C0, name: sheepTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/sheep, start: 0x794650, name: sheepAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/sheep, start: 0x794670, name: sheepSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/frog, start: 0x794910, name: frogTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/frog, start: 0x797460, name: frogAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/frog, start: 0x797480, name: frogSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/crab, start: 0x797570, name: crabTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/crab, start: 0x79A0C0, name: crabAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/crab, start: 0x79A0E0, name: crabSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/hornedBeetle, start: 0x79A1D0, name: hornedBeetleTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/hornedBeetle, start: 0x79A670, name: hornedBeetleAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/hornedBeetle, start: 0x79A690, name: hornedBeetleSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/stagBeetle, start: 0x79A770, name: stagBeetleTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/stagBeetle, start: 0x79AC10, name: stagBeetleAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/stagBeetle, start: 0x79AC30, name: stagBeetleSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cricket, start: 0x79AD10, name: cricketTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cricket, start: 0x79B080, name: cricketAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cricket, start: 0x79B0A0, name: cricketSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cicada, start: 0x79B180, name: cicadaTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cicada, start: 0x79B580, name: cicadaAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cicada, start: 0x79B5A0, name: cicadaSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/whiteButterfly, start: 0x79B8B0, name: whiteButterflyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/whiteButterfly, start: 0x79BBD0, name: whiteButterflyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/whiteButterfly, start: 0x79BBF0, name: whiteButterflySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/ladybug, start: 0x79BCD0, name: ladybugTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/ladybug, start: 0x79C150, name: ladybugAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/ladybug, start: 0x79C170, name: ladybugSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/dragonfly, start: 0x79C480, name: dragonflyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/dragonfly, start: 0x79C6D0, name: dragonflyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/dragonfly, start: 0x79C6F0, name: dragonflySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/grasshopper, start: 0x79C7D0, name: grasshopperTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/grasshopper, start: 0x79CB40, name: grasshopperAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/grasshopper, start: 0x79CB60, name: grasshopperSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/snake, start: 0x79CC40, name: snakeTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/snake, start: 0x79FA50, name: snakeAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/snake, start: 0x79FA70, name: snakeSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/purpleButterfly, start: 0x79FB30, name: purpleButterflyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/purpleButterfly, start: 0x7A0590, name: purpleButterflyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/purpleButterfly, start: 0x7A05B0, name: purpleButterflySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/dad, start: 0x7A0690, name: dadTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/dad, start: 0x7A5930, name: dadAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/dad, start: 0x7A5950, name: dadSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cowIndoors, start: 0x7A5A40, name: cowIndoorsTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cowIndoors, start: 0x7DD6C0, name: cowIndoorsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/cowIndoors, start: 0x7DD6E0, name: cowIndoorsSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/horseUnbridled, start: 0x7DD8E0, name: horseUnbridledTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/horseUnbridled, start: 0x7E99E0, name: horseUnbridledAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/animals/horseUnbridled, start: 0x7E9A00, name: horseUnbridledSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/horseRace/horseRacer, start: 0x7E9AF0, name: horseRacerTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/horseRace/horseRacer, start: 0x7F4490, name: horseRacerAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/horseRace/horseRacer, start: 0x7F44B0, name: horseRacerSpritesheetIndex }
+  - { type: bin, dir: assets/sprites/entitySprites/empty, start: 0x7F46E0, name: emptyEntityTexture }
+  - { type: bin, dir: assets/sprites/entitySprites/empty, start: 0x7F46F0, name: emptyEntityAssetsIndex }
+  - { type: bin, dir: assets/sprites/entitySprites/empty, start: 0x7F4700, name: emptyEntitySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mariaHarrisBaby, start: 0x7F4710, name: mariaHarrisBabyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mariaHarrisBaby, start: 0x7F5FD0, name: mariaHarrisBabyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/mariaHarrisBaby, start: 0x7F5FF0, name: mariaHarrisBabySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/popuriGrayBaby, start: 0x7F6010, name: popuriGrayBabyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/popuriGrayBaby, start: 0x7F7B20, name: popuriGrayBabyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/popuriGrayBaby, start: 0x7F7B40, name: popuriGrayBabySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/elliJeffBaby, start: 0x7F7B60, name: elliJeffBabyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/elliJeffBaby, start: 0x7F93F0, name: elliJeffBabyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/elliJeffBaby, start: 0x7F9410, name: elliJeffBabySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/annCliffBaby, start: 0x7F9430, name: annCliffBabyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/annCliffBaby, start: 0x7FACC0, name: annCliffBabyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/annCliffBaby, start: 0x7FACE0, name: annCliffBabySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/karenKaiBaby, start: 0x7FAD00, name: karenKaiBabyTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/karenKaiBaby, start: 0x7FC6D0, name: karenKaiBabyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/npc/karenKaiBaby, start: 0x7FC6F0, name: karenKaiBabySpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/shadows, start: 0x7FC710, name: shadowsTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/shadows, start: 0x7FCBE0, name: shadowsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/expressionBubbles, start: 0x7FCC00, name: expressionBubblesTexture }
+  - { type: bin, extract: false, dir: sprites/entitySprites/expressionBubbles, start: 0x7FFE30, name: expressionBubblesAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/entitySprites/expressionBubbles, start: 0x7FFE50, name: expressionBubblesSpritesheetIndex }
+  - { type: hm64map, dir: maps/ranch, start: 0x7FFF30, name: ranchSpringMap }
+  - { type: hm64map, dir: maps/ranch, start: 0x80D3D0, name: ranchSummerMap }
+  - { type: hm64map, dir: maps/ranch, start: 0x81A830, name: ranchFallMap }
+  - { type: hm64map, dir: maps/ranch, start: 0x8289C0, name: ranchWinterMap }
+  - { type: hm64map, dir: maps/ranch, start: 0x835E20, name: annRoomMap }
+  - { type: hm64map, dir: maps/ranch, start: 0x83D690, name: ranchBarnMap }
+  - { type: hm64map, dir: maps/ranch, start: 0x849100, name: ranchStoreMap }
+  - { type: hm64map, dir: maps/ranch, start: 0x84EB00, name: ranchHouseMap }
+  - { type: hm64map, dir: maps/unknown, start: 0x856580, name: emptyMap1 }
+  - { type: hm64map, dir: maps/beach, start: 0x856590, name: beachSpringMap }
+  - { type: hm64map, dir: maps/beach, start: 0x85E870, name: beachSummerMap }
+  - { type: hm64map, dir: maps/beach, start: 0x866B50, name: beachFallMap }
+  - { type: hm64map, dir: maps/beach, start: 0x86EE30, name: beachWinterMap }
+  - { type: hm64map, dir: maps/raceTrack, start: 0x877110, name: raceTrackSpringMap }
+  - { type: hm64map, dir: maps/raceTrack, start: 0x87EF10, name: raceTrackSummerMap }
+  - { type: hm64map, dir: maps/raceTrack, start: 0x87EF20, name: raceTrackFallMap }
+  - { type: hm64map, dir: maps/raceTrack, start: 0x886D20, name: raceTrackWinterMap }
+  - { type: hm64map, dir: maps/mountain/mountain1, start: 0x88EB20, name: mountain1SpringMap }
+  - { type: hm64map, dir: maps/mountain/mountain1, start: 0x8A6620, name: mountain1SummerMap }
+  - { type: hm64map, dir: maps/mountain/mountain1, start: 0x8BE120, name: mountain1FallMap }
+  - { type: hm64map, dir: maps/mountain/mountain1, start: 0x8D5C20, name: mountain1WinterMap }
+  - { type: hm64map, dir: maps/mountain/mountain2, start: 0x8ED2E0, name: mountain2SpringMap }
+  - { type: hm64map, dir: maps/mountain/mountain2, start: 0x905380, name: mountain2SummerMap }
+  - { type: hm64map, dir: maps/mountain/mountain2, start: 0x91D2A0, name: mountain2FallMap }
+  - { type: hm64map, dir: maps/mountain/mountain2, start: 0x9351C0, name: mountain2WinterMap }
+  - { type: hm64map, dir: maps/mountain/topOfMountain1, start: 0x94D0E0, name: topOfMountain1SpringMap }
+  - { type: hm64map, dir: maps/mountain/topOfMountain1, start: 0x9615D0, name: topOfMountain1SummerMap }
+  - { type: hm64map, dir: maps/mountain/topOfMountain1, start: 0x975850, name: topOfMountain1FallMap }
+  - { type: hm64map, dir: maps/mountain/topOfMountain1, start: 0x989AD0, name: topOfMountain1WinterMap }
+  - { type: hm64map, dir: maps/mountain/moonMountain, start: 0x99F3C0, name: moonMountainSpringMap }
+  - { type: hm64map, dir: maps/mountain/moonMountain, start: 0x9B3F30, name: moonMountainSummerMap }
+  - { type: hm64map, dir: maps/mountain/moonMountain, start: 0x9C8AA0, name: moonMountainFallMap }
+  - { type: hm64map, dir: maps/mountain/moonMountain, start: 0x9DD610, name: moonMountainWinterMap }
+  - { type: hm64map, dir: maps/carpenterHut, start: 0x9F2180, name: carpentersHutMap }
+  - { type: hm64map, dir: maps/dumplingHouse, start: 0x9FA480, name: dumplingHouseMap }
+  - { type: hm64map, dir: maps/pond, start: 0xA04680, name: pondSpringMap }
+  - { type: hm64map, dir: maps/pond, start: 0xA0C8C0, name: pondSummerMap }
+  - { type: hm64map, dir: maps/pond, start: 0xA14910, name: pondFallMap }
+  - { type: hm64map, dir: maps/pond, start: 0xA1C960, name: pondWinterMap }
+  - { type: hm64map, dir: maps/bakery, start: 0xA249B0, name: elliRoomMap }
+  - { type: hm64map, dir: maps/bakery, start: 0xA2BD50, name: bakeryMap }
+  - { type: hm64map, dir: maps/village/village1, start: 0xA32E60, name: village1SpringMap }
+  - { type: hm64map, dir: maps/village/village1, start: 0xA4C040, name: village1SummerMap }
+  - { type: hm64map, dir: maps/village/village1, start: 0xA65220, name: village1FallMap }
+  - { type: hm64map, dir: maps/village/village1, start: 0xA7ECB0, name: village1WinterMap }
+  - { type: hm64map, dir: maps/village/village2, start: 0xA97C10, name: village2SpringMap }
+  - { type: hm64map, dir: maps/village/village2, start: 0xAABCC0, name: village2SummerMap }
+  - { type: hm64map, dir: maps/village/village2, start: 0xABFD70, name: village2FallMap }
+  - { type: hm64map, dir: maps/village/village2, start: 0xAD3E20, name: village2WinterMap }
+  - { type: hm64map, dir: maps/flowerShop, start: 0xAE7ED0, name: popuriRoomMap }
+  - { type: hm64map, dir: maps/flowerShop, start: 0xAEF320, name: flowerShopMap }
+  - { type: hm64map, dir: maps/church, start: 0xAF4900, name: churchMap }
+  - { type: hm64map, dir: maps/souvenirShop, start: 0xAFA4C0, name: souvenirShopMap }
+  - { type: hm64map, dir: maps/square, start: 0xAFEB10, name: squareSpringMap }
+  - { type: hm64map, dir: maps/square, start: 0xB0DDC0, name: squareSummerMap }
+  - { type: hm64map, dir: maps/square, start: 0xB1CE60, name: squareFallMap }
+  - { type: hm64map, dir: maps/square, start: 0xB2BF00, name: squareWinterMap }
+  - { type: hm64map, dir: maps/rickShop, start: 0xB38390, name: ricksShopMap }
+  - { type: hm64map, dir: maps/midwife, start: 0xB3C810, name: midwifeHouseMap }
+  - { type: hm64map, dir: maps/tavern, start: 0xB416C0, name: tavernMap }
+  - { type: hm64map, dir: maps/library, start: 0xB4A3C0, name: libraryMap }
+  - { type: hm64map, dir: maps/mayorHouse, start: 0xB4DE40, name: mariaRoomMap }
+  - { type: hm64map, dir: maps/mayorHouse, start: 0xB53DD0, name: mayorHouseMap }
+  - { type: hm64map, dir: maps/potionShop, start: 0xB5AAB0, name: potionShopBackroomMap }
+  - { type: hm64map, dir: maps/potionShop, start: 0xB60390, name: potionShopMap }
+  - { type: hm64map, dir: maps/unknown, start: 0xB64830, name: emptyMap2 }
+  - { type: hm64map, dir: maps/cave, start: 0xB64840, name: harvestSpriteCaveMap }
+  - { type: hm64map, dir: maps/cave, start: 0xB6A4C0, name: caveMap }
+  - { type: hm64map, dir: maps/mine, start: 0xB6E100, name: emptyMineMap }
+  - { type: hm64map, dir: maps/mine, start: 0xB6E110, name: mineMap }
+  - { type: hm64map, dir: maps/vineyard, start: 0xB6F570, name: karenRoomMap }
+  - { type: hm64map, dir: maps/vineyard, start: 0xB7A9B0, name: vineyardSpringMap }
+  - { type: hm64map, dir: maps/vineyard, start: 0xB8B240, name: vineyardSummerMap }
+  - { type: hm64map, dir: maps/vineyard, start: 0xB9BAD0, name: vineyardFallMap }
+  - { type: hm64map, dir: maps/vineyard, start: 0xBAC360, name: vineyardWinterMap }
+  - { type: hm64map, dir: maps/vineyard, start: 0xBBC710, name: vineyardHouseMap }
+  - { type: hm64map, dir: maps/vineyard, start: 0xBC5110, name: vineyardCellar1Map }
+  - { type: hm64map, dir: maps/vineyard, start: 0xBC9630, name: vineyardCellar2Map }
+  - { type: hm64map, dir: maps/road, start: 0xBD1680, name: roadSpringMap }
+  - { type: hm64map, dir: maps/road, start: 0xBDB750, name: roadSummerMap }
+  - { type: hm64map, dir: maps/road, start: 0xBE5820, name: roadFallMap }
+  - { type: hm64map, dir: maps/road, start: 0xBEF8F0, name: roadWinterMap }
+  - { type: hm64map, dir: maps/farm, start: 0xBF99C0, name: farmSpringMap }
+  - { type: hm64map, dir: maps/farm, start: 0xC13640, name: farmSummerMap }
+  - { type: hm64map, dir: maps/farm, start: 0xC2D2C0, name: farmFallMap }
+  - { type: hm64map, dir: maps/farm, start: 0xC46F40, name: farmWinterMap }
+  - { type: hm64map, dir: maps/greenhouse, start: 0xC603F0, name: greenhouseMap }
+  - { type: hm64map, dir: maps/house, start: 0xC64800, name: houseMap }
+  - { type: hm64map, dir: maps/farm, start: 0xC72A50, name: barnMap }
+  - { type: hm64map, dir: maps/farm, start: 0xC7D8E0, name: coopMap }
+  - { type: hm64map, dir: maps/house, start: 0xC83B80, name: kitchenMap }
+  - { type: hm64map, dir: maps/house, start: 0xC8D060, name: bathroomMap }
+  - { type: bin, extract: false, dir: sprites/mapObjects/beach/waves, start: 0xC94C40, name: wavesTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/beach/waves, start: 0xC9D0E0, name: wavesAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/beach/waves, start: 0xC9D100, name: wavesSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/mountainWater, start: 0xC9D120, name: mountainWaterTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/mountainWater, start: 0xCA0850, name: mountainWaterAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/mountainWater, start: 0xCA0870, name: mountainWaterSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/boulder, start: 0xCA0890, name: boulderTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/boulder, start: 0xCA3A00, name: boulderAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/boulder, start: 0xCA3A20, name: boulderSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/bridge, start: 0xCA3A40, name: bridgeTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/bridge, start: 0xCA4590, name: bridgeAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/bridge, start: 0xCA45B0, name: bridgeSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/stonePillar, start: 0xCA45D0, name: stonePillarTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/stonePillar, start: 0xCA4A80, name: stonePillarAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/stonePillar, start: 0xCA4AA0, name: stonePillarSpritesheetIndex }
+  - { type: bin, dir: assets/sprites/mapObjects/mountain/empty, start: 0xCA4AB0, name: emptyMountainSprite1Texture }
+  - { type: bin, dir: assets/sprites/mapObjects/mountain/empty, start: 0xCA4AD0, name: emptyMountainSprite2Texture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/mountainPathTiles, start: 0xCA4AE0, name: mountainPathTilesTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/mountainPathTiles, start: 0xCA4ED0, name: mountainPathTilesAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/mountainPathTiles, start: 0xCA4EF0, name: mountainPathTilesSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/steam, start: 0xCA4F00, name: steamTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/steam, start: 0xCA6FA0, name: steamAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/mountain/steam, start: 0xCA6FC0, name: steamSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/pond/pondWater, start: 0xCA6FE0, name: pondWaterTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/pond/pondWater, start: 0xCA8270, name: pondWaterAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/pond/pondWater, start: 0xCA8290, name: pondWaterSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/square/festivalFlowers, start: 0xCA82A0, name: festivalFlowersTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/square/festivalFlowers, start: 0xCA8B40, name: festivalFlowersAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/square/festivalFlowers, start: 0xCA8B60, name: festivalFlowersSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/square/squareFountain, start: 0xCA8B70, name: squareFountainTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/square/squareFountain, start: 0xCA9AE0, name: squareFountainAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/square/squareFountain, start: 0xCA9B00, name: squareFountainSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/village2/village2Water, start: 0xCA9B20, name: village2WaterTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/village2/village2Water, start: 0xCAAAB0, name: village2WaterAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/village2/village2Water, start: 0xCAAAD0, name: village2WaterSpritesheetIndex }
+  - { type: bin, dir: assets/sprites/mapObjects/unknown/empty, start: 0xCAAAE0, name: emptyMapSprite1Texture }
+  - { type: bin, dir: assets/sprites/mapObjects/unknown/empty, start: 0xCAAB00, name: emptyMapSprite2Texture }
+  - { type: bin, dir: assets/sprites/mapObjects/unknown/empty, start: 0xCAAB10, name: emptyMapSprite3Texture }
+  - { type: bin, dir: assets/sprites/mapObjects/unknown/empty, start: 0xCAAB30, name: emptyMapSprite4Texture }
+  - { type: bin, dir: assets/sprites/mapObjects/unknown/empty, start: 0xCAAB40, name: emptyMapSprite5Texture }
+  - { type: bin, dir: assets/sprites/mapObjects/unknown/empty, start: 0xCAAB60, name: emptyMapSprite6Texture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/bathroom/stone, start: 0xCAAB70, name: stoneTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/bathroom/stone, start: 0xCAADB0, name: stoneAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/bathroom/stone, start: 0xCAADD0, name: stoneSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/vineyard/vineyardTree, start: 0xCAADE0, name: vineyardTreeTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/vineyard/vineyardTree, start: 0xCACF30, name: vineyardTreeAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/vineyard/vineyardTree, start: 0xCACF50, name: vineyardTreeSpritesheetIndex }
+  - { type: bin, dir: assets/sprites/mapObjects/unknown/empty, start: 0xCACF70, name: emptyMap1Texture }
+  - { type: bin, dir: assets/sprites/mapObjects/unknown/empty, start: 0xCACF90, name: emptyMap2Texture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/farm/farmPond, start: 0xCACFA0, name: farmPondTexture }
+  - { type: bin, extract: false, dir: sprites/mapObjects/farm/farmPond, start: 0xCAD080, name: farmPondAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/mapObjects/farm/farmPond, start: 0xCAD0A0, name: farmPondSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/effects/funeralIntro, start: 0xCAD0B0, name: funeralIntroTexture }
+  - { type: bin, extract: false, dir: sprites/effects/funeralIntro, start: 0xCB47B0, name: funeralIntroAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/effects/moonMountainBackground, start: 0xCB47D0, name: moonMountainBackgroundTexture }
+  - { type: bin, extract: false, dir: sprites/effects/moonMountainBackground, start: 0xCB93C0, name: moonMountainBackgroundAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/effects/horseRace, start: 0xCB93E0, name: horseRaceTexture }
+  - { type: bin, extract: false, dir: sprites/effects/horseRace, start: 0xCBE020, name: horseRaceAssetsIndex }
+  - { type: bin, dir: assets/sprites/effects/empty, start: 0xCBE040, name: emptyEffectTexture }
+  - { type: bin, extract: false, dir: sprites/effects/splash, start: 0xCBE060, name: splashTexture }
+  - { type: bin, extract: false, dir: sprites/effects/splash, start: 0xCBF890, name: splashAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/effects/sparklers, start: 0xCBF8B0, name: sparklersTexture }
+  - { type: bin, extract: false, dir: sprites/effects/sparklers, start: 0xCBFCC0, name: sparklersAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/effects/chimneySmoke, start: 0xCBFCE0, name: chimneySmokeTexture }
+  - { type: bin, extract: false, dir: sprites/effects/chimneySmoke, start: 0xCC1650, name: chimneySmokeAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/effects/balloons, start: 0xCC1670, name: balloonsTexture }
+  - { type: bin, extract: false, dir: sprites/effects/balloons, start: 0xCC2110, name: balloonsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/effects/smallCloud, start: 0xCC2130, name: smallCloudTexture }
+  - { type: bin, extract: false, dir: sprites/effects/smallCloud, start: 0xCC34F0, name: smallCloudAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/effects/fairies, start: 0xCC3510, name: fairiesTexture }
+  - { type: bin, extract: false, dir: sprites/effects/fairies, start: 0xCC40A0, name: fairiesAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/effects/fireflies, start: 0xCC40C0, name: firefliesTexture }
+  - { type: bin, extract: false, dir: sprites/effects/fireflies, start: 0xCC5730, name: firefliesAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/bulletBlinking, start: 0xCC5750, name: bulletBlinkingTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/bulletBlinking, start: 0xCC6080, name: bulletBlinkingAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/bulletNumeral, start: 0xCC60A0, name: bulletNumeralTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/bulletNumeral, start: 0xCC67C0, name: bulletNumeralAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/checkerboardBackground, start: 0xCC67E0, name: checkerboardBackgroundTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/checkerboardBackground, start: 0xCC8DD0, name: checkerboardBackgroundAssetsIndex }
+  - { type: bin, dir: assets/sprites/overlayScreens, start: 0xCC8DF0, name: emptyOverlayScreen2Texture }
+  - { type: bin, dir: assets/sprites/overlayScreens, start: 0xCC8E10, name: emptyOverlayScreen3Texture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/namingScreenBackground, start: 0xCC8E30, name: namingScreenBackgroundTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/namingScreenBackground, start: 0xCCB420, name: namingScreenBackgroundAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/book, start: 0xCCB440, name: bookTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/book, start: 0xCD0BA0, name: bookAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/photoSmall, start: 0xCD0BC0, name: photoSmallTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/photoSmall, start: 0xCD5370, name: photoSmallAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/photoLarge, start: 0xCD5390, name: photoLargeTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/photoLarge, start: 0xCDA930, name: photoLargeAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/namingScreen1, start: 0xCDA950, name: namingScreen1Texture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/namingScreen1, start: 0xCDE010, name: namingScreen1AssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/calendar, start: 0xCDE030, name: calendarTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/calendar, start: 0xCED7C0, name: calendarAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/calenderJapan, start: 0xCED7E0, name: calenderJapanTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/calenderJapan, start: 0xCF11D0, name: calenderJapanAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/bookScreenLabels, start: 0xCF11F0, name: bookScreenLabelsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/bookScreenLabels, start: 0xCF2D10, name: bookScreenLabelsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/japaneseCharacterSelect, start: 0xCF2D30, name: japaneseCharacterSelectTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/japaneseCharacterSelect, start: 0xCF4A00, name: japaneseCharacterSelectAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/overlayScreenNames, start: 0xCF4A20, name: overlayScreenNamesTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/overlayScreenNames, start: 0xCFF430, name: overlayScreenNamesAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/money, start: 0xCFF450, name: moneyTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/money, start: 0xD00530, name: moneyAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/powerNutTreeDrawing, start: 0xD00550, name: powerNutTreeDrawingTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/powerNutTreeDrawing, start: 0xD06630, name: powerNutTreeDrawingAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/inventoryScreen, start: 0xD06650, name: inventoryScreenTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/inventoryScreen, start: 0xD0D470, name: inventoryScreenAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/prizeScreen, start: 0xD0D490, name: prizeScreenTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/prizeScreen, start: 0xD154E0, name: prizeScreenAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/loadGameScreen, start: 0xD15500, name: loadGameScreenTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/loadGameScreen, start: 0xD1D140, name: loadGameScreenAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/messageBox, start: 0xD1D160, name: messageBoxTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/messageBox, start: 0xD1FA40, name: messageBoxAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/namingScreen2, start: 0xD1FA60, name: namingScreen2Texture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/namingScreen2, start: 0xD2F260, name: namingScreen2AssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/estimateScreen, start: 0xD2F280, name: estimateScreenTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/estimateScreen, start: 0xD309F0, name: estimateScreenAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/raceBettingUI, start: 0xD30A10, name: raceBettingUITexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/raceBettingUI, start: 0xD37CA0, name: raceBettingUIAssetsIndex }
+  - { type: bin, dir: assets/sprites/overlayScreens, start: 0xD37CC0, name: emptyOverlayScreen4Texture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/timeUI, start: 0xD37CE0, name: timeUITexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/timeUI, start: 0xD3AC70, name: timeUIAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/houseExtensionSelection, start: 0xD3AC90, name: houseExtensionSelectionTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/houseExtensionSelection, start: 0xD3DFE0, name: houseExtensionSelectionAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/shopIcons, start: 0xD3E000, name: shopIconsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/shopIcons, start: 0xD3FC60, name: shopIconsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/rankings, start: 0xD3FC80, name: rankingsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/rankings, start: 0xD466B0, name: rankingsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/guidebook, start: 0xD466D0, name: guidebookTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/guidebook, start: 0xD49020, name: guidebookAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/dialogueButtonIcons, start: 0xD49040, name: dialogueButtonIconsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/dialogueButtonIcons, start: 0xD4ACC0, name: dialogueButtonIconsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/tvContent, start: 0xD4ACE0, name: tvContentTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/tvContent, start: 0xD4EB30, name: tvContentAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/tvContent, start: 0xD4EB50, name: tvContentSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/tools, start: 0xD4EBF0, name: toolsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/tools, start: 0xD536D0, name: toolsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/tools, start: 0xD536F0, name: toolsSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/holdableItems, start: 0xD537B0, name: holdableItemsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/holdableItems, start: 0xD84110, name: holdableItemsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/holdableItems, start: 0xD84130, name: holdableItemsSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/extraFestival, start: 0xD846E0, name: extraFestivalTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/extraFestival, start: 0xD87E80, name: extraFestivalAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/extraFestival, start: 0xD87EA0, name: extraFestivalSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/homeItems, start: 0xD87ED0, name: homeItemsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/homeItems, start: 0xD8C280, name: homeItemsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/homeItems, start: 0xD8C2A0, name: homeItemsSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/groundObjects, start: 0xD8C310, name: groundObjectsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/groundObjects, start: 0xD93A90, name: groundObjectsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/rain, start: 0xD93AB0, name: rainTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/rain, start: 0xD93E90, name: rainAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/characterAvatars, start: 0xD93EB0, name: characterAvatarsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/characterAvatars, start: 0xDBAFE0, name: characterAvatarsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/characterAvatars, start: 0xDBB000, name: characterAvatarsSpritesheetIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/titleSprites, start: 0xDBB240, name: titleSpritesTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/titleSprites, start: 0xDD1F50, name: titleSpritesAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/controllerIcons, start: 0xDD1F70, name: controllerIconsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/controllerIcons, start: 0xDD2E40, name: controllerIconsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/logos, start: 0xDD2E60, name: logosTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/logos, start: 0xDD57F0, name: logosAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/credits, start: 0xDD5810, name: creditsTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/credits, start: 0xDE0280, name: creditsAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/albumPhotos, start: 0xDE02A0, name: albumPhotosTexture }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/albumPhotos, start: 0xE056C0, name: albumPhotosAssetsIndex }
+  - { type: bin, extract: false, dir: sprites/overlayScreens/albumPhotos, start: 0xE056E0, name: albumPhotosSpritesheetIndex }
+  - { type: bin, dir: assets/sprites/overlayScreens/map, start: 0xE05760, name: villageMapScreenTexture }
+  - { type: bin, dir: assets/sprites/overlayScreens/map, start: 0xE18910, name: villageMapScreenAssetsIndex }
+  - { type: bin, extract: false, start: 0xE18930, name: fontTexture }
+  - { type: bin, extract: false, start: 0xE23830, name: fontPalette1 }
+  - { type: bin, extract: false, start: 0xE23860, name: fontPalette2 }
+  - { type: bin, extract: false, start: 0xE23890, name: fontPalette3 }
+  - { type: bin, extract: false, dir: text, start: 0xE238C0, name: text1Text }
+  - { type: bin, extract: false, dir: text, start: 0xE239F0, name: text1TextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE23A60, name: libraryText }
+  - { type: bin, extract: false, dir: text, start: 0xE26550, name: libraryTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE266D0, name: diaryText }
+  - { type: bin, extract: false, dir: text, start: 0xE27CE0, name: diaryTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE27FB0, name: recipesJapaneseText }
+  - { type: bin, extract: false, dir: text, start: 0xE2B480, name: recipesJapaneseTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE2B510, name: festivalOverlaySelectionsText }
+  - { type: bin, extract: false, dir: text, start: 0xE2C0B0, name: festivalOverlaySelectionsTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE2C1F0, name: lettersText }
+  - { type: bin, extract: false, dir: text, start: 0xE2CE60, name: lettersTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE2CF60, name: levelInteractionsText }
+  - { type: bin, extract: false, dir: text, start: 0xE2FCA0, name: levelInteractionsTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE30250, name: animalInteractionsText }
+  - { type: bin, extract: false, dir: text, start: 0xE30330, name: animalInteractionsTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE30360, name: tvText }
+  - { type: bin, extract: false, dir: text, start: 0xE366E0, name: tvTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE36970, name: text10Text }
+  - { type: bin, extract: false, dir: text, start: 0xE36980, name: text10TextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE36990, name: namingScreenText }
+  - { type: bin, extract: false, dir: text, start: 0xE36B20, name: namingScreenTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE36B80, name: elliText }
+  - { type: bin, extract: false, dir: text, start: 0xE38C70, name: elliTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE38F30, name: kaiText }
+  - { type: bin, extract: false, dir: text, start: 0xE3A0D0, name: kaiTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE3A220, name: karenText }
+  - { type: bin, extract: false, dir: text, start: 0xE3BE10, name: karenTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE3C0C0, name: gotzText }
+  - { type: bin, extract: false, dir: text, start: 0xE3CC20, name: gotzTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE3CD20, name: sashaText }
+  - { type: bin, extract: false, dir: text, start: 0xE3D7C0, name: sashaTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE3D8A0, name: cliffText }
+  - { type: bin, extract: false, dir: text, start: 0xE3E750, name: cliffTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE3E890, name: jeffText }
+  - { type: bin, extract: false, dir: text, start: 0xE3FCC0, name: jeffTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE3FE30, name: kentText }
+  - { type: bin, extract: false, dir: text, start: 0xE40B80, name: kentTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE40CC0, name: harrisText }
+  - { type: bin, extract: false, dir: text, start: 0xE41CF0, name: harrisTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE41E40, name: popuriText }
+  - { type: bin, extract: false, dir: text, start: 0xE43C50, name: popuriTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE43F00, name: mariaText }
+  - { type: bin, extract: false, dir: text, start: 0xE45D70, name: mariaTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE46010, name: mayText }
+  - { type: bin, extract: false, dir: text, start: 0xE46880, name: mayTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE46950, name: annText }
+  - { type: bin, extract: false, dir: text, start: 0xE48940, name: annTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE48C00, name: dougText }
+  - { type: bin, extract: false, dir: text, start: 0xE496B0, name: dougTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE497A0, name: grayText }
+  - { type: bin, extract: false, dir: text, start: 0xE49F40, name: grayTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE4A050, name: basilText }
+  - { type: bin, extract: false, dir: text, start: 0xE4AA60, name: basilTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE4AB40, name: lilliaText }
+  - { type: bin, extract: false, dir: text, start: 0xE4B6A0, name: lilliaTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE4B770, name: dukeText }
+  - { type: bin, extract: false, dir: text, start: 0xE4C070, name: dukeTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE4C130, name: shipperText }
+  - { type: bin, extract: false, dir: text, start: 0xE4C920, name: shipperTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE4C9C0, name: harvestSpritesText }
+  - { type: bin, extract: false, dir: text, start: 0xE4D4E0, name: harvestSpritesTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE4D630, name: assistantCarpentersText }
+  - { type: bin, extract: false, dir: text, start: 0xE4DD50, name: assistantCarpentersTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE4DE10, name: masterCarpenterText }
+  - { type: bin, extract: false, dir: text, start: 0xE4E560, name: masterCarpenterTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE4E600, name: mayorText }
+  - { type: bin, extract: false, dir: text, start: 0xE4F1D0, name: mayorTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE4F2C0, name: gregText }
+  - { type: bin, extract: false, dir: text, start: 0xE4FCB0, name: gregTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE4FD90, name: rickText }
+  - { type: bin, extract: false, dir: text, start: 0xE50C60, name: rickTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE50D50, name: barleyText }
+  - { type: bin, extract: false, dir: text, start: 0xE512F0, name: barleyTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE51390, name: sydneyText }
+  - { type: bin, extract: false, dir: text, start: 0xE51790, name: sydneyTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE51810, name: potionShopDealerText }
+  - { type: bin, extract: false, dir: text, start: 0xE52240, name: potionShopDealerTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE52320, name: mayorWifeText }
+  - { type: bin, extract: false, dir: text, start: 0xE52EC0, name: mayorWifeTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE52FA0, name: ellenText }
+  - { type: bin, extract: false, dir: text, start: 0xE53790, name: ellenTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE53830, name: stuText }
+  - { type: bin, extract: false, dir: text, start: 0xE54010, name: stuTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE54100, name: midwifeText }
+  - { type: bin, extract: false, dir: text, start: 0xE54DF0, name: midwifeTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE54EF0, name: pastorText }
+  - { type: bin, extract: false, dir: text, start: 0xE557C0, name: pastorTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE55880, name: saibaraText }
+  - { type: bin, extract: false, dir: text, start: 0xE560B0, name: saibaraTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE56170, name: ranchCutscenesText }
+  - { type: bin, extract: false, dir: text, start: 0xE56DA0, name: ranchCutscenesTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE56EF0, name: funeralIntroText }
+  - { type: bin, extract: false, dir: text, start: 0xE57060, name: funeralIntroTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE57090, name: fireworksFestivalText }
+  - { type: bin, extract: false, dir: text, start: 0xE57360, name: fireworksFestivalTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE573B0, name: flowerFestivalText }
+  - { type: bin, extract: false, dir: text, start: 0xE585D0, name: flowerFestivalTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE587C0, name: seaFestivalAndEvaluationText }
+  - { type: bin, extract: false, dir: text, start: 0xE59F20, name: seaFestivalAndEvaluationTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE5A1A0, name: cowFestivalText }
+  - { type: bin, extract: false, dir: text, start: 0xE5AA10, name: cowFestivalTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE5AAE0, name: fireflyFestivalText }
+  - { type: bin, extract: false, dir: text, start: 0xE5B3F0, name: fireflyFestivalTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE5B4D0, name: dogRaceText }
+  - { type: bin, extract: false, dir: text, start: 0xE5BD60, name: dogRaceTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE5BE50, name: mountainCutscenesText }
+  - { type: bin, extract: false, dir: text, start: 0xE5E510, name: mountainCutscenesTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE5E980, name: sowingFestivalText }
+  - { type: bin, extract: false, dir: text, start: 0xE5F770, name: sowingFestivalTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE5F900, name: harvestFestivalText }
+  - { type: bin, extract: false, dir: text, start: 0xE60500, name: harvestFestivalTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE60630, name: newYearFestivalText }
+  - { type: bin, extract: false, dir: text, start: 0xE60DE0, name: newYearFestivalTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE60EC0, name: spiritFestivalText }
+  - { type: bin, extract: false, dir: text, start: 0xE61170, name: spiritFestivalTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE611C0, name: horseRaceText }
+  - { type: bin, extract: false, dir: text, start: 0xE62680, name: horseRaceTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE628A0, name: village1CutscenesText }
+  - { type: bin, extract: false, dir: text, start: 0xE64F70, name: village1CutscenesTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE65350, name: village2CutscenesText }
+  - { type: bin, extract: false, dir: text, start: 0xE666B0, name: village2CutscenesTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE66870, name: vineyardCutscenesText }
+  - { type: bin, extract: false, dir: text, start: 0xE671F0, name: vineyardCutscenesTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE672F0, name: roadCutscenesText }
+  - { type: bin, extract: false, dir: text, start: 0xE67920, name: roadCutscenesTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE679C0, name: farmVisitsText }
+  - { type: bin, extract: false, dir: text, start: 0xE6D0E0, name: farmVisitsTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE6DB10, name: houseCutscenesText }
+  - { type: bin, extract: false, dir: text, start: 0xE705E0, name: houseCutscenesTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE70ED0, name: eggFestivalText }
+  - { type: bin, extract: false, dir: text, start: 0xE71650, name: eggFestivalTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE71760, name: beachCutscenesText }
+  - { type: bin, extract: false, dir: text, start: 0xE71F40, name: beachCutscenesTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE72020, name: vegetableFestivalText }
+  - { type: bin, extract: false, dir: text, start: 0xE72840, name: vegetableFestivalTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE72910, name: babyText }
+  - { type: bin, extract: false, dir: text, start: 0xE72A50, name: babyTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE72AD0, name: mrsManaAndJohnText }
+  - { type: bin, extract: false, dir: text, start: 0xE72EE0, name: mrsManaAndJohnTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE72F60, name: additionalNPCsText }
+  - { type: bin, extract: false, dir: text, start: 0xE73420, name: additionalNPCsTextIndex }
+  - { type: bin, extract: false, dir: text, start: 0xE73490, name: howToPlayText }
+  - { type: bin, extract: false, dir: text, start: 0xE74200, name: howToPlayTextIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE74320, name: text1Dialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE74330, name: text1DialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE74340, name: diaryDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE74440, name: diaryDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE744A0, name: elliDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE74D30, name: elliDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE74E60, name: kaiDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE75310, name: kaiDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE753C0, name: karenDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE75CA0, name: karenDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE75DE0, name: cliffDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE761F0, name: cliffDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE762A0, name: jeffDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE76780, name: jeffDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE76830, name: harrisDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE76CE0, name: harrisDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE76D80, name: popuriDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE775E0, name: popuriDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE77710, name: mariaDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE77F80, name: mariaDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE780B0, name: annDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE78920, name: annDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE78A70, name: grayDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE78E60, name: grayDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE78F00, name: ellenDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE79180, name: ellenDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE791F0, name: gotzDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE79580, name: gotzDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE79600, name: sashaDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE798D0, name: sashaDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE79950, name: kentDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE79D20, name: kentDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE79DC0, name: mayDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7A110, name: mayDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7A190, name: stuDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7A570, name: stuDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7A5F0, name: dougDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7A930, name: dougDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7A9B0, name: basilDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7AC10, name: basilDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7AC80, name: lilliaDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7AF70, name: lilliaDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7AFE0, name: saibaraDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7B260, name: saibaraDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7B2E0, name: midwifeDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7B610, name: midwifeDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7B6A0, name: dukeDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7B900, name: dukeDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7B970, name: shipperDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7BC40, name: shipperDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7BCB0, name: harvestSprites1Dialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7BFD0, name: harvestSprites1DialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7C040, name: harvestSprites2Dialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7C360, name: harvestSprites2DialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7C3D0, name: harvestSprites3Dialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7C6D0, name: harvestSprites3DialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7C740, name: assistantCarpenters1Dialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7C920, name: assistantCarpenters1DialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7C990, name: assistantCarpenters2Dialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7CB80, name: assistantCarpenters2DialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7CBF0, name: masterCarpenterDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7CE10, name: masterCarpenterDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7CE80, name: mayorDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7D180, name: mayorDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7D200, name: gregDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7D550, name: gregDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7D5E0, name: rickDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7D990, name: rickDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7DA10, name: barleyDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7DC80, name: barleyDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7DCF0, name: sydneyDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7DF50, name: sydneyDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7DFC0, name: mayorWifeDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7E390, name: mayorWifeDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7E410, name: pastorDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7E640, name: pastorDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7E6A0, name: potionShopDealerDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7E960, name: potionShopDealerDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7E9E0, name: ranchCutscenesDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EA20, name: ranchCutscenesDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EA50, name: fireworksFestivalDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EA80, name: fireworksFestivalDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EAA0, name: flowerFestivalDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EAF0, name: flowerFestivalDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EB20, name: seaFestivalAndEvaluationDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EBD0, name: seaFestivalAndEvaluationDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EC30, name: cowFestivalDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EC50, name: cowFestivalDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EC60, name: fireflyFestivalDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7ECD0, name: fireflyFestivalDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7ED00, name: dogRaceDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7ED10, name: dogRaceDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7ED20, name: vegetableFestivalDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7ED70, name: vegetableFestivalDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EDA0, name: mountainCutscenesDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EE60, name: mountainCutscenesDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EEB0, name: sowingFestivalDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EF40, name: sowingFestivalDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7EF80, name: harvestFestivalDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F070, name: harvestFestivalDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F0E0, name: horseRaceDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F110, name: horseRaceDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F130, name: vineyardCutscenesDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F170, name: vineyardCutscenesDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F190, name: roadCutscenesDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F1B0, name: roadCutscenesDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F1C0, name: farmVisitsDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F300, name: farmVisitsDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F3A0, name: houseCutscenesDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F460, name: houseCutscenesDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F4F0, name: eggFestivalDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F500, name: eggFestivalDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F510, name: village1CutscenesDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F620, name: village1CutscenesDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F6A0, name: village2CutscenesDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F6D0, name: village2CutscenesDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F6F0, name: namingScreenDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F730, name: namingScreenDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F770, name: newYearFestivalDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F780, name: newYearFestivalDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F790, name: beachCutscenesDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F7B0, name: beachCutscenesDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F7C0, name: shopDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7F980, name: shopDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7FA30, name: festivalOverlaySelectionsDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7FA90, name: festivalOverlaySelectionsDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7FAD0, name: babyDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7FCC0, name: babyDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7FD10, name: mrsManaDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7FDD0, name: mrsManaDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7FDF0, name: johnDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7FF30, name: johnDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE7FF60, name: gourmetJudgeDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE80010, name: gourmetJudgeDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE80040, name: npcBabyDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE80060, name: npcBabyDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE80070, name: libraryDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE80110, name: libraryDialogueIndex }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE80170, name: entomologistDialogue }
+  - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE801E0, name: entomologistDialogueIndex }
+  - { type: bin, dir: audio, start: 0xE80200, name: waveTablePointer }
+  - { type: bin, dir: audio, start: 0xE86A90, name: waveTableData }
+  - { type: seq, dir: audio/sequences, start: 0xFC5690, name: opening }
+  - { type: seq, dir: audio/sequences, start: 0xFC7E80, name: title }
+  - { type: seq, dir: audio/sequences, start: 0xFCA840, name: sportsFestival1 }
+  - { type: seq, dir: audio/sequences, start: 0xFCCCD0, name: goodbye }
+  - { type: seq, dir: audio/sequences, start: 0xFCE470, name: spring }
+  - { type: seq, dir: audio/sequences, start: 0xFCF930, name: summer }
+  - { type: seq, dir: audio/sequences, start: 0xFD1EA0, name: autumn }
+  - { type: seq, dir: audio/sequences, start: 0xFD2FD0, name: winter }
+  - { type: seq, dir: audio/sequences, start: 0xFD3FE0, name: namingScreen }
+  - { type: seq, dir: audio/sequences, start: 0xFD4F80, name: festivalTheme }
+  - { type: seq, dir: audio/sequences, start: 0xFD61C0, name: sportsFestival2 }
+  - { type: seq, dir: audio/sequences, start: 0xFD7CF0, name: spiritFestivalTheme }
+  - { type: seq, dir: audio/sequences, start: 0xFD8A70, name: dogRaceTheme }
+  - { type: seq, dir: audio/sequences, start: 0xFDA770, name: racingFestival }
+  - { type: seq, dir: audio/sequences, start: 0xFDBBC0, name: festivalDance }
+  - { type: seq, dir: audio/sequences, start: 0xFDCB70, name: mountain }
+  - { type: seq, dir: audio/sequences, start: 0xFDEE50, name: village }
+  - { type: seq, dir: audio/sequences, start: 0xFE08E0, name: pond }
+  - { type: seq, dir: audio/sequences, start: 0xFE12E0, name: church }
+  - { type: seq, dir: audio/sequences, start: 0xFE18D0, name: tavern }
+  - { type: seq, dir: audio/sequences, start: 0xFE3480, name: wedding }
+  - { type: seq, dir: audio/sequences, start: 0xFE4050, name: newYearSunrise }
+  - { type: seq, dir: audio/sequences, start: 0xFE4F00, name: credits }
+  - { type: seq, dir: audio/sequences, start: 0xFE64F0, name: brokenMusicBox }
+  - { type: seq, dir: audio/sequences, start: 0xFE6720, name: musicBox }
+  - { type: seq, dir: audio/sequences, start: 0xFE69C0, name: flutePerformance }
+  - { type: seq, dir: audio/sequences, start: 0xFE6B70, name: organPerformance }
+  - { type: seq, dir: audio/sequences, start: 0xFE6D40, name: ocarinaPerformance }
+  - { type: seq, dir: audio/sequences, start: 0xFE6F40, name: sleighBells }
+  - { type: seq, dir: audio/sequences, start: 0xFE70C0, name: badEnding }
+  - { type: seq, dir: audio/sequences, start: 0xFE7930, name: vocalPerformance }
+  - { type: seq, dir: audio/sequences, start: 0xFE7AD0, name: ensemblePerformance }
+  - { type: seq, dir: audio/sequences, start: 0xFE8100, name: drumPerformance }
+  - { type: seq, dir: audio/sequences, start: 0xFE8210, name: typhoonAmbience1 }
+  - { type: seq, dir: audio/sequences, start: 0xFE8880, name: typhoonAmbience2 }
+  - { type: seq, dir: audio/sequences, start: 0xFE96B0, name: nightAmbienceSpring }
+  - { type: seq, dir: audio/sequences, start: 0xFE9B70, name: nightAmbienceSummer }
+  - { type: seq, dir: audio/sequences, start: 0xFE9DC0, name: nightAmbienceAutumn }
+  - { type: seq, dir: audio/sequences, start: 0xFE9F90, name: starryNightFestival }
+  - { type: seq, dir: audio/sequences, start: 0xFEA610, name: beachAmbience1 }
+  - { type: seq, dir: audio/sequences, start: 0xFEA800, name: beachAmbience2 }
+  - { type: seq, dir: audio/sequences, start: 0xFEA9A0, name: bird1 }
+  - { type: seq, dir: audio/sequences, start: 0xFEAAA0, name: bird2 }
+  - { type: seq, dir: audio/sequences, start: 0xFEABA0, name: seq44 }
+  - { type: seq, dir: audio/sequences, start: 0xFEABB0, name: cicada }
+  - { type: seq, dir: audio/sequences, start: 0xFEAD00, name: seq46 }
+  - { type: seq, dir: audio/sequences, start: 0xFEAD20, name: seq47 }
+  - { type: seq, dir: audio/sequences, start: 0xFEAE50, name: seq48 }
+  - { type: seq, dir: audio/sequences, start: 0xFEAE70, name: fireworksSfx }
+  - { type: seq, dir: audio/sequences, start: 0xFEB060, name: seq50 }
+  - { type: seq, dir: audio/sequences, start: 0xFEB070, name: horseGallopFast }
+  - { type: seq, dir: audio/sequences, start: 0xFEB6A0, name: horseGallop1 }
+  - { type: seq, dir: audio/sequences, start: 0xFEB7A0, name: horseGallop2 }
+  - { type: seq, dir: audio/sequences, start: 0xFEB8A0, name: horseGallop3 }
+  - { type: seq, dir: audio/sequences, start: 0xFEB9A0, name: water1 }
+  - { type: seq, dir: audio/sequences, start: 0xFEBAA0, name: water2 }
+  - { type: seq, dir: audio/sequences, start: 0xFEBBB0, name: hammer }
+  - { type: seq, dir: audio/sequences, start: 0xFEBCB0, name: seq58 }
+  - { type: seq, dir: audio/sequences, start: 0xFEBDB0, name: seq59 }
+  - { type: seq, dir: audio/sequences, start: 0xFEBEC0, name: seq60 }
+  - { type: seq, dir: audio/sequences, start: 0xFEBFC0, name: shimmer }
+  - { type: seq, dir: audio/sequences, start: 0xFEC0D0, name: seeds }
+  - { type: seq, dir: audio/sequences, start: 0xFEC1F0, name: cowBell }
+  - { type: seq, dir: audio/sequences, start: 0xFEC300, name: seq64 }
+  - { type: seq, dir: audio/sequences, start: 0xFEC4D0, name: sickle }
+  - { type: seq, dir: audio/sequences, start: 0xFEC5F0, name: hoe }
+  - { type: seq, dir: audio/sequences, start: 0xFEC700, name: fanfare }
+  - { type: bin, extract: false, start: 0xFEC880, name: padding }
+  - { type: bin, start: 0xFED180 }
 
   - [0x1000000]

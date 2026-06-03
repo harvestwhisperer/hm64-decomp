@@ -39,6 +39,11 @@ from .charmap import (
 _REPO_DIR = Path(__file__).resolve().parent.parent.parent.parent
 DEFAULT_OUTPUT_DIR = _REPO_DIR / "assets" / "text"
 
+BASEROM_PATHS = {
+    'us': _REPO_DIR / "baserom.us.z64",
+    'jp': _REPO_DIR / "baserom.jp.z64",
+}
+
 
 # Message box types by line width
 MESSAGE_BOX_TYPES = {
@@ -452,7 +457,6 @@ def extract_text_bank(bank: addresses.TextBankInfo, output_base: Path,
     """
     print(f"  Extracting: {bank.name}")
 
-    # Eagerly validate that characterAvatars.h is loadable
     get_character_avatar_macros()
 
     output_path = output_base / bank.name
@@ -546,7 +550,7 @@ def extract_text_bank(bank: addresses.TextBankInfo, output_base: Path,
 
 
 def extract_all(output_dir: Path = DEFAULT_OUTPUT_DIR, modding: bool = False) -> bool:
-    """Extract all text banks. Returns True only if every bank succeeded."""
+    """Extract all text banks. Returns True if every bank succeeds."""
     banks = addresses.get_all_text_banks()
     print(f"Found {len(banks)} text banks to extract")
 
@@ -598,9 +602,16 @@ def main():
                         help='Output directory')
     parser.add_argument('--modding', action='store_true',
                         help='Enable modding mode: skip junk data, no metadata, human-readable output')
+    parser.add_argument('--region', choices=['us', 'jp'], default='us',
+                        help='ROM region: selects the address CSV and default baserom (default: us)')
+    parser.add_argument('--rom', type=str, default=None,
+                        help='Override the ROM path (defaults to baserom.<region>.z64 at repo root)')
 
     args = parser.parse_args()
     output_dir = Path(args.output)
+
+    addresses.set_region(args.region)
+    rom.set_rom_path(Path(args.rom) if args.rom else BASEROM_PATHS[args.region])
 
     ok = True
     if args.command == 'extract_all':

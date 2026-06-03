@@ -86,7 +86,6 @@ void initializeTVAssets(void) {
 
 //INCLUDE_ASM("asm/nonmatchings/game/tv", incrementVarietyShowCounter);
 
-// variety show episode incrementer
 void incrementVarietyShowCounter(void) {
     
     switch (gDayOfWeek) {
@@ -148,433 +147,485 @@ void incrementVarietyShowCounter(void) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/tv", setTVContentIndex);
+// INCLUDE_ASM("asm/nonmatchings/game/tv", setTVContentIndex);
 
 void setTVContentIndex(void) {
 
     tvContext.contentIndex = 0xFF;
-    
+
     if (gHour < 6) {
         tvContext.contentIndex = BLUE_SCREEN;
         return;
     }
 
-    if (gWeather != TYPHOON) {
-
-        switch (tvContext.channelIndex) {
-
-            case WEATHER_CHANNEL:
-
-                switch (gForecast) {
-                    case SUNNY:
-                        tvContext.contentIndex = SUNNY_FORECAST;
-                        break;
-                    case RAIN:
-                        tvContext.contentIndex = RAIN_FORECAST;
-                        break;
-                    case SNOW:
-                        tvContext.contentIndex = SNOW_FORECAST;
-                        break;
-                    case TYPHOON:
-                        tvContext.contentIndex = TYPHOON_FORECAST;
-                        break;
-
-                }
-
-                break;
-
-            case NEWS_CHANNEL:
-
-                switch (gSeason) {
-
-                    case SPRING:
-                        tvContext.contentIndex = NEWS_SPRING;
-                        break;
-                    case SUMMER:
-                        tvContext.contentIndex = NEWS_SUMMER;
-                        break;
-                    case AUTUMN:
-                        tvContext.contentIndex = NEWS_AUTUMN;
-                        break;
-                    case WINTER:
-                        tvContext.contentIndex = NEWS_WINTER;
-                        break;
-
-                }
-
-                break;
-
-            case EDUCATION_CHANNEL:
-
-                switch (gDayOfWeek) {
-
-                    case SUNDAY:
-                       switch (getRandomNumberInRange(0, 2)) {
-                           case 0:
-                               tvContext.contentIndex = 9;
-                               return;
-                           case 1:
-                               tvContext.contentIndex = 10;
-                               return;
-                           case 2:    
-                               break;
-                           default:
-                               return;
-                       } 
-
-                        break;
-
-                    case MONDAY:
-                    case TUESDAY:
-                        tvContext.contentIndex = 9;
-                        return;
-
-                    case WEDNESDAY:
-                    case THURSDAY:
-                       tvContext.contentIndex = 10;
-                       return;
-
-                    case FRIDAY:
-                    case SATURDAY:
-                        break;
-
-                    default:
-                        return;
-
-                }
-                
-                tvContext.contentIndex = 11;
-                break;
-            
-            case STATIC_CHANNEL:
-                tvContext.contentIndex = STATIC;
-                break;
-        }
-
-    } else {
+    if (gWeather == TYPHOON) {
         tvContext.contentIndex = 19;
+        return;
     }
+    
+    switch (tvContext.channelIndex) {               
+        
+        case WEATHER_CHANNEL:
 
+            switch (gForecast) {
+                case SUNNY:
+                    tvContext.contentIndex = SUNNY_FORECAST;
+                    break;
+                case RAIN:
+                    tvContext.contentIndex = RAIN_FORECAST;
+                    break;
+                case SNOW:
+                    tvContext.contentIndex = SNOW_FORECAST;
+                    break;
+                case TYPHOON:
+                    tvContext.contentIndex = TYPHOON_FORECAST;
+                    break;
+
+            }
+
+            break;
+
+        case NEWS_CHANNEL:                                         
+        
+            switch (gSeason) {
+
+                case SPRING:
+                    tvContext.contentIndex = NEWS_SPRING;
+                    break;
+                case SUMMER:
+                    tvContext.contentIndex = NEWS_SUMMER;
+                    break;
+                case AUTUMN:
+                    tvContext.contentIndex = NEWS_AUTUMN;
+                    break;
+                case WINTER:
+                    tvContext.contentIndex = NEWS_WINTER;
+                    break;
+
+            }
+
+            break;
+
+        case EDUCATION_CHANNEL:
+
+            switch (gDayOfWeek) {
+
+                case MONDAY:
+                case TUESDAY:
+                    tvContext.contentIndex = EDUCATIONAL_CHANNEL_1;
+                    return;
+
+                case WEDNESDAY:
+                case THURSDAY:
+                   tvContext.contentIndex = EDUCATIONAL_CHANNEL_2;
+                   return;
+                
+                case FRIDAY:
+                case SATURDAY:
+                    tvContext.contentIndex = EDUCATIONAL_CHANNEL_3;
+                    break;
+
+                case SUNDAY:
+                   switch (getRandomNumberInRange(0, 2)) {
+                       case 0:
+                           tvContext.contentIndex = EDUCATIONAL_CHANNEL_1;
+                           return;
+                       case 1:
+                           tvContext.contentIndex = EDUCATIONAL_CHANNEL_2;
+                           return;
+                       case 2:
+                           tvContext.contentIndex = EDUCATIONAL_CHANNEL_3;
+                           break;
+                       default:
+                           break;
+                   }
+
+                    break;
+                
+                default:
+                    return;
+
+            }
+            
+            break;
+        
+#ifdef _JP
+        case VARIETY_CHANNEL:    
+        
+            switch (gDayOfWeek) { 
+                
+                case MONDAY:                                    
+                    tvContext.contentIndex = VARIETY_CUT_THE_VILLAIN;
+                    break;
+                case TUESDAY:                                    
+                    tvContext.contentIndex = 13;
+                    break;
+                case WEDNESDAY:                                    
+                    tvContext.contentIndex = VARIETY_THE_MONMON_SHOW;
+                    break;
+                case THURSDAY:                                    
+                    tvContext.contentIndex = VARIETY_SPORTS;
+                    break;
+                case FRIDAY:                                    
+                    tvContext.contentIndex = 16;
+                    break;
+                case SATURDAY:                                    
+                    tvContext.contentIndex = VARIETY_SECRET_SOLIDER;
+                    break;
+                case SUNDAY:                                    
+                    tvContext.contentIndex = VARIETY_ICHIGO;
+                    break;
+                }
+            
+            break;
+#else
+        case STATIC_CHANNEL:
+            tvContext.contentIndex = STATIC;
+            break;
+#endif
+    }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/tv", setTVDialogueIndex );
 
 void setTVDialogueIndex (void) {
 
-    tvContext.dialogueIndex = 0xFF;
+    tvContext.textIndex = 0xFF;
 
     switch (tvContext.contentIndex) {
+
         case BLUE_SCREEN:
-            tvContext.dialogueIndex = 0xFF;
+            tvContext.textIndex = 0xFF;
             break;
+
         default:
             break;
+
         case STATIC:
-            tvContext.dialogueIndex = 0xFF;
+            tvContext.textIndex = 0xFF;
             break;
+
         case SUNNY_FORECAST:
             switch (gSeasonTomorrow) {                      
                 default:                                    
                     break;
                 case SPRING:                                     
-                    tvContext.dialogueIndex = 0;
+                    tvContext.textIndex = 0;
                     break;
                 case SUMMER:                                     
-                    tvContext.dialogueIndex = 3;
+                    tvContext.textIndex = 3;
                     break;
                 case AUTUMN:                                     
-                    tvContext.dialogueIndex = 5;
+                    tvContext.textIndex = 5;
                     break;
                 case WINTER:
-                    tvContext.dialogueIndex = 8;
+                    tvContext.textIndex = 8;
                     break;
                 }
             break;
+
         case RAIN_FORECAST:
              switch (gSeasonTomorrow) {                      
                 default:                                    
                     break;
                 case SPRING:                                     
-                    tvContext.dialogueIndex = 1;
+                    tvContext.textIndex = 1;
                     break;
                 case SUMMER:                                     
-                    tvContext.dialogueIndex = 4;
+                    tvContext.textIndex = 4;
                     break;
                 case AUTUMN:                                     
-                    tvContext.dialogueIndex = 6;
+                    tvContext.textIndex = 6;
                     break;
                 }
             break;
+
         case SNOW_FORECAST:
-            tvContext.dialogueIndex = 9;
+            tvContext.textIndex = 9;
             break;
+
         case TYPHOON_FORECAST:
-            tvContext.dialogueIndex = 10;
+            tvContext.textIndex = 10;
             break;
+
         case NEWS_SPRING:
             if (gDayOfMonth == 1) {
-                tvContext.dialogueIndex = 0xB;
+                tvContext.textIndex = 11;
             }
             if (1 < gDayOfMonth && gDayOfMonth < 7) {
-                tvContext.dialogueIndex = 12;
+                tvContext.textIndex = 12;
             }
             if (gDayOfMonth == 7) {
-                tvContext.dialogueIndex = 0xD;
+                tvContext.textIndex = 13;
             }
             if (gDayOfMonth == 8) {
-                tvContext.dialogueIndex = 0xE;
+                tvContext.textIndex = 14;
             }
             if (8 < gDayOfMonth && gDayOfMonth < 16) {
-                tvContext.dialogueIndex = 0xF;
+                tvContext.textIndex = 15;
             }
             if (gDayOfMonth == 16) {
-                tvContext.dialogueIndex = 16;
+                tvContext.textIndex = 16;
             }
             if (gDayOfMonth == 17) {
-                tvContext.dialogueIndex = 17;
+                tvContext.textIndex = 17;
             }
             if (17 < gDayOfMonth && gDayOfMonth < 22) {
-                tvContext.dialogueIndex = 18;
+                tvContext.textIndex = 18;
             }
             if (gDayOfMonth == 22) {
-                tvContext.dialogueIndex = 19;
+                tvContext.textIndex = 19;
             }
             if (gDayOfMonth == 23) {
-                tvContext.dialogueIndex = 0x14;
+                tvContext.textIndex = 20;
             }
             if (23 < gDayOfMonth && gDayOfMonth < 30) {
-                tvContext.dialogueIndex = 0x15;
+                tvContext.textIndex = 21;
             }
-            
             if (gDayOfMonth == 30) {
-                 tvContext.dialogueIndex = 22;
+                 tvContext.textIndex = 22;
             }
             break;
+
         case NEWS_SUMMER:
             if (gDayOfMonth == 1) {
-                tvContext.dialogueIndex = 23;
+                tvContext.textIndex = 23;
             }
             if (1 < gDayOfMonth && gDayOfMonth < 8) {
-                tvContext.dialogueIndex = 24;
+                tvContext.textIndex = 24;
             }
             if (gDayOfMonth == 8) {
-                tvContext.dialogueIndex = 25;
+                tvContext.textIndex = 25;
             }
             if (gDayOfMonth == 9) {
-                tvContext.dialogueIndex = 26;
+                tvContext.textIndex = 26;
             }
             if (9 < gDayOfMonth && gDayOfMonth < 16) {
-                tvContext.dialogueIndex = 27;
+                tvContext.textIndex = 27;
             }
             if (gDayOfMonth == 16) {
-                tvContext.dialogueIndex = 0x1C;
+                tvContext.textIndex = 28;
             }
             if (gDayOfMonth == 17) {
-                tvContext.dialogueIndex = 0x1D;
+                tvContext.textIndex = 29;
             }
             if (17 < gDayOfMonth && gDayOfMonth < 23) {
-                tvContext.dialogueIndex = 0x1E;
+                tvContext.textIndex = 30;
             }
             if (gDayOfMonth == 23) {
-                tvContext.dialogueIndex = 0x1F;
+                tvContext.textIndex = 31;
             }
             if (gDayOfMonth == 24) {
-                tvContext.dialogueIndex = 0x20;
+                tvContext.textIndex = 32;
             }
             if (24 < gDayOfMonth && gDayOfMonth < 31) {
-                tvContext.dialogueIndex = 0x21;
+                tvContext.textIndex = 33;
             }
             break;
+
         case NEWS_AUTUMN:
             if (0 < gDayOfMonth && gDayOfMonth < 3) {
-                tvContext.dialogueIndex = 0x22;
+                tvContext.textIndex = 34;
             }
             if (gDayOfMonth == 3) {
-                tvContext.dialogueIndex = 0x23;
+                tvContext.textIndex = 35;
             }
             if (gDayOfMonth == 4) {
-                tvContext.dialogueIndex = 0x24;
+                tvContext.textIndex = 36;
             }
             if (4 < gDayOfMonth && gDayOfMonth < 10) {
-                tvContext.dialogueIndex = 0x25;
+                tvContext.textIndex = 37;
             }
             if (9 < gDayOfMonth && gDayOfMonth < 12) {
-                tvContext.dialogueIndex = 0x26;
+                tvContext.textIndex = 38;
             }
             if (gDayOfMonth == 12) {
-                tvContext.dialogueIndex = 0x27;
+                tvContext.textIndex = 39;
             }
             if (12 < gDayOfMonth && gDayOfMonth < 19) {
-                tvContext.dialogueIndex = 0x28;
+                tvContext.textIndex = 40;
             }
             if (gDayOfMonth == 19) {
-                tvContext.dialogueIndex = 0x29;
+                tvContext.textIndex = 41;
             }
             if (gDayOfMonth == 0x14) {
-                tvContext.dialogueIndex = 0x2A;
+                tvContext.textIndex = 42;
             }
             if (20 < gDayOfMonth && gDayOfMonth < 27) {
-                tvContext.dialogueIndex = 0x2B;
+                tvContext.textIndex = 43;
             }
             if (gDayOfMonth == 27) {
-                tvContext.dialogueIndex = 16;
+                tvContext.textIndex = 16;
             }
             if (gDayOfMonth == 28) {
-                tvContext.dialogueIndex = 17;
+                tvContext.textIndex = 17;
             }
             if (28 < gDayOfMonth && gDayOfMonth < 31) {
-                tvContext.dialogueIndex = 0x2C;
+                tvContext.textIndex = 44;
             }
             break;
+
         case NEWS_WINTER:
             if (gDayOfMonth == 1) {
-                tvContext.dialogueIndex = 0x2D;
+                tvContext.textIndex = 45;
             }
             if (1 < gDayOfMonth && gDayOfMonth < 6) {
-                tvContext.dialogueIndex = 0x2E;
+                tvContext.textIndex = 46;
             }
             if (5 < gDayOfMonth && gDayOfMonth < 9) {
-                tvContext.dialogueIndex = 0x2F;
+                tvContext.textIndex = 47;
             }
             if (gDayOfMonth == 9) {
-                tvContext.dialogueIndex = 0x30;
+                tvContext.textIndex = 48;
             }
             if (gDayOfMonth == 10) {
-                tvContext.dialogueIndex = 0x31;
+                tvContext.textIndex = 49;
             }
             if (10 < gDayOfMonth && gDayOfMonth < 18) {
-                tvContext.dialogueIndex = 0x32;
+                tvContext.textIndex = 50;
             }
             if (gDayOfMonth == 18) {
-                tvContext.dialogueIndex = 0x33;
+                tvContext.textIndex = 51;
             }
             if (gDayOfMonth == 19) {
-                tvContext.dialogueIndex = 0x34;
+                tvContext.textIndex = 52;
             }
             if (19 < gDayOfMonth && gDayOfMonth < 23) {
-                tvContext.dialogueIndex = 0x35;
+                tvContext.textIndex = 53;
             }
             if (gDayOfMonth == 23) {
-                tvContext.dialogueIndex = 0x36;
+                tvContext.textIndex = 54;
             }
             if (gDayOfMonth == 24) {
-                tvContext.dialogueIndex = 0x37;
+                tvContext.textIndex = 55;
             }
             if (gDayOfMonth >= 25) {
-                tvContext.dialogueIndex = 0x38;
+                tvContext.textIndex = 56;
             }
             if (gDayOfMonth == 26) {
-                tvContext.dialogueIndex = 0x39;
+                tvContext.textIndex = 57;
             }
             if (gDayOfMonth == 27) {
-                tvContext.dialogueIndex = 0x3A;
+                tvContext.textIndex = 58;
             }
             if (27 < gDayOfMonth && gDayOfMonth < 31) {
-                tvContext.dialogueIndex = 0x3B;
+                tvContext.textIndex = 59;
             }
             break;
-        case 9:
+
+        case EDUCATIONAL_CHANNEL_1:
             if (gDayOfWeek == SUNDAY) {
-                tvContext.dialogueIndex = 0x4D;
+                tvContext.textIndex = 77;
             } else {
                 switch (getRandomNumberInRange(0, 2)) {    
                     case 0:
-                        tvContext.dialogueIndex = 0x3C;
+                        tvContext.textIndex = 60;
                         break;
                     case 1:
-                        tvContext.dialogueIndex = 0x3D;
+                        tvContext.textIndex = 61;
                         break;
                     case 2:
-                        tvContext.dialogueIndex = 0x3E;
+                        tvContext.textIndex = 62;
                         break;
                     default:
                         return;
                 }
             }
             break;
-        case 10:                                 
-            if (gDayOfWeek == 0) {
-                tvContext.dialogueIndex = 0x4E;
+
+        case EDUCATIONAL_CHANNEL_2:                                 
+            if (gDayOfWeek == SUNDAY) {
+                tvContext.textIndex = 78;
             } else {
                 switch (gSeason) {                          
                     case 1:                          
                         if (gDayOfWeek == WEDNESDAY) {
-                            tvContext.dialogueIndex = 0x3F;
+                            tvContext.textIndex = 63;
                         } else {
-                            tvContext.dialogueIndex = 0x40;
+                            tvContext.textIndex = 64;
                         }
                         break;
                     case 2:                                     
                         if (gDayOfWeek == WEDNESDAY) {
-                            tvContext.dialogueIndex = 0x41;
+                            tvContext.textIndex = 65;
                         } else {
-                            tvContext.dialogueIndex = 0x42;
+                            tvContext.textIndex = 66;
                         }
                         break;
                     case 3:                                     
                         if (gDayOfWeek == WEDNESDAY) {
-                            tvContext.dialogueIndex = 0x43;
+                            tvContext.textIndex = 67;
                         } else {
-                            tvContext.dialogueIndex = 0x44;
+                            tvContext.textIndex = 68;
                         }
                         break;
                     case 4:                                     
                         if (gDayOfWeek == WEDNESDAY) {
-                            tvContext.dialogueIndex = 0x45;
+                            tvContext.textIndex = 69;
                         } else {
-                            tvContext.dialogueIndex = 0x46;
+                            tvContext.textIndex = 70;
                         }
                         break;
                 }
             }
             break;
-        case 11:
+
+        case EDUCATIONAL_CHANNEL_3:
             if (gDayOfWeek == SUNDAY) {
-                tvContext.dialogueIndex = 0x4F;
+                tvContext.textIndex = 79;
             } else {
                 switch (getRandomNumberInRange(0, 5)) {                        
                     case 0:                                     
-                        tvContext.dialogueIndex = 0x47;
+                        tvContext.textIndex = 71;
                         break;
                     case 1:                                     
-                        tvContext.dialogueIndex = 0x48;
+                        tvContext.textIndex = 72;
                         break;
                     case 2:                                     
-                        tvContext.dialogueIndex = 0x49;
+                        tvContext.textIndex = 73;
                         break;
                     case 3:                                     
-                        tvContext.dialogueIndex = 0x4A;
+                        tvContext.textIndex = 74;
                         break;
                     case 4:                                     
-                        tvContext.dialogueIndex = 0x4B;
+                        tvContext.textIndex = 75;
                         break;
                     case 5:                                     
-                        tvContext.dialogueIndex = 0x4C;
+                        tvContext.textIndex = 76;
                         break;
                 }
             }
             break;
-        case 12:
-            tvContext.dialogueIndex = tvContext.varietyShowEpisodeCounters[0] + 0x50;
+
+        case VARIETY_CUT_THE_VILLAIN:
+            tvContext.textIndex = tvContext.varietyShowEpisodeCounters[0] + 80;
             break;
+
         case 13:
-            tvContext.dialogueIndex = tvContext.varietyShowEpisodeCounters[1] + 0x5A;
+            tvContext.textIndex = tvContext.varietyShowEpisodeCounters[1] + 90;
             break;
-        case 14:
-            tvContext.dialogueIndex = tvContext.varietyShowEpisodeCounters[2] + 0x64;
+
+        case VARIETY_THE_MONMON_SHOW:
+            tvContext.textIndex = tvContext.varietyShowEpisodeCounters[2] + 100;
             break;
-        case 15:
-            tvContext.dialogueIndex = tvContext.varietyShowEpisodeCounters[3] + 0x6E;
+
+        case VARIETY_SPORTS:
+            tvContext.textIndex = tvContext.varietyShowEpisodeCounters[3] + 110;
             break;
+
         case 16:
-            tvContext.dialogueIndex = tvContext.varietyShowEpisodeCounters[4] + 0x78;
+            tvContext.textIndex = tvContext.varietyShowEpisodeCounters[4] + 120;
             break;
-        case 17:
-            tvContext.dialogueIndex = tvContext.varietyShowEpisodeCounters[5] + 0x82;
+
+        case VARIETY_SECRET_SOLIDER:
+            tvContext.textIndex = tvContext.varietyShowEpisodeCounters[5] + 130;
             break;
-        case 18:
-            tvContext.dialogueIndex = tvContext.varietyShowEpisodeCounters[6] + 0x96;
+
+        case VARIETY_ICHIGO:
+            tvContext.textIndex = tvContext.varietyShowEpisodeCounters[6] + 150;
             break;        
+
     }
     
 }
@@ -615,20 +666,22 @@ void setTVPictureIndex(void) {
         case NEWS_WINTER:
             tvContext.pictureIndex = 10;
             break;
-        case 9:
+        case EDUCATIONAL_CHANNEL_1:
             tvContext.pictureIndex = EDUCATION_CHANNEL_PICTURE;
             break;
-        case 10:
+        case EDUCATIONAL_CHANNEL_2:
             tvContext.pictureIndex = EDUCATION_CHANNEL_PICTURE;
             break;
-        case 11:
+        case EDUCATIONAL_CHANNEL_3:
             tvContext.pictureIndex = EDUCATION_CHANNEL_PICTURE;
             break;
 
         // variety show: unused in US version
-        case 12:
+        case VARIETY_CUT_THE_VILLAIN:
+            // Cut the Villain!
             tvContext.pictureIndex = 11;
             break;
+
         case 13:
             if (tvContext.varietyShowEpisodeCounters[1] == 3 || tvContext.varietyShowEpisodeCounters[1] == 6) {
                 tvContext.pictureIndex = 13;
@@ -636,34 +689,46 @@ void setTVPictureIndex(void) {
                 tvContext.pictureIndex = 13;
                 break;
             } else {
+                // Sing Tonight!
                 tvContext.pictureIndex = 12;
             }
             break;
             
-        case 14:
+        case VARIETY_THE_MONMON_SHOW:
+            // The Monmon Show
             tvContext.pictureIndex = 14;
             break;        
-        case 15:
+
+        case VARIETY_SPORTS:
+            // sports
             tvContext.pictureIndex = 15;
             break;
+
         case 16:
             if (!getRandomNumberInRange(0, 1)) {
+                // Red String of Fate
                 tvContext.pictureIndex = 17;
                 break;
             } else {
                 tvContext.pictureIndex = 16;
             }
             break;
-        case 17:
+
+        case VARIETY_SECRET_SOLIDER:
+            // Secret Solider: Gon!
             tvContext.pictureIndex = 18;
             break;
-        case 18:
+
+        case VARIETY_ICHIGO:
+            // Ichigo, Girl Detective
             tvContext.pictureIndex = 19;
             break;
             
         default:
             break;
+
     }
+    
 }
 
 //INCLUDE_ASM("asm/nonmatchings/game/tv", tvMainLoopCallback);
@@ -677,13 +742,13 @@ void setTVPictureIndex(void) {
 
 //         case TV_MODE_LOAD:
 
-//             if (tvContext.dialogueIndex != 0xFF) {
+//             if (tvContext.textIndex != 0xFF) {
                 
 //                 // set up dialogue box
 //                 setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
 //                 setMessageBoxSpriteIndices(0, 1, 0, 0);
 //                 setMessageBoxInterpolationWithFlags(0, -4, 0);
-//                 initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
+//                 initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 8, tvContext.textIndex, 0);
 
 //                 tvContext.mode++;
 
@@ -750,12 +815,12 @@ void tvMainLoopCallback(void) {
 
         case TV_MODE_LOAD:
 
-            if (tvContext.dialogueIndex != 0xFF) {
+            if (tvContext.textIndex != 0xFF) {
                 
                 setMessageBoxViewSpacePosition(0, 0, -64.0f, 352.0f);
                 setMessageBoxSpriteIndices(0, 1, 0, 0);
                 setMessageBoxInterpolationWithFlags(0, -4, 0);
-                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 8, tvContext.dialogueIndex, 0);
+                initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 8, tvContext.textIndex, 0);
 
                 tvContext.mode++;
 
