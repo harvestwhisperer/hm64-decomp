@@ -84,7 +84,7 @@ u16 calculateFieldScore(void) {
 
 }
 
-u8 calculateShippingScore(void) {
+u32 calculateShippingScore(void) {
 
     u8 score = 0;
     

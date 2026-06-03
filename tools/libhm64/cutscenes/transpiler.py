@@ -41,6 +41,18 @@ BUILTIN_CONSTANTS = {
     'DIRECTION_E':  6,
     'DIRECTION_SE': 7,
 
+    # Legacy direction names (calibrated to the canonical SW iso view).
+    # Retained for backward compatibility with un-swept .cutscene files;
+    # prefer DIRECTION_* in new content.
+    'SOUTHWEST': 0,
+    'WEST':      1,
+    'NORTHWEST': 2,
+    'NORTH':     3,
+    'NORTHEAST': 4,
+    'EAST':      5,
+    'SOUTHEAST': 6,
+    'SOUTH':     7,
+
     # Map-rotation index (CCW from S). Use with SET_ASSET_ROTATION (which
     # calls setInitialMapRotation at runtime). Labels name the iso view the
     # rotation produces (where world-S projects on screen). MAP_ROTATION_SW
@@ -53,6 +65,16 @@ BUILTIN_CONSTANTS = {
     'MAP_ROTATION_NW': 5,
     'MAP_ROTATION_W':  6,
     'MAP_ROTATION_SW': 7,
+
+    # Legacy short names; retained for backward compatibility.
+    'MAP_ROT_S':  0,
+    'MAP_ROT_SE': 1,
+    'MAP_ROT_E':  2,
+    'MAP_ROT_NE': 3,
+    'MAP_ROT_N':  4,
+    'MAP_ROT_NW': 5,
+    'MAP_ROT_W':  6,
+    'MAP_ROT_SW': 7,
 
     "BUTTON_C_RIGHT": 0x0001,
     "BUTTON_C_LEFT": 0x0002,

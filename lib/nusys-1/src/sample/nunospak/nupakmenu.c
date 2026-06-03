@@ -235,8 +235,13 @@ display_screen:
 
             canvas_cursor(MENU_NUM_X, MENU_FILE_Y-FONT_HSKIP);
             canvas_putstr(STR_MENU_ITEMS, MENU_COLOR_ITEM, MENU_COLOR_SHADOW);
-            canvas_cursor(0xF2, MENU_FREE_BLK_Y1);
-            canvas_putstr("\x1F\x2B\x1E\x1E\x01\x29\x1A\x20\x1E\x2C\x3F" , MENU_COLOR_ITEM, MENU_COLOR_SHADOW);
+#ifndef _JP
+            canvas_cursor( 0xF2, MENU_FREE_BLK_Y1 );
+            canvas_putstr( "\x1F\x2B\x1E\x1E\x01\x29\x1A\x20\x1E\x2C\x3F" , MENU_COLOR_ITEM, MENU_COLOR_SHADOW );
+#else
+            canvas_cursor( MENU_FREE_BLK_X1, MENU_FREE_BLK_Y1 );
+            canvas_putstr( STR_BLK_LEFT, MENU_COLOR_ITEM, MENU_COLOR_SHADOW );
+#endif
             __display_free_block((u16)(free_blocks));
             
             for (i = 0; i < 17; i ++) {

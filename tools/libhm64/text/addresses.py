@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Set, Tuple
 
-from ..data import TEXT_ADDRESSES_CSV, TEXT_SELECTION_SEGMENTS_CSV
+from ..data import TEXT_ADDRESSES_CSV, TEXT_ADDRESSES_JP_CSV, TEXT_SELECTION_SEGMENTS_CSV
 
 
 # Banks where the LAST segment contains junk data (not real text)
@@ -47,11 +47,27 @@ class TextBankInfo:
         return self.index_start
 
 
+# Active text-addresses CSV. Defaults to US; switch to JP via set_region().
+_active_text_addresses_csv: Path = TEXT_ADDRESSES_CSV
+
 # Cache for text banks
 _text_banks_cache: Optional[List[TextBankInfo]] = None
 
 # Cache for selection segments
 _selection_segments_cache: Optional[Set[Tuple[str, int]]] = None
+
+
+def set_region(region: str) -> None:
+    """Select which region's text-address CSV the loaders use ('us' or 'jp')."""
+    global _active_text_addresses_csv
+    region = region.lower()
+    if region == 'us':
+        _active_text_addresses_csv = TEXT_ADDRESSES_CSV
+    elif region == 'jp':
+        _active_text_addresses_csv = TEXT_ADDRESSES_JP_CSV
+    else:
+        raise ValueError(f"Unknown region: {region!r} (expected 'us' or 'jp')")
+    clear_cache()
 
 
 def _load_text_banks() -> List[TextBankInfo]:
@@ -63,11 +79,11 @@ def _load_text_banks() -> List[TextBankInfo]:
 
     _text_banks_cache = []
 
-    if not TEXT_ADDRESSES_CSV.exists():
-        print(f"Warning: Text addresses CSV not found: {TEXT_ADDRESSES_CSV}")
+    if not _active_text_addresses_csv.exists():
+        print(f"Warning: Text addresses CSV not found: {_active_text_addresses_csv}")
         return _text_banks_cache
 
-    with open(TEXT_ADDRESSES_CSV, 'r', newline='', encoding='utf-8') as f:
+    with open(_active_text_addresses_csv, 'r', newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
 
         for row_num, row in enumerate(reader, start=2):

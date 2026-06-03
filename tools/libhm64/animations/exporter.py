@@ -193,7 +193,7 @@ def emit_avatar_inc_c(data: dict) -> str:
 def emit_avatar_h(data: dict) -> str:
     """Emit `characterAvatars.h` from the JSON model.
 
-    Macro names are `DIALOGUE_AVATARS_<CHARACTER>_<EXPRESSION>`
+    Macro names = `DIALOGUE_AVATARS_<CHARACTER>_<EXPRESSION>`
     """
     macros: list[tuple[str, int]] = []
     for flat_idx, entry in enumerate(data["entries"]):

@@ -203,7 +203,7 @@ u8 D_80113C40[] = {
 static const u8 houseConstructionDays[6];
 static const u16 lifeEventHouseConstructionBits[6];
 static const u8 animalLocationsHouseConstruction[6];
-static const u16 mailTextIndices[79];
+static const u16 mailTextIndices[80];
 
 static const s16 houseExtensionPrices[6];     
 static const s16 houseExtensionLumberCosts[6];
@@ -3582,7 +3582,7 @@ u16 getTextIndexFromLetterIndex(u8 index) {
 
     u16 arr[80];
     
-    memcpy(arr, mailTextIndices, 0xA0);
+    memcpy(arr, mailTextIndices, 160);
 
     return arr[index];
 
@@ -3614,8 +3614,7 @@ static const u8 animalLocationsHouseConstruction[6] = { FARM, FARM, HOUSE, FARM,
 
 // INCLUDE_RODATA("asm/nonmatchings/game/game", mailTextIndices);
 
-// text indices for letters
-static const u16 mailTextIndices[79] = { 
+static const u16 mailTextIndices[80] = { 
      0, 1, 2, 3, 4, 5, 
      6, 7, 8, 9, 10, 11, 
      12, 13, 14, 15, 16, 

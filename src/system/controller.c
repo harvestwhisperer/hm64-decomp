@@ -66,7 +66,7 @@ void controllerInit(void) {
     buttonRepeatModeTriggerDelayFrames = 16;
 
     contPattern = nuContInit();
-    
+
 }
 
 // this requires button on NUContData struct to be volatile
@@ -316,7 +316,7 @@ u32 func_8004D904(u8 contIndex, u8 *companyCode, u8 *gameCode) {
     return !controllers[contIndex].pak.error;
 }
 
-u32 func_8004D954(u8 contIndex, u8* noteName, u8 *extName) {
+u8 func_8004D954(u8 contIndex, u8* noteName, u8 *extName) {
     nuContPakFileOpenJis(&controllers[contIndex].pak, noteName, extName, NU_CONT_PAK_MODE_NOCREATE, 0);
     return !controllers[contIndex].pak.error;
 }
