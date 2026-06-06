@@ -989,6 +989,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[3] = gGlobalSeasonName[3];
                             gCurrentSeasonName[4] = gGlobalSeasonName[4];
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
+
                         
                                                         convertNumberToGameVariableString(21, gFarmAnimals[1].birthdayDayOfMonth, 1);
                             generateMilkTypeString(1);

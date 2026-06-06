@@ -25,10 +25,19 @@ extern void tvMainLoopCallback(void);
 #define STATIC_PICTURE 0
 #define BLUE_SCREEN_PICTURE 1
 #define EDUCATION_CHANNEL_PICTURE 2
+
 #define NEWS_SPRING 5
 #define NEWS_SUMMER 6
 #define NEWS_AUTUMN 7
 #define NEWS_WINTER 8
+#define EDUCATIONAL_CHANNEL_1 9
+#define EDUCATIONAL_CHANNEL_2 10
+#define EDUCATIONAL_CHANNEL_3 11
+#define VARIETY_CUT_THE_VILLAIN 12
+#define VARIETY_THE_MONMON_SHOW 14
+#define VARIETY_SPORTS 15
+#define VARIETY_SECRET_SOLIDER 17
+#define VARIETY_ICHIGO 18
 
 #define TV_MODE_LOAD 0
 #define TV_MODE_DIALOGUE 1
@@ -36,7 +45,7 @@ extern void tvMainLoopCallback(void);
 
 // D_80170270
 typedef struct {
-    u16 dialogueIndex;
+    u16 textIndex;
     u8 contentIndex;
     u8 pictureIndex;
     u8 mode;

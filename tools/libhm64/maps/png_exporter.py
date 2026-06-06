@@ -9,7 +9,7 @@ from pathlib import Path
 
 import numpy as np
 
-from ..common.rom import get_rom, read_bytes
+from ..common.rom import get_rom, read_bytes, set_rom_path
 from ..common.textures import write_texture_png
 from .addresses import (
     get_all_map_addresses,
@@ -18,6 +18,7 @@ from .addresses import (
     get_texture_offsets_array,
     get_palette_offsets_array,
     is_placeholder_map,
+    set_region,
 )
 
 # Default paths
@@ -169,9 +170,20 @@ def main():
         "--output-dir", type=str, default=str(DEFAULT_OUTPUT_DIR),
         help="Output directory for PNG files"
     )
+    parser.add_argument(
+        "--region", choices=["us", "jp"], default="us",
+        help="ROM region: selects the address CSV and default baserom (default: us)"
+    )
+    parser.add_argument(
+        "--rom", type=str, default=None,
+        help="Override the ROM path (defaults to baserom.<region>.z64 at repo root)"
+    )
 
     args = parser.parse_args()
     output_dir = Path(args.output_dir)
+
+    set_region(args.region)
+    set_rom_path(Path(args.rom) if args.rom else _PACKAGE_DIR / f"baserom.{args.region}.z64")
 
     if args.command == "tiles":
         write_tile_textures(output_dir)

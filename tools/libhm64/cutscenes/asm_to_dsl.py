@@ -99,8 +99,21 @@ class AnimLoop:
     label: Optional[str] = None
 
 
+@dataclass
+class RawData:
+    """A 32-bit data word emitted verbatim (.long).
+
+    Used for self-referencing SET_ANIM_DATA_PTR words (rel16 == 0) — a pointer
+    to its own field, never valid as code. Emitting the raw word keeps the ROM
+    byte-identical; a label is preserved so any branch target still resolves.
+    """
+    offset: int
+    word: int
+    label: Optional[str] = None
+
+
 # Type alias for decoded items
-DecodedItem = Union[DecodedCommand, AnimFrame, AnimEnd, AnimLoop]
+DecodedItem = Union[DecodedCommand, AnimFrame, AnimEnd, AnimLoop, RawData]
 
 
 # =============================================================================
@@ -117,6 +130,9 @@ class AsmParser:
         self.current_offset = 0
         self.in_data_section = False
         self.global_symbol: Optional[str] = None
+        # Byte offsets the extractor marked as animation data (# @anim_begin/end).
+        self.anim_offsets: Set[int] = set()
+        self._in_anim = False
 
     def parse_file(self, path: Path) -> Tuple[List[ByteData], Dict[str, int], Dict[int, str]]:
         """Parse an assembly file and return byte data and label mappings"""
@@ -128,6 +144,14 @@ class AsmParser:
 
         for line in lines:
             line = line.strip()
+
+            # Animation-data region markers from the extractor.
+            if '@anim_begin' in line:
+                self._in_anim = True
+                continue
+            if '@anim_end' in line:
+                self._in_anim = False
+                continue
 
             # Skip empty lines and comments
             if not line or line.startswith('#') or line.startswith(';'):
@@ -173,6 +197,7 @@ class AsmParser:
                         continue
 
             # Parse data directives
+            _off0 = self.current_offset
             if line.startswith('.half') or line.startswith('.hword') or line.startswith('.short'):
                 self._parse_half(line, pending_label)
                 pending_label = None
@@ -182,6 +207,8 @@ class AsmParser:
             elif line.startswith('.word') or line.startswith('.long'):
                 self._parse_word(line, pending_label)
                 pending_label = None
+            if self._in_anim and self.current_offset > _off0:
+                self.anim_offsets.update(range(_off0, self.current_offset))
 
         return self.bytes_data, self.labels, self.offset_to_label
 
@@ -289,10 +316,14 @@ class CommandDecoder:
     """Decodes byte data into commands and animation frames"""
 
     def __init__(self, bytes_data: List[ByteData], labels: Dict[str, int],
-                 offset_to_label: Dict[int, str]):
+                 offset_to_label: Dict[int, str], code_start: int = 0,
+                 anim_offsets: Optional[Set[int]] = None):
         self.bytes_data = bytes_data
         self.labels = labels
         self.offset_to_label = offset_to_label
+        # Byte offsets the extractor marked as animation data. When present,
+        # they define the anim regions authoritatively (no re-discovery).
+        self.marker_anim_offsets = set(anim_offsets) if anim_offsets else set()
         self.idx = 0
         self.decoded: List[DecodedItem] = []
         self.local_vars: Dict[int, str] = {}  # address -> var name
@@ -300,24 +331,57 @@ class CommandDecoder:
         self.animation_targets: Set[int] = set()  # Offsets that are animation data
         self.animation_byte_ranges: Set[int] = set()  # Byte offsets that are animation data
         self.detected_buffer: Optional[int] = None  # Which buffer (1 or 2) is used
+        # Offset where executable code begins (== size of the leading local
+        # buffer storage). Bytes before it are local-variable initial values,
+        # emitted verbatim as raw words rather than decoded as code. The caller
+        # supplies a guarded value (0 when the bank does not begin with buffer
+        # storage); see the generator.
+        self.code_start = code_start
+        self._start_idx = 0
+        if code_start > 0:
+            for i, bd in enumerate(bytes_data):
+                if bd.offset >= code_start:
+                    self._start_idx = i
+                    break
 
     def decode(self) -> Tuple[List[DecodedItem], Dict[int, str], Optional[int]]:
         """Decode all bytes into commands. Returns (decoded, local_vars, detected_buffer)"""
 
-        # First pass: decode commands to find animation targets (from opcodes 0 and 1)
-        # We store results temporarily, then re-decode after processing animations
-        self.idx = 0
-        while self.idx < len(self.bytes_data):
-            self._decode_command()
+        if self.marker_anim_offsets:
+            # Authoritative anim segmentation from the extractor's markers:
+            # decode the marked anim runs as blocks, then decode everything else
+            # as commands. No heuristic anim-target discovery (which over-runs).
+            # A contiguous marked run may hold several anim blocks (each ending
+            # in a terminator), so decode repeatedly until the run is consumed.
+            self.animation_byte_ranges = set(self.marker_anim_offsets)
+            marked = self.marker_anim_offsets
+            run_starts = sorted(o for o in marked if (o - 1) not in marked)
+            off_to_idx = {bd.offset: i for i, bd in enumerate(self.bytes_data)}
+            for start in run_starts:
+                idx = off_to_idx.get(start)
+                if idx is None:
+                    continue
+                self.idx = idx
+                while (self.idx < len(self.bytes_data)
+                       and self.bytes_data[self.idx].offset in marked):
+                    before = self.idx
+                    self._decode_animation_block()
+                    if self.idx <= before:  # no progress — avoid infinite loop
+                        self.idx = before + 1
+        else:
+            # First pass: decode commands to find animation targets (opcodes 0/1).
+            self.idx = self._start_idx
+            while self.idx < len(self.bytes_data):
+                self._decode_command()
 
-        # Second pass: decode animation blocks at identified targets
-        for target in sorted(self.animation_targets):
-            self._decode_animation_at(target)
+            # Second pass: decode animation blocks at identified targets
+            for target in sorted(self.animation_targets):
+                self._decode_animation_at(target)
 
-        # Third pass: re-decode commands, skipping animation byte ranges
+        # Re-decode commands, skipping animation byte ranges
         self.decoded = [item for item in self.decoded
                        if not isinstance(item, DecodedCommand)]  # Keep only animation items
-        self.idx = 0
+        self.idx = self._start_idx
         while self.idx < len(self.bytes_data):
             bd = self.bytes_data[self.idx]
             # Skip if this offset is part of animation data
@@ -329,7 +393,163 @@ class CommandDecoder:
         # Sort decoded items by offset
         self.decoded.sort(key=lambda x: x.offset)
 
+        self._detect_leading_storage()
+
         return self.decoded, self.local_vars, self.detected_buffer
+
+    def _word_at(self, offset: int) -> Optional[int]:
+        """Reconstruct the 32-bit big-endian word at a byte offset, if the
+        parsed stream has two consecutive halfwords there."""
+        wb = self._words_by_off
+        return wb.get(offset)
+
+    def _build_words_by_off(self):
+        # Reconstruct a byte-level map (regardless of .byte/.half/.word framing),
+        # then form 32-bit big-endian words at every 4-aligned offset whose four
+        # bytes are all known (non-symbolic).
+        bytemap = {}
+        for bd in self.bytes_data:
+            if bd.value.is_symbol:
+                for k in range(bd.size):
+                    bytemap[bd.offset + k] = None
+            else:
+                v = bd.value.value & ((1 << (8 * bd.size)) - 1)
+                for k in range(bd.size):
+                    bytemap[bd.offset + (bd.size - 1 - k)] = (v >> (8 * k)) & 0xFF
+        words_by_off = {}
+        for o in bytemap:
+            if o % 4 != 0:
+                continue
+            bs = [bytemap.get(o + j) for j in range(4)]
+            if all(b is not None for b in bs):
+                words_by_off[o] = (bs[0] << 24) | (bs[1] << 16) | (bs[2] << 8) | bs[3]
+        self._words_by_off = words_by_off
+        self._bytemap = bytemap
+
+    def _detect_leading_storage(self):
+        """Emit the leading local-buffer block and lift self-referencing words.
+
+        Bytes before ``code_start`` (the bank's cutscene entry-point offset) are
+        local-variable initial values, not code: emit them verbatim as raw 32-bit
+        words. Anywhere in the bank, a SET_ANIM_DATA_PTR(_WITH_FLAG) (opcodes
+        0/1) whose rel16 target is not a real command boundary is a self/null
+        pointer (never valid code) — also emit it as a raw word. All of this
+        keeps the ROM byte-identical; buffer-local references in commands are
+        emitted as raw hex addresses, so no .buffer/.local declarations are
+        needed to reproduce the storage.
+        """
+        self._build_words_by_off()
+        words_by_off = self._words_by_off
+
+        # Leading local-buffer storage: [0, code_start) as raw words.
+        leading = []
+        off = 0
+        while off < self.code_start and off in words_by_off:
+            leading.append(RawData(offset=off, word=words_by_off[off]))
+            off += 4
+
+        valid_offsets = {it.offset for it in self.decoded}
+
+        def is_storage_word(item) -> bool:
+            if not isinstance(item, DecodedCommand) or item.opcode not in (0, 1):
+                return False
+            if item.size != 4 or not item.params:
+                return False
+            m = re.match(r'\.loc_([0-9A-Fa-f]+)$', item.params[0])
+            if not m:
+                return False
+            return int(m.group(1), 16) not in valid_offsets
+
+        # A real command always has zero padding bytes. A "command" with a
+        # non-zero pad is a misframe — the bytes are really animation/data that
+        # happens to start with a valid opcode (e.g. an anim frame in a code
+        # region decoded as SET_FRAME_DELTA, whose wait/flip bytes land in the
+        # command's pad16 and would be zeroed by the transpiler). Lift such
+        # commands to raw words so the bytes survive verbatim.
+        _ptype_size = {'pad8': 1, 'pad16': 2, 'u8': 1, 's8': 1, 'u16': 2,
+                       's16': 2, 'rel16': 2, 'u32': 4, 's32': 4, 'addr32': 4,
+                       'rom_start32': 4, 'rom_end32': 4}
+
+        def has_nonzero_pad(item) -> bool:
+            spec = ASM_COMMAND_SPECS.get(item.opcode)
+            if not spec or item.size <= 0:
+                return False
+            _, param_types = spec
+            cur = item.offset + 2
+            for ptype in param_types:
+                if ptype in ('pad8', 'pad16'):
+                    for k in range(_ptype_size[ptype]):
+                        if self._bytemap.get(cur + k):
+                            return True
+                cur += _ptype_size.get(ptype, 0)
+            return False
+
+        converted = []
+        for it in self.decoded:
+            if is_storage_word(it) and it.offset in words_by_off:
+                converted.append(RawData(offset=it.offset, word=words_by_off[it.offset],
+                                         label=it.label))
+            elif (isinstance(it, DecodedCommand) and has_nonzero_pad(it)
+                  and it.offset % 4 == 0 and it.size % 4 == 0
+                  and all((it.offset + k) in words_by_off
+                          for k in range(0, it.size, 4))):
+                for k in range(0, it.size, 4):
+                    converted.append(RawData(
+                        offset=it.offset + k,
+                        word=words_by_off[it.offset + k],
+                        label=it.label if k == 0 else None))
+            else:
+                converted.append(it)
+
+        self.decoded = leading + converted
+        self.decoded.sort(key=lambda x: x.offset)
+
+        # Gap-fill safety net: any byte present in the assembly but not covered
+        # by a decoded item (anim data, command, or raw word) would otherwise be
+        # silently dropped — e.g. an ANIM_END word (FFFF 0000) sitting in a code
+        # region between two anim blocks, which _decode_command discards as an
+        # unknown opcode. Emit every uncovered run as raw .long words so the ROM
+        # stays byte-identical regardless of decode gaps.
+        covered = set(self.animation_byte_ranges)
+        for it in self.decoded:
+            if isinstance(it, DecodedCommand):
+                for k in range(it.size):
+                    covered.add(it.offset + k)
+            elif isinstance(it, RawData):
+                for k in range(4):
+                    covered.add(it.offset + k)
+        all_off = set()
+        for bd in self.bytes_data:
+            for k in range(bd.size):
+                all_off.add(bd.offset + k)
+        gaps = sorted(all_off - covered)
+        if gaps:
+            fill = []
+            i = 0
+            while i < len(gaps):
+                start = gaps[i]
+                end = start
+                while i + 1 < len(gaps) and gaps[i + 1] == end + 1:
+                    i += 1
+                    end = gaps[i]
+                i += 1
+                # Emit the run as 4-aligned .long words.
+                off = start
+                while off <= end:
+                    if off % 4 == 0 and off in words_by_off and off + 3 <= end:
+                        fill.append(RawData(offset=off, word=words_by_off[off]))
+                        off += 4
+                    else:
+                        # Non-aligned remainder: emit a single padded word so the
+                        # bytes are preserved (should be rare; logged for review).
+                        base = off - (off % 4)
+                        if base in words_by_off and not any(
+                                r.offset == base for r in fill):
+                            fill.append(RawData(offset=base, word=words_by_off[base]))
+                        off += 1
+            if fill:
+                self.decoded.extend(fill)
+                self.decoded.sort(key=lambda x: x.offset)
 
     def _decode_animation_at(self, target_offset: int):
         """Decode animation block at a specific offset"""
@@ -393,11 +613,13 @@ class CommandDecoder:
             return bd.value.symbol
 
         addr = bd.value.value
-        # Check if it's a local variable in either buffer
+        # Buffer-local addresses are emitted as raw hex (byte-exact). Naming
+        # them as .local vars can't represent overlapping / sub-word locals
+        # without miscounting the leading storage block, so leave naming for
+        # manual refinement.
         buf_num, offset = is_local_var_addr(addr)
         if buf_num is not None:
             self.detected_buffer = buf_num  # Track which buffer is used
-            return self._get_local_var_name(addr)
         # Return as hex
         return f"0x{addr:08X}"
 
@@ -536,6 +758,12 @@ class CommandDecoder:
             start_offset = start_bd.offset
             label = start_bd.label
 
+            # When the extractor marked anim regions, stop exactly at the end of
+            # the marked run instead of running until a terminator (which can
+            # over-run into code/data when the heuristic is wrong).
+            if self.marker_anim_offsets and start_offset not in self.marker_anim_offsets:
+                break
+
             # Check if we have enough data for a frame header (2 bytes for anim_id)
             if start_bd.size != 2:
                 break
@@ -653,26 +881,9 @@ class DslEmitter:
         self._emit("; Auto-generated from ASM by hm64_asm_to_dsl.py")
         self._emit("")
 
-        # Emit local variable declarations
-        if self.local_vars:
-            self._emit("; Local variables")
-            # Determine which buffer base to use
-            if self.detected_buffer and self.detected_buffer in BUFFER_BASES:
-                buffer_base = BUFFER_BASES[self.detected_buffer][0]
-            else:
-                buffer_base = BUFFER_BASES[1][0]  # Default to buffer 1
-            # Sort by address
-            sorted_vars = sorted(self.local_vars.items(), key=lambda x: x[0])
-            for addr, name in sorted_vars:
-                # Determine type based on address alignment
-                offset = addr - buffer_base
-                if offset % 4 == 0:
-                    self._emit(f".var {name}, u32")
-                elif offset % 2 == 0:
-                    self._emit(f".var {name}, u16")
-                else:
-                    self._emit(f".var {name}, u8")
-            self._emit("")
+        # Buffer-local references are emitted as raw hex addresses and the
+        # leading local-buffer storage is emitted as raw .long words (see the
+        # decoder), so no .buffer/.local declarations are needed here.
 
         # Emit commands and animation data
         for item in self.decoded:
@@ -684,6 +895,8 @@ class DslEmitter:
                 self._emit_anim_end(item)
             elif isinstance(item, AnimLoop):
                 self._emit_anim_loop(item)
+            elif isinstance(item, RawData):
+                self._emit_raw_data(item)
 
         return '\n'.join(self.output)
 
@@ -700,9 +913,22 @@ class DslEmitter:
                 label = '.' + label
             self._emit(f"{label}:")
 
+    def _resolve_label(self, item) -> Optional[str]:
+        """Resolve the label for a decoded item.
+
+        Prefers offset_to_label, which is authoritative after decode and
+        includes branch targets synthesized during decode (e.g. .loc_XXXX).
+        Without this, synthesized targets are referenced but never emitted,
+        producing dangling labels that fail to transpile.
+        """
+        offset = getattr(item, 'offset', None)
+        if offset is not None and offset in self.offset_to_label:
+            return self.offset_to_label[offset]
+        return getattr(item, 'label', None)
+
     def _emit_command(self, cmd: DecodedCommand):
         """Emit a command"""
-        self._emit_label(cmd.label)
+        self._emit_label(self._resolve_label(cmd))
 
         name = cmd.name
         if name.startswith('CMD_'):
@@ -717,19 +943,28 @@ class DslEmitter:
 
     def _emit_anim_frame(self, frame: AnimFrame):
         """Emit an animation frame"""
-        self._emit_label(frame.label)
+        self._emit_label(self._resolve_label(frame))
         vec_str = f"({frame.vec[0]}, {frame.vec[1]}, {frame.vec[2]})"
         self._emit(f"    .anim_frame {frame.anim_id}, 0x{frame.flag:02X}, {vec_str}, {frame.wait}, {frame.flip}")
 
     def _emit_anim_end(self, end: AnimEnd):
         """Emit animation end marker"""
-        self._emit_label(end.label)
+        self._emit_label(self._resolve_label(end))
         self._emit("    .anim_end")
 
     def _emit_anim_loop(self, loop: AnimLoop):
         """Emit animation loop marker"""
-        self._emit_label(loop.label)
+        self._emit_label(self._resolve_label(loop))
         self._emit(f"    .anim_loop {loop.target_label}")
+
+    def _emit_raw_data(self, data: RawData):
+        """Emit a raw 32-bit word verbatim.
+
+        Uses .long: the transpiler maps DSL .word to a 2-byte .half, while
+        .long emits a full 32-bit word.
+        """
+        self._emit_label(self._resolve_label(data))
+        self._emit(f"    .long   0x{data.word:08X}")
 
 
 # =============================================================================
@@ -742,6 +977,9 @@ def main():
     )
     parser.add_argument('input', help='Input .s assembly file')
     parser.add_argument('-o', '--output', help='Output .cutscene file (default: stdout)')
+    parser.add_argument('--code-start', type=lambda x: int(x, 0), default=0,
+                        help="Offset where code begins (bank's cutscene entry-point "
+                             "offset). Bytes before it are leading local-buffer storage.")
 
     args = parser.parse_args()
 
@@ -755,7 +993,8 @@ def main():
     bytes_data, labels, offset_to_label = asm_parser.parse_file(input_path)
 
     # Decode commands
-    decoder = CommandDecoder(bytes_data, labels, offset_to_label)
+    decoder = CommandDecoder(bytes_data, labels, offset_to_label, code_start=args.code_start,
+                             anim_offsets=asm_parser.anim_offsets)
     decoded, local_vars, detected_buffer = decoder.decode()
 
     # Emit DSL

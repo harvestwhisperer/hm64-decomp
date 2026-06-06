@@ -1,4 +1,3 @@
-
 #ifndef _MAIN_PROC_H_
 #define _MAIN_PROC_H_
 
@@ -13,16 +12,17 @@ extern volatile u8 framebufferCount;
 extern volatile u8 previousDrawnFrameCount;
 extern volatile u8 currentFramebufferIndex;
 extern u16 gMainMapIndex;
-extern volatile u8 D_80204B38;
 extern volatile u8 stepMainLoop;
 extern volatile u32 pendingGfxNum;
 extern volatile u8 mainLoopUpdateRate;
-extern volatile u8 D_80222730;
 extern volatile u8 frameRate;
-extern volatile u8 D_80237A04;
 extern volatile u8 frameCount;
 
 extern volatile u32 gGraphicsBufferIndex;
 extern volatile u8 gfxTaskNo;
+
+extern volatile u8 D_80204B38;
+extern volatile u8 D_80222730;
+extern volatile u8 D_80237A04;
 
 #endif

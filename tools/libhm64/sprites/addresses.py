@@ -10,15 +10,30 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from ..common import rom
-from ..data import SPRITE_ADDRESSES_CSV
+from ..data import SPRITE_ADDRESSES_CSV, SPRITE_ADDRESSES_JP_CSV
 
 _REPO_DIR = Path(__file__).resolve().parent.parent.parent.parent
 DEFAULT_CSV_PATH = SPRITE_ADDRESSES_CSV
 DEFAULT_OUTPUT_DIR = _REPO_DIR / "assets" / "sprites"
 
+_active_csv: Path = SPRITE_ADDRESSES_CSV
+
 # Cached data
 _sprites: Optional[List['SpriteInfo']] = None
 _label_index: Optional[Dict[str, 'SpriteInfo']] = None
+
+
+def set_region(region: str) -> None:
+    """Select which region's sprite-address CSV the loaders use ('us' or 'jp')."""
+    global _active_csv
+    region = region.lower()
+    if region == 'us':
+        _active_csv = SPRITE_ADDRESSES_CSV
+    elif region == 'jp':
+        _active_csv = SPRITE_ADDRESSES_JP_CSV
+    else:
+        raise ValueError(f"Unknown region: {region!r} (expected 'us' or 'jp')")
+    clear_cache()
 
 
 @dataclass
@@ -49,9 +64,12 @@ class SpriteInfo:
         return self.sprite_type == 'type-2'
 
 
-def _load_sprites(csv_path: Path = DEFAULT_CSV_PATH) -> None:
+def _load_sprites(csv_path: Optional[Path] = None) -> None:
     """Load and cache sprite data from CSV."""
     global _sprites, _label_index
+
+    if csv_path is None:
+        csv_path = _active_csv
 
     _sprites = []
     _label_index = {}
@@ -93,14 +111,14 @@ def _load_sprites(csv_path: Path = DEFAULT_CSV_PATH) -> None:
             _label_index[info.label] = info
 
 
-def get_all_sprites(csv_path: Path = DEFAULT_CSV_PATH) -> List[SpriteInfo]:
+def get_all_sprites(csv_path: Optional[Path] = None) -> List[SpriteInfo]:
     """Get list of all sprite info from CSV."""
     if _sprites is None:
         _load_sprites(csv_path)
     return _sprites
 
 
-def get_sprite_by_label(label: str, csv_path: Path = DEFAULT_CSV_PATH) -> Optional[SpriteInfo]:
+def get_sprite_by_label(label: str, csv_path: Optional[Path] = None) -> Optional[SpriteInfo]:
     """Get sprite info by label name."""
     if _label_index is None:
         _load_sprites(csv_path)
