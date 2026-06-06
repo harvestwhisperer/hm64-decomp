@@ -2028,7 +2028,10 @@ void useMiraclePotion();
 void useCowMedicine();
 void useGrassSeeds();
 void useEmptyBottle();
+#ifndef JP
 u8 allocateGroundItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment);
+#endif
+u8 allocateThrownItemSlot(u8 index, u8 stateIndex, u32 heldItemIndex, u16 hasDirectionFrame, bool useAttachment);
 void setItemPosition(u8 index, f32 x, f32 y, f32 z);
 void loadHeldItemEntity(u8, u16);   
 bool handlePutDownHeldItem(u8 itemIndex);
@@ -2811,7 +2814,7 @@ void useHammer(void) {
                     
                     toolUse.boulderHitCounter = 0;
                     
-                    groundObjectIndex = allocateGroundItemSlot(1, 12, 2, 0, 8);
+                        groundObjectIndex = allocateGroundItemSlot(1, 12, 2, 0, 8);
                     
                     vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                     vec.x += vec2.x;
@@ -2887,7 +2890,6 @@ void useHammer(void) {
                         }
 
                         groundObjectIndex = allocateGroundItemSlot(1, 12, temp, 0, 8);
-
                         vec = getGroundObjectWorldPosition(MAIN_MAP_INDEX, (u8)vec.x, (u8)vec.z);
                         vec.x += vec2.x;
                         vec.z += vec2.z;

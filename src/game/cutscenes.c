@@ -5762,3 +5762,5 @@ void loadCutscene(bool morningVisit) {
     }
     
 }
+
+// evaluation.c doesn't start at a 0x10-aligned boundary in JP; functions might actually belong to this translation unit

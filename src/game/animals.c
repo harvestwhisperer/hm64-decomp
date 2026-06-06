@@ -1302,6 +1302,7 @@ void setMrsManaCowsNames(void) {
     mrsManaCow2Index = initializeNewFarmAnimal(1, 0);
     mrsManaCow3Index = initializeNewFarmAnimal(1, 0);
 
+
     gFarmAnimals[mrsManaCow1Index].name[0] = char_M;
     gFarmAnimals[mrsManaCow1Index].name[1] = char_o;
     gFarmAnimals[mrsManaCow1Index].name[2] = char_m;
@@ -1322,6 +1323,7 @@ void setMrsManaCowsNames(void) {
     gFarmAnimals[mrsManaCow3Index].name[3] = char_a;
     gFarmAnimals[mrsManaCow3Index].name[4] = 0xFF;
     gFarmAnimals[mrsManaCow3Index].name[5] = 0xFF;
+
     
 }
 
@@ -10440,7 +10442,7 @@ u8 getTotalPregnantFamAnimals(void) {
     }
     
     return count;
-    
+
 }
 
 // check all farm animals + animals going to be born

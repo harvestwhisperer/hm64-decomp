@@ -317,20 +317,14 @@ extern u8 mrsManaCow2Index;
 
 extern u16 D_8016FDF0;
 extern u8 bornChickenIndex;
-// newest farm animal index?
 extern u8 bornAnimalIndex;
-// cow festival stall
 extern u8 gCowFestivalEnteredCowIndex;
 extern u8 gSelectedAnimalIndex;
 
-// dead animal count
-// TODO: label
 extern u16 deadAnimalCount;
 
-// purchased animal type
 extern u8 selectedAnimalType;
 
-// animal price?
 extern u32 gAnimalSalePrice;
 
 #endif

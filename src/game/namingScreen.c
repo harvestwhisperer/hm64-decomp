@@ -123,6 +123,7 @@ void handleSeasonSelectionInput(void);
 void moveSeasonCursorHorizontally(void);
 void moveSeasonCursorVertically(void);
 void handleNamingGridInput(void);
+bool checkNameProhibited(void);
 
 static inline int getSpriteIndexFromFlags(u16 flags) {
     int v = (flags & NAMING_SCREEN_NAME_POSITION_MASK) >> NAMING_SCREEN_NAME_POSITION_SHIFT;
@@ -679,7 +680,8 @@ bool selectCharacterOrConfirm(void) {
 
                 initializeDialogueSession(0, DIALOGUE_NAMING_SCREEN, 8, 0);
                 namingScreenContext.flags |= NAMING_SCREEN_EMPTY_NAME_ERROR;
-            
+
+
             } else if (namingScreenContext.screenType == NAMING_SCREEN_TYPE_PLAYER) {
             
                 setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 8);

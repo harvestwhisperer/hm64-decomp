@@ -56,5 +56,6 @@ undefined_funcs_auto.txt
 !/lib/ucode/rspboot.s
 !/lib/yay0/yay0Decode.s
 !/config/us/common_bss.ld
+!/config/jp/common_bss.ld
 !/tools/build
 /tools/build/mkldscript

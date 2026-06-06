@@ -84,10 +84,15 @@ u32 D_802226E4;
 // "PACKINSOFT FARM2" in ASCII
 u8 sramSignature[16] = { 0x50, 0x41, 0x43, 0x4B, 0x49, 0x4E, 0x53, 0x4F, 0x46, 0x54, 0x20, 0x46, 0x41, 0x52, 0x4D, 0x32 };
 
+#define RANKING_LIST_NUMBER_X 48.0f
+#define RANKING_DETAIL_NUMBER_X1 48.0f
+#define RANKING_DETAIL_NUMBER_X2 -26.0f
+#define RANKING_DETAIL_NUMBER_X3 98.0f
+
 /* helpers */
 
 void initializeLoadGameScreen(bool returningFromRanking) {
-    
+
     if (!returningFromRanking) {
         loadGameScreenContext.showControllerPakScreen = FALSE;
         loadGameScreenContext.actionColumnHighlighted = 0;
@@ -96,14 +101,14 @@ void initializeLoadGameScreen(bool returningFromRanking) {
     } else {
         loadGameScreenContext.action = LOAD_GAME_ACTION_FADE_IN_COLUMN;
     }
-    
+
     loadGameScreenContext.gamePakExtension[0] = 0x45;
     loadGameScreenContext.gamePakExtension[1] = 0x39;
     loadGameScreenContext.gamePakExtension[2] = 0x4E;
     loadGameScreenContext.gamePakExtension[3] = 0x59;
     loadGameScreenContext.gamePakExtension[4] = 0x57;
     loadGameScreenContext.gamePakExtension[5] = 0x45;
-    
+
     loadGameScreenContext.gamePakNoteNameA[0] = 0x48;
     loadGameScreenContext.gamePakNoteNameA[1] = 0x41;
     loadGameScreenContext.gamePakNoteNameA[2] = 0x52;
@@ -124,7 +129,7 @@ void initializeLoadGameScreen(bool returningFromRanking) {
     loadGameScreenContext.gamePakNoteNameA[17] = 0;
     loadGameScreenContext.gamePakNoteNameA[18] = 0;
     loadGameScreenContext.gamePakNoteNameA[19] = 0;
-    
+
     loadGameScreenContext.gamePakNoteNameB[0] = 0x48;
     loadGameScreenContext.gamePakNoteNameB[1] = 0x41;
     loadGameScreenContext.gamePakNoteNameB[2] = 0x52;
@@ -145,31 +150,31 @@ void initializeLoadGameScreen(bool returningFromRanking) {
     loadGameScreenContext.gamePakNoteNameB[17] = 0;
     loadGameScreenContext.gamePakNoteNameB[18] = 0;
     loadGameScreenContext.gamePakNoteNameB[19] = 0;
-    
+
     setGameVariableString(0, loadGameScreenContext.playerNames[0], 6);
     setGameVariableString(1, loadGameScreenContext.dateNumbers[0], 2);
-    setGameVariableString(2, loadGameScreenContext.seasonNames[0], 6);
+    setGameVariableString(2, loadGameScreenContext.seasonNames[0], sizeof(loadGameScreenContext.seasonNames[0]));
     setGameVariableString(3, loadGameScreenContext.dateEndings[0], 2);
-    
+
     setGameVariableString(4, loadGameScreenContext.playerNames[1], 6);
     setGameVariableString(5, loadGameScreenContext.dateNumbers[1], 2);
-    setGameVariableString(6, loadGameScreenContext.seasonNames[1], 6);
+    setGameVariableString(6, loadGameScreenContext.seasonNames[1], sizeof(loadGameScreenContext.seasonNames[0]));
     setGameVariableString(7, loadGameScreenContext.dateEndings[1], 2);
-    
+
     setGameVariableString(8, loadGameScreenContext.playerNames[2], 6);
     setGameVariableString(9, loadGameScreenContext.dateNumbers[2], 2);
-    setGameVariableString(10, loadGameScreenContext.seasonNames[2], 6);
+    setGameVariableString(10, loadGameScreenContext.seasonNames[2], sizeof(loadGameScreenContext.seasonNames[0]));
     setGameVariableString(11, loadGameScreenContext.dateEndings[2], 2);
-    
+
     setGameVariableString(12, loadGameScreenContext.playerNames[3], 6);
     setGameVariableString(13, loadGameScreenContext.dateNumbers[3], 2);
-    setGameVariableString(14, loadGameScreenContext.seasonNames[3], 6);
+    setGameVariableString(14, loadGameScreenContext.seasonNames[3], sizeof(loadGameScreenContext.seasonNames[0]));
     setGameVariableString(15, loadGameScreenContext.dateEndings[3], 2);
-    
+
     showDiarySelectScreen(1, loadGameScreenContext.diaryHighlighted);
-    
+
     setMainLoopCallbackFunctionIndex(SELECT_GAME);
-    
+
 }
 
 void resetGamePakState(void) {
@@ -833,8 +838,8 @@ void gameSelectCallback(void) {
                     if (loadGameScreenContext.flags[loadGameScreenContext.diaryHighlighted] & 2) {
                         setDiaryCursorPosition(1, loadGameScreenContext.diaryHighlighted, 0xFF);
                         loadGameScreenContext.action = LOAD_GAME_ACTION_PICK_MOVE_DEST;
-                        loadGameScreenContext.unk_86 = loadGameScreenContext.diaryHighlighted;
-                        loadGameScreenContext.unk_88 = loadGameScreenContext.showControllerPakScreen;
+                        loadGameScreenContext.unk_72 = loadGameScreenContext.diaryHighlighted;
+                        loadGameScreenContext.unk_74 = loadGameScreenContext.showControllerPakScreen;
                         playSfx(0);
                     
                     }
@@ -860,8 +865,8 @@ void gameSelectCallback(void) {
 
             if (loadGameScreenContext.showControllerPakScreen == FALSE) {
                 
-                if (loadGameScreenContext.unk_88 == FALSE) {
-                    setDiaryCursorPosition(1, loadGameScreenContext.unk_86, 0xFF);
+                if (loadGameScreenContext.unk_74 == FALSE) {
+                    setDiaryCursorPosition(1, loadGameScreenContext.unk_72, 0xFF);
                 }
                 
                 if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
@@ -908,8 +913,8 @@ void gameSelectCallback(void) {
 
             } else {
                 
-                if (loadGameScreenContext.showControllerPakScreen == loadGameScreenContext.unk_88) {
-                    setDiaryCursorPosition(1, loadGameScreenContext.unk_86, 0xFF);
+                if (loadGameScreenContext.showControllerPakScreen == loadGameScreenContext.unk_74) {
+                    setDiaryCursorPosition(1, loadGameScreenContext.unk_72, 0xFF);
                 }
                 
                 if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
@@ -1052,7 +1057,7 @@ void gameSelectCallback(void) {
                 resetAnimationState(0xB2);
                 
                 set = TRUE;
-                handleSramOperation(loadGameScreenContext.unk_86, loadGameScreenContext.unk_88, loadGameScreenContext.diaryHighlighted, loadGameScreenContext.showControllerPakScreen);
+                handleSramOperation(loadGameScreenContext.unk_72, loadGameScreenContext.unk_74, loadGameScreenContext.diaryHighlighted, loadGameScreenContext.showControllerPakScreen);
                 loadAllDiarySlots();
                 loadGameScreenContext.action = LOAD_GAME_ACTION_SELECT_COLUMN;
                 playSfx(0);
@@ -1506,7 +1511,7 @@ void initializeNewGameState(void) {
     D_8016FFF0 = 0;
     D_8016FFF4 = 0;
 
-    for (j = 0; j < 32; j++) {
+    for (j = 0; j < MAX_TOOLBOX_SLOTS; j++) {
         gToolboxSlots[j] = 0;
     }
 
@@ -1865,7 +1870,7 @@ bool loadGameFromSram(u8 saveSlot, bool gamePakEnabled) {
     D_8016FFF0 = buff->unk_110;
     D_8016FFF4 = buff->unk_114;
 
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < MAX_TOOLBOX_SLOTS; i++) {
         gToolboxSlots[i] = *((u8*)buff + 0x380 + i);
     }
 
@@ -2235,7 +2240,7 @@ bool saveGameToSram(u8 saveSlot) {
     sramBuffer.unk_110 = D_8016FFF0;
     sramBuffer.unk_114 = D_8016FFF4;
 
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < MAX_TOOLBOX_SLOTS; i++) {
         *((u8*)buff + 0x380 + i) = gToolboxSlots[i];
     }
 
@@ -2722,34 +2727,34 @@ void setupRankingListMessageBoxes(bool noFadeIn) {
 
     // render percentages
     if (gFarmRankingData.flags[0] & RANKING_FLAG_ACTIVE) {
-        setNumberSprites(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 48.0f, 40.0f, 16.0f, 10);
+        setNumberSprites(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_LIST_NUMBER_X, 40.0f, 16.0f, 10);
         dmaNumberSprites(0, gFarmRankingData.years[0], 1, 3);
         setNumberSprites(5, 0x8B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 116.0f, 40.0f, 16.0f, 10);
         dmaNumberSprites(5, gFarmRankingData.scores[0], 2, 3);
     }
 
     if (gFarmRankingData.flags[1] & RANKING_FLAG_ACTIVE) {
-        setNumberSprites(1, 0x8E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 48.0f, 8.0f, 16.0f, 10);
+        setNumberSprites(1, 0x8E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_LIST_NUMBER_X, 8.0f, 16.0f, 10);
         dmaNumberSprites(1, gFarmRankingData.years[1], 1, 3);
         setNumberSprites(6, 0x90, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 116.0f, 8.0f, 16.0f, 10);
         dmaNumberSprites(6, gFarmRankingData.scores[1], 2, 3);
     }
     
     if (gFarmRankingData.flags[2] & RANKING_FLAG_ACTIVE) {
-        setNumberSprites(2, 0x93, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 48.0f, -24.0f, 16.0f, 10);
+        setNumberSprites(2, 0x93, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_LIST_NUMBER_X, -24.0f, 16.0f, 10);
         dmaNumberSprites(2, gFarmRankingData.years[2], 1, 3);
         setNumberSprites(7, 0x95, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 116.0f, -24.0f, 16.0f, 10);
         dmaNumberSprites(7, gFarmRankingData.scores[2], 2, 3);
     }
     if (gFarmRankingData.flags[3] & RANKING_FLAG_ACTIVE) {
-        setNumberSprites(3, 0x98, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 48.0f, -56.0f, 16.0f, 10);
+        setNumberSprites(3, 0x98, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_LIST_NUMBER_X, -56.0f, 16.0f, 10);
         dmaNumberSprites(3, gFarmRankingData.years[3], 1, 3);
         setNumberSprites(8, 0x9A, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 116.0f, -56.0f, 16.0f, 10);
         dmaNumberSprites(8, gFarmRankingData.scores[3], 2, 3);
     }
     
     if (gFarmRankingData.flags[4] & RANKING_FLAG_ACTIVE) {
-        setNumberSprites(4, 0x9D, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 48.0f, -88.0f, 16.0f, 10);
+        setNumberSprites(4, 0x9D, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_LIST_NUMBER_X, -88.0f, 16.0f, 10);
         dmaNumberSprites(4, gFarmRankingData.years[4], 1, 3);
         setNumberSprites(9, 0x9F, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 116.0f, -88.0f, 16.0f, 10);
         dmaNumberSprites(9, gFarmRankingData.scores[4], 2, 3);
@@ -2905,37 +2910,37 @@ void setupRankingDetailMessageBoxes(u8 slot) {
         initializeMessageBox(5, TEXT_1_TEXT_INDEX, 17, MESSAGE_BOX_MODE_NO_INPUT);
     }
 
-    setNumberSprites(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 48.0f, 80.0f, 16.0f, 10);
+    setNumberSprites(0, 0x89, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_DETAIL_NUMBER_X1, 80.0f, 16.0f, 10);
     dmaNumberSprites(0, gFarmRankingData.years[slot], 1, 3);
 
     setNumberSprites(1, 0x8B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 116.0f, 80.0f, 16.0f, 10);
     dmaNumberSprites(1, gFarmRankingData.scores[slot], 2, 3);
 
-    setNumberSprites(2, 0xA4, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, -26.0f, -32.0f, 16.0f, 10);
+    setNumberSprites(2, 0xA4, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_DETAIL_NUMBER_X2, -32.0f, 16.0f, 10);
     dmaNumberSprites(2, gFarmRankingData.photoCount[slot], 1, 3);
     
-    setNumberSprites(3, 0xA6, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, -26.0f, -48.0f, 16.0f, 10);
+    setNumberSprites(3, 0xA6, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_DETAIL_NUMBER_X2, -48.0f, 16.0f, 10);
     dmaNumberSprites(3, gFarmRankingData.recipeCount[slot], 1, 3);
     
-    setNumberSprites(4, 0xA8, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, -26.0f, -64.0f, 16.0f, 10);
+    setNumberSprites(4, 0xA8, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_DETAIL_NUMBER_X2, -64.0f, 16.0f, 10);
     dmaNumberSprites(4, (gFarmRankingData.houseExtensions[slot] * 100) / 6, 2, 3);
     
-    setNumberSprites(5, 0xAB, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, -26.0f, -80.0f, 16.0f, 10);
+    setNumberSprites(5, 0xAB, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_DETAIL_NUMBER_X2, -80.0f, 16.0f, 10);
     dmaNumberSprites(5, gFarmRankingData.grassTiles[slot], 2, 3);
     
-    setNumberSprites(6, 0x8E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, 34.0f, 16.0f, 10);
+    setNumberSprites(6, 0x8E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_DETAIL_NUMBER_X3, 34.0f, 16.0f, 10);
     dmaNumberSprites(6, gFarmRankingData.cropsShipped[slot], 4, 3);
     
-    setNumberSprites(7, 0x93, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, 6.0f, 16.0f, 10);
+    setNumberSprites(7, 0x93, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_DETAIL_NUMBER_X3, 6.0f, 16.0f, 10);
     dmaNumberSprites(7, gFarmRankingData.milkShipped[slot], 3, 3);
     
-    setNumberSprites(8, 0x97, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, -22.0f, 16.0f, 10);
+    setNumberSprites(8, 0x97, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_DETAIL_NUMBER_X3, -22.0f, 16.0f, 10);
     dmaNumberSprites(8, gFarmRankingData.eggsShipped[slot], 3, 3);
     
-    setNumberSprites(9, 0x9B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, -50.0f, 16.0f, 10);
+    setNumberSprites(9, 0x9B, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_DETAIL_NUMBER_X3, -50.0f, 16.0f, 10);
     dmaNumberSprites(9, gFarmRankingData.fishCaught[slot], 2, 3);
     
-    setNumberSprites(0xA, 0x9E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, 98.0f, -78.0f, 16.0f, 10);
+    setNumberSprites(0xA, 0x9E, (u32)&_rankingsTextureSegmentRomStart, (u32)&_rankingsTextureSegmentRomEnd, (u32)&_rankingsAssetsIndexSegmentRomStart, (u32)&_rankingsAssetsIndexSegmentRomEnd, (u8*)FARM_RANKINGS_TEXTURE_BUFFER, (u16*)FARM_RANKINGS_PALETTE_BUFFER, (AnimationFrameMetadata*)FARM_RANKINGS_ANIMATION_FRAME_METADATA_BUFFER, (u32*)FARM_RANKINGS_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, 0, 4, 0, RANKING_DETAIL_NUMBER_X3, -78.0f, 16.0f, 10);
     dmaNumberSprites(0xA, gFarmRankingData.gold[slot], 5, 3);
 
     setMessageBoxRGBA(0, 255, 255, 255, 255);

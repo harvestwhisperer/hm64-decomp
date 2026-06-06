@@ -97,6 +97,7 @@ volatile u8 startGfxTask(void) {
     gfxTaskNo += 1;
     
     return gfxTaskNo;
+    
 }
 
 volatile u8 doViewportGfxTask(void) {

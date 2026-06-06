@@ -2439,7 +2439,8 @@ bool checkShopItemShouldBeDisplayed(u16 itemIndex) {
 
         case RANCH_STORE_MIRACLE_POTION_ITEM:
 
-            if (getTotalFarmAnimalsByType(2) && !getTotalFarmAnimalsByType(3) && getTotalPregnantFamAnimals() == 0) {
+        if (getTotalFarmAnimalsByType(2) && !getTotalFarmAnimalsByType(3) && getTotalPregnantFamAnimals() == 0) 
+            {
                 if (!checkHaveTool(MIRACLE_POTION)) {
                     result = 1;
                 }

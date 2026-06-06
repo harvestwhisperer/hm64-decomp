@@ -16,8 +16,8 @@
 #include "mainLoop.h"
 
 #include "assetIndices/maps.h"
-                    
-// forward declarations           
+
+// forward declarations
 void setGlobalSeasonName(u8);
 void clearMonthlyLetterBits(void);
 void setupNewYear(void);
@@ -38,26 +38,26 @@ u8 gCurrentSeasonName[6];
 u8 gGlobalSeasonName[6];
 
 void handleTimeUpdates(void) {
-    
+
     if ((getLevelFlags(gBaseMapIndex) & LEVEL_TIME_FLOWS) && !checkDailyEventBit(SUSPEND_TIME_DURING_ANIMATION)) {
         updateClock(TRUE);
     }
-    
+
     if (gHour == 0 && gMinutes == 0 && gSeconds == 0) {
         setSeasonName();
     }
-    
+
     if (gHour == 6) {
-        
+
         if (!checkDailyEventBit(DAY_START_6AM_GUARD)) {
 
             setPlayerAction(254, ANIM_DEFAULT);
             handleExitLevel(1, END_OF_DAY_2);
-            
+
         }
 
     } else {
-        
+
         clearDailyEventBit(DAY_START_6AM_GUARD);
 
         if (!(gCutsceneCompletionFlags & CUTSCENE_COMPLETION_OWN_AUDIO_LIGHTING)) {
@@ -65,9 +65,9 @@ void handleTimeUpdates(void) {
         }
 
     }
-    
+
     if (NIGHTTIME) {
-        
+
         if (!checkDailyEventBit(NIGHTTIME_AUDIO_STOPPED)) {
 
             stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
@@ -77,20 +77,20 @@ void handleTimeUpdates(void) {
 
             setLevelAudio(gBaseMapIndex, gSeason, gHour);
             setAudioSequenceVolume(gCurrentAudioSequenceIndex, gAudioSequenceVolume);
- 
+
             setDailyEventBit(NIGHTTIME_AUDIO_STARTED);
 
         }
-        
+
     }
-    
+
     if (gHour < 6 && gWeather != RAIN && gBaseMapIndex != BEACH && !checkDailyEventBit(PREDAWN_AUDIO_STOPPED)) {
         stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
         setDailyEventBit(PREDAWN_AUDIO_STOPPED);
     }
-    
+
     handleTimedDailyCutscenes(gBaseMapIndex);
-    
+
 }
 
 void updateClock(u8 incrementSeconds) {
@@ -98,12 +98,12 @@ void updateClock(u8 incrementSeconds) {
     if (incrementSeconds == TRUE) {
         gSeconds += 8;
     }
-    
+
     if (gSeconds >= 60) {
         gSeconds = 0;
         gMinutes++;
     }
-    
+
     if (gMinutes >= 60) {
         gMinutes = 0;
         gHour++;
@@ -132,17 +132,17 @@ void updateClock(u8 incrementSeconds) {
         gYear++;
         setupNewYear();
     }
-    
+
     if (gYear >= 100) {
         gYear = 99;
     }
-    
+
     gSeasonTomorrow = gSeason;
-    
+
     if ((gDayOfMonth + 1) >= 31) {
         gSeasonTomorrow = gSeason + 1;
     }
-    
+
     if (gSeasonTomorrow >= 5) {
         gSeasonTomorrow = SPRING;
     }
@@ -150,11 +150,11 @@ void updateClock(u8 incrementSeconds) {
 
 void setupNewYear(void) {
 
-    gHarvestKing = gHarvestCoinFinder;  
+    gHarvestKing = gHarvestCoinFinder;
     gFlowerFestivalGoddess = 0xFF;
     gHarvestCoinFinder = 0xFF;
     gVoteForFlowerFestivalGoddess = 0xFF;
-    
+
     clearLifeEventBit(WEATHER_WISH);
 
     clearReadLetterBit(MAIL_MARIA_SPRING);
@@ -205,14 +205,14 @@ void clearMonthlyLetterBits(void) {
 }
 
 void setClockNewDay(void) {
-    
+
     gHour = 6;
     gMinutes = 0;
     gSeconds = 0;
-    
+
     gDayOfMonth++;
     gDayOfWeek++;
-   
+
     updateClock(FALSE);
 
 }
@@ -251,9 +251,9 @@ void setClockNewDay(void) {
 // }
 
 void setSeasonName(void) {
-
+    
     setGlobalSeasonName(gSeason);
-
+    
     gCurrentSeasonName[0] = gGlobalSeasonName[0];
     gCurrentSeasonName[1] = gGlobalSeasonName[1];
     gCurrentSeasonName[2] = gGlobalSeasonName[2];
@@ -267,43 +267,44 @@ void setSeasonName(void) {
 
 void setGlobalSeasonName(u8 season) {
 
-    switch(season) {        
-        
+    switch(season) {
+
         case SPRING:
-            gGlobalSeasonName[0] = char_S; 
-            gGlobalSeasonName[1] = char_p; 
-            gGlobalSeasonName[2] = char_r; 
-            gGlobalSeasonName[3] = char_i; 
-            gGlobalSeasonName[4] = char_n; 
-            gGlobalSeasonName[5] = char_g; 
+            gGlobalSeasonName[0] = char_S;
+            gGlobalSeasonName[1] = char_p;
+            gGlobalSeasonName[2] = char_r;
+            gGlobalSeasonName[3] = char_i;
+            gGlobalSeasonName[4] = char_n;
+            gGlobalSeasonName[5] = char_g;
             break;
         case SUMMER:
-            gGlobalSeasonName[0] = char_S; 
-            gGlobalSeasonName[1] = char_u; 
-            gGlobalSeasonName[2] = char_m; 
-            gGlobalSeasonName[3] = char_m; 
-            gGlobalSeasonName[4] = char_e; 
+            gGlobalSeasonName[0] = char_S;
+            gGlobalSeasonName[1] = char_u;
+            gGlobalSeasonName[2] = char_m;
+            gGlobalSeasonName[3] = char_m;
+            gGlobalSeasonName[4] = char_e;
             gGlobalSeasonName[5] = char_r;
             break;
         case AUTUMN:
-            gGlobalSeasonName[0] = char_A; 
-            gGlobalSeasonName[1] = char_u; 
-            gGlobalSeasonName[2] = char_t; 
-            gGlobalSeasonName[3] = char_u; 
-            gGlobalSeasonName[4] = char_m; 
-            gGlobalSeasonName[5] = char_n; 
+            gGlobalSeasonName[0] = char_A;
+            gGlobalSeasonName[1] = char_u;
+            gGlobalSeasonName[2] = char_t;
+            gGlobalSeasonName[3] = char_u;
+            gGlobalSeasonName[4] = char_m;
+            gGlobalSeasonName[5] = char_n;
             break;
         case WINTER:
-            gGlobalSeasonName[0] = char_W; 
-            gGlobalSeasonName[1] = char_i; 
-            gGlobalSeasonName[2] = char_n; 
-            gGlobalSeasonName[3] = char_t; 
-            gGlobalSeasonName[4] = char_e; 
+            gGlobalSeasonName[0] = char_W;
+            gGlobalSeasonName[1] = char_i;
+            gGlobalSeasonName[2] = char_n;
+            gGlobalSeasonName[3] = char_t;
+            gGlobalSeasonName[4] = char_e;
             gGlobalSeasonName[5] = char_r;
             break;
         default:
             break;
 
     }
-    
+
 }
+

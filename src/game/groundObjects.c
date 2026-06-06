@@ -1196,10 +1196,10 @@ void updateGroundObjectsOvernight(void) {
     u8 i, j;
     u8 flags;
     u8 currentGroundObject;
-    
+
     // farm
     for (i = 0; i < FIELD_HEIGHT; i++) {
-        
+
         for (j = 0; j < FIELD_WIDTH; j++) {
 
             currentGroundObject = farmFieldTiles[i][j];
@@ -1340,18 +1340,18 @@ void updateGroundObjectsOvernight(void) {
 }
                     
                 }
-                
+
                 farmFieldTiles[i][j] = currentGroundObject;
-                
+
             }
-            
+
         }
-        
+
     }
 
     // greenhouse
     for (i = 0; i < FIELD_HEIGHT; i++) {
-     
+
         for (j = 0; j < FIELD_WIDTH; j++) {
 
             currentGroundObject = greenhouseFieldTiles[i][j];

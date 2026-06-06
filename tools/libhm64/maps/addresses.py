@@ -13,17 +13,33 @@ from typing import List, Tuple, Dict, Optional
 import numpy as np
 
 from ..common.rom import get_rom
-from ..data import MAP_ADDRESSES_CSV
+from ..data import MAP_ADDRESSES_CSV, MAP_ADDRESSES_JP_CSV
+
+# Active map-addresses CSV. Defaults to US; switch via set_region().
+_active_csv: Path = MAP_ADDRESSES_CSV
 
 # Cache for CSV data
 _csv_cache: Optional[List[Tuple[str, ...]]] = None
+
+
+def set_region(region: str) -> None:
+    """Select which region's map-address CSV the loaders use ('us' or 'jp')."""
+    global _active_csv
+    region = region.lower()
+    if region == 'us':
+        _active_csv = MAP_ADDRESSES_CSV
+    elif region == 'jp':
+        _active_csv = MAP_ADDRESSES_JP_CSV
+    else:
+        raise ValueError(f"Unknown region: {region!r} (expected 'us' or 'jp')")
+    clear_cache()
 
 
 def _load_csv_cache() -> List[Tuple[str, ...]]:
     """Load and cache CSV data."""
     global _csv_cache
     if _csv_cache is None:
-        with open(MAP_ADDRESSES_CSV, newline='', encoding='utf-8') as f:
+        with open(_active_csv, newline='', encoding='utf-8') as f:
             reader = csv.reader(f)
             _csv_cache = [tuple(row) for row in reader]
     return _csv_cache

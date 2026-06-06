@@ -25,10 +25,10 @@
 u32 D_8016FB00;
 
 void setupGameStart(void) {
-    
+
     // set up game
-    initializeAll(); 
-    
+    initializeAll();
+
     if (contPattern & 1) {
 #if TESTING
         initializeNewGameState();
@@ -48,7 +48,7 @@ void setupGameStart(void) {
         initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, TEXT_1_TEXT_INDEX, 25, MESSAGE_BOX_MODE_NO_INPUT);
 
     }
-    
+
 }
 
 void startGame(void) {
@@ -68,14 +68,13 @@ void startGame(void) {
 #endif
 
     setMainLoopCallbackFunctionIndex(MAP_LOAD);
-    
+
 }
 
 // unused function: probably for sandboxing during development or demos
 // not in JP version
 /*
 void func_8004DFF8(void) {
-    
     setLifeEventBit(HAVE_HORSE);
     setLifeEventBit(HAVE_KITCHEN);
     setLifeEventBit(HAVE_BATHROOM);
@@ -98,34 +97,33 @@ void func_8004DFF8(void) {
     setLifeEventBit(WON_CALENDAR_STICKERS_FROM_RAFFLE);
     setLifeEventBit(HAVE_MUG);
     setLifeEventBit(HAVE_LUNCHEON_MAT);
-    
+
     setSpecialDialogueBit(HARVEST_GODDESS_OFFERING_ADVICE_DIALOGUE);
-    
+
     gPlayer.belongingsSlots[0] = TOMATO_HELD_ITEM;
-    
+
     initializeHorse();
-    
+
     horseInfo.grown = TRUE;
 
     setLifeEventBit(MARRIED);
     setLifeEventBit(WIFE_PREGNANT);
-    
+
     gWife = POPURI;
-    
+
     npcAffection[POPURI] = MAX_AFFECTION;
-    
+
     gSeason = WINTER;
     gDayOfMonth = 18;
-    
+
     dogInfo.affection = MAX_AFFECTION;
-    
+
     gHour = 8;
-    
+
     // max recipes
     recipesBits[0] = -1;
-    
+
     // unused game variable
     D_8016FB00 = 7;
-    
 }
 */

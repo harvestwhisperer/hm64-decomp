@@ -2,6 +2,13 @@
 Extract animation script data, character-avatar mapping, and standalone
 animation labels from the ROM into JSON under `assets/sprites/...`.
 
+Modding branches (`dev`, `dev-qol`) drop the splat animation-script and
+character-avatar segments and run this extractor inline with
+`make extract-sprites` to bootstrap the JSON source-of-truth files. The
+exporter then regenerates the C/H files from JSON on every build.
+
+Idempotent by default: any JSON already on disk is left alone so editor
+edits aren't clobbered. Pass `--force` to re-extract from the ROM.
 
 Inputs:
   - `tools/libhm64/data/animation_scripts_addresses.csv`  (entity + avatar ROM ranges)
@@ -45,6 +52,9 @@ SCRIPT_SPRITE_OVERRIDES: dict[str, str] = {
 }
 
 AVATAR_SCRIPT_NAME = "characterAvatars"
+# The avatar table is 143 entries; the splat segment range (F7118-F71B0) is
+# 152 bytes because the next segment is 8-byte aligned. The 9 trailing bytes
+# are alignment padding emitted by the linker, not part of the C array.
 AVATAR_COUNT = 143
 
 MASK_METADATA_OFFSET = 0x1FFF
@@ -119,8 +129,6 @@ def _load_character_avatars_csv() -> dict[int, tuple[str, str]]:
     """Read the canonical (character, expression) names keyed by ROM index.
 
     Source of truth for the macro names the text transpiler/extractor expect.
-    Missing or unparseable rows surface as empty strings so the caller can
-    decide whether to keep the entry unlabelled.
     """
     table: dict[int, tuple[str, str]] = {}
     if not CHARACTER_AVATARS_CSV.is_file():

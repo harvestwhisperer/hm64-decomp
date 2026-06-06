@@ -39,6 +39,12 @@ from .textures import save_texture_png
 _REPO_DIR = Path(__file__).resolve().parent.parent.parent.parent
 DEFAULT_OUTPUT_DIR = _REPO_DIR / "assets" / "sprites"
 
+# Baseroms live at the repo root, named per region.
+BASEROM_PATHS = {
+    'us': _REPO_DIR / "baserom.us.z64",
+    'jp': _REPO_DIR / "baserom.jp.z64",
+}
+
 
 def palette_to_json(pal_data: bytes) -> Dict:
     """Convert palette bytes to JSON format."""
@@ -403,9 +409,16 @@ def main():
     parser.add_argument('label', nargs='?', help='Sprite label (for extract command)')
     parser.add_argument('--output', '-o', type=str, default=str(DEFAULT_OUTPUT_DIR),
                         help='Output directory')
+    parser.add_argument('--region', choices=['us', 'jp'], default='us',
+                        help='ROM region: selects the address CSV and default baserom (default: us)')
+    parser.add_argument('--rom', type=str, default=None,
+                        help='Override the ROM path (defaults to baserom.<region>.z64 at repo root)')
 
     args = parser.parse_args()
     output_dir = Path(args.output)
+
+    addresses.set_region(args.region)
+    rom.set_rom_path(Path(args.rom) if args.rom else BASEROM_PATHS[args.region])
 
     if args.command == 'extract_all':
         extract_all(output_dir)
