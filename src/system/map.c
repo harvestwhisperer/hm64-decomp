@@ -2379,6 +2379,8 @@ bool activateMapAddition(u16 mapIndex, u16 mapAdditionIndex, bool loopFlag) {
 
             if (loopFlag) {
                 mm->mapAdditions[mapAdditionIndex].flags = MAP_ADDITION_ACTIVE | MAP_ADDITION_LOOPING;
+                // reset cache for overlay screens (toolbox, freezer, cabinet)
+                mapControllers[MAIN_MAP_INDEX].flags &= ~MAP_CONTROLLER_DATA_CACHED;
             }
 
         }
