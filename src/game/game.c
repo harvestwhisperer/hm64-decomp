@@ -1021,7 +1021,7 @@ inline void handleExitLevel(u16 arg0, u16 callbackIndex) {
     currentMusicIndex = getMusicIndexForMap(gBaseMapIndex, gSeason, gHour);
     nextMusicIndex = getMusicIndexForMap(nextMapIndex, gSeason, gHour);
 
-    if (currentMusicIndex != nextMusicIndex) {
+    if (callbackIndex != MAP_LOAD || currentMusicIndex != nextMusicIndex) {
         stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
     }
 
@@ -1063,7 +1063,8 @@ void exitLevelCallback(void) {
     nextMapIndex = getMapForSpawnPoint(gSpawnPointIndex);
     currentMusicIndex = getMusicIndexForMap(gBaseMapIndex, gSeason, gHour);
     nextMusicIndex = getMusicIndexForMap(nextMapIndex, gSeason, gHour);
-    skipAudioWait = (currentMusicIndex == nextMusicIndex);
+
+    skipAudioWait = (gameLoopContext.callbackIndex == MAP_LOAD) && (currentMusicIndex == nextMusicIndex);
 
     if (checkMapRGBADone(MAIN_MAP_INDEX) && (skipAudioWait || checkDefaultSequenceChannelOpen(gCurrentAudioSequenceIndex))) {
 
