@@ -759,6 +759,9 @@ extract-map-sprites:
 extract-cutscenes:
 	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.cutscenes.extractor --all --region $(REGION)
 
+extract-animations: extract-sprites
+	$(V)PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.animations.extractor --all
+
 # Extract .inst + .aifc directly from the ROM. The .inst is the canonical
 # sentinel — make tracks it as the prerequisite for repack. The recipe also
 # produces 147 .aifc files (and .wav previews) under sounds/ which the
