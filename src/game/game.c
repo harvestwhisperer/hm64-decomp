@@ -1021,6 +1021,7 @@ inline void handleExitLevel(u16 arg0, u16 callbackIndex) {
     currentMusicIndex = getMusicIndexForMap(gBaseMapIndex, gSeason, gHour);
     nextMusicIndex = getMusicIndexForMap(nextMapIndex, gSeason, gHour);
 
+    // if naming screen or end of day, stop audio
     if (callbackIndex != MAP_LOAD || currentMusicIndex != nextMusicIndex) {
         stopAudioSequenceWithDefaultFadeOut(gCurrentAudioSequenceIndex);
     }

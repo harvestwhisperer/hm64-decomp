@@ -34,6 +34,7 @@ void setupGameStart(void) {
         initializeNewGameState();
         initializeGameVariables();
         startGame();
+        acquireKeyItem(OCARINA);
 #else
         launchIntroCutscene(CUTSCENE_OPENING_LOGOS, SQUARE_SPAWN_POINT_1, 1);
 #endif

@@ -427,7 +427,9 @@ void handleGrassSeedsAnimation();
 void handleBlueFeatherAnimation();                                  
 void handleEmptyBottleAnimation();      
 void dismountHorse(void);    
-void handlePlayerInput(void);                              
+void handlePlayerInput(void);         
+void handleOcarinaAction(void);
+void handleOcarinaAnimation(void);                        
 
 static inline void resetAction() {
     gPlayer.actionPhaseFrameCounter = 0;
@@ -829,6 +831,9 @@ void updatePlayerAction(void) {
         case (ACQUIRING_MUSIC_BOX - 1):
             handleAcquireMusicBoxAction();
             break;
+        case (PLAYING_OCARINA - 1):
+            handleOcarinaAction();
+            break;
     }
     
     updateHeldItemState();
@@ -1039,6 +1044,19 @@ void handlePlayerInput(void) {
                 temp = 0xFF;
                 // whistle for horse
                 startAction(WHISTLING_FOR_HORSE, ANIM_WHISTLE_FOR_HORSE);
+            }
+        }
+    }
+
+    if (!set) {
+        if (!(gPlayer.flags & PLAYER_RIDING_HORSE)) {
+            if (checkButtonPressed(CONTROLLER_1, BUTTON_D_UP) && checkHaveKeyItem(OCARINA)) {
+                set = TRUE;
+                temp = 0xFF;
+                startAction(PLAYING_OCARINA, ANIM_OCARINA);
+                gPlayer.actionTimer = 0; // clear delay
+                // duck background music while playing
+                setAudioSequenceVolume(gCurrentAudioSequenceIndex, gAudioSequenceVolume / OCARINA_MUSIC_DUCK_DIVISOR);
             }
         }
     }
@@ -2393,7 +2411,44 @@ void handleHotSpringAction(void) {
 void handleWhistleForDogAction(void) {
     
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-        playSfx(0xA);
+        playSfx(WHISTLE);
+    }
+
+}
+
+static inline u8 getOcarinaNoteForButton(void) {
+    if (checkButtonPressed(CONTROLLER_1, BUTTON_C_LEFT))  return OCARINA_NOTE_1;
+    if (checkButtonPressed(CONTROLLER_1, BUTTON_C_DOWN))  return OCARINA_NOTE_2;
+    if (checkButtonPressed(CONTROLLER_1, BUTTON_C_UP))    return OCARINA_NOTE_3;
+    if (checkButtonPressed(CONTROLLER_1, BUTTON_C_RIGHT)) return OCARINA_NOTE_4;
+    if (checkButtonPressed(CONTROLLER_1, BUTTON_D_LEFT))  return OCARINA_NOTE_5;
+    if (checkButtonPressed(CONTROLLER_1, BUTTON_D_DOWN))  return OCARINA_NOTE_6;
+    if (checkButtonPressed(CONTROLLER_1, BUTTON_D_UP))    return OCARINA_NOTE_7;
+    if (checkButtonPressed(CONTROLLER_1, BUTTON_D_RIGHT)) return OCARINA_NOTE_8;
+    return 0xFF;
+}
+
+void handleOcarinaAction(void) {
+
+    if (gPlayer.actionPhase >= 2 && checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
+        setAudioSequenceVolume(gCurrentAudioSequenceIndex, gAudioSequenceVolume);
+        resetAction();
+        return;
+    }
+
+    // tick down the delay since the last note
+    if (gPlayer.actionTimer) {
+        gPlayer.actionTimer--;
+    }
+
+    // accept notes while holding (phase 2) or already playing (phase 4),
+    // but only once the per-note delay has elapsed
+    if ((gPlayer.actionPhase == 2 || gPlayer.actionPhase == 4) && !gPlayer.actionTimer) {
+        u8 note = getOcarinaNoteForButton();
+        if (note != 0xFF) {
+            playSfx(note);
+            gPlayer.actionPhase = 3; // request the head-bob (re-triggers if already playing)
+        }
     }
 
 }
@@ -2776,6 +2831,10 @@ void handlePlayerAnimation(void) {
             break;
         case ANIM_ACQUIRE_MUSIC_BOX:
             handleAcquireMusicBoxAnimation();
+            playerIdleCounter = 0;
+            break;
+        case ANIM_OCARINA:
+            handleOcarinaAnimation();
             playerIdleCounter = 0;
             break;
     }
@@ -3376,6 +3435,41 @@ void handleWhistleForDogAnimation(void) {
             resetAction();
             handleWhistleForDog();
         }
+
+    }
+
+}
+
+void handleOcarinaAnimation(void) {
+
+    switch (gPlayer.actionPhase) {
+
+        case 0: // take out ocarina
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_OCARINA_1);
+            gPlayer.actionPhase = 1;
+            break;
+
+        case 1: // raise finished
+            if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
+                setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_OCARINA_2);
+                gPlayer.actionPhase = 2;
+            }
+            break;
+
+        case 2: // holding, idle
+            break;
+
+        case 3: // note played
+            setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_OCARINA_3);
+            gPlayer.actionPhase = 4;
+            break;
+
+        case 4: // return to default
+            if (checkEntityAnimationStateChanged(ENTITY_PLAYER)) {
+                setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_OCARINA_2);
+                gPlayer.actionPhase = 2;
+            }
+            break;
 
     }
 

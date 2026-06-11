@@ -1182,12 +1182,12 @@ void loadDiarySelectScreen(void) {
         startSpriteAnimation(0x84, 1, 0);
 
         // Ranking button
-        dmaSprite(0xA2, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
-        setSpriteViewSpacePosition(0xA2, 0.0f, 0.0f, 8.0f);
-        setSpriteColor(0xA2, 0, 0, 0, 0);
-        setSpriteBlendMode(0xA2, SPRITE_BLEND_ALPHA_DECAL);
-        setBilinearFiltering(0xA2, TRUE);
-        startSpriteAnimation(0xA2, 6, 0);
+        dmaSprite(0xAD, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+        setSpriteViewSpacePosition(0xAD, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0xAD, 0, 0, 0, 0);
+        setSpriteBlendMode(0xAD, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xAD, TRUE);
+        startSpriteAnimation(0xAD, 6, 0);
         
         // diary book 1
         dmaSprite(0xA3, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
@@ -1339,7 +1339,13 @@ void loadDiarySelectScreen(void) {
         setBilinearFiltering(0x84, TRUE);
         startSpriteAnimation(0x84, 1, 0);
 
-        
+        dmaSprite(0xAD, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);
+        setSpriteViewSpacePosition(0xAD, 0.0f, 0.0f, 8.0f);
+        setSpriteColor(0xAD, 0, 0, 0, 0);
+        setSpriteBlendMode(0xAD, SPRITE_BLEND_ALPHA_DECAL);
+        setBilinearFiltering(0xAD, TRUE);
+        startSpriteAnimation(0xAD, 6, 0);
+
         // data book icons
 
         dmaSprite(0xA3, (u32)&_loadGameScreenTextureSegmentRomStart, (u32)&_loadGameScreenTextureSegmentRomEnd, (u32)&_loadGameScreenAssetsIndexSegmentRomStart, (u32)&_loadGameScreenAssetsIndexSegmentRomEnd, NULL, NULL, (u8*)OVERLAY_SCREEN_TEXTURE_BUFFER, NULL, (u16*)OVERLAY_SCREEN_PALETTE_BUFFER, (AnimationFrameMetadata*)OVERLAY_SCREEN_ANIMATION_FRAME_METADATA_BUFFER, (u32*)OVERLAY_SCREEN_TEXTURE_TO_PALETTE_LOOKUP_BUFFER, NULL, 0, FALSE);

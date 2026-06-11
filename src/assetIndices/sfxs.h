@@ -54,6 +54,16 @@
 #define RUMBLE 89
 #define TOOL_ACQUISITION_FANFARE 90
 
+// one octave; major scale
+#define OCARINA_NOTE_1 104
+#define OCARINA_NOTE_2 105
+#define OCARINA_NOTE_3 106
+#define OCARINA_NOTE_4 107
+#define OCARINA_NOTE_5 108
+#define OCARINA_NOTE_6 109
+#define OCARINA_NOTE_7 110
+#define OCARINA_NOTE_8 111
+
 #define RAIN_SFX 32
 #define TYPHOON_SFX 34
 

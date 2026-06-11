@@ -46,6 +46,7 @@
 #define DROPPING_ITEM_IN_WATER 32
 // 33 unused
 #define ACQUIRING_MUSIC_BOX 34
+#define PLAYING_OCARINA 35
 
 /* animation handlers */
 #define ANIM_DEFAULT 0
@@ -81,6 +82,7 @@
 #define ANIM_DROP_ITEM_IN_WATER 33
 #define ANIM_DRINK_ALCOHOL 34
 #define ANIM_ACQUIRE_MUSIC_BOX 35
+#define ANIM_OCARINA 36
 
 #define PLAYER_RIDING_HORSE 0x1
 #define PLAYER_BATH_POSE_1 0x2
@@ -159,5 +161,8 @@ extern u8 gToolboxSlots[];
 // counter until napping animation
 extern u16 playerIdleCounter;
 extern u16 gSickDays;
+
+#define OCARINA_MUSIC_DUCK_DIVISOR 2
+#define OCARINA_NOTE_DELAY 2
 
 #endif

@@ -106,6 +106,7 @@ u8 checkShippingBinInteraction(u16 mapIndex) {
     }
 
     return result;
+    
 }
 
 u8 checkBarnAnimalFeedInteraction(u16 mapIndex) {
@@ -991,7 +992,7 @@ u8 handleBarnLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
                             gCurrentSeasonName[5] = gGlobalSeasonName[5];
 
                         
-                                                        convertNumberToGameVariableString(21, gFarmAnimals[1].birthdayDayOfMonth, 1);
+                            convertNumberToGameVariableString(21, gFarmAnimals[1].birthdayDayOfMonth, 1);
                             generateMilkTypeString(1);
                             setGameVariableString(38, gFarmAnimals[1].motherName, 6);
                             func_80061690(gFarmAnimals[1].milkType);

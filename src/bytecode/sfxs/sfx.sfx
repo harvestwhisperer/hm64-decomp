@@ -159,6 +159,17 @@
 .SFX_102:         sample
 .SFX_103:         sample
 
+; SFX_TYPE playback reads sfxList[id+1]
+.OCARINA_NOTE_PAD: sample
+.OCARINA_NOTE_1:  play instr=0x33 vol=0x7F note=0x30 length=0x30
+.OCARINA_NOTE_2:  play instr=0x33 vol=0x7F note=0x32 length=0x30
+.OCARINA_NOTE_3:  play instr=0x33 vol=0x7F note=0x34 length=0x30
+.OCARINA_NOTE_4:  play instr=0x33 vol=0x7F note=0x35 length=0x30
+.OCARINA_NOTE_5:  play instr=0x33 vol=0x7F note=0x37 length=0x30
+.OCARINA_NOTE_6:  play instr=0x33 vol=0x7F note=0x39 length=0x30
+.OCARINA_NOTE_7:  play instr=0x33 vol=0x7F note=0x3B length=0x30
+.OCARINA_NOTE_8:  play instr=0x33 vol=0x7F note=0x3C length=0x30
+
 priorities {
     .SELECT_1:        0
     .CLOSE:           100
@@ -264,4 +275,13 @@ priorities {
     .SFX_101:         100
     .SFX_102:         100
     .SFX_103:         100
+    .OCARINA_NOTE_PAD: 100
+    .OCARINA_NOTE_1:  100
+    .OCARINA_NOTE_2:  100
+    .OCARINA_NOTE_3:  100
+    .OCARINA_NOTE_4:  100
+    .OCARINA_NOTE_5:  100
+    .OCARINA_NOTE_6:  100
+    .OCARINA_NOTE_7:  100
+    .OCARINA_NOTE_8:  100
 }
