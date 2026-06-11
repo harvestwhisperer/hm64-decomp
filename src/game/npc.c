@@ -1237,7 +1237,7 @@ void setMariaLocation(void) {
                 
             }
 
-            if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+            if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                 maria->idleAnimation = MARIA_ANIMATION_HOLDING_DIRECTIONAL;
                 maria->movingAnimation = MARIA_ANIMATION_118;
             }
@@ -1361,7 +1361,7 @@ void setMariaLocation(void) {
                     
                 } 
 
-                if (getNPCBabyCarryingState(MARIA) == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+                if (getNPCBabyCarryingState(MARIA) == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                     maria->idleAnimation = MARIA_ANIMATION_HOLDING_DIRECTIONAL;
                     maria->movingAnimation = MARIA_ANIMATION_118;
                 }
@@ -1715,7 +1715,7 @@ void setPopuriLocation(void) {
                 
             }
 
-            if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+            if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                 popuri->idleAnimation = 122;
                 popuri->movingAnimation = 132;
             }
@@ -2187,11 +2187,11 @@ void setElliLocation(void) {
                 
             }
 
-            if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+            if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                 elli->idleAnimation = 0x69;
                 elli->movingAnimation = 0x73;
             }
-    
+
         } else if (!checkDailyEventBit(FESTIVAL)) {
 
             if (checkLifeEventBit(ELLI_JEFF_MARRIED)) {
@@ -2736,7 +2736,7 @@ void setAnnLocation(void) {
                 
             }
 
-            if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+            if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                 ann->idleAnimation = 0x6F;
                 ann->movingAnimation = 0x79;
             }
@@ -3236,11 +3236,11 @@ void setKarenLocation(void) {
                 
             }
 
-            if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+            if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                 karen->idleAnimation = 0x66;
                 karen->movingAnimation = 0x70;
             }
-    
+
         } else if (!checkDailyEventBit(FESTIVAL)) {
 
             if (checkLifeEventBit(KAREN_KAI_MARRIED)) {
@@ -3521,7 +3521,7 @@ void setBabyLocation(void) {
     
     clearDailyEventBit(PICKED_UP_BABY);
 
-    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
 
         baby->wanderRadiusX = 64;
         baby->wanderRadiusZ = 64;
