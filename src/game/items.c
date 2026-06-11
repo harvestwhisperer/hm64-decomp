@@ -374,7 +374,7 @@ u16 itemEntityMetadata[224][5] = {
     { ENTITY_ASSET_STATIC_ITEM,   226,   226,   226,   226 }, /* 199 */
     { ENTITY_ASSET_STATIC_ITEM,   227,   227,   227,   227 }, /* 200 */
     { ENTITY_ASSET_STATIC_ITEM,   228,   228,   228,   228 }, /* 201 */
-    { ENTITY_ASSET_STATIC_ITEM,   231,   231,   231,   231 }, /* OPEN_BOOK_HELD_ITEM */
+    { ENTITY_ASSET_STATIC_ITEM,   231,   231,   231,   231 }, /* LIBRARY_BOOK_HELD_ITEM */
     { ENTITY_ASSET_STATIC_ITEM,   234,   234,   234,   234 }, /* SICKLE_HELD_ITEM */
     { ENTITY_ASSET_STATIC_ITEM,   235,   235,   235,   235 }, /* SILVER_SICKLE_HELD_ITEM */
     { ENTITY_ASSET_STATIC_ITEM,   236,   236,   236,   236 }, /* GOLDEN_SICKLE_HELD_ITEM */
@@ -602,7 +602,7 @@ u16 itemPaletteOverrides[] = {
     0xFFFF, /* 199 */
     0xFFFF, /* 200 */
     0xFFFF, /* 201 */
-    0xFFFF, /* OPEN_BOOK_HELD_ITEM */
+    0xFFFF, /* LIBRARY_BOOK_HELD_ITEM */
     0xFFFF, /* SICKLE_HELD_ITEM */
     0xFFFF, /* SILVER_SICKLE_HELD_ITEM */
     0xFFFF, /* GOLDEN_SICKLE_HELD_ITEM */
@@ -829,7 +829,7 @@ u8 heldItemDialogueItemIndices[] = {
      HELD_ITEM_DIALOGUE_BABY, /* 199 */
      HELD_ITEM_DIALOGUE_BABY, /* 200 */
      HELD_ITEM_DIALOGUE_BABY, /* 201 */
-     0, /* OPEN_BOOK_HELD_ITEM */
+     0, /* LIBRARY_BOOK_HELD_ITEM */
      0, /* SICKLE_HELD_ITEM */
      0, /* SILVER_SICKLE_HELD_ITEM */
      0, /* GOLDEN_SICKLE_HELD_ITEM */
@@ -1056,7 +1056,7 @@ u16 itemTextIndices[] = {
      319, /* 199 */
      319, /* 200 */
      319, /* 201 */
-       0, /* OPEN_BOOK_HELD_ITEM */
+       0, /* LIBRARY_BOOK_HELD_ITEM */
        0, /* SICKLE_HELD_ITEM */
        0, /* SILVER_SICKLE_HELD_ITEM */
        0, /* GOLDEN_SICKLE_HELD_ITEM */
@@ -1283,7 +1283,7 @@ u16 itemShippingValues[] = {
        0, /* 199 */
        0, /* 200 */
        0, /* 201 */
-       0, /* OPEN_BOOK_HELD_ITEM */
+       0, /* LIBRARY_BOOK_HELD_ITEM */
        0, /* SICKLE_HELD_ITEM */
        0, /* SILVER_SICKLE_HELD_ITEM */
        0, /* GOLDEN_SICKLE_HELD_ITEM */
@@ -1510,7 +1510,7 @@ u16 itemFlags[] = {
     ITEM_TOOL | ITEM_THROWABLE, /* 199 */
     ITEM_TOOL | ITEM_THROWABLE, /* 200 */
     ITEM_TOOL | ITEM_THROWABLE, /* 201 */
-    0, /* OPEN_BOOK_HELD_ITEM */
+    0, /* LIBRARY_BOOK_HELD_ITEM */
     0, /* SICKLE_HELD_ITEM */
     0, /* SILVER_SICKLE_HELD_ITEM */
     0, /* GOLDEN_SICKLE_HELD_ITEM */
@@ -1737,7 +1737,7 @@ u8 itemStaminaRestorationValue[] = {
      0, /* 199 */
      0, /* 200 */
      0, /* 201 */
-     0, /* OPEN_BOOK_HELD_ITEM */
+     0, /* LIBRARY_BOOK_HELD_ITEM */
      0, /* SICKLE_HELD_ITEM */
      0, /* SILVER_SICKLE_HELD_ITEM */
      0, /* GOLDEN_SICKLE_HELD_ITEM */
@@ -1964,7 +1964,7 @@ u8 itemFatigueReductionValue[] = {
     0, /* 199 */
     0, /* 200 */
     0, /* 201 */
-    0, /* OPEN_BOOK_HELD_ITEM */
+    0, /* LIBRARY_BOOK_HELD_ITEM */
     0, /* SICKLE_HELD_ITEM */
     0, /* SILVER_SICKLE_HELD_ITEM */
     0, /* GOLDEN_SICKLE_HELD_ITEM */

@@ -51,7 +51,7 @@ void setupGameStart(void) {
 
 }
 
-// INCLUDE_ASM("asm/nonmatchings/game/gameStart", startGame);
+//INCLUDE_ASM("asm/nonmatchings/game/gameStart", startGame);
 
 void startGame(void) {
 
