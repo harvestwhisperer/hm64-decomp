@@ -375,7 +375,7 @@ void handleStaminaExhaustionAnimation(void);
 void handleFatigueThresholdAnimation(void);
 void handleIdleNapAnimation(void);
 void handleUnusedAnimation29(void);
-void handleDialogueSelectionAnimation(void);
+void handleLibraryBookReadAnimation(void);
 void handlePutFoodInDogBowlAnimation(void);
 void handleDropItemInWaterAnimation(void);
 void handleDrinkAlcoholAnimation(void);
@@ -3002,8 +3002,8 @@ void handlePlayerAnimation(void) {
             handleUnusedAnimation29();
             playerIdleCounter = 0;
             break;
-        case ANIM_DIALOGUE_SELECTING:
-            handleDialogueSelectionAnimation();
+        case ANIM_READ_LIBRARY_BOOK:
+            handleLibraryBookReadAnimation();
             playerIdleCounter = 0;
             break;
         case ANIM_PUT_FOOD_IN_DOG_BOWL:
@@ -3496,10 +3496,9 @@ void handleJumpAnimation(void) {
 // empty function
 void handleUnusedAnimation29(void) {}
 
-//INCLUDE_ASM("asm/nonmatchings/game/player", handleDialogueSelectionAnimation);
+// INCLUDE_ASM("asm/nonmatchings/game/player", handleLibraryBookReadAnimation);
 
-// dialogue selecting
-void handleDialogueSelectionAnimation(void) {
+void handleLibraryBookReadAnimation(void) {
 
     if (checkEntityAnimationStateChanged(ENTITY_PLAYER) || (gPlayer.actionPhase == 0)) {
         
@@ -3508,8 +3507,8 @@ void handleDialogueSelectionAnimation(void) {
             setEntityAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_HOLDING_NOD_SW);
             
             gPlayer.actionPhase = 1;
-            gPlayer.heldItem = 202;
-            gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_DIALOGUE_SELECTION, 202, 0, ITEM_CONTEXT_USE_ATTACHMENT);
+            gPlayer.heldItem = LIBRARY_BOOK_HELD_ITEM;
+            gPlayer.itemInfoIndex = initializeHeldItem(0, ITEM_STATE_DIALOGUE_SELECTION, LIBRARY_BOOK_HELD_ITEM, 0, ITEM_CONTEXT_USE_ATTACHMENT);
             
         } else {
             setMainLoopCallbackFunctionIndex(DIALOGUE_SELECTION);

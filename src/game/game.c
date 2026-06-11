@@ -1767,7 +1767,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
@@ -1795,7 +1795,7 @@ void dialogueMenuCallback() {
                     gPlayer.heldItem = 0;
 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -1829,7 +1829,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
                         
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                     
@@ -1857,7 +1857,7 @@ void dialogueMenuCallback() {
                     gPlayer.heldItem = 0;
                     
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -1892,7 +1892,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                     
@@ -1920,7 +1920,7 @@ void dialogueMenuCallback() {
                     gPlayer.heldItem = 0;
 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -1954,7 +1954,7 @@ void dialogueMenuCallback() {
                             gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
@@ -1982,7 +1982,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                 
@@ -2019,7 +2019,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                 
@@ -2050,7 +2050,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
         
@@ -2087,7 +2087,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                     
@@ -2118,7 +2118,7 @@ void dialogueMenuCallback() {
                     gPlayer.heldItem = 0;
                 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -2155,7 +2155,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
@@ -2186,7 +2186,7 @@ void dialogueMenuCallback() {
                     gPlayer.heldItem = 0;
 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -2223,7 +2223,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
@@ -2254,7 +2254,7 @@ void dialogueMenuCallback() {
                     gPlayer.heldItem = 0;
 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -2291,7 +2291,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
                     
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
@@ -2324,7 +2324,7 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -2361,7 +2361,7 @@ void dialogueMenuCallback() {
                             gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
@@ -2392,7 +2392,7 @@ void dialogueMenuCallback() {
                     gPlayer.heldItem = 0;
                     
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_DIALOGUE_SELECTING);
+                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
                 
