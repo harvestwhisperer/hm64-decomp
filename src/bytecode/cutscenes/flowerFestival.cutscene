@@ -45,6 +45,7 @@
 #include "texts.h"
 #include "dialogues.h"
 #include "entityBuffers.h"
+#include "entityAnimationLabels.h"
 
 #define MAIN_MAP_INDEX 0
 #define MARRIED 0
@@ -182,7 +183,7 @@
 
 .setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
-    SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
+    SET_ENTITY_ANIMATIONS 0, PLAYER_ANIMATION_STANDING_DIRECTIONAL, PLAYER_ANIMATION_WALKING_DIRECTIONAL, PLAYER_ANIMATION_RUNNING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_WALKING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_RUNNING_DIRECTIONAL
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
@@ -414,9 +415,9 @@
 .player_bow_to_girl:
     EXECUTE_SUBROUTINE .setup_player
     SET_OTHER_EXECUTOR_PTR 36, .track_player_then_exit
-    SET_ENTITY_DIRECTIONAL_ANIMATION 24
+    SET_ENTITY_DIRECTIONAL_ANIMATION PLAYER_ANIMATION_HOLDING_DIRECTIONAL
     SET_WAIT_FRAMES 20
-    SET_ENTITY_DIRECTIONAL_ANIMATION 0
+    SET_ENTITY_DIRECTIONAL_ANIMATION PLAYER_ANIMATION_STANDING_DIRECTIONAL
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
     PAUSE_ENTITY 0
     DEACTIVATE_SELF
@@ -526,49 +527,79 @@
     EXECUTE_SUBROUTINE .mayor_player_king_start_dance
 
 .mayor_harris_g0:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .mayor_king_harris_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_harris_g0_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gSumGirlsWithHighAffection, .mayor_king_harris_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_harris_g0_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .mayor_king_harris_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_harris_g1:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .mayor_king_harris_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_harris_g1_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gSumGirlsWithHighAffection, .mayor_king_harris_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_harris_g1_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .mayor_king_harris_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_harris_g2:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .mayor_king_harris_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_harris_g2_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gSumGirlsWithHighAffection, .mayor_king_harris_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_harris_g2_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .mayor_king_harris_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_harris_g3:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .mayor_king_harris_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_harris_g3_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gSumGirlsWithHighAffection, .mayor_king_harris_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_harris_g3_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .mayor_king_harris_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_harris_g4:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .mayor_king_harris_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_harris_g4_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gSumGirlsWithHighAffection, .mayor_king_harris_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_harris_g4_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .mayor_king_harris_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_choose_king_gray:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gSumGirlsWithHighAffection, .mayor_talk_done
@@ -587,49 +618,79 @@
     EXECUTE_SUBROUTINE .mayor_player_king_start_dance
 
 .mayor_gray_g0:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .mayor_king_gray_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_gray_g0_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gSumGirlsWithHighAffection, .mayor_king_gray_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_gray_g0_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .mayor_king_gray_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_gray_g1:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .mayor_king_gray_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_gray_g1_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gSumGirlsWithHighAffection, .mayor_king_gray_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_gray_g1_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .mayor_king_gray_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_gray_g2:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .mayor_king_gray_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_gray_g2_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gSumGirlsWithHighAffection, .mayor_king_gray_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_gray_g2_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .mayor_king_gray_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_gray_g3:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .mayor_king_gray_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_gray_g3_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gSumGirlsWithHighAffection, .mayor_king_gray_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_gray_g3_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .mayor_king_gray_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_gray_g4:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .mayor_king_gray_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_gray_g4_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gSumGirlsWithHighAffection, .mayor_king_gray_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_gray_g4_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .mayor_king_gray_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_choose_king_jeff:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gSumGirlsWithHighAffection, .mayor_talk_done
@@ -648,49 +709,79 @@
     EXECUTE_SUBROUTINE .mayor_player_king_start_dance
 
 .mayor_jeff_g0:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .mayor_king_jeff_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_jeff_g0_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gSumGirlsWithHighAffection, .mayor_king_jeff_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_jeff_g0_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .mayor_king_jeff_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_jeff_g1:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .mayor_king_jeff_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_jeff_g1_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gSumGirlsWithHighAffection, .mayor_king_jeff_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_jeff_g1_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .mayor_king_jeff_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_jeff_g2:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .mayor_king_jeff_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_jeff_g2_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gSumGirlsWithHighAffection, .mayor_king_jeff_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_jeff_g2_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .mayor_king_jeff_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_jeff_g3:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .mayor_king_jeff_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_jeff_g3_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gSumGirlsWithHighAffection, .mayor_king_jeff_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_jeff_g3_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .mayor_king_jeff_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_jeff_g4:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .mayor_king_jeff_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_jeff_g4_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gSumGirlsWithHighAffection, .mayor_king_jeff_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_jeff_g4_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .mayor_king_jeff_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_choose_king_cliff:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gSumGirlsWithHighAffection, .mayor_talk_done
@@ -709,49 +800,79 @@
     EXECUTE_SUBROUTINE .mayor_player_king_start_dance
 
 .mayor_cliff_g0:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .mayor_king_cliff_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_cliff_g0_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gSumGirlsWithHighAffection, .mayor_king_cliff_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_cliff_g0_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .mayor_king_cliff_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_cliff_g1:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .mayor_king_cliff_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_cliff_g1_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gSumGirlsWithHighAffection, .mayor_king_cliff_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_cliff_g1_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .mayor_king_cliff_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_cliff_g2:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .mayor_king_cliff_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_cliff_g2_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gSumGirlsWithHighAffection, .mayor_king_cliff_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_cliff_g2_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .mayor_king_cliff_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_cliff_g3:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .mayor_king_cliff_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_cliff_g3_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gSumGirlsWithHighAffection, .mayor_king_cliff_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_cliff_g3_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .mayor_king_cliff_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_cliff_g4:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .mayor_king_cliff_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_cliff_g4_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gSumGirlsWithHighAffection, .mayor_king_cliff_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_cliff_g4_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .mayor_king_cliff_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_choose_king_kai:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gSumGirlsWithHighAffection, .mayor_talk_done
@@ -770,49 +891,79 @@
     EXECUTE_SUBROUTINE .mayor_player_king_start_dance
 
 .mayor_kai_g0:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .mayor_king_kai_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_kai_g0_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gSumGirlsWithHighAffection, .mayor_king_kai_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_kai_g0_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .mayor_king_kai_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_kai_g1:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .mayor_king_kai_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_kai_g1_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gSumGirlsWithHighAffection, .mayor_king_kai_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_kai_g1_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .mayor_king_kai_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_kai_g2:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .mayor_king_kai_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_kai_g2_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gSumGirlsWithHighAffection, .mayor_king_kai_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_kai_g2_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .mayor_king_kai_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_kai_g3:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .mayor_king_kai_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_kai_g3_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gSumGirlsWithHighAffection, .mayor_king_kai_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_kai_g3_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .mayor_king_kai_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_kai_g4:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .mayor_king_kai_cue
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .mayor_kai_g4_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 5, 5, gSumGirlsWithHighAffection, .mayor_king_kai_cue
     EXECUTE_SUBROUTINE .mayor_talk_done
 
+#ifndef _JP
 .mayor_kai_g4_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .mayor_king_kai_cue
     RETURN_FROM_SUBROUTINE
+#endif
 
 .mayor_player_king_prompt:
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_49,0
@@ -1160,9 +1311,9 @@
     EXECUTE_SUBROUTINE .setup_player
     SET_ASSET_ROTATION 0
     SPAWN_EXECUTOR 32, .power_nut_shine
-    SET_ENTITY_DIRECTIONAL_ANIMATION 24
+    SET_ENTITY_DIRECTIONAL_ANIMATION PLAYER_ANIMATION_HOLDING_DIRECTIONAL
     SET_WAIT_FRAMES 30
-    SET_ENTITY_ANIMATION 437
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_EATING
     WAIT_ENTITY_ANIMATION
     SET_SPECIAL_BIT 7, acquiredPowerNutBits
     UPDATE_U8_VALUE 15, 250, gMaximumStamina
@@ -1309,7 +1460,11 @@
     BRANCH_ON_SPECIAL_BIT 1, flags, .harris_chosen_check
     BRANCH_U8_VAR_WITHIN_RANGE 0, 59, npcAffection[HARRIS], .harris_talk_low
     BRANCH_U8_VAR_WITHIN_RANGE 60, 99, npcAffection[HARRIS], .harris_talk_mid
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .harris_talk_mid
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .harris_married_check
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[HARRIS], .harris_talk_high
 
 .harris_talk_done:
@@ -1319,22 +1474,30 @@
     CLEAR_SPECIAL_BIT 0, flags
     EXECUTE_SUBROUTINE .harris_wait_loop
 
+#ifndef _JP
 .harris_married_check:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .harris_talk_mid
     RETURN_FROM_SUBROUTINE
+#endif
 
 .harris_chosen_check:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gFlowerFestivalGoddess, .harris_chosen_talk
     RETURN_FROM_SUBROUTINE
 
 .harris_chosen_talk:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .harris_chosen_wife_talk
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .harris_chosen_wife_check
+#endif
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,67
     EXECUTE_SUBROUTINE .harris_talk_done
 
+#ifndef _JP
 .harris_chosen_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .harris_chosen_wife_talk
     RETURN_FROM_SUBROUTINE
+#endif
 
 .harris_chosen_wife_talk:
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,105
@@ -1393,7 +1556,11 @@
     BRANCH_ON_SPECIAL_BIT 1, flags, .gray_chosen_check
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[GRAY], .gray_talk_low
     BRANCH_U8_VAR_WITHIN_RANGE 80, 149, npcAffection[GRAY], .gray_talk_mid
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .gray_talk_mid
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .gray_married_check
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 150, 255, npcAffection[GRAY], .gray_talk_high
 
 .gray_talk_done:
@@ -1403,22 +1570,30 @@
     CLEAR_SPECIAL_BIT 0, flags
     EXECUTE_SUBROUTINE .gray_wait_loop
 
+#ifndef _JP
 .gray_married_check:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .gray_talk_mid
     RETURN_FROM_SUBROUTINE
+#endif
 
 .gray_chosen_check:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gFlowerFestivalGoddess, .gray_chosen_talk
     RETURN_FROM_SUBROUTINE
 
 .gray_chosen_talk:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .gray_chosen_wife_talk
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .gray_chosen_wife_check
+#endif
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,73
     EXECUTE_SUBROUTINE .gray_talk_done
 
+#ifndef _JP
 .gray_chosen_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .gray_chosen_wife_talk
     RETURN_FROM_SUBROUTINE
+#endif
 
 .gray_chosen_wife_talk:
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,106
@@ -1477,7 +1652,11 @@
     BRANCH_ON_SPECIAL_BIT 1, flags, .jeff_chosen_check
     BRANCH_U8_VAR_WITHIN_RANGE 0, 59, npcAffection[JEFF], .jeff_talk_low
     BRANCH_U8_VAR_WITHIN_RANGE 60, 99, npcAffection[JEFF], .jeff_talk_mid
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .jeff_talk_mid
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .jeff_married_check
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[JEFF], .jeff_talk_high
 
 .jeff_talk_done:
@@ -1487,22 +1666,30 @@
     CLEAR_SPECIAL_BIT 0, flags
     EXECUTE_SUBROUTINE .jeff_wait_loop
 
+#ifndef _JP
 .jeff_married_check:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .jeff_talk_mid
     RETURN_FROM_SUBROUTINE
+#endif
 
 .jeff_chosen_check:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gFlowerFestivalGoddess, .jeff_chosen_talk
     RETURN_FROM_SUBROUTINE
 
 .jeff_chosen_talk:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .jeff_chosen_wife_talk
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .jeff_chosen_wife_check
+#endif
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,79
     EXECUTE_SUBROUTINE .jeff_talk_done
 
+#ifndef _JP
 .jeff_chosen_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .jeff_chosen_wife_talk
     RETURN_FROM_SUBROUTINE
+#endif
 
 .jeff_chosen_wife_talk:
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,107
@@ -1561,7 +1748,11 @@
     BRANCH_ON_SPECIAL_BIT 1, flags, .cliff_chosen_check
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[CLIFF], .cliff_talk_low
     BRANCH_U8_VAR_WITHIN_RANGE 80, 149, npcAffection[CLIFF], .cliff_talk_mid
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cliff_talk_mid
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cliff_married_check
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 150, 255, npcAffection[CLIFF], .cliff_talk_high
 
 .cliff_talk_done:
@@ -1571,22 +1762,30 @@
     CLEAR_SPECIAL_BIT 0, flags
     EXECUTE_SUBROUTINE .cliff_wait_loop
 
+#ifndef _JP
 .cliff_married_check:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cliff_talk_mid
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cliff_chosen_check:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gFlowerFestivalGoddess, .cliff_chosen_talk
     RETURN_FROM_SUBROUTINE
 
 .cliff_chosen_talk:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cliff_chosen_wife_talk
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cliff_chosen_wife_check
+#endif
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,85
     EXECUTE_SUBROUTINE .cliff_talk_done
 
+#ifndef _JP
 .cliff_chosen_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cliff_chosen_wife_talk
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cliff_chosen_wife_talk:
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,108
@@ -1645,7 +1844,11 @@
     BRANCH_ON_SPECIAL_BIT 1, flags, .kai_chosen_check
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[KAI], .kai_talk_low
     BRANCH_U8_VAR_WITHIN_RANGE 80, 149, npcAffection[KAI], .kai_talk_mid
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .kai_talk_mid
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .kai_married_check
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 150, 255, npcAffection[KAI], .kai_talk_high
 
 .kai_talk_done:
@@ -1655,22 +1858,30 @@
     CLEAR_SPECIAL_BIT 0, flags
     EXECUTE_SUBROUTINE .kai_wait_loop
 
+#ifndef _JP
 .kai_married_check:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .kai_talk_mid
     RETURN_FROM_SUBROUTINE
+#endif
 
 .kai_chosen_check:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gFlowerFestivalGoddess, .kai_chosen_talk
     RETURN_FROM_SUBROUTINE
 
 .kai_chosen_talk:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .kai_chosen_wife_talk
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .kai_chosen_wife_check
+#endif
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,91
     EXECUTE_SUBROUTINE .kai_talk_done
 
+#ifndef _JP
 .kai_chosen_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .kai_chosen_wife_talk
     RETURN_FROM_SUBROUTINE
+#endif
 
 .kai_chosen_wife_talk:
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,109
@@ -1764,7 +1975,11 @@
     SPAWN_EXECUTOR 0, .player_bow_to_girl
     SET_ENTITY_DIRECTIONAL_ANIMATION 0
     SET_WAIT_FRAMES 20
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_wife_reunion
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .maria_married_check
+#endif
     BRANCH_ON_SPECIAL_BIT 26, lifeEventBits[0], .maria_life26_talk
     BRANCH_U8_VAR_WITHIN_RANGE 0, 99, npcAffection, .maria_talk_low
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection, .maria_talk_high
@@ -1776,9 +1991,11 @@
     CLEAR_SPECIAL_BIT 0, flags
     EXECUTE_SUBROUTINE .maria_wait_loop
 
+#ifndef _JP
 .maria_married_check:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_wife_reunion
     RETURN_FROM_SUBROUTINE
+#endif
 
 .maria_talk_low:
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,27
@@ -1915,7 +2132,11 @@
     SPAWN_EXECUTOR 0, .player_bow_to_girl
     SET_ENTITY_DIRECTIONAL_ANIMATION 0
     SET_WAIT_FRAMES 20
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .popuri_wife_reunion
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .popuri_married_check
+#endif
     BRANCH_ON_SPECIAL_BIT 27, lifeEventBits[0], .popuri_life27_talk
     BRANCH_U8_VAR_WITHIN_RANGE 0, 99, npcAffection[POPURI], .popuri_talk_low
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[POPURI], .popuri_talk_high
@@ -1927,9 +2148,11 @@
     CLEAR_SPECIAL_BIT 0, flags
     EXECUTE_SUBROUTINE .popuri_wait_loop
 
+#ifndef _JP
 .popuri_married_check:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .popuri_wife_reunion
     RETURN_FROM_SUBROUTINE
+#endif
 
 .popuri_talk_low:
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,35
@@ -2066,7 +2289,11 @@
     SPAWN_EXECUTOR 0, .player_bow_to_girl
     SET_ENTITY_DIRECTIONAL_ANIMATION 0
     SET_WAIT_FRAMES 20
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .elli_wife_reunion
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .elli_married_check
+#endif
     BRANCH_ON_SPECIAL_BIT 28, lifeEventBits[0], .elli_life28_talk
     BRANCH_U8_VAR_WITHIN_RANGE 0, 99, npcAffection[ELLI], .elli_talk_low
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[ELLI], .elli_talk_high
@@ -2078,9 +2305,11 @@
     CLEAR_SPECIAL_BIT 0, flags
     EXECUTE_SUBROUTINE .elli_wait_loop
 
+#ifndef _JP
 .elli_married_check:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .elli_wife_reunion
     RETURN_FROM_SUBROUTINE
+#endif
 
 .elli_talk_low:
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,41
@@ -2217,7 +2446,11 @@
     SPAWN_EXECUTOR 0, .player_bow_to_girl
     SET_ENTITY_DIRECTIONAL_ANIMATION 0
     SET_WAIT_FRAMES 20
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .ann_wife_reunion
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .ann_married_check
+#endif
     BRANCH_ON_SPECIAL_BIT 29, lifeEventBits[0], .ann_life29_talk
     BRANCH_U8_VAR_WITHIN_RANGE 0, 99, npcAffection[ANN], .ann_talk_low
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[ANN], .ann_talk_high
@@ -2229,9 +2462,11 @@
     CLEAR_SPECIAL_BIT 0, flags
     EXECUTE_SUBROUTINE .ann_wait_loop
 
+#ifndef _JP
 .ann_married_check:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .ann_wife_reunion
     RETURN_FROM_SUBROUTINE
+#endif
 
 .ann_talk_low:
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,49
@@ -2400,7 +2635,11 @@
     SPAWN_EXECUTOR 0, .player_bow_to_girl
     SET_ENTITY_DIRECTIONAL_ANIMATION 0
     SET_WAIT_FRAMES 20
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .karen_wife_reunion
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .karen_married_check
+#endif
     BRANCH_ON_SPECIAL_BIT 30, lifeEventBits[0], .karen_life30_talk
     INIT_MESSAGE_BOX_TYPE1 0, FLOWER_FESTIVAL_TEXT_INDEX,57
 
@@ -2411,9 +2650,11 @@
     CLEAR_SPECIAL_BIT 0, flags
     EXECUTE_SUBROUTINE .karen_wait_loop
 
+#ifndef _JP
 .karen_married_check:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .karen_wife_reunion
     RETURN_FROM_SUBROUTINE
+#endif
 
 .karen_chosen_check:
     BRANCH_ON_SPECIAL_BIT 30, lifeEventBits[0], .karen_life30_talk
@@ -2802,60 +3043,60 @@
     EXECUTE_SUBROUTINE .dance_loop_maria
 
 .dance_goddess_maria_bow:
-    SET_ENTITY_ANIMATION 660
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_3
     WAIT_ENTITY_ANIMATION
-    SET_ENTITY_ANIMATION 661
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_4
     WAIT_ENTITY_ANIMATION
-    SET_ENTITY_ANIMATION 662
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_5
     WAIT_ENTITY_ANIMATION
     RETURN_FROM_SUBROUTINE
 
 .dance_goddess_maria_turn:
-    SET_ENTITY_ANIMATION 663
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_6
     WAIT_ENTITY_ANIMATION
-    SET_ENTITY_ANIMATION 664
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_7
     WAIT_ENTITY_ANIMATION
     SET_WAIT_FRAMES 14
-    SET_ENTITY_ANIMATION 663
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_6
     WAIT_ENTITY_ANIMATION
-    SET_ENTITY_DIRECTIONAL_ANIMATION 0
+    SET_ENTITY_DIRECTIONAL_ANIMATION PLAYER_ANIMATION_STANDING_DIRECTIONAL
     RETURN_FROM_SUBROUTINE
 
 .dance_player_loop:
-    SET_ENTITY_ANIMATION 658
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_1
     SET_WAIT_FRAMES 78
     EXECUTE_SUBROUTINE .dance_goddess_maria_bow
     SET_WAIT_FRAMES 2
-    SET_ENTITY_ANIMATION 658
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_1
     SET_WAIT_FRAMES 78
     EXECUTE_SUBROUTINE .dance_goddess_maria_bow
     SET_WAIT_FRAMES 2
-    SET_ENTITY_ANIMATION 659
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_2
     SET_FRAME_DELTA 0, 0, 1, 48
     SET_WAIT_FRAMES 24
     EXECUTE_SUBROUTINE .dance_goddess_maria_bow
     SET_WAIT_FRAMES 2
-    SET_ENTITY_ANIMATION 659
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_2
     SET_FRAME_DELTA 0, 0, -1, 48
     SET_WAIT_FRAMES 20
     EXECUTE_SUBROUTINE .dance_goddess_maria_bow
     EXECUTE_SUBROUTINE .dance_goddess_maria_turn
-    SET_ENTITY_ANIMATION 659
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_2
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 24
     EXECUTE_SUBROUTINE .dance_goddess_maria_bow
     SET_WAIT_FRAMES 2
-    SET_ENTITY_ANIMATION 659
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_2
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
     EXECUTE_SUBROUTINE .dance_goddess_maria_bow
     SET_WAIT_FRAMES 2
-    SET_ENTITY_ANIMATION 659
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_2
     SET_FRAME_DELTA 1, 0, 0, 48
     SET_WAIT_FRAMES 24
     EXECUTE_SUBROUTINE .dance_goddess_maria_bow
     SET_WAIT_FRAMES 2
-    SET_ENTITY_ANIMATION 659
+    SET_ENTITY_ANIMATION PLAYER_ANIMATION_DANCE_2
     SET_FRAME_DELTA -1, 0, 0, 48
     SET_WAIT_FRAMES 13
     EXECUTE_SUBROUTINE .dance_goddess_maria_bow

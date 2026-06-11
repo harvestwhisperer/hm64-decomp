@@ -2,8 +2,4 @@
 
 // this is a hack to get the original total bss size for the main code segment
 // bss addresses are assigned partially via their alphabetical order (z = to ensure last in this case)
-#ifdef _JP
-u8 z[0xFAC10];
-#else 
 u8 z[0xFAC20];
-#endif

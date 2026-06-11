@@ -47,6 +47,7 @@
 #include "entities.h"
 #include "texts.h"
 #include "dialogues.h"
+#include "entityAnimationLabels.h"
 
 #define MAIN_MAP_INDEX 0
 #define MARRIED 0
@@ -110,7 +111,7 @@
 
 .setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
-    SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
+    SET_ENTITY_ANIMATIONS 0, PLAYER_ANIMATION_STANDING_DIRECTIONAL, PLAYER_ANIMATION_WALKING_DIRECTIONAL, PLAYER_ANIMATION_RUNNING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_WALKING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_RUNNING_DIRECTIONAL
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
@@ -370,9 +371,9 @@
 
 .cs850_player_lift_anim:
     SET_ASSET_ROTATION 0
-    SET_ENTITY_DIRECTIONAL_ANIMATION 456
+    SET_ENTITY_DIRECTIONAL_ANIMATION PLAYER_ANIMATION_JUMPING_2_N
     SET_WAIT_FRAMES 32
-    SET_ENTITY_DIRECTIONAL_ANIMATION 0
+    SET_ENTITY_DIRECTIONAL_ANIMATION PLAYER_ANIMATION_STANDING_DIRECTIONAL
     EXECUTE_SUBROUTINE .wait_loop
 
 .cs850_kent_lift_anim:
@@ -471,7 +472,11 @@
     EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs850_ann_spouse_talk
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs850_ann_married_guard
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 1
     WAIT_FOR_DIALOGUE_INPUT 0
 
@@ -482,9 +487,11 @@
     SET_SPECIAL_BIT 2, var1
     EXECUTE_SUBROUTINE .cs850_ann_wait
 
+#ifndef _JP
 .cs850_ann_married_guard:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs850_ann_spouse_talk
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs850_ann_spouse_talk:
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 47
@@ -511,7 +518,11 @@
     EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs850_maria_spouse_talk
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs850_maria_married_guard
+#endif
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 31
     WAIT_MESSAGE_BOX_CLOSED 0
     RESET_MESSAGE_BOX_AVATAR 0
@@ -523,9 +534,11 @@
     SET_SPECIAL_BIT 3, var1
     EXECUTE_SUBROUTINE .cs850_maria_wait
 
+#ifndef _JP
 .cs850_maria_married_guard:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs850_maria_spouse_talk
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs850_maria_spouse_talk:
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 33
@@ -682,7 +695,11 @@
     EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs850_popuri_spouse_talk
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs850_popuri_married_guard
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 7
     WAIT_FOR_DIALOGUE_INPUT 0
 
@@ -693,9 +710,11 @@
     SET_SPECIAL_BIT 7, var1
     EXECUTE_SUBROUTINE .cs850_popuri_wait
 
+#ifndef _JP
 .cs850_popuri_married_guard:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs850_popuri_spouse_talk
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs850_popuri_spouse_talk:
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 38
@@ -722,7 +741,11 @@
     EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs850_elli_spouse_talk
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs850_elli_married_guard
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 8
     WAIT_FOR_DIALOGUE_INPUT 0
 
@@ -733,9 +756,11 @@
     SET_SPECIAL_BIT 8, var1
     EXECUTE_SUBROUTINE .cs850_elli_wait
 
+#ifndef _JP
 .cs850_elli_married_guard:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs850_elli_spouse_talk
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs850_elli_spouse_talk:
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 42
@@ -960,7 +985,11 @@
     EXECUTE_SUBROUTINE .setup_message_box
     PAUSE_ENTITY 0
     FLIP_ENTITY_DIRECTION 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs850_karen_spouse_talk
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs850_karen_married_guard
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 9
     WAIT_FOR_DIALOGUE_INPUT 0
 
@@ -971,9 +1000,11 @@
     SET_SPECIAL_BIT 16, var1
     EXECUTE_SUBROUTINE .cs850_karen_wait
 
+#ifndef _JP
 .cs850_karen_married_guard:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs850_karen_spouse_talk
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs850_karen_spouse_talk:
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 58
@@ -1019,11 +1050,11 @@
     EXECUTE_SUBROUTINE .setup_player
     TOGGLE_PAUSE_ENTITY 0
     SET_WAIT_FRAMES 15
-    SET_ENTITY_DIRECTIONAL_ANIMATION 24
+    SET_ENTITY_DIRECTIONAL_ANIMATION PLAYER_ANIMATION_HOLDING_DIRECTIONAL
     SET_WAIT_FRAMES 15
     SPAWN_EXECUTOR 32, .cs850_king_side_tracker
     SET_WAIT_FRAMES 15
-    SET_ENTITY_DIRECTIONAL_ANIMATION 0
+    SET_ENTITY_DIRECTIONAL_ANIMATION PLAYER_ANIMATION_STANDING_DIRECTIONAL
     SET_WAIT_FRAMES 30
     SET_ASSET_ROTATION 0
     SET_OTHER_EXECUTOR_PTR 5, .face_southwest
@@ -1046,7 +1077,7 @@
     SET_OTHER_EXECUTOR_PTR 38, .cs850_rise_medium
     SET_OTHER_EXECUTOR_PTR 39, .cs850_rise_fast
     SET_OTHER_EXECUTOR_PTR 32, .cs850_rise_slow
-    SET_ENTITY_DIRECTIONAL_ANIMATION 456
+    SET_ENTITY_DIRECTIONAL_ANIMATION PLAYER_ANIMATION_JUMPING_2_N
     WAIT_ENTITY_ANIMATION
     UPDATE_GLOBAL_RGBA 0, 0, 0, 0, 8
     WAIT_RGBA_FINISHED
@@ -3121,56 +3152,90 @@
     EXECUTE_SUBROUTINE .wait_loop
 
 .cs852_harris_open:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs852_harris_ask_player
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_harris_if_maria_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[HARRIS], .cs852_harris_ask_player
     EXECUTE_SUBROUTINE .cs852_harris_player_declines
 
+#ifndef _JP
 .cs852_harris_if_maria_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs852_harris_ask_player
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs852_gray_open:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs852_gray_ask_player
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_gray_if_popuri_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[GRAY], .cs852_gray_ask_player
     EXECUTE_SUBROUTINE .cs852_gray_player_declines
 
+#ifndef _JP
 .cs852_gray_if_popuri_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs852_gray_ask_player
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs852_jeff_open:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs852_jeff_ask_player
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_jeff_if_elli_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[JEFF], .cs852_jeff_ask_player
     EXECUTE_SUBROUTINE .cs852_jeff_player_declines
 
+#ifndef _JP
 .cs852_jeff_if_elli_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs852_jeff_ask_player
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs852_cliff_open:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs852_cliff_ask_player
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_cliff_if_ann_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[CLIFF], .cs852_cliff_ask_player
     EXECUTE_SUBROUTINE .cs852_cliff_player_declines
 
+#ifndef _JP
 .cs852_cliff_if_ann_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs852_cliff_ask_player
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs852_kai_open:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs852_kai_ask_player
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_kai_if_karen_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 100, 255, npcAffection[KAI], .cs852_kai_ask_player
     EXECUTE_SUBROUTINE .cs852_kai_player_declines
 
+#ifndef _JP
 .cs852_kai_if_karen_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs852_kai_ask_player
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs852_harris_ask_player:
     SET_ASSET_ROTATION 6
     SET_WAIT_FRAMES 15
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 62
     WAIT_MESSAGE_BOX_CLOSED 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs852_harris_player_accepts
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_harris_married_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 12
     WAIT_FOR_DIALOGUE_INPUT 0
     BRANCH_ON_DIALOGUE 0, 0, .cs852_harris_player_accepts
@@ -3185,9 +3250,11 @@
     SPAWN_EXECUTOR 25, .cs852_harris_balloon_with_player
     DEACTIVATE_SELF
 
+#ifndef _JP
 .cs852_harris_married_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .cs852_harris_player_accepts
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs852_harris_balloon_with_player:
     SET_WAIT_FRAMES 1
@@ -3221,7 +3288,11 @@
     SET_WAIT_FRAMES 15
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 66
     WAIT_MESSAGE_BOX_CLOSED 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs852_gray_player_accepts
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_gray_married_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 12
     WAIT_FOR_DIALOGUE_INPUT 0
     BRANCH_ON_DIALOGUE 0, 0, .cs852_gray_player_accepts
@@ -3236,9 +3307,11 @@
     SPAWN_EXECUTOR 25, .cs852_gray_balloon_with_player
     DEACTIVATE_SELF
 
+#ifndef _JP
 .cs852_gray_married_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .cs852_gray_player_accepts
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs852_gray_balloon_with_player:
     SET_WAIT_FRAMES 1
@@ -3272,7 +3345,11 @@
     SET_WAIT_FRAMES 15
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 70
     WAIT_MESSAGE_BOX_CLOSED 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs852_jeff_player_accepts
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_jeff_married_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 12
     WAIT_FOR_DIALOGUE_INPUT 0
     BRANCH_ON_DIALOGUE 0, 0, .cs852_jeff_player_accepts
@@ -3287,9 +3364,11 @@
     SPAWN_EXECUTOR 25, .cs852_jeff_balloon_with_player
     DEACTIVATE_SELF
 
+#ifndef _JP
 .cs852_jeff_married_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .cs852_jeff_player_accepts
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs852_jeff_balloon_with_player:
     SET_WAIT_FRAMES 1
@@ -3323,7 +3402,11 @@
     SET_WAIT_FRAMES 15
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 74
     WAIT_MESSAGE_BOX_CLOSED 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs852_cliff_player_accepts
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_cliff_married_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 12
     WAIT_FOR_DIALOGUE_INPUT 0
     BRANCH_ON_DIALOGUE 0, 0, .cs852_cliff_player_accepts
@@ -3338,9 +3421,11 @@
     SPAWN_EXECUTOR 25, .cs852_cliff_balloon_with_player
     DEACTIVATE_SELF
 
+#ifndef _JP
 .cs852_cliff_married_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .cs852_cliff_player_accepts
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs852_cliff_balloon_with_player:
     SET_WAIT_FRAMES 1
@@ -3374,7 +3459,11 @@
     SET_WAIT_FRAMES 15
     INIT_MESSAGE_BOX_TYPE1 0, SOWING_FESTIVAL_TEXT_INDEX, 78
     WAIT_MESSAGE_BOX_CLOSED 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs852_kai_player_accepts
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .cs852_kai_married_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_55, 12
     WAIT_FOR_DIALOGUE_INPUT 0
     BRANCH_ON_DIALOGUE 0, 0, .cs852_kai_player_accepts
@@ -3389,9 +3478,11 @@
     SPAWN_EXECUTOR 25, .cs852_kai_balloon_with_player
     DEACTIVATE_SELF
 
+#ifndef _JP
 .cs852_kai_married_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .cs852_kai_player_accepts
     RETURN_FROM_SUBROUTINE
+#endif
 
 .cs852_kai_balloon_with_player:
     SET_WAIT_FRAMES 1

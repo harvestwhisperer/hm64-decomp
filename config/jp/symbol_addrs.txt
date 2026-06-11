@@ -156,9 +156,9 @@ stepMainLoop            = 0x80205698;
 gfxTaskNo               = 0x8020569A;
 
 gGraphicsBufferIndex    = 0x80205AC0;
-frameCount              = 0x80205AC4;
+vblankCounter              = 0x80205AC4;
 
-frameRate               = 0x80237881;
+vblanksPerDraw               = 0x80237881;
 
 gspF3DEX2_fifoTextStart      = 0x801114C0; // name_end:gspF3DEX2_fifoTextEnd dont_allow_addend:True
 gspF3DEX2_fifoDataStart      = 0x8011ECF0; // name_end:gspF3DEX2_fifoDataEnd dont_allow_addend:True
@@ -177,7 +177,7 @@ previousDrawnFrameCount      = 0x801C46B5;
 currentWorldRotationAngles   = 0x801708E8;
 gCamera                      = 0x801F73C8;
 mainLoopCallbackCurrentIndex = 0x80205ADA;
-mainLoopUpdateRate           = 0x80222B72;
+mainLoopUpdateInterval           = 0x80222B72;
 pendingGfxNum                = 0x80222B78;
 sceneMatrices                = 0x802378F0;
 D_801895D5                   = 0x801895D5; // size:0x9
