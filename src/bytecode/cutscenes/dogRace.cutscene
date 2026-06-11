@@ -34,6 +34,7 @@
 #include "entities.h"
 #include "texts.h"
 #include "dialogues.h"
+#include "entityAnimationLabels.h"
 #include "raceStateFlags.h"
 
 #define MAIN_MAP_INDEX 0
@@ -105,7 +106,7 @@
 
 .setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
-    SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
+    SET_ENTITY_ANIMATIONS 0, PLAYER_ANIMATION_STANDING_DIRECTIONAL, PLAYER_ANIMATION_WALKING_DIRECTIONAL, PLAYER_ANIMATION_RUNNING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_WALKING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_RUNNING_DIRECTIONAL
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
 
@@ -205,7 +206,11 @@
     ;   - Married: spawn the wife if she is Maria or Karen.
     ;   - Single with high Maria affection AND dog in race: spawn Maria.
     ;   - Otherwise: no extra spawn.
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .spawn_maria_crowd
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .check_wife_is_maria
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 0, 79, npcAffection[MARIA], .check_married_karen
     BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_IN_RACE, raceStateFlags, .spawn_maria_crowd
     EXECUTE_SUBROUTINE .check_married_karen
@@ -214,7 +219,11 @@
     SPAWN_EXECUTOR 14, .maria_setup
 
 .check_married_karen:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .spawn_karen_crowd
+#else
     BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .check_wife_is_karen
+#endif
 
 .fade_in_start_announcer:
     SET_WAIT_FRAMES 1
@@ -226,15 +235,23 @@
 
 .spawn_karen_crowd:
     SPAWN_EXECUTOR 15, .karen_setup
+#ifdef _JP
+    RETURN_FROM_SUBROUTINE
+#else
     EXECUTE_SUBROUTINE .fade_in_start_announcer
+#endif
 
+#ifndef _JP
 .check_wife_is_maria:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .spawn_maria_crowd
     RETURN_FROM_SUBROUTINE
+#endif
 
+#ifndef _JP
 .check_wife_is_karen:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .spawn_karen_crowd
     RETURN_FROM_SUBROUTINE
+#endif
 
 ; ------------------------------------------------------------
 ; Time announcer (executor 41 during cutscenes 1300/1301)
@@ -546,7 +563,11 @@
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
     BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_RACE_FINALIZED, raceStateFlags, .popuri_talk_running_hard
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .popuri_wife_talk_chick_race
+#else
     BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .popuri_check_wife
+#endif
     BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_IN_RACE, raceStateFlags, .popuri_talk_good_luck
     INIT_MESSAGE_BOX_TYPE1 0, DOG_RACE_TEXT_INDEX, 16
 
@@ -556,9 +577,11 @@
     TOGGLE_PAUSE_ENTITIES
     EXECUTE_SUBROUTINE .popuri_wait
 
+#ifndef _JP
 .popuri_check_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .popuri_wife_talk_chick_race
     RETURN_FROM_SUBROUTINE
+#endif
 
 .popuri_talk_good_luck:
     INIT_MESSAGE_BOX_TYPE1 0, DOG_RACE_TEXT_INDEX, 15
@@ -594,7 +617,11 @@
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
     BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_RACE_FINALIZED, raceStateFlags, .ann_talk_affection
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .ann_wife_talk_why_not
+#else
     BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .ann_check_wife
+#endif
     BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_IN_RACE, raceStateFlags, .ann_talk_pray
     INIT_MESSAGE_BOX_TYPE1 0, DOG_RACE_TEXT_INDEX, 23
 
@@ -604,9 +631,11 @@
     TOGGLE_PAUSE_ENTITIES
     EXECUTE_SUBROUTINE .ann_wait
 
+#ifndef _JP
 .ann_check_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .ann_wife_talk_why_not
     RETURN_FROM_SUBROUTINE
+#endif
 
 .ann_talk_pray:
     INIT_MESSAGE_BOX_TYPE1 0, DOG_RACE_TEXT_INDEX, 24
@@ -668,7 +697,11 @@
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
     BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_RACE_FINALIZED, raceStateFlags, .elli_talk_ticket
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .elli_wife_talk_cheering
+#else
     BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .elli_check_wife
+#endif
     BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_IN_RACE, raceStateFlags, .elli_talk_hope_wins
     INIT_MESSAGE_BOX_TYPE1 0, DOG_RACE_TEXT_INDEX, 19
 
@@ -678,9 +711,11 @@
     TOGGLE_PAUSE_ENTITIES
     EXECUTE_SUBROUTINE .elli_wait
 
+#ifndef _JP
 .elli_check_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .elli_wife_talk_cheering
     RETURN_FROM_SUBROUTINE
+#endif
 
 .elli_talk_hope_wins:
     INIT_MESSAGE_BOX_TYPE1 0, DOG_RACE_TEXT_INDEX, 20
@@ -849,7 +884,11 @@
     FLIP_ENTITY_DIRECTION 0
     EXECUTE_SUBROUTINE .setup_message_box
     BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_RACE_FINALIZED, raceStateFlags, .maria_post_race_on_interact
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_wife_talk_glad
+#else
     BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .maria_check_wife
+#endif
     INIT_MESSAGE_BOX_TYPE1 0, DOG_RACE_TEXT_INDEX, 0
 
 .maria_talk_done:
@@ -858,22 +897,30 @@
     TOGGLE_PAUSE_ENTITIES
     EXECUTE_SUBROUTINE .maria_wait
 
+#ifndef _JP
 .maria_check_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_wife_talk_glad
     RETURN_FROM_SUBROUTINE
+#endif
 
 .maria_wife_talk_glad:
     INIT_MESSAGE_BOX_TYPE1 0, DOG_RACE_TEXT_INDEX, 1
     EXECUTE_SUBROUTINE .maria_talk_done
 
 .maria_post_race_on_interact:
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_post_race_check_won
+#else
     BRANCH_ON_SPECIAL_BIT 0, lifeEventBits[0], .maria_post_race_check_wife
+#endif
     INIT_MESSAGE_BOX_TYPE1 0, DOG_RACE_TEXT_INDEX, 56
     EXECUTE_SUBROUTINE .maria_talk_done
 
+#ifndef _JP
 .maria_post_race_check_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_post_race_check_won
     RETURN_FROM_SUBROUTINE
+#endif
 
 .maria_post_race_check_won:
     BRANCH_ON_SPECIAL_BIT RACE_STATE_BIT_PLAYER_WON, raceStateFlags, .maria_post_race_talk_surprised

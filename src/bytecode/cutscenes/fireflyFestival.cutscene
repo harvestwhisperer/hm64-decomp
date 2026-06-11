@@ -35,6 +35,7 @@
 #include "entities.h"
 #include "texts.h"
 #include "dialogues.h"
+#include "entityAnimationLabels.h"
 
 #define MAIN_MAP_INDEX 0
 
@@ -292,7 +293,7 @@
 
 .setup_player:
     SETUP_ENTITY 0, ENTITY_ASSET_PLAYER, 1
-    SET_ENTITY_ANIMATIONS 0, 0, 8, 16, 24, 32, 40
+    SET_ENTITY_ANIMATIONS 0, PLAYER_ANIMATION_STANDING_DIRECTIONAL, PLAYER_ANIMATION_WALKING_DIRECTIONAL, PLAYER_ANIMATION_RUNNING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_WALKING_DIRECTIONAL, PLAYER_ANIMATION_HOLDING_RUNNING_DIRECTIONAL
     SET_BEHAVIOR_FLAGS CUTSCENE_ASSET_BEHAVIOR_TRACK_ENTITY
     RETURN_FROM_SUBROUTINE
     SET_ENTITY_MAP_SPACE_INDEPENDENT FALSE
@@ -323,7 +324,11 @@
     SPAWN_EXECUTOR 9, .elli_setup
     SPAWN_EXECUTOR 10, .ann_setup
     BRANCH_ON_SPECIAL_BIT 15, lifeEventBits[1], .after_karen_check
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .spawn_karen
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .spawn_karen_if_wife
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 0, 25, npcAffection[KAREN], .after_karen_check
 
 .spawn_karen:
@@ -373,9 +378,11 @@
     SPAWN_EXECUTOR 41, .timer_tick
     DEACTIVATE_SELF
 
+#ifndef _JP
 .spawn_karen_if_wife:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .spawn_karen
     RETURN_FROM_SUBROUTINE
+#endif
 
 ; ============================================================
 ; Festival timer and outro orchestration
@@ -501,7 +508,15 @@
     DEACTIVATE_EXECUTOR 31
     DEACTIVATE_EXECUTOR 32
     DEACTIVATE_EXECUTOR 33
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .close_maria
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .close_popuri
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .close_elli
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .close_ann
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .close_karen
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .close_married_dispatch
+#endif
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gSumGirlsWithHighAffection, .close_maria
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gSumGirlsWithHighAffection, .close_popuri
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gSumGirlsWithHighAffection, .close_elli
@@ -523,6 +538,7 @@
     WAIT_RGBA_FINISHED
     EXECUTE_SUBROUTINE .wait_loop
 
+#ifndef _JP
 .close_married_dispatch:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .close_maria
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .close_popuri
@@ -530,6 +546,7 @@
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .close_ann
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .close_karen
     RETURN_FROM_SUBROUTINE
+#endif
 
 .close_maria:
     SET_OTHER_EXECUTOR_PTR 0, .player_outro_track
@@ -883,7 +900,11 @@
     PAUSE_ENTITIES
     SET_SPECIAL_BIT 0, var0
     FLIP_ENTITY_DIRECTION 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_talk_as_wife
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .maria_talk_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_52, 1
     WAIT_FOR_DIALOGUE_INPUT 0
 
@@ -892,9 +913,11 @@
     CLEAR_SPECIAL_BIT 0, var0
     EXECUTE_SUBROUTINE .maria_wait
 
+#ifndef _JP
 .maria_talk_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_talk_as_wife
     RETURN_FROM_SUBROUTINE
+#endif
 
 .maria_talk_as_wife:
     INIT_MESSAGE_BOX_TYPE1 0, FIREFLY_FESTIVAL_TEXT_INDEX, 17
@@ -908,7 +931,11 @@
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
     WAIT_RGBA_FINISHED
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_close_as_wife
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .maria_close_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_52, 6
     WAIT_FOR_DIALOGUE_INPUT 0
     BRANCH_ON_DIALOGUE 0, 0, .maria_close_accept
@@ -945,9 +972,11 @@
     IDLE_WHILE_SEQUENCE_PLAYING 0
     EXECUTE_SUBROUTINE .exit_demo
 
+#ifndef _JP
 .maria_close_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 0, 0, gWife, .maria_close_as_wife
     RETURN_FROM_SUBROUTINE
+#endif
 
 .maria_close_as_wife:
     UPDATE_U8_VALUE 5, 255, gHappiness
@@ -984,7 +1013,11 @@
     PAUSE_ENTITIES
     SET_SPECIAL_BIT 0, var0
     FLIP_ENTITY_DIRECTION 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .popuri_talk_as_wife
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .popuri_talk_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_52, 2
     WAIT_FOR_DIALOGUE_INPUT 0
 
@@ -993,9 +1026,11 @@
     CLEAR_SPECIAL_BIT 0, var0
     EXECUTE_SUBROUTINE .popuri_wait
 
+#ifndef _JP
 .popuri_talk_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .popuri_talk_as_wife
     RETURN_FROM_SUBROUTINE
+#endif
 
 .popuri_talk_as_wife:
     INIT_MESSAGE_BOX_TYPE1 0, FIREFLY_FESTIVAL_TEXT_INDEX, 25
@@ -1009,7 +1044,11 @@
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
     WAIT_RGBA_FINISHED
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .popuri_close_as_wife
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .popuri_close_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_52, 7
     WAIT_FOR_DIALOGUE_INPUT 0
     BRANCH_ON_DIALOGUE 0, 0, .popuri_close_accept
@@ -1046,9 +1085,11 @@
     IDLE_WHILE_SEQUENCE_PLAYING 0
     EXECUTE_SUBROUTINE .exit_demo
 
+#ifndef _JP
 .popuri_close_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 1, 1, gWife, .popuri_close_as_wife
     RETURN_FROM_SUBROUTINE
+#endif
 
 .popuri_close_as_wife:
     UPDATE_U8_VALUE 5, 255, gHappiness
@@ -1106,7 +1147,11 @@
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
     WAIT_RGBA_FINISHED
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .elli_close_as_wife
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .elli_close_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_52, 8
     WAIT_FOR_DIALOGUE_INPUT 0
     BRANCH_ON_DIALOGUE 0, 0, .elli_close_accept
@@ -1143,9 +1188,11 @@
     IDLE_WHILE_SEQUENCE_PLAYING 0
     EXECUTE_SUBROUTINE .exit_demo
 
+#ifndef _JP
 .elli_close_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 2, 2, gWife, .elli_close_as_wife
     RETURN_FROM_SUBROUTINE
+#endif
 
 .elli_close_as_wife:
     UPDATE_U8_VALUE 5, 255, gHappiness
@@ -1182,7 +1229,11 @@
     PAUSE_ENTITIES
     SET_SPECIAL_BIT 0, var0
     FLIP_ENTITY_DIRECTION 0
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .ann_talk_as_wife
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .ann_talk_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_52, 4
     WAIT_FOR_DIALOGUE_INPUT 0
 
@@ -1191,9 +1242,11 @@
     CLEAR_SPECIAL_BIT 0, var0
     EXECUTE_SUBROUTINE .ann_wait
 
+#ifndef _JP
 .ann_talk_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .ann_talk_as_wife
     RETURN_FROM_SUBROUTINE
+#endif
 
 .ann_talk_as_wife:
     INIT_MESSAGE_BOX_TYPE1 0, FIREFLY_FESTIVAL_TEXT_INDEX, 39
@@ -1207,7 +1260,11 @@
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
     WAIT_RGBA_FINISHED
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .ann_close_as_wife
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .ann_close_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_52, 9
     WAIT_FOR_DIALOGUE_INPUT 0
     BRANCH_ON_DIALOGUE 0, 0, .ann_close_accept
@@ -1244,9 +1301,11 @@
     IDLE_WHILE_SEQUENCE_PLAYING 0
     EXECUTE_SUBROUTINE .exit_demo
 
+#ifndef _JP
 .ann_close_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 3, 3, gWife, .ann_close_as_wife
     RETURN_FROM_SUBROUTINE
+#endif
 
 .ann_close_as_wife:
     UPDATE_U8_VALUE 5, 255, gHappiness
@@ -1304,7 +1363,11 @@
     SET_WAIT_FRAMES 1
     UPDATE_GLOBAL_RGBA 80, 80, 80, 80, 8
     WAIT_RGBA_FINISHED
+#ifdef _JP
+    BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .karen_close_as_wife
+#else
     BRANCH_ON_SPECIAL_BIT MARRIED, lifeEventBits[0], .karen_close_wife_check
+#endif
     INIT_DIALOGUE_SESSION 0, DIALOGUE_TEXT_52, 10
     WAIT_FOR_DIALOGUE_INPUT 0
     BRANCH_ON_DIALOGUE 0, 0, .karen_close_accept
@@ -1341,9 +1404,11 @@
     IDLE_WHILE_SEQUENCE_PLAYING 0
     EXECUTE_SUBROUTINE .exit_demo
 
+#ifndef _JP
 .karen_close_wife_check:
     BRANCH_U8_VAR_WITHIN_RANGE 4, 4, gWife, .karen_close_as_wife
     RETURN_FROM_SUBROUTINE
+#endif
 
 .karen_close_as_wife:
     UPDATE_U8_VALUE 5, 255, gHappiness

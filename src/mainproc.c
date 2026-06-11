@@ -35,16 +35,15 @@ volatile u8 framebufferCount;
 volatile u8 previousDrawnFrameCount;
 volatile u8 stepMainLoop;
 volatile u32 pendingGfxNum;
-volatile u8 mainLoopUpdateRate;
+volatile u8 mainLoopUpdateInterval;
 
-// per 60; 1 = 60 fps
-volatile u8 frameRate;
+volatile u8 vblanksPerDraw;
 
 u16 gMainMapIndex;
 
 volatile u32 gGraphicsBufferIndex;
 volatile u8 gfxTaskNo;
-volatile u8 frameCount;
+volatile u8 vblankCounter;
 
 volatile u8 loopStepsPerCycle;
 volatile u8 framebufferCount;
@@ -148,7 +147,7 @@ void initializeMainProcess(void) {
     engineStateFlags = 0;
     mainLoopCallbackCurrentIndex = 0;
 
-    frameCount = 0;
+    vblankCounter = 0;
 
     drawnFrameCount = 0;
     framebufferCount = 0;
@@ -162,9 +161,8 @@ void initializeMainProcess(void) {
 
     D_80237408 = 0;
 
-    frameRate = 1;
-
-    mainLoopUpdateRate = 1;
+    vblanksPerDraw = 1;
+    mainLoopUpdateInterval = 1;
 
     D_801C3B68[0] = 0;
     D_801C3B68[1] = 0;

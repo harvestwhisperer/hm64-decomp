@@ -14,9 +14,9 @@ extern volatile u8 currentFramebufferIndex;
 extern u16 gMainMapIndex;
 extern volatile u8 stepMainLoop;
 extern volatile u32 pendingGfxNum;
-extern volatile u8 mainLoopUpdateRate;
-extern volatile u8 frameRate;
-extern volatile u8 frameCount;
+extern volatile u8 mainLoopUpdateInterval;
+extern volatile u8 vblanksPerDraw;
+extern volatile u8 vblankCounter;
 
 extern volatile u32 gGraphicsBufferIndex;
 extern volatile u8 gfxTaskNo;

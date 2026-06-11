@@ -59,6 +59,7 @@ LANG_JAPANESE ?= 0
 ifeq ($(REGION),jp)
   JP_DEFINE := -D_JP=1
   LANG_JAPANESE := 1
+  CUTSCENE_JP_ALIASES := -include include/jp_symbol_aliases.h
 endif
 
 BUILD_DIR_REPLACE := sed -e 's|$$(BUILD_DIR)|$(BUILD_DIR)|g'
@@ -329,7 +330,7 @@ $(BUILD_DIR)/makerom/entry.o: makerom/entry.s
 .SECONDEXPANSION:
 $(CUTSCENE_ASSETS_DIR)/%.s: $$(call cutscene_dsl,$$*)
 	@mkdir -p $(CUTSCENE_ASSETS_DIR)
-	$(V)$(CPP) $(CUTSCENE_CPP_INCLUDES) $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
+	$(V)$(CPP) $(CUTSCENE_CPP_INCLUDES) $(JP_DEFINE) $(CUTSCENE_JP_ALIASES) $< | $(CUTSCENE_TRANSPILER) - -n $* -o $@
 
 $(CUTSCENE_BUILD_DIR)/%.bin.o: $(CUTSCENE_ASSETS_DIR)/%.s
 	$(MKDIR)
