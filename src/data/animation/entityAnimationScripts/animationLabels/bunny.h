@@ -1,31 +1,34 @@
-#ifndef _BUNNY_ANIMATION_MACROS_H_
-#define _BUNNY_ANIMATION_MACROS_H_
+#ifndef _BUNNY_H_
+#define _BUNNY_H_
 
-#define BUNNY_ANIMATION_0                        0
-#define BUNNY_ANIMATION_1                        1
-#define BUNNY_ANIMATION_2                        2
-#define BUNNY_ANIMATION_3                        3
-#define BUNNY_ANIMATION_4                        4
-#define BUNNY_ANIMATION_5                        5
-#define BUNNY_ANIMATION_6                        6
-#define BUNNY_ANIMATION_7                        7
-#define BUNNY_ANIMATION_8                        8
-#define BUNNY_ANIMATION_9                        9
-#define BUNNY_ANIMATION_10                       10
-#define BUNNY_ANIMATION_11                       11
-#define BUNNY_ANIMATION_12                       12
-#define BUNNY_ANIMATION_13                       13
-#define BUNNY_ANIMATION_14                       14
-#define BUNNY_ANIMATION_15                       15
-#define BUNNY_ANIMATION_16                       16
-#define BUNNY_ANIMATION_17                       17
-#define BUNNY_ANIMATION_18                       18
-#define BUNNY_ANIMATION_19                       19
-#define BUNNY_ANIMATION_20                       20
-#define BUNNY_ANIMATION_21                       21
-#define BUNNY_ANIMATION_22                       22
-#define BUNNY_ANIMATION_23                       23
-#define BUNNY_ANIMATION_24                       24
-#define BUNNY_ANIMATION_25                       25
+#define BUNNY_ANIMATION_STANDING_DIRECTIONAL   0
+#define BUNNY_ANIMATION_STANDING_S             0
+#define BUNNY_ANIMATION_STANDING_SW            1
+#define BUNNY_ANIMATION_STANDING_W             2
+#define BUNNY_ANIMATION_STANDING_NW            3
+#define BUNNY_ANIMATION_STANDING_N             4
+#define BUNNY_ANIMATION_STANDING_NE            5
+#define BUNNY_ANIMATION_STANDING_E             6
+#define BUNNY_ANIMATION_STANDING_SE            7
+#define BUNNY_ANIMATION_HOPPING_DIRECTIONAL    8
+#define BUNNY_ANIMATION_HOPPING_S              8
+#define BUNNY_ANIMATION_HOPPING_SW             9
+#define BUNNY_ANIMATION_HOPPING_W              10
+#define BUNNY_ANIMATION_HOPPING_NW             11
+#define BUNNY_ANIMATION_HOPPING_N              12
+#define BUNNY_ANIMATION_HOPPING_NE             13
+#define BUNNY_ANIMATION_HOPPING_E              14
+#define BUNNY_ANIMATION_HOPPING_SE             15
+#define BUNNY_ANIMATION_STANDING_2_DIRECTIONAL 16
+#define BUNNY_ANIMATION_STANDING_2_S           16
+#define BUNNY_ANIMATION_STANDING_2_SW          17
+#define BUNNY_ANIMATION_STANDING_2_W           18
+#define BUNNY_ANIMATION_STANDING_2_NW          19
+#define BUNNY_ANIMATION_STANDING_2_N           20
+#define BUNNY_ANIMATION_STANDING_2_NE          21
+#define BUNNY_ANIMATION_STANDING_2_E           22
+#define BUNNY_ANIMATION_STANDING_2_SE          23
+#define BUNNY_ANIMATION_LOOK_AROUND_SW         24
+#define BUNNY_ANIMATION_LOOK_AROUND_SE         25
 
 #endif

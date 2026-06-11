@@ -26,6 +26,8 @@
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
 
+#include "data/animation/entityAnimationScripts/entityAnimationLabels.h"
+
 #include "buffers/buffers.h"
 
 #include "ld_symbols.h"
@@ -1099,15 +1101,15 @@ u8 getNPCBabyCarryingState(u8 npcIndex) {
 /* set starting locations */
 
 void setMariaLocation(void) {
+
     npcInfo *maria = &npcs[MARIA];
 
-
-     u8 result;
+    u8 result;
 
     maria->wanderRadiusX = 64;
     maria->wanderRadiusZ = 64;
-    maria->idleAnimation = 0;
-    maria->movingAnimation = 8;
+    maria->idleAnimation = MARIA_ANIMATION_STANDING_DIRECTIONAL;
+    maria->movingAnimation = MARIA_ANIMATION_WALKING_DIRECTIONAL;
 
     if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(MARIA_LOCATION_OVERRIDE)) {
 
@@ -1236,8 +1238,8 @@ void setMariaLocation(void) {
             }
 
             if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
-                maria->idleAnimation = 0x6C;
-                maria->movingAnimation = 0x76;
+                maria->idleAnimation = MARIA_ANIMATION_HOLDING_DIRECTIONAL;
+                maria->movingAnimation = MARIA_ANIMATION_118;
             }
     
         } else if (!checkDailyEventBit(FESTIVAL)) {
@@ -1360,8 +1362,8 @@ void setMariaLocation(void) {
                 } 
 
                 if (getNPCBabyCarryingState(MARIA) == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
-                    maria->idleAnimation = 0x6C;
-                    maria->movingAnimation = 0x76;
+                    maria->idleAnimation = MARIA_ANIMATION_HOLDING_DIRECTIONAL;
+                    maria->movingAnimation = MARIA_ANIMATION_118;
                 }
                 
             } else {
@@ -3512,8 +3514,8 @@ case TUESDAY:
 }
 
 void setBabyLocation(void) {
-    npcInfo *baby = &npcs[BABY];
 
+    npcInfo *baby = &npcs[BABY];
 
     u8 set = FALSE;
     
@@ -3987,13 +3989,13 @@ void setJeffLocation(void) {
 }
 
 void setCliffLocation(void) {
-    npcInfo *cliff = &npcs[CLIFF];
 
+    npcInfo *cliff = &npcs[CLIFF];
 
     cliff->wanderRadiusX = 64;
     cliff->wanderRadiusZ = 64;
-    cliff->idleAnimation = 0;
-    cliff->movingAnimation = 8;
+    cliff->idleAnimation = CLIFF_ANIMATION_STANDING_DIRECTIONAL;
+    cliff->movingAnimation = CLIFF_ANIMATION_WALKING_DIRECTIONAL;
 
     if (!checkLifeEventBit(CLIFF_GONE)) {
 
@@ -4646,13 +4648,13 @@ void setMayorWifeLocation(void) {
 }
 
 void setLilliaLocation(void) {
-    npcInfo *lillia = &npcs[LILLIA];
 
+    npcInfo *lillia = &npcs[LILLIA];
 
     lillia->wanderRadiusX = 64;
     lillia->wanderRadiusZ = 64;
-    lillia->movingAnimation = 8;
-    lillia->idleAnimation = 0;
+    lillia->movingAnimation = LILLIA_ANIMATION_WALKING_DIRECTIONAL;
+    lillia->idleAnimation = LILLIA_ANIMATION_STANDING_DIRECTIONAL;
 
     if (gWeather != SUNNY) goto DEFAULT;
 
@@ -4695,13 +4697,13 @@ DEFAULT:
 }
 
 void setBasilLocation(void) {
-    npcInfo *basil = &npcs[BASIL];
 
+    npcInfo *basil = &npcs[BASIL];
 
     basil->wanderRadiusX = 64;
     basil->wanderRadiusZ = 64;
-    basil->idleAnimation = 0;
-    basil->movingAnimation = 8;
+    basil->idleAnimation = BASIL_ANIMATION_STANDING_DIRECTIONAL;
+    basil->movingAnimation = BASIL_ANIMATION_WALKING_DIRECTIONAL;
 
     if (!checkLifeEventBit(BASIL_IN_TOWN)) goto FUNC_END;
 
@@ -5080,13 +5082,13 @@ void setPotionShopDealerLocation(void) {
 }
 
 void setKentLocation(void) {
-    npcInfo *kent = &npcs[KENT];
 
+    npcInfo *kent = &npcs[KENT];
 
     kent->wanderRadiusX = 64;
     kent->wanderRadiusZ = 64;
-    kent->movingAnimation = 8;
-    kent->idleAnimation = 0;
+    kent->movingAnimation = KENT_ANIMATION_WALKING_DIRECTIONAL;
+    kent->idleAnimation = KENT_ANIMATION_STANDING_DIRECTIONAL;
 
     if (gWeather == SUNNY) {
         
@@ -5939,13 +5941,13 @@ break;
 }
 
 void setShipperLocation(void) {
-    npcInfo *shipper = &npcs[SHIPPER];
 
+    npcInfo *shipper = &npcs[SHIPPER];
 
     shipper->wanderRadiusX = 64;
     shipper->wanderRadiusZ = 64;
-    shipper->idleAnimation = 0;
-    shipper->movingAnimation = 8;
+    shipper->idleAnimation = SHIPPER_ANIMATION_STANDING_DIRECTIONAL;
+    shipper->movingAnimation = SHIPPER_ANIMATION_WALKING_DIRECTIONAL;
 
     if (NIGHTTIME && shipper->location < 2) {
         
@@ -6037,17 +6039,15 @@ void setSaibaraLocation(void) {
 }
 
 void setDukeLocation(void) {
-    npcInfo *duke = &npcs[DUKE];
- 
 
-    int temp = gDayOfWeek;
+    npcInfo *duke = &npcs[DUKE];
 
     duke->wanderRadiusX = 64;
     duke->wanderRadiusZ = 64;
-    duke->idleAnimation = 0;
-    duke->movingAnimation = 8;
+    duke->idleAnimation = DUKE_ANIMATION_STANDING_DIRECTIONAL;
+    duke->movingAnimation = DUKE_ANIMATION_WALKING_DIRECTIONAL;
 
-    switch (temp) {
+    switch (gDayOfWeek) {
         
         case MONDAY ... SATURDAY:
             if NIGHTTIME {
@@ -6072,46 +6072,14 @@ void setDukeLocation(void) {
 
 }
 
-// alternate without switch
-/*
-void setDukeLocation(void) {
-    npcInfo *duke = &npcs[DUKE];
-
-    
-        int temp = gDayOfWeek;
-
-        duke->wanderRadiusX = 64;
-        duke->wanderRadiusZ = 64;
-        duke->idleAnimation = 0;
-        duke->movingAnimation = 8;
-
-        if (temp < 7 && gDayOfWeek && NIGHTTIME) {
-            
-        duke->levelIndex = TAVERN;
-        duke->startingCoordinates.y = 0.0f;
-        duke->direction = 0;
-        duke->defaultAnimationMode = NPC_ANIMATION_IDLE;
-
-        duke->startingCoordinates.x = -128.0f;
-        duke->startingCoordinates.z = -128.0f;
-        
-        duke->flags |= NPC_ACTIVE;
-        
-    }
-
-    duke->animationMode =  duke->defaultAnimationMode;
-    
-}
-*/
-
 void setGregLocation(void) {
-    npcInfo *greg = &npcs[GREG];
 
+    npcInfo *greg = &npcs[GREG];
 
     greg->wanderRadiusX = 64;
     greg->wanderRadiusZ = 64;
-    greg->idleAnimation = 0;
-    greg->movingAnimation = 8;
+    greg->idleAnimation = GREG_ANIMATION_STANDING_DIRECTIONAL;
+    greg->movingAnimation = GREG_ANIMATION_WALKING_DIRECTIONAL;
 
     if (gSeason != WINTER && checkHaveTool(FISHING_POLE) && gWeather == SUNNY) {
 
@@ -6553,13 +6521,13 @@ void setBarleyLocation(void) {
 }
 
 void setMrsManaLocation(void) {
+    
     npcInfo *mrsMana = &npcs[MRS_MANA];
-
     
     mrsMana->wanderRadiusX = 64;
     mrsMana->wanderRadiusZ = 64;
-    mrsMana->idleAnimation = 0;
-    mrsMana->movingAnimation = 8;
+    mrsMana->idleAnimation = MRS_MANA_ANIMATION_STANDING_DIRECTIONAL;
+    mrsMana->movingAnimation = MRS_MANA_ANIMATION_WALKING_DIRECTIONAL;
 
     if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(MRS_MANA_COWS_EVENT) && NIGHTTIME) {
 
@@ -6580,13 +6548,13 @@ void setMrsManaLocation(void) {
 }
 
 void setJohnLocation(void) {
+    
     npcInfo *john = &npcs[JOHN];
 
-    
     john->wanderRadiusX = 64;
     john->wanderRadiusZ = 64;
-    john->idleAnimation = 0;
-    john->movingAnimation = 8;
+    john->idleAnimation = JOHN_ANIMATION_STANDING_DIRECTIONAL;
+    john->movingAnimation = JOHN_ANIMATION_WALKING_DIRECTIONAL;
 
     if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(MRS_MANA_COWS_EVENT) && (9 < gHour && gHour < 16)) {
 
@@ -6609,11 +6577,10 @@ void setJohnLocation(void) {
 void setGourmetJudgeLocation(void) {
     npcInfo *gourmetJudge = &npcs[GOURMET_JUDGE];
 
-
     gourmetJudge->wanderRadiusX = 64;
     gourmetJudge->wanderRadiusZ = 64;
-    gourmetJudge->idleAnimation = 0;
-    gourmetJudge->movingAnimation = 8;
+    gourmetJudge->idleAnimation = GOURMET_JUDGE_ANIMATION_STANDING_DIRECTIONAL;
+    gourmetJudge->movingAnimation = GOURMET_JUDGE_ANIMATION_WALKING_DIRECTIONAL;
 
     if (checkLifeEventBit(VINEYARD_FIRST_WINE) && gourmetJudge->location == 0 && (8 < gHour && gHour < 17)) {
 
@@ -7028,13 +6995,13 @@ void setKarenKaiBabyLocation(void) {
 }
 
 void setEntomologistLocation(void) {
+    
     npcInfo *entomologist = &npcs[ENTOMOLOGIST];
 
-    
     entomologist->wanderRadiusX = 64;
     entomologist->wanderRadiusZ = 64;
-    entomologist->idleAnimation = 0;
-    entomologist->movingAnimation = 8;
+    entomologist->idleAnimation = ENTOMOLOGIST_ANIMATION_STANDING_DIRECTIONAL;
+    entomologist->movingAnimation = ENTOMOLOGIST_ANIMATION_WALKING_DIRECTIONAL;
 
     if (gYear == 2 && gSeason == SPRING && 1 < gDayOfMonth && gDayOfMonth < 21 && (5 < gHour && gHour < 18)) {
 
@@ -7147,7 +7114,7 @@ void handleMariaAnimation(void) {
 
                 case NPC_ANIMATION_SLEEPING:
 
-                    setEntityAnimation(maria->entityIndex, 24);
+                    setEntityAnimation(maria->entityIndex, MARIA_ANIMATION_SLEEPING);
 
                     entities[maria->entityIndex].coordinates.x = -192.0f;
                     entities[maria->entityIndex].coordinates.y = 0.0f;
@@ -8105,7 +8072,8 @@ void handleKentAnimation(void) {
 
                         kent->speed = 0;
                         kent->animationTimer = 0;
-                        setEntityDirectionalAnimation(kent->entityIndex, 0);
+                        setEntityDirectionalAnimation(kent->entityIndex, KENT_ANIMATION_STANDING_DIRECTIONAL);
+
                         tempDirection = getRandomNumberInRange(0, 60);
 
                         if (tempDirection < DIRECTION_N) {
@@ -8121,7 +8089,7 @@ void handleKentAnimation(void) {
                         kent->animationTimer = 0;
 
                         // running
-                        setEntityDirectionalAnimation(kent->entityIndex, 16);
+                        setEntityDirectionalAnimation(kent->entityIndex, KENT_ANIMATION_RUNNING_DIRECTIONAL);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
                             kent->animationState = 1;

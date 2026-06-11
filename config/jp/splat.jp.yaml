@@ -1465,8 +1465,8 @@ segments:
   - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE80110, name: libraryDialogueIndex }
   - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE80170, name: entomologistDialogue }
   - { type: bin, extract: false, dir: dialogues/bytecode, start: 0xE801E0, name: entomologistDialogueIndex }
-  - { type: bin, dir: audio, start: 0xE80200, name: waveTablePointer }
-  - { type: bin, dir: audio, start: 0xE86A90, name: waveTableData }
+  - { type: bin, dir: audio, start: 0xE80200, name: waveTablePointer, extract: false }
+  - { type: bin, dir: audio, start: 0xE86A90, name: waveTableData, extract: false }
   - { type: seq, dir: audio/sequences, start: 0xFC5690, name: opening }
   - { type: seq, dir: audio/sequences, start: 0xFC7E80, name: title }
   - { type: seq, dir: audio/sequences, start: 0xFCA840, name: sportsFestival1 }

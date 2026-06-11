@@ -1,31 +1,34 @@
-#ifndef _SHIPPER_ANIMATION_MACROS_H_
-#define _SHIPPER_ANIMATION_MACROS_H_
+#ifndef _SHIPPER_H_
+#define _SHIPPER_H_
 
-#define SHIPPER_ANIMATION_0                      0
-#define SHIPPER_ANIMATION_1                      1
-#define SHIPPER_ANIMATION_2                      2
-#define SHIPPER_ANIMATION_3                      3
-#define SHIPPER_ANIMATION_4                      4
-#define SHIPPER_ANIMATION_5                      5
-#define SHIPPER_ANIMATION_6                      6
-#define SHIPPER_ANIMATION_7                      7
-#define SHIPPER_ANIMATION_8                      8
-#define SHIPPER_ANIMATION_9                      9
-#define SHIPPER_ANIMATION_10                     10
-#define SHIPPER_ANIMATION_11                     11
-#define SHIPPER_ANIMATION_12                     12
-#define SHIPPER_ANIMATION_13                     13
-#define SHIPPER_ANIMATION_14                     14
-#define SHIPPER_ANIMATION_15                     15
-#define SHIPPER_ANIMATION_16                     16
-#define SHIPPER_ANIMATION_17                     17
-#define SHIPPER_ANIMATION_18                     18
-#define SHIPPER_ANIMATION_19                     19
-#define SHIPPER_ANIMATION_20                     20
-#define SHIPPER_ANIMATION_21                     21
-#define SHIPPER_ANIMATION_22                     22
-#define SHIPPER_ANIMATION_23                     23
-#define SHIPPER_ANIMATION_24                     24
-#define SHIPPER_ANIMATION_25                     25
+#define SHIPPER_ANIMATION_STANDING_DIRECTIONAL    0
+#define SHIPPER_ANIMATION_STANDING_S              0
+#define SHIPPER_ANIMATION_STANDING_SW             1
+#define SHIPPER_ANIMATION_STANDING_W              2
+#define SHIPPER_ANIMATION_STANDING_NW             3
+#define SHIPPER_ANIMATION_STANDING_N              4
+#define SHIPPER_ANIMATION_STANDING_NE             5
+#define SHIPPER_ANIMATION_STANDING_E              6
+#define SHIPPER_ANIMATION_STANDING_SE             7
+#define SHIPPER_ANIMATION_WALKING_DIRECTIONAL     8
+#define SHIPPER_ANIMATION_WALKING_S               8
+#define SHIPPER_ANIMATION_WALKING_SW              9
+#define SHIPPER_ANIMATION_WALKING_W               10
+#define SHIPPER_ANIMATION_WALKING_NW              11
+#define SHIPPER_ANIMATION_WALKING_N               12
+#define SHIPPER_ANIMATION_WALKING_NE              13
+#define SHIPPER_ANIMATION_WALKING_E               14
+#define SHIPPER_ANIMATION_WALKING_SE              15
+#define SHIPPER_ANIMATION_HOLDING_MAY_DIRECTIONAL 16
+#define SHIPPER_ANIMATION_HOLDING_MAY_S           16
+#define SHIPPER_ANIMATION_HOLDING_MAY_SW          17
+#define SHIPPER_ANIMATION_HOLDING_MAY_W           18
+#define SHIPPER_ANIMATION_HOLDING_MAY_NW          19
+#define SHIPPER_ANIMATION_HOLDING_MAY_N           20
+#define SHIPPER_ANIMATION_HOLDING_MAY_NE          21
+#define SHIPPER_ANIMATION_HOLDING_MAY_E           22
+#define SHIPPER_ANIMATION_HOLDING_MAY_SE          23
+#define SHIPPER_ANIMATION_RAISE_ARM_1_SE          24
+#define SHIPPER_ANIMATION_RAISE_ARM_2_SE          25
 
 #endif

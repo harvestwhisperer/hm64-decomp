@@ -84,9 +84,9 @@ void readControllerData(void) {
         NUContData *cd = &contData[i];
 
         if (!nuContStatus[i].errno) {
-
-            if ((frameCount % mainLoopUpdateRate) == 0) {
-
+            
+            if ((vblankCounter % mainLoopUpdateInterval) == 0) {
+                
                 c->analogStick.rawX = cd->stick_x;
                 c->analogStick.rawY = cd->stick_y;
 

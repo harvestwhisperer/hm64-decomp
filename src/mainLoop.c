@@ -187,15 +187,15 @@ u8 gfxRetraceCallback(int pendingGfx) {
     handleGraphicsUpdate(pendingGfx);
     updateMainLoopTimer(pendingGfx);
     
-    if (frameCount > 59) {
-        frameCount = 0;
+    if (vblankCounter > 59) {
+        vblankCounter = 0;
         engineStateFlags |= 2;
     }
     
     // no op
     // func_8004DF00();
     
-    frameCount++;
+    vblankCounter++;
     retraceCount++;
     // reset to 0 when pendingGfx < 3
     framebufferCount++;
@@ -208,9 +208,9 @@ void handleGraphicsUpdate(int pendingGfx) {
 
   u8 temp;
     
-  if ((frameCount % frameRate) == 0) {
+  if ((vblankCounter % vblanksPerDraw) == 0) {
       
-    if (frameCount > 59) {
+    if (vblankCounter > 59) {
 
       previousDrawnFrameCount = drawnFrameCount;
       drawnFrameCount = 0;
@@ -239,9 +239,9 @@ void handleGraphicsUpdate(int pendingGfx) {
 
 void updateMainLoopTimer(int pendingGfx) {
     
-    if ((frameCount % mainLoopUpdateRate) == 0) {
+    if ((vblankCounter % mainLoopUpdateInterval) == 0) {
         
-        if (frameCount > 59) {
+        if (vblankCounter > 59) {
 
           previousLoopStepsPerCycle = loopStepsPerCycle;
           loopStepsPerCycle = 0;
