@@ -10,6 +10,7 @@ Currently supported modding workflows:
 - Cutscene editing and new cutscenes
 - Dialogue logic editing and additional dialogues
 - Audio sequence replacement
+- Instrument soundbank editing
 
 QOL implementations:
 - Day clock advances at 80% of the original game speed
@@ -20,6 +21,7 @@ QOL implementations:
 - Use cached pointers wherever possible, reducing up to 50% of RAM lookups across translation units
 - Fix map loading bug caused by redundant/unnecessary ground object function calls
 - Sowing seeds while raining automatically waters them 
+- Added new ocarina playing mode (use d-pad up after acquiring the ocarina)
 
 Replacing other assets (maps, sprites, animations, fonts) is fully supported in theory, but tooling to create/modify these assets is still in progress.
 
