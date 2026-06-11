@@ -203,11 +203,9 @@
 #define CRICKET_HELD_ITEM 185
 #define BABY_HELD_ITEM 186
 // multiple directions
-// #define BABY_HELD_ITEM 192
 #define BABY_GROWN_HELD_ITEM 194
 // multiple directions
-// #define BABY_GROWN_HELD_ITEM 195
-#define OPEN_BOOK_HELD_ITEM 202
+#define LIBRARY_BOOK_HELD_ITEM 202
 #define SICKLE_HELD_ITEM 203
 #define SILVER_SICKLE_HELD_ITEM 204
 #define GOLDEN_SICKLE_HELD_ITEM 205

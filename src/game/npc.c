@@ -1219,7 +1219,7 @@ void setMariaLocation(void) {
                 
             }
 
-            if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+            if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                 npcs[MARIA].idleAnimation = MARIA_ANIMATION_HOLDING_DIRECTIONAL;
                 npcs[MARIA].movingAnimation = MARIA_ANIMATION_118;
             }
@@ -1343,7 +1343,7 @@ void setMariaLocation(void) {
                     
                 } 
 
-                if (getNPCBabyCarryingState(MARIA) == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+                if (getNPCBabyCarryingState(MARIA) == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                     npcs[MARIA].idleAnimation = MARIA_ANIMATION_HOLDING_DIRECTIONAL;
                     npcs[MARIA].movingAnimation = MARIA_ANIMATION_118;
                 }
@@ -1695,7 +1695,7 @@ void setPopuriLocation(void) {
                 
             }
 
-            if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+            if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                 npcs[POPURI].idleAnimation = 122;
                 npcs[POPURI].movingAnimation = 132;
             }
@@ -2165,7 +2165,7 @@ void setElliLocation(void) {
                 
             }
 
-            if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+            if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                 npcs[ELLI].idleAnimation = 0x69;
                 npcs[ELLI].movingAnimation = 0x73;
             }
@@ -2712,7 +2712,7 @@ void setAnnLocation(void) {
                 
             }
 
-            if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+            if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                 npcs[ANN].idleAnimation = 0x6F;
                 npcs[ANN].movingAnimation = 0x79;
             }
@@ -3210,7 +3210,7 @@ void setKarenLocation(void) {
                 
             }
 
-            if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+            if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
                 npcs[KAREN].idleAnimation = 0x66;
                 npcs[KAREN].movingAnimation = 0x70;
             }
@@ -3493,7 +3493,7 @@ void setBabyLocation(void) {
     
     clearDailyEventBit(PICKED_UP_BABY);
 
-    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
+    if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
 
         npcs[BABY].wanderRadiusX = 64;
         npcs[BABY].wanderRadiusZ = 64;
