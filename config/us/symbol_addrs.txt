@@ -1998,7 +1998,7 @@ gNamingScreenIndex 							= 0x80205624;
 __osRdb_Read_Data_Buf 						= 0x80205628; // size:0x4
 elliJeffPregnancyCounter 					= 0x8020562C;
 gGraphicsBufferIndex 						= 0x80205630;
-frameCount 									= 0x80205634;
+vblankCounter 									= 0x80205634;
 gMapWithSeasonIndex 						= 0x80205635;
 pinkCatMintSeedsQuantity                    = 0x80205636;
 gAverageFarmAnimalAffection 				= 0x8020563A;
@@ -2047,7 +2047,7 @@ strawberrySeedsQuantity                     = 0x802373E8;
 gWife 										= 0x802373E9;
 __osRdb_IP6_Ct 								= 0x802373EC; // size:0x4
 flowerShopPoints 							= 0x802373F0;
-frameRate 									= 0x802373F1;
+vblanksPerDraw 									= 0x802373F1;
 currentMapLightingRGBA                      = 0x802373F8; // size:0x10
 gHarvestCoinFinder 							= 0x80237409;
 shopContext 								= 0x8023740A; // size:0x6
@@ -2058,7 +2058,7 @@ freezerItemSlots 							= 0x80237420; // size:0x20
 __osSiAccessQueue 							= 0x80237440; // size:0x18
 eggplantSeedsQuantity                       = 0x80237458;
 sceneMatrices 								= 0x80237460; // size:0x5A0
-D_80237A00f                                  = 0x80237A00; // size:0x4
+D_80237A00                                  = 0x80237A00; // size:0x4
 nuContDataMutexQ 							= 0x80237A08;
 
 // Ignored Symbols

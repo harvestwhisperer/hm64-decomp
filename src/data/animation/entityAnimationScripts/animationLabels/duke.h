@@ -1,22 +1,24 @@
-#ifndef _DUKE_ANIMATION_MACROS_H_
-#define _DUKE_ANIMATION_MACROS_H_
+#ifndef _DUKE_H_
+#define _DUKE_H_
 
-#define DUKE_ANIMATION_0                         0
-#define DUKE_ANIMATION_1                         1
-#define DUKE_ANIMATION_2                         2
-#define DUKE_ANIMATION_3                         3
-#define DUKE_ANIMATION_4                         4
-#define DUKE_ANIMATION_5                         5
-#define DUKE_ANIMATION_6                         6
-#define DUKE_ANIMATION_7                         7
-#define DUKE_ANIMATION_8                         8
-#define DUKE_ANIMATION_9                         9
-#define DUKE_ANIMATION_10                        10
-#define DUKE_ANIMATION_11                        11
-#define DUKE_ANIMATION_12                        12
-#define DUKE_ANIMATION_13                        13
-#define DUKE_ANIMATION_14                        14
-#define DUKE_ANIMATION_15                        15
-#define DUKE_ANIMATION_16                        16
+#define DUKE_ANIMATION_STANDING_DIRECTIONAL 0
+#define DUKE_ANIMATION_STANDING_S           0
+#define DUKE_ANIMATION_STANDING_SW          1
+#define DUKE_ANIMATION_STANDING_W           2
+#define DUKE_ANIMATION_STANDING_NW          3
+#define DUKE_ANIMATION_STANDING_N           4
+#define DUKE_ANIMATION_STANDING_NE          5
+#define DUKE_ANIMATION_STANDING_E           6
+#define DUKE_ANIMATION_STANDING_SE          7
+#define DUKE_ANIMATION_WALKING_DIRECTIONAL  8
+#define DUKE_ANIMATION_WALKING_S            8
+#define DUKE_ANIMATION_WALKING_SW           9
+#define DUKE_ANIMATION_WALKING_W            10
+#define DUKE_ANIMATION_WALKING_NW           11
+#define DUKE_ANIMATION_WALKING_N            12
+#define DUKE_ANIMATION_WALKING_NE           13
+#define DUKE_ANIMATION_WALKING_E            14
+#define DUKE_ANIMATION_WALKING_SE           15
+#define DUKE_ANIMATION_RAISE_ARM_SE         16
 
 #endif

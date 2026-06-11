@@ -6063,11 +6063,13 @@ segments:
   - name: waveTablePointer
     type: bin
     dir: audio
+    extract: false
     start: 0xE93080
 
   - name: waveTableData
     dir: audio
     type: bin
+    extract: false
     start: 0xE99910
 
   # music

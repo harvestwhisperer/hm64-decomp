@@ -26,6 +26,8 @@
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
 
+#include "data/animation/entityAnimationScripts/entityAnimationLabels.h"
+
 #include "buffers/buffers.h"
 
 #include "ld_symbols.h"
@@ -1088,8 +1090,8 @@ void setMariaLocation(void) {
 
     npcs[MARIA].wanderRadiusX = 64;
     npcs[MARIA].wanderRadiusZ = 64;
-    npcs[MARIA].idleAnimation = 0;
-    npcs[MARIA].movingAnimation = 8;
+    npcs[MARIA].idleAnimation = MARIA_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[MARIA].movingAnimation = MARIA_ANIMATION_WALKING_DIRECTIONAL;
 
     if (!checkDailyEventBit(BIRTH_EVENT_DAILY) && !checkLifeEventBit(WIFE_LEFT) && !checkDailyEventBit(MARIA_LOCATION_OVERRIDE)) {
 
@@ -1218,8 +1220,8 @@ void setMariaLocation(void) {
             }
 
             if (getBabyCarryingState() == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
-                npcs[MARIA].idleAnimation = 0x6C;
-                npcs[MARIA].movingAnimation = 0x76;
+                npcs[MARIA].idleAnimation = MARIA_ANIMATION_HOLDING_DIRECTIONAL;
+                npcs[MARIA].movingAnimation = MARIA_ANIMATION_118;
             }
     
         } else if (!checkDailyEventBit(FESTIVAL)) {
@@ -1342,8 +1344,8 @@ void setMariaLocation(void) {
                 } 
 
                 if (getNPCBabyCarryingState(MARIA) == 1 && ((u8)(gPlayer.heldItem + 0x46)) >= 0x10) {
-                    npcs[MARIA].idleAnimation = 0x6C;
-                    npcs[MARIA].movingAnimation = 0x76;
+                    npcs[MARIA].idleAnimation = MARIA_ANIMATION_HOLDING_DIRECTIONAL;
+                    npcs[MARIA].movingAnimation = MARIA_ANIMATION_118;
                 }
                 
             } else {
@@ -3956,8 +3958,8 @@ void setCliffLocation(void) {
 
     npcs[CLIFF].wanderRadiusX = 64;
     npcs[CLIFF].wanderRadiusZ = 64;
-    npcs[CLIFF].idleAnimation = 0;
-    npcs[CLIFF].movingAnimation = 8;
+    npcs[CLIFF].idleAnimation = CLIFF_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[CLIFF].movingAnimation = CLIFF_ANIMATION_WALKING_DIRECTIONAL;
 
     if (!checkLifeEventBit(CLIFF_GONE)) {
 
@@ -4607,8 +4609,8 @@ void setLilliaLocation(void) {
 
     npcs[LILLIA].wanderRadiusX = 64;
     npcs[LILLIA].wanderRadiusZ = 64;
-    npcs[LILLIA].movingAnimation = 8;
-    npcs[LILLIA].idleAnimation = 0;
+    npcs[LILLIA].movingAnimation = LILLIA_ANIMATION_WALKING_DIRECTIONAL;
+    npcs[LILLIA].idleAnimation = LILLIA_ANIMATION_STANDING_DIRECTIONAL;
 
     if (gWeather != SUNNY) goto DEFAULT;
 
@@ -4654,8 +4656,8 @@ void setBasilLocation(void) {
 
     npcs[BASIL].wanderRadiusX = 64;
     npcs[BASIL].wanderRadiusZ = 64;
-    npcs[BASIL].idleAnimation = 0;
-    npcs[BASIL].movingAnimation = 8;
+    npcs[BASIL].idleAnimation = BASIL_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[BASIL].movingAnimation = BASIL_ANIMATION_WALKING_DIRECTIONAL;
 
     if (!checkLifeEventBit(BASIL_IN_TOWN)) goto FUNC_END;
 
@@ -5025,10 +5027,11 @@ void setPotionShopDealerLocation(void) {
 
 void setKentLocation(void) {
 
+
     npcs[KENT].wanderRadiusX = 64;
     npcs[KENT].wanderRadiusZ = 64;
-    npcs[KENT].movingAnimation = 8;
-    npcs[KENT].idleAnimation = 0;
+    npcs[KENT].movingAnimation = KENT_ANIMATION_WALKING_DIRECTIONAL;
+    npcs[KENT].idleAnimation = KENT_ANIMATION_STANDING_DIRECTIONAL;
 
     if (gWeather == SUNNY) {
         
@@ -5874,8 +5877,8 @@ void setShipperLocation(void) {
 
     npcs[SHIPPER].wanderRadiusX = 64;
     npcs[SHIPPER].wanderRadiusZ = 64;
-    npcs[SHIPPER].idleAnimation = 0;
-    npcs[SHIPPER].movingAnimation = 8;
+    npcs[SHIPPER].idleAnimation = SHIPPER_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[SHIPPER].movingAnimation = SHIPPER_ANIMATION_WALKING_DIRECTIONAL;
 
     if (NIGHTTIME && npcs[SHIPPER].location < 2) {
         
@@ -5970,8 +5973,8 @@ void setDukeLocation(void) {
 
     npcs[DUKE].wanderRadiusX = 64;
     npcs[DUKE].wanderRadiusZ = 64;
-    npcs[DUKE].idleAnimation = 0;
-    npcs[DUKE].movingAnimation = 8;
+    npcs[DUKE].idleAnimation = DUKE_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[DUKE].movingAnimation = DUKE_ANIMATION_WALKING_DIRECTIONAL;
 
     switch (temp) {
         
@@ -6006,8 +6009,8 @@ void setDukeLocation(void) {
 
         npcs[DUKE].wanderRadiusX = 64;
         npcs[DUKE].wanderRadiusZ = 64;
-        npcs[DUKE].idleAnimation = 0;
-        npcs[DUKE].movingAnimation = 8;
+        npcs[DUKE].idleAnimation = DUKE_ANIMATION_STANDING_DIRECTIONAL;
+        npcs[DUKE].movingAnimation = DUKE_ANIMATION_WALKING_DIRECTIONAL;
 
         if (temp < 7 && gDayOfWeek && NIGHTTIME) {
             
@@ -6032,8 +6035,8 @@ void setGregLocation(void) {
 
     npcs[GREG].wanderRadiusX = 64;
     npcs[GREG].wanderRadiusZ = 64;
-    npcs[GREG].idleAnimation = 0;
-    npcs[GREG].movingAnimation = 8;
+    npcs[GREG].idleAnimation = GREG_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[GREG].movingAnimation = GREG_ANIMATION_WALKING_DIRECTIONAL;
 
     if (gSeason != WINTER && checkHaveTool(FISHING_POLE) && gWeather == SUNNY) {
 
@@ -6472,8 +6475,8 @@ void setMrsManaLocation(void) {
     
     npcs[MRS_MANA].wanderRadiusX = 64;
     npcs[MRS_MANA].wanderRadiusZ = 64;
-    npcs[MRS_MANA].idleAnimation = 0;
-    npcs[MRS_MANA].movingAnimation = 8;
+    npcs[MRS_MANA].idleAnimation = MRS_MANA_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[MRS_MANA].movingAnimation = MRS_MANA_ANIMATION_WALKING_DIRECTIONAL;
 
     if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(MRS_MANA_COWS_EVENT) && NIGHTTIME) {
 
@@ -6497,8 +6500,8 @@ void setJohnLocation(void) {
     
     npcs[JOHN].wanderRadiusX = 64;
     npcs[JOHN].wanderRadiusZ = 64;
-    npcs[JOHN].idleAnimation = 0;
-    npcs[JOHN].movingAnimation = 8;
+    npcs[JOHN].idleAnimation = JOHN_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[JOHN].movingAnimation = JOHN_ANIMATION_WALKING_DIRECTIONAL;
 
     if (gYear == 1 && gSeason == WINTER && (gDayOfMonth < 5) && checkLifeEventBit(MRS_MANA_COWS_EVENT) && (9 < gHour && gHour < 16)) {
 
@@ -6522,8 +6525,8 @@ void setGourmetJudgeLocation(void) {
 
     npcs[GOURMET_JUDGE].wanderRadiusX = 64;
     npcs[GOURMET_JUDGE].wanderRadiusZ = 64;
-    npcs[GOURMET_JUDGE].idleAnimation = 0;
-    npcs[GOURMET_JUDGE].movingAnimation = 8;
+    npcs[GOURMET_JUDGE].idleAnimation = GOURMET_JUDGE_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[GOURMET_JUDGE].movingAnimation = GOURMET_JUDGE_ANIMATION_WALKING_DIRECTIONAL;
 
     if (checkLifeEventBit(VINEYARD_FIRST_WINE) && npcs[GOURMET_JUDGE].location == 0 && (8 < gHour && gHour < 17)) {
 
@@ -6926,8 +6929,8 @@ void setEntomologistLocation(void) {
     
     npcs[ENTOMOLOGIST].wanderRadiusX = 64;
     npcs[ENTOMOLOGIST].wanderRadiusZ = 64;
-    npcs[ENTOMOLOGIST].idleAnimation = 0;
-    npcs[ENTOMOLOGIST].movingAnimation = 8;
+    npcs[ENTOMOLOGIST].idleAnimation = ENTOMOLOGIST_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[ENTOMOLOGIST].movingAnimation = ENTOMOLOGIST_ANIMATION_WALKING_DIRECTIONAL;
 
     if (gYear == 2 && gSeason == SPRING && 1 < gDayOfMonth && gDayOfMonth < 21 && (5 < gHour && gHour < 18)) {
 
@@ -7038,7 +7041,7 @@ void handleMariaAnimation(void) {
 
                 case NPC_ANIMATION_SLEEPING:
 
-                    setEntityAnimation(npcs[MARIA].entityIndex, 24);
+                    setEntityAnimation(npcs[MARIA].entityIndex, MARIA_ANIMATION_SLEEPING);
 
                     entities[npcs[MARIA].entityIndex].coordinates.x = -192.0f;
                     entities[npcs[MARIA].entityIndex].coordinates.y = 0.0f;
@@ -7956,7 +7959,7 @@ void handleKentAnimation(void) {
 
                         npcs[KENT].speed = 0;
                         npcs[KENT].animationTimer = 0;
-                        setEntityDirectionalAnimation(npcs[KENT].entityIndex, 0);
+                        setEntityDirectionalAnimation(npcs[KENT].entityIndex, KENT_ANIMATION_STANDING_DIRECTIONAL);
                         tempDirection = getRandomNumberInRange(0, 60);
 
                         if (tempDirection < DIRECTION_N) {
@@ -7972,7 +7975,7 @@ void handleKentAnimation(void) {
                         npcs[KENT].animationTimer = 0;
 
                         // running
-                        setEntityDirectionalAnimation(npcs[KENT].entityIndex, 16);
+                        setEntityDirectionalAnimation(npcs[KENT].entityIndex, KENT_ANIMATION_RUNNING_DIRECTIONAL);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
                             npcs[KENT].animationState = 1;
