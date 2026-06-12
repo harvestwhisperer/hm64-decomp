@@ -26,6 +26,27 @@ To build a JP ROM, place your JP ROM in the root directory as `baserom.jp.z64` a
 1. Copy `baserom.us.z64` (or `baserom.jp.z64` if building JP) to the project's root directory (must provide your own and must be in big endian/z64 format).
 1. Run `make setup && make` or simply `make fresh` (with `VERBOSE=1` and `-j[n]` optional). For building JP, run `make fresh VERSION=jp`, etc.
 
+### Docker Workflow
+
+Docker is also supported, and can be useful on Linux and non-Debian-based
+distributions where Python packaging and MIPS toolchain packages differ from
+the WSL setup assumptions.
+
+Prerequisite: install Docker.
+
+1. `git clone --recursive https://github.com/harvestwhisperer/hm64-decomp.git`
+1. `cd hm64-decomp`
+1. Copy `baserom.us.z64` (or `baserom.jp.z64` if building JP) to the project's root directory (must provide your own and must be in big endian/z64 format).
+1. Run `bash tools/docker.sh make fresh` (with `VERBOSE=1` optional). For building JP, run `bash tools/docker.sh make fresh VERSION=jp`, etc.
+
+For an interactive container shell, run `bash tools/docker.sh`. The image sets
+`PYTHON`, `KMC_PATH`, and `MODERN_GCC=0`, so normal build commands work inside
+the shell.
+
+The Docker helper defaults to `linux/amd64` because the KMC toolchain release is
+a Linux binary toolchain. Override `HM64_DOCKER_IMAGE` or
+`HM64_DOCKER_PLATFORM` if you need a custom image tag or platform.
+
 ## Asset extraction
 
 ### Sprites
