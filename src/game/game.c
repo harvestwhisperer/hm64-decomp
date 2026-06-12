@@ -1210,11 +1210,14 @@ void endCutsceneCallback(void) {
 }
 
 void loadNamingScreenCallback(void) {
-    
+
     u8* namePtr;
 
     openOverlayScreen();
-    
+
+    // The naming screen's texture buffer overlaps MAP_DATA_BUFFER; need to clear map data cache for when naming screen is opened during cutscenes
+    mapControllers[MAIN_MAP_INDEX].flags &= ~MAP_CONTROLLER_DATA_CACHED;
+
     switch (gNamingScreenIndex) {
 
         case NAMING_SCREEN_TYPE_PLAYER:
