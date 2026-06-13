@@ -78,6 +78,9 @@ void initializeTVAssets(void) {
     
     setMapObject(MAIN_MAP_INDEX, 9, TV_CONTENT, tvContext.pictureIndex, -12.0f, 36.0f, -154.0f, 0xFF, 0xFE, 0, 0);
 
+    // TV content sprites share the same vaddr as GROUND_OBJECTS_TEXTURE_BUFFER (0x802EB800)
+    mapControllers[MAIN_MAP_INDEX].flags &= ~MAP_CONTROLLER_GROUND_OBJECTS_CACHED;
+
     tvContext.mode = 0;
 
 }
