@@ -92,7 +92,7 @@ void initializeMessageBoxes(void) {
         messageBoxes[i].lineSpacing = 0;
 
         messageBoxes[i].characterPrintSfx = 0xFF;
-        messageBoxes[i].unk_74 = 0xFF;
+        messageBoxes[i].messageOpenSfx = 0xFF;
         messageBoxes[i].messageCloseSfx = 0xFF;
 
         messageBoxes[i].totalCharactersProcessed = 0;
@@ -153,7 +153,7 @@ bool initializeEmptyMessageBox(u16 messageBoxIndex, u8* textBufferAddr) {
             messageBoxes[messageBoxIndex].currentLineBeingPrinted = 0;
 
             messageBoxes[messageBoxIndex].characterPrintSfx = 0xFF;
-            messageBoxes[messageBoxIndex].unk_74 = 0xFF;
+            messageBoxes[messageBoxIndex].messageOpenSfx = 0xFF;
             messageBoxes[messageBoxIndex].messageCloseSfx = 0xFF;
 
             messageBoxes[messageBoxIndex].textBufferBase = textBufferAddr;
@@ -657,7 +657,7 @@ bool setMessageBoxSfx(u16 index, u32 arg1, u32 arg2, u32 arg3) {
         if (messageBoxes[index].flags & MESSAGE_BOX_ACTIVE) {
 
             messageBoxes[index].characterPrintSfx = arg1;
-            messageBoxes[index].unk_74 = arg2;
+            messageBoxes[index].messageOpenSfx = arg2;
             messageBoxes[index].messageCloseSfx = arg3;
             
             result = TRUE;
@@ -1685,8 +1685,8 @@ void updateMessageBoxText(u16 index) {
                     resetAnimationState(overlayIcons[messageBoxes[index].overlayIconIndex].spriteIndex);
                     
                     if (messageBoxes[index].characterPrintSfx != 0xFF) {
-                        setSfx(messageBoxes[index].unk_74 + 1);
-                        setSfxVolume(messageBoxes[index].unk_74 + 1, 0x80);
+                        setSfx(messageBoxes[index].messageOpenSfx + 1);
+                        setSfxVolume(messageBoxes[index].messageOpenSfx + 1, 128);
                     }
                     
                 } else {

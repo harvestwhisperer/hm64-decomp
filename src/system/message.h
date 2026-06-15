@@ -246,7 +246,7 @@ typedef struct {
     u16 unk_68; // counter
     MessageBoxInterpolator scrollInterpolator; // 0x6A
     u32 characterPrintSfx;
-    u32 unk_74; // Unknown SFX (follows same pattern as other SFX fields)
+    u32 messageOpenSfx;
     u32 messageCloseSfx;
     s16 unk_7C; // interpolation rate value
     u16 textIndex;

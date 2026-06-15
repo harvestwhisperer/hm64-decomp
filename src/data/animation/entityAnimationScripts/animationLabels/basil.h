@@ -22,8 +22,8 @@
 #define BASIL_ANIMATION_LIFT_UP_POPURI_1     16
 #define BASIL_ANIMATION_LIFT_UP_POPURI_2     17
 #define BASIL_ANIMATION_LIFT_UP_POPURI_3     18
-#define BASIL_ANIMATION_19                   19
-#define BASIL_ANIMATION_20                   20
+#define BASIL_ANIMATION_STEP_1_NE            19
+#define BASIL_ANIMATION_STEP_2_NE            20
 #define BASIL_ANIMATION_SHRUG_SW             21
 
 #endif

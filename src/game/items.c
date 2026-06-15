@@ -2588,7 +2588,7 @@ void useHoe(void) {
             
         } else {
             toolUse.toolUseState = 0;
-            playSfx(0x1B);
+            playSfx(27);
         }
 
         toolUse.stepIndex++;
@@ -4760,7 +4760,7 @@ void updateHeldItemState(void) {
 
                     case ITEM_STATE_DROP_IN_WATER:
                         handleItemDroppedInWater(itemInfo[i].heldItemIndex, i);
-                        playSfx(FISHING_ROD_CAST);
+                        playSfx(PLOP_SFX);
                         itemInfo[i].stateIndex = ITEM_STATE_CLEANUP;
                         break;
 

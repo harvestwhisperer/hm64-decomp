@@ -39,6 +39,7 @@
 #include "assetIndices/cutscenes.h"
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
+#include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
 
 // forward declarations
@@ -4595,7 +4596,7 @@ void handleCutsceneCompletion(void) {
                         nuPiReadRom((u32)&_fontPalette1SegmentRomStart, FONT_PALETTE_1_BUFFER, ptr2 - ptr1);
                         setMessageBoxFont(0, 14, 14, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
                         setMessageBoxInterpolationWithFlags(0, -4, 0);
-                        setMessageBoxSfx(0, 0x57, 8, 1);
+                        setMessageBoxSfx(MAIN_MESSAGE_BOX_INDEX, TEXT_PRINT_SFX, OPEN_SFX, CLOSE_SFX);
  
                         if (D_80180710 == 0) {
                             showDialogueTextBox(DIALOGUE_MENU_EVALUATION_CONTINUE_PROMPT);
@@ -5255,7 +5256,7 @@ void handleCutsceneCompletion(void) {
             nuPiReadRom(ptr1, FONT_PALETTE_1_BUFFER, ptr2 - ptr1);
             setMessageBoxFont(0, 14, 14, FONT_TEXTURE_BUFFER, FONT_PALETTE_1_BUFFER);
             setMessageBoxInterpolationWithFlags(0, 1, 1);
-            setMessageBoxSfx(0, 0xFF, 0xFF, 0xFF);
+            setMessageBoxSfx(MAIN_MESSAGE_BOX_INDEX, 0xFF, 0xFF, 0xFF);
             gCutsceneCompletionFlags &= ~CUTSCENE_COMPLETION_LOAD_FONT_PALETTE_3;
         }
 

@@ -1063,7 +1063,7 @@ void handlePlayerInput(void) {
                 set = TRUE;
                 pauseGameplay();
                 loadOverlayScreen(1, PAUSE_SCREEN_LOAD);
-                playSfx(MENU_OPEN_SFX);
+                playSfx(OPEN_SFX);
                 temp = 0xFF;
             }
         }
@@ -1523,7 +1523,7 @@ void handleToolAction(void) {
 void handleThrowItemAction(void) {
 
     if (gPlayer.actionPhaseFrameCounter == 0 && gPlayer.actionPhase == 0) {
-        playSfx(0x26);
+        playSfx(THROW_SFX);
         clearHeldItemSlot(gPlayer.itemInfoIndex);
         allocateThrownItemSlot(1, ITEM_STATE_THROW_START, gPlayer.heldItem, 0, 8);
         gPlayer.heldItem = 0;
@@ -2071,8 +2071,7 @@ case 2:
                 gPlayer.actionPhaseFrameCounter++;
                 
                 if (gPlayer.actionPhaseFrameCounter == 10) {
-                    // flush
-                    playSfx(86);
+                    playSfx(FLUSH_SFX);
                 }
                 
             }
@@ -2393,7 +2392,7 @@ void handleHotSpringAction(void) {
 void handleWhistleForDogAction(void) {
     
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-        playSfx(0xA);
+        playSfx(WHISTLE_SFX);
     }
 
 }
@@ -2401,7 +2400,7 @@ void handleWhistleForDogAction(void) {
 void handleWhistleForHorseAction(void) {
 
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-        playSfx(WHISTLE);
+        playSfx(WHISTLE_SFX);
     }
 
 }
@@ -2629,7 +2628,7 @@ void handlePlayerAnimation(void) {
             if (!gPlayer.heldItem && !checkDailyEventBit(EGG_FESTIVAL_HOLDING_EGG)) {
                 if (gPlayer.flags & PLAYER_RIDING_HORSE) {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-                        playSfx(9);
+                        playSfx(HORSE_GALLOP_SFX);
                     }
                     setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_HORSE_RUNNING_DIRECTIONAL);
                 } else {
@@ -3165,7 +3164,7 @@ void handleJumpAnimation(void) {
                     gPlayer.actionPhase = 3;
 
                     setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
-                    playSfx(40);
+                    playSfx(PLOP_SFX);
                       
                 } else if (gPlayer.flags & PLAYER_BATH_POSE_3) {
                     
@@ -3193,7 +3192,7 @@ void handleJumpAnimation(void) {
                     gPlayer.actionPhase = 2;
                     
                     setEntityDirection(ENTITY_PLAYER, convertWorldDirectionToScreenDirection(gPlayer.direction, MAIN_MAP_INDEX));
-                    playSfx(40);
+                    playSfx(PLOP_SFX);
                                         
                 } else if (gPlayer.flags & PLAYER_HOT_SPRING_POSE_3) {
                 
@@ -3493,7 +3492,7 @@ void handleFishingRodAnimation(void) {
                     } 
 
                     spawnFishingRodEntity(0, 157, vec.x, vec.y, vec.z);
-                    playSfx(FISHING_ROD_CAST);
+                    playSfx(PLOP_SFX);
                     setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_FISHING_DIRECTIONAL);
                     gPlayer.actionPhase = 2;
                 
@@ -3585,7 +3584,8 @@ void handleFishingRodAnimation(void) {
     }
 
     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-        playSfx(11);
+        // reuse sickle sfx
+        playSfx(SICKLE_SFX);
     }
     
 }
@@ -3634,7 +3634,7 @@ void handleToolAcquisitionAnimation(void) {
             
             case 2:
                 gPlayer.actionPhase = 3;
-                playSfx(0x5A);
+                playSfx(FANFARE_SFX);
                 setMainLoopCallbackFunctionIndex(END_CUTSCENE);
                 pauseGameplay();
                 break;

@@ -6233,7 +6233,7 @@ segments:
     dir: audio/sequences
     start: 0xFFA950
 
-  - name: drumPerformance
+  - name: rainAmbience
     type: seq
     dir: audio/sequences
     start: 0xFFAF80

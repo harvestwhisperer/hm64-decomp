@@ -1152,7 +1152,7 @@ beginwave
     include "badEnding"
     include "vocalPerformance"
     include "ensemblePerformance"
-    include "drumPerformance"
+    include "rainAmbience"
     include "typhoonAmbience1"
     include "typhoonAmbience2"
     include "nightAmbienceSpring"

@@ -1,29 +1,32 @@
-#ifndef _RICK_ANIMATION_MACROS_H_
-#define _RICK_ANIMATION_MACROS_H_
+#ifndef _RICK_H_
+#define _RICK_H_
 
-#define RICK_ANIMATION_0                         0
-#define RICK_ANIMATION_1                         1
-#define RICK_ANIMATION_2                         2
-#define RICK_ANIMATION_3                         3
-#define RICK_ANIMATION_4                         4
-#define RICK_ANIMATION_5                         5
-#define RICK_ANIMATION_6                         6
-#define RICK_ANIMATION_7                         7
-#define RICK_ANIMATION_8                         8
-#define RICK_ANIMATION_9                         9
-#define RICK_ANIMATION_10                        10
-#define RICK_ANIMATION_11                        11
-#define RICK_ANIMATION_12                        12
-#define RICK_ANIMATION_13                        13
-#define RICK_ANIMATION_14                        14
-#define RICK_ANIMATION_15                        15
-#define RICK_ANIMATION_16                        16
-#define RICK_ANIMATION_17                        17
-#define RICK_ANIMATION_18                        18
-#define RICK_ANIMATION_19                        19
-#define RICK_ANIMATION_20                        20
-#define RICK_ANIMATION_21                        21
-#define RICK_ANIMATION_22                        22
-#define RICK_ANIMATION_23                        23
+#define RICK_ANIMATION_STANDING_DIRECTIONAL        0
+#define RICK_ANIMATION_STANDING_S                  0
+#define RICK_ANIMATION_STANDING_SW                 1
+#define RICK_ANIMATION_STANDING_W                  2
+#define RICK_ANIMATION_STANDING_NW                 3
+#define RICK_ANIMATION_STANDING_N                  4
+#define RICK_ANIMATION_STANDING_NE                 5
+#define RICK_ANIMATION_STANDING_E                  6
+#define RICK_ANIMATION_STANDING_SE                 7
+#define RICK_ANIMATION_WALKING_DIRECTIONAL         8
+#define RICK_ANIMATION_WALKING_S                   8
+#define RICK_ANIMATION_WALKING_SW                  9
+#define RICK_ANIMATION_WALKING_W                   10
+#define RICK_ANIMATION_WALKING_NW                  11
+#define RICK_ANIMATION_WALKING_N                   12
+#define RICK_ANIMATION_WALKING_NE                  13
+#define RICK_ANIMATION_WALKING_E                   14
+#define RICK_ANIMATION_WALKING_SE                  15
+#define RICK_ANIMATION_SCRATCHING_HEAD_DIRECTIONAL 16
+#define RICK_ANIMATION_SCRATCHING_HEAD_S           16
+#define RICK_ANIMATION_SCRATCHING_HEAD_SW          17
+#define RICK_ANIMATION_SCRATCHING_HEAD_W           18
+#define RICK_ANIMATION_SCRATCHING_HEAD_NW          19
+#define RICK_ANIMATION_SCRATCHING_HEAD_N           20
+#define RICK_ANIMATION_SCRATCHING_HEAD_NE          21
+#define RICK_ANIMATION_SCRATCHING_HEAD_E           22
+#define RICK_ANIMATION_SCRATCHING_HEAD_SE          23
 
 #endif

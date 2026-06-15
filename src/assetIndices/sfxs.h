@@ -4,19 +4,17 @@
 // #define TOTAL_SFX 90
 
 // TODO: finish adding sfx
-#define SELECT_1 0
-#define CLOSE 1
-#define MOVE_CURSOR 2
-#define INVALID_BUZZ 3
-// shipping bin
+#define SELECT_1_SFX 0
+#define CLOSE_SFX 1
+#define MOVE_CURSOR_SFX 2
+#define INVALID_BUZZ_SFX 3
 #define ITEM_PLUCK_SFX 4
 #define WALKING_SFX 5
 // 5 and 6 = gallop
 #define SELECT_2 7
-// pause screen, dialogue box
-#define MENU_OPEN_SFX 8
-// 9 gallop
-#define WHISTLE 10
+#define OPEN_SFX 8
+#define HORSE_GALLOP_SFX 9
+#define WHISTLE_SFX 10
 #define SICKLE_SFX 11
 #define SILVER_SICKLE_SFX 12
 #define GOLDEN_SICKLE_SFX 13
@@ -39,22 +37,20 @@
 #define SHIMMER_SFX 35
 #define PICKING_UP_SFX 36
 #define PUTTING_DOWN_SFX 37
-#define FISHING_ROD_CAST 40
+#define THROW_SFX 38
+#define PLOP_SFX 40
 #define TV_OFF_SFX 47
 #define DOOR_OPEN_SFX 50
 #define HORSE_NEIGH 56
-// 0x3F set by loadLevel
-#define DOG_BARK 59
+#define DOG_BARK_1_SFX 59
 #define ROOSTER 63
 #define CHICKEN_CLUCK 64
 #define BIRD_CHIRP 66
 #define CAT_MEOW 67
 #define BIRD_CHIRP_2 70
-#define DIALOGUE_BEEP 87
-#define RUMBLE 89
-#define TOOL_ACQUISITION_FANFARE 90
-
-#define RAIN_SFX 32
-#define TYPHOON_SFX 34
+#define FLUSH_SFX 86
+#define TEXT_PRINT_SFX 87
+#define RUMBLE_SFX 89
+#define FANFARE_SFX 90
 
 #endif
