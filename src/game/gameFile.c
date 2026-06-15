@@ -27,6 +27,8 @@
 #include "game/title.h"
 #include "game/weather.h"
 
+#include "assetIndices/sfxs.h"
+
 #include "buffers/buffers.h"
 
 #include "mainLoop.h"
@@ -635,7 +637,7 @@ void gameSelectCallback(void) {
                     if (!set) {
                         if (loadGameScreenContext.diaryHighlighted) {
                             loadGameScreenContext.diaryHighlighted--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         set = TRUE;
                     }
@@ -666,7 +668,7 @@ void gameSelectCallback(void) {
                             }
                         } else {
                             loadGameScreenContext.diaryHighlighted++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                     
                         set = TRUE;
@@ -682,7 +684,7 @@ void gameSelectCallback(void) {
                         
                         if (loadGameScreenContext.diaryHighlighted) {
                             loadGameScreenContext.diaryHighlighted--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             set = TRUE;
                         } else {
                             loadGameScreenContext.showControllerPakScreen = FALSE;
@@ -702,7 +704,7 @@ void gameSelectCallback(void) {
                     if (!set) {
                         if (loadGameScreenContext.diaryHighlighted != 1) {
                             loadGameScreenContext.diaryHighlighted++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         set = TRUE;
                     }
@@ -714,7 +716,7 @@ void gameSelectCallback(void) {
                 if (!set) {
                     if (loadGameScreenContext.action != LOAD_GAME_ACTION_SELECT_COLUMN) {
                         loadGameScreenContext.action = LOAD_GAME_ACTION_SELECT_COLUMN;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     set = TRUE;
                 }
@@ -747,7 +749,7 @@ void gameSelectCallback(void) {
                         setMessageBoxRGBAWithTransition(2, 0, 0, 0, 0, 0x18);
                         setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 0x18);
                         loadGameScreenContext.action = LOAD_GAME_ACTION_LOAD_DIARY;
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                         stopAudioSequenceWithDefaultFadeOut(1);
                     } 
                     
@@ -768,7 +770,7 @@ void gameSelectCallback(void) {
                 setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 0x18);
                 loadGameScreenContext.action = LOAD_GAME_ACTION_RETURN_TO_TITLE;
                 stopAudioSequenceWithDefaultFadeOut(1);
-                playSfx(1);
+                playSfx(CLOSE_SFX);
                 
             }
     
@@ -780,7 +782,7 @@ void gameSelectCallback(void) {
                 if (!set) {
                     if (loadGameScreenContext.actionColumnHighlighted) {
                         loadGameScreenContext.actionColumnHighlighted--;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     set = TRUE;
                 }
@@ -795,7 +797,7 @@ void gameSelectCallback(void) {
 #endif
                     {
                         loadGameScreenContext.actionColumnHighlighted++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     set = TRUE;
                 }
@@ -805,7 +807,7 @@ void gameSelectCallback(void) {
                 if (!set) {
                     if (loadGameScreenContext.action != LOAD_GAME_ACTION_SELECT_DIARY) {
                         loadGameScreenContext.action = LOAD_GAME_ACTION_SELECT_DIARY;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     set = TRUE;
                 }
@@ -848,11 +850,11 @@ void gameSelectCallback(void) {
                             setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 0x18);
                             // load farm ranking screen
                             loadGameScreenContext.action = LOAD_GAME_ACTION_OPEN_RANKING;
-                            playSfx(0);
+                            playSfx(SELECT_1_SFX);
                             break;
                     }
                     
-                    playSfx(0);
+                    playSfx(SELECT_1_SFX);
                     set = TRUE;
                 
                 }
@@ -869,7 +871,7 @@ void gameSelectCallback(void) {
                 setMessageBoxRGBAWithTransition(3, 0, 0, 0, 0, 0x18);
                 loadGameScreenContext.action = LOAD_GAME_ACTION_RETURN_TO_TITLE;
                 stopAudioSequenceWithDefaultFadeOut(1);
-                playSfx(1);
+                playSfx(CLOSE_SFX);
             }
             
             break;
@@ -882,7 +884,7 @@ void gameSelectCallback(void) {
                     if (!set) {
                         if (loadGameScreenContext.diaryHighlighted) {
                             loadGameScreenContext.diaryHighlighted--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         set = TRUE;
                     }
@@ -909,7 +911,7 @@ void gameSelectCallback(void) {
                             }
                         } else {
                             loadGameScreenContext.diaryHighlighted++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         
                         set = TRUE;
@@ -924,7 +926,7 @@ void gameSelectCallback(void) {
                     if (!set) {
                         if (loadGameScreenContext.diaryHighlighted) {
                             loadGameScreenContext.diaryHighlighted--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             set = TRUE;
                         } else {
                             loadGameScreenContext.showControllerPakScreen = FALSE;
@@ -946,7 +948,7 @@ void gameSelectCallback(void) {
     
                         if (loadGameScreenContext.diaryHighlighted != 1) {
                             loadGameScreenContext.diaryHighlighted++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         set = TRUE;
                     }
@@ -966,7 +968,7 @@ void gameSelectCallback(void) {
                     if (loadGameScreenContext.flags[loadGameScreenContext.diaryHighlighted] & 2) {
                         startSpriteAnimation(0xAC, 2, 0);
                         loadGameScreenContext.action = LOAD_GAME_ACTION_CONFIRM_DELETE;
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                     }
                     set = TRUE;
                 }
@@ -975,7 +977,7 @@ void gameSelectCallback(void) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
                 if (!set) {
                     loadGameScreenContext.action = LOAD_GAME_ACTION_SELECT_COLUMN;
-                    playSfx(1);
+                    playSfx(CLOSE_SFX);
                 }
             }
             
@@ -989,7 +991,7 @@ void gameSelectCallback(void) {
                     if (!set) {
                         if (loadGameScreenContext.diaryHighlighted) {
                             loadGameScreenContext.diaryHighlighted--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         set = TRUE;
                     }
@@ -1016,7 +1018,7 @@ void gameSelectCallback(void) {
                             }
                         } else {
                             loadGameScreenContext.diaryHighlighted++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
 
                         set = TRUE;
@@ -1032,7 +1034,7 @@ void gameSelectCallback(void) {
                         
                         if (loadGameScreenContext.diaryHighlighted) {
                             loadGameScreenContext.diaryHighlighted--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             set = TRUE;
                         } else {
                             loadGameScreenContext.showControllerPakScreen = FALSE;
@@ -1054,7 +1056,7 @@ void gameSelectCallback(void) {
                     if (!set) {
                         if (loadGameScreenContext.diaryHighlighted != 1) {
                             loadGameScreenContext.diaryHighlighted++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         set = TRUE;
                     }
@@ -1079,7 +1081,7 @@ void gameSelectCallback(void) {
                         loadGameScreenContext.action = LOAD_GAME_ACTION_PICK_MOVE_DEST;
                         loadGameScreenContext.unk_72 = loadGameScreenContext.diaryHighlighted;
                         loadGameScreenContext.unk_74 = loadGameScreenContext.showControllerPakScreen;
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                     
                     }
                     
@@ -1093,7 +1095,7 @@ void gameSelectCallback(void) {
                 
                 if (!set) {
                     loadGameScreenContext.action = LOAD_GAME_ACTION_SELECT_COLUMN;
-                    playSfx(1);
+                    playSfx(CLOSE_SFX);
                 }
                 
             }
@@ -1113,7 +1115,7 @@ void gameSelectCallback(void) {
                     if (!set) {
                         if (loadGameScreenContext.diaryHighlighted) {
                             loadGameScreenContext.diaryHighlighted--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         set = TRUE;
                     }
@@ -1142,7 +1144,7 @@ void gameSelectCallback(void) {
 
                         } else {
                             loadGameScreenContext.diaryHighlighted++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         
                         set = TRUE;
@@ -1162,7 +1164,7 @@ void gameSelectCallback(void) {
                     
                         if (loadGameScreenContext.diaryHighlighted) {
                             loadGameScreenContext.diaryHighlighted--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             set = TRUE;
                         } else {
                             loadGameScreenContext.showControllerPakScreen = FALSE;
@@ -1183,7 +1185,7 @@ void gameSelectCallback(void) {
                     if (!set) {
                         if (loadGameScreenContext.diaryHighlighted != 1) {
                             loadGameScreenContext.diaryHighlighted++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         set = TRUE;
                     }
@@ -1205,7 +1207,7 @@ void gameSelectCallback(void) {
                     if (loadGameScreenContext.flags[loadGameScreenContext.diaryHighlighted] & 1) {
                         startSpriteAnimation(0xAC, 2, 0);
                         loadGameScreenContext.action = LOAD_GAME_ACTION_CONFIRM_MOVE;
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                     }
                     set = TRUE;
                 }
@@ -1214,7 +1216,7 @@ void gameSelectCallback(void) {
             if (checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
                 resetAnimationState(0xB2);
                 loadGameScreenContext.action = LOAD_GAME_ACTION_SELECT_COLUMN;
-                playSfx(1);
+                playSfx(CLOSE_SFX);
             }
 
             break;
@@ -1271,13 +1273,13 @@ void gameSelectCallback(void) {
                 deleteSaveSlot(loadGameScreenContext.diaryHighlighted, loadGameScreenContext.showControllerPakScreen);
                 loadAllDiarySlots();
                 loadGameScreenContext.action = LOAD_GAME_ACTION_SELECT_COLUMN;
-                playSfx(0);
+                playSfx(SELECT_1_SFX);
             }
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
                 resetAnimationState(0xAC);
                 loadGameScreenContext.action = LOAD_GAME_ACTION_PICK_DELETE_TARGET;
-                playSfx(1);
+                playSfx(CLOSE_SFX);
             }
             
             break;
@@ -1295,14 +1297,14 @@ void gameSelectCallback(void) {
                 handleSramOperation(loadGameScreenContext.unk_72, loadGameScreenContext.unk_74, loadGameScreenContext.diaryHighlighted, loadGameScreenContext.showControllerPakScreen);
                 loadAllDiarySlots();
                 loadGameScreenContext.action = LOAD_GAME_ACTION_SELECT_COLUMN;
-                playSfx(0);
+                playSfx(SELECT_1_SFX);
 
             }
             
             if (checkButtonPressed(CONTROLLER_1, BUTTON_B) && !set) {
                 resetAnimationState(0xAC);
                 loadGameScreenContext.action = LOAD_GAME_ACTION_PICK_MOVE_DEST;
-                playSfx(1);
+                playSfx(CLOSE_SFX);
             }
             
             break;
@@ -3366,7 +3368,7 @@ void farmRankingScreenCallback(void) {
                     
                     if (gFarmRankingData.cursorIndex) {
                         gFarmRankingData.cursorIndex--;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     set = TRUE;
@@ -3379,7 +3381,7 @@ void farmRankingScreenCallback(void) {
                 
                 if (gFarmRankingData.cursorIndex != 4) {
                     gFarmRankingData.cursorIndex++;
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                 }
                 
                 set = TRUE;
@@ -3423,7 +3425,7 @@ void farmRankingScreenCallback(void) {
                     deactivateNumberSprites(9);
                     
                     gFarmRankingData.screenState = FARM_RANKING_STATE_OPEN_DETAIL;
-                    playSfx(0);
+                    playSfx(SELECT_1_SFX);
                     
                 }
             
@@ -3454,7 +3456,7 @@ void farmRankingScreenCallback(void) {
                 updateNumberSpriteRGBA(9, 0, 0, 0, 0, 24);
                 
                 gFarmRankingData.screenState = FARM_RANKING_STATE_EXIT;
-                playSfx(0);
+                playSfx(SELECT_1_SFX);
                 
             }
 
@@ -3502,7 +3504,7 @@ void farmRankingScreenCallback(void) {
                 deactivateNumberSprites(10);
                 
                 gFarmRankingData.screenState = FARM_RANKING_STATE_RETURN_TO_LIST;
-                playSfx(0);
+                playSfx(SELECT_1_SFX);
                 
             }
             

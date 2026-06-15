@@ -1,7 +1,7 @@
 #ifndef _SEQUENCE_INDICES_H_
 #define _SEQUENCE_INDICES_H_
 
-// currently defined in audio.h; might make more sense to auto-generate when building
+// TODO: auto-generate based off of spec (currently defined manually in audio.h)
 // #define TOTAL_SEQUENCES 64
 
 #define OPENING 0
@@ -36,7 +36,7 @@
 #define BAD_ENDING_THEME 29
 #define VOCAL_PERFORMANCE 30
 #define ENSEMBLE_PERFORMANCE 31
-#define DRUM_PERFORMANCE 32
+#define RAIN_AMBIENCE 32
 #define TYPHOON_AMBIENCE_1 33
 #define TYPHOON_AMBIENCE_2 34
 #define NIGHT_AMBIENCE_SPRING 35

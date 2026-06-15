@@ -1499,7 +1499,7 @@ segments:
   - { type: seq, dir: audio/sequences, start: 0xFE70C0, name: badEnding }
   - { type: seq, dir: audio/sequences, start: 0xFE7930, name: vocalPerformance }
   - { type: seq, dir: audio/sequences, start: 0xFE7AD0, name: ensemblePerformance }
-  - { type: seq, dir: audio/sequences, start: 0xFE8100, name: drumPerformance }
+  - { type: seq, dir: audio/sequences, start: 0xFE8100, name: rainAmbience }
   - { type: seq, dir: audio/sequences, start: 0xFE8210, name: typhoonAmbience1 }
   - { type: seq, dir: audio/sequences, start: 0xFE8880, name: typhoonAmbience2 }
   - { type: seq, dir: audio/sequences, start: 0xFE96B0, name: nightAmbienceSpring }

@@ -1,23 +1,25 @@
-#ifndef _GOTZ_ANIMATION_MACROS_H_
-#define _GOTZ_ANIMATION_MACROS_H_
+#ifndef _GOTZ_H_
+#define _GOTZ_H_
 
-#define GOTZ_ANIMATION_0                         0
-#define GOTZ_ANIMATION_1                         1
-#define GOTZ_ANIMATION_2                         2
-#define GOTZ_ANIMATION_3                         3
-#define GOTZ_ANIMATION_4                         4
-#define GOTZ_ANIMATION_5                         5
-#define GOTZ_ANIMATION_6                         6
-#define GOTZ_ANIMATION_7                         7
-#define GOTZ_ANIMATION_8                         8
-#define GOTZ_ANIMATION_9                         9
-#define GOTZ_ANIMATION_10                        10
-#define GOTZ_ANIMATION_11                        11
-#define GOTZ_ANIMATION_12                        12
-#define GOTZ_ANIMATION_13                        13
-#define GOTZ_ANIMATION_14                        14
-#define GOTZ_ANIMATION_15                        15
-#define GOTZ_ANIMATION_16                        16
-#define GOTZ_ANIMATION_17                        17
+#define GOTZ_ANIMATION_STANDING_DIRECTIONAL 0
+#define GOTZ_ANIMATION_STANDING_S           0
+#define GOTZ_ANIMATION_STANDING_SW          1
+#define GOTZ_ANIMATION_STANDING_W           2
+#define GOTZ_ANIMATION_STANDING_NW          3
+#define GOTZ_ANIMATION_STANDING_N           4
+#define GOTZ_ANIMATION_STANDING_NE          5
+#define GOTZ_ANIMATION_STANDING_E           6
+#define GOTZ_ANIMATION_STANDING_SE          7
+#define GOTZ_ANIMATION_WALKING_DIRECTIONAL  8
+#define GOTZ_ANIMATION_WALKING_S            8
+#define GOTZ_ANIMATION_WALKING_SW           9
+#define GOTZ_ANIMATION_WALKING_W            10
+#define GOTZ_ANIMATION_WALKING_NW           11
+#define GOTZ_ANIMATION_WALKING_N            12
+#define GOTZ_ANIMATION_WALKING_NE           13
+#define GOTZ_ANIMATION_WALKING_E            14
+#define GOTZ_ANIMATION_WALKING_SE           15
+#define GOTZ_ANIMATION_RAISING_HAND_SE      16
+#define GOTZ_ANIMATION_STOMPING_SW          17
 
 #endif
