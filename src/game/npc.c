@@ -8323,7 +8323,7 @@ void handleCarpenter1Animation(void) {
                             npcs[CARPENTER_1].speed = 0;
                             npcs[CARPENTER_1].animationTimer = 0;
 
-                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, 0);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, ASSISTANT_CARPENTER_ANIMATION_STANDING_DIRECTIONAL);
 
                             temp = getRandomNumberInRange(0, 60);
 
@@ -8345,7 +8345,7 @@ void handleCarpenter1Animation(void) {
 
                             npcs[CARPENTER_1].speed = 1;
                             npcs[CARPENTER_1].animationTimer = 0;
-                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, 8);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, ASSISTANT_CARPENTER_ANIMATION_WALKING_DIRECTIONAL);
 
                             temp = getRandomNumberInRange(0, 19);
 
@@ -8364,7 +8364,7 @@ void handleCarpenter1Animation(void) {
 
                             npcs[CARPENTER_1].speed = 0;
                             npcs[CARPENTER_1].animationTimer = 60;
-                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, 20);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, ASSISTANT_CARPENTER_ANIMATION_SAWING_DIRECTIONAL);
 
                             npcs[CARPENTER_1].animationState = 1;
                             npcs[CARPENTER_1].flags |= NPC_NEEDS_UPDATE;
@@ -8414,7 +8414,7 @@ void handleCarpenter2Animation(void) {
                             npcs[CARPENTER_2].speed = 0;
                             npcs[CARPENTER_2].animationTimer = 0;
 
-                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, 0);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, ASSISTANT_CARPENTER_ANIMATION_STANDING_DIRECTIONAL);
 
                             temp = getRandomNumberInRange(0, 60);
 
@@ -8435,7 +8435,7 @@ void handleCarpenter2Animation(void) {
 
                             npcs[CARPENTER_2].speed = 1;
                             npcs[CARPENTER_2].animationTimer = 0;
-                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, 8);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, ASSISTANT_CARPENTER_ANIMATION_WALKING_DIRECTIONAL);
 
                             temp = getRandomNumberInRange(0, 19);
 
@@ -8453,7 +8453,7 @@ void handleCarpenter2Animation(void) {
 
                             npcs[CARPENTER_2].speed = 0;
                             npcs[CARPENTER_2].animationTimer = 60;
-                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, 28);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, ASSISTANT_CARPENTER_ANIMATION_AXING_DIRECTIONAL);
 
                             npcs[CARPENTER_2].animationState = 1;
                             npcs[CARPENTER_2].flags |= NPC_NEEDS_UPDATE;

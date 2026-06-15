@@ -29,7 +29,7 @@
 #include "assetIndices/maps.h"
 #include "assetIndices/sequences.h"
 #include "assetIndices/sfxs.h"
-#include "assetIndices/sprites.h"  
+#include "assetIndices/sprites.h"
 
 // shared bss
 u8 groundObjectsGridX;
@@ -650,7 +650,7 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
 
     if (gWeather == RAIN) {
         
-        gCurrentAudioSequenceIndex = RAIN_SFX;
+        gCurrentAudioSequenceIndex = RAIN_AMBIENCE;
         
         if (getLevelFlags(mapIndex) & LEVEL_INDOOR_BUILDING) {
             gAudioSequenceVolume = 64;
@@ -660,7 +660,7 @@ void setLevelAudio(u16 mapIndex, u8 season, u8 hour) {
         
     } else if (gWeather == TYPHOON) {
         
-        gCurrentAudioSequenceIndex = TYPHOON_SFX;
+        gCurrentAudioSequenceIndex = TYPHOON_AMBIENCE_2;
         gAudioSequenceVolume = 128;
         
     } else {

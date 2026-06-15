@@ -46,7 +46,7 @@ Addresses sequenceRomAddresses[] = {
     { &_badEndingSegmentRomStart, &_badEndingSegmentRomEnd },
     { &_vocalPerformanceSegmentRomStart, &_vocalPerformanceSegmentRomEnd },
     { &_ensemblePerformanceSegmentRomStart, &_ensemblePerformanceSegmentRomEnd },
-    { &_drumPerformanceSegmentRomStart, &_drumPerformanceSegmentRomEnd },
+    { &_rainAmbienceSegmentRomStart, &_rainAmbienceSegmentRomEnd },
     { &_typhoonAmbience1SegmentRomStart, &_typhoonAmbience1SegmentRomEnd },
     { &_typhoonAmbience2SegmentRomStart, &_typhoonAmbience2SegmentRomEnd },
     { &_nightAmbienceSpringSegmentRomStart, &_nightAmbienceSpringSegmentRomEnd },

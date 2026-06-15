@@ -832,7 +832,7 @@ bool handleHouseLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 20:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 setMainLoopCallbackFunctionIndex(CALENDAR_LOAD);
-                levelInteractionsInfo.interactionSfxIndex  = MENU_OPEN_SFX;
+                levelInteractionsInfo.interactionSfxIndex = OPEN_SFX;
                 result = TRUE;
             }
             break;
@@ -1436,7 +1436,7 @@ bool handleKitchenLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 21:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 setMainLoopCallbackFunctionIndex(RECIPE_BOOK_LOAD);
-                levelInteractionsInfo.interactionSfxIndex = MENU_OPEN_SFX;
+                levelInteractionsInfo.interactionSfxIndex = OPEN_SFX;
                 result = TRUE;
             }
             break;
@@ -1445,7 +1445,7 @@ bool handleKitchenLevelInteractions(u16 mapIndex, u8 levelInteractionIndex) {
         case 22:
             if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
                 setMainLoopCallbackFunctionIndex(KITCHEN_PICTURE_LOAD);
-                levelInteractionsInfo.interactionSfxIndex = MENU_OPEN_SFX;
+                levelInteractionsInfo.interactionSfxIndex = OPEN_SFX;
                 result = TRUE;
             }
             break;

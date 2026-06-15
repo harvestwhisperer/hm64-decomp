@@ -1,24 +1,26 @@
-#ifndef _PASTOR_ANIMATION_MACROS_H_
-#define _PASTOR_ANIMATION_MACROS_H_
+#ifndef _PASTOR_H_
+#define _PASTOR_H_
 
-#define PASTOR_ANIMATION_0                       0
-#define PASTOR_ANIMATION_1                       1
-#define PASTOR_ANIMATION_2                       2
-#define PASTOR_ANIMATION_3                       3
-#define PASTOR_ANIMATION_4                       4
-#define PASTOR_ANIMATION_5                       5
-#define PASTOR_ANIMATION_6                       6
-#define PASTOR_ANIMATION_7                       7
-#define PASTOR_ANIMATION_8                       8
-#define PASTOR_ANIMATION_9                       9
-#define PASTOR_ANIMATION_10                      10
-#define PASTOR_ANIMATION_11                      11
-#define PASTOR_ANIMATION_12                      12
-#define PASTOR_ANIMATION_13                      13
-#define PASTOR_ANIMATION_14                      14
-#define PASTOR_ANIMATION_15                      15
-#define PASTOR_ANIMATION_16                      16
-#define PASTOR_ANIMATION_17                      17
-#define PASTOR_ANIMATION_18                      18
+#define PASTOR_ANIMATION_STANDING_DIRECTIONAL 0
+#define PASTOR_ANIMATION_STANDING_S           0
+#define PASTOR_ANIMATION_STANDING_SW          1
+#define PASTOR_ANIMATION_STANDING_W           2
+#define PASTOR_ANIMATION_STANDING_NW          3
+#define PASTOR_ANIMATION_STANDING_N           4
+#define PASTOR_ANIMATION_STANDING_NE          5
+#define PASTOR_ANIMATION_STANDING_E           6
+#define PASTOR_ANIMATION_STANDING_SE          7
+#define PASTOR_ANIMATION_WALKING_DIRECTIONAL  8
+#define PASTOR_ANIMATION_WALKING_S            8
+#define PASTOR_ANIMATION_WALKING_SW           9
+#define PASTOR_ANIMATION_WALKING_W            10
+#define PASTOR_ANIMATION_WALKING_NW           11
+#define PASTOR_ANIMATION_WALKING_N            12
+#define PASTOR_ANIMATION_WALKING_NE           13
+#define PASTOR_ANIMATION_WALKING_E            14
+#define PASTOR_ANIMATION_WALKING_SE           15
+#define PASTOR_ANIMATION_NODDNG_SW            16
+#define PASTOR_ANIMATION_NODDING_SE           17
+#define PASTOR_ANIMATION_SHAKING_HEAD_NW      18
 
 #endif

@@ -1495,7 +1495,7 @@ void shopDialogueCallback(void) {
                 if (!set) {
                     
                     if (shopContext.buySelected) {
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     shopContext.buySelected = FALSE;
@@ -1512,7 +1512,7 @@ void shopDialogueCallback(void) {
                 if (!set) {
 
                     if (shopContext.buySelected == FALSE) {
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     shopContext.buySelected = TRUE;
@@ -1537,7 +1537,7 @@ void shopDialogueCallback(void) {
                     
                         if (shopItemMaxQuantities[shopContext.storeItemIndex] >= 2) {
                             updateShopQuantityArrows(shopItemMaxQuantities[shopContext.storeItemIndex]);
-                            playSfx(2);                           
+                            playSfx(MOVE_CURSOR_SFX);                           
                         }
                         
                     }
@@ -1563,7 +1563,7 @@ void shopDialogueCallback(void) {
 
                         if (shopItemMaxQuantities[shopContext.storeItemIndex] >= 2) {
                             updateShopQuantityArrows(shopItemMaxQuantities[shopContext.storeItemIndex]);
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
 
                     }
@@ -1589,10 +1589,10 @@ void shopDialogueCallback(void) {
                     
                     if (shopContext.buySelected == FALSE) {
                         shopContext.mode = SHOP_MODE_COMMIT_PURCHASE;
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                     } else {
                         shopContext.mode = SHOP_MODE_DECLINE_PURCHASE;
-                        playSfx(1);
+                        playSfx(CLOSE_SFX);
                     }
                     
                     set = TRUE;
@@ -1617,7 +1617,7 @@ void shopDialogueCallback(void) {
                     shopContext.buySelected = TRUE;
                     shopContext.mode = SHOP_MODE_DECLINE_PURCHASE;
 
-                    playSfx(1);
+                    playSfx(CLOSE_SFX);
 
                 }
                 

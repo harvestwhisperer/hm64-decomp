@@ -27,6 +27,9 @@
 #include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
 
+#include "data/animation/entityAnimationScripts/animationLabels/dog.h"
+#include "data/animation/entityAnimationScripts/animationLabels/horseGrown.h"
+
 #include "buffers/buffers.h"
 
 // bss
@@ -2866,6 +2869,7 @@ case 6:
             
             break;
         
+        // unimplemented/cut
         case 9:
             
             dog->speed = 0;
@@ -3148,6 +3152,7 @@ case 20:
             
             break;
 
+        // unimplemented/cut
         case 26:
             
             dog->speed = 0;
@@ -3196,7 +3201,7 @@ case 20:
             dog->actionState = 0;
             dog->flags |= DOG_STATE_CHANGED;
             
-            playSfx(0x3C);
+            playSfx(60);
             
             break;
         
@@ -3382,7 +3387,7 @@ void updateAdultChickenNormal(u8 index) {
             chicken->actionState = 0;
             chicken->flags |= CHICKEN_STATE_CHANGED;
             
-            playSfx(0x41);
+            playSfx(65);
             
             break;
         
@@ -3467,7 +3472,7 @@ void updateChick(u8 index) {
             
             chicken->flags |= CHICKEN_STATE_CHANGED;
             
-            playSfx(0x42);
+            playSfx(66);
             
             break;
 
@@ -3941,7 +3946,7 @@ void updateAdultCowNormal(u8 index) {
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
-            playSfx(0x36);
+            playSfx(54);
             
             break;
             
@@ -3958,7 +3963,7 @@ void updateAdultCowNormal(u8 index) {
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~FARM_ANIMAL_LINGERING;
             
-            playSfx(0x37);
+            playSfx(55);
             
             break;
             
@@ -4265,7 +4270,7 @@ void updateAdultCowHappy(u8 index) {
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x36);
+            playSfx(54);
             
             break;
         
@@ -4282,7 +4287,7 @@ void updateAdultCowHappy(u8 index) {
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x37);
+            playSfx(55);
 
             break;
         
@@ -4558,7 +4563,7 @@ case 1:
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x36);
+            playSfx(54);
             
             break;
         
@@ -4575,7 +4580,7 @@ case 1:
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x37);
+            playSfx(55);
 
             break;
         
@@ -4832,7 +4837,7 @@ case 1:
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x36);
+            playSfx(54);
             
             break;
         
@@ -5125,7 +5130,7 @@ case 1:
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x36);
+            playSfx(54);
             
             break;
         
@@ -5142,7 +5147,7 @@ case 1:
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x37);
+            playSfx(55);
             
             break;
         
@@ -5420,7 +5425,7 @@ case 1:
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x36);
+            playSfx(54);
             
             break;
         
@@ -5437,7 +5442,7 @@ case 1:
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x37);
+            playSfx(55);
             
             break;
         
@@ -5727,7 +5732,7 @@ void updatePregnantCow(u8 index) {
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x36);
+            playSfx(54);
             
             break;
         
@@ -5744,7 +5749,7 @@ void updatePregnantCow(u8 index) {
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x37);
+            playSfx(55);
             
             break;
         
@@ -5981,7 +5986,7 @@ case 4:
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x3A);
+            playSfx(58);
             
             break;
         
@@ -5998,7 +6003,7 @@ case 4:
             farmAnimal->flags |= (FARM_ANIMAL_STATE_CHANGED | FARM_ANIMAL_FOLLOWING);
             farmAnimal->flags &= ~(FARM_ANIMAL_LINGERING);
 
-            playSfx(0x3A);
+            playSfx(58);
             
             break;
         
@@ -6839,6 +6844,7 @@ void updateHorseGrown(void) {
             horse->flags |= HORSE_STATE_CHANGED;
             break;
 
+        // unimplemented/cut
         case 8:
             
             horse->speed = 0;
@@ -6881,7 +6887,7 @@ case 16:
             horse->flags |= (HORSE_STATE_CHANGED | 0x80); 
             horse->flags &= ~(0x40);
             
-            playSfx(0x39);
+            playSfx(57);
             
             break;
 
@@ -6897,7 +6903,7 @@ case 16:
             horse->flags |= (HORSE_STATE_CHANGED | 0x80); 
             horse->flags &= ~(0x40);
             
-            playSfx(0x38);
+            playSfx(56);
             
             break;
 
@@ -7108,7 +7114,7 @@ void updateHorseNotGrown(void) {
             horse->flags |= (HORSE_STATE_CHANGED | 0x80); 
             horse->flags &= ~(0x40);
             
-            playSfx(0x39);
+            playSfx(57);
             
             break;
 
@@ -7124,7 +7130,7 @@ void updateHorseNotGrown(void) {
             horse->flags |= (HORSE_STATE_CHANGED | 0x80); 
             horse->flags &= ~(0x40);
             
-            playSfx(0x38);
+            playSfx(56);
             
             break;
 
@@ -8151,7 +8157,7 @@ void updateCat(u8 index) {
             
             miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            playSfx(0x43);
+            playSfx(67);
             break;
 
         case 2:
@@ -9252,7 +9258,7 @@ void updateSparrow(u8 index) {
             
             miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
-            playSfx(0x46);
+            playSfx(70);
             
             break;
 
@@ -9357,9 +9363,9 @@ void updateBird(u8 index) {
             miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (!getRandomNumberInRange(0, 1)) {
-                playSfx(0x48);
+                playSfx(72);
             } else {
-                playSfx(0x49);
+                playSfx(73);
             }
             
             break;
@@ -9617,9 +9623,9 @@ void updateCicada(u8 index) {
             miscAnimal->flags |= MISC_ANIMAL_STATE_CHANGED;
 
             if (!(5 < gHour && gHour < 16)) {
-                playSfx(0x51);
+                playSfx(81);
             } else {
-                playSfx(0x4E);
+                playSfx(78);
             }
             
             break;
@@ -10369,7 +10375,7 @@ void handleWhistleForDog(void) {
     if (dog->flags & DOG_ENTITY_LOADED) {
         dog->flags |= DOG_FOLLOWING;
         dog->actionState = 0;
-        playSfx(DOG_BARK);
+        playSfx(DOG_BARK_1_SFX);
     }
 
     if (!(dog->flags & DOG_WHISTLED_FOR_DAILY)) {

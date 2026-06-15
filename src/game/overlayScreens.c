@@ -2553,7 +2553,7 @@ void pauseScreenCallback(void) {
                     if (overlayScreenTable.cellIndex == 8) {
                         
                         overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     } else {
                         
@@ -2561,11 +2561,11 @@ void pauseScreenCallback(void) {
                         
                         if (overlayScreenTable.cellIndex < 4) {
                             overlayScreenTable.cellIndex += 4;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         } else if (overlayScreenTable.unk_3 == 0xFF) {
                             overlayScreenTable.cellIndex -= 4;
                             overlayScreenTable.screenState = 6;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                     
                     }
@@ -2586,7 +2586,7 @@ void pauseScreenCallback(void) {
                         
                         if (overlayScreenTable.cellIndex >= 4) {
                             overlayScreenTable.cellIndex -= 4;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                     
                         set = TRUE;
@@ -2607,7 +2607,7 @@ void pauseScreenCallback(void) {
                         if ((overlayScreenTable.cellIndex != 3) && (overlayScreenTable.cellIndex != 7)) {
                             
                             overlayScreenTable.cellIndex++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             
                         } else if (overlayScreenTable.unk_3 == 0xFF) {
                             
@@ -2620,7 +2620,7 @@ void pauseScreenCallback(void) {
                             }
                         
                             overlayScreenTable.screenState = 7;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         
                         }
                         
@@ -2641,7 +2641,7 @@ void pauseScreenCallback(void) {
                         
                         if (overlayScreenTable.cellIndex && (overlayScreenTable.cellIndex != 4)) {
                             overlayScreenTable.cellIndex = overlayScreenTable.cellIndex - 1;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         
                         set = TRUE;
@@ -2673,10 +2673,10 @@ void pauseScreenCallback(void) {
                     
                     if (overlayScreenTable.cellIndex == 8) {
                         overlayScreenTable.cellIndex = overlayScreenTable.unk_3;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     } else if (overlayScreenTable.cellIndex < 4) {
                         overlayScreenTable.cellIndex += 4;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     set = TRUE;
@@ -2694,12 +2694,12 @@ void pauseScreenCallback(void) {
                         if (overlayScreenTable.cellIndex >= 4) {
                             
                             overlayScreenTable.cellIndex -= 4;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         
                         } else if (overlayScreenTable.unk_3 == 0xFF) {
                             overlayScreenTable.cellIndex += 4;
                             overlayScreenTable.screenState = 5;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         
                         set = TRUE;
@@ -2719,7 +2719,7 @@ void pauseScreenCallback(void) {
                         if (overlayScreenTable.cellIndex != 3 && overlayScreenTable.cellIndex != 7) {
                             
                             overlayScreenTable.cellIndex++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             
                         } else if (overlayScreenTable.unk_3 == 0xFF) {
                             
@@ -2731,7 +2731,7 @@ void pauseScreenCallback(void) {
                             }
                             
                             overlayScreenTable.screenState = 7;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             
                         }
                         
@@ -2751,7 +2751,7 @@ void pauseScreenCallback(void) {
                         
                         if (overlayScreenTable.cellIndex && overlayScreenTable.cellIndex != 4) {
                             overlayScreenTable.cellIndex--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         
                         set = TRUE;
@@ -2784,13 +2784,13 @@ void pauseScreenCallback(void) {
                 
                     if (overlayScreenTable.cellIndex < 6) {
                         overlayScreenTable.cellIndex += 2;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     } else if (overlayScreenTable.pageNumber != 2) {
                         overlayScreenTable.pageNumber++;
                         overlayScreenTable.cellIndex -= 6;
                         loadPauseScreenItemSprites();
                         updatePauseScreenSelectionHighlight();
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                         
                     set = TRUE;
@@ -2805,13 +2805,13 @@ void pauseScreenCallback(void) {
                     
                     if (overlayScreenTable.cellIndex >= 2) {
                         overlayScreenTable.cellIndex -= 2;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     } else if (overlayScreenTable.pageNumber) {
                         overlayScreenTable.pageNumber--;
                         overlayScreenTable.cellIndex += 6;
                         loadPauseScreenItemSprites();
                         updatePauseScreenSelectionHighlight();
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     set = TRUE;
@@ -2825,7 +2825,7 @@ void pauseScreenCallback(void) {
                 
                     if (!(overlayScreenTable.cellIndex & 1)) {
                         overlayScreenTable.cellIndex++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     set = TRUE;
@@ -2842,7 +2842,7 @@ void pauseScreenCallback(void) {
                     if (temp2 & 1) {
                         
                         overlayScreenTable.cellIndex--;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     } else if (overlayScreenTable.unk_3 == 0xFF) {
                         
@@ -2866,7 +2866,7 @@ void pauseScreenCallback(void) {
                             }
                         }
                         
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     }
                     
@@ -2928,7 +2928,7 @@ void pauseScreenCallback(void) {
                     overlayScreenTable.screenState = 2;
                 }
                 
-                playSfx(1);
+                playSfx(CLOSE_SFX);
                 set = TRUE;
 
             }
@@ -2990,7 +2990,7 @@ void pauseScreenCallback(void) {
                     
                 }
                 
-                playSfx(0);
+                playSfx(SELECT_1_SFX);
                 set = TRUE;
                 
             }
@@ -3482,7 +3482,7 @@ void toolboxScreenCallback(void) {
                     
                     if (overlayScreenTable.cellIndex < 4) {
                         overlayScreenTable.cellIndex += 4;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
 
                     set = TRUE;
@@ -3504,7 +3504,7 @@ void toolboxScreenCallback(void) {
                         overlayScreenTable.screenState = 6;
                     }
                 
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     set = TRUE;
                 
                 }
@@ -3520,7 +3520,7 @@ void toolboxScreenCallback(void) {
                     if ((overlayScreenTable.cellIndex != 3) && (overlayScreenTable.cellIndex != 7)) {
                         
                         overlayScreenTable.cellIndex++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     } else if (overlayScreenTable.pageNumber != 3) {
                         
@@ -3535,7 +3535,7 @@ void toolboxScreenCallback(void) {
                         loadToolboxToolSprites();
                         updateToolboxSelectionHighlight();
                         
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     }
                     
@@ -3556,7 +3556,7 @@ void toolboxScreenCallback(void) {
                         if (overlayScreenTable.cellIndex && overlayScreenTable.cellIndex != 4) {
                             
                             overlayScreenTable.cellIndex--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             
                         } else if (overlayScreenTable.pageNumber) {
 
@@ -3570,7 +3570,7 @@ void toolboxScreenCallback(void) {
                             loadToolboxToolSprites();
                             updateToolboxSelectionHighlight();
 
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             
                         }
 
@@ -3610,7 +3610,7 @@ void toolboxScreenCallback(void) {
                         overlayScreenTable.screenState = 5;
                     }
                     
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     set = TRUE;
                 
                 }
@@ -3629,7 +3629,7 @@ void toolboxScreenCallback(void) {
                             overlayScreenTable.cellIndex = 8;
                         }
                         
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         set = TRUE;
                     
                     }
@@ -3646,7 +3646,7 @@ void toolboxScreenCallback(void) {
                         
                         if ((overlayScreenTable.cellIndex != 3) && (overlayScreenTable.cellIndex != 7)) {
                             overlayScreenTable.cellIndex++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                     
                         set = TRUE;
@@ -3664,7 +3664,7 @@ void toolboxScreenCallback(void) {
                         
                         if (overlayScreenTable.cellIndex && overlayScreenTable.cellIndex != 4) {
                             overlayScreenTable.cellIndex--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         
                         set = TRUE;
@@ -3715,7 +3715,7 @@ void toolboxScreenCallback(void) {
                     overlayScreenTable.screenState = 2;
                 }
     
-                playSfx(1);
+                playSfx(CLOSE_SFX);
                 set = TRUE;
             }
             
@@ -3744,7 +3744,7 @@ void toolboxScreenCallback(void) {
                 
                 updateToolboxSelectionHighlight();
                 
-                playSfx(0);
+                playSfx(SELECT_1_SFX);
                 set = TRUE;
             
             }
@@ -4204,7 +4204,7 @@ void freezerScreenCallback(void) {
                         overlayScreenTable.screenState = 6;
                     }
 
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     set = TRUE;
                     
                 }
@@ -4224,7 +4224,7 @@ void freezerScreenCallback(void) {
                         overlayScreenTable.screenState = 6;
                     }
                 
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     set = TRUE;
                 
                 }
@@ -4240,7 +4240,7 @@ void freezerScreenCallback(void) {
                     if ((overlayScreenTable.cellIndex != 3) && (overlayScreenTable.cellIndex != 7)) {
                         
                         overlayScreenTable.cellIndex++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     } else if (overlayScreenTable.pageNumber != 3) {
                         
@@ -4255,7 +4255,7 @@ void freezerScreenCallback(void) {
                         loadFreezerItemSprites();
                         updateFreezerSelectionHighlight();
                         
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     }
                     
@@ -4276,7 +4276,7 @@ void freezerScreenCallback(void) {
                         if (overlayScreenTable.cellIndex && overlayScreenTable.cellIndex != 4) {
                             
                             overlayScreenTable.cellIndex--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             
                         } else if (overlayScreenTable.pageNumber) {
 
@@ -4291,7 +4291,7 @@ void freezerScreenCallback(void) {
                             loadFreezerItemSprites();
                             updateFreezerSelectionHighlight();
 
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             
                         }
 
@@ -4329,7 +4329,7 @@ void freezerScreenCallback(void) {
                         overlayScreenTable.cellIndex += 4;
                     }
                     
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     set = TRUE;
                 
                 }
@@ -4349,7 +4349,7 @@ void freezerScreenCallback(void) {
                             overlayScreenTable.screenState = 5;
                         }
                         
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         set = TRUE;
                     
                     }
@@ -4365,7 +4365,7 @@ void freezerScreenCallback(void) {
                         
                         if ((overlayScreenTable.cellIndex != 3) && (overlayScreenTable.cellIndex != 7)) {
                             overlayScreenTable.cellIndex++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                     
                         set = TRUE;
@@ -4383,7 +4383,7 @@ void freezerScreenCallback(void) {
                         
                         if (overlayScreenTable.cellIndex && overlayScreenTable.cellIndex != 4) {
                             overlayScreenTable.cellIndex--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         
                         set = TRUE;
@@ -4431,7 +4431,7 @@ void freezerScreenCallback(void) {
                     overlayScreenTable.screenState = 2;
                 }
     
-                playSfx(1);
+                playSfx(CLOSE_SFX);
                 set = TRUE;
                 
             }
@@ -4452,9 +4452,9 @@ void freezerScreenCallback(void) {
                         overlayScreenTable.pageNumber = overlayScreenTable.unk_4;
                         loadFreezerItemSprites();
                         updateFreezerSelectionHighlight();
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                     } else {
-                        playSfx(3);
+                        playSfx(INVALID_BUZZ_SFX);
                     }
                     
                 } else {
@@ -4464,9 +4464,9 @@ void freezerScreenCallback(void) {
                         overlayScreenTable.unk_5 = overlayScreenTable.screenState;
                         overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
                         updateFreezerSelectionHighlight();
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                     } else {
-                        playSfx(3);
+                        playSfx(INVALID_BUZZ_SFX);
                     }
 
                 }
@@ -4953,7 +4953,7 @@ void cabinetScreenCallback(void) {
                         overlayScreenTable.screenState = 101;
                     }
 
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     set = TRUE;
                     
                 }
@@ -4973,7 +4973,7 @@ void cabinetScreenCallback(void) {
                         overlayScreenTable.screenState = 101;
                     }
                 
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     set = TRUE;
                 
                 }
@@ -4989,7 +4989,7 @@ void cabinetScreenCallback(void) {
                     if ((overlayScreenTable.cellIndex != 3) && (overlayScreenTable.cellIndex != 7)) {
                         
                         overlayScreenTable.cellIndex++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     } else if (overlayScreenTable.pageNumber != 3) {
                         
@@ -5004,7 +5004,7 @@ void cabinetScreenCallback(void) {
                         loadCabinetItemSprites();
                         updateCabinetSelectionHighlight();
                         
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     }
                     
@@ -5025,7 +5025,7 @@ void cabinetScreenCallback(void) {
                         if (overlayScreenTable.cellIndex && overlayScreenTable.cellIndex != 4) {
                             
                             overlayScreenTable.cellIndex--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             
                         } else if (overlayScreenTable.pageNumber) {
 
@@ -5039,7 +5039,7 @@ void cabinetScreenCallback(void) {
                             loadCabinetItemSprites();
                             updateCabinetSelectionHighlight();
 
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             
                         }
 
@@ -5073,10 +5073,10 @@ void cabinetScreenCallback(void) {
                     if (overlayScreenTable.cellIndex == 8) {
                         overlayScreenTable.cellIndex = 1;
                         overlayScreenTable.screenState = 5;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     } else if (overlayScreenTable.cellIndex < 4) {
                         overlayScreenTable.cellIndex += 4;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
 
                     set = TRUE;
@@ -5098,7 +5098,7 @@ if (overlayScreenTable.cellIndex != 8) {
                             overlayScreenTable.screenState = 5;
                         }
                         
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         set = TRUE;
                         
                     }
@@ -5115,7 +5115,7 @@ if (overlayScreenTable.cellIndex != 8) {
 
                         if (overlayScreenTable.cellIndex != 3 && overlayScreenTable.cellIndex != 7) {
                             overlayScreenTable.cellIndex++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         
                         set = TRUE;
@@ -5134,7 +5134,7 @@ if (overlayScreenTable.cellIndex != 8) {
 
                         if (overlayScreenTable.cellIndex != 0 && overlayScreenTable.cellIndex != 4) {
                             overlayScreenTable.cellIndex--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
 
                         set = TRUE;
@@ -5184,7 +5184,7 @@ if (overlayScreenTable.cellIndex != 8) {
                     overlayScreenTable.screenState = 2;
                 }
 
-                playSfx(1);
+                playSfx(CLOSE_SFX);
                 set = TRUE;
                 
             }
@@ -5209,10 +5209,10 @@ if (overlayScreenTable.cellIndex != 8) {
                         loadCabinetItemSprites();
                         updateCabinetSelectionHighlight();
 
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                         
                     } else {
-                        playSfx(3);
+                        playSfx(INVALID_BUZZ_SFX);
                     }
                     
                 } else if (isCabinetItemSwappable()) {
@@ -5220,9 +5220,9 @@ if (overlayScreenTable.cellIndex != 8) {
                     overlayScreenTable.unk_5 = overlayScreenTable.screenState;
                     overlayScreenTable.unk_4 = overlayScreenTable.pageNumber;
                     updateCabinetSelectionHighlight();
-                    playSfx(0);
+                    playSfx(SELECT_1_SFX);
                 } else {
-                    playSfx(3);
+                    playSfx(INVALID_BUZZ_SFX);
                 }
 
                 set = TRUE;
@@ -5672,7 +5672,7 @@ void houseExtensionsSelectionScreenCallback(void) {
                     
                     if (overlayScreenTable.cellIndex != 5) {
                         overlayScreenTable.cellIndex++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
             
                     set = TRUE;
@@ -5686,7 +5686,7 @@ void houseExtensionsSelectionScreenCallback(void) {
                 if (!set) {
                     if (overlayScreenTable.cellIndex != 0) {
                         overlayScreenTable.cellIndex--;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     set = TRUE;
@@ -5710,7 +5710,7 @@ void houseExtensionsSelectionScreenCallback(void) {
                     overlayScreenTable.screenState = 4;
                 }
                 
-                playSfx(0);
+                playSfx(SELECT_1_SFX);
                 set = TRUE;
                 
             }
@@ -5735,7 +5735,7 @@ void houseExtensionsSelectionScreenCallback(void) {
         deactivateNumberSprites(1);
         resetAnimationState(CURSOR_HAND);
         overlayScreenTable.screenState = 2;
-        playSfx(1);
+        playSfx(CLOSE_SFX);
     }
     
 }
@@ -5894,7 +5894,7 @@ void estimateScreenCallback(void) {
     if ((overlayScreenTable.screenState >= 4) && (checkButtonPressed(CONTROLLER_1, BUTTON_B)) && (temp == 0)) {
         fadeOutEstimateSprites();
         overlayScreenTable.screenState = 2;
-        playSfx(1);
+        playSfx(CLOSE_SFX);
     }
     
 }
@@ -6135,7 +6135,7 @@ case 5:
                             overlayScreenTable.cellIndex = temp;
                             setSpriteViewSpacePosition(CURSOR_HAND, kitchenPicturePowerNutsXCoordinates[temp] - 8.0f, kitchenPicturePowerNutsYCoordinates[temp] - 8.0f, 32.0f);
                             updatePowerNutCellAnimations();
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
     
                     }
@@ -6159,7 +6159,7 @@ case 5:
                             overlayScreenTable.cellIndex = temp;
                             setSpriteViewSpacePosition(CURSOR_HAND, kitchenPicturePowerNutsXCoordinates[temp] - 8.0f, kitchenPicturePowerNutsYCoordinates[temp] - 8.0f, 32.0f);
                             updatePowerNutCellAnimations();
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                             
                         }
 
@@ -6185,7 +6185,7 @@ case 5:
                         controllers[CONTROLLER_1].buttonPressed = 0;
                         overlayScreenTable.screenState = 4;
                         
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                         
                     }
                     
@@ -6203,7 +6203,7 @@ case 5:
         resetAnimationState(CURSOR_HAND);
         fadeOutKitchenPictureSprites();
         overlayScreenTable.screenState = 2;
-        playSfx(1);
+        playSfx(CLOSE_SFX);
     }
     
 }
@@ -6511,7 +6511,7 @@ void calendarScreenCallback(void) {
                             (f32) (-(overlayScreenTable.unk_9 * 24) + 22), 
                             32.0f);
                         
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     }
                 
@@ -6534,7 +6534,7 @@ void calendarScreenCallback(void) {
                            (f32) (-(overlayScreenTable.unk_9 * 24) + 22), 
                            32.0f);
                     
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     
                     }
             
@@ -6557,7 +6557,7 @@ void calendarScreenCallback(void) {
                            (f32) (-(overlayScreenTable.unk_9 * 24) + 22), 
                            32.0f);
                     
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     
                     }
             
@@ -6580,7 +6580,7 @@ void calendarScreenCallback(void) {
                            (f32) (-(overlayScreenTable.unk_9 * 24) + 22), 
                            32.0f);
                     
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     
                     }
             
@@ -6611,7 +6611,7 @@ void calendarScreenCallback(void) {
                         
                         setSpriteColor(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, 0xFF, 0xFF, 0xFF, 0x80);
                         setSpriteBlendMode(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, SPRITE_BLEND_ALPHA_DECAL);
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                     
                     }
             
@@ -6642,9 +6642,9 @@ void calendarScreenCallback(void) {
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
+                    
+                        playSfx(MOVE_CURSOR_SFX);
 
-playSfx(2);
-                        
                     }
                 
                     set = TRUE;
@@ -6670,8 +6670,8 @@ playSfx(2);
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-
-playSfx(2);
+                        
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     }
                 
@@ -6698,8 +6698,8 @@ playSfx(2);
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-
-playSfx(2);
+                        
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     }
                 
@@ -6726,8 +6726,8 @@ playSfx(2);
                             (f32)((overlayScreenTable.unk_A * 32) - 122), 
                             (f32)(-(overlayScreenTable.unk_B * 24) + 26), 
                             32.0f);
-
-playSfx(2);
+                        
+                        playSfx(MOVE_CURSOR_SFX);
                         
                     }
                 
@@ -6761,7 +6761,7 @@ playSfx(2);
                         calendarStickers[overlayScreenTable.cellIndex] = 0xFF;
                         
                         overlayScreenTable.screenState = 5;
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                         
                     }
                     
@@ -6785,7 +6785,7 @@ playSfx(2);
                     setSpriteBlendMode(CALENDAR_STICKERS_BASE + overlayScreenTable.cellIndex, SPRITE_BLEND_ALPHA_DECAL);
                     overlayScreenTable.screenState = 5;
         
-                    playSfx(1);
+                    playSfx(CLOSE_SFX);
             
                     set = TRUE;
                 
@@ -6801,7 +6801,7 @@ playSfx(2);
         resetAnimationState(CURSOR_HAND);
         fadeOutCalendarSprites();
         overlayScreenTable.screenState = 2;
-        playSfx(1);
+        playSfx(CLOSE_SFX);
     }
     
 }
@@ -6985,7 +6985,7 @@ void recipeBookScreenCallback(void) {
                     
                     if (!set) {
                         if (scrollMessageBoxDown(0)) {
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         set = TRUE;
                     }
@@ -6997,7 +6997,7 @@ void recipeBookScreenCallback(void) {
                     if (!set) {
                         
                         if (scrollMessageBoxUp(0)) {
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         
                         set = TRUE;
@@ -7031,7 +7031,7 @@ void recipeBookScreenCallback(void) {
                         setMessageBoxScrollSpeed(0, 1);
                         overlayScreenTable.screenState = 5;
                         
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                         
                         setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8 * 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
                         startSpriteAnimation(CURSOR_HAND, 3, 0);
@@ -7051,12 +7051,12 @@ void recipeBookScreenCallback(void) {
                 if (!set) {
                     if (overlayScreenTable.unk_8) {
                         overlayScreenTable.unk_8--;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     } else if (overlayScreenTable.pageNumber) {
                         overlayScreenTable.pageNumber--;
                         loadRecipeBookLabels();
                         overlayScreenTable.unk_8 = 1;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8* 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
@@ -7072,12 +7072,12 @@ void recipeBookScreenCallback(void) {
                     
                     if (overlayScreenTable.unk_8 != 1) {
                         overlayScreenTable.unk_8++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     } else if (overlayScreenTable.pageNumber != 2) {
                         overlayScreenTable.pageNumber++;
                         loadRecipeBookLabels();
                         overlayScreenTable.unk_8 = 0;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                 
                     setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8* 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
@@ -7092,7 +7092,7 @@ if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
                     
                     if (overlayScreenTable.unk_9) {
                         overlayScreenTable.unk_9--;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                 
                     setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8* 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
@@ -7108,7 +7108,7 @@ if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
                     
                     if (overlayScreenTable.unk_9 != 7) {
                         overlayScreenTable.unk_9++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8* 128) - 128), (f32)(56 - (overlayScreenTable.unk_9 * 16)), 32.0f);
@@ -7140,7 +7140,7 @@ if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
         resetAnimationState(CURSOR_HAND);
         fadeOutRecipeBookSprites();
         overlayScreenTable.screenState = 2;
-        playSfx(1);
+        playSfx(CLOSE_SFX);
     }
     
 }
@@ -7477,12 +7477,12 @@ void albumScreenCallback(void) {
                     
                     if (overlayScreenTable.unk_8) {
                         overlayScreenTable.unk_8--;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     } else if (overlayScreenTable.pageNumber) {
                         overlayScreenTable.pageNumber--;
                         loadAlbumPhotos();
                         overlayScreenTable.unk_8 = 1;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     
                     }
                     
@@ -7500,12 +7500,12 @@ void albumScreenCallback(void) {
                 
                     if (overlayScreenTable.unk_8 != 1) {
                         overlayScreenTable.unk_8++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     } else if (overlayScreenTable.pageNumber != 3) {
                         overlayScreenTable.pageNumber++;
                         loadAlbumPhotos();
                         overlayScreenTable.unk_8 = 0;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8 * 128) - 120), (f32)(40 - (overlayScreenTable.unk_9 * 80)), 32.0f);
@@ -7522,7 +7522,7 @@ void albumScreenCallback(void) {
                     
                     if (overlayScreenTable.unk_9) {
                         overlayScreenTable.unk_9--;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8 * 128) - 120), (f32)(40 - (overlayScreenTable.unk_9 * 80)), 32.0f);
@@ -7539,7 +7539,7 @@ void albumScreenCallback(void) {
                 
                     if (overlayScreenTable.unk_9 != 1) {
                         overlayScreenTable.unk_9++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                     }
                     
                     setSpriteViewSpacePosition(CURSOR_HAND, (f32)((overlayScreenTable.unk_8 * 128) - 120), (f32)(40 - (overlayScreenTable.unk_9 * 80)), 32.0f);
@@ -7568,7 +7568,7 @@ void albumScreenCallback(void) {
                         controllers[CONTROLLER_1].buttonPressed = 0;
                         overlayScreenTable.screenState = 4;
                         
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                         
                     }
                     
@@ -7608,7 +7608,7 @@ void albumScreenCallback(void) {
         deactivateNumberSprites(0);
         deactivateNumberSprites(1);
         overlayScreenTable.screenState = 2;
-        playSfx(1);
+        playSfx(CLOSE_SFX);
     }
     
 }
@@ -8011,7 +8011,7 @@ void pauseScreenMapCallback(void) {
                 updateSpriteRGBA(0x82, 0, 0, 0, 0, 24);
                 updateSpriteRGBA(0xA3, 0, 0, 0, 0, 24);
                 overlayScreenTable.screenState = 3;
-                playSfx(1);
+                playSfx(CLOSE_SFX);
             }
             break;
             
@@ -8419,12 +8419,12 @@ void raceBettingScreenCallback(void) {
                 
                 if (overlayScreenTable.cellIndex) {
                     overlayScreenTable.cellIndex--;
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                 } else {
                     overlayScreenTable.cellIndex = 0xFF;
                     overlayScreenTable.screenState = 6;
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     setSpriteViewSpacePosition(CURSOR_HAND, 96.0f, -96.0f, 32.0f);
                 }
                 
@@ -8436,12 +8436,12 @@ void raceBettingScreenCallback(void) {
                 
                     if ((overlayScreenTable.cellIndex) != 5) {
                         overlayScreenTable.cellIndex++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     } else {
                         overlayScreenTable.cellIndex = 0xFF;
                         overlayScreenTable.screenState = 6;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         setSpriteViewSpacePosition(CURSOR_HAND, 96.0f, -96.0f, 32.0f);
                     }
                 
@@ -8453,13 +8453,13 @@ void raceBettingScreenCallback(void) {
                 overlayScreenTable.screenState = 5;
                 setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                 set = TRUE;
-                playSfx(0);
+                playSfx(SELECT_1_SFX);
             }
             
             if ((checkButtonPressed(CONTROLLER_1, BUTTON_START)) && !set) {
                 overlayScreenTable.cellIndex = 0xFF;
                 overlayScreenTable.screenState = 6;
-                playSfx(2);
+                playSfx(MOVE_CURSOR_SFX);
                 setSpriteViewSpacePosition(CURSOR_HAND, 96.0f, -96.0f, 32.0f);
             }
             
@@ -8476,7 +8476,7 @@ void raceBettingScreenCallback(void) {
                         if (gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex]) {
                             raceBettingGold += adjustValue(raceBettingGold, 50, gGold);
                             gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex]--;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                         
                     }
@@ -8498,7 +8498,7 @@ setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIn
                         if (gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex] != 99) {
                             raceBettingGold += adjustValue(raceBettingGold, -50, gGold);
                             gRacingContext.playerBets[gRacingContext.currentRaceIndex][overlayScreenTable.cellIndex]++;
-                            playSfx(2);
+                            playSfx(MOVE_CURSOR_SFX);
                         }
                     }
 
@@ -8515,7 +8515,7 @@ setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIn
                     overlayScreenTable.screenState = 4;
                     setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
-                    playSfx(1);
+                    playSfx(CLOSE_SFX);
                 }
                 
             }
@@ -8531,7 +8531,7 @@ setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIn
                 
                 if (!set) {
                     overlayScreenTable.cellIndex = 5;
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
                     overlayScreenTable.screenState = 4;
@@ -8543,7 +8543,7 @@ setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIn
                 
                 if (!set) {
                     overlayScreenTable.cellIndex = 0;
-                    playSfx(2);
+                    playSfx(MOVE_CURSOR_SFX);
                     setSpriteViewSpacePosition(CURSOR_HAND, -112.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 24), 32.0f);
                     set = TRUE;
                     overlayScreenTable.screenState = 4;
@@ -8579,7 +8579,7 @@ setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIn
                     fadeOutRaceBettingSprites();
                     overlayScreenTable.screenState = 2;
                     
-                    playSfx(0);
+                    playSfx(SELECT_1_SFX);
                     
                 }
             }
@@ -8592,7 +8592,7 @@ setSpriteViewSpacePosition(CURSOR_HAND, 32.0f, (f32)(-(overlayScreenTable.cellIn
         resetAnimationState(CURSOR_HAND);
         fadeOutRaceBettingSprites();
         overlayScreenTable.screenState = 2;
-        playSfx(1);
+        playSfx(CLOSE_SFX);
     }
     
 }
@@ -9266,7 +9266,7 @@ void raceResultsScreenCallback(void) {
             
             overlayScreenTable.screenState = 2;
             
-            playSfx(1);
+            playSfx(CLOSE_SFX);
             
         }
     
@@ -9499,7 +9499,7 @@ void raceGiftsScreenCallback(void) {
                     
                     if (overlayScreenTable.cellIndex) {
                         overlayScreenTable.cellIndex--;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         setSpriteViewSpacePosition(CURSOR_HAND, -104.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 16), 32.0f);
                     }
                     
@@ -9512,7 +9512,7 @@ void raceGiftsScreenCallback(void) {
                 if (!set) {
                     if (overlayScreenTable.cellIndex != 2) {
                         overlayScreenTable.cellIndex++;
-                        playSfx(2);
+                        playSfx(MOVE_CURSOR_SFX);
                         setSpriteViewSpacePosition(CURSOR_HAND, -104.0f, (f32)(-(overlayScreenTable.cellIndex * 16) + 16), 32.0f);
                     }
                     set = TRUE;
@@ -9538,7 +9538,7 @@ label1:
                         initializeDialogueSession(0, DIALOGUE_FESTIVAL_OVERLAY_SELECTIONS, 11, 0x40);
                         overlayScreenTable.screenState = 7;
 label3:
-                        playSfx(0);
+                        playSfx(SELECT_1_SFX);
                         set = TRUE;
                         
                     } else {
@@ -9564,7 +9564,7 @@ label2:
         updateSpriteAlpha(0x84, 0, 24);
         deactivateNumberSprites(2);
         overlayScreenTable.screenState = 2;
-        playSfx(1);
+        playSfx(CLOSE_SFX);
     }
     
 }

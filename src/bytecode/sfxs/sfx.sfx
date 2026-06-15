@@ -1,16 +1,16 @@
 #include "sfxs.h"
 
-.SELECT_1:        sample
-.CLOSE:           play instr=0x5D vol=0x7F note=0x24 length=0x2C
-.MOVE_CURSOR:     play instr=0x5E vol=0x78 note=0x24 length=0x16
-.INVALID_BUZZ:    play instr=0x5F vol=0x7F note=0x27 length=0x0C
+.SELECT_1_SFX:        sample
+.CLOSE_SFX:           play instr=0x5D vol=0x7F note=0x24 length=0x2C
+.MOVE_CURSOR_SFX:     play instr=0x5E vol=0x78 note=0x24 length=0x16
+.INVALID_BUZZ_SFX:    play instr=0x5F vol=0x7F note=0x27 length=0x0C
 .ITEM_PLUCK_SFX:  play instr=0x60 vol=0x7F note=0x24 length=0x12
 .WALKING_SFX:     play instr=0x61 vol=0x64 note=0x24 length=0x14
 .SFX_6:           play instr=0x62 vol=0x55 note=0x2C length=0x03
 .SELECT_2:        play instr=0x62 vol=0x5F note=0x28 length=0x04
 .MENU_OPEN_SFX:   play instr=0x5D vol=0x7F note=0x24 length=0x2C
 .SFX_9:           play instr=0x6F vol=0x78 note=0x24 length=0x17
-.WHISTLE:         sample
+.WHISTLE_SFX:         sample
 .SICKLE_SFX:      play instr=0x63 vol=0x7F note=0x24 length=0x69
 .SILVER_SICKLE_SFX: play instr=0x64 vol=0x7F note=0x28 length=0x28
 .GOLDEN_SICKLE_SFX: play instr=0x64 vol=0x7F note=0x24 length=0x28
@@ -40,7 +40,7 @@
 .PUTTING_DOWN_SFX: play instr=0x6E vol=0x7F note=0x1C length=0x0A
 .SFX_38:          play instr=0x6E vol=0x7F note=0x17 length=0x06
 .SFX_39:          play instr=0x5E vol=0x6E note=0x2B length=0x14
-.FISHING_ROD_CAST: sample
+.PLOP_SFX: sample
 .SFX_41:          play instr=0x70 vol=0x7F note=0x24 length=0x14
 .SFX_42:          sample
 .SFX_43:          play instr=0x71 vol=0x7F note=0x24 length=0x12
@@ -62,7 +62,7 @@
     NOTE_VOL        0x7F
     NOTE            0x24, 0x93
     END
-.HORSE_NEIGH:
+.HORSE_NEIGH_SFX:
     SET_INSTRUMENT  0x78
     ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
     PAN             0x7F
@@ -129,7 +129,7 @@
     NOTE            0x24, 0x10E
     END
 .SFX_86:          play instr=0x8F vol=0x7F note=0x24 length=0x2F
-.DIALOGUE_BEEP:
+.TEXT_PRINT_SFX:
     SET_INSTRUMENT  0x90
     ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
     PAN             0x7F
@@ -137,14 +137,14 @@
     NOTE            0x24, 0xC6
     END
 .SFX_88:          play instr=0x91 vol=0x73 note=0x24 length=0x0C
-.RUMBLE:
+.RUMBLE_SFX:
     SET_INSTRUMENT  0x8A
     ADSR_SET        0x01, 0x73, 0x01, 0x73, 0x01, 0x73, 0x02
     PAN             0x7F
     NOTE_VOL        0x7F
     NOTE            0x24, 0x111
     END
-.TOTAL_SFX:       play instr=0x8B vol=0x7F note=0x24 length=0x74
+.SFX_90:       play instr=0x8B vol=0x7F note=0x24 length=0x74
 .SFX_91:          sample
 .SFX_92:          sample
 .SFX_93:          sample
@@ -171,17 +171,17 @@
 .OCARINA_NOTE_8:  play instr=0x33 vol=0x7F note=0x3C length=0x30
 
 priorities {
-    .SELECT_1:        0
-    .CLOSE:           100
-    .MOVE_CURSOR:     100
-    .INVALID_BUZZ:    100
+    .SELECT_1_SFX:        0
+    .CLOSE_SFX:           100
+    .MOVE_CURSOR_SFX:     100
+    .INVALID_BUZZ_SFX:    100
     .ITEM_PLUCK_SFX:  100
     .WALKING_SFX:     100
     .SFX_6:           100
-    .SELECT_2:        100
+    .SELECT_2_SFX:        100
     .MENU_OPEN_SFX:   100
     .SFX_9:           100
-    .WHISTLE:         100
+    .WHISTLE_SFX:         100
     .SICKLE_SFX:      100
     .SILVER_SICKLE_SFX: 100
     .GOLDEN_SICKLE_SFX: 100
@@ -211,7 +211,7 @@ priorities {
     .PUTTING_DOWN_SFX: 100
     .SFX_38:          100
     .SFX_39:          100
-    .FISHING_ROD_CAST: 100
+    .PLOP_SFX: 100
     .SFX_41:          100
     .SFX_42:          100
     .SFX_43:          100
@@ -227,10 +227,10 @@ priorities {
     .SFX_53:          100
     .SFX_54:          100
     .SFX_55:          100
-    .HORSE_NEIGH:     100
+    .HORSE_NEIGH_SFX:     100
     .SFX_57:          100
     .SFX_58:          100
-    .DOG_BARK:        100
+    .DOG_BARK_SFX:        100
     .SFX_60:          100
     .SFX_61:          100
     .SFX_62:          100
@@ -258,10 +258,10 @@ priorities {
     .SFX_84:          100
     .SFX_85:          100
     .SFX_86:          100
-    .DIALOGUE_BEEP:   100
+    .TEXT_PRINT_SFX:   100
     .SFX_88:          100
-    .RUMBLE:          100
-    .TOTAL_SFX:       100
+    .RUMBLE_SFX:          100
+    .SFX_90:       100
     .SFX_91:          100
     .SFX_92:          100
     .SFX_93:          100

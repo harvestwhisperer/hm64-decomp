@@ -1118,16 +1118,16 @@ void handleNamingGridInput(void) {
     if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHWEST)) {
         set = TRUE;
         moveCursorLeft();
-        setSfx(3);
-        setSfxVolume(3, SFX_VOLUME);
+        setSfx(INVALID_BUZZ_SFX);
+        setSfxVolume(INVALID_BUZZ_SFX, SFX_VOLUME);
     }
 
     if (!set) {
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHEAST)) {
             set = TRUE;
             moveCursorRight();
-            setSfx(3);
-            setSfxVolume(3, SFX_VOLUME);
+            setSfx(INVALID_BUZZ_SFX);
+            setSfxVolume(INVALID_BUZZ_SFX, SFX_VOLUME);
         }
     }
 
@@ -1135,8 +1135,8 @@ void handleNamingGridInput(void) {
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_SOUTHWEST)) {
             set = TRUE;
             moveCursorDown();
-            setSfx(3);
-            setSfxVolume(3, SFX_VOLUME);
+            setSfx(INVALID_BUZZ_SFX);
+            setSfxVolume(INVALID_BUZZ_SFX, SFX_VOLUME);
         }
     }
 
@@ -1145,8 +1145,8 @@ void handleNamingGridInput(void) {
         if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
             moveCursorUp();
             set = TRUE;
-            setSfx(3);
-            setSfxVolume(3, SFX_VOLUME);
+            setSfx(INVALID_BUZZ_SFX);
+            setSfxVolume(INVALID_BUZZ_SFX, SFX_VOLUME);
         }
     }
 
@@ -1155,8 +1155,8 @@ void handleNamingGridInput(void) {
         if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
 
             set = TRUE;
-            setSfx(1);
-            setSfxVolume(CLOSE, SFX_VOLUME);
+            setSfx(CLOSE_SFX);
+            setSfxVolume(CLOSE_SFX, SFX_VOLUME);
 
             if (selectCharacterOrConfirm()) {
                 return;
@@ -1171,8 +1171,8 @@ void handleNamingGridInput(void) {
         if (checkButtonPressed(CONTROLLER_1, BUTTON_B)) {
 
             set = TRUE;
-            setSfx(1);
-            setSfxVolume(CLOSE, SFX_VOLUME);
+            setSfx(CLOSE_SFX);
+            setSfxVolume(CLOSE_SFX, SFX_VOLUME);
             
             index = getSpriteIndexFromFlags(namingScreenContext.flags);
             
@@ -1209,8 +1209,8 @@ void handleNamingGridInput(void) {
             startSpriteAnimation(0x91, 2, 1);
             setSpritePaletteIndex(0x91, 4);
             
-            setSfx(3);
-            setSfxVolume(3, SFX_VOLUME);
+            setSfx(INVALID_BUZZ_SFX);
+            setSfxVolume(INVALID_BUZZ_SFX, SFX_VOLUME);
         
         }
 
@@ -1309,8 +1309,8 @@ void handleSeasonSelectionInput(void) {
 
         moveSeasonCursorVertically();
 
-        setSfx(3);
-        setSfxVolume(3, SFX_VOLUME);
+        setSfx(INVALID_BUZZ_SFX);
+        setSfxVolume(INVALID_BUZZ_SFX, SFX_VOLUME);
 
     }
 
@@ -1322,8 +1322,8 @@ void handleSeasonSelectionInput(void) {
 
             moveSeasonCursorHorizontally();
 
-            setSfx(3);
-            setSfxVolume(3, SFX_VOLUME);
+            setSfx(INVALID_BUZZ_SFX);
+            setSfxVolume(INVALID_BUZZ_SFX, SFX_VOLUME);
         }
 
     }
@@ -1337,8 +1337,8 @@ void handleSeasonSelectionInput(void) {
             moveSeasonCursorVertically();
             moveSeasonCursorHorizontally();
 
-            setSfx(3);
-            setSfxVolume(3, SFX_VOLUME);
+            setSfx(INVALID_BUZZ_SFX);
+            setSfxVolume(INVALID_BUZZ_SFX, SFX_VOLUME);
 
         }
         
@@ -1348,8 +1348,8 @@ void handleSeasonSelectionInput(void) {
 
         if (checkButtonPressed(CONTROLLER_1, BUTTON_A)) {
             
-            setSfx(1);
-            setSfxVolume(CLOSE, SFX_VOLUME);
+            setSfx(CLOSE_SFX);
+            setSfxVolume(CLOSE_SFX, SFX_VOLUME);
 
             updateSpriteRGBA(0x80, 0, 0, 0, 0, 8);
             updateSpriteRGBA(0x83, 0, 0, 0, 0, 8);

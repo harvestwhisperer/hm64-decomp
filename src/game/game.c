@@ -2399,9 +2399,8 @@ void endOfDayCallback1(void) {
         
         clearHeldItemsAtEndOfDay();
         
-        // earthquake
         if (checkEarthquakeShouldHappen()) {
-            playSfx(RUMBLE);
+            playSfx(RUMBLE_SFX);
             setMainLoopCallbackFunctionIndex(WAIT_AUDIO_FINISH);
             gameLoopContext.callbackIndex = END_OF_DAY_1;
             return;
@@ -2473,7 +2472,7 @@ void endOfDayCallback2(void) {
         // earthquake
         if (checkEarthquakeShouldHappen()) {
             
-            playSfx(RUMBLE);
+            playSfx(RUMBLE_SFX);
             
             setMainLoopCallbackFunctionIndex(WAIT_AUDIO_FINISH);
             gameLoopContext.callbackIndex = END_OF_DAY_1;
