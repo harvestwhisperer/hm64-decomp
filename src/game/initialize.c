@@ -48,6 +48,7 @@
 #include "assetIndices/entities.h"
 #include "assetIndices/maps.h"
 #include "assetIndices/sequences.h"
+#include "assetIndices/sfxs.h"
 #include "assetIndices/sprites.h"
 #include "assetIndices/texts.h"
 
@@ -1316,7 +1317,7 @@ void initializeMainMessageBoxes(void) {
     setMessageBoxFont(MAIN_MESSAGE_BOX_INDEX, 14, 14, (u8*)FONT_TEXTURE_BUFFER, (u16*)FONT_PALETTE_1_BUFFER);
     setMessageBoxInterpolationWithFlags(MAIN_MESSAGE_BOX_INDEX, -4, 0);
     setMessageBoxSpriteIndices(MAIN_MESSAGE_BOX_INDEX, 0, 0, 0);
-    setMessageBoxSfx(MAIN_MESSAGE_BOX_INDEX, 0x57, 8, 1);
+    setMessageBoxSfx(MAIN_MESSAGE_BOX_INDEX, TEXT_PRINT_SFX, OPEN_SFX, CLOSE_SFX);
     setMessageBoxButtonMask(MAIN_MESSAGE_BOX_INDEX, (BUTTON_B | BUTTON_A));
     setMessageBoxScrollSpeed(MAIN_MESSAGE_BOX_INDEX, 1);
 

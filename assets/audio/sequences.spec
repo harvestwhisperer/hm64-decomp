@@ -191,9 +191,9 @@ beginseg
 endseg
 
 beginseg
-    name "drumPerformance"
+    name "rainAmbience"
     flags RAW
-    include "build/assets/audio/sequences/drumPerformance.seq.o"
+    include "build/assets/audio/sequences/rainAmbience.seq.o"
 endseg
 
 beginseg

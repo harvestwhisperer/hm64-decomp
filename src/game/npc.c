@@ -2209,8 +2209,8 @@ void setElliLocation(void) {
             }
 
             if (getBabyCarryingState() == 1 && (gPlayer.heldItem < BABY_HELD_ITEM || gPlayer.heldItem > (LIBRARY_BOOK_HELD_ITEM - 1))) {
-                npcs[ELLI].idleAnimation = 0x69;
-                npcs[ELLI].movingAnimation = 0x73;
+                npcs[ELLI].idleAnimation = 105;
+                npcs[ELLI].movingAnimation = 115;
             }
     
         } else if (!checkDailyEventBit(FESTIVAL)) {
@@ -4821,8 +4821,8 @@ void setEllenLocation(void) {
 
     npcs[ELLEN].wanderRadiusX = 64;
     npcs[ELLEN].wanderRadiusZ = 64;
-    npcs[ELLEN].idleAnimation = 0;
-    npcs[ELLEN].movingAnimation = 8;
+    npcs[ELLEN].idleAnimation = ELLEN_ANIMATION_LOOKING_RIGHT;
+    npcs[ELLEN].movingAnimation = ELLEN_ANIMATION_ROCKING_SW;
     
     if (!checkLifeEventBit(ELLEN_DIED)) {
 
@@ -4867,8 +4867,8 @@ void setDougLocation(void) {
 
     npcs[DOUG].wanderRadiusX = 64;
     npcs[DOUG].wanderRadiusZ = 64;
-    npcs[DOUG].idleAnimation = 0;
-    npcs[DOUG].movingAnimation = 8;
+    npcs[DOUG].idleAnimation = DOUG_ANIMATION_STANDING_DIRECTIONAL;
+    npcs[DOUG].movingAnimation = DOUG_ANIMATION_WALKING_DIRECTIONAL;
 
     // FIXME: something off here
     if (temp >= SUNDAY && (temp < THURSDAY || temp < 7 && (temp2 = temp) >= FRIDAY) && (7 < gHour && gHour < 17)) {
@@ -7295,7 +7295,7 @@ void handlePopuriAnimation(void) {
                             npcs[POPURI].speed = 0;
                             npcs[POPURI].animationTimer = 60;
 
-                            setEntityDirectionalAnimation(npcs[POPURI].entityIndex, 0x72);
+                            setEntityDirectionalAnimation(npcs[POPURI].entityIndex, 114);
                             npcs[POPURI].animationState = 1;
 
                             npcs[POPURI].flags |= NPC_NEEDS_UPDATE;
@@ -8075,7 +8075,7 @@ void handleSashaAnimation(void) {
                         npcs[SASHA].speed = 0;
                         npcs[SASHA].animationTimer = 0;
 
-                        setEntityDirectionalAnimation(npcs[SASHA].entityIndex, 0);
+                        setEntityDirectionalAnimation(npcs[SASHA].entityIndex, SASHA_ANIMATION_STANDING_DIRECTIONAL);
                         tempDirection = getRandomNumberInRange(0, 60);
 
                         if (tempDirection < DIRECTION_N) {
@@ -8090,7 +8090,7 @@ void handleSashaAnimation(void) {
                         npcs[SASHA].speed = 1;
                         npcs[SASHA].animationTimer = 0;
 
-                        setEntityDirectionalAnimation(npcs[SASHA].entityIndex, 8);
+                        setEntityDirectionalAnimation(npcs[SASHA].entityIndex, SASHA_ANIMATION_WALKING_DIRECTIONAL);
 
                         if (getRandomNumberInRange(0, 19) < 8) {
                             npcs[SASHA].animationState = 1;
@@ -8417,7 +8417,7 @@ void handleCarpenter1Animation(void) {
                             npcs[CARPENTER_1].speed = 0;
                             npcs[CARPENTER_1].animationTimer = 0;
 
-                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, 0);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, ASSISTANT_CARPENTER_ANIMATION_STANDING_DIRECTIONAL);
 
                             temp = getRandomNumberInRange(0, 60);
 
@@ -8439,7 +8439,7 @@ void handleCarpenter1Animation(void) {
 
                             npcs[CARPENTER_1].speed = 1;
                             npcs[CARPENTER_1].animationTimer = 0;
-                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, 8);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, ASSISTANT_CARPENTER_ANIMATION_WALKING_DIRECTIONAL);
 
                             temp = getRandomNumberInRange(0, 19);
 
@@ -8458,7 +8458,7 @@ void handleCarpenter1Animation(void) {
 
                             npcs[CARPENTER_1].speed = 0;
                             npcs[CARPENTER_1].animationTimer = 60;
-                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, 20);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_1].entityIndex, ASSISTANT_CARPENTER_ANIMATION_SAWING_DIRECTIONAL);
 
                             npcs[CARPENTER_1].animationState = 1;
                             npcs[CARPENTER_1].flags |= NPC_NEEDS_UPDATE;
@@ -8510,7 +8510,7 @@ void handleCarpenter2Animation(void) {
                             npcs[CARPENTER_2].speed = 0;
                             npcs[CARPENTER_2].animationTimer = 0;
 
-                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, 0);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, ASSISTANT_CARPENTER_ANIMATION_STANDING_DIRECTIONAL);
 
                             temp = getRandomNumberInRange(0, 60);
 
@@ -8531,7 +8531,7 @@ void handleCarpenter2Animation(void) {
 
                             npcs[CARPENTER_2].speed = 1;
                             npcs[CARPENTER_2].animationTimer = 0;
-                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, 8);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, ASSISTANT_CARPENTER_ANIMATION_WALKING_DIRECTIONAL);
 
                             temp = getRandomNumberInRange(0, 19);
 
@@ -8549,7 +8549,7 @@ void handleCarpenter2Animation(void) {
 
                             npcs[CARPENTER_2].speed = 0;
                             npcs[CARPENTER_2].animationTimer = 60;
-                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, 28);
+                            setEntityDirectionalAnimation(npcs[CARPENTER_2].entityIndex, ASSISTANT_CARPENTER_ANIMATION_AXING_DIRECTIONAL);
 
                             npcs[CARPENTER_2].animationState = 1;
                             npcs[CARPENTER_2].flags |= NPC_NEEDS_UPDATE;
@@ -8597,8 +8597,7 @@ void handleMasterCarpenterAnimation(void) {
                         npcs[MASTER_CARPENTER].animationState = 10;
                         npcs[MASTER_CARPENTER].animationTimer = 0;
 
-                        // smoking pipe
-                        setEntityAnimation(npcs[MASTER_CARPENTER].entityIndex, 16);
+                        setEntityAnimation(npcs[MASTER_CARPENTER].entityIndex, MASTER_CARPENTER_ANIMATION_SMOKING_SW);
 
                         npcs[MASTER_CARPENTER].flags |= NPC_NEEDS_UPDATE;
                         break;

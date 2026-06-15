@@ -197,7 +197,7 @@ void loadLevel(u8 arg0) {
             gPlayer.heldItem = 0;
         }
 
-        if (!(gCutsceneFlags & CUTSCENE_ACTIVE) && getHealthyChickenCount()) {
+        if (!(gCutsceneFlags & CUTSCENE_ACTIVE) && getHealthyChickenCount() != 0) {
             playSfx(63);
         }
 

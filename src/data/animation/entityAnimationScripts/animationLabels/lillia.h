@@ -19,9 +19,9 @@
 #define LILLIA_ANIMATION_WALKING_NE           13
 #define LILLIA_ANIMATION_WALKING_E            14
 #define LILLIA_ANIMATION_WALKING_SE           15
-#define LILLIA_ANIMATION_16                   16
-#define LILLIA_ANIMATION_17                   17
-#define LILLIA_ANIMATION_18                   18
-#define LILLIA_ANIMATION_19                   19
+#define LILLIA_ANIMATION_HAPPY_1_SE           16
+#define LILLIA_ANIMATION_HAPPY_2_SE           17
+#define LILLIA_ANIMATION_HAPPY_1_SW           18
+#define LILLIA_ANIMATION_HAPPY_2_SW           19
 
 #endif
