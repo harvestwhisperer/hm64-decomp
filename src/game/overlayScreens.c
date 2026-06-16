@@ -7450,7 +7450,7 @@ void recipeBookScreenCallback(void) {
 
                 if (!set) {
                     
-                    if (checkRecipe((overlayScreenTable.unk_8 * 8) + overlayScreenTable.unk_9 + (overlayScreenTable.pageNumber * 0x10))) {
+                    if (checkRecipe((overlayScreenTable.unk_8 * 8) + overlayScreenTable.unk_9 + (overlayScreenTable.pageNumber * 16))) {
                         
                         hideRightArrow();
                         hideLeftArrow();
@@ -7458,10 +7458,10 @@ void recipeBookScreenCallback(void) {
                         resetAnimationState(0x79);
                         
                         setMessageBoxViewSpacePosition(MAIN_MESSAGE_BOX_INDEX, 0.0f, 0.0f, 352.0f);
-                        setMessageBoxSpriteIndices(MAIN_MESSAGE_BOX_INDEX, 1U, 0U, 0U);
-                        setMessageBoxLineAndRowSizes(MAIN_MESSAGE_BOX_INDEX, 0x10, 3);
+                        setMessageBoxSpriteIndices(MAIN_MESSAGE_BOX_INDEX, 1, 0, 0);
+                        setMessageBoxLineAndRowSizes(MAIN_MESSAGE_BOX_INDEX, 16, 3);
                         setMessageBoxInterpolationWithFlags(MAIN_MESSAGE_BOX_INDEX, 1, 3);
-                        initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 3, overlayScreenTable.unk_9 + (overlayScreenTable.unk_8 * 8) + (overlayScreenTable.pageNumber * 0x10), 0x8000);
+                        initializeMessageBox(MAIN_MESSAGE_BOX_INDEX, 3, overlayScreenTable.unk_9 + (overlayScreenTable.unk_8 * 8) + (overlayScreenTable.pageNumber * 16), 0x8000);
                         setMessageBoxScrollSpeed(MAIN_MESSAGE_BOX_INDEX, 4);
                         
                         controllers[CONTROLLER_1].buttonPressed = 0;

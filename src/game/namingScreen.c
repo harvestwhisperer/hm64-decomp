@@ -1475,7 +1475,6 @@ void handleNamingGridInput(void) {
             
         }       
             
-        
     }
 
     if (!set) {
@@ -1501,9 +1500,9 @@ void handleNamingGridInput(void) {
                 }
                 
             }
-
                 
-        }        
+        }     
+           
     } 
 
     if (!set) {
