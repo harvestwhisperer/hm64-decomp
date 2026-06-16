@@ -3658,47 +3658,44 @@ void calculateFarmRankingScore(u8 slot) {
     
     gFarmRankingData.scores[slot] = 0.0f;
 
-    // TODO: the (u32) manual casts are actually temp u32 variables
+    totalScore = ((gFarmRankingData.mariaAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore = (((u32)gFarmRankingData.mariaAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.popuriAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.popuriAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.elliAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.elliAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.annAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.annAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.karenAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.karenAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.harrisAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.harrisAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.grayAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.grayAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.jeffAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.jeffAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.cliffAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.cliffAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.kaiAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.kaiAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.wifeAffection[slot] * 100) / MAX_AFFECTION);
 
-    // copy/paste bug: should be wife affection
-    totalScore += (((u32)gFarmRankingData.kaiAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.babyAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.babyAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.dogAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.dogAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.horseAffection[slot] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.horseAffection[slot] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.farmAnimalAffection[slot][0] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.farmAnimalAffection[slot][1] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.farmAnimalAffection[slot][2] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.farmAnimalAffection[slot][3] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.farmAnimalAffection[slot][4] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.farmAnimalAffection[slot][5] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.farmAnimalAffection[slot][6] * 100) / MAX_AFFECTION);
+    totalScore += ((gFarmRankingData.farmAnimalAffection[slot][7] * 100) / MAX_AFFECTION);
 
-    totalScore += (((u32)gFarmRankingData.farmAnimalAffection[slot][0] * 100) / MAX_AFFECTION);
-    totalScore += (((u32)gFarmRankingData.farmAnimalAffection[slot][1] * 100) / MAX_AFFECTION);
-    totalScore += (((u32)gFarmRankingData.farmAnimalAffection[slot][2] * 100) / MAX_AFFECTION);
-    totalScore += (((u32)gFarmRankingData.farmAnimalAffection[slot][3] * 100) / MAX_AFFECTION);
-    totalScore += (((u32)gFarmRankingData.farmAnimalAffection[slot][4] * 100) / MAX_AFFECTION);
-    totalScore += (((u32)gFarmRankingData.farmAnimalAffection[slot][5] * 100) / MAX_AFFECTION);
-    totalScore += (((u32)gFarmRankingData.farmAnimalAffection[slot][6] * 100) / MAX_AFFECTION);
-    totalScore += (((u32)gFarmRankingData.farmAnimalAffection[slot][7] * 100) / MAX_AFFECTION);
-
-    totalScore += (((u32)gFarmRankingData.chickenCounts[slot] * 100) / 6);
+    totalScore += ((gFarmRankingData.chickenCounts[slot] * 100) / 6);
 
     totalScore += ((gFarmRankingData.cropsShipped[slot] * 1000) / 99999);
 
@@ -3710,19 +3707,19 @@ void calculateFarmRankingScore(u8 slot) {
 
     totalScore += ((gFarmRankingData.gold[slot] * 1000) / MAX_GOLD);
 
-    totalScore += (((u32)gFarmRankingData.maxStamina[slot] * 100) / MAX_STAMINA);
+    totalScore += ((gFarmRankingData.maxStamina[slot] * 100) / MAX_STAMINA);
 
-    totalScore += (((u32)gFarmRankingData.photoCount[slot] * 25) / 4);
+    totalScore += ((gFarmRankingData.photoCount[slot] * 25) / 4);
 
-    totalScore += (((u32)gFarmRankingData.recipeCount[slot] * 100) / 35);
+    totalScore += ((gFarmRankingData.recipeCount[slot] * 100) / 35);
 
-    totalScore += (((u32)gFarmRankingData.houseExtensions[slot] * 100) / 6);
+    totalScore += ((gFarmRankingData.houseExtensions[slot] * 100) / 6);
 
-    totalScore += (((u32)gFarmRankingData.grassTiles[slot] * 400) / 480);
+    totalScore += ((gFarmRankingData.grassTiles[slot] * 400) / 480);
 
-    totalScore += (((u32)gFarmRankingData.happiness[slot] * 400) / MAX_HAPPINESS);
+    totalScore += ((gFarmRankingData.happiness[slot] * 400) / MAX_HAPPINESS);
 
-    farmRankingRawScore = (u32)totalScore;
+    farmRankingRawScore = totalScore;
     
     gFarmRankingData.scores[slot] = totalScore / 70.0f;
     
