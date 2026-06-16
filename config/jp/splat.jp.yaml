@@ -37,7 +37,7 @@ options:
   rodata_string_guesser_level: 0
   data_string_guesser_level: 2
   libultra_symbols: True
-  disassemble_all: False
+  # disassemble_all: True
   segment_symbols_style: makerom
   # hardware_regs: True
   gfx_ucode: f3dex2
