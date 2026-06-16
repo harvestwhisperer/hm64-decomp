@@ -7117,7 +7117,6 @@ void recipeBookScreenCallback(void) {
                 hideRightArrow();
             }
 
-
             break;
     
     }
