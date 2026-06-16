@@ -358,7 +358,7 @@ void handleUnusedAction25(void);
 void handleTreeClimbingAction(void);
 void handleToolAcquisitionAction(void);
 void handleJumpDownAction(void);
-void handleResetHeldItemAction(void);
+void handleReadLibraryBookAction(void);
 void handlePutFoodInDogBowlAction(void);
 void handleDropItemInWaterAction(void);
 void handleUnusedAction33(void);
@@ -816,8 +816,8 @@ void updatePlayerAction(void) {
         case (JUMPING_DOWN - 1):
             handleJumpDownAction();
             break;
-        case (DIALOGUE_SELECTING - 1):
-            handleResetHeldItemAction();
+        case (READING_LIBRARY_BOOK - 1):
+            handleReadLibraryBookAction();
             break;
         case (PUTTING_FOOD_IN_DOG_BOWL - 1):
             handlePutFoodInDogBowlAction();
@@ -1841,7 +1841,7 @@ void handleJumpDownAction(void) {
 }
 
 // empty function
-void handleResetHeldItemAction(void) {}
+void handleReadLibraryBookAction(void) {}
 
 // put food in dog bowl
 void handlePutFoodInDogBowlAction(void) {
@@ -2683,7 +2683,7 @@ void handlePlayerAnimation(void) {
             if (!gPlayer.heldItem && !checkDailyEventBit(EGG_FESTIVAL_HOLDING_EGG)) {
                 if (gPlayer.flags & PLAYER_RIDING_HORSE) {
                     if (checkEntityShouldPlaySoundEffect(ENTITY_PLAYER)) {
-                        playSfx(HORSE_GALLOP_SFX);
+                        playSfx(9);
                     }
                     setEntityDirectionalAnimation(ENTITY_PLAYER, PLAYER_ANIMATION_HORSE_RUNNING_DIRECTIONAL);
                 } else {

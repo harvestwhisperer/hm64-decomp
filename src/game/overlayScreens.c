@@ -7129,7 +7129,6 @@ if (checkButtonRepeat(CONTROLLER_1, BUTTON_STICK_NORTHEAST)) {
                 hideRightArrow();
             }
 
-
             break;
 
 }

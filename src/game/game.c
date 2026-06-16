@@ -1656,7 +1656,7 @@ void dialogueMenuCallback() {
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
-                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+                    if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 3) {
 
                         switch (selectedMenuRow) {             
                             case 0:                         
@@ -1680,11 +1680,11 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
-                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+                } else if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 3) {
                     
                     switch (selectedMenuRow) {                 
                         case 0:                             
@@ -1708,7 +1708,7 @@ void dialogueMenuCallback() {
                     gPlayer.heldItem = 0;
 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                    setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -1718,7 +1718,7 @@ void dialogueMenuCallback() {
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
-                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+                    if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 3) {
 
                         switch (selectedMenuRow) {            
                             case 0:                        
@@ -1742,11 +1742,11 @@ void dialogueMenuCallback() {
                         gPlayer.heldItem = 0;
                         
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                     
-                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+                } else if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 3) {
 
                     switch (selectedMenuRow) {                
                         case 0:                             
@@ -1770,7 +1770,7 @@ void dialogueMenuCallback() {
                     gPlayer.heldItem = 0;
                     
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                    setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -1780,7 +1780,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
-                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+                    if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 3) {
 
                         switch (selectedMenuRow) {             
                             case 0:                         
@@ -1804,11 +1804,11 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                     
-                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+                } else if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 3) {
 
                     switch (selectedMenuRow) {                         
                         case 0:                             
@@ -1832,7 +1832,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                     gPlayer.heldItem = 0;
 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                    setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -1842,7 +1842,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
-                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+                    if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 3) {
 
                         switch (selectedMenuRow) {             
                             case 0:                         
@@ -1866,11 +1866,11 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                             gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
-                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 3) {
+                } else if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 3) {
 
                     switch (selectedMenuRow) {                 
                         case 0:                             
@@ -1894,7 +1894,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                 
@@ -1904,7 +1904,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
-                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                    if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                         switch (selectedMenuRow) {            
                             case 0:                         
@@ -1931,11 +1931,11 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                 
-                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                } else if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                     switch (selectedMenuRow) {                
                         case 0:                             
@@ -1962,7 +1962,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
         
@@ -1972,7 +1972,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
-                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                    if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                         switch (selectedMenuRow) {             
                             case 0:                         
@@ -1999,11 +1999,11 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
                     
-                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                } else if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                     switch (selectedMenuRow) {                 
                         case 0:                             
@@ -2030,7 +2030,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                     gPlayer.heldItem = 0;
                 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                    setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -2040,7 +2040,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
-                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                    if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                         switch (selectedMenuRow) {             
                             case 0:                         
@@ -2067,11 +2067,11 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
-                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                } else if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                     switch (selectedMenuRow) {                 
                         case 0:                             
@@ -2098,7 +2098,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                     gPlayer.heldItem = 0;
 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                    setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -2108,7 +2108,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
-                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                    if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                         switch (selectedMenuRow) {             
                             case 0:                         
@@ -2135,11 +2135,11 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
-                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                } else if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
                     
                     switch (selectedMenuRow) {                 
                         case 0:                             
@@ -2166,7 +2166,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                     gPlayer.heldItem = 0;
 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                    setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -2176,7 +2176,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
-                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                    if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                         switch (selectedMenuRow) {             
                             case 0:                         
@@ -2203,11 +2203,11 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         gPlayer.heldItem = 0;
                     
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
-                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                } else if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                     switch (selectedMenuRow) {       
 
@@ -2236,7 +2236,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                         gPlayer.heldItem = 0;
 
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                    setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
 
@@ -2246,7 +2246,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
 
                 if (gSeason == SPRING || gSeason == WINTER) {
 
-                    if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                    if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                         switch (selectedMenuRow) {             
                             case 0:                         
@@ -2273,11 +2273,11 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                             gPlayer.heldItem = 0;
 
                     } else {
-                        setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                        setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                         setMainLoopCallbackFunctionIndex(MAIN_GAME);
                     }
 
-                } else if (gPlayer.actionHandler == DIALOGUE_SELECTING || selectedMenuRow == 4) {
+                } else if (gPlayer.actionHandler == READING_LIBRARY_BOOK || selectedMenuRow == 4) {
 
                     switch (selectedMenuRow) {                 
                         case 0:                             
@@ -2304,7 +2304,7 @@ case DIALOGUE_MENU_LIBRARY_BOOKSHELF_3:
                     gPlayer.heldItem = 0;
                     
                 } else {
-                    setPlayerAction(DIALOGUE_SELECTING, ANIM_READ_LIBRARY_BOOK);
+                    setPlayerAction(READING_LIBRARY_BOOK, ANIM_READ_LIBRARY_BOOK);
                     setMainLoopCallbackFunctionIndex(MAIN_GAME);
                 }
                 

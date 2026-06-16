@@ -36,6 +36,7 @@ asm/
 !config/jp/symbol_addrs.txt
 !config/jp/undefined_funcs.txt
 !config/jp/undefined_syms.txt
+!config/jp/header.s
 !tools/requirements.txt
 bin/
 build/

@@ -1163,8 +1163,8 @@ void handleNamingGridInput(void) {
             }
             
         }       
-
-}
+            
+    }
 
     if (!set) {
             
@@ -1190,9 +1190,10 @@ void handleNamingGridInput(void) {
                 
             }
                 
-        }        
+        }     
+           
     } 
-        
+
     if (!set) { 
         
         if (checkButtonPressed(CONTROLLER_1, BUTTON_START)) {
