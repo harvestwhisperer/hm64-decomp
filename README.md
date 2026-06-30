@@ -26,7 +26,7 @@ To build a JP ROM, place your JP ROM in the root directory as `baserom.jp.z64` a
 1. Copy `baserom.us.z64` (or `baserom.jp.z64` if building JP) to the project's root directory (must provide your own and must be in big endian/z64 format).
 1. Run `make setup && make` or simply `make fresh` (with `VERBOSE=1` and `-j[n]` optional). For building JP, run `make fresh VERSION=jp`, etc.
 
-### Docker Workflow
+### Docker Workflow (Non-Debian Linux)
 
 Docker is also supported, and can be useful on Linux and non-Debian-based
 distributions where Python packaging and MIPS toolchain packages differ from
@@ -46,6 +46,10 @@ the shell.
 The Docker helper defaults to `linux/amd64` because the KMC toolchain release is
 a Linux binary toolchain. Override `HM64_DOCKER_IMAGE` or
 `HM64_DOCKER_PLATFORM` if you need a custom image tag or platform.
+
+### Docker Workflow (Windows)
+
+Using Docker via Windows is currently not supported in favor of WSL.
 
 ## Asset extraction
 
