@@ -376,6 +376,17 @@ class SeqConverter:
                 if target_track.instrument == -1: target_track.instrument = 25 # Default Piano
                 self.seq.tracks.append(target_track)
 
+            elif self.seq.tempo_source == -1:
+                # Track has no notes (e.g. a Format-1 conductor track) so it
+                # produces no output track, but it may still carry the
+                # sequence tempo, which is global. Rescue the tempo source so
+                # SET_TEMPO still gets emitted on the master track.
+                for s in cur_sources:
+                    if s.type == ControllerType.TEMPO and s.events:
+                        self.seq.sources.append(s)
+                        self.seq.tempo_source = len(self.seq.sources) - 1
+                        break
+
         # Recalc total ticks
         max_t = 0
         for t in self.seq.tracks:
