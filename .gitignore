@@ -22,6 +22,7 @@
 *.wav
 *.aifc
 *.inst
+*.sf2
 *.txt
 asm/
 !makerom/entry.s
