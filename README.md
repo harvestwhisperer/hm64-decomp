@@ -121,6 +121,10 @@ As an example, opcode 88 corresponds to `cutsceneHandlerSetSong`, which is the 8
 
 Compared to the dialogue bytecode, the cutscene bytecode is much more sophisticated and involves multiple bytecode executors. I.e., the initial executor can spawn child executors that execute different segments of the bytecode and can spawn their own child executors as well. To handle this, the default `make extract-cutscenes` command generates 3 parses of each bytecode segment: a linear scan, a graph-based scan that tracks spawns, branches, and subroutine jumps, and a disassembled assembly file.
 
+### Audio
+
+The standard build automatically extracts the original instrument sample data and N64 Wavetable into the `assets` directory and repackages for the build. To extract a general midi soundfont easily, run `make extract-soundfont`. For more customization, run the Python module directly: `python -m libhm64.audio.wavetable.sf2_writer --layout <gm|game> --root-transpose <semitones>` (the `game` order preserves the original instrument order in the soundfont).
+
 ## Modding
 
 See the `dev` and `dev-qol` branches for more information.
