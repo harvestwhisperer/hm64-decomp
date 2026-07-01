@@ -13,12 +13,11 @@ import argparse
 import sys
 from pathlib import Path
 
-from libhm64.audio.wavetable import container, adpcm, aifc, inst_writer
+from libhm64.audio.wavetable import container, adpcm, aifc, inst_writer, sf2_writer
 from libhm64.common import rom
 
 
-# Segment boundaries (must match config/us/splat.us.yaml). The bin files
-# include trailing padding bytes that aren't part of the V2 bank format —
+# The bin files include trailing padding bytes that aren't part of the V2 bank format —
 # see container.POINTER_TRAILER / DATA_TRAILER for the canonical values
 # that pack() always emits at the end.
 ROM_POINTER_START = 0xE93080
@@ -27,7 +26,8 @@ ROM_DATA_START    = 0xE99910
 ROM_DATA_END      = 0xFD8510   # next segment (`opening`)
 
 
-def extract(out_dir: Path) -> int:
+def extract(out_dir: Path, sf2_path: Path = None, sf2_layout: str = "gm",
+            root_transpose: int = sf2_writer.DEFAULT_ROOT_TRANSPOSE) -> int:
     pointer_bytes = rom.read_bytes(ROM_POINTER_START, ROM_POINTER_END)
     data_bytes    = rom.read_bytes(ROM_DATA_START,    ROM_DATA_END)
     bank = container.parse(pointer_bytes, data_bytes)
@@ -58,6 +58,12 @@ def extract(out_dir: Path) -> int:
     print(f"wrote {n_written} instruments ({n_skipped} empty slots skipped)")
     print(f"  AIFC + WAV pairs in: {sounds_dir}")
     print(f"  bank manifest:       {inst_path}")
+
+    if sf2_path is not None:
+        sf2_path.parent.mkdir(parents=True, exist_ok=True)
+        sf2_path.write_bytes(
+            sf2_writer.build_sf2(bank, layout=sf2_layout, root_transpose=root_transpose))
+        print(f"  SF2 soundfont:       {sf2_path} (layout={sf2_layout})")
     return 0
 
 
@@ -67,12 +73,22 @@ def main(argv: list[str]) -> int:
                     help="output directory (will be created)")
     ap.add_argument("--rom", type=Path, default=None,
                     help="override ROM path (defaults to baserom.us.z64 in repo root)")
+    ap.add_argument("--sf2", type=Path, default=None,
+                    help="also emit an SF2 soundfont at this path")
+    ap.add_argument("--layout", choices=("gm", "game"), default="gm",
+                    help="SF2 preset layout: 'gm' (General MIDI order, default) "
+                         "or 'game' (raw game-instrument order)")
+    ap.add_argument("--root-transpose", type=int,
+                    default=sf2_writer.DEFAULT_ROOT_TRANSPOSE,
+                    help="semitone transpose baked into SF2 sample roots to match "
+                         "converter.py's note offset (default 12; audition and tweak)")
     args = ap.parse_args(argv)
 
     if args.rom is not None:
         rom.set_rom_path(args.rom)
 
-    return extract(args.out)
+    return extract(args.out, sf2_path=args.sf2, sf2_layout=args.layout,
+                   root_transpose=args.root_transpose)
 
 
 if __name__ == "__main__":
