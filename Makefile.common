@@ -200,9 +200,14 @@ FONT_PNG_EXPORTER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.fonts.png_expo
 
 WAVETABLE_EXTRACTOR := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.audio.wavetable.extractor
 WAVETABLE_REPACKER  := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.audio.wavetable.repacker
+WAVETABLE_SF2_WRITER := PYTHONPATH=$(TOOLS_DIR) $(PYTHON) -m libhm64.audio.wavetable.sf2_writer
 WAVETABLE_ASSETS    := assets/audio/wavetable
 WAVETABLE_INST      := $(WAVETABLE_ASSETS)/BOKUJO01.inst
 WAVETABLE_SOUNDS    := $(wildcard $(WAVETABLE_ASSETS)/sounds/*.aifc)
+
+SF2_LAYOUT          ?= gm
+SF2_ROOT_TRANSPOSE  ?= 12
+WAVETABLE_SF2       := $(WAVETABLE_ASSETS)/BOKUJO01_$(SF2_LAYOUT).sf2
 
 # Extra args appended to `extract-texts`. Master leaves it empty (extract from
 # ROM); dev/dev-qol set `--modding` in their prelude (extract as .txt files).
@@ -785,6 +790,12 @@ bin/audio/waveTablePointer.bin bin/audio/waveTableData.bin &: $(WAVETABLE_INST) 
 
 repack-wavetable: bin/audio/waveTablePointer.bin bin/audio/waveTableData.bin
 
+$(WAVETABLE_SF2): $(WAVETABLE_INST)
+	$(V)$(WAVETABLE_SF2_WRITER) --inst $(WAVETABLE_INST) --out $@ \
+	    --layout $(SF2_LAYOUT) --root-transpose $(SF2_ROOT_TRANSPOSE)
+
+extract-soundfont: $(WAVETABLE_SF2)
+
 extract-font:
 	$(V)$(FONT_PNG_EXPORTER) extract_all
 	$(V)$(FONT_PNG_EXPORTER) extract_all_palettes
@@ -799,7 +810,7 @@ split:
 CUTSCENE_ASM := $(patsubst $(CUTSCENE_BUILD_DIR)/%.bin.o,$(CUTSCENE_ASSETS_DIR)/%.s,$(CUTSCENE_OBJECTS))
 DIALOGUE_ASM := $(patsubst $(DIALOGUE_BUILD_DIR)/%.bin.o,$(DIALOGUE_ASSETS_DIR)/%.s,$(DIALOGUE_OBJECTS))
 
-.PHONY: extract-map-sprites extract-cutscenes extract-wavetable repack-wavetable extract-font assemble-fonts
+.PHONY: extract-map-sprites extract-cutscenes extract-wavetable repack-wavetable extract-soundfont extract-font assemble-fonts
 .PHONY: extract-map-sprites extract-cutscenes extract-font assemble-fonts
 .PHONY: split
 
