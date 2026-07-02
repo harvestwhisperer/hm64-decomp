@@ -1,4 +1,4 @@
-"""Bank -> SF2 (SoundFont 2.04)
+"""Bank -> SF2 (SoundFont 2.01, 16-bit)
 
   layout="game"  (pairs with converter's non-GM mode: game_inst = msg.program)
       One preset per wave-bank instrument. The preset's (bank, program) encodes
@@ -259,7 +259,7 @@ class _Sf2Builder:
 
     def serialize(self) -> bytes:
         info = _list(b"INFO",
-                     _ck(b"ifil", struct.pack("<HH", 2, 4))
+                     _ck(b"ifil", struct.pack("<HH", 2, 1))
                      + _ck(b"isng", _zstr("EMU8000"))
                      + _ck(b"INAM", _zstr(self.bank_name)))
         sdta = _list(b"sdta", _ck(b"smpl", bytes(self._pcm)))
