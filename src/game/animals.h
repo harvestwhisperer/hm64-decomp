@@ -298,8 +298,8 @@ extern void adjustDogAffection(s8 value);
 extern void adjustHorseAffection(s8 value);
 
 extern void setAnimalLocations(u8);
-extern void setDogLocation(u8);
-extern void setHorseLocation(u8);
+extern void resetDogLocation(u8);
+extern void resetHorseLocation(u8);
 
 extern MiscAnimal gMiscAnimals[MAX_MISC_ANIMALS];
 extern Chicken gChickens[MAX_CHICKENS];
