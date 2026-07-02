@@ -1472,8 +1472,8 @@ void setAnimalLocations(u8 mapIndex) {
 
     u8 i;
     
-    setDogLocation(mapIndex);
-    setHorseLocation(mapIndex);
+    resetDogLocation(mapIndex);
+    resetHorseLocation(mapIndex);
 
     for (i = 0; i < MAX_FARM_ANIMALS; i++) {
         resetFarmAnimalLocation(mapIndex, i);
@@ -1485,9 +1485,9 @@ void setAnimalLocations(u8 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", setDogLocation);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", resetDogLocation);
 
-void setDogLocation(u8 mapIndex) {
+void resetDogLocation(u8 mapIndex) {
 
     if (dogInfo.flags & DOG_ACTIVE && (mapIndex == 0xFF || dogInfo.location == mapIndex)) {
         dogInfo.location = FARM;
@@ -1500,9 +1500,9 @@ void setDogLocation(u8 mapIndex) {
 
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/animals", setHorseLocation);
+//INCLUDE_ASM("asm/nonmatchings/game/animals", resetHorseLocation);
 
-void setHorseLocation(u8 mapIndex) {
+void resetHorseLocation(u8 mapIndex) {
 
     if (horseInfo.flags & HORSE_ACTIVE && (mapIndex == 0xFF || horseInfo.location == mapIndex)) {
         horseInfo.coordinates.y = 0;

@@ -2565,7 +2565,7 @@ void endOfDayCallback2(void) {
         if (gPlayer.flags & PLAYER_RIDING_HORSE) {
             gPlayer.flags &= ~PLAYER_RIDING_HORSE;
             clearDailyEventBit(RIDING_HORSE);
-            setHorseLocation(0xFF);
+            resetHorseLocation(0xFF);
             horseInfo.flags &= ~HORSE_BEING_RODE;
         }
 
@@ -2743,7 +2743,7 @@ void setFestivalDailyBits(void) {
     }
 }
 
-//INCLUDE_ASM("asm/nonmatchings/game/game", checkEarthquakeShouldHappen);
+//INCLUDE_ASM("resetDogLocations/game/game", checkEarthquakeShouldHappen);
 
 bool checkEarthquakeShouldHappen(void) {
 
@@ -2853,7 +2853,7 @@ void clearHeldItemsAtEndOfDay(void) {
                 resetChickenLocation(0xFF, gPlayer.heldAnimalIndex);
                 break;
             case 0x58 ... 0x5F:
-                setDogLocation(0xFF);
+                resetDogLocation(0xFF);
                 break;
             default:
                 break;
